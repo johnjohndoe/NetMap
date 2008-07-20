@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<project SchemaVersion="2.0">
+    <assemblies>
+        <assembly location="..\..\..\ApplicationUtil\bin\Debug\Microsoft.NetMap.ApplicationUtil.dll" documentation="..\..\..\ApplicationUtil\bin\Debug\Microsoft.NetMap.ApplicationUtil.xml" />
+        <assembly location="..\..\..\Core\bin\Debug\Microsoft.NetMap.Core.dll" documentation="..\..\..\Core\bin\Debug\Microsoft.NetMap.Core.xml" />
+        <assembly location="..\..\..\Adapters\bin\Debug\Microsoft.NetMap.Adapters.dll" documentation="..\..\..\Adapters\bin\Debug\Microsoft.NetMap.Adapters.xml" />
+        <assembly location="..\..\..\Control\bin\Debug\Microsoft.NetMap.Control.dll" documentation="..\..\..\Control\bin\Debug\Microsoft.NetMap.Control.xml" />
+        <assembly location="..\..\..\Visualization\bin\Debug\Microsoft.NetMap.Visualization.dll" documentation="..\..\..\Visualization\bin\Debug\Microsoft.NetMap.Visualization.xml" />
+    </assemblies>
+    <namespaces>
+        <namespace name="Microsoft.NetMap.ApplicationUtil">Utility classes for use in NetMap applications.</namespace>
+        <namespace name="Microsoft.SocialNetworkLib">Utility classes for analyzing social networks.</namespace>
+        <namespace name="Microsoft.NetMap.Adapters">Interfaces and objects for converting NetMap graph data to and from a variety of data formats.</namespace>
+        <namespace name="Microsoft.NetMap.Core">Core interfaces that define graphs, vertices, and edges.  Includes default graph, vertex, and edge implementations that can be used as-is or extended by your application via inheritance.  You can also create graph, vertex, and edge classes from scratch.  The only requirement is that your classes must implement the corresponding core interface.  All graph classes must implement IGraph, for example.</namespace>
+        <namespace name="Microsoft.NetMap.Visualization">Interfaces that define layout and drawing operations that can be performed on NetMap graphs.  Includes a basic set of implementations.</namespace>
+        <namespace name="UnfinishedTopics">Fake namespace to document topics in the spec that haven't yet been incorporated into the NetMap object model.</namespace>
+    </namespaces>
+    <documenters>
+        <documenter name="MSDN-CHM">
+            <property name="RootPageContainsNamespaces" value="True" />
+            <property name="OutputDirectory" value=".\" />
+            <property name="HtmlHelpName" value="NetMapApi" />
+            <property name="Title" value="Microsoft Research .NetMap" />
+            <property name="DocumentProtected" value="False" />
+            <property name="SkipNamespacesWithoutSummaries" value="True" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+    </documenters>
+</project>

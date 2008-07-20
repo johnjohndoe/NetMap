@@ -1,0 +1,64 @@
+
+/* This is a sample graph file in the Pajek format, which is roughly documented
+/* here:
+/*
+/*     http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf.
+/*
+/* A Pajek file consists of one or more sections that start with a section
+/* header.  A section header starts with an asterisk in column 1.
+
+/* The "*vertices" section specifies the graph's vertices.  The header includes
+/* the vertex count.
+
+*vertices 14
+
+/* The header is followed by one line per vertex.  The first field of each
+/* vertex line is a one-based index that must range from 1 to the vertex count.
+/* The second field of each vertex line is the vertex name surrounded by double
+/* quotes.  (Fields in Pajek are separated by any combination of spaces and
+/* tabs.)  The vertex name may optionally be followed by the vertex's x- y- and
+/* z-coordinates, which must range from 0 to 1.0.
+
+1 "Vertex13"
+2 "Vertex14"
+3 "Vertex12"
+4 "Vertex11"
+5 "Vertex1"
+6 "Vertex10"
+7 "Vertex9"
+8 "Vertex8"
+9 "Vertex7"
+10 "Vertex3"
+11 "Vertex2"
+12 "Vertex4"
+13 "Vertex5"
+14 "Vertex6"
+
+/* The arcs section specifies directed edges in the format "Vertex1Index
+/* Vertex2Index Weight".
+
+*arcs
+14 14 1
+14 12 1
+13 12 1
+12 11 1
+10 11 1
+10 5 1
+5 9 1
+5 8 1
+5 7 1
+5 6 1
+5 4 1
+4 3 1
+3 1 1
+1 2 1
+
+/* There can also be an edges section that specifies undirected edges in the
+/* same format, and arcslist and edgeslist sections that specify directed and
+/* undirected edge lists in the format "Vertex1Index Vertex2Index
+/* Vertex3Index ...".  This specifies edges from Vertex1 to Vertex2, Vertex1 to
+/* Vertex3, and so on.
+/*
+/* Comment lines start with "/*".
+/*
+/* C#UNG ignores fields and lines it doesn't recognize.

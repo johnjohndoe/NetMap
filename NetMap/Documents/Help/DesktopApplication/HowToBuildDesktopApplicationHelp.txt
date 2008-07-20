@@ -1,0 +1,13 @@
+
+To Build the NetMap DesktopApplication Help File
+------------------------------------------------
+
+1. In VSS, check out the NetMapDesktopApplication.chm file.
+
+2. Install the Microsoft HTML Help Workshop.
+
+3. Start the Help Workshop (hhw.exe).
+
+4. In the Help Workshop, open NetMapDesktopApplication.hhp.
+
+5. Run File, Compile.

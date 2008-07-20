@@ -1,0 +1,40 @@
+
+To Build the NetMap API Help File
+---------------------------------
+
+1. Build the NetMap solution.  The help file depends on XML files built by
+   Visual Studio at the same time it builds the solution.
+
+2. Install the NDoc documentation tool.  See the NDoc Installation Notes below.
+
+3. Check out $/NetMap/Documents/Help/Api/NetMapApi.chm.
+
+4. On a command line, navigate to the local NetMap directory corresponding to
+   $/NetMap/Documents/Help/Api and run this command:
+
+       "[NDocPath]\NDocConsole.exe" -project=NetMapApi.ndoc -verbose
+
+   This creates a help file, NetMapApi.chm, and puts it in the local directory
+   corresponding to $/NetMap/Documents/Help/Api.  It also creates a bunch of
+   intermediate files in the same directory, all of which can be deleted.
+
+5. As an alternative to step 4, you can run the NDoc GUI application at
+   [NDocPath]\NDocGui.exe, open NetMapApi.ndoc in the application, and run the
+   Documentation, Build command.
+
+
+NDoc Installation Notes
+-----------------------
+
+The latest official version of NDoc, 1.3.1, is available at
+http://ndoc.sourceforge.net/.  However, version 1.3.1 does not work with the
+generic classes introduced in .NET 2.0 and therefore doesn't work with NetMap.
+
+As of June 2007, NDoc is no longer under development, but before the NDoc
+developer ended the project, he distributed an alpha version of NDoc 2.0.  The
+alpha version does work with generics, and it's the one that should be used to
+build the NetMap help file.  It's checked into VSS at
+$/Tools/NDoc/NDoc2-Alpha3u.zip.  There is no setup program; just unzip the Zip
+file into any directory.  Included in this Zip file are the NDocConsole.exe and
+NDocGui.exe programs referenced above.
+

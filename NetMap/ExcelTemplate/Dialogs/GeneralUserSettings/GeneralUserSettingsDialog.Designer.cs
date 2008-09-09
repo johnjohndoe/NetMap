@@ -58,6 +58,8 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label24 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbxPrimaryLabelFillColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
+            this.label4 = new System.Windows.Forms.Label();
             this.lblMaximumAlphaMessage = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.nudVertexAlpha = new System.Windows.Forms.NumericUpDown();
@@ -68,6 +70,8 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxSelectedVertexColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.btnResetAll = new System.Windows.Forms.Button();
             this.cbxBackColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
+            this.btnFont = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudEdgeWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSelectedEdgeWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexRadius)).BeginInit();
@@ -100,10 +104,10 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(354, 383);
+            this.btnOK.Location = new System.Drawing.Point(354, 408);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 9;
+            this.btnOK.TabIndex = 10;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -111,17 +115,17 @@ namespace Microsoft.NetMap.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(440, 383);
+            this.btnCancel.Location = new System.Drawing.Point(440, 408);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 10;
+            this.btnCancel.TabIndex = 11;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // nudSelectedEdgeWidth
             // 
             this.nudSelectedEdgeWidth.DecimalPlaces = 1;
-            this.nudSelectedEdgeWidth.Location = new System.Drawing.Point(69, 56);
+            this.nudSelectedEdgeWidth.Location = new System.Drawing.Point(74, 56);
             this.nudSelectedEdgeWidth.Name = "nudSelectedEdgeWidth";
             this.nudSelectedEdgeWidth.Size = new System.Drawing.Size(56, 20);
             this.nudSelectedEdgeWidth.TabIndex = 3;
@@ -156,7 +160,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // nudVertexRadius
             // 
             this.nudVertexRadius.DecimalPlaces = 1;
-            this.nudVertexRadius.Location = new System.Drawing.Point(63, 90);
+            this.nudVertexRadius.Location = new System.Drawing.Point(89, 90);
             this.nudVertexRadius.Name = "nudVertexRadius";
             this.nudVertexRadius.Size = new System.Drawing.Size(56, 20);
             this.nudVertexRadius.TabIndex = 5;
@@ -174,15 +178,15 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             this.cbxVertexShape.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxVertexShape.FormattingEnabled = true;
-            this.cbxVertexShape.Location = new System.Drawing.Point(63, 55);
+            this.cbxVertexShape.Location = new System.Drawing.Point(89, 55);
             this.cbxVertexShape.Name = "cbxVertexShape";
-            this.cbxVertexShape.Size = new System.Drawing.Size(86, 21);
+            this.cbxVertexShape.Size = new System.Drawing.Size(119, 21);
             this.cbxVertexShape.TabIndex = 3;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 309);
+            this.label9.Location = new System.Drawing.Point(15, 339);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(94, 13);
             this.label9.TabIndex = 4;
@@ -191,18 +195,18 @@ namespace Microsoft.NetMap.ExcelTemplate
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(15, 345);
+            this.label10.Location = new System.Drawing.Point(15, 375);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(42, 13);
-            this.label10.TabIndex = 6;
+            this.label10.TabIndex = 7;
             this.label10.Text = "&Margin:";
             // 
             // nudMargin
             // 
-            this.nudMargin.Location = new System.Drawing.Point(113, 343);
+            this.nudMargin.Location = new System.Drawing.Point(113, 373);
             this.nudMargin.Name = "nudMargin";
             this.nudMargin.Size = new System.Drawing.Size(56, 20);
-            this.nudMargin.TabIndex = 7;
+            this.nudMargin.TabIndex = 8;
             // 
             // nudRelativeArrowSize
             // 
@@ -223,6 +227,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.lblMaximumAlphaMessage2);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.nudEdgeAlpha);
@@ -232,9 +237,9 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.nudRelativeArrowSize);
             this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Location = new System.Drawing.Point(272, 9);
+            this.groupBox1.Location = new System.Drawing.Point(284, 9);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(248, 169);
+            this.groupBox1.Size = new System.Drawing.Size(236, 199);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Edges";
@@ -271,7 +276,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxEdgeColor.FormattingEnabled = true;
             this.cbxEdgeColor.Location = new System.Drawing.Point(74, 25);
             this.cbxEdgeColor.Name = "cbxEdgeColor";
-            this.cbxEdgeColor.Size = new System.Drawing.Size(159, 21);
+            this.cbxEdgeColor.Size = new System.Drawing.Size(145, 21);
             this.cbxEdgeColor.TabIndex = 1;
             // 
             // groupBox2
@@ -280,9 +285,9 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.groupBox2.Controls.Add(this.label24);
             this.groupBox2.Controls.Add(this.label20);
             this.groupBox2.Controls.Add(this.nudSelectedEdgeWidth);
-            this.groupBox2.Location = new System.Drawing.Point(272, 186);
+            this.groupBox2.Location = new System.Drawing.Point(283, 216);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(249, 100);
+            this.groupBox2.Size = new System.Drawing.Size(237, 100);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected edges";
@@ -291,9 +296,9 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             this.cbxSelectedEdgeColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSelectedEdgeColor.FormattingEnabled = true;
-            this.cbxSelectedEdgeColor.Location = new System.Drawing.Point(69, 25);
+            this.cbxSelectedEdgeColor.Location = new System.Drawing.Point(74, 25);
             this.cbxSelectedEdgeColor.Name = "cbxSelectedEdgeColor";
-            this.cbxSelectedEdgeColor.Size = new System.Drawing.Size(159, 21);
+            this.cbxSelectedEdgeColor.Size = new System.Drawing.Size(145, 21);
             this.cbxSelectedEdgeColor.TabIndex = 1;
             // 
             // label24
@@ -316,6 +321,8 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.cbxPrimaryLabelFillColor);
+            this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.lblMaximumAlphaMessage);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.nudVertexAlpha);
@@ -327,15 +334,32 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.groupBox3.Controls.Add(this.cbxVertexShape);
             this.groupBox3.Location = new System.Drawing.Point(18, 9);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 169);
+            this.groupBox3.Size = new System.Drawing.Size(248, 199);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Vertices";
             // 
+            // cbxPrimaryLabelFillColor
+            // 
+            this.cbxPrimaryLabelFillColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxPrimaryLabelFillColor.FormattingEnabled = true;
+            this.cbxPrimaryLabelFillColor.Location = new System.Drawing.Point(89, 161);
+            this.cbxPrimaryLabelFillColor.Name = "cbxPrimaryLabelFillColor";
+            this.cbxPrimaryLabelFillColor.Size = new System.Drawing.Size(145, 21);
+            this.cbxPrimaryLabelFillColor.TabIndex = 10;
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(9, 161);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 35);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Primary label &fill color:";
+            // 
             // lblMaximumAlphaMessage
             // 
             this.lblMaximumAlphaMessage.AutoSize = true;
-            this.lblMaximumAlphaMessage.Location = new System.Drawing.Point(125, 129);
+            this.lblMaximumAlphaMessage.Location = new System.Drawing.Point(151, 129);
             this.lblMaximumAlphaMessage.Name = "lblMaximumAlphaMessage";
             this.lblMaximumAlphaMessage.Size = new System.Drawing.Size(90, 13);
             this.lblMaximumAlphaMessage.TabIndex = 8;
@@ -353,7 +377,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // nudVertexAlpha
             // 
             this.nudVertexAlpha.DecimalPlaces = 1;
-            this.nudVertexAlpha.Location = new System.Drawing.Point(63, 127);
+            this.nudVertexAlpha.Location = new System.Drawing.Point(89, 127);
             this.nudVertexAlpha.Name = "nudVertexAlpha";
             this.nudVertexAlpha.Size = new System.Drawing.Size(56, 20);
             this.nudVertexAlpha.TabIndex = 7;
@@ -362,9 +386,9 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             this.cbxVertexColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxVertexColor.FormattingEnabled = true;
-            this.cbxVertexColor.Location = new System.Drawing.Point(63, 25);
+            this.cbxVertexColor.Location = new System.Drawing.Point(89, 25);
             this.cbxVertexColor.Name = "cbxVertexColor";
-            this.cbxVertexColor.Size = new System.Drawing.Size(159, 21);
+            this.cbxVertexColor.Size = new System.Drawing.Size(145, 21);
             this.cbxVertexColor.TabIndex = 1;
             // 
             // label2
@@ -381,9 +405,9 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.groupBox4.Controls.Add(this.chkAutoSelect);
             this.groupBox4.Controls.Add(this.cbxSelectedVertexColor);
             this.groupBox4.Controls.Add(this.label6);
-            this.groupBox4.Location = new System.Drawing.Point(18, 186);
+            this.groupBox4.Location = new System.Drawing.Point(18, 216);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(236, 100);
+            this.groupBox4.Size = new System.Drawing.Size(248, 100);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Selected vertices";
@@ -401,17 +425,17 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             this.cbxSelectedVertexColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSelectedVertexColor.FormattingEnabled = true;
-            this.cbxSelectedVertexColor.Location = new System.Drawing.Point(63, 25);
+            this.cbxSelectedVertexColor.Location = new System.Drawing.Point(89, 25);
             this.cbxSelectedVertexColor.Name = "cbxSelectedVertexColor";
-            this.cbxSelectedVertexColor.Size = new System.Drawing.Size(159, 21);
+            this.cbxSelectedVertexColor.Size = new System.Drawing.Size(145, 21);
             this.cbxSelectedVertexColor.TabIndex = 1;
             // 
             // btnResetAll
             // 
-            this.btnResetAll.Location = new System.Drawing.Point(18, 383);
+            this.btnResetAll.Location = new System.Drawing.Point(18, 408);
             this.btnResetAll.Name = "btnResetAll";
             this.btnResetAll.Size = new System.Drawing.Size(80, 23);
-            this.btnResetAll.TabIndex = 8;
+            this.btnResetAll.TabIndex = 9;
             this.btnResetAll.Text = "Reset All";
             this.btnResetAll.UseVisualStyleBackColor = true;
             this.btnResetAll.Click += new System.EventHandler(this.btnResetAll_Click);
@@ -420,10 +444,28 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             this.cbxBackColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBackColor.FormattingEnabled = true;
-            this.cbxBackColor.Location = new System.Drawing.Point(115, 306);
+            this.cbxBackColor.Location = new System.Drawing.Point(115, 336);
             this.cbxBackColor.Name = "cbxBackColor";
-            this.cbxBackColor.Size = new System.Drawing.Size(159, 21);
+            this.cbxBackColor.Size = new System.Drawing.Size(145, 21);
             this.cbxBackColor.TabIndex = 5;
+            // 
+            // btnFont
+            // 
+            this.btnFont.Location = new System.Drawing.Point(283, 334);
+            this.btnFont.Name = "btnFont";
+            this.btnFont.Size = new System.Drawing.Size(80, 23);
+            this.btnFont.TabIndex = 6;
+            this.btnFont.Text = "Fo&nt...";
+            this.btnFont.UseVisualStyleBackColor = true;
+            this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
+            // 
+            // label11
+            // 
+            this.label11.Location = new System.Drawing.Point(136, 89);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(90, 31);
+            this.label11.TabIndex = 9;
+            this.label11.Text = "(Directed graphs only)";
             // 
             // GeneralUserSettingsDialog
             // 
@@ -431,7 +473,8 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(537, 423);
+            this.ClientSize = new System.Drawing.Size(537, 448);
+            this.Controls.Add(this.btnFont);
             this.Controls.Add(this.cbxBackColor);
             this.Controls.Add(this.btnResetAll);
             this.Controls.Add(this.groupBox4);
@@ -507,5 +550,9 @@ namespace Microsoft.NetMap.ExcelTemplate
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxSelectedEdgeColor;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxBackColor;
         private System.Windows.Forms.CheckBox chkAutoSelect;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxPrimaryLabelFillColor;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnFont;
+        private System.Windows.Forms.Label label11;
     }
 }

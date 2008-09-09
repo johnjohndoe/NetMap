@@ -81,37 +81,28 @@ public interface IGraphMetricCalculator
     /// </summary>
     ///
     /// <param name="graph">
-    /// The graph to calculate metrics for.
-    /// </param>
-    ///
-    /// <param name="graphMetricUserSettings">
-    /// The user's settings for calculating graph metrics.
-    /// </param>
-    ///
-    /// <param name="backgroundWorker">
-    /// The <see cref="BackgroundWorker" /> object that is performing all graph
-	/// metric calculations.
-    /// </param>
-    ///
-    /// <param name="doWorkEventArgs">
-    /// The <see cref="DoWorkEventArgs" /> object that was passed to <see
-	/// cref="BackgroundWorker.DoWork" />.
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+	/// edges and self-loops.
     /// </param>
 	///
+    /// <param name="calculateGraphMetricsContext">
+	/// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
 	/// <returns>
 	/// An array of GraphMetricColumn objects, one for each related metric
 	/// calculated by this method.
 	/// </returns>
 	///
 	/// <remarks>
-	/// This method should periodically check backgroundWorker.<see
+	/// This method should periodically check BackgroundWorker.<see
 	/// cref="BackgroundWorker.CancellationPending" />.  If true, the method
-	/// should set doWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
+	/// should set DoWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
 	/// true and return null immediately.
 	///
 	/// <para>
-	/// It should also periodically report progress by calling the <paramref
-	/// name="backgroundWorker" />.<see
+	/// It should also periodically report progress by calling the
+	/// BackgroundWorker.<see
 	/// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
 	/// userState argument must be a <see cref="GraphMetricProgress" /> object.
 	/// </para>
@@ -128,9 +119,7 @@ public interface IGraphMetricCalculator
     CalculateGraphMetrics
     (
 		IGraph graph,
-		GraphMetricUserSettings graphMetricUserSettings,
-		BackgroundWorker backgroundWorker,
-		DoWorkEventArgs doWorkEventArgs
+		CalculateGraphMetricsContext calculateGraphMetricsContext
     );
 }
 

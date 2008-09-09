@@ -109,6 +109,12 @@ public partial class GraphMetricWriter : Object
 				sCurrentWorksheetPlusTable = sThisWorksheetPlusTable;
 			}
 
+			// Apparent Excel bug: Adding a column when the header row is not
+			// the default row height increases the header row height.  Work
+			// around this by saving the height and restoring it below.
+
+            Double dHeaderRowHeight = (Double)oTable.HeaderRowRange.RowHeight;
+
 			// Write the column.
 
 			Debug.Assert(oTable != null);
@@ -141,6 +147,8 @@ public partial class GraphMetricWriter : Object
 			{
 				Debug.Assert(false);
 			}
+
+            oTable.HeaderRowRange.RowHeight = dHeaderRowHeight;
 		}
 	}
 
@@ -173,10 +181,10 @@ public partial class GraphMetricWriter : Object
 
 		// Get the required column information.
 
-		Range oVisibleColumnData, oVisibleIDColumnData;
+		Range oVisibleColumnData, oIDColumnData;
 
 		if ( !TryGetRequiredColumnWithIDInformation(oGraphMetricColumnWithID,
-			oTable, out oVisibleColumnData, out oVisibleIDColumnData) )
+			oTable, out oVisibleColumnData, out oIDColumnData) )
 		{
 			return;
 		}
@@ -195,25 +203,29 @@ public partial class GraphMetricWriter : Object
 				oGraphMetricValueWithID);
 		}
 
-		Int32 iAreas = oVisibleColumnData.Areas.Count;
+		Debug.Assert(oTable.Parent is Worksheet);
+		Worksheet oWorksheet = (Worksheet)oTable.Parent;
 
-		Debug.Assert(oVisibleIDColumnData.Areas.Count == iAreas);
+		Int32 iIDColumnNumberOneBased = oIDColumnData.Column;
 
-		// Loop through the visible areas.
+		// Loop through the areas, and split each area into subranges if the
+		// area contains too many rows.
 
-		for (Int32 i = 1; i <= iAreas; i++)
+		foreach ( Range oColumnSubrange in
+			ExcelRangeSplitter.SplitRange(oVisibleColumnData) )
 		{
-			Range oColumnArea = oVisibleColumnData.Areas[i];
-			Range oIDColumnArea = oVisibleIDColumnData.Areas[i];
-			Int32 iRows = oColumnArea.Rows.Count;
+			Int32 iRows = oColumnSubrange.Rows.Count;
 
-			Debug.Assert(oIDColumnArea.Rows.Count == iRows);
+			Range oIDColumnSubrange = ExcelRangeSplitter.GetParallelSubrange(
+				oColumnSubrange, iIDColumnNumberOneBased);
+
+			Debug.Assert(oIDColumnSubrange.Rows.Count == iRows);
 
 			Object [,] aoColumnValues =
 				ExcelUtil.GetSingleColumn2DArray(iRows);
 
 			Object [,] aoIDColumnValues =
-				ExcelUtil.GetRangeValues(oIDColumnArea);
+				ExcelUtil.GetRangeValues(oIDColumnSubrange);
 
 			// Loop through the rows.
 
@@ -225,10 +237,9 @@ public partial class GraphMetricWriter : Object
 				// Get the ID stored in the row.
 
 				if (
-					!ExcelUtil.TryGetNonEmptyStringFromCell(aoIDColumnValues,
-						iRowOneBased, 1, out sID)
+					!ExcelUtil.TryGetNonEmptyStringFromCell(
+						aoIDColumnValues, iRowOneBased, 1, out sID)
 					||
-
 					!Int32.TryParse(sID, out iID)
 				   )
 				{
@@ -254,7 +265,7 @@ public partial class GraphMetricWriter : Object
 					oGraphMetricValueWithID.Value;
 			}
 
-			oColumnArea.set_Value(Missing.Value, aoColumnValues);
+			oColumnSubrange.set_Value(Missing.Value, aoColumnValues);
 		}
 	}
 
@@ -301,17 +312,47 @@ public partial class GraphMetricWriter : Object
 			oGraphMetricColumnOrdered.GraphMetricValuesOrdered;
 
 		Int32 iRows = aoGraphMetricValuesOrdered.Length;
-
 		Object [,] aoValues = ExcelUtil.GetSingleColumn2DArray(iRows);
+		Boolean bStyleSpecified = false;
 
 		for (Int32 i = 0; i < iRows; i++)
 		{
-			aoValues[i + 1, 1] = aoGraphMetricValuesOrdered[i].Value;
+			GraphMetricValueOrdered oGraphMetricValueOrdered =
+				aoGraphMetricValuesOrdered[i];
+
+			aoValues[i + 1, 1] = oGraphMetricValueOrdered.Value;
+
+			if (oGraphMetricValueOrdered.Style != null)
+			{
+				// A style was specified for this row.  It will need to be
+				// applied later.  (It should be possible to apply the style
+				// here, but that does not work reliably when values are
+				// written to the cells afterwards, as they are after this
+				// loop.)
+
+				bStyleSpecified = true;
+			}
 		}
 
 		// Write the array to the column.
 
 		ExcelUtil.SetRangeValues(oVisibleColumnData, aoValues);
+
+		if (bStyleSpecified)
+		{
+			for (Int32 i = 0; i < iRows; i++)
+			{
+				String sStyle = aoGraphMetricValuesOrdered[i].Style;
+
+				if (sStyle != null)
+				{
+					// This row has a style.  Apply it.
+
+					ExcelUtil.SetRangeStyle(
+						(Range)oVisibleColumnData.Cells[i + 1, 1], sStyle);
+				}
+			}
+		}
 	}
 
 	//*************************************************************************
@@ -335,9 +376,9 @@ public partial class GraphMetricWriter : Object
 	/// returned.
 	/// </param>
 	///
-	/// <param name="oVisibleIDColumnData">
-	/// Where the visible range of the ID column gets stored if true is
-	/// returned.
+	/// <param name="oIDColumnData">
+	/// Where the ID column gets stored if true is returned.  The column may
+	/// contain hidden rows.
 	/// </param>
 	///
 	/// <returns>
@@ -351,7 +392,7 @@ public partial class GraphMetricWriter : Object
 		GraphMetricColumnWithID oGraphMetricColumnWithID,
 		ListObject oTable,
 		out Range oVisibleColumnData,
-		out Range oVisibleIDColumnData
+		out Range oIDColumnData
 	)
 	{
 		Debug.Assert(oGraphMetricColumnWithID != null);
@@ -359,7 +400,7 @@ public partial class GraphMetricWriter : Object
 		AssertValid();
 
 		oVisibleColumnData = null;
-		oVisibleIDColumnData = null;
+		oIDColumnData = null;
 
 		// Get the specified column.
 
@@ -371,18 +412,8 @@ public partial class GraphMetricWriter : Object
 
 		// Get the ID column.
 
-		Range oIDColumnData;
-
 		if ( !ExcelUtil.TryGetTableColumnData(oTable,
 			CommonTableColumnNames.ID, out oIDColumnData) )
-		{
-			return (false);
-		}
-
-		// Get the visible range of the ID column.
-
-		if ( !ExcelUtil.TryGetVisibleRange(oIDColumnData,
-			out oVisibleIDColumnData) )
 		{
 			return (false);
 		}
@@ -433,26 +464,31 @@ public partial class GraphMetricWriter : Object
 		// Add the specified column if it's not already present.
 
 		String sColumnName = oGraphMetricColumn.ColumnName;
+		String sColumnStyle = oGraphMetricColumn.Style;
+
+		Microsoft.Office.Interop.Excel.ListColumn oColumn;
+
+		if (
+			!ExcelUtil.TryGetTableColumn(oTable, sColumnName, out oColumn)
+			&&
+			!ExcelUtil.TryAddTableColumn(oTable, sColumnName,
+				oGraphMetricColumn.ColumnWidthChars, sColumnStyle, out oColumn)
+			)
+		{
+			// Give up.
+
+			return (false);
+		}
+
 		Range oColumnData;
 
-		if ( !ExcelUtil.TryGetTableColumnData(oTable,
-			sColumnName, out oColumnData) )
+		if ( !ExcelUtil.TryGetTableColumnData(oTable, sColumnName,
+			out oColumnData) )
 		{
-			Microsoft.Office.Interop.Excel.ListColumn oColumn;
-
-			if (
-				!ExcelUtil.TryAddTableColumn(oTable, sColumnName,
-					oGraphMetricColumn.ColumnWidthChars, out oColumn)
-				||
-				!ExcelUtil.TryGetTableColumnData(oTable, sColumnName,
-					out oColumnData)
-				)
-			{
-				// Give up.
-
-				return (false);
-			}
+			return (false);
 		}
+
+		ExcelUtil.SetRangeStyle(oColumn.Range, sColumnStyle);
 
 		String sNumberFormat = oGraphMetricColumn.NumberFormat;
 
@@ -460,6 +496,14 @@ public partial class GraphMetricWriter : Object
 		{
 			oColumnData.NumberFormat = sNumberFormat;
 		}
+
+		// Wrapping text makes Range.set_Value() very slow, so turn it off.
+
+		oColumn.Range.WrapText = false;
+
+		// But wrap the text in the column's header.
+
+		( (Range)oColumn.Range.Cells[1, 1] ).WrapText = true;
 
 		// Get the visible range.
 

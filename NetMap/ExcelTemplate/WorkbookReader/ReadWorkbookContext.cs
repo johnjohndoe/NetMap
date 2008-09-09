@@ -35,6 +35,11 @@ namespace Microsoft.NetMap.ExcelTemplate
 /// is read.
 /// </para>
 ///
+/// <para>
+/// Set <see cref="AutoFillWorkbook" /> to true to run the AutoFill feature on
+/// the workbook before the workbook is read.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -54,6 +59,7 @@ public class ReadWorkbookContext : Object
 		m_bIgnoreVertexLocations = true;
 		m_bFillIDColumns = false;
 		m_bPopulateVertexWorksheet = false;
+		m_bAutoFillWorkbook = false;
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
 		m_oColorConverter2 = new ColorConverter2();
 		m_oEdgeWidthConverter = new EdgeWidthConverter();
@@ -174,6 +180,37 @@ public class ReadWorkbookContext : Object
 		set
 		{
             m_bPopulateVertexWorksheet = value;
+
+			AssertValid();
+		}
+    }
+
+    //*************************************************************************
+    //  Property: AutoFillWorkbook
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the AutoFill feature should be
+	/// run on the workbook before the workbook is read.
+    /// </summary>
+    ///
+    /// <value>
+	/// true to run the AutoFill feature.  The default is false.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    AutoFillWorkbook
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bAutoFillWorkbook);
+        }
+
+		set
+		{
+            m_bAutoFillWorkbook = value;
 
 			AssertValid();
 		}
@@ -465,6 +502,7 @@ public class ReadWorkbookContext : Object
 		// m_bIgnoreVertexLocations
 		// m_bFillIDColumns
 		// m_bPopulateVertexWorksheet
+		// m_bAutoFillWorkbook
 		// m_oGraphRectangle
 		Debug.Assert(m_oColorConverter2 != null);
 		Debug.Assert(m_oEdgeWidthConverter != null);
@@ -493,6 +531,10 @@ public class ReadWorkbookContext : Object
 	/// true to populate the vertex table with unique vertex names.
 
 	protected Boolean m_bPopulateVertexWorksheet;
+
+	/// true to run the AutoFill feature on the workbook.
+
+	protected Boolean m_bAutoFillWorkbook;
 
     /// The rectangle the graph is being drawn within.
 

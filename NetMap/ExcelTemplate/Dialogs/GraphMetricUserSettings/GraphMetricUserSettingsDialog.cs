@@ -65,11 +65,14 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
 
 		clbGraphMetrics.Items.AddRange( new Object [] {
 
-			new ObjectWithText( GraphMetric.InDegree, "In-Degree"),
-			new ObjectWithText( GraphMetric.OutDegree, "Out-Degree"),
+			new ObjectWithText( GraphMetric.InDegree,
+				"In-Degree  (directed graphs only)"),
+
+			new ObjectWithText( GraphMetric.OutDegree,
+				"Out-Degree  (directed graphs only)"),
 
 			new ObjectWithText( GraphMetric.Degree,
-				"Degree  (= In-Degree + Out-Degree)"),
+				"Degree  (undirected graphs only)"),
 
 			new ObjectWithText( GraphMetric.ClusteringCoefficient,
 				"Clustering Coefficient"),
@@ -77,10 +80,8 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
 			new ObjectWithText( GraphMetric.BetweennessCentrality,
 				"Betweenness Centrality"),
 
-			#if false  // TODO: Clusters aren't implemented yet.
-			new ObjectWithText( GraphMetric.Clusters,
-				"Clusters"),
-			#endif
+			new ObjectWithText( GraphMetric.OverallMetrics,
+				"Overall Metrics"),
 			} );
 
 		DoDataExchange(false);
@@ -141,9 +142,9 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
 
 		BetweennessCentrality,
 
-		/// Clusters.
+		/// Overall graph metrics.
 
-		Clusters,
+		OverallMetrics,
     }
 
     //*************************************************************************
@@ -298,17 +299,17 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
 
 					break;
 
-				case GraphMetric.Clusters:
+				case GraphMetric.OverallMetrics:
 
 					if (bFromControls)
 					{
 						m_oGraphMetricUserSettings.
-							CalculateClusters = bItemIsChecked;
+							CalculateOverallMetrics = bItemIsChecked;
 					}
 					else
 					{
 						bItemIsChecked = m_oGraphMetricUserSettings.
-							CalculateClusters;
+							CalculateOverallMetrics;
 					}
 
 					break;

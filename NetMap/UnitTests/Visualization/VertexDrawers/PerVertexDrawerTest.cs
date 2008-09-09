@@ -368,7 +368,7 @@ public class PerVertexDrawerTest : Object
 		// Circle.
 
 		oVertex = oVertices.Add();
-		oVertex.Location = new Point(10, 20);
+		oVertex.Location = new Point(10, 10);
 
 		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
 			VertexDrawer.VertexShape.Circle);
@@ -379,7 +379,7 @@ public class PerVertexDrawerTest : Object
 		// Disk.
 
 		oVertex = oVertices.Add();
-		oVertex.Location = new Point(20, 20);
+		oVertex.Location = new Point(20, 10);
 
 		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
 			VertexDrawer.VertexShape.Disk);
@@ -390,10 +390,76 @@ public class PerVertexDrawerTest : Object
 		// Sphere.
 
 		oVertex = oVertices.Add();
-		oVertex.Location = new Point(30, 20);
+		oVertex.Location = new Point(30, 10);
 
 		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
 			VertexDrawer.VertexShape.Sphere);
+
+		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
+
+
+		// Square.
+
+		oVertex = oVertices.Add();
+		oVertex.Location = new Point(40, 10);
+
+		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+			VertexDrawer.VertexShape.Square);
+
+		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
+
+
+		// Solid square.
+
+		oVertex = oVertices.Add();
+		oVertex.Location = new Point(10, 25);
+
+		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+			VertexDrawer.VertexShape.SolidSquare);
+
+		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
+
+
+		// Diamond.
+
+		oVertex = oVertices.Add();
+		oVertex.Location = new Point(20, 25);
+
+		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+			VertexDrawer.VertexShape.Diamond);
+
+		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
+
+
+		// SolidDiamond.
+
+		oVertex = oVertices.Add();
+		oVertex.Location = new Point(30, 25);
+
+		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+			VertexDrawer.VertexShape.SolidDiamond);
+
+		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
+
+
+		// Triangle.
+
+		oVertex = oVertices.Add();
+		oVertex.Location = new Point(40, 25);
+
+		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+			VertexDrawer.VertexShape.Triangle);
+
+		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
+
+
+		// SolidTriangle.
+
+		oVertex = oVertices.Add();
+		oVertex.Location = new Point(10, 40);
+
+		oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+			VertexDrawer.VertexShape.SolidTriangle);
 
 		m_oPerVertexDrawer.DrawVertex(oVertex, m_oDrawContext);
 

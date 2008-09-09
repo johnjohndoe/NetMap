@@ -361,6 +361,62 @@ internal class GraphicsUtil
 	}
 
 	//*************************************************************************
+	//	Method: DrawSquare()
+	//
+	/// <summary>
+	/// Draws a square defined by a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="oGraphics">
+	///	Object to draw on.
+	/// </param>
+	///
+	/// <param name="oPen">
+	///	Pen to draw with.
+	/// </param>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the square's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the square's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the square.
+	/// </param>
+	///
+	/// <remarks>
+	/// The square is specified as a center point and half-width to make this
+	/// method compatible with <see cref="DrawCircle" />.
+	/// </remarks>
+	//*************************************************************************
+
+	public static void
+	DrawSquare
+	(
+		Graphics oGraphics,
+		Pen oPen,
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(oGraphics != null);
+		Debug.Assert(oPen != null);
+		Debug.Assert(fHalfWidth >= 0);
+
+		RectangleF oRectangleF = 
+			SquareFromCenterAndHalfWidth(fXCenter, fYCenter, fHalfWidth);
+
+		Rectangle oRectangle = RectangleFToRectangle(
+			oRectangleF, (Int32)Math.Round(oPen.Width) );
+
+		oGraphics.DrawRectangle(oPen, oRectangle);
+	}
+
+	//*************************************************************************
 	//	Method: FillSquare()
 	//
 	/// <summary>
@@ -385,7 +441,7 @@ internal class GraphicsUtil
 	/// </param>
 	///
 	/// <param name="fHalfWidth">
-	/// One half of the width of the square.
+	/// One half the width of the square.
 	/// </param>
 	///
 	/// <remarks>
@@ -439,7 +495,7 @@ internal class GraphicsUtil
 	/// </param>
 	///
 	/// <param name="fHalfWidth">
-	/// One half of the width of the square.
+	/// One half the width of the square.
 	/// </param>
 	///
 	/// <remarks>
@@ -496,6 +552,210 @@ internal class GraphicsUtil
 
 		oPathGradientBrush.Dispose();
 		oGraphicsPath.Dispose();
+	}
+
+	//*************************************************************************
+	//	Method: DrawDiamond()
+	//
+	/// <summary>
+	/// Draws a diamond defined by a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="oGraphics">
+	///	Object to draw on.
+	/// </param>
+	///
+	/// <param name="oPen">
+	///	Pen to draw with.
+	/// </param>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the diamond.
+	/// </param>
+	///
+	/// <remarks>
+	/// The diamond is specified as a center point and half-width to make this
+	/// method compatible with <see cref="DrawCircle" />.
+	/// </remarks>
+	//*************************************************************************
+
+	public static void
+	DrawDiamond
+	(
+		Graphics oGraphics,
+		Pen oPen,
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(oGraphics != null);
+		Debug.Assert(oPen != null);
+		Debug.Assert(fHalfWidth >= 0);
+
+		oGraphics.DrawPolygon(oPen, DiamondFromCenterAndHalfWidth(
+			fXCenter, fYCenter, fHalfWidth) );
+	}
+
+	//*************************************************************************
+	//	Method: FillDiamond()
+	//
+	/// <summary>
+	/// Fills a diamond defined by a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="oGraphics">
+	///	Object to draw on.
+	/// </param>
+	///
+	/// <param name="oBrush">
+	///	Brush to draw with.
+	/// </param>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the diamond.
+	/// </param>
+	///
+	/// <remarks>
+	/// The diamond is specified as a center point and half-width to make this
+	/// method compatible with <see cref="DrawCircle" />.
+	/// </remarks>
+	//*************************************************************************
+
+	public static void
+	FillDiamond
+	(
+		Graphics oGraphics,
+		Brush oBrush,
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(oGraphics != null);
+		Debug.Assert(oBrush != null);
+		Debug.Assert(fHalfWidth >= 0);
+
+		oGraphics.FillPolygon(oBrush, DiamondFromCenterAndHalfWidth(
+			fXCenter, fYCenter, fHalfWidth) );
+	}
+
+	//*************************************************************************
+	//	Method: DrawTriangle()
+	//
+	/// <summary>
+	/// Draws an equilateral triangle defined by a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="oGraphics">
+	///	Object to draw on.
+	/// </param>
+	///
+	/// <param name="oPen">
+	///	Pen to draw with.
+	/// </param>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the square that bounds the triangle.
+	/// </param>
+	///
+	/// <remarks>
+	/// The triangle is specified as a center point and half-width to make this
+	/// method compatible with <see cref="DrawCircle" />.
+	/// </remarks>
+	//*************************************************************************
+
+	public static void
+	DrawTriangle
+	(
+		Graphics oGraphics,
+		Pen oPen,
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(oGraphics != null);
+		Debug.Assert(oPen != null);
+		Debug.Assert(fHalfWidth >= 0);
+
+		oGraphics.DrawPolygon(oPen, TriangleFromCenterAndHalfWidth(
+			fXCenter, fYCenter, fHalfWidth) );
+	}
+
+	//*************************************************************************
+	//	Method: FillTriangle()
+	//
+	/// <summary>
+	/// Fills an equilateral triangle defined by a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="oGraphics">
+	///	Object to draw on.
+	/// </param>
+	///
+	/// <param name="oBrush">
+	///	Brush to draw with.
+	/// </param>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the square that bounds the triangle.
+	/// </param>
+	///
+	/// <remarks>
+	/// The triangle is specified as a center point and half-width to make this
+	/// method compatible with <see cref="DrawCircle" />.
+	/// </remarks>
+	//*************************************************************************
+
+	public static void
+	FillTriangle
+	(
+		Graphics oGraphics,
+		Brush oBrush,
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(oGraphics != null);
+		Debug.Assert(oBrush != null);
+		Debug.Assert(fHalfWidth >= 0);
+
+		oGraphics.FillPolygon(oBrush, TriangleFromCenterAndHalfWidth(
+			fXCenter, fYCenter, fHalfWidth) );
 	}
 
 	//*************************************************************************
@@ -718,8 +978,12 @@ internal class GraphicsUtil
 	/// </param>
 	///
 	/// <param name="fHalfWidth">
-	/// One half of the width of the square.
+	/// One half the width of the square.
 	/// </param>
+	///
+	/// <returns>
+	/// The specified square.
+	/// </returns>
 	//*************************************************************************
 
 	public static RectangleF
@@ -738,6 +1002,194 @@ internal class GraphicsUtil
 			fXCenter + fHalfWidth,
 			fYCenter + fHalfWidth)
 			);
+	}
+
+	//*************************************************************************
+	//	Method: DiamondFromCenterAndHalfWidth()
+	//
+	/// <summary>
+	/// Returns an array of points that define a diamond given a center point
+	/// and half-width.
+	/// </summary>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the diamond.
+	/// </param>
+	///
+	/// <returns>
+	/// The specified diamond.
+	/// </returns>
+	//*************************************************************************
+
+	public static PointF []
+	DiamondFromCenterAndHalfWidth
+	(
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(fHalfWidth >= 0);
+
+		return ( new PointF [] {
+			new PointF(fXCenter, fYCenter - fHalfWidth),
+			new PointF(fXCenter + fHalfWidth, fYCenter),
+			new PointF(fXCenter, fYCenter + fHalfWidth),
+			new PointF(fXCenter - fHalfWidth, fYCenter),
+			} );
+	}
+
+	//*************************************************************************
+	//	Method: GetDiamondEdgeMidpoints()
+	//
+	/// <summary>
+	/// Returns an array of points on the midpoints of a diamond's edges given
+	/// a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the diamond's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the diamond.
+	/// </param>
+	///
+	/// <returns>
+	/// The midpoints of the specified diamond.
+	/// </returns>
+	//*************************************************************************
+
+	public static PointF []
+	GetDiamondEdgeMidpoints
+	(
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(fHalfWidth >= 0);
+
+		Single fQuarterWidth = fHalfWidth / 2F;
+
+		return ( new PointF [] {
+
+			// Midpoints on edges:
+
+			new PointF(fXCenter + fQuarterWidth,
+				fYCenter - fQuarterWidth),
+
+			new PointF(fXCenter + fQuarterWidth,
+				fYCenter + fQuarterWidth),
+
+			new PointF(fXCenter - fQuarterWidth,
+				fYCenter + fQuarterWidth),
+
+			new PointF(fXCenter - fQuarterWidth,
+				fYCenter - fQuarterWidth),
+			} );
+	}
+
+	//*************************************************************************
+	//	Method: TriangleFromCenterAndHalfWidth()
+	//
+	/// <summary>
+	/// Returns an array of points that define an equilateral triangle given a
+	/// center point and half-width.
+	/// </summary>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the square that bounds the triangle.
+	/// </param>
+	///
+	/// <returns>
+	/// The specified triangle.  The order of the points is top, lower-right,
+	/// lower-left.
+	/// </returns>
+	//*************************************************************************
+
+	public static PointF []
+	TriangleFromCenterAndHalfWidth
+	(
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(fHalfWidth >= 0);
+
+		Single fHalfHeight = fHalfWidth * SquareRootOfThreeOverTwo;
+
+		return ( new PointF [] {
+			new PointF(fXCenter, fYCenter - fHalfHeight),
+			new PointF(fXCenter + fHalfWidth, fYCenter + fHalfHeight),
+			new PointF(fXCenter - fHalfWidth, fYCenter + fHalfHeight),
+			} );
+	}
+
+	//*************************************************************************
+	//	Method: GetTriangleEdgeMidpoints()
+	//
+	/// <summary>
+	/// Returns an array of points on the midpoints of an equilateral
+	/// triangle's edges given a center point and half-width.
+	/// </summary>
+	///
+	/// <param name="fXCenter">
+	/// x-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fYCenter">
+	/// y-coordinate of the triangle's center.
+	/// </param>
+	///
+	/// <param name="fHalfWidth">
+	/// One half the width of the square that bounds the triangle.
+	/// </param>
+	///
+	/// <returns>
+	/// The midpoints of the specified triangle.
+	/// </returns>
+	//*************************************************************************
+
+	public static PointF []
+	GetTriangleEdgeMidpoints
+	(
+		Single fXCenter,
+		Single fYCenter,
+		Single fHalfWidth
+	)
+	{
+		Debug.Assert(fHalfWidth >= 0);
+
+		Single fHalfHeight = fHalfWidth * SquareRootOfThreeOverTwo;
+		Single fQuarterWidth = fHalfWidth / 2F;
+
+		return ( new PointF [] {
+			new PointF(fXCenter + fQuarterWidth, fYCenter),
+			new PointF(fXCenter, fYCenter + fHalfHeight),
+			new PointF(fXCenter - fQuarterWidth, fYCenter),
+			} );
 	}
 
 	//*************************************************************************
@@ -1268,6 +1720,15 @@ internal class GraphicsUtil
 			oBitmap = null;
 		}
 	}
+
+
+	//*************************************************************************
+	//	Private constants
+	//*************************************************************************
+
+	// Used in equilateral triangle calculations.
+
+	private const Single SquareRootOfThreeOverTwo = 0.866025404F;
 }
 
 }

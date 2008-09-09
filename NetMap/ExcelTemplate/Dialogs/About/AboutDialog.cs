@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Research.CommunityTechnologies.AppLib;
+using Microsoft.NetMap.ApplicationUtil;
 using System.Diagnostics;
 
 namespace Microsoft.NetMap.ExcelTemplate
@@ -81,8 +82,7 @@ public partial class AboutDialog : ExcelTemplateForm
 
 				"Version {0}"
 				,
-				FileVersionInfo.GetVersionInfo(
-					Assembly.GetExecutingAssembly().Location).FileVersion
+				AssemblyUtil2.ProductVersion
 				);
 
 			lblCopyright.Text = String.Format(
@@ -126,6 +126,38 @@ public partial class AboutDialog : ExcelTemplateForm
 		System.Diagnostics.Process.Start(
 			"mailto:" + ErrorUtil.BugReportEmailAddress
 			);
+    }
+
+	//*************************************************************************
+	//	Method: btnEnableAllNotifications_Click()
+	//
+	/// <summary>
+	///	Handles the Click event on the btnEnableAllNotifications button.
+	/// </summary>
+	///
+	/// <param name="sender">
+	///	Standard event argument.
+	/// </param>
+	///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+	//*************************************************************************
+
+    private void
+	btnEnableAllNotifications_Click
+	(
+		object sender,
+		EventArgs e
+	)
+    {
+		AssertValid();
+
+		NotificationUserSettings oNotificationUserSettings =
+			new NotificationUserSettings();
+
+		oNotificationUserSettings.EnableAllNotifications();
+		oNotificationUserSettings.Save();
     }
 
 	//*************************************************************************
@@ -198,7 +230,7 @@ public partial class AboutDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AboutDialog") ]
+[ SettingsGroupNameAttribute("AboutDialog2") ]
 
 public class AboutDialogUserSettings : FormSettings
 {

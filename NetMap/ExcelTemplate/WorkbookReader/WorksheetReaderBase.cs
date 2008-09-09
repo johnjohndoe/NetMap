@@ -42,7 +42,7 @@ public class WorksheetReaderBase : Object
     {
 		m_oAlphaConverter = new AlphaConverter();
 
-		AssertValid();
+		// AssertValid();
     }
 
     //*************************************************************************
@@ -128,9 +128,9 @@ public class WorksheetReaderBase : Object
 	/// method does nothing.
     /// </param>
 	///
-    /// <param name="oArea">
-	/// Area of the table that encompasses the rows within the ID column that
-	/// should be filled in.
+    /// <param name="oSubrange">
+	/// Subrange of the table that encompasses the rows within the ID column
+	/// that should be filled in.  Can't contain multiple areas.
     /// </param>
     //*************************************************************************
 
@@ -139,12 +139,13 @@ public class WorksheetReaderBase : Object
 	(
 		ListObject oTable,
 		Int32 iIDColumnIndex,
-		Range oArea
+		Range oSubrange
 	)
     {
 		Debug.Assert(oTable != null);
 		Debug.Assert(iIDColumnIndex == NoSuchColumn || iIDColumnIndex >= 1);
-		Debug.Assert(oArea != null);
+		Debug.Assert(oSubrange != null);
+		Debug.Assert(oSubrange.Areas.Count == 1);
 		AssertValid();
 
 		if (iIDColumnIndex == NoSuchColumn)
@@ -165,29 +166,47 @@ public class WorksheetReaderBase : Object
 
 		// Get the rows within the ID column that should be filled in.
 
-		Int32 iAreaStartRowOneBased = oArea.Row;
-		Int32 iRowsInArea = oArea.Rows.Count;
+		Int32 iSubrangeStartRowOneBased = oSubrange.Row;
+		Int32 iRowsInSubrange = oSubrange.Rows.Count;
 		Int32 iTableStartRowOneBased = oTable.Range.Row;
 
 		Range oIDRange = oWorksheet.get_Range(
 
 			oDataBodyRange.Cells[
-				iAreaStartRowOneBased - iTableStartRowOneBased,
+				iSubrangeStartRowOneBased - iTableStartRowOneBased,
 				iIDColumnIndex
 				],
 
 			oDataBodyRange.Cells[
-				iAreaStartRowOneBased - iTableStartRowOneBased + iRowsInArea
-					- 1,
+				iSubrangeStartRowOneBased - iTableStartRowOneBased
+					+ iRowsInSubrange - 1,
 				iIDColumnIndex
 				]
 			);
 
-		// Use the row-number formula, then replace the formula with its
-		// value.
+		// Use the Excel row numbers as the unique IDs.  Create a one-column
+		// array, then fill it in with the row numbers.
+
+		Int32 iRows = oIDRange.Rows.Count;
+
+		Object [,] aoValues = ExcelUtil.GetSingleColumn2DArray(iRows);
+
+		for (Int32 i = 1; i <= iRows; i++)
+		{
+			aoValues[i, 1] = iSubrangeStartRowOneBased + i - 1;
+		}
+
+		oIDRange.Value2 = aoValues;
+
+		#if false
+
+		// Note: Don't use the following clever code to fill in the row
+		// numbers.  On large worksheets, the calculations take forever.
 
 		oIDRange.Value2 = "=ROW()";
 		oIDRange.Value2 = oIDRange.Value2;
+
+		#endif
     }
 
     //*************************************************************************
@@ -308,6 +327,10 @@ public class WorksheetReaderBase : Object
 	/// Edge or vertex to set the color on.
     /// </param>
     ///
+    /// <param name="sColorKey">
+	/// Name of the metadata key that stores the color on the edge or vertex.
+    /// </param>
+    ///
     /// <param name="oColorConverter2">
 	/// Object for converting the color from a string to a Color.
     /// </param>
@@ -321,6 +344,7 @@ public class WorksheetReaderBase : Object
 		Int32 iRowOneBased,
 		Int32 iColumnOneBased,
 		IMetadataProvider oEdgeOrVertex,
+		String sColorKey,
 		ColorConverter2 oColorConverter2
 	)
 	{
@@ -329,6 +353,7 @@ public class WorksheetReaderBase : Object
 		Debug.Assert(iRowOneBased >= 1);
 		Debug.Assert(iColumnOneBased >= 1);
 		Debug.Assert(oEdgeOrVertex != null);
+		Debug.Assert( !String.IsNullOrEmpty(sColorKey) );
 		Debug.Assert(oColorConverter2 != null);
         AssertValid();
 
@@ -359,7 +384,7 @@ public class WorksheetReaderBase : Object
 			);
 		}
 
-		oEdgeOrVertex.SetValue(ReservedMetadataKeys.PerColor, oColor);
+		oEdgeOrVertex.SetValue(sColorKey, oColor);
 	}
 
     //*************************************************************************

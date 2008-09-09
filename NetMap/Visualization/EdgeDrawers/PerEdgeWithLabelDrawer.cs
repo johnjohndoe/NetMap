@@ -99,27 +99,35 @@ public class PerEdgeWithLabelDrawer : PerEdgeWithImageDrawer
 
 		PrimaryLabelDrawInfo oPrimaryLabelDrawInfo;
 
-		if ( !PerVertexWithLabelDrawer.TryGetPrimaryLabelDrawInfo(
-			vertex2, out oPrimaryLabelDrawInfo) )
+		if ( PerVertexWithLabelDrawer.TryGetPrimaryLabelDrawInfo(
+			vertex1, out oPrimaryLabelDrawInfo) )
+		{
+			// The first endpoint should be at the center of the primary label.
+
+			edgeEndpoint1 = vertex1.Location;
+		}
+		else
 		{
 			// Defer to the base class.
 
-			base.GetEdgeEndpoints(vertex1, vertex2, drawContext,
-				out edgeEndpoint1, out edgeEndpoint2);
-
-			return;
+			edgeEndpoint1 = GetEdgeEndpoint1(vertex1, vertex2, drawContext);
 		}
 
-		// Get the first endpoint from the base class.
+		if ( PerVertexWithLabelDrawer.TryGetPrimaryLabelDrawInfo(
+			vertex2, out oPrimaryLabelDrawInfo) )
+		{
+			// Get a point on the label's outline that is near the first
+			// vertex.
 
-		edgeEndpoint1 = base.GetEdgeEndpoint1(vertex1, vertex2, drawContext);
+			edgeEndpoint2 = GetNearestPointOnVertexRectangle(vertex1.Location,
+				oPrimaryLabelDrawInfo.OutlineRectangle);
+		}
+		else
+		{
+			// Defer to the base class.
 
-		// Get a point on the label's outline that is near the first endpoint.
-
-		edgeEndpoint2 = GetPointNearVertexRectangle(
-			Point.Round(edgeEndpoint1),
-			oPrimaryLabelDrawInfo.OutlineRectangle
-			);
+			edgeEndpoint2 = GetEdgeEndpoint2(vertex1, vertex2, drawContext);
+		}
 	}
 
     //*************************************************************************

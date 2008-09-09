@@ -554,6 +554,68 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 		}
     }
 
+	//*************************************************************************
+	//	Method: SetValue
+	//
+	/// <summary>
+	/// Sets the metadata value associated with a specified key. 
+	/// </summary>
+	///
+	/// <param name="key">
+	/// The value's key.  Can't be null or empty, and can't start with a
+	/// tilde (~).  If the key already exists, its value gets overwritten.
+	/// </param>
+	///
+	/// <param name="value">
+	/// The value to set.  Can be null.
+	/// </param>
+	///
+	/// <remarks>
+	/// The application can store arbitrary metadata by adding key/value pairs
+	/// via <see cref="SetValue(String, Object)" />.  The values can be
+	/// retrieved with <see cref="IMetadataProvider.GetValue(String)" /> or
+	/// one of its variants.  The keys are of type <see cref="String" /> and
+	/// the values are of type <see cref="Object" />.
+	///
+	/// <para>
+	///	If you want to store just a single metadata object, use the <see
+	/// cref="IMetadataProvider.Tag" /> property instead.
+	/// </para>
+	///
+	/// <para>
+	/// Keys that start with a tilde (~) are reserved by the NetMap system for
+	/// internal use.
+	/// </para>
+	///
+	/// </remarks>
+	///
+	/// <seealso cref="IMetadataProvider.ContainsKey" />
+	/// <seealso cref="IMetadataProvider.TryGetValue(String, out Object)" />
+	/// <seealso cref="IMetadataProvider.GetRequiredValue(String, Type)" />
+	/// <seealso cref="IMetadataProvider.GetValue(String)" />
+	/// <seealso cref="IMetadataProvider.Tag" />
+	//*************************************************************************
+
+	public new void
+	SetValue
+	(
+		String key,
+		Object value
+	)
+	{
+		AssertValid();
+
+		base.SetValue(key, value);
+
+		if (key == ReservedMetadataKeys.Hide)
+		{
+			// A hidden vertex should never respond positively to a hit test,
+			// so remove any hit-test area that might be stored on the vertex.
+
+			RemoveKey(ReservedMetadataKeys.HitTestArea);
+		}
+	}
+
     //*************************************************************************
     //  Method: Clone()
     //

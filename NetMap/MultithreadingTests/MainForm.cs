@@ -39,7 +39,7 @@ public partial class MainForm : Form
 	protected IAsyncLayout
 	CreateAsyncLayout()
 	{
-		IAsyncLayout oAsyncLayout = new KamadaKawaiiLayout();
+		IAsyncLayout oAsyncLayout = new FruchtermanReingoldLayout();
 
 		oAsyncLayout.LayOutGraphIterationCompleted +=
 			new EventHandler(this.AsyncLayout_LayOutGraphIterationCompleted);
@@ -56,7 +56,7 @@ public partial class MainForm : Form
 	{
 		AsyncGraphDrawer oAsyncGraphDrawer = new AsyncGraphDrawer();
 
-		oAsyncGraphDrawer.Layout = new KamadaKawaiiLayout();
+		oAsyncGraphDrawer.Layout = new FruchtermanReingoldLayout();
 
 		IGraph oGraph = oAsyncGraphDrawer.Graph;
 
@@ -85,7 +85,7 @@ public partial class MainForm : Form
 		MultiSelectionGraphDrawer oMultiSelectionGraphDrawer =
 			new MultiSelectionGraphDrawer();
 
-		oMultiSelectionGraphDrawer.Layout = new KamadaKawaiiLayout();
+		oMultiSelectionGraphDrawer.Layout = new FruchtermanReingoldLayout();
 
 		IGraph oGraph = oMultiSelectionGraphDrawer.Graph;
 

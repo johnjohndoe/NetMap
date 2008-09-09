@@ -50,6 +50,10 @@ public class GraphMetricColumnOrdered : GraphMetricColumn
 	/// Sample: "0.00".
 	/// </param>
 	///
+	/// <param name="style">
+	/// Style of the column, or null to not apply a style.  Sample: "Bad".
+	/// </param>
+	///
 	/// <param name="graphMetricValuesOrdered">
 	/// Array of graph metric values, one value per calculated column cell.
 	/// </param>
@@ -62,10 +66,11 @@ public class GraphMetricColumnOrdered : GraphMetricColumn
 		String columnName,
 		Single columnWidthChars,
 		String numberFormat,
+		String style,
 		GraphMetricValueOrdered [] graphMetricValuesOrdered
 	)
 	: base(worksheetName, tableName, columnName, columnWidthChars,
-		numberFormat)
+		numberFormat, style)
     {
 		m_aoGraphMetricValuesOrdered = graphMetricValuesOrdered;
 

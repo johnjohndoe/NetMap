@@ -102,6 +102,26 @@ public static class ErrorUtil
 	}
 
     //*************************************************************************
+    //  Method: OnMissingColumn()
+    //
+    /// <summary>
+	/// Throws a <see cref="WorkbookFormatException" /> when a column required
+	/// for a feature is missing.
+    /// </summary>
+    //*************************************************************************
+
+	public static void
+	OnMissingColumn()
+	{
+		throw new WorkbookFormatException(
+			"The workbook is missing a column that is required to use this"
+			+ " feature."
+			+ "\r\n\r\n"
+			+ GetTemplateMessage()
+			);
+	}
+
+    //*************************************************************************
     //  Method: GetNoOpenWorkbookMessage()
     //
     /// <summary>

@@ -83,6 +83,11 @@ public class VertexDrawer : VertexDrawerBase, IVertexDrawer
 	public enum
 	VertexShape
 	{
+		// Note:
+		//
+		// These values get stored in user setting files and their numerical
+		// values should not be modified.
+
 		/// <summary>
 		/// The vertices are drawn as circles.
 		/// </summary>
@@ -100,6 +105,42 @@ public class VertexDrawer : VertexDrawerBase, IVertexDrawer
 		/// </summary>
 
 		Sphere = 2,
+
+		/// <summary>
+		/// The vertices are drawn as squares.
+		/// </summary>
+
+		Square = 3,
+
+		/// <summary>
+		/// The vertices are drawn as solid squares.
+		/// </summary>
+
+		SolidSquare = 4,
+
+		/// <summary>
+		/// The vertices are drawn as diamonds.
+		/// </summary>
+
+		Diamond = 5,
+
+		/// <summary>
+		/// The vertices are drawn as solid diamonds.
+		/// </summary>
+
+		SolidDiamond = 6,
+
+		/// <summary>
+		/// The vertices are drawn as equilateral triangles.
+		/// </summary>
+
+		Triangle = 7,
+
+		/// <summary>
+		/// The vertices are drawn as solid equilateral triangles.
+		/// </summary>
+
+		SolidTriangle = 8,
 	}
 
     //*************************************************************************
@@ -506,30 +547,46 @@ public class VertexDrawer : VertexDrawerBase, IVertexDrawer
 		Single fX = oLocation.X;
 		Single fY = oLocation.Y;
 
-		// Determine which color to use.
-
 		Boolean bDrawSelected = VertexShouldBeDrawnSelected(vertex);
-
 		Color oActualColor = GetActualColor(vertex, bDrawSelected);
+		Single fActualRadius = GetActualRadius(vertex);
+		Int32 iBoundsRadius = (Int32)Math.Ceiling(fActualRadius);
+
+		m_oOutlinePen.Color = oActualColor;
+
+		m_oOutlinePen.Width =
+			bDrawSelected ? SelectedOutlinePenWidth : OutlinePenWidth;
+
+		m_oOutlinePen.Alignment = PenAlignment.Center;
+
+		SolidBrush oSharedSolidBrush = GetSharedSolidBrush(oActualColor);
 
 		Graphics oGraphics = drawContext.Graphics;
 
 		Debug.Assert(oGraphics != null);
 
-		Single fActualRadius = this.GetActualRadius(vertex);
+		Rectangle oVertexBounds = Rectangle.FromLTRB(
+			(Int32)Math.Floor(fX - iBoundsRadius),
+			(Int32)Math.Floor(fY - iBoundsRadius),
+			(Int32)Math.Ceiling(fX + iBoundsRadius),
+			(Int32)Math.Ceiling(fY + iBoundsRadius)
+			);
 
-		Int32 iBoundsRadius = (Int32)Math.Ceiling(fActualRadius);
+		HitTestArea oHitTestArea = null;
 
-		switch ( this.GetActualShape(vertex) )
+		// Amount by which the radius is incremented for solid shapes.
+		//
+		// NetMapControl uses a two-bitmap scheme in which a selected vertex is
+		// displayed by drawing on top of the unselected vertex.  When drawing
+		// a solid shape with anti-aliasing turned on, the selected vertex
+		// radius must be greater than the unselected radius to hide the anti-
+		// aliasing "feathering" at the vertex edges.
+
+		const Single RadiusIncrement = 0.5F;
+
+		switch ( GetActualShape(vertex) )
 		{
 			case VertexShape.Circle:
-
-				m_oOutlinePen.Color = oActualColor;
-
-				m_oOutlinePen.Width =
-					bDrawSelected ? SelectedOutlinePenWidth : OutlinePenWidth;
-
-				m_oOutlinePen.Alignment = PenAlignment.Center;
 
 				GraphicsUtil.DrawCircle(oGraphics, m_oOutlinePen, fX, fY,
 					fActualRadius);
@@ -540,18 +597,11 @@ public class VertexDrawer : VertexDrawerBase, IVertexDrawer
 
 				if (bDrawSelected)
 				{
-					// NetMapControl uses a two-bitmap scheme in which a
-					// selected vertex is displayed by drawing on top of the
-					// unselected vertex.  With anti-aliasing turned on, the
-					// selected vertex radius must be greater than the
-					// unselected radius to hide the anti-aliasing "feathering"
-					// at the vertex edges.
-
-					fActualRadius += 0.5F;
+					fActualRadius += RadiusIncrement;
 				}
 
-				GraphicsUtil.FillCircle(oGraphics,
-					GetSharedSolidBrush(oActualColor), fX, fY, fActualRadius);
+				GraphicsUtil.FillCircle(oGraphics, oSharedSolidBrush,
+					fX, fY, fActualRadius);
 
 				break;
 
@@ -562,28 +612,103 @@ public class VertexDrawer : VertexDrawerBase, IVertexDrawer
 
 				break;
 
+			case VertexShape.Square:
+
+				oHitTestArea = new RectangularHitTestArea(oVertexBounds);
+
+				GraphicsUtil.DrawSquare(oGraphics, m_oOutlinePen, fX, fY,
+					fActualRadius);
+
+				break;
+
+			case VertexShape.SolidSquare:
+
+				oHitTestArea = new RectangularHitTestArea(oVertexBounds);
+
+				if (bDrawSelected)
+				{
+					fActualRadius += RadiusIncrement;
+				}
+
+				GraphicsUtil.FillSquare(oGraphics, oSharedSolidBrush,
+					fX, fY, fActualRadius);
+
+				break;
+
+			case VertexShape.Diamond:
+
+				oHitTestArea =
+					new DiamondHitTestArea(oLocation, fActualRadius);
+
+				GraphicsUtil.DrawDiamond(oGraphics, m_oOutlinePen, fX, fY,
+					fActualRadius);
+
+				break;
+
+			case VertexShape.SolidDiamond:
+
+				oHitTestArea =
+					new DiamondHitTestArea(oLocation, fActualRadius);
+
+				if (bDrawSelected)
+				{
+					fActualRadius += RadiusIncrement;
+				}
+
+				GraphicsUtil.FillDiamond(oGraphics, oSharedSolidBrush,
+					fX, fY, fActualRadius);
+
+				oHitTestArea =
+					new DiamondHitTestArea(oLocation, fActualRadius);
+
+				break;
+
+			case VertexShape.Triangle:
+
+				oHitTestArea =
+					new TriangularHitTestArea(oLocation, fActualRadius);
+
+				GraphicsUtil.DrawTriangle(oGraphics, m_oOutlinePen, fX, fY,
+					fActualRadius);
+
+				break;
+
+			case VertexShape.SolidTriangle:
+
+				oHitTestArea =
+					new TriangularHitTestArea(oLocation, fActualRadius);
+
+				if (bDrawSelected)
+				{
+					fActualRadius += RadiusIncrement;
+				}
+
+				GraphicsUtil.FillTriangle(oGraphics, oSharedSolidBrush,
+					fX, fY, fActualRadius);
+
+				break;
+
 			default:
 
 				Debug.Assert(false);
-
 				break;
 		}
 
-		// If the vertex isn't hidden, add a hit-test area to the vertex's
+		// If the vertex isn't transparent, add a hit-test area to the vertex's
 		// metadata.  This gets used by VertexContainsPoint().
 
 		if (oActualColor.A != 0)
 		{
-			SetHitTestArea( vertex,
-				new CircularHitTestArea(oLocation, fActualRadius) );
-		}
+			if (oHitTestArea == null)
+			{
+				// Assume a default circular hit-test area.
 
-		Rectangle oVertexBounds = Rectangle.FromLTRB(
-			(Int32)Math.Floor(fX - iBoundsRadius),
-			(Int32)Math.Floor(fY - iBoundsRadius),
-			(Int32)Math.Ceiling(fX + iBoundsRadius),
-			(Int32)Math.Ceiling(fY + iBoundsRadius)
-			);
+				oHitTestArea = new CircularHitTestArea(
+					oLocation, fActualRadius);
+			}
+
+			SetHitTestArea(vertex, oHitTestArea);
+		}
 
 		return (oVertexBounds);
 	}

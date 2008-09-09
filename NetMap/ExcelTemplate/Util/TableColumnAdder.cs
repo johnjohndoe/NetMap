@@ -151,15 +151,20 @@ public class TableColumnAdder : Object
 			column2NameBase += sStringToAppend;
 		}
 
-		ListColumn oListColumn;
+		ListColumn oListColumn1, oListColumn2;
 
 		if (
-			!ExcelUtil.TryAddTableColumn(oTable, column1NameBase,
-				column1WidthChars, out oListColumn)
-			||
-			!ExcelUtil.TryAddTableColumn(oTable, column2NameBase,
-				column2WidthChars, out oListColumn)
+			ExcelUtil.TryAddTableColumn(oTable, column1NameBase,
+				column1WidthChars, null, out oListColumn1)
+			&&
+			ExcelUtil.TryAddTableColumn(oTable, column2NameBase,
+				column2WidthChars, null, out oListColumn2)
 			)
+		{
+			oListColumn1.Range.WrapText = true;
+			oListColumn2.Range.WrapText = true;
+		}
+		else
 		{
 			FormUtil.ShowWarning("The columns weren't added.");
 		}

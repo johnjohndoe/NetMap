@@ -741,32 +741,231 @@ public class VertexDrawerTest : Object
     public void
     TestDrawVertex()
     {
+		// Vary the shape.
+
 		foreach (
 			VertexDrawer.VertexShape eShape in
 			Enum.GetValues( typeof(VertexDrawer.VertexShape) )
 			)
+		{
+			Graphics oGraphics = m_oDrawContext.Graphics;
 
-		foreach ( Int32 iX in new Int32 [] {-10, 35, 58} )
+			oGraphics.Clear(Color.White);
 
-		foreach ( Int32 iY in new Int32 [] {-7, 25, 53} )
+			m_oVertex.Location = new Point(BitmapWidth / 2, BitmapHeight / 2);
 
-		foreach ( Int32 iRadius in new Int32 [] {1, 20} )
+			m_oVertexDrawer.Radius = 10;
+			m_oVertexDrawer.Shape = eShape;
 
-		foreach ( Color oColor in new Color [] {Color.Red} )
+			m_oVertexDrawer.DrawVertex(m_oVertex, m_oDrawContext);
 
-		foreach ( Color oSelectedColor in new Color [] {Color.Blue} )
+			String sTestImageFileNameNoExtension = String.Format(
+
+				"VaryShape-({0})"
+				,
+				eShape
+				);
+
+			SaveOrCompareTestImage(m_oBitmap, sTestImageFileNameNoExtension);
+		}
+    }
+
+    //*************************************************************************
+    //  Method: TestDrawVertex2()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestDrawVertex2()
+    {
+		// Vary the location.
+
+		foreach ( Int32 iX in new Int32 [] {10, 25, 40} )
+
+		foreach ( Int32 iY in new Int32 [] {8, 17, 38} )
+		{
+			Graphics oGraphics = m_oDrawContext.Graphics;
+
+			oGraphics.Clear(Color.White);
+
+			m_oVertex.Location = new PointF(iX, iY);
+
+			m_oVertexDrawer.Radius = 10;
+
+			m_oVertexDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+			String sTestImageFileNameNoExtension = String.Format(
+
+				"VaryLocation-({0}),({1})"
+				,
+				iX,
+				iY
+				);
+
+			SaveOrCompareTestImage(m_oBitmap, sTestImageFileNameNoExtension);
+		}
+    }
+
+    //*************************************************************************
+    //  Method: TestDrawVertex3()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestDrawVertex3()
+    {
+		// Vary the radius.
+
+		foreach ( Int32 iRadius in new Int32 [] {1, 5, 20} )
+		{
+			Graphics oGraphics = m_oDrawContext.Graphics;
+
+			oGraphics.Clear(Color.White);
+
+			m_oVertex.Location = new Point(BitmapWidth / 2, BitmapHeight / 2);
+
+			m_oVertexDrawer.Radius = iRadius;
+
+			m_oVertexDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+			String sTestImageFileNameNoExtension = String.Format(
+
+				"VaryRadius-({0})"
+				,
+				iRadius
+				);
+
+			SaveOrCompareTestImage(m_oBitmap, sTestImageFileNameNoExtension);
+		}
+    }
+
+    //*************************************************************************
+    //  Method: TestDrawVertex4()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestDrawVertex4()
+    {
+		// Vary the color.
+
+		foreach ( Color oColor in new Color []
+			{Color.Red, Color.Blue, Color.Green} )
+		{
+			Graphics oGraphics = m_oDrawContext.Graphics;
+
+			oGraphics.Clear(Color.White);
+
+			m_oVertex.Location = new Point(BitmapWidth / 2, BitmapHeight / 2);
+
+			m_oVertexDrawer.Color = oColor;
+			m_oVertexDrawer.Radius = 10;
+
+			m_oVertexDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+			String sTestImageFileNameNoExtension = String.Format(
+
+				"VaryColor-({0})"
+				,
+				oColor
+				);
+
+			SaveOrCompareTestImage(m_oBitmap, sTestImageFileNameNoExtension);
+		}
+    }
+
+    //*************************************************************************
+    //  Method: TestDrawVertex5()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestDrawVertex5()
+    {
+		// Vary the selected color.
+
+		foreach ( Color oSelectedColor in new Color []
+			{Color.Gray, Color.Orange, Color.Purple} )
+		{
+			Graphics oGraphics = m_oDrawContext.Graphics;
+
+			oGraphics.Clear(Color.White);
+
+			m_oVertex.Location = new Point(BitmapWidth / 2, BitmapHeight / 2);
+			MultiSelectionGraphDrawer.SelectVertex(m_oVertex, true);
+
+			m_oVertexDrawer.SelectedColor = oSelectedColor;
+			m_oVertexDrawer.Radius = 10;
+
+			m_oVertexDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+			String sTestImageFileNameNoExtension = String.Format(
+
+				"VarySelectedColor-({0})"
+				,
+				oSelectedColor
+				);
+
+			SaveOrCompareTestImage(m_oBitmap, sTestImageFileNameNoExtension);
+		}
+    }
+
+    //*************************************************************************
+    //  Method: TestDrawVertex6()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestDrawVertex6()
+    {
+		// Vary the selected state.
 
 		foreach (Boolean bSelected in GraphUtil.AllBoolean)
 		{
-			TestDrawVertex(
-				eShape,
-				iX,
-				iY,
-				iRadius,
-				oColor,
-				oSelectedColor,
-				bSelected 
+			Graphics oGraphics = m_oDrawContext.Graphics;
+
+			oGraphics.Clear(Color.White);
+
+			m_oVertex.Location = new Point(BitmapWidth / 2, BitmapHeight / 2);
+			MultiSelectionGraphDrawer.SelectVertex(m_oVertex, bSelected);
+
+			m_oVertexDrawer.Radius = 10;
+
+			m_oVertexDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+			String sTestImageFileNameNoExtension = String.Format(
+
+				"VarySelectedState-({0})"
+				,
+				bSelected
 				);
+
+			SaveOrCompareTestImage(m_oBitmap, sTestImageFileNameNoExtension);
 		}
     }
 
@@ -925,6 +1124,53 @@ public class VertexDrawerTest : Object
 		#else
 
 		TestImageUtil.CompareTestImage(m_oBitmap, TestImageRelativeDirectory,
+			sTestImageFileNameNoExtension);
+
+		#endif
+    }
+
+    //*************************************************************************
+    //  Method: SaveOrCompareTestImage()
+    //
+    /// <summary>
+    /// Saves a test image file to disk or compares a bitmap to a test image
+	/// file stored on disk.
+    /// </summary>
+	///
+	/// <param name="oBitmap">
+	/// Bitmap to save or compare.
+	/// </param>
+	///
+	/// <param name="sTestImageFileNameNoExtension">
+	/// Name of the test image file, without a path or extension.  Sample:
+	/// "DrawVertex1".
+	/// </param>
+	///
+	/// <remarks>
+	/// If SAVE_TEST_IMAGES is defined, this method saves a test image file to
+	/// disk.  Otherwise, it compares a bitmap to a test image file stored on
+	/// disk.
+	/// </remarks>
+    //*************************************************************************
+
+    protected void
+    SaveOrCompareTestImage
+	(
+		Bitmap oBitmap,
+		String sTestImageFileNameNoExtension
+	)
+    {
+		Debug.Assert(oBitmap != null);
+		Debug.Assert( !String.IsNullOrEmpty(sTestImageFileNameNoExtension) );
+
+		#if SAVE_TEST_IMAGES
+
+		TestImageUtil.SaveTestImage(oBitmap, TestImageRelativeDirectory,
+			sTestImageFileNameNoExtension);
+
+		#else
+
+		TestImageUtil.CompareTestImage(oBitmap, TestImageRelativeDirectory,
 			sTestImageFileNameNoExtension);
 
 		#endif

@@ -116,8 +116,8 @@ public class PerEdgeWithImageDrawer : PerEdgeDrawer
 		Rectangle oImageRectangle2 =
 			PerVertexWithImageDrawer.GetImageRectangle(vertex2, oImage2);
 
-		edgeEndpoint2 = GetPointNearVertexRectangle(
-			Point.Round(edgeEndpoint1), oImageRectangle2);
+		edgeEndpoint2 = GetNearestPointOnVertexRectangle(edgeEndpoint1,
+			oImageRectangle2);
 	}
 
     //*************************************************************************

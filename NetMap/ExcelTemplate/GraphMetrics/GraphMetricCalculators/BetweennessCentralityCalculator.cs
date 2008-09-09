@@ -10,7 +10,7 @@ using Microsoft.NetMap.Core;
 namespace Microsoft.NetMap.ExcelTemplate
 {
 //*****************************************************************************
-//  Interface: BetweennessCentralityCalculator
+//  Class: BetweennessCentralityCalculator
 //
 /// <summary>
 /// Calculates the betweenness centrality for each of the graph's vertices.
@@ -23,6 +23,11 @@ namespace Microsoft.NetMap.ExcelTemplate
 ///
 /// <para>
 /// http://www.inf.uni-konstanz.de/algo/publications/b-fabc-01.pdf
+/// </para>
+///
+/// <para>
+/// According to the paper, the algorithm works even if the graph has
+/// self-loops and multiple edges.
 /// </para>
 ///
 /// </remarks>
@@ -79,37 +84,28 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
     /// </summary>
     ///
     /// <param name="graph">
-    /// The graph to calculate metrics for.
-    /// </param>
-    ///
-    /// <param name="graphMetricUserSettings">
-    /// The user's settings for calculating graph metrics.
-    /// </param>
-    ///
-    /// <param name="backgroundWorker">
-    /// The <see cref="BackgroundWorker" /> object that is performing all graph
-	/// metric calculations.
-    /// </param>
-    ///
-    /// <param name="doWorkEventArgs">
-    /// The <see cref="DoWorkEventArgs" /> object that was passed to <see
-	/// cref="BackgroundWorker.DoWork" />.
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+	/// edges and self-loops.
     /// </param>
 	///
+    /// <param name="calculateGraphMetricsContext">
+	/// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
 	/// <returns>
 	/// An array of GraphMetricColumn objects, one for each related metric
 	/// calculated by this method.
 	/// </returns>
 	///
 	/// <remarks>
-	/// This method should periodically check backgroundWorker.<see
+	/// This method should periodically check BackgroundWorker.<see
 	/// cref="BackgroundWorker.CancellationPending" />.  If true, the method
-	/// should set doWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
+	/// should set DoWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
 	/// true and return null immediately.
 	///
 	/// <para>
-	/// It should also periodically report progress by calling the <paramref
-	/// name="backgroundWorker" />.<see
+	/// It should also periodically report progress by calling the
+	/// BackgroundWorker.<see
 	/// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
 	/// userState argument must be a <see cref="GraphMetricProgress" /> object.
 	/// </para>
@@ -126,20 +122,27 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
     CalculateGraphMetrics
     (
 		IGraph graph,
-		GraphMetricUserSettings graphMetricUserSettings,
-		BackgroundWorker backgroundWorker,
-		DoWorkEventArgs doWorkEventArgs
+		CalculateGraphMetricsContext calculateGraphMetricsContext
     )
 	{
+		Debug.Assert(graph != null);
+		Debug.Assert(calculateGraphMetricsContext != null);
 		AssertValid();
 
-		if (!graphMetricUserSettings.CalculateBetweennessCentrality)
+		if (!calculateGraphMetricsContext.GraphMetricUserSettings.
+			CalculateBetweennessCentrality)
 		{
 			return ( new GraphMetricColumn[0] );
 		}
 
 		IVertexCollection oVertices = graph.Vertices;
 		Int32 iVertices = oVertices.Count;
+
+		Boolean bGraphIsDirected =
+			(graph.Directedness == GraphDirectedness.Directed);
+
+		BackgroundWorker oBackgroundWorker =
+			calculateGraphMetricsContext.BackgroundWorker;
 
 		// Note: The variable names and some of the comments below are those
 		// used in Alogorithm 1 of the paper "A Faster Algorithm for
@@ -181,14 +184,14 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
 
 			if (iCalculations % VerticesPerProgressReport == 0)
 			{
-				if (backgroundWorker.CancellationPending)
+				if (oBackgroundWorker.CancellationPending)
 				{
-					doWorkEventArgs.Cancel = true;
+					calculateGraphMetricsContext.DoWorkEventArgs.Cancel = true;
 
 					return (null);
 				}
 
-                ReportProgress(iCalculations, iVertices, backgroundWorker);
+                ReportProgress(iCalculations, iVertices, oBackgroundWorker);
 			}
 
 			S.Clear();
@@ -274,6 +277,19 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
 			iCalculations++;
 		}
 
+		// As noted in the Brandes paper, "the centrality scores need to be
+		// divided by two if the graph is undirected, since all shortest paths
+		// are considered twice."
+		//
+		// (Because the calculated centralities are normalized below, this
+		// actually has no effect.  The divide-by-two code is included in case
+		// normalization is removed in the future.)
+
+		if (!bGraphIsDirected)
+		{
+			MaximumCb /= 2.0F;
+		}
+
 		// Transfer the betweenness centralities to an array of
 		// GraphMetricValue objects.
 
@@ -290,6 +306,11 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
 			{
 				Single ThisCb = Cb[oVertex.ID];
 
+				if (!bGraphIsDirected)
+				{
+					ThisCb /= 2.0F;
+				}
+
 				if (MaximumCb != 0)
 				{
 					// Normalize the value.
@@ -305,8 +326,9 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
 		return ( new GraphMetricColumn [] {
 			new GraphMetricColumnWithID( WorksheetNames.Vertices,
 				TableNames.Vertices,
-				VertexTableColumnNames.BetweennessCentrality, ColumnWidthChars,
-				NumericFormat, oGraphMetricValues.ToArray()
+				VertexTableColumnNames.BetweennessCentrality,
+				VertexTableColumnWidths.BetweennessCentrality,
+				NumericFormat, null, oGraphMetricValues.ToArray()
 				) } );
 	}
 
@@ -338,10 +360,6 @@ public class BetweennessCentralityCalculator : GraphMetricCalculatorBase
 	/// the cancellation flag is checked.
 
 	protected const Int32 VerticesPerProgressReport = 100;
-
-	/// Width of the betweenness centrality column, in characters.
-
-	protected const Single ColumnWidthChars = 24.0F;
 
 	/// Number format for the column.
 

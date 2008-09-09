@@ -289,6 +289,137 @@ public class PerVertexWithLabelDrawerTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestPerVertexPrimaryLabel7()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method using a primary label.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestPerVertexPrimaryLabel7()
+    {
+		// Change default fill color.
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
+			"Primary label");
+
+		m_oPerVertexWithLabelDrawer.PrimaryLabelFillColor = Color.Orange;
+
+		m_oPerVertexWithLabelDrawer.PreDrawVertex(m_oVertex, m_oDrawContext);
+		m_oPerVertexWithLabelDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+		SaveOrCompareTestImage(m_oBitmap, "TestPerVertexPrimaryLabel7");
+    }
+
+    //*************************************************************************
+    //  Method: TestPerVertexPrimaryLabel8()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method using a primary label.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestPerVertexPrimaryLabel8()
+    {
+		// Change default text color.
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
+			"Primary label");
+
+		m_oPerVertexWithLabelDrawer.Color = Color.Green;
+
+		m_oPerVertexWithLabelDrawer.PreDrawVertex(m_oVertex, m_oDrawContext);
+		m_oPerVertexWithLabelDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+		SaveOrCompareTestImage(m_oBitmap, "TestPerVertexPrimaryLabel8");
+    }
+
+    //*************************************************************************
+    //  Method: TestPerVertexPrimaryLabel9()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method using a primary label.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestPerVertexPrimaryLabel9()
+    {
+		// Change per-vertex fill color.
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
+			"Primary label");
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+			Color.Yellow);
+
+		m_oPerVertexWithLabelDrawer.PreDrawVertex(m_oVertex, m_oDrawContext);
+		m_oPerVertexWithLabelDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+		SaveOrCompareTestImage(m_oBitmap, "TestPerVertexPrimaryLabel9");
+    }
+
+    //*************************************************************************
+    //  Method: TestPerVertexPrimaryLabel10()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method using a primary label.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestPerVertexPrimaryLabel10()
+    {
+		// Change per-vertex text color.
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
+			"Primary label");
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerColor, Color.Orange);
+
+		m_oPerVertexWithLabelDrawer.PreDrawVertex(m_oVertex, m_oDrawContext);
+		m_oPerVertexWithLabelDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+		SaveOrCompareTestImage(m_oBitmap, "TestPerVertexPrimaryLabel10");
+    }
+
+    //*************************************************************************
+    //  Method: TestPerVertexPrimaryLabel11()
+    //
+    /// <summary>
+    /// Tests the DrawVertex() method using a primary label.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestPerVertexPrimaryLabel11()
+    {
+		// Change font.
+
+		m_oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
+			"Primary label");
+
+		m_oPerVertexWithLabelDrawer.Font = new Font("Courier New", 15F);
+
+		m_oPerVertexWithLabelDrawer.PreDrawVertex(m_oVertex, m_oDrawContext);
+		m_oPerVertexWithLabelDrawer.DrawVertex(m_oVertex, m_oDrawContext);
+
+		SaveOrCompareTestImage(m_oBitmap, "TestPerVertexPrimaryLabel11");
+    }
+
+    //*************************************************************************
     //  Method: SaveOrCompareTestImage()
     //
     /// <summary>

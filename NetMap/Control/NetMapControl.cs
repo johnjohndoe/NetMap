@@ -162,46 +162,97 @@ namespace Microsoft.NetMap.Visualization
 /// cref="EndUpdate()" /> should be called when you are done.
 ///
 /// <code>
-/// using System;
-/// using System.Windows.Forms;
-/// using Microsoft.NetMap.Visualization;
-/// using Microsoft.NetMap.Core;
-/// 
-/// namespace WindowsFormsApplication1
-/// {
-/// public partial class Form1 : Form
-/// {
-///     public Form1()
-///     {
-///         InitializeComponent();
-///     
-///         oNetMapControl.BeginUpdate();
-///     
-///         // Get the graph's vertex collection.
-///     
-///         IVertexCollection oVertices = oNetMapControl.Graph.Vertices;
-///     
-///         // Add three vertices.
-///     
-///         IVertex oVertexA = oVertices.Add();
-///         IVertex oVertexB = oVertices.Add();
-///         IVertex oVertexC = oVertices.Add();
-///     
-///         // Get the graph's edge collection.
-///     
-///         IEdgeCollection oEdges = oNetMapControl.Graph.Edges;
-///     
-///         // Connect the vertices with edges.
-///     
-///         oEdges.Add(oVertexA, oVertexB);
-///         oEdges.Add(oVertexB, oVertexC);
-///         oEdges.Add(oVertexC, oVertexA);
-///     
-///         oNetMapControl.EndUpdate();
-///     }
-/// }
-///     
-/// }
+/**
+
+using System;
+using System.Windows.Forms;
+using System.Drawing;
+using Microsoft.NetMap.Visualization;
+using Microsoft.NetMap.Core;
+
+namespace WindowsFormsApplication1
+{
+public partial class Form1 : Form
+{
+    public Form1()
+    {
+        InitializeComponent();
+
+        netMapControl1.BeginUpdate();
+
+        // The default vertex drawer draws all vertices with the same
+        // color, radius, and shape.  Replace it with one that will vary
+        // the appearance of each vertex based on metadata values stored in
+        // the vertices.
+
+        netMapControl1.VertexDrawer = new PerVertexWithLabelDrawer();
+
+        // Replace the default edge drawer with one that will vary the color
+        // and width of each edge based on metadata values stored in the edges.
+
+        netMapControl1.EdgeDrawer = new PerEdgeWithLabelDrawer();
+
+        // Get the graph's vertex collection.
+
+        IVertexCollection oVertices = netMapControl1.Graph.Vertices;
+
+        // Add three vertices.
+
+        IVertex oVertexA = oVertices.Add();
+        IVertex oVertexB = oVertices.Add();
+        IVertex oVertexC = oVertices.Add();
+
+        // Change the color, radius, and shape of vertex A.
+
+        oVertexB.SetValue(ReservedMetadataKeys.PerColor, Color.Orange);
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexRadius, 20F);
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexShape,
+            VertexDrawer.VertexShape.Sphere);
+
+        // Draw vertex B as a primary label instead of a shape.  A primary
+        // label is a box containing text.
+
+        oVertexA.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
+            "Primary Label");
+
+        // Set the primary label's text and fill colors.
+
+        oVertexA.SetValue(ReservedMetadataKeys.PerColor, Color.White);
+        oVertexA.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+            Color.Black);
+
+        // Add a secondary label to vertex C.  A secondary label is text that
+        // is drawn outside the vertex.  It can be added to a shape, image, or
+        // primary label.
+
+        oVertexC.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
+            "Secondary Label");
+
+        // Get the graph's edge collection.
+
+        IEdgeCollection oEdges = netMapControl1.Graph.Edges;
+
+        // Connect the vertices with directed edges.
+
+        IEdge oEdge1 = oEdges.Add(oVertexA, oVertexB, true);
+        IEdge oEdge2 = oEdges.Add(oVertexB, oVertexC, true);
+        IEdge oEdge3 = oEdges.Add(oVertexC, oVertexA, true);
+
+        // Customize their appearance.
+
+        oEdge1.SetValue(ReservedMetadataKeys.PerColor, Color.Chartreuse);
+        oEdge1.SetValue(ReservedMetadataKeys.PerEdgeWidth, 3);
+
+        oEdge2.SetValue(ReservedMetadataKeys.PerEdgeWidth, 5);
+
+        oEdge3.SetValue(ReservedMetadataKeys.PerColor, Color.ForestGreen);
+
+        netMapControl1.EndUpdate();
+    }
+}
+}
+
+*/
 /// </code>
 ///
 /// </example>
@@ -946,13 +997,6 @@ public class NetMapControl : Panel
 
 		CheckBusy(MethodName);
 
-		// Do nothing if the graph hasn't been drawn yet.
-
-		if (m_oBitmapNoSelection == null) 
-		{
-			return;
-		}
-
 		// Update the selected state of the vertex and its incident edges.
 
 		SetVertexSelectedState(vertex, selected);
@@ -963,6 +1007,13 @@ public class NetMapControl : Panel
 			{
 				SetEdgeSelectedState(oEdge, selected);
 			}
+		}
+
+		// Stop if the graph hasn't been drawn yet.
+
+		if (m_oBitmapNoSelection == null) 
+		{
+			return;
 		}
 
 		// Copy the "no selection" bitmap to the "with selection" bitmap,
@@ -1031,13 +1082,6 @@ public class NetMapControl : Panel
         this.ArgumentChecker.CheckArgumentNotNull(MethodName, "edge", edge);
 		CheckBusy(MethodName);
 
-		// Do nothing if the graph hasn't been drawn yet.
-
-		if (m_oBitmapNoSelection == null) 
-		{
-			return;
-		}
-
 		// Update the selected state of the edge and its adjacent vertices.
 
 		SetEdgeSelectedState(edge, selected);
@@ -1046,6 +1090,13 @@ public class NetMapControl : Panel
 		{
 			SetVertexSelectedState(edge.Vertices[0], selected);
 			SetVertexSelectedState(edge.Vertices[1], selected);
+		}
+
+		// Stop if the graph hasn't been drawn yet.
+
+		if (m_oBitmapNoSelection == null) 
+		{
+			return;
 		}
 
 		// Copy the "no selection" bitmap to the "with selection" bitmap,
@@ -1108,13 +1159,6 @@ public class NetMapControl : Panel
 
 		CheckBusy(MethodName);
 
-		// Do nothing if the graph hasn't been drawn yet.
-
-		if (m_oBitmapNoSelection == null) 
-		{
-			return;
-		}
-
 		// Clear the selection.
 
 		SetVertexSelectedStateAll(false);
@@ -1130,6 +1174,13 @@ public class NetMapControl : Panel
 		foreach (IEdge oEdge in edges)
 		{
 			SetEdgeSelectedState(oEdge, true);
+		}
+
+		// Stop if the graph hasn't been drawn yet.
+
+		if (m_oBitmapNoSelection == null) 
+		{
+			return;
 		}
 
 		// Copy the "no selection" bitmap to the "with selection" bitmap,
@@ -2747,15 +2798,15 @@ public class NetMapControl : Panel
 	{
 		AssertValid();
 
-		// Do nothing if the graph hasn't been drawn yet.
+		SetVertexSelectedStateAll(bSelect);
+		SetEdgeSelectedStateAll(bSelect);
+
+		// Stop if the graph hasn't been drawn yet.
 
 		if (m_oBitmapNoSelection == null)
 		{
 			return;
 		}
-
-		SetVertexSelectedStateAll(bSelect);
-		SetEdgeSelectedStateAll(bSelect);
 
 		// Copy the "no selection" bitmap to the "with selection" bitmap and
 		// update the PictureBox.

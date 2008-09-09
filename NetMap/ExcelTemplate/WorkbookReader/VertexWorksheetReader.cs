@@ -192,6 +192,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
 		oVertexTableColumnIndexes.PrimaryLabel = GetTableColumnIndex(
 			oVertexTable, VertexTableColumnNames.PrimaryLabel, false);
 
+		oVertexTableColumnIndexes.PrimaryLabelFillColor = GetTableColumnIndex(
+			oVertexTable, VertexTableColumnNames.PrimaryLabelFillColor, false);
+
 		oVertexTableColumnIndexes.SecondaryLabel = GetTableColumnIndex(
 			oVertexTable, VertexTableColumnNames.SecondaryLabel, false);
 
@@ -263,10 +266,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
 		// Read the range that contains visible vertex data.  If the table is
 		// filtered, the range may contain multiple areas.
 
-        Range oVertexRange;
+        Range oVisibleVertexRange;
 
 		if ( !ExcelUtil.TryGetVisibleTableRange(
-            oVertexTable, out oVertexRange) )
+            oVertexTable, out oVisibleVertexRange) )
 		{
 			// There is no visible vertex data.
 
@@ -295,36 +298,40 @@ public class VertexWorksheetReader : WorksheetReaderBase
 				VertexTableColumnNames.CustomMenuItemTextBase,
 				VertexTableColumnNames.CustomMenuItemActionBase);
 
-		// Loop through the areas.
+		// Loop through the areas, and split each area into subranges if the
+		// area contains too many rows.
 
-		foreach (Range oVertexRangeArea in oVertexRange.Areas)
+		foreach ( Range oSubrange in
+			ExcelRangeSplitter.SplitRange(oVisibleVertexRange) )
 		{
 			if (oReadWorkbookContext.FillIDColumns)
 			{
-				// If the ID column exists, fill the rows within it that are
-				// contained within the area with a sequence of unique IDs.
+				// If the ID column exists, fill the rows within it that
+				// are contained within the subrange with a sequence of
+				// unique IDs.
 
 				FillIDColumn(oVertexTable, oVertexTableColumnIndexes.ID,
-					oVertexRangeArea);
+					oSubrange);
 			}
 
-			// Add the contents of the area to the graph.
+			// Add the contents of the subrange to the graph.
 
-			AddVertexRangeAreaToGraph(oVertexRangeArea,
+			AddVertexSubrangeToGraph(oSubrange,
 				oVertexTableColumnIndexes, aoCustomMenuItemPairIndexes,
 				oReadWorkbookContext, oGraph);
 		}
     }
 
     //*************************************************************************
-    //  Method: AddVertexRangeAreaToGraph()
+    //  Method: AddVertexSubrangeToGraph()
     //
     /// <summary>
-	/// Adds the contents of one area of the vertex range to a NetMap graph.
+	/// Adds the contents of one subrange of the vertex range to a NetMap
+	/// graph.
     /// </summary>
     ///
-    /// <param name="oVertexRangeArea">
-	/// One area of the range that contains vertex data.
+    /// <param name="oVertexSubrange">
+	/// One subrange of the range that contains vertex data.
     /// </param>
 	///
     /// <param name="oVertexTableColumnIndexes">
@@ -346,24 +353,19 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// <param name="oGraph">
 	/// Graph to add vertices to.
     /// </param>
-	///
-    /// <remarks>
-	/// This method should be called once for each area in the range that
-	/// contains vertex data.
-    /// </remarks>
     //*************************************************************************
 
     protected void
-    AddVertexRangeAreaToGraph
+    AddVertexSubrangeToGraph
     (
-		Range oVertexRangeArea,
+		Range oVertexSubrange,
 		VertexTableColumnIndexes oVertexTableColumnIndexes,
 		KeyValuePair<Int32, Int32> [] aoCustomMenuItemPairIndexes,
 		ReadWorkbookContext oReadWorkbookContext,
 		IGraph oGraph
     )
     {
-		Debug.Assert(oVertexRangeArea != null);
+		Debug.Assert(oVertexSubrange != null);
 		Debug.Assert(oVertexTableColumnIndexes.VertexName != NoSuchColumn);
 		Debug.Assert(aoCustomMenuItemPairIndexes != null);
 		Debug.Assert(oReadWorkbookContext != null);
@@ -371,7 +373,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
         AssertValid();
 
 		IVertexCollection oVertices = oGraph.Vertices;
-		Object [,] aoVertexValues = ExcelUtil.GetRangeValues(oVertexRangeArea);
+		Object [,] aoVertexValues = ExcelUtil.GetRangeValues(oVertexSubrange);
 
 		Dictionary<String, IVertex> oVertexNameDictionary =
 			oReadWorkbookContext.VertexNameDictionary;
@@ -387,7 +389,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 		// Loop through the rows.
 
-		Int32 iRows = oVertexRangeArea.Rows.Count;
+		Int32 iRows = oVertexSubrange.Rows.Count;
 
 		for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
 		{
@@ -431,7 +433,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 				if ( !oVertexVisibilityConverter.TryWorkbookToGraph(
 					sVisibility, out eVisibility) )
 				{
-					OnInvalidVisibility(oVertexRangeArea, iRowOneBased,
+					OnInvalidVisibility(oVertexSubrange, iRowOneBased,
 						oVertexTableColumnIndexes.Visibility);
 				}
 			}
@@ -530,7 +532,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.ID != NoSuchColumn)
 			{
-				AddToIDDictionary(oVertexRangeArea, aoVertexValues,
+				AddToIDDictionary(oVertexSubrange, aoVertexValues,
 					iRowOneBased, oVertexTableColumnIndexes.ID, oVertex,
 					oReadWorkbookContext.VertexIDDictionary);
 			}
@@ -546,7 +548,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 				    oVertexTableColumnIndexes.Y != NoSuchColumn)
 			    {
 				    bLocationSpecified = CheckForLocation(
-					    oVertexRangeArea, aoVertexValues, iRowOneBased,
+					    oVertexSubrange, aoVertexValues, iRowOneBased,
 					    oVertexTableColumnIndexes.X,
 						oVertexTableColumnIndexes.Y,
 						oReadWorkbookContext.VertexLocationConverter,
@@ -559,7 +561,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			    if (oVertexTableColumnIndexes.Locked != NoSuchColumn)
 			    {
-				    CheckForLocked(oVertexRangeArea, aoVertexValues,
+				    CheckForLocked(oVertexSubrange, aoVertexValues,
 						iRowOneBased, oVertexTableColumnIndexes.Locked,
 						bLocationSpecified, oVertex);
 			    }
@@ -572,7 +574,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.Marked != NoSuchColumn)
 			{
-				CheckForMarked(oVertexRangeArea, aoVertexValues, iRowOneBased,
+				CheckForMarked(oVertexSubrange, aoVertexValues, iRowOneBased,
 					oVertexTableColumnIndexes.Marked, oVertex);
 			}
 
@@ -583,7 +585,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (aoCustomMenuItemPairIndexes.Length > 0)
 			{
-				CheckForCustomMenuItems(oVertexRangeArea, aoVertexValues,
+				CheckForCustomMenuItems(oVertexSubrange, aoVertexValues,
 					iRowOneBased, aoCustomMenuItemPairIndexes, oVertex);
 			}
 
@@ -592,7 +594,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.Alpha != NoSuchColumn)
 			{
-				CheckForAlpha(oVertexRangeArea, aoVertexValues, iRowOneBased,
+				CheckForAlpha(oVertexSubrange, aoVertexValues, iRowOneBased,
 					oVertexTableColumnIndexes.Alpha, oVertex);
 			}
 
@@ -601,7 +603,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.SecondaryLabel != NoSuchColumn)
 			{
-				CheckForNonEmptyCell(oVertexRangeArea, aoVertexValues,
+				CheckForNonEmptyCell(oVertexSubrange, aoVertexValues,
 					iRowOneBased, oVertexTableColumnIndexes.SecondaryLabel,
 					oVertex, ReservedMetadataKeys.PerVertexSecondaryLabel);
 			}
@@ -611,7 +613,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.ToolTip != NoSuchColumn)
 			{
-				if ( CheckForNonEmptyCell(oVertexRangeArea, aoVertexValues,
+				if ( CheckForNonEmptyCell(oVertexSubrange, aoVertexValues,
 					iRowOneBased, oVertexTableColumnIndexes.ToolTip, oVertex,
 					ReservedMetadataKeys.ToolTip) )
 				{
@@ -624,9 +626,20 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.PrimaryLabel != NoSuchColumn)
 			{
-				CheckForNonEmptyCell(oVertexRangeArea, aoVertexValues,
+				CheckForNonEmptyCell(oVertexSubrange, aoVertexValues,
 					iRowOneBased, oVertexTableColumnIndexes.PrimaryLabel,
 					oVertex, ReservedMetadataKeys.PerVertexPrimaryLabel);
+			}
+
+			// If there is a primary label fill color column and the color for
+			// this row isn't empty, set the vertex's primary label fill color.
+
+			if (oVertexTableColumnIndexes.PrimaryLabelFillColor != NoSuchColumn)
+			{
+				CheckForColor(oVertexSubrange, aoVertexValues, iRowOneBased,
+					oVertexTableColumnIndexes.PrimaryLabelFillColor, oVertex,
+					ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+					oReadWorkbookContext.ColorConverter2);
 			}
 
 			// If there is an image key column and the image key for this row
@@ -634,7 +647,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.ImageKey != NoSuchColumn)
 			{
-				CheckForImageKey(oVertexRangeArea, aoVertexValues,
+				CheckForImageKey(oVertexSubrange, aoVertexValues,
 					iRowOneBased, oVertexTableColumnIndexes.ImageKey,
 					oImageIDDictionary, oVertex);
 			}
@@ -644,9 +657,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.Color != NoSuchColumn)
 			{
-				CheckForColor(oVertexRangeArea, aoVertexValues, iRowOneBased,
+				CheckForColor(oVertexSubrange, aoVertexValues, iRowOneBased,
 					oVertexTableColumnIndexes.Color, oVertex,
-					oReadWorkbookContext.ColorConverter2);
+                    ReservedMetadataKeys.PerColor,
+                    oReadWorkbookContext.ColorConverter2);
 			}
 
 			// If there is a shape column and the shape for this row isn't
@@ -654,7 +668,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.Shape != NoSuchColumn)
 			{
-				CheckForShape(oVertexRangeArea, aoVertexValues,
+				CheckForShape(oVertexSubrange, aoVertexValues,
 					iRowOneBased, oVertexTableColumnIndexes.Shape, oVertex);
 			}
 
@@ -663,7 +677,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 			if (oVertexTableColumnIndexes.Radius != NoSuchColumn)
 			{
-				CheckForRadius(oVertexRangeArea, aoVertexValues, iRowOneBased,
+				CheckForRadius(oVertexSubrange, aoVertexValues, iRowOneBased,
 					oVertexTableColumnIndexes.Radius,
 					oReadWorkbookContext.VertexRadiusConverter, oVertex);
 			}
@@ -674,7 +688,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 			if (oVertexTableColumnIndexes.VertexDrawerPrecedence !=
 				NoSuchColumn)
 			{
-				CheckForVertexDrawerPrecedence(oVertexRangeArea,
+				CheckForVertexDrawerPrecedence(oVertexSubrange,
 					aoVertexValues, iRowOneBased,
 					oVertexTableColumnIndexes.VertexDrawerPrecedence, oVertex);
 			}
@@ -1560,29 +1574,33 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
 		public Int32 VertexName;
 
-		/// The edge's optional color.
+		/// The vertex's optional color.
 
 		public Int32 Color;
 
-		/// The edge's optional shape.
+		/// The vertex's optional shape.
 
 		public Int32 Shape;
 
-		/// The edge's optional radius.
+		/// The vertex's optional radius.
 
 		public Int32 Radius;
 
-		/// The edge's optional image key.  If specified, the image is drawn
+		/// The vertex's optional image key.  If specified, the image is drawn
 		/// instead of a shape.
 
 		public Int32 ImageKey;
 
-		/// The edge's optional primary label.  If specified, the primary label
-		/// is drawn instead of a shape or image.
+		/// The vertex's optional primary label.  If specified, the primary
+		/// label is drawn instead of a shape or image.
 
 		public Int32 PrimaryLabel;
 
-		/// The edge's optional secondary label.  If specified, the secondary
+		/// The vertex's optional primary label fill color.
+
+		public Int32 PrimaryLabelFillColor;
+
+		/// The vertex's optional secondary label.  If specified, the secondary
 		/// label is drawn in addition to a shape, image, or primary label.
 
 		public Int32 SecondaryLabel;

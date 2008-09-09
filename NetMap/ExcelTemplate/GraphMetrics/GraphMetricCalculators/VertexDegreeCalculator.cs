@@ -5,17 +5,23 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.NetMap.Core;
 
 namespace Microsoft.NetMap.ExcelTemplate
 {
 //*****************************************************************************
-//  Interface: VertexDegreeCalculator
+//  Class: VertexDegreeCalculator
 //
 /// <summary>
 /// Calculates the in-degree, out-degree, and degree for each of the graph's
 /// vertices.
 /// </summary>
+///
+/// <remarks>
+/// This calculator includes all self-loops in its calculations.  It also
+/// includes all parallel edges, which may not be expected by the user.
+/// </remarks>
 //*****************************************************************************
 
 public class VertexDegreeCalculator : GraphMetricCalculatorBase
@@ -69,37 +75,28 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     /// </summary>
     ///
     /// <param name="graph">
-    /// The graph to calculate metrics for.
-    /// </param>
-    ///
-    /// <param name="graphMetricUserSettings">
-    /// The user's settings for calculating graph metrics.
-    /// </param>
-    ///
-    /// <param name="backgroundWorker">
-    /// The <see cref="BackgroundWorker" /> object that is performing all graph
-	/// metric calculations.
-    /// </param>
-    ///
-    /// <param name="doWorkEventArgs">
-    /// The <see cref="DoWorkEventArgs" /> object that was passed to <see
-	/// cref="BackgroundWorker.DoWork" />.
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+	/// edges and self-loops.
     /// </param>
 	///
+    /// <param name="calculateGraphMetricsContext">
+	/// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
 	/// <returns>
 	/// An array of GraphMetricColumn objects, one for each related metric
 	/// calculated by this method.
 	/// </returns>
 	///
 	/// <remarks>
-	/// This method should periodically check backgroundWorker.<see
+	/// This method should periodically check BackgroundWorker.<see
 	/// cref="BackgroundWorker.CancellationPending" />.  If true, the method
-	/// should set doWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
+	/// should set DoWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
 	/// true and return null immediately.
 	///
 	/// <para>
-	/// It should also periodically report progress by calling the <paramref
-	/// name="backgroundWorker" />.<see
+	/// It should also periodically report progress by calling the
+	/// BackgroundWorker.<see
 	/// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
 	/// userState argument must be a <see cref="GraphMetricProgress" /> object.
 	/// </para>
@@ -116,19 +113,25 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     CalculateGraphMetrics
     (
 		IGraph graph,
-		GraphMetricUserSettings graphMetricUserSettings,
-		BackgroundWorker backgroundWorker,
-		DoWorkEventArgs doWorkEventArgs
+		CalculateGraphMetricsContext calculateGraphMetricsContext
     )
 	{
+		Debug.Assert(graph != null);
+		Debug.Assert(calculateGraphMetricsContext != null);
 		AssertValid();
 
-		if (!graphMetricUserSettings.CalculateDegree &&
-			!graphMetricUserSettings.CalculateInDegree &&
-			!graphMetricUserSettings.CalculateOutDegree)
+		GraphMetricUserSettings oGraphMetricUserSettings =
+			calculateGraphMetricsContext.GraphMetricUserSettings;
+
+		if (!oGraphMetricUserSettings.CalculateDegree &&
+			!oGraphMetricUserSettings.CalculateInDegree &&
+			!oGraphMetricUserSettings.CalculateOutDegree)
 		{
 			return ( new GraphMetricColumn[0] );
 		}
+
+		BackgroundWorker oBackgroundWorker =
+			calculateGraphMetricsContext.BackgroundWorker;
 
 		IVertexCollection oVertices = graph.Vertices;
 		Int32 iVertices = oVertices.Count;
@@ -154,6 +157,12 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 		Int32 iRowID;
 
 		// Calculate the degrees for each vertex.
+		//
+		// For simplicity, all degree numbers (in-degree, out-degree, and
+		// degree) are calculated regardless of whether the graph is directed
+		// or undirected.  After all numbers are calculated,
+		// FilterGraphMetricColumns() filters out the numbers that don't apply
+		// to the graph, based on its directedness.
 
 		foreach (IVertex oVertex in oVertices)
 		{
@@ -162,14 +171,14 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 
 			if (iCalculations % VerticesPerProgressReport == 0)
 			{
-				if (backgroundWorker.CancellationPending)
+				if (oBackgroundWorker.CancellationPending)
 				{
-					doWorkEventArgs.Cancel = true;
+					calculateGraphMetricsContext.DoWorkEventArgs.Cancel = true;
 
 					return (null);
 				}
 
-                ReportProgress(iCalculations, iVertices, backgroundWorker);
+                ReportProgress(iCalculations, iVertices, oBackgroundWorker);
 			}
 
 			if ( !TryGetRowID(oVertex, out iRowID) )
@@ -279,7 +288,7 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 
 		// Figure out which columns to add.
 
-		return ( FilterGraphMetricColumns(graphMetricUserSettings,
+		return ( FilterGraphMetricColumns(graph, calculateGraphMetricsContext,
 			oInDegreeGraphMetricValues, oOutDegreeGraphMetricValues,
 			oDegreeGraphMetricValues, oVertex1InDegreeGraphMetricValues,
 			oVertex1OutDegreeGraphMetricValues,
@@ -326,11 +335,15 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 		{
 			IVertex [] aoVertices = oIncidentEdge.Vertices;
 
+			// Test both of the edge's vertices so that a self-loop is properly
+			// handled.
+
 			if (aoVertices[0] == oVertex)
 			{
 				iOutDegree++;
 			}
-			else
+
+			if (aoVertices[1] == oVertex)
 			{
 				iInDegree++;
 			}
@@ -343,9 +356,13 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     /// <summary>
     /// Determines which GraphMetricColumn objects to return to the caller.
     /// </summary>
+	///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.
+    /// </param>
     ///
-    /// <param name="oGraphMetricUserSettings">
-    /// The user's settings for calculating graph metrics.
+    /// <param name="oCalculateGraphMetricsContext">
+	/// Provides access to objects needed for calculating graph metrics.
     /// </param>
     ///
     /// <param name="oInDegreeGraphMetricValues">
@@ -401,7 +418,8 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     protected GraphMetricColumn []
     FilterGraphMetricColumns
     (
-		GraphMetricUserSettings oGraphMetricUserSettings,
+		IGraph oGraph,
+		CalculateGraphMetricsContext oCalculateGraphMetricsContext,
 		List<GraphMetricValueWithID> oInDegreeGraphMetricValues,
 		List<GraphMetricValueWithID> oOutDegreeGraphMetricValues,
 		List<GraphMetricValueWithID> oDegreeGraphMetricValues,
@@ -415,7 +433,8 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 	{
 		AssertValid();
 
-		Debug.Assert(oGraphMetricUserSettings != null);
+		Debug.Assert(oGraph != null);
+		Debug.Assert(oCalculateGraphMetricsContext != null);
 		Debug.Assert(oInDegreeGraphMetricValues != null);
 		Debug.Assert(oOutDegreeGraphMetricValues != null);
 		Debug.Assert(oDegreeGraphMetricValues != null);
@@ -426,13 +445,32 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 		Debug.Assert(oVertex2OutDegreeGraphMetricValues != null);
 		Debug.Assert(oVertex2DegreeGraphMetricValues != null);
 
-		Boolean bCalculateInDegree =
+		GraphMetricUserSettings oGraphMetricUserSettings =
+			oCalculateGraphMetricsContext.GraphMetricUserSettings;
+
+		Boolean bGraphIsDirected =
+			(oGraph.Directedness == GraphDirectedness.Directed);
+
+		Boolean bCalculateInDegree = bGraphIsDirected &&
 			oGraphMetricUserSettings.CalculateInDegree;
 
-		Boolean bCalculateOutDegree =
+		Boolean bCalculateOutDegree = bGraphIsDirected &&
 			oGraphMetricUserSettings.CalculateOutDegree;
 
-		Boolean bCalculateDegree = oGraphMetricUserSettings.CalculateDegree;
+		Boolean bCalculateDegree = !bGraphIsDirected &&
+			oGraphMetricUserSettings.CalculateDegree;
+
+		String sStyle = null;
+
+		if (oCalculateGraphMetricsContext.DuplicateEdgeDetector.
+			GraphContainsDuplicateEdges)
+		{
+			// The calculations include duplicate edges, which may not be
+			// expected by the user.  Warn her with Excel's "bad" pre-defined
+			// style.
+
+			sStyle = GraphMetricColumn.ExcelStyleBad;
+		}
 
 		// Figure out which columns to add.
 
@@ -443,56 +481,70 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Vertices, TableNames.Vertices,
-				VertexTableColumnNames.InDegree, VertexInDegreeWidthChars,
-				NumericFormat, oInDegreeGraphMetricValues.ToArray() ) );
+				VertexTableColumnNames.InDegree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oInDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateOutDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Vertices, TableNames.Vertices,
-				VertexTableColumnNames.OutDegree, VertexOutDegreeWidthChars,
-				NumericFormat, oOutDegreeGraphMetricValues.ToArray() ) );
+				VertexTableColumnNames.OutDegree,
+                ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oOutDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Vertices, TableNames.Vertices,
-				VertexTableColumnNames.Degree, VertexDegreeWidthChars,
-				NumericFormat, oDegreeGraphMetricValues.ToArray() ) );
+				VertexTableColumnNames.Degree,
+                ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateInDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Edges, TableNames.Edges,
-				EdgeTableColumnNames.Vertex1InDegree, EdgeInDegreeWidthChars,
-				NumericFormat, oVertex1InDegreeGraphMetricValues.ToArray() ) );
+				EdgeTableColumnNames.Vertex1InDegree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oVertex1InDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateOutDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Edges, TableNames.Edges,
-				EdgeTableColumnNames.Vertex1OutDegree, EdgeOutDegreeWidthChars,
-				NumericFormat, oVertex1OutDegreeGraphMetricValues.ToArray() ) );
+				EdgeTableColumnNames.Vertex1OutDegree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oVertex1OutDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Edges, TableNames.Edges,
-				EdgeTableColumnNames.Vertex1Degree, EdgeDegreeWidthChars,
-				NumericFormat, oVertex1DegreeGraphMetricValues.ToArray() ) );
+				EdgeTableColumnNames.Vertex1Degree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oVertex1DegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateInDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Edges, TableNames.Edges,
-				EdgeTableColumnNames.Vertex2InDegree, EdgeInDegreeWidthChars,
-				NumericFormat, oVertex2InDegreeGraphMetricValues.ToArray() ) );
+				EdgeTableColumnNames.Vertex2InDegree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oVertex2InDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateOutDegree)
@@ -500,16 +552,20 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Edges, TableNames.Edges,
-				EdgeTableColumnNames.Vertex2OutDegree, EdgeOutDegreeWidthChars,
-				NumericFormat, oVertex2OutDegreeGraphMetricValues.ToArray() ) );
+				EdgeTableColumnNames.Vertex2OutDegree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oVertex2OutDegreeGraphMetricValues.ToArray() ) );
 		}
 
 		if (bCalculateDegree)
 		{
 			oGraphMetricColumns.Add( new GraphMetricColumnWithID(
 				WorksheetNames.Edges, TableNames.Edges,
-				EdgeTableColumnNames.Vertex2Degree, EdgeDegreeWidthChars,
-				NumericFormat, oVertex2DegreeGraphMetricValues.ToArray() ) );
+				EdgeTableColumnNames.Vertex2Degree,
+				ExcelUtil.AutoColumnWidth,
+				NumericFormat, sStyle,
+				oVertex2DegreeGraphMetricValues.ToArray() ) );
 		}
 
 		return ( oGraphMetricColumns.ToArray() );
@@ -543,33 +599,6 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
 	/// the cancellation flag is checked.
 
 	protected const Int32 VerticesPerProgressReport = 100;
-
-	/// Width of the in-degree column on the vertex worksheet, in characters.
-
-	protected const Single VertexInDegreeWidthChars = 11.3F;
-
-	/// Width of the out-degree column on the vertex worksheet, in characters.
-
-	protected const Single VertexOutDegreeWidthChars = 12.9F;
-
-	/// Width of the degree column on the vertex worksheet, in characters.
-
-	protected const Single VertexDegreeWidthChars = 8.9F;
-
-
-	/// Width of the vertex in-degree columns on the edge worksheet, in
-	/// characters.
-
-	protected const Single EdgeInDegreeWidthChars = 19.5F;
-
-	/// Width of the out-degree columns on the edge worksheet, in characters.
-
-	protected const Single EdgeOutDegreeWidthChars = 21.0F;
-
-	/// Width of the degree columns on the edge worksheet, in characters.
-
-	protected const Single EdgeDegreeWidthChars = 16.9F;
-
 
 	/// Number format for all columns.
 

@@ -1406,7 +1406,7 @@ public partial class MainForm : DesktopApplicationForm
 			+ "Copyright (c) {2} Microsoft Corporation"
 			,
 			sApplicationName,
-			Application.ProductVersion,
+			AssemblyUtil2.ProductVersion,
 			DateTime.Now.Year
 			);
 

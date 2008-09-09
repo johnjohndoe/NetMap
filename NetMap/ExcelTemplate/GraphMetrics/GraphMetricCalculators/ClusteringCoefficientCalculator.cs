@@ -10,7 +10,7 @@ using Microsoft.NetMap.Core;
 namespace Microsoft.NetMap.ExcelTemplate
 {
 //*****************************************************************************
-//  Interface: ClusteringCoefficientCalculator
+//  Class: ClusteringCoefficientCalculator
 //
 /// <summary>
 /// Calculates the clustering coefficient for each of the graph's vertices.
@@ -21,6 +21,12 @@ namespace Microsoft.NetMap.ExcelTemplate
 ///
 /// <para>
 /// http://www.wandora.org/wandora/wiki/index.php?title=Clustering_coefficient
+/// </para>
+///
+/// <para>
+/// This calculator skips all self-loops, which would render the calculations
+/// invalid.  The calculations are rendered invalid if the graph has duplicate
+/// edges, however.
 /// </para>
 ///
 /// </remarks>
@@ -77,37 +83,28 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     /// </summary>
     ///
     /// <param name="graph">
-    /// The graph to calculate metrics for.
-    /// </param>
-    ///
-    /// <param name="graphMetricUserSettings">
-    /// The user's settings for calculating graph metrics.
-    /// </param>
-    ///
-    /// <param name="backgroundWorker">
-    /// The <see cref="BackgroundWorker" /> object that is performing all graph
-	/// metric calculations.
-    /// </param>
-    ///
-    /// <param name="doWorkEventArgs">
-    /// The <see cref="DoWorkEventArgs" /> object that was passed to <see
-	/// cref="BackgroundWorker.DoWork" />.
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+	/// edges and self-loops.
     /// </param>
 	///
+    /// <param name="calculateGraphMetricsContext">
+	/// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
 	/// <returns>
 	/// An array of GraphMetricColumn objects, one for each related metric
 	/// calculated by this method.
 	/// </returns>
 	///
 	/// <remarks>
-	/// This method should periodically check backgroundWorker.<see
+	/// This method should periodically check BackgroundWorker.<see
 	/// cref="BackgroundWorker.CancellationPending" />.  If true, the method
-	/// should set doWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
+	/// should set DoWorkEventArgs.<see cref="CancelEventArgs.Cancel" /> to
 	/// true and return null immediately.
 	///
 	/// <para>
-	/// It should also periodically report progress by calling the <paramref
-	/// name="backgroundWorker" />.<see
+	/// It should also periodically report progress by calling the
+	/// BackgroundWorker.<see
 	/// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
 	/// userState argument must be a <see cref="GraphMetricProgress" /> object.
 	/// </para>
@@ -124,14 +121,15 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     CalculateGraphMetrics
     (
 		IGraph graph,
-		GraphMetricUserSettings graphMetricUserSettings,
-		BackgroundWorker backgroundWorker,
-		DoWorkEventArgs doWorkEventArgs
+		CalculateGraphMetricsContext calculateGraphMetricsContext
     )
 	{
+		Debug.Assert(graph != null);
+		Debug.Assert(calculateGraphMetricsContext != null);
 		AssertValid();
 
-		if (!graphMetricUserSettings.CalculateClusteringCoefficient)
+		if (!calculateGraphMetricsContext.GraphMetricUserSettings.
+			CalculateClusteringCoefficient)
 		{
 			return ( new GraphMetricColumn[0] );
 		}
@@ -142,6 +140,12 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 		List<GraphMetricValueWithID> oGraphMetricValues =
 			new List<GraphMetricValueWithID>();
 
+		Boolean bGraphIsDirected =
+			(graph.Directedness == GraphDirectedness.Directed);
+
+		BackgroundWorker oBackgroundWorker =
+			calculateGraphMetricsContext.BackgroundWorker;
+
 		Int32 iCalculations = 0;
 
 		foreach (IVertex oVertex in oVertices)
@@ -151,14 +155,14 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 
 			if (iCalculations % VerticesPerProgressReport == 0)
 			{
-				if (backgroundWorker.CancellationPending)
+				if (oBackgroundWorker.CancellationPending)
 				{
-					doWorkEventArgs.Cancel = true;
+					calculateGraphMetricsContext.DoWorkEventArgs.Cancel = true;
 
 					return (null);
 				}
 
-                ReportProgress(iCalculations, iVertices, backgroundWorker);
+                ReportProgress(iCalculations, iVertices, oBackgroundWorker);
 			}
 
 			Int32 iRowID;
@@ -169,16 +173,29 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 			}
 
 			oGraphMetricValues.Add(new GraphMetricValueWithID(
-				iRowID, CalculateClusteringCoefficient(oVertex) ) );
+				iRowID,
+				CalculateClusteringCoefficient(oVertex, bGraphIsDirected) ) );
 
 			iCalculations++;
+		}
+
+		String sStyle = null;
+
+		if (calculateGraphMetricsContext.DuplicateEdgeDetector.
+			GraphContainsDuplicateEdges)
+		{
+			// The calculations are rendered invalid if the graph has duplicate
+			// edges, so warn the user with Excel's "bad" pre-defined style.
+
+			sStyle = GraphMetricColumn.ExcelStyleBad;
 		}
 
 		return ( new GraphMetricColumn [] {
 			new GraphMetricColumnWithID( WorksheetNames.Vertices,
 				TableNames.Vertices,
-				VertexTableColumnNames.ClusteringCoefficient, ColumnWidthChars,
-				NumericFormat, oGraphMetricValues.ToArray()
+				VertexTableColumnNames.ClusteringCoefficient,
+				VertexTableColumnWidths.ClusteringCoefficient,
+				NumericFormat, sStyle, oGraphMetricValues.ToArray()
 				) } );
 	}
 
@@ -193,6 +210,10 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     /// The vertex to calculate the clustering coefficient for.
     /// </param>
     ///
+    /// <param name="bGraphIsDirected">
+    /// true if the graph is directed, false if it's undirected.
+    /// </param>
+    ///
 	/// <returns>
 	/// The vertex's clustering coefficient.
 	/// </returns>
@@ -201,19 +222,16 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     protected Double
     CalculateClusteringCoefficient
     (
-		IVertex oVertex
+		IVertex oVertex,
+		Boolean bGraphIsDirected
     )
 	{
 		Debug.Assert(oVertex != null);
 		AssertValid();
 
 		IVertex [] aoAdjacentVertices = oVertex.AdjacentVertices;
-		Int32 iAdjacentVertices = aoAdjacentVertices.Length;
-
-		if (iAdjacentVertices == 0)
-		{
-			return (0);
-		}
+		Int32 iAdjacentVertices = 0;
+		Int32 iVertexID = oVertex.ID;
 
 		// Create a dictionary of the vertex's adjacent vertices.  The key is
 		// the IVertex.ID and the value isn't used.
@@ -223,8 +241,23 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 
 		foreach (IVertex oAdjacentVertex in aoAdjacentVertices)
 		{
-			oAdjacentVertexIDDictionary.Add(oAdjacentVertex.ID, ' ');
-			
+			Int32 iAdjacentVertexID = oAdjacentVertex.ID;
+
+			// Skip self-loops.
+
+			if (iAdjacentVertexID == iVertexID)
+			{
+				continue;
+			}
+
+			oAdjacentVertexIDDictionary.Add(iAdjacentVertexID, ' ');
+
+			iAdjacentVertices++;
+		}
+
+		if (iAdjacentVertices == 0)
+		{
+			return (0);
 		}
 
 		// Create a dictionary of the unique edges in the vertex's
@@ -239,10 +272,22 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 
 		foreach (IVertex oAdjacentVertex in aoAdjacentVertices)
 		{
+			// Skip self-loops.
+
+			if (oAdjacentVertex.ID == iVertexID)
+			{
+				continue;
+			}
+
 			// Loop through the adjacent vertex's incident edges.
 
 			foreach (IEdge oIncidentEdge in oAdjacentVertex.IncidentEdges)
 			{
+				if (oIncidentEdge.IsSelfLoop)
+				{
+					continue;
+				}
+
 				// If this incident edge connects the adjacent vertex to
 				// another adjacent vertex, add it to the dictionary if it
 				// isn't already there.
@@ -259,8 +304,8 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 
         Debug.Assert(iAdjacentVertices > 0);
 
-        Double dDenominator =
-			CalculateEdgesInFullyConnectedNeighborhood(iAdjacentVertices);
+        Double dDenominator = CalculateEdgesInFullyConnectedNeighborhood(
+			iAdjacentVertices, bGraphIsDirected);
 
         if (dDenominator == 0)
         {
@@ -298,10 +343,6 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 	/// the cancellation flag is checked.
 
 	protected const Int32 VerticesPerProgressReport = 100;
-
-	/// Width of the clustering coefficient column, in characters.
-
-	protected const Single ColumnWidthChars = 22;
 
 	/// Number format for the column.
 

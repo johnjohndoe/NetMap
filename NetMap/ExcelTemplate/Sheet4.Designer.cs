@@ -13,7 +13,7 @@ namespace Microsoft.NetMap.ExcelTemplate {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(4)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(7)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class Sheet4 : Microsoft.Office.Tools.Excel.Worksheet {
         
@@ -24,6 +24,14 @@ namespace Microsoft.NetMap.ExcelTemplate {
         internal Microsoft.Office.Tools.Excel.NamedRange ValidVertexShapes;
         
         internal Microsoft.Office.Tools.Excel.NamedRange ValidVertexVisibilities;
+        
+        internal Microsoft.Office.Tools.Excel.NamedRange ValidBooleansDefaultFalse;
+        
+        internal Microsoft.Office.Tools.Excel.NamedRange ValidBooleansDefaultTrue;
+        
+        internal Microsoft.Office.Tools.Excel.NamedRange ValidPrecedences;
+        
+        internal Microsoft.Office.Tools.Excel.ListObject PerWorkbookSettings;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "9.0.0.0")]
         private global::System.Object missing = global::System.Type.Missing;
@@ -129,6 +137,10 @@ namespace Microsoft.NetMap.ExcelTemplate {
             this.ValidEdgeVisibilities.BeginInit();
             this.ValidVertexShapes.BeginInit();
             this.ValidVertexVisibilities.BeginInit();
+            this.ValidBooleansDefaultFalse.BeginInit();
+            this.ValidBooleansDefaultTrue.BeginInit();
+            this.ValidPrecedences.BeginInit();
+            this.PerWorkbookSettings.BeginInit();
         }
         
         /// 
@@ -136,6 +148,10 @@ namespace Microsoft.NetMap.ExcelTemplate {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "9.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void EndInitialization() {
+            this.PerWorkbookSettings.EndInit();
+            this.ValidPrecedences.EndInit();
+            this.ValidBooleansDefaultTrue.EndInit();
+            this.ValidBooleansDefaultFalse.EndInit();
             this.ValidVertexVisibilities.EndInit();
             this.ValidVertexShapes.EndInit();
             this.ValidEdgeVisibilities.EndInit();
@@ -152,6 +168,10 @@ namespace Microsoft.NetMap.ExcelTemplate {
             this.ValidEdgeVisibilities = new Microsoft.Office.Tools.Excel.NamedRange(this.ItemProvider, this.HostContext, "ValidEdgeVisibilities", this, "ValidEdgeVisibilities");
             this.ValidVertexShapes = new Microsoft.Office.Tools.Excel.NamedRange(this.ItemProvider, this.HostContext, "ValidVertexShapes", this, "ValidVertexShapes");
             this.ValidVertexVisibilities = new Microsoft.Office.Tools.Excel.NamedRange(this.ItemProvider, this.HostContext, "ValidVertexVisibilities", this, "ValidVertexVisibilities");
+            this.ValidBooleansDefaultFalse = new Microsoft.Office.Tools.Excel.NamedRange(this.ItemProvider, this.HostContext, "ValidBooleansDefaultFalse", this, "ValidBooleansDefaultFalse");
+            this.ValidBooleansDefaultTrue = new Microsoft.Office.Tools.Excel.NamedRange(this.ItemProvider, this.HostContext, "ValidBooleansDefaultTrue", this, "ValidBooleansDefaultTrue");
+            this.ValidPrecedences = new Microsoft.Office.Tools.Excel.NamedRange(this.ItemProvider, this.HostContext, "ValidPrecedences", this, "ValidPrecedences");
+            this.PerWorkbookSettings = new Microsoft.Office.Tools.Excel.ListObject(this.ItemProvider, this.HostContext, "Sheet4:PerWorkbookSettings", this, "PerWorkbookSettings");
         }
         
         /// 
@@ -159,6 +179,24 @@ namespace Microsoft.NetMap.ExcelTemplate {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "9.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeComponents() {
+            ((System.ComponentModel.ISupportInitialize)(this.ValidColors)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidEdgeVisibilities)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidVertexShapes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidVertexVisibilities)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidBooleansDefaultFalse)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidBooleansDefaultTrue)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidPrecedences)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PerWorkbookSettings)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidColors)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidEdgeVisibilities)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidVertexShapes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidVertexVisibilities)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidBooleansDefaultFalse)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidBooleansDefaultTrue)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValidPrecedences)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PerWorkbookSettings)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
         }
         
         /// 
@@ -174,6 +212,10 @@ namespace Microsoft.NetMap.ExcelTemplate {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "9.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         protected override void OnShutdown() {
+            this.PerWorkbookSettings.Dispose();
+            this.ValidPrecedences.Dispose();
+            this.ValidBooleansDefaultTrue.Dispose();
+            this.ValidBooleansDefaultFalse.Dispose();
             this.ValidVertexVisibilities.Dispose();
             this.ValidVertexShapes.Dispose();
             this.ValidEdgeVisibilities.Dispose();

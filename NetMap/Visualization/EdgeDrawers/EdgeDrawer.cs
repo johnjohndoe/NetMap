@@ -578,8 +578,8 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 		AssertValid();
 
 		// To keep things simple, a self-loop is drawn as a Bezier curve that
-		// starts at a point on the vertex's circle, arcs out towards the most
-		// distant edge of the graph rectangle, and ends at the starting point.
+		// starts at a point on the vertex, arcs out towards the most distant
+		// edge of the graph rectangle, and ends at the starting point.
 		//
 		// Future improvement: Make sure the curve doesn't cross the rectangle
 		// boundary.
@@ -593,98 +593,110 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 			fVertexRadius = 0;
 		}
 
-		Int32 iVertexRadius = (Int32)fVertexRadius;
-
 		// Determine which graph rectangle edge is farthest from the vertex.
 
 		Rectangle oGraphRectangle = drawContext.GraphRectangle;
 
 		Point oVertexLocation = Point.Round(vertex.Location);
 
-		Int32 iVertexX = oVertexLocation.X;
-		Int32 iVertexY = oVertexLocation.Y;
+		Single fVertexX = oVertexLocation.X;
+		Single fVertexY = oVertexLocation.Y;
 
-		Int32 iDistanceFromLeft = iVertexX - oGraphRectangle.Left;
-		Int32 iDistanceFromRight = oGraphRectangle.Right - iVertexX;
-		Int32 iDistanceFromTop = iVertexY - oGraphRectangle.Top;
-		Int32 iDistanceFromBottom = oGraphRectangle.Bottom - iVertexY;
+		Single fDistanceFromLeft = fVertexX - oGraphRectangle.Left;
+		Single fDistanceFromRight = oGraphRectangle.Right - fVertexX;
+		Single fDistanceFromTop = fVertexY - oGraphRectangle.Top;
+		Single fDistanceFromBottom = oGraphRectangle.Bottom - fVertexY;
 
 		RectangleEdge eFarthestEdge = RectangleEdge.Left;
-		Int32 iGreatestDistance = iDistanceFromLeft;
+		Single fGreatestDistance = fDistanceFromLeft;
 
-		if (iDistanceFromRight > iGreatestDistance)
+		if (fDistanceFromRight > fGreatestDistance)
 		{
 			eFarthestEdge = RectangleEdge.Right;
-			iGreatestDistance = iDistanceFromRight;
+			fGreatestDistance = fDistanceFromRight;
 		}
 
-		if (iDistanceFromTop > iGreatestDistance)
+		if (fDistanceFromTop > fGreatestDistance)
 		{
 			eFarthestEdge = RectangleEdge.Top;
-			iGreatestDistance = iDistanceFromTop;
+			fGreatestDistance = fDistanceFromTop;
 		}
 
-		if (iDistanceFromBottom > iGreatestDistance)
+		if (fDistanceFromBottom > fGreatestDistance)
 		{
 			eFarthestEdge = RectangleEdge.Bottom;
-			iGreatestDistance = iDistanceFromBottom;
+			fGreatestDistance = fDistanceFromBottom;
 		}
 
-		Int32 iPoint0X = 0, iPoint0Y = 0;
-		Int32 iPoint1X = 0, iPoint1Y = 0;
-		Int32 iPoint2X = 0, iPoint2Y = 0;
+		VertexDrawer.VertexShape eVertexShape;
+
+		if ( GetVertexShape(vertex, drawContext, out eVertexShape) &&
+			(eVertexShape == VertexDrawer.VertexShape.Triangle ||
+			 eVertexShape == VertexDrawer.VertexShape.SolidTriangle) )
+		{
+			// Triangles are a special case.
+
+			DrawSelfLoopOnVertexTriangle(pen, vertex, fVertexRadius,
+				drawContext, eFarthestEdge);
+
+			return;
+		}
+
+		Single fPoint0X = 0, fPoint0Y = 0;
+		Single fPoint1X = 0, fPoint1Y = 0;
+		Single fPoint2X = 0, fPoint2Y = 0;
 
 		switch (eFarthestEdge)
 		{
 			case RectangleEdge.Left:
 
-				iPoint0X = iVertexX - iVertexRadius;
-				iPoint0Y = iVertexY;
+				fPoint0X = fVertexX - fVertexRadius;
+				fPoint0Y = fVertexY;
 
-				iPoint1X = iPoint0X - SelfLoopBezierWidth;
-				iPoint1Y = iPoint0Y + SelfLoopBezierHeight;
+				fPoint1X = fPoint0X - SelfLoopBezierWidth;
+				fPoint1Y = fPoint0Y + SelfLoopBezierHeight;
 
-				iPoint2X = iPoint0X - SelfLoopBezierWidth;
-				iPoint2Y = iPoint0Y - SelfLoopBezierHeight;
+				fPoint2X = fPoint0X - SelfLoopBezierWidth;
+				fPoint2Y = fPoint0Y - SelfLoopBezierHeight;
 
 				break;
 
 			case RectangleEdge.Right:
 
-				iPoint0X = iVertexX + iVertexRadius;
-				iPoint0Y = iVertexY;
+				fPoint0X = fVertexX + fVertexRadius;
+				fPoint0Y = fVertexY;
 
-				iPoint1X = iPoint0X + SelfLoopBezierWidth;
-				iPoint1Y = iPoint0Y + SelfLoopBezierHeight;
+				fPoint1X = fPoint0X + SelfLoopBezierWidth;
+				fPoint1Y = fPoint0Y + SelfLoopBezierHeight;
 
-				iPoint2X = iPoint0X + SelfLoopBezierWidth;
-				iPoint2Y = iPoint0Y - SelfLoopBezierHeight;
+				fPoint2X = fPoint0X + SelfLoopBezierWidth;
+				fPoint2Y = fPoint0Y - SelfLoopBezierHeight;
 
 				break;
 
 			case RectangleEdge.Top:
 
-				iPoint0X = iVertexX;
-				iPoint0Y = iVertexY - iVertexRadius;
+				fPoint0X = fVertexX;
+				fPoint0Y = fVertexY - fVertexRadius;
 
-				iPoint1X = iPoint0X + SelfLoopBezierHeight;
-				iPoint1Y = iPoint0Y - SelfLoopBezierWidth;
+				fPoint1X = fPoint0X + SelfLoopBezierHeight;
+				fPoint1Y = fPoint0Y - SelfLoopBezierWidth;
 
-				iPoint2X = iPoint0X - SelfLoopBezierHeight;
-				iPoint2Y = iPoint0Y - SelfLoopBezierWidth;
+				fPoint2X = fPoint0X - SelfLoopBezierHeight;
+				fPoint2Y = fPoint0Y - SelfLoopBezierWidth;
 
 				break;
 
 			case RectangleEdge.Bottom:
 
-				iPoint0X = iVertexX;
-				iPoint0Y = iVertexY + iVertexRadius;
+				fPoint0X = fVertexX;
+				fPoint0Y = fVertexY + fVertexRadius;
 
-				iPoint1X = iPoint0X + SelfLoopBezierHeight;
-				iPoint1Y = iPoint0Y + SelfLoopBezierWidth;
+				fPoint1X = fPoint0X + SelfLoopBezierHeight;
+				fPoint1Y = fPoint0Y + SelfLoopBezierWidth;
 
-				iPoint2X = iPoint0X - SelfLoopBezierHeight;
-				iPoint2Y = iPoint0Y + SelfLoopBezierWidth;
+				fPoint2X = fPoint0X - SelfLoopBezierHeight;
+				fPoint2Y = fPoint0Y + SelfLoopBezierWidth;
 
 				break;
 
@@ -694,13 +706,13 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 				break;
 		}
 
-		Point oPoint0 = new Point(iPoint0X, iPoint0Y);
-		Point oPoint1 = new Point(iPoint1X, iPoint1Y);
-		Point oPoint2 = new Point(iPoint2X, iPoint2Y);
+		PointF oPoint0F = new PointF(fPoint0X, fPoint0Y);
+		PointF oPoint1F = new PointF(fPoint1X, fPoint1Y);
+		PointF oPoint2F = new PointF(fPoint2X, fPoint2Y);
 
 		Graphics oGraphics = drawContext.Graphics;
 
-		oGraphics.DrawBezier(pen, oPoint0, oPoint1, oPoint2, oPoint0);
+		oGraphics.DrawBezier(pen, oPoint0F, oPoint1F, oPoint2F, oPoint0F);
 	}
 
     //*************************************************************************
@@ -1041,22 +1053,48 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 		Debug.Assert(oVertex2 != null);
 		Debug.Assert(oDrawContext != null);
 
-		// Attempt to get the shape of Vertex1.
+		// Attempt to get the shape and radius of Vertex1.
 
 		VertexDrawer.VertexShape eVertexShape;
+		Single fVertex1Radius;
 
-		if (GetVertexShape(oVertex1, oDrawContext, out eVertexShape) &&
-			eVertexShape == VertexDrawer.VertexShape.Circle)
+		if ( GetVertexShape(oVertex1, oDrawContext, out eVertexShape) &&
+			GetVertexRadius(oVertex1, oDrawContext, out fVertex1Radius) )
 		{
-			// Vertex1 is drawn as a circle.  The first endpoint should be on
-			// the circle.
-
-			Single fVertex1Radius;
-
-			if ( GetVertexRadius(oVertex1, oDrawContext, out fVertex1Radius) )
+			if (eVertexShape == VertexDrawer.VertexShape.Circle)
 			{
-				return ( GetEdgeEndpoint(oVertex2.Location, oVertex1.Location,
-					fVertex1Radius) );
+				// The first endpoint should be on the circle.
+
+				return ( GetEdgeEndpointByDistance(oVertex2.Location,
+					oVertex1.Location, fVertex1Radius) );
+			}
+			else if (eVertexShape == VertexDrawer.VertexShape.Square)
+			{
+				// The first endpoint should be on the square.
+
+				PointF oVertex1Location = oVertex1.Location;
+
+				RectangleF oVertex2RectangleF =
+					GraphicsUtil.SquareFromCenterAndHalfWidth(
+						oVertex1Location.X, oVertex1Location.Y,
+						fVertex1Radius);
+
+				return ( GetNearestPointOnVertexRectangle(oVertex2.Location,
+					oVertex2RectangleF) );
+			}
+			else if (eVertexShape == VertexDrawer.VertexShape.Diamond)
+			{
+				// The first endpoint should be on the diamond.
+
+				return ( GetNearestPointOnVertexDiamond(oVertex2.Location,
+					oVertex1, fVertex1Radius) );
+			}
+			else if (eVertexShape == VertexDrawer.VertexShape.Triangle)
+			{
+				// The first endpoint should be on the triangle.
+
+				return ( GetNearestPointOnVertexTriangle(oVertex2.Location,
+					oVertex1, fVertex1Radius) );
 			}
 		}
 
@@ -1102,52 +1140,115 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 		Debug.Assert(oVertex2 != null);
 		Debug.Assert(oDrawContext != null);
 
-		Boolean bEndpoint2OnCircle = false;
+		// Attempt to get the shape and radius of Vertex2.
 
-		if (m_fRelativeArrowSize != 0)
+		PointF oVertex1Location = oVertex1.Location;
+		PointF oVertex2Location = oVertex2.Location;
+		VertexDrawer.VertexShape eVertexShape;
+		Single fVertex2Radius;
+
+		if ( GetVertexShape(oVertex2, oDrawContext, out eVertexShape) &&
+			GetVertexRadius(oVertex2, oDrawContext, out fVertex2Radius) )
 		{
-			// An arrow is being drawn.  The second endpoint should be on the
-			// circle of Vertex2.
-
-			bEndpoint2OnCircle = true;
-		}
-		else
-		{
-			// An arrow isn't being drawn.  Attempt to get the shape of
-			// Vertex2.
-
-			VertexDrawer.VertexShape eVertexShape;
-
-			if (GetVertexShape(oVertex2, oDrawContext, out eVertexShape) &&
-				eVertexShape == VertexDrawer.VertexShape.Circle)
+			switch (eVertexShape)
 			{
-				// Vertex2 is drawn as a circle.  The second endpoint should be
-				// on the circle.
+				case VertexDrawer.VertexShape.Circle:
 
-				bEndpoint2OnCircle = true;
+					// The second endpoint should be on the edge of Vertex2.
+
+					return ( GetEdgeEndpointByDistance(oVertex1Location,
+						oVertex2Location, fVertex2Radius) );
+
+				case VertexDrawer.VertexShape.Square:
+				case VertexDrawer.VertexShape.SolidSquare:
+
+					if (eVertexShape == VertexDrawer.VertexShape.SolidSquare &&
+						m_fRelativeArrowSize == 0)
+					{
+						// An arrow is not being drawn.  The second endpoint
+						// should be at the center of Vertex2.
+
+						break;
+					}
+
+					// The second endpoint should be on the edge of Vertex2.
+
+					RectangleF oVertex2RectangleF =
+						GraphicsUtil.SquareFromCenterAndHalfWidth(
+							oVertex2Location.X, oVertex2Location.Y,
+							fVertex2Radius);
+
+					return ( GetNearestPointOnVertexRectangle(
+						oVertex1Location, oVertex2RectangleF) );
+
+				case VertexDrawer.VertexShape.Disk:
+				case VertexDrawer.VertexShape.Sphere:
+
+					if (m_fRelativeArrowSize == 0)
+					{
+						// An arrow is not being drawn.  The second endpoint
+						// should be at the center of Vertex2.
+
+						break;
+					}
+
+					// The second endpoint should be on the edge of Vertex2.
+
+					return ( GetEdgeEndpointByDistance(oVertex1Location,
+						oVertex2Location, fVertex2Radius) );
+
+				case VertexDrawer.VertexShape.Diamond:
+				case VertexDrawer.VertexShape.SolidDiamond:
+
+					if (eVertexShape == VertexDrawer.VertexShape.SolidDiamond
+						&& m_fRelativeArrowSize == 0)
+					{
+						// An arrow is not being drawn.  The second endpoint
+						// should be at the center of Vertex2.
+
+						break;
+					}
+
+					// The second endpoint should be on the edge of Vertex2.
+
+					return ( GetNearestPointOnVertexDiamond(oVertex1Location,
+						oVertex2, fVertex2Radius) );
+
+				case VertexDrawer.VertexShape.Triangle:
+				case VertexDrawer.VertexShape.SolidTriangle:
+
+					if (eVertexShape == VertexDrawer.VertexShape.SolidTriangle
+						&& m_fRelativeArrowSize == 0)
+					{
+						// An arrow is not being drawn.  The second endpoint
+						// should be at the center of Vertex2.
+
+						break;
+					}
+
+					// The second endpoint should be on the edge of Vertex2.
+
+					return ( GetNearestPointOnVertexTriangle(oVertex1Location,
+						oVertex2, fVertex2Radius) );
+
+				default:
+
+					Debug.Assert(false);
+					break;
 			}
 		}
 
-		Single fVertex2Radius;
+		// The second endpoint should be at the center of Vertex2.
 
-		if (bEndpoint2OnCircle &&
-			GetVertexRadius(oVertex2, oDrawContext, out fVertex2Radius)
-			)
-		{
-			// The second endpoint should be on the circle of Vertex2.
-
-			return ( GetEdgeEndpoint(oVertex1.Location, oVertex2.Location,
-				fVertex2Radius) );
-		}
-
-		return (oVertex2.Location);
+		return (oVertex2Location);
 	}
 
     //*************************************************************************
-    //  Method: GetEdgeEndpoint()
+    //  Method: GetEdgeEndpointByDistance()
     //
     /// <summary>
-    /// Gets one of the edge's endpoint.
+    /// Gets an edge endpoint that is a specified distance from a specified
+	/// vertex.
     /// </summary>
     ///
     /// <param name="oVertexALocation">
@@ -1170,7 +1271,7 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
     //*************************************************************************
 
 	protected PointF
-	GetEdgeEndpoint
+	GetEdgeEndpointByDistance
 	(
 		PointF oVertexALocation,
 		PointF oVertexBLocation,
@@ -1245,23 +1346,23 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 	}
 
     //*************************************************************************
-    //  Method: GetPointNearVertexRectangle()
+    //  Method: GetNearestPointOnVertexRectangle()
     //
     /// <summary>
-    /// Gets a point on a vertex rectangle that is near a specified point.
+    /// Gets a point on a vertex rectangle that is nearest to a specified point.
     /// </summary>
     ///
-    /// <param name="oPoint">
+    /// <param name="oPointF">
 	/// Specified point.
     /// </param>
 	///
-    /// <param name="oVertexRectangle">
+    /// <param name="oVertexRectangleF">
 	/// A vertex rectangle to find a point on.
     /// </param>
 	///
     /// <returns>
-	/// A point on <paramref name="oVertexRectangle" /> that is near <paramref
-	/// name="oPoint" />.
+	/// A point on <paramref name="oVertexRectangle" /> that is nearest
+	/// <paramref name="oPoint" />.
     /// </returns>
 	///
 	/// <remarks>
@@ -1270,43 +1371,175 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 	/// </remarks>
     //*************************************************************************
 
-	protected Point
-	GetPointNearVertexRectangle
+	protected PointF
+	GetNearestPointOnVertexRectangle
 	(
-		Point oPoint,
-		Rectangle oVertexRectangle
+		PointF oPointF,
+		RectangleF oVertexRectangleF
 	)
 	{
 		AssertValid();
 
 		// Get an array of points on the rectangle's edge to consider.
 
-		Point [] aoPointsOnRectangle =
-			GetPointsOnVertexRectangle(oVertexRectangle);
+		PointF [] aoPointsOnRectangle =
+			GetPointsOnVertexRectangle(oVertexRectangleF);
 
 		// Loop through all the points to find the shortest distance to oPoint.
 
-		Int32 iMinimumDistanceSquared = Int32.MaxValue;
+		return ( GetNearestPoint(oPointF, aoPointsOnRectangle) );
+	}
 
-		Point oNearbyPoint = Point.Empty;
+    //*************************************************************************
+    //  Method: GetNearestPointOnVertexDiamond()
+    //
+    /// <summary>
+    /// Gets a point on a vertex diamond that is nearest to a specified point.
+    /// </summary>
+    ///
+    /// <param name="oPointF">
+	/// Specified point.
+    /// </param>
+	///
+    /// <param name="oVertex">
+	/// The vertex that a nearest point should be found for.  It's assumed that
+	/// the vertex is drawn as a diamond or solid diamond.
+    /// </param>
+	///
+    /// <param name="fVertexRadius">
+	/// One half the width of the vertex diamond.
+    /// </param>
+	///
+    /// <returns>
+	/// The point on the diamond that is nearest to <paramref name="oPoint" />.
+    /// </returns>
+    //*************************************************************************
 
-		foreach (Point oPointOnRectangle in aoPointsOnRectangle)
+	protected PointF
+	GetNearestPointOnVertexDiamond
+	(
+		PointF oPointF,
+		IVertex oVertex,
+		Single fVertexRadius
+	)
+	{
+		Debug.Assert(oVertex != null);
+		Debug.Assert(fVertexRadius >= 0);
+		AssertValid();
+
+		Single fXCenter = oVertex.Location.X;
+		Single fYCenter = oVertex.Location.Y;
+
+		PointF [] aoPointsOnDiamond = GraphicsUtil.GetDiamondEdgeMidpoints(
+			fXCenter, fYCenter, fVertexRadius);
+
+		// Loop through all the points to find the shortest distance to oPoint.
+
+		return ( GetNearestPoint(oPointF, aoPointsOnDiamond) );
+	}
+
+    //*************************************************************************
+    //  Method: GetNearestPointOnVertexTriangle()
+    //
+    /// <summary>
+    /// Gets a point on a vertex triangle that is nearest to a specified point.
+    /// </summary>
+    ///
+    /// <param name="oPointF">
+	/// Specified point.
+    /// </param>
+	///
+    /// <param name="oVertex">
+	/// The vertex that a nearest point should be found for.  It's assumed that
+	/// the vertex is drawn as a triangle or solid triangle.
+    /// </param>
+	///
+    /// <param name="fVertexRadius">
+	/// One half of the width of the square that bounds the triangle.
+    /// </param>
+	///
+    /// <returns>
+	/// The point on the triangle that is nearest to <paramref name="oPoint" />.
+    /// </returns>
+    //*************************************************************************
+
+	protected PointF
+	GetNearestPointOnVertexTriangle
+	(
+		PointF oPointF,
+		IVertex oVertex,
+		Single fVertexRadius
+	)
+	{
+		Debug.Assert(oVertex != null);
+		Debug.Assert(fVertexRadius >= 0);
+		AssertValid();
+
+		Single fXCenter = oVertex.Location.X;
+		Single fYCenter = oVertex.Location.Y;
+
+		PointF [] aoPointsOnTriangle = GraphicsUtil.GetTriangleEdgeMidpoints(
+			fXCenter, fYCenter, fVertexRadius);
+
+		// Loop through all the points to find the shortest distance to oPoint.
+
+		return ( GetNearestPoint(oPointF, aoPointsOnTriangle) );
+	}
+
+    //*************************************************************************
+    //  Method: GetNearestPoint()
+    //
+    /// <summary>
+    /// Gets a point is nearest to a specified point.
+    /// </summary>
+    ///
+    /// <param name="oPointF">
+	/// Specified point.
+    /// </param>
+	///
+    /// <param name="aoOtherPoints">
+	/// Array of other points.
+    /// </param>
+	///
+    /// <returns>
+	/// The point in <paramref name="aoOtherPoints" /> that is nearest
+	/// to <paramref name="oPoint" />.
+    /// </returns>
+    //*************************************************************************
+
+	protected PointF
+	GetNearestPoint
+	(
+		PointF oPointF,
+		PointF [] aoOtherPoints
+	)
+	{
+		Debug.Assert(aoOtherPoints != null);
+		AssertValid();
+
+		// Loop through all the points to find the shortest distance to oPoint.
+
+		Single fMinimumDistanceSquared = Single.MaxValue;
+
+		PointF oNearbyPointF = PointF.Empty;
+
+		foreach (PointF oOtherPointF in aoOtherPoints)
 		{
-			Int32 iDistanceX = oPoint.X - oPointOnRectangle.X;
-			Int32 iDistanceY = oPoint.Y - oPointOnRectangle.Y;
+			Single fDistanceX = oPointF.X - oOtherPointF.X;
+			Single fDistanceY = oPointF.Y - oOtherPointF.Y;
 
-			Int32 iDistanceSquared =
-				iDistanceX * iDistanceX + iDistanceY * iDistanceY;
+			Single fDistanceSquared =
+				fDistanceX * fDistanceX + fDistanceY * fDistanceY;
 
-			if (iDistanceSquared < iMinimumDistanceSquared)
+			if (fDistanceSquared < fMinimumDistanceSquared)
 			{
-				oNearbyPoint = oPointOnRectangle;
+				oNearbyPointF = oOtherPointF;
 
-				iMinimumDistanceSquared = iDistanceSquared;
+				fMinimumDistanceSquared = fDistanceSquared;
 			}
 		}
 
-		return (oNearbyPoint);
+		return (oNearbyPointF);
 	}
 
     //*************************************************************************
@@ -1317,7 +1550,7 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 	/// edge's second endpoint.
     /// </summary>
     ///
-    /// <param name="oVertexRectangle">
+    /// <param name="oVertexRectangleF">
 	/// Rectangle to get points for.
     /// </param>
 	///
@@ -1326,46 +1559,46 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
     /// </returns>
     //*************************************************************************
 
-	protected Point []
+	protected PointF []
 	GetPointsOnVertexRectangle
 	(
-		Rectangle oVertexRectangle
+		RectangleF oVertexRectangleF
 	)
 	{
 		AssertValid();
 
 		// Use points 1/4, 1/2, and 3/4 along each edge.
 
-		Int32 iOneQuarterWidth = oVertexRectangle.Width / 4;
-		Int32 iHalfWidth = iOneQuarterWidth * 2;
-		Int32 iThreeQuarterWidth = iHalfWidth + iOneQuarterWidth;
+		Single fOneQuarterWidth = oVertexRectangleF.Width / 4;
+		Single fHalfWidth = fOneQuarterWidth * 2;
+		Single fThreeQuarterWidth = fHalfWidth + fOneQuarterWidth;
 
-		Int32 iOneQuarterHeight = oVertexRectangle.Height / 4;
-		Int32 iHalfHeight = iOneQuarterHeight * 2;
-		Int32 iThreeQuarterHeight = iHalfHeight + iOneQuarterHeight;
+		Single fOneQuarterHeight = oVertexRectangleF.Height / 4;
+		Single iHalfHeight = fOneQuarterHeight * 2;
+		Single fThreeQuarterHeight = iHalfHeight + fOneQuarterHeight;
 
-		Int32 iTop = oVertexRectangle.Top;
-		Int32 iBottom = oVertexRectangle.Bottom;
-		Int32 iLeft = oVertexRectangle.Left;
-		Int32 iRight = oVertexRectangle.Right;
+		Single fTop = oVertexRectangleF.Top;
+		Single fBottom = oVertexRectangleF.Bottom;
+		Single fLeft = oVertexRectangleF.Left;
+		Single iRight = oVertexRectangleF.Right;
 
-		Point [] aoPoints = new Point[] {
+		PointF [] aoPoints = new PointF[] {
 
-			new Point(iLeft, iTop + iOneQuarterHeight),
-			new Point(iLeft, iTop + iHalfHeight),
-			new Point(iLeft, iTop + iThreeQuarterHeight),
+			new PointF(fLeft, fTop + fOneQuarterHeight),
+			new PointF(fLeft, fTop + iHalfHeight),
+			new PointF(fLeft, fTop + fThreeQuarterHeight),
 
-			new Point(iRight, iTop + iOneQuarterHeight),
-			new Point(iRight, iTop + iHalfHeight),
-			new Point(iRight, iTop + iThreeQuarterHeight),
+			new PointF(iRight, fTop + fOneQuarterHeight),
+			new PointF(iRight, fTop + iHalfHeight),
+			new PointF(iRight, fTop + fThreeQuarterHeight),
 
-			new Point(iLeft + iOneQuarterWidth, iTop),
-			new Point(iLeft + iHalfWidth, iTop),
-			new Point(iLeft + iThreeQuarterWidth, iTop),
+			new PointF(fLeft + fOneQuarterWidth, fTop),
+			new PointF(fLeft + fHalfWidth, fTop),
+			new PointF(fLeft + fThreeQuarterWidth, fTop),
 
-			new Point(iLeft + iOneQuarterWidth, iBottom),
-			new Point(iLeft + iHalfWidth, iBottom),
-			new Point(iLeft + iThreeQuarterWidth, iBottom),
+			new PointF(fLeft + fOneQuarterWidth, fBottom),
+			new PointF(fLeft + fHalfWidth, fBottom),
+			new PointF(fLeft + fThreeQuarterWidth, fBottom),
 			};
 
 		return (aoPoints);
@@ -1427,41 +1660,41 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 
 		Rectangle oGraphRectangle = oDrawContext.GraphRectangle;
 
-		Int32 iDistanceFromLeft = oVertexRectangle.Left - oGraphRectangle.Left;
+		Single fDistanceFromLeft = oVertexRectangle.Left - oGraphRectangle.Left;
 
-		Int32 iDistanceFromRight =
+		Single fDistanceFromRight =
 			oGraphRectangle.Right - oVertexRectangle.Right;
 
-		Int32 iDistanceFromTop = oVertexRectangle.Top - oGraphRectangle.Top;
+		Single fDistanceFromTop = oVertexRectangle.Top - oGraphRectangle.Top;
 
-		Int32 iDistanceFromBottom =
+		Single fDistanceFromBottom =
 			oGraphRectangle.Bottom - oVertexRectangle.Bottom;
 
 		RectangleEdge eFarthestEdge = RectangleEdge.Left;
-		Int32 iGreatestDistance = iDistanceFromLeft;
+		Single fGreatestDistance = fDistanceFromLeft;
 
-		if (iDistanceFromRight > iGreatestDistance)
+		if (fDistanceFromRight > fGreatestDistance)
 		{
 			eFarthestEdge = RectangleEdge.Right;
-			iGreatestDistance = iDistanceFromRight;
+			fGreatestDistance = fDistanceFromRight;
 		}
 
-		if (iDistanceFromTop > iGreatestDistance)
+		if (fDistanceFromTop > fGreatestDistance)
 		{
 			eFarthestEdge = RectangleEdge.Top;
-			iGreatestDistance = iDistanceFromTop;
+			fGreatestDistance = fDistanceFromTop;
 		}
 
-		if (iDistanceFromBottom > iGreatestDistance)
+		if (fDistanceFromBottom > fGreatestDistance)
 		{
 			eFarthestEdge = RectangleEdge.Bottom;
-			iGreatestDistance = iDistanceFromBottom;
+			fGreatestDistance = fDistanceFromBottom;
 		}
 
-		Int32 fPoint0X = 0, fPoint0Y = 0;
-		Int32 fPoint1X = 0, fPoint1Y = 0;
-		Int32 fPoint2X = 0, fPoint2Y = 0;
-		Int32 fPoint3X = 0, fPoint3Y = 0;
+		Single fPoint0X = 0, fPoint0Y = 0;
+		Single fPoint1X = 0, fPoint1Y = 0;
+		Single fPoint2X = 0, fPoint2Y = 0;
+		Single fPoint3X = 0, fPoint3Y = 0;
 
 		switch (eFarthestEdge)
 		{
@@ -1535,14 +1768,143 @@ public class EdgeDrawer : EdgeDrawerBase, IEdgeDrawer
 				break;
 		}
 
-		Point oPoint0 = new Point(fPoint0X, fPoint0Y);
-		Point oPoint1 = new Point(fPoint1X, fPoint1Y);
-		Point oPoint2 = new Point(fPoint2X, fPoint2Y);
-		Point oPoint3 = new Point(fPoint3X, fPoint3Y);
+		PointF oPoint0F = new PointF(fPoint0X, fPoint0Y);
+		PointF oPoint1F = new PointF(fPoint1X, fPoint1Y);
+		PointF oPoint2F = new PointF(fPoint2X, fPoint2Y);
+		PointF oPoint3F = new PointF(fPoint3X, fPoint3Y);
 
 		Graphics oGraphics = oDrawContext.Graphics;
 
-		oGraphics.DrawBezier(oPen, oPoint0, oPoint1, oPoint2, oPoint3);
+		oGraphics.DrawBezier(oPen, oPoint0F, oPoint1F, oPoint2F, oPoint3F);
+	}
+
+    //*************************************************************************
+    //  Method: DrawSelfLoopOnVertexTriangle()
+    //
+    /// <summary>
+    /// Draws an edge that is a self-loop on a vertex drawn as a triangle.
+    /// </summary>
+    ///
+    /// <param name="oPen">
+	/// Pen to use.
+    /// </param>
+	///
+    /// <param name="oVertex">
+	/// Vertex that the edge connects to itself.
+    /// </param>
+	///
+    /// <param name="fVertexRadius">
+	/// Radius of the vertex, or zero if the radius couldn't be obtained.
+    /// </param>
+	///
+    /// <param name="oDrawContext">
+	/// Provides access to objects needed for drawing operations.
+    /// </param>
+	///
+    /// <param name="eFarthestEdge">
+	/// Edge of the graph rectangle that is farthest from the vertex.
+    /// </param>
+    //*************************************************************************
+
+	protected void
+	DrawSelfLoopOnVertexTriangle
+	(
+		Pen oPen,
+		IVertex oVertex,
+		Single fVertexRadius,
+		DrawContext oDrawContext,
+		RectangleEdge eFarthestEdge
+	)
+	{
+		Debug.Assert(oPen != null);
+		Debug.Assert(oVertex != null);
+		Debug.Assert(fVertexRadius >= 0);
+		Debug.Assert(oDrawContext != null);
+		AssertValid();
+
+		// Get the points on the triangle.  The order of the points is top,
+		// lower-right, lower-left.
+
+		PointF oVertexLocation = oVertex.Location;
+
+		PointF [] aoPoints = GraphicsUtil.TriangleFromCenterAndHalfWidth(
+			oVertexLocation.X, oVertexLocation.Y, fVertexRadius);
+
+		Single fPoint0X = 0, fPoint0Y = 0;
+		Single fPoint1X = 0, fPoint1Y = 0;
+		Single fPoint2X = 0, fPoint2Y = 0;
+		Single fPoint3X = 0, fPoint3Y = 0;
+
+		switch (eFarthestEdge)
+		{
+			case RectangleEdge.Left:
+
+				fPoint0X = aoPoints[2].X;
+				fPoint0Y = aoPoints[2].Y;
+
+				fPoint1X = fPoint0X - SelfLoopBezierWidth;
+				fPoint1Y = fPoint0Y + SelfLoopBezierHeight;
+
+				fPoint2X = fPoint0X - SelfLoopBezierWidth;
+				fPoint2Y = fPoint0Y - SelfLoopBezierHeight;
+
+				break;
+
+			case RectangleEdge.Right:
+
+				fPoint0X = aoPoints[1].X;
+				fPoint0Y = aoPoints[1].Y;
+
+				fPoint1X = fPoint0X + SelfLoopBezierWidth;
+				fPoint1Y = fPoint0Y + SelfLoopBezierHeight;
+
+				fPoint2X = fPoint0X + SelfLoopBezierWidth;
+				fPoint2Y = fPoint0Y - SelfLoopBezierHeight;
+
+				break;
+
+			case RectangleEdge.Top:
+
+				fPoint0X = aoPoints[0].X;
+				fPoint0Y = aoPoints[0].Y;
+
+				fPoint1X = fPoint0X + SelfLoopBezierHeight;
+				fPoint1Y = fPoint0Y - SelfLoopBezierWidth;
+
+				fPoint2X = fPoint0X - SelfLoopBezierHeight;
+				fPoint2Y = fPoint0Y - SelfLoopBezierWidth;
+
+				break;
+
+			case RectangleEdge.Bottom:
+
+				fPoint0X = aoPoints[2].X + (aoPoints[1].X - aoPoints[2].X) / 2F;
+				fPoint0Y = aoPoints[1].Y;
+
+				fPoint1X = fPoint0X + SelfLoopBezierHeight;
+				fPoint1Y = fPoint0Y + SelfLoopBezierWidth;
+
+				fPoint2X = fPoint0X - SelfLoopBezierHeight;
+				fPoint2Y = fPoint0Y + SelfLoopBezierWidth;
+
+				fPoint3X = fPoint0X;
+				fPoint3Y = fPoint0Y;
+
+				break;
+
+			default:
+
+				Debug.Assert(false);
+				break;
+		}
+
+		PointF oPoint0F = new PointF(fPoint0X, fPoint0Y);
+		PointF oPoint1F = new PointF(fPoint1X, fPoint1Y);
+		PointF oPoint2F = new PointF(fPoint2X, fPoint2Y);
+
+		Graphics oGraphics = oDrawContext.Graphics;
+
+		oGraphics.DrawBezier(oPen, oPoint0F, oPoint1F, oPoint2F, oPoint0F);
 	}
 
 	//*************************************************************************

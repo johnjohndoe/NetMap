@@ -16,18 +16,24 @@
     <ManifestKeyFile>ExcelTemplate_TemporaryKey.pfx</ManifestKeyFile>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>False</IsWebBootstrapper>
+    <TargetFrameworkSubset>Client</TargetFrameworkSubset>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>H:\Projects\NetMap\Releases\1.0.1.47\</PublishUrl>
+    <PublishUrl>H:\Projects\NetMap\Releases\1.0.1.54\ExcelAddIn\</PublishUrl>
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.47</ApplicationVersion>
+    <ApplicationVersion>1.0.1.54</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>false</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
   </PropertyGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -41,11 +47,21 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Office.PIARedist.2007">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Office 2007 Primary Interop Assemblies</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.VSTORuntime.3.0">
       <Visible>False</Visible>
-      <ProductName>Visual Studio Tools for the Office system 3.0 Runtime</ProductName>
+      <ProductName>Visual Studio Tools for the Office system 3.0 Runtime Service Pack 1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
@@ -85,9 +101,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -118,7 +131,10 @@
       <Link>UIComponents\ColorGradientPanel.cs</Link>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="..\..\Common\ExcelUtil.cs">
+    <Compile Include="..\..\Common\Excel\ExcelRangeSplitter.cs">
+      <Link>Util\ExcelRangeSplitter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelUtil.cs">
       <Link>Util\ExcelUtil.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\GraphicsUtil.cs">
@@ -162,6 +178,12 @@
     <Compile Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.designer.cs">
       <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\CreateClusters\CreateClustersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CreateClusters\CreateClustersDialog.designer.cs">
+      <DependentUpon>CreateClustersDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +202,18 @@
     </Compile>
     <Compile Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.designer.cs">
       <DependentUpon>GraphMetricUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportEdges\ImportEdgesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImportEdges\ImportEdgesDialog.designer.cs">
+      <DependentUpon>ImportEdgesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Notification\NotificationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Notification\NotificationDialog.Designer.cs">
+      <DependentUpon>NotificationDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.cs">
       <SubType>Form</SubType>
@@ -221,11 +255,16 @@
     <Compile Include="EventArgs\TableSelectionChangedEventArgs.cs" />
     <Compile Include="EventArgs\VertexAttributesEditedEventArgs.cs" />
     <Compile Include="EventArgs\VertexMovedEventArgs.cs" />
+    <Compile Include="GraphMetrics\CalculateGraphMetricsContext.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculationManager.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\BetweennessCentralityCalculator.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\ClusterCalculator.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\ClusterCalculator.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\Community.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\CommunityPair.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\DeltaQMaxHeap.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\OverallMetricCalculator.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnOrdered.cs" />
@@ -292,6 +331,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Sheet2.resx">
       <DependentUpon>Sheet2.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TaskPane\TaskPane.resx">
       <DependentUpon>TaskPane.cs</DependentUpon>
@@ -341,6 +381,24 @@
     <Compile Include="Sheet4.Designer.cs">
       <DependentUpon>Sheet4.Designer.xml</DependentUpon>
     </Compile>
+    <Compile Include="Sheet5.cs">
+      <DependentUpon>NetMapGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet5.Designer.cs">
+      <DependentUpon>Sheet5.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet6.cs">
+      <DependentUpon>NetMapGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet6.Designer.cs">
+      <DependentUpon>Sheet6.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet7.cs">
+      <DependentUpon>NetMapGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet7.Designer.cs">
+      <DependentUpon>Sheet7.Designer.xml</DependentUpon>
+    </Compile>
     <Compile Include="Sheets1And2Helper.cs" />
     <Compile Include="TaskPane\TaskPane.cs">
       <SubType>UserControl</SubType>
@@ -367,9 +425,16 @@
     <Compile Include="UserSettings\AutoFill\NumericRangeColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\GeneralUserSettings.cs" />
     <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
+    <Compile Include="UserSettings\NotificationUserSettings.cs" />
+    <Compile Include="Util\ClusterMapper.cs" />
     <Compile Include="Util\ComparisonOperator.cs" />
+    <Compile Include="Util\DuplicateEdgeDetector.cs" />
+    <Compile Include="Util\DuplicateEdgeMerger.cs" />
+    <Compile Include="Util\EdgeImporter.cs" />
     <Compile Include="Util\ErrorUtil.cs" />
+    <Compile Include="Util\ExcelColumnWidths.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
+    <Compile Include="Util\ImportEdgeException.cs" />
     <Compile Include="Util\NetMapControlUtil.cs" />
     <Compile Include="Util\SubgraphImageCreator.cs" />
     <Compile Include="Util\TableColumnAdder.cs" />
@@ -381,6 +446,7 @@
     <Compile Include="Util\WorksheetContextMenuManager.cs" />
     <Compile Include="WorkbookReader\EdgeWorksheetReader.cs" />
     <Compile Include="WorkbookReader\ImageWorksheetReader.cs" />
+    <Compile Include="WorkbookReader\PerWorkbookSettings.cs" />
     <Compile Include="WorkbookReader\ReadWorkbookContext.cs" />
     <Compile Include="WorkbookReader\ValueConverters\AlphaConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\BooleanConverter.cs" />
@@ -459,9 +525,19 @@
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\CreateClusters\CreateClustersDialog.resx">
+      <DependentUpon>CreateClustersDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.resx">
       <DependentUpon>GraphMetricUserSettingsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImportEdges\ImportEdgesDialog.resx">
+      <DependentUpon>ImportEdgesDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Notification\NotificationDialog.resx">
+      <DependentUpon>NotificationDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.resx">
       <DependentUpon>SelectSubgraphsDialog.cs</DependentUpon>
@@ -475,6 +551,25 @@
     <EmbeddedResource Include="Images\SampleSubgraphs\3.5.jpg" />
     <EmbeddedResource Include="Images\SampleSubgraphs\4.0.jpg" />
     <EmbeddedResource Include="Images\SampleSubgraphs\4.5.jpg" />
+    <EmbeddedResource Include="Sheet4.resx">
+      <DependentUpon>Sheet4.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet5.Designer.xml">
+      <DependentUpon>Sheet5.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet6.Designer.xml">
+      <DependentUpon>Sheet6.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet7.Designer.xml">
+      <DependentUpon>Sheet7.cs</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\OfficeTools\Microsoft.VisualStudio.Tools.Office.Office2007.targets" />
@@ -482,11 +577,14 @@
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="NetMapGraph.xltx" HostPackage="{B284B16A-C42C-4438-BDCD-B72F4AC43CFB}" OfficeVersion="12.0" VstxVersion="3.0" ApplicationType="XLT" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files\Microsoft Office\Office12\Excel.exe" DebugInfoCommandLine="/t &quot;[$OUTPUT]NetMapGraph.xltx&quot;" />
-        <Host Name="Excel Document" Path=".\NetMapGraph.xltx" GeneratedCodeNamespace="Microsoft.NetMap.ExcelTemplate" PublishedHash="AA7D8001F2D33F8CAF0E81446EA31ECE96E54E1D">
+        <Host Name="Excel Document" Path=".\NetMapGraph.xltx" GeneratedCodeNamespace="Microsoft.NetMap.ExcelTemplate" PublishedHash="4D8E879928CBA270A29ED7FD412557FCA49DBAF9">
           <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="245DB3698AC9C0D8DC43523F505F15A7AE65DDCD" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
           <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
           <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="929EB06E3232D25BBFB6DA207F133759A5E75F10" DisplayName="Images" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
-          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="68A3CB1104CC5DD685C011EC574774C222F593B8" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
+          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="16CC5CE95B1FFE7AAB3A1C0BED926CB7BF5B766E" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
+          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="651F0F18F0DA9DEEF21F2887996E77B7C73F9326" CanActivate="false" DisplayName="Clusters" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
+          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="1641ABE04217FBFF4F1B81D6385356B84C00F914" CanActivate="false" DisplayName="Cluster Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
+          <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="9D6EBDFD59407161A65741A2F78E7AC34A88358D" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="D0EA144E67D552625DC149C1653F9B8844BAE80B" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
         </Host>
       </FlavorProperties>

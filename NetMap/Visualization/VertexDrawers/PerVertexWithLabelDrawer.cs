@@ -35,6 +35,14 @@ namespace Microsoft.NetMap.Visualization
 /// </para>
 ///
 /// <para>
+/// If a vertex has the <see
+/// cref="ReservedMetadataKeys.PerVertexPrimaryLabel" /> and <see
+/// cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" /> keys, the
+/// specified fill color is used to fill the primary label rectangle.  The
+/// default fill color is <see cref="PrimaryLabelFillColor" />.
+/// </para>
+///
+/// <para>
 /// To force this class to ignore the <see
 /// cref="ReservedMetadataKeys.PerVertexPrimaryLabel" /> key and delegate
 /// drawing to the base class, add a <see
@@ -62,6 +70,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
     public PerVertexWithLabelDrawer()
     {
 		m_oFont = SystemFonts.DefaultFont;
+		m_oPrimaryLabelFillColor = SystemColors.Window;
 
 		AssertValid();
     }
@@ -92,6 +101,41 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		set
 		{
 			m_oFont = value;
+
+			AssertValid();
+		}
+	}
+
+	//*************************************************************************
+	//	Property: PrimaryLabelFillColor
+	//
+	/// <summary>
+	///	Gets or sets the fill color to use for primary labels.
+	/// </summary>
+	///
+	/// <value>
+	///	The fill color to use for primary labels.  The default is
+	/// SystemColors.Window.
+	/// </value>
+	///
+	/// <remarks>
+	/// <see cref="Color" /> is used for the primary label text.
+	/// </remarks>
+	//*************************************************************************
+
+	public Color
+	PrimaryLabelFillColor
+	{
+		get
+		{
+			AssertValid();
+
+			return (m_oPrimaryLabelFillColor);
+		}
+
+		set
+		{
+			m_oPrimaryLabelFillColor = value;
 
 			AssertValid();
 		}
@@ -310,6 +354,10 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 
 		Boolean bDrawSelected = VertexShouldBeDrawnSelected(vertex);
 
+		// Use the vertex color as the text color for both labels.
+
+		Color oActualColor = GetActualColor(vertex, false);
+
 		Rectangle oVertexBounds;
 
 		// Attempt to retrieve the drawing information cached by
@@ -323,7 +371,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 			// text.
 
 			DrawPrimaryLabel(vertex, drawContext, oPrimaryLabelDrawInfo,
-				bDrawSelected);
+				oActualColor, bDrawSelected);
 
 			oVertexBounds = oPrimaryLabelDrawInfo.OutlineRectangle;
 		}
@@ -343,7 +391,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 			// drawn.
 
 			DrawSecondaryLabel(vertex, drawContext, (String)oSecondaryLabel,
-				oVertexBounds, bDrawSelected);
+				oVertexBounds, oActualColor, bDrawSelected);
 		}
 
 		return (oVertexBounds);
@@ -368,6 +416,10 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 	/// Information needed to draw the primary label.
     /// </param>
 	///
+    /// <param name="oTextColor">
+	/// Text color to use.
+    /// </param>
+	///
     /// <param name="bDrawSelected">
 	/// true if the vertex should be drawn selected.
     /// </param>
@@ -379,6 +431,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		IVertex oVertex,
 		DrawContext oDrawContext,
 		PrimaryLabelDrawInfo oPrimaryLabelDrawInfo,
+		Color oTextColor,
 		Boolean bDrawSelected
 	)
 	{
@@ -386,6 +439,23 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		Debug.Assert(oDrawContext != null);
 		Debug.Assert(oPrimaryLabelDrawInfo != null);
 		AssertValid();
+
+		// If a per-vertex fill color hasn't been specified, use the default
+		// fill color.
+
+		Color oFillColor;
+		Object oFillColorAsObject;
+
+		if ( oVertex.TryGetValue(
+			ReservedMetadataKeys.PerVertexPrimaryLabelFillColor, typeof(Color),
+			out oFillColorAsObject) )
+		{
+			oFillColor = (Color)oFillColorAsObject;
+		}
+		else
+		{
+			oFillColor = m_oPrimaryLabelFillColor;
+		}
 
 		// Get the rectangles in which to draw the label.
 
@@ -399,7 +469,8 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		SmoothingMode eOldSmoothingMode = oGraphics.SmoothingMode;
 		oGraphics.SmoothingMode = SmoothingMode.None;
 
-		oGraphics.FillRectangle(SystemBrushes.Window, oOutlineRectangle);
+		oGraphics.FillRectangle(GetSharedSolidBrush(oFillColor),
+			oOutlineRectangle);
 
 		DrawVertexOutline(oDrawContext, oOutlineRectangle, bDrawSelected);
 
@@ -408,7 +479,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		// Draw the label.
 
 		oGraphics.DrawString(oPrimaryLabelDrawInfo.PrimaryLabel, m_oFont,
-			SystemBrushes.WindowText, oTextRectangleF);
+			GetSharedSolidBrush(oTextColor), oTextRectangleF);
 
 		// Add a hit-test area to the vertex's metadata.  This gets used by
 		// VertexContainsPoint().
@@ -439,6 +510,12 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 	/// Bounding rectangle of the vertex.
     /// </param>
     ///
+    /// <param name="oUnselectedTextColor">
+	/// Color of the vertex when it is not selected.  This is used as the
+	/// secondary label text color when the vertex is not selected.  (When the
+	/// vertex is selected, this.SelectedColor is used.)
+    /// </param>
+	///
     /// <param name="bDrawSelected">
 	/// true if the vertex should be drawn selected.
     /// </param>
@@ -451,6 +528,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		DrawContext oDrawContext,
 		String sSecondaryLabel,
 		Rectangle oVertexBounds,
+		Color oUnselectedTextColor,
 		Boolean bDrawSelected
 	)
 	{
@@ -484,7 +562,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		oGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
 		SolidBrush oSharedSolidBrush = GetSharedSolidBrush(
-			bDrawSelected ? this.SelectedColor : SystemColors.WindowText);
+			bDrawSelected ? this.SelectedColor : oUnselectedTextColor);
 
 		oGraphics.DrawString(sSecondaryLabel, m_oFont, oSharedSolidBrush,
             oSecondaryLabelRectangleF);
@@ -792,6 +870,7 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 		base.AssertValid();
 
 		Debug.Assert(m_oFont != null);
+		// m_oPrimaryLabelFillColor
     }
 
 
@@ -815,6 +894,10 @@ public class PerVertexWithLabelDrawer : PerVertexWithImageDrawer
 	///	The font to use for drawing labels.
 
 	protected Font m_oFont;
+
+	///	The fill color to use for primary labels.
+
+	protected Color m_oPrimaryLabelFillColor;
 }
 
 }

@@ -56,7 +56,8 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
 
 			return(this.CalculateInDegree || this.CalculateOutDegree ||
 				this.CalculateDegree || this.CalculateClusteringCoefficient ||
-				this.CalculateBetweennessCentrality || this.CalculateClusters
+				this.CalculateBetweennessCentrality ||
+				this.CalculateOverallMetrics
 				);
         }
     }
@@ -232,15 +233,15 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: CalculateClusters
+    //  Property: CalculateOverallMetrics
     //
     /// <summary>
-    /// Gets or sets a flag specifying whether the graph should be partitioned
-	/// into clusters.
+    /// Gets or sets a flag specifying whether overall graph metrics should be
+	/// calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to partition the graph into clusters.  The default is false.
+	/// true to calculate overall graph metrics.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -248,18 +249,18 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
 	[ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateClusters
+	CalculateOverallMetrics
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateClustersKey] );
+			return ( (Boolean)this[CalculateOverallMetricsKey] );
         }
 
         set
         {
-			this[CalculateClustersKey] = value;
+			this[CalculateOverallMetricsKey] = value;
 
             AssertValid();
         }
@@ -314,10 +315,10 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
 	protected const String CalculateBetweennessCentralityKey =
 		"CalculateBetweennessCentrality";
 
-	/// Name of the settings key for the CalculateClusters property.
+	/// Name of the settings key for the CalculateOverallMetrics property.
 
-	protected const String CalculateClustersKey =
-		"CalculateClusters";
+	protected const String CalculateOverallMetricsKey =
+		"CalculateOverallMetrics";
 
 
     //*************************************************************************

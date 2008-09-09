@@ -6,6 +6,7 @@ using System;
 using System.Configuration;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Drawing;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -50,12 +51,17 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 	/// <param name="graphMetricUserSettings">
 	/// User settings for calculating graph metrics.
 	/// </param>
+	///
+	/// <param name="notificationUserSettings">
+	/// User settings for notifications.
+	/// </param>
 	//*************************************************************************
 
 	public CalculateGraphMetricsDialog
 	(
         Microsoft.Office.Interop.Excel.Workbook workbook,
-		GraphMetricUserSettings graphMetricUserSettings
+		GraphMetricUserSettings graphMetricUserSettings,
+		NotificationUserSettings notificationUserSettings
 	)
 	: this()
 	{
@@ -68,8 +74,13 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 
 		m_oWorkbook = workbook;
 		m_oGraphMetricUserSettings = graphMetricUserSettings;
+		m_oNotificationUserSettings = notificationUserSettings;
 
 		m_oGraphMetricCalculationManager = new GraphMetricCalculationManager();
+
+		m_oGraphMetricCalculationManager.DuplicateEdgeDetected +=
+			new CancelEventHandler(
+				GraphMetricCalculationManager_DuplicateEdgeDetected);
 
 		m_oGraphMetricCalculationManager.GraphMetricCalculationProgressChanged
 			+= new ProgressChangedEventHandler(
@@ -222,7 +233,7 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 		{
 			// An exception was thrown from the synchronous code within
 			// CalculateGraphMetricsAsync().  (Exceptions thrown from the
-			// asynchronous code is handled by the
+			// asynchronous code are handled by the
 			// GraphMetricCalculationCompleted event handler.)
 
 			ErrorUtil.OnException(oException);
@@ -269,13 +280,68 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 		}
 	}
 
+    //*************************************************************************
+    //  Method: GraphMetricCalculationManager_DuplicateEdgeDetected()
+    //
+    /// <summary>
+	/// Handles the DuplicateEdgeDetected event on the
+	/// GraphMetricCalculationManager object.
+    /// </summary>
+    ///
+	/// <param name="sender">
+	/// Standard event argument.
+	/// </param>
+    ///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+	private void
+	GraphMetricCalculationManager_DuplicateEdgeDetected
+	(
+		object sender,
+		CancelEventArgs e
+	)
+	{
+		AssertValid();
+
+		if (!m_oNotificationUserSettings.GraphHasDuplicateEdge)
+		{
+			return;
+		}
+
+		const String Message =
+			"The workbook contains duplicate edges that will cause some of"
+			+ " the graph metrics to be inaccurate.  Do you want to calculate"
+			+ " graph metrics anyway?"
+			+ "\r\n\r\n"
+			+ "If you answer Yes, the inaccurate metrics will be highlighted"
+			+ " with Excel's \"Bad\" style, which is usually red."
+			;
+
+		NotificationDialog oNotificationDialog = new NotificationDialog(
+			"Duplicate Edges", SystemIcons.Warning, Message);
+
+		if (oNotificationDialog.ShowDialog() != DialogResult.Yes)
+		{
+			e.Cancel = true;
+			this.Close();
+		}
+
+		if (oNotificationDialog.DisableFutureNotifications)
+		{
+			m_oNotificationUserSettings.GraphHasDuplicateEdge = false;
+			m_oNotificationUserSettings.Save();
+		}
+	}
 
     //*************************************************************************
     //  Method: GraphMetricCalculationManager_
 	//          GraphMetricCalculationProgressChanged()
     //
     /// <summary>
-	/// Handles the ImageCreationProgressChanged event on the
+	/// Handles the GraphMetricCalculationProgressChanged event on the
 	/// GraphMetricCalculationManager object.
     /// </summary>
     ///
@@ -318,7 +384,7 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     //  Method: GraphMetricCalculationManager_GraphMetricCalculationCompleted()
     //
     /// <summary>
-	/// Handles the ImageCreationCompleted event on the
+	/// Handles the GraphMetricCalculationCompleted event on the
 	/// GraphMetricCalculationManager
 	/// object.
     /// </summary>
@@ -407,6 +473,7 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 		Debug.Assert(m_oCalculateGraphMetricsDialogUserSettings != null);
 		Debug.Assert(m_oWorkbook != null);
 		Debug.Assert(m_oGraphMetricUserSettings != null);
+		Debug.Assert(m_oNotificationUserSettings != null);
 		Debug.Assert(m_oGraphMetricCalculationManager != null);
     }
 
@@ -427,6 +494,10 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 	/// User settings for calculating graph metrics.
 
 	protected GraphMetricUserSettings m_oGraphMetricUserSettings;
+
+	/// User settings for notifications.
+
+	protected NotificationUserSettings m_oNotificationUserSettings;
 
 	/// Object that does most of the work.
 

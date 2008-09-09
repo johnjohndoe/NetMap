@@ -251,7 +251,14 @@ public class Sheets1And2Helper : Object
 
 		rowIDDictionary = new Dictionary<Int32, Int32>();
 
-		Int32 iDataBodyRangeRow = m_oTable.DataBodyRange.Row;
+		Range oDataBodyRange = m_oTable.DataBodyRange;
+
+		if (oDataBodyRange == null)
+		{
+			return (false);
+		}
+
+		Int32 iDataBodyRangeRow = oDataBodyRange.Row;
 
 		// Loop through the visible areas.
 

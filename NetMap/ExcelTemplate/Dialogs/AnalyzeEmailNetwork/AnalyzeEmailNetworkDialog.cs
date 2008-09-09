@@ -946,7 +946,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
     //  Method: SetTieStrengthValues()
     //
     /// <summary>
-	/// Sets the values of the edge table's tie strengths column
+	/// Sets the values of the edge table's tie strength column.
     /// </summary>
     ///
 	/// <param name="aoTieStrengths">
@@ -979,7 +979,8 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
 			ListColumn oListColumn;
 
 			if ( !ExcelUtil.TryAddTableColumn(m_oEdgeTable,
-				EdgeTableColumnNames.TieStrength, 14F, out oListColumn) )
+				EdgeTableColumnNames.TieStrength,
+				ExcelUtil.AutoColumnWidth, null, out oListColumn) )
 			{
 				this.ShowWarning(
 					"The tie strength column wasn't added."

@@ -299,92 +299,84 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 		// Read the range that contains visible edge data.  If the table is
 		// filtered, the range may contain multiple areas.
 
-        Range oEdgeRange;
+        Range oVisibleEdgeRange;
 
-		if ( !ExcelUtil.TryGetVisibleTableRange(oEdgeTable, out oEdgeRange) )
+		if ( !ExcelUtil.TryGetVisibleTableRange(oEdgeTable,
+			out oVisibleEdgeRange) )
 		{
 			return;
 		}
-
-		IVertexCollection oVertices = oGraph.Vertices;
-		IEdgeCollection oEdges = oGraph.Edges;
 
 		// Get the indexes of the columns within the table.
 
 		EdgeTableColumnIndexes oEdgeTableColumnIndexes =
 			GetEdgeTableColumnIndexes(oEdgeTable);
 
-		// Loop through the areas.
+		// Loop through the areas, and split each area into subranges if the
+		// area contains too many rows.
 
-		foreach (Range oEdgeRangeArea in oEdgeRange.Areas)
+		foreach ( Range oSubrange in
+			ExcelRangeSplitter.SplitRange(oVisibleEdgeRange) )
 		{
 			if (oReadWorkbookContext.FillIDColumns)
 			{
 				// If the ID column exists, fill the rows within it that are
-				// contained within the area with a sequence of unique IDs.
+				// contained within the subrange with a sequence of unique IDs.
 
 				FillIDColumn(oEdgeTable, oEdgeTableColumnIndexes.ID,
-					oEdgeRangeArea);
+					oSubrange);
 			}
 
-			// Add the contents of the area to the graph.
+			// Add the contents of the subrange to the graph.
 
-			AddEdgeRangeAreaToGraph(oEdgeRangeArea, oEdgeTableColumnIndexes,
-				oVertices, oEdges, oReadWorkbookContext);
+			AddEdgeSubrangeToGraph(oSubrange, oEdgeTableColumnIndexes,
+				oGraph, oReadWorkbookContext);
 		}
     }
 
     //*************************************************************************
-    //  Method: AddEdgeRangeAreaToGraph()
+    //  Method: AddEdgeSubrangeToGraph()
     //
     /// <summary>
-	/// Adds the contents of one area of the edge range to a NetMap graph.
+	/// Adds the contents of one subrange of the edge range to a NetMap graph.
     /// </summary>
     ///
-    /// <param name="oEdgeRangeArea">
-	/// One area of the range that contains edge data.
+    /// <param name="oEdgeSubrange">
+	/// One subrange of the range that contains edge data.
     /// </param>
 	///
     /// <param name="oEdgeTableColumnIndexes">
 	/// One-based indexes of the columns within the edge table.
     /// </param>
-    ///
-    /// <param name="oVertices">
-	/// NetMap graph's vertex collection.
-    /// </param>
-    ///
-    /// <param name="oEdges">
-	/// NetMap graph's edge collection.
+	///
+    /// <param name="oGraph">
+	/// Graph to add edges to.
     /// </param>
     ///
     /// <param name="oReadWorkbookContext">
 	/// Provides access to objects needed for converting an Excel workbook to a
 	/// NetMap graph.
     /// </param>
-    ///
-    /// <remarks>
-	/// This method should be called once for each area in the range that
-	/// contains edge data.
-    /// </remarks>
     //*************************************************************************
 
     protected void
-    AddEdgeRangeAreaToGraph
+    AddEdgeSubrangeToGraph
     (
-		Range oEdgeRangeArea,
+		Range oEdgeSubrange,
 		EdgeTableColumnIndexes oEdgeTableColumnIndexes,
-		IVertexCollection oVertices,
-		IEdgeCollection oEdges,
+		IGraph oGraph,
 		ReadWorkbookContext oReadWorkbookContext
     )
     {
-		Debug.Assert(oEdgeRangeArea != null);
-		Debug.Assert(oVertices != null);
-		Debug.Assert(oEdges != null);
+		Debug.Assert(oEdgeSubrange != null);
+		Debug.Assert(oGraph != null);
 		Debug.Assert(oReadWorkbookContext != null);
         AssertValid();
 
-		Object [,] aoEdgeValues = ExcelUtil.GetRangeValues(oEdgeRangeArea);
+		IVertexCollection oVertices = oGraph.Vertices;
+		IEdgeCollection oEdges = oGraph.Edges;
+
+		Object [,] aoEdgeValues = ExcelUtil.GetRangeValues(oEdgeSubrange);
 
 		Dictionary<String, IVertex> oVertexNameDictionary =
 			oReadWorkbookContext.VertexNameDictionary;
@@ -392,10 +384,13 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 		EdgeVisibilityConverter oEdgeVisibilityConverter =
 			new EdgeVisibilityConverter();
 
+		Boolean bGraphIsDirected =
+			(oGraph.Directedness == GraphDirectedness.Directed);
+
 		// Loop through the rows.  Each row contains two vertex names at a
 		// minimum and represents an edge.
 
-		Int32 iRows = oEdgeRangeArea.Rows.Count;
+		Int32 iRows = oEdgeSubrange.Rows.Count;
 
 		for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
 		{
@@ -422,7 +417,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 			{
 				// A half-empty row is an error.
 
-				OnHalfEmptyEdgeRow(oEdgeRangeArea, iRowOneBased,
+				OnHalfEmptyEdgeRow(oEdgeSubrange, iRowOneBased,
 					oEdgeTableColumnIndexes, bVertex1IsEmpty);
 			}
 
@@ -443,7 +438,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 					sVisibility, out eVisibility)
 				)
 			{
-				OnInvalidVisibility(oEdgeRangeArea, iRowOneBased,
+				OnInvalidVisibility(oEdgeSubrange, iRowOneBased,
 					oEdgeTableColumnIndexes.Visibility);
 			}
 
@@ -465,14 +460,14 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
 			// Add an edge connecting the vertices.
 
-			IEdge oEdge = oEdges.Add(oVertex1, oVertex2, true);
+			IEdge oEdge = oEdges.Add(oVertex1, oVertex2, bGraphIsDirected);
 
 			// If there is an ID column, add the edge to the edge ID dictionary
 			// and set the edge's Tag to the ID.
 
 			if (oEdgeTableColumnIndexes.ID != NoSuchColumn)
 			{
-				AddToIDDictionary(oEdgeRangeArea, aoEdgeValues, iRowOneBased,
+				AddToIDDictionary(oEdgeSubrange, aoEdgeValues, iRowOneBased,
 					oEdgeTableColumnIndexes.ID, oEdge,
 					oReadWorkbookContext.EdgeIDDictionary);
 			}
@@ -490,7 +485,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
 			if (oEdgeTableColumnIndexes.Alpha != NoSuchColumn)
 			{
-				Boolean bAlphaIsZero = CheckForAlpha(oEdgeRangeArea,
+				Boolean bAlphaIsZero = CheckForAlpha(oEdgeSubrange,
 					aoEdgeValues, iRowOneBased, oEdgeTableColumnIndexes.Alpha,
 					oEdge);
 
@@ -505,8 +500,9 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
 			if (oEdgeTableColumnIndexes.Color != NoSuchColumn)
 			{
-				CheckForColor(oEdgeRangeArea, aoEdgeValues, iRowOneBased,
+				CheckForColor(oEdgeSubrange, aoEdgeValues, iRowOneBased,
 					oEdgeTableColumnIndexes.Color, oEdge,
+                    ReservedMetadataKeys.PerColor,
                     oReadWorkbookContext.ColorConverter2);
 			}
 
@@ -515,7 +511,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
 			if (oEdgeTableColumnIndexes.Width != NoSuchColumn)
 			{
-				CheckForWidth(oEdgeRangeArea, aoEdgeValues, iRowOneBased,
+				CheckForWidth(oEdgeSubrange, aoEdgeValues, iRowOneBased,
 					oEdgeTableColumnIndexes.Width,
 					oReadWorkbookContext.EdgeWidthConverter, oEdge);
 			}

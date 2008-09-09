@@ -75,6 +75,9 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
+            this.btnVertexPrimaryLabeFillColorDetails = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lnkHowAutoFillWorks = new System.Windows.Forms.LinkLabel();
@@ -110,7 +113,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(64, 13);
-            this.label3.TabIndex = 14;
+            this.label3.TabIndex = 15;
             this.label3.Text = "&Vertex Color";
             // 
             // cbxEdgeColorSourceColumnName
@@ -120,7 +123,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxEdgeColorSourceColumnName.MaxLength = 100;
             this.cbxEdgeColorSourceColumnName.Name = "cbxEdgeColorSourceColumnName";
             this.cbxEdgeColorSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxEdgeColorSourceColumnName.TabIndex = 3;
+            this.cbxEdgeColorSourceColumnName.TabIndex = 4;
             // 
             // tlpTableLayoutPanel
             // 
@@ -129,14 +132,14 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexYDetails, 2, 14);
-            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexXDetails, 2, 13);
-            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexVisibilityDetails, 2, 12);
-            this.tlpTableLayoutPanel.Controls.Add(this.label12, 0, 14);
-            this.tlpTableLayoutPanel.Controls.Add(this.label8, 0, 10);
-            this.tlpTableLayoutPanel.Controls.Add(this.label11, 0, 13);
-            this.tlpTableLayoutPanel.Controls.Add(this.label10, 0, 12);
-            this.tlpTableLayoutPanel.Controls.Add(this.label9, 0, 11);
+            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexYDetails, 2, 15);
+            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexXDetails, 2, 14);
+            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexVisibilityDetails, 2, 13);
+            this.tlpTableLayoutPanel.Controls.Add(this.label12, 0, 15);
+            this.tlpTableLayoutPanel.Controls.Add(this.label8, 0, 11);
+            this.tlpTableLayoutPanel.Controls.Add(this.label11, 0, 14);
+            this.tlpTableLayoutPanel.Controls.Add(this.label10, 0, 13);
+            this.tlpTableLayoutPanel.Controls.Add(this.label9, 0, 12);
             this.tlpTableLayoutPanel.Controls.Add(this.btnVertexAlphaDetails, 2, 8);
             this.tlpTableLayoutPanel.Controls.Add(this.btnVertexRadiusDetails, 2, 7);
             this.tlpTableLayoutPanel.Controls.Add(this.btnVertexShapeDetails, 2, 6);
@@ -147,12 +150,12 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.tlpTableLayoutPanel.Controls.Add(this.label5, 0, 7);
             this.tlpTableLayoutPanel.Controls.Add(this.btnEdgeAlphaDetails, 2, 3);
             this.tlpTableLayoutPanel.Controls.Add(this.label4, 0, 6);
-            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexYSourceColumnName, 1, 14);
+            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexYSourceColumnName, 1, 15);
             this.tlpTableLayoutPanel.Controls.Add(this.label3, 0, 5);
-            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexXSourceColumnName, 1, 13);
-            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexVisibilitySourceColumnName, 1, 12);
-            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexToolTipSourceColumnName, 1, 11);
-            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexSecondaryLabelSourceColumnName, 1, 10);
+            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexXSourceColumnName, 1, 14);
+            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexVisibilitySourceColumnName, 1, 13);
+            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexToolTipSourceColumnName, 1, 12);
+            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexSecondaryLabelSourceColumnName, 1, 11);
             this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexPrimaryLabelSourceColumnName, 1, 9);
             this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexAlphaSourceColumnName, 1, 8);
             this.tlpTableLayoutPanel.Controls.Add(this.cbxEdgeWidthSourceColumnName, 1, 2);
@@ -171,10 +174,13 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.tlpTableLayoutPanel.Controls.Add(this.label15, 0, 3);
             this.tlpTableLayoutPanel.Controls.Add(this.label16, 0, 4);
             this.tlpTableLayoutPanel.Controls.Add(this.label17, 2, 0);
+            this.tlpTableLayoutPanel.Controls.Add(this.label18, 0, 10);
+            this.tlpTableLayoutPanel.Controls.Add(this.cbxVertexPrimaryLabelFillColorSourceColumnName, 1, 10);
+            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexPrimaryLabeFillColorDetails, 2, 10);
             this.tlpTableLayoutPanel.Enabled = false;
             this.tlpTableLayoutPanel.Location = new System.Drawing.Point(12, 38);
             this.tlpTableLayoutPanel.Name = "tlpTableLayoutPanel";
-            this.tlpTableLayoutPanel.RowCount = 15;
+            this.tlpTableLayoutPanel.RowCount = 16;
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
@@ -190,12 +196,13 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
-            this.tlpTableLayoutPanel.Size = new System.Drawing.Size(364, 443);
+            this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tlpTableLayoutPanel.Size = new System.Drawing.Size(364, 470);
             this.tlpTableLayoutPanel.TabIndex = 2;
             // 
             // btnVertexYDetails
             // 
-            this.btnVertexYDetails.Location = new System.Drawing.Point(319, 416);
+            this.btnVertexYDetails.Location = new System.Drawing.Point(319, 443);
             this.btnVertexYDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexYDetails.Name = "btnVertexYDetails";
             this.btnVertexYDetails.Size = new System.Drawing.Size(25, 20);
@@ -206,7 +213,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // btnVertexXDetails
             // 
-            this.btnVertexXDetails.Location = new System.Drawing.Point(319, 389);
+            this.btnVertexXDetails.Location = new System.Drawing.Point(319, 416);
             this.btnVertexXDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexXDetails.Name = "btnVertexXDetails";
             this.btnVertexXDetails.Size = new System.Drawing.Size(25, 20);
@@ -217,11 +224,11 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // btnVertexVisibilityDetails
             // 
-            this.btnVertexVisibilityDetails.Location = new System.Drawing.Point(319, 362);
+            this.btnVertexVisibilityDetails.Location = new System.Drawing.Point(319, 389);
             this.btnVertexVisibilityDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexVisibilityDetails.Name = "btnVertexVisibilityDetails";
             this.btnVertexVisibilityDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnVertexVisibilityDetails.TabIndex = 37;
+            this.btnVertexVisibilityDetails.TabIndex = 38;
             this.btnVertexVisibilityDetails.Text = "...";
             this.btnVertexVisibilityDetails.UseVisualStyleBackColor = true;
             this.btnVertexVisibilityDetails.Click += new System.EventHandler(this.btnVertexVisibilityDetails_Click);
@@ -229,7 +236,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(4, 418);
+            this.label12.Location = new System.Drawing.Point(4, 445);
             this.label12.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(47, 13);
@@ -239,17 +246,17 @@ namespace Microsoft.NetMap.ExcelTemplate
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(4, 310);
+            this.label8.Location = new System.Drawing.Point(4, 337);
             this.label8.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(120, 13);
-            this.label8.TabIndex = 29;
+            this.label8.TabIndex = 32;
             this.label8.Text = "Vertex Se&condary Label";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(4, 391);
+            this.label11.Location = new System.Drawing.Point(4, 418);
             this.label11.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(47, 13);
@@ -259,21 +266,21 @@ namespace Microsoft.NetMap.ExcelTemplate
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(4, 364);
+            this.label10.Location = new System.Drawing.Point(4, 391);
             this.label10.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(76, 13);
-            this.label10.TabIndex = 35;
+            this.label10.TabIndex = 36;
             this.label10.Text = "Vertex Visi&bility";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(4, 337);
+            this.label9.Location = new System.Drawing.Point(4, 364);
             this.label9.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(76, 13);
-            this.label9.TabIndex = 32;
+            this.label9.TabIndex = 34;
             this.label9.Text = "Vertex &ToolTip";
             // 
             // btnVertexAlphaDetails
@@ -282,7 +289,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnVertexAlphaDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexAlphaDetails.Name = "btnVertexAlphaDetails";
             this.btnVertexAlphaDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnVertexAlphaDetails.TabIndex = 25;
+            this.btnVertexAlphaDetails.TabIndex = 26;
             this.btnVertexAlphaDetails.Text = "...";
             this.btnVertexAlphaDetails.UseVisualStyleBackColor = true;
             this.btnVertexAlphaDetails.Click += new System.EventHandler(this.btnVertexAlphaDetails_Click);
@@ -293,7 +300,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnVertexRadiusDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexRadiusDetails.Name = "btnVertexRadiusDetails";
             this.btnVertexRadiusDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnVertexRadiusDetails.TabIndex = 22;
+            this.btnVertexRadiusDetails.TabIndex = 23;
             this.btnVertexRadiusDetails.Text = "...";
             this.btnVertexRadiusDetails.UseVisualStyleBackColor = true;
             this.btnVertexRadiusDetails.Click += new System.EventHandler(this.btnVertexRadiusDetails_Click);
@@ -304,7 +311,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnVertexShapeDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexShapeDetails.Name = "btnVertexShapeDetails";
             this.btnVertexShapeDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnVertexShapeDetails.TabIndex = 19;
+            this.btnVertexShapeDetails.TabIndex = 20;
             this.btnVertexShapeDetails.Text = "...";
             this.btnVertexShapeDetails.UseVisualStyleBackColor = true;
             this.btnVertexShapeDetails.Click += new System.EventHandler(this.btnVertexShapeDetails_Click);
@@ -316,7 +323,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label7.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(103, 13);
-            this.label7.TabIndex = 26;
+            this.label7.TabIndex = 27;
             this.label7.Text = "Vertex Primary &Label";
             // 
             // btnVertexColorDetails
@@ -325,7 +332,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnVertexColorDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnVertexColorDetails.Name = "btnVertexColorDetails";
             this.btnVertexColorDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnVertexColorDetails.TabIndex = 16;
+            this.btnVertexColorDetails.TabIndex = 17;
             this.btnVertexColorDetails.Text = "...";
             this.btnVertexColorDetails.UseVisualStyleBackColor = true;
             this.btnVertexColorDetails.Click += new System.EventHandler(this.btnVertexColorDetails_Click);
@@ -337,7 +344,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label6.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(76, 13);
-            this.label6.TabIndex = 23;
+            this.label6.TabIndex = 24;
             this.label6.Text = "Vertex O&pacity";
             // 
             // btnEdgeVisibilityDetails
@@ -346,7 +353,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnEdgeVisibilityDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnEdgeVisibilityDetails.Name = "btnEdgeVisibilityDetails";
             this.btnEdgeVisibilityDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnEdgeVisibilityDetails.TabIndex = 13;
+            this.btnEdgeVisibilityDetails.TabIndex = 14;
             this.btnEdgeVisibilityDetails.Text = "...";
             this.btnEdgeVisibilityDetails.UseVisualStyleBackColor = true;
             this.btnEdgeVisibilityDetails.Click += new System.EventHandler(this.btnEdgeVisibilityDetails_Click);
@@ -358,7 +365,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label5.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(73, 13);
-            this.label5.TabIndex = 20;
+            this.label5.TabIndex = 21;
             this.label5.Text = "Vertex &Radius";
             // 
             // btnEdgeAlphaDetails
@@ -367,7 +374,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnEdgeAlphaDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnEdgeAlphaDetails.Name = "btnEdgeAlphaDetails";
             this.btnEdgeAlphaDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnEdgeAlphaDetails.TabIndex = 10;
+            this.btnEdgeAlphaDetails.TabIndex = 11;
             this.btnEdgeAlphaDetails.Text = "...";
             this.btnEdgeAlphaDetails.UseVisualStyleBackColor = true;
             this.btnEdgeAlphaDetails.Click += new System.EventHandler(this.btnEdgeAlphaDetails_Click);
@@ -379,13 +386,13 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label4.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(71, 13);
-            this.label4.TabIndex = 17;
+            this.label4.TabIndex = 18;
             this.label4.Text = "Vertex &Shape";
             // 
             // cbxVertexYSourceColumnName
             // 
             this.cbxVertexYSourceColumnName.FormattingEnabled = true;
-            this.cbxVertexYSourceColumnName.Location = new System.Drawing.Point(155, 416);
+            this.cbxVertexYSourceColumnName.Location = new System.Drawing.Point(155, 443);
             this.cbxVertexYSourceColumnName.MaxLength = 100;
             this.cbxVertexYSourceColumnName.Name = "cbxVertexYSourceColumnName";
             this.cbxVertexYSourceColumnName.Size = new System.Drawing.Size(144, 21);
@@ -394,7 +401,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // cbxVertexXSourceColumnName
             // 
             this.cbxVertexXSourceColumnName.FormattingEnabled = true;
-            this.cbxVertexXSourceColumnName.Location = new System.Drawing.Point(155, 389);
+            this.cbxVertexXSourceColumnName.Location = new System.Drawing.Point(155, 416);
             this.cbxVertexXSourceColumnName.MaxLength = 100;
             this.cbxVertexXSourceColumnName.Name = "cbxVertexXSourceColumnName";
             this.cbxVertexXSourceColumnName.Size = new System.Drawing.Size(144, 21);
@@ -403,29 +410,29 @@ namespace Microsoft.NetMap.ExcelTemplate
             // cbxVertexVisibilitySourceColumnName
             // 
             this.cbxVertexVisibilitySourceColumnName.FormattingEnabled = true;
-            this.cbxVertexVisibilitySourceColumnName.Location = new System.Drawing.Point(155, 362);
+            this.cbxVertexVisibilitySourceColumnName.Location = new System.Drawing.Point(155, 389);
             this.cbxVertexVisibilitySourceColumnName.MaxLength = 100;
             this.cbxVertexVisibilitySourceColumnName.Name = "cbxVertexVisibilitySourceColumnName";
             this.cbxVertexVisibilitySourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexVisibilitySourceColumnName.TabIndex = 36;
+            this.cbxVertexVisibilitySourceColumnName.TabIndex = 37;
             // 
             // cbxVertexToolTipSourceColumnName
             // 
             this.cbxVertexToolTipSourceColumnName.FormattingEnabled = true;
-            this.cbxVertexToolTipSourceColumnName.Location = new System.Drawing.Point(155, 335);
+            this.cbxVertexToolTipSourceColumnName.Location = new System.Drawing.Point(155, 362);
             this.cbxVertexToolTipSourceColumnName.MaxLength = 100;
             this.cbxVertexToolTipSourceColumnName.Name = "cbxVertexToolTipSourceColumnName";
             this.cbxVertexToolTipSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexToolTipSourceColumnName.TabIndex = 33;
+            this.cbxVertexToolTipSourceColumnName.TabIndex = 35;
             // 
             // cbxVertexSecondaryLabelSourceColumnName
             // 
             this.cbxVertexSecondaryLabelSourceColumnName.FormattingEnabled = true;
-            this.cbxVertexSecondaryLabelSourceColumnName.Location = new System.Drawing.Point(155, 308);
+            this.cbxVertexSecondaryLabelSourceColumnName.Location = new System.Drawing.Point(155, 335);
             this.cbxVertexSecondaryLabelSourceColumnName.MaxLength = 100;
             this.cbxVertexSecondaryLabelSourceColumnName.Name = "cbxVertexSecondaryLabelSourceColumnName";
             this.cbxVertexSecondaryLabelSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexSecondaryLabelSourceColumnName.TabIndex = 30;
+            this.cbxVertexSecondaryLabelSourceColumnName.TabIndex = 33;
             // 
             // cbxVertexPrimaryLabelSourceColumnName
             // 
@@ -434,7 +441,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxVertexPrimaryLabelSourceColumnName.MaxLength = 100;
             this.cbxVertexPrimaryLabelSourceColumnName.Name = "cbxVertexPrimaryLabelSourceColumnName";
             this.cbxVertexPrimaryLabelSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexPrimaryLabelSourceColumnName.TabIndex = 27;
+            this.cbxVertexPrimaryLabelSourceColumnName.TabIndex = 28;
             // 
             // cbxVertexAlphaSourceColumnName
             // 
@@ -443,7 +450,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxVertexAlphaSourceColumnName.MaxLength = 100;
             this.cbxVertexAlphaSourceColumnName.Name = "cbxVertexAlphaSourceColumnName";
             this.cbxVertexAlphaSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexAlphaSourceColumnName.TabIndex = 24;
+            this.cbxVertexAlphaSourceColumnName.TabIndex = 25;
             // 
             // cbxEdgeWidthSourceColumnName
             // 
@@ -452,7 +459,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxEdgeWidthSourceColumnName.MaxLength = 100;
             this.cbxEdgeWidthSourceColumnName.Name = "cbxEdgeWidthSourceColumnName";
             this.cbxEdgeWidthSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxEdgeWidthSourceColumnName.TabIndex = 6;
+            this.cbxEdgeWidthSourceColumnName.TabIndex = 7;
             // 
             // cbxVertexRadiusSourceColumnName
             // 
@@ -461,7 +468,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxVertexRadiusSourceColumnName.MaxLength = 100;
             this.cbxVertexRadiusSourceColumnName.Name = "cbxVertexRadiusSourceColumnName";
             this.cbxVertexRadiusSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexRadiusSourceColumnName.TabIndex = 21;
+            this.cbxVertexRadiusSourceColumnName.TabIndex = 22;
             // 
             // cbxVertexShapeSourceColumnName
             // 
@@ -470,7 +477,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxVertexShapeSourceColumnName.MaxLength = 100;
             this.cbxVertexShapeSourceColumnName.Name = "cbxVertexShapeSourceColumnName";
             this.cbxVertexShapeSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexShapeSourceColumnName.TabIndex = 18;
+            this.cbxVertexShapeSourceColumnName.TabIndex = 19;
             // 
             // cbxVertexColorSourceColumnName
             // 
@@ -479,7 +486,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxVertexColorSourceColumnName.MaxLength = 100;
             this.cbxVertexColorSourceColumnName.Name = "cbxVertexColorSourceColumnName";
             this.cbxVertexColorSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxVertexColorSourceColumnName.TabIndex = 15;
+            this.cbxVertexColorSourceColumnName.TabIndex = 16;
             // 
             // cbxEdgeVisibilitySourceColumnName
             // 
@@ -488,7 +495,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxEdgeVisibilitySourceColumnName.MaxLength = 100;
             this.cbxEdgeVisibilitySourceColumnName.Name = "cbxEdgeVisibilitySourceColumnName";
             this.cbxEdgeVisibilitySourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxEdgeVisibilitySourceColumnName.TabIndex = 12;
+            this.cbxEdgeVisibilitySourceColumnName.TabIndex = 13;
             // 
             // cbxEdgeAlphaSourceColumnName
             // 
@@ -497,7 +504,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxEdgeAlphaSourceColumnName.MaxLength = 100;
             this.cbxEdgeAlphaSourceColumnName.Name = "cbxEdgeAlphaSourceColumnName";
             this.cbxEdgeAlphaSourceColumnName.Size = new System.Drawing.Size(144, 21);
-            this.cbxEdgeAlphaSourceColumnName.TabIndex = 9;
+            this.cbxEdgeAlphaSourceColumnName.TabIndex = 10;
             // 
             // btnEdgeWidthDetails
             // 
@@ -505,7 +512,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnEdgeWidthDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnEdgeWidthDetails.Name = "btnEdgeWidthDetails";
             this.btnEdgeWidthDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnEdgeWidthDetails.TabIndex = 7;
+            this.btnEdgeWidthDetails.TabIndex = 8;
             this.btnEdgeWidthDetails.Text = "...";
             this.btnEdgeWidthDetails.UseVisualStyleBackColor = true;
             this.btnEdgeWidthDetails.Click += new System.EventHandler(this.btnEdgeWidthDetails_Click);
@@ -516,7 +523,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnEdgeColorDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.btnEdgeColorDetails.Name = "btnEdgeColorDetails";
             this.btnEdgeColorDetails.Size = new System.Drawing.Size(25, 20);
-            this.btnEdgeColorDetails.TabIndex = 4;
+            this.btnEdgeColorDetails.TabIndex = 5;
             this.btnEdgeColorDetails.Text = "...";
             this.btnEdgeColorDetails.UseVisualStyleBackColor = true;
             this.btnEdgeColorDetails.Click += new System.EventHandler(this.btnEdgeColorDetails_Click);
@@ -528,7 +535,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label13.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(59, 13);
-            this.label13.TabIndex = 2;
+            this.label13.TabIndex = 3;
             this.label13.Text = "&Edge Color";
             // 
             // label14
@@ -538,7 +545,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(63, 13);
-            this.label14.TabIndex = 5;
+            this.label14.TabIndex = 6;
             this.label14.Text = "Edge &Width";
             // 
             // label15
@@ -548,7 +555,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(71, 13);
-            this.label15.TabIndex = 8;
+            this.label15.TabIndex = 9;
             this.label15.Text = "Edge &Opacity";
             // 
             // label16
@@ -558,7 +565,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(71, 13);
-            this.label16.TabIndex = 11;
+            this.label16.TabIndex = 12;
             this.label16.Text = "E&dge Visibility";
             // 
             // label17
@@ -568,13 +575,43 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label17.Location = new System.Drawing.Point(306, 24);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(54, 13);
-            this.label17.TabIndex = 45;
+            this.label17.TabIndex = 2;
             this.label17.Text = "Options";
             this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(4, 310);
+            this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(80, 13);
+            this.label18.TabIndex = 29;
+            this.label18.Text = "     ˪ &Fill Color";
+            // 
+            // cbxVertexPrimaryLabelFillColorSourceColumnName
+            // 
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName.FormattingEnabled = true;
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName.Location = new System.Drawing.Point(155, 308);
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName.MaxLength = 100;
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName.Name = "cbxVertexPrimaryLabelFillColorSourceColumnName";
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName.Size = new System.Drawing.Size(144, 21);
+            this.cbxVertexPrimaryLabelFillColorSourceColumnName.TabIndex = 30;
+            // 
+            // btnVertexPrimaryLabeFillColorDetails
+            // 
+            this.btnVertexPrimaryLabeFillColorDetails.Location = new System.Drawing.Point(319, 308);
+            this.btnVertexPrimaryLabeFillColorDetails.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
+            this.btnVertexPrimaryLabeFillColorDetails.Name = "btnVertexPrimaryLabeFillColorDetails";
+            this.btnVertexPrimaryLabeFillColorDetails.Size = new System.Drawing.Size(25, 20);
+            this.btnVertexPrimaryLabeFillColorDetails.TabIndex = 31;
+            this.btnVertexPrimaryLabeFillColorDetails.Text = "...";
+            this.btnVertexPrimaryLabeFillColorDetails.UseVisualStyleBackColor = true;
+            this.btnVertexPrimaryLabeFillColorDetails.Click += new System.EventHandler(this.btnVertexPrimaryLabelFillColorDetails_Click);
+            // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(220, 496);
+            this.btnOK.Location = new System.Drawing.Point(220, 523);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 3;
@@ -585,7 +622,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(301, 496);
+            this.btnCancel.Location = new System.Drawing.Point(301, 523);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 4;
@@ -620,7 +657,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(391, 534);
+            this.ClientSize = new System.Drawing.Size(391, 561);
             this.Controls.Add(this.cbxUseAutoFill);
             this.Controls.Add(this.lnkHowAutoFillWorks);
             this.Controls.Add(this.btnCancel);
@@ -687,5 +724,8 @@ namespace Microsoft.NetMap.ExcelTemplate
         private System.Windows.Forms.Button btnEdgeColorDetails;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.CheckBox cbxUseAutoFill;
+        private System.Windows.Forms.Label label18;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexPrimaryLabelFillColorSourceColumnName;
+        private System.Windows.Forms.Button btnVertexPrimaryLabeFillColorDetails;
     }
 }

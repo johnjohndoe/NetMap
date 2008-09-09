@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NetMap.ExcelTemplate
 {
@@ -47,6 +48,11 @@ public abstract class GraphMetricColumn : Object
 	/// Number format of the column, or null if the column is not numeric.
 	/// Sample: "0.00".
 	/// </param>
+	///
+	/// <param name="style">
+	/// Style of the column, or null to apply Excel's normal style.  Sample:
+	/// "Bad".
+	/// </param>
     //*************************************************************************
 
     public GraphMetricColumn
@@ -55,7 +61,8 @@ public abstract class GraphMetricColumn : Object
 		String tableName,
 		String columnName,
 		Single columnWidthChars,
-		String numberFormat
+		String numberFormat,
+		String style
 	)
     {
 		m_sWorksheetName = worksheetName;
@@ -63,6 +70,7 @@ public abstract class GraphMetricColumn : Object
 		m_sColumnName = columnName;
 		m_fColumnWidthChars = columnWidthChars;
 		m_sNumberFormat = numberFormat;
+		m_sStyle = style;
 
 		// AssertValid();
     }
@@ -178,7 +186,8 @@ public abstract class GraphMetricColumn : Object
     /// </summary>
     ///
     /// <value>
-    /// The width of the column, in characters.
+    /// The width of the column, in characters, or <see
+    /// cref="ExcelUtil.AutoColumnWidth" /> to automatically size the column.
     /// </value>
     //*************************************************************************
 
@@ -230,6 +239,37 @@ public abstract class GraphMetricColumn : Object
         }
     }
 
+    //*************************************************************************
+    //  Property: Style
+    //
+    /// <summary>
+    /// Gets or sets the style of the column.
+    /// </summary>
+    ///
+    /// <value>
+	/// The style of the column, or null to apply Excel's normal style.
+	/// Sample: "Bad".
+    /// </value>
+    //*************************************************************************
+
+    public String
+    Style
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_sStyle);
+        }
+
+        set
+        {
+			m_sStyle = value;
+
+            AssertValid();
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -247,9 +287,26 @@ public abstract class GraphMetricColumn : Object
 		Debug.Assert( !String.IsNullOrEmpty(m_sWorksheetName) );
 		Debug.Assert( !String.IsNullOrEmpty(m_sTableName) );
 		Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
-		Debug.Assert(m_fColumnWidthChars > 0);
+
+		Debug.Assert(m_fColumnWidthChars == ExcelUtil.AutoColumnWidth ||
+            m_fColumnWidthChars > 0);
+
 		// m_sNumberFormat
+		// m_sStyle
     }
+
+
+    //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+	/// Name of Excel's pre-defined "normal" style.
+
+	public const String ExcelStyleNormal = "Normal";
+
+	/// Name of Excel's pre-defined "bad" style.
+
+	public const String ExcelStyleBad = "Bad";
 
 
     //*************************************************************************
@@ -275,6 +332,10 @@ public abstract class GraphMetricColumn : Object
 	/// Number format of the column, or null if the column is not numeric.
 
 	protected String m_sNumberFormat;
+
+	/// Style of the column, or null to not apply a style.  Sample: "Bad".
+
+	protected String m_sStyle;
 }
 
 }

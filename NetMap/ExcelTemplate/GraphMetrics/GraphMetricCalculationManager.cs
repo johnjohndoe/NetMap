@@ -21,7 +21,7 @@ namespace Microsoft.NetMap.ExcelTemplate
 /// Call <see cref="CalculateGraphMetricsAsync(
 /// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" /> to
 /// calculate the graph metrics.  Call <see cref="CancelAsync" /> to stop the
-/// calculations.  Handle the <see
+/// calculations.  Handle the <see cref="DuplicateEdgeDetected" />, <see
 /// cref="GraphMetricCalculationProgressChanged" /> and <see
 /// cref="GraphMetricCalculationCompleted" /> events to monitor the progress
 /// and completion of the calculations.
@@ -112,7 +112,7 @@ public class GraphMetricCalculationManager : Object
 				new VertexDegreeCalculator(),
 				new ClusteringCoefficientCalculator(),
 				new BetweennessCentralityCalculator(),
-				new ClusterCalculator(),
+				new OverallMetricCalculator(),
 				};
 
 		this.CalculateGraphMetricsAsync(
@@ -162,6 +162,18 @@ public class GraphMetricCalculationManager : Object
 	/// before asynchronous calculations begin.
 	/// </para>
 	///
+	/// <para>
+	/// If <paramref name="workbook" /> contains duplicate edges, a <see
+	/// cref="DuplicateEdgeDetected" /> event is fired on the caller's thread
+	/// before asynchronous calculations begin.  Because duplicate edges can
+	/// cause unexpected results with some graph calculators, the event handler
+	/// is given the opportunity to cancel all calculations by setting the
+	/// event's <see cref="CancelEventArgs.Cancel" /> property to true.  If
+	/// there is no event handler or the handler leaves the <see
+	/// cref="CancelEventArgs.Cancel" /> property set to false, calculations
+	/// continue anyway.
+	/// </para>
+	///
     /// </remarks>
     //*************************************************************************
 
@@ -196,6 +208,33 @@ public class GraphMetricCalculationManager : Object
 
 		IGraph oGraph = ReadWorkbook(workbook);
 
+		// Check for duplicate edges, which can cause unexpected results with
+		// some graph calculators.
+
+		DuplicateEdgeDetector oDuplicateEdgeDetector =
+			new DuplicateEdgeDetector(oGraph);
+
+		if (oDuplicateEdgeDetector.GraphContainsDuplicateEdges)
+		{
+			CancelEventHandler oDuplicateEdgeDetected =
+				this.DuplicateEdgeDetected;
+
+			if (oDuplicateEdgeDetected != null)
+			{
+				// Fire a DuplicateEdgeDetected event and give the handler a
+				// chance to cancel calculations.
+
+				CancelEventArgs oCancelEventArgs = new CancelEventArgs(false);
+
+				oDuplicateEdgeDetected(this, oCancelEventArgs);
+
+				if (oCancelEventArgs.Cancel)
+				{
+					return;
+				}
+			}
+		}
+
 		// Wrap the arguments in an object that can be passed to
 		// BackgroundWorker.RunWorkerAsync().
 
@@ -209,6 +248,9 @@ public class GraphMetricCalculationManager : Object
 
 		oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings =
 			graphMetricUserSettings;
+
+		oCalculateGraphMetricsAsyncArgs.DuplicateEdgeDetector =
+			oDuplicateEdgeDetector;
 
 		// Create a BackgroundWorker and handle its events.
 
@@ -256,6 +298,29 @@ public class GraphMetricCalculationManager : Object
 			m_oBackgroundWorker.CancelAsync();
 		}
     }
+
+	//*************************************************************************
+	//	Event: DuplicateEdgeDetected
+	//
+	/// <summary>
+	///	Occurs when a duplicate edge is detected by <see
+	/// cref="CalculateGraphMetricsAsync(
+	/// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
+	/// </summary>
+	///
+    /// <remarks>
+	/// Because duplicate edges can cause unexpected results with some graph
+	/// calculators, the event handler is given the opportunity to cancel all
+	/// calculations by setting the event's <see
+	/// cref="CancelEventArgs.Cancel" /> property to true.  If there is no
+	/// event handler or the handler leaves the <see
+	/// cref="CancelEventArgs.Cancel" /> property set to false, calculations
+	/// continue anyway.
+    /// </remarks>
+	//*************************************************************************
+
+	public event CancelEventHandler DuplicateEdgeDetected;
+
 
 	//*************************************************************************
 	//	Event: GraphMetricCalculationProgressChanged
@@ -403,15 +468,18 @@ public class GraphMetricCalculationManager : Object
 		IGraphMetricCalculator [] aoGraphMetricCalculators =
 			oCalculateGraphMetricsAsyncArgs.GraphMetricCalculators;
 
-		GraphMetricUserSettings oGraphMetricUserSettings =
-			oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings;
-
-		Int32 iGraphMetricCalculators = aoGraphMetricCalculators.Length;
-
 		List<GraphMetricColumn> oAggregatedGraphMetricColumns =
 			new List<GraphMetricColumn>();
 
+        CalculateGraphMetricsContext oCalculateGraphMetricsContext =
+            new CalculateGraphMetricsContext(
+				oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings,
+				oCalculateGraphMetricsAsyncArgs.DuplicateEdgeDetector,
+                oBackgroundWorker, oDoWorkEventArgs);
+
 		// Loop through the IGraphMetricCalculator implementations.
+
+		Int32 iGraphMetricCalculators = aoGraphMetricCalculators.Length;
 
 		for (Int32 i = 0; i < iGraphMetricCalculators; i++)
 		{
@@ -422,8 +490,7 @@ public class GraphMetricCalculationManager : Object
 
 			GraphMetricColumn [] aoGraphMetricColumns =
 				oGraphMetricCalculator.CalculateGraphMetrics(oGraph,
-					oGraphMetricUserSettings, oBackgroundWorker,
-					oDoWorkEventArgs);
+					oCalculateGraphMetricsContext);
 
 			if (oDoWorkEventArgs.Cancel)
 			{
@@ -620,6 +687,8 @@ public class GraphMetricCalculationManager : Object
 		public IGraphMetricCalculator [] GraphMetricCalculators;
 		///
 		public GraphMetricUserSettings GraphMetricUserSettings;
+		///
+		public DuplicateEdgeDetector DuplicateEdgeDetector;
 	};
 }
 

@@ -364,9 +364,20 @@ public static class ToStringUtil
 		Debug.Assert(oStringBuilder != null);
 
 		oStringBuilder.Append(
-			(oObject == null) ? "[null]" : oObject.ToString()
+			(oObject == null) ? NullString : oObject.ToString()
 			);
 	}
+
+
+    //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+	/// <summary>
+	/// String that represents a null object.
+	/// </summary>
+
+	public static String NullString = "[null]";
 }
 
 }

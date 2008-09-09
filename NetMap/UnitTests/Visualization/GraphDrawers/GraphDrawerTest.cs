@@ -69,7 +69,7 @@ public class GraphDrawerTest : Object
     {
         m_oGraphDrawer = new GraphDrawer();
 
-		m_oGraphDrawer.Layout = new KamadaKawaiiLayout();
+		m_oGraphDrawer.Layout = new GridLayout();
 
 		m_oGraphDrawer.VertexDrawer = new VertexDrawer();
 
@@ -131,8 +131,7 @@ public class GraphDrawerTest : Object
 
 		Assert.AreEqual(0, m_oGraphDrawer.Graph.Edges.Count);
 
-		Assert.IsInstanceOfType( m_oGraphDrawer.Layout,
-			typeof(KamadaKawaiiLayout) );
+		Assert.IsInstanceOfType( m_oGraphDrawer.Layout, typeof(GridLayout) );
 
 		Assert.IsInstanceOfType( m_oGraphDrawer.VertexDrawer,
 			typeof(VertexDrawer) );

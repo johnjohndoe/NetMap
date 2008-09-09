@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using System.Configuration;
 using System.Diagnostics;
+using Microsoft.NetMap.Core;
 using Microsoft.NetMap.Visualization;
 
 namespace Microsoft.NetMap.ExcelTemplate
@@ -37,15 +38,84 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: BackColor
+    //  Property: NewWorkbookGraphDirectedness
     //
     /// <summary>
-    /// Gets or sets the color of unselected vertices.
+    /// Gets or sets the graph directedness applied to a new workbook.
     /// </summary>
     ///
     /// <value>
-	/// The color of unselected vertices, as a KnownColor.  The default value
-	/// is Color.White.
+    /// The graph directedness applied to a new workbook, as a
+	/// GraphDirectedness.  The default value is GraphDirectedness.Directed.
+    /// </value>
+    //*************************************************************************
+
+	[ UserScopedSettingAttribute() ]
+	[ DefaultSettingValueAttribute("Directed") ]
+
+    public GraphDirectedness
+	NewWorkbookGraphDirectedness
+    {
+        get
+        {
+            AssertValid();
+
+			return ( (GraphDirectedness)
+				this[NewWorkbookGraphDirectednessKey] );
+        }
+
+        set
+        {
+			this[NewWorkbookGraphDirectednessKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: Font
+    //
+    /// <summary>
+    /// Gets or sets the graph's font.
+    /// </summary>
+    ///
+    /// <value>
+	/// The graph's font, as a Font.  The default value is
+	/// Microsoft Sans Serif, 8.25pt.
+    /// </value>
+    //*************************************************************************
+
+	[ UserScopedSettingAttribute() ]
+	[ DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt") ]
+
+    public Font
+	Font
+    {
+        get
+        {
+            AssertValid();
+
+			return ( (Font)this[FontKey] );
+        }
+
+        set
+        {
+			this[FontKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BackColor
+    //
+    /// <summary>
+    /// Gets or sets the graph's background color.
+    /// </summary>
+    ///
+    /// <value>
+	/// The graph's background color, as a KnownColor.  The default value is
+	/// Color.White.
     /// </value>
     //*************************************************************************
 
@@ -441,6 +511,45 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: PrimaryLabelFillColor
+    //
+    /// <summary>
+    /// Gets or sets the fill color of vertices that are drawn as primary
+	/// labels.
+    /// </summary>
+    ///
+    /// <value>
+	/// The fill color of vertices that are drawn as primary labels, as a
+	/// KnownColor.  The default value is Color.White.
+    /// </value>
+	///
+	/// <remarks>
+	/// <see cref="VertexColor" /> is used as the primary label's text color.
+	/// </remarks>
+    //*************************************************************************
+
+	[ UserScopedSettingAttribute() ]
+	[ DefaultSettingValueAttribute("White") ]
+
+    public KnownColor
+	PrimaryLabelFillColor
+    {
+        get
+        {
+            AssertValid();
+
+			return ( (KnownColor)this[PrimaryLabelFillColorKey] );
+        }
+
+        set
+        {
+			this[PrimaryLabelFillColorKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: VertexAlpha
     //
     /// <summary>
@@ -711,6 +820,17 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
 		oVertexDrawer2.SelectedColor =
 			Color.FromKnownColor(this.SelectedVertexColor);
+
+		if (oVertexDrawer is PerVertexWithLabelDrawer)
+		{
+			PerVertexWithLabelDrawer oPerVertexWithLabelDrawer =
+				(PerVertexWithLabelDrawer)oVertexDrawer;
+
+			oPerVertexWithLabelDrawer.PrimaryLabelFillColor =
+				Color.FromKnownColor(this.PrimaryLabelFillColor);
+
+			oPerVertexWithLabelDrawer.Font = this.Font;
+		}
     }
 
 	//*************************************************************************
@@ -755,6 +875,16 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
+
+	/// Name of the settings key for the NewWorkbookGraphDirectedness property.
+
+	protected const String NewWorkbookGraphDirectednessKey =
+		"NewWorkbookGraphDirectedness";
+
+	/// Name of the settings key for the Font property.
+
+	protected const String FontKey =
+		"Font";
 
 	/// Name of the settings key for the BackColor property.
 
@@ -809,6 +939,11 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
 	protected const String VertexColorKey =
 		"VertexColor";
+
+	/// Name of the settings key for the PrimaryLabelFillColor property.
+
+	protected const String PrimaryLabelFillColorKey =
+		"PrimaryLabelFillColor";
 
 	/// Name of the settings key for the VertexAlpha property.
 

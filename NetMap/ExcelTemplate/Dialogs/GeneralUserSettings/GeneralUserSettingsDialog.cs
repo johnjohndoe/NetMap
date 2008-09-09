@@ -50,6 +50,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 		generalUserSettings.AssertValid();
 
 		m_oGeneralUserSettings = generalUserSettings;
+		m_oFont = m_oGeneralUserSettings.Font;
 
 		// Instantiate an object that saves and retrieves the position of this
 		// dialog.  Note that the object automatically saves the settings when
@@ -65,6 +66,9 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
         cbxBackColor.PopulateWithObjectsAndText(oAllGraphAndWorkbookValues);
         cbxVertexColor.PopulateWithObjectsAndText(oAllGraphAndWorkbookValues);
+
+        cbxPrimaryLabelFillColor.PopulateWithObjectsAndText(
+			oAllGraphAndWorkbookValues);
 
         cbxSelectedVertexColor.PopulateWithObjectsAndText(
 			oAllGraphAndWorkbookValues);
@@ -206,10 +210,15 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
 			m_oGeneralUserSettings.VertexAlpha = (Single)nudVertexAlpha.Value;
 
+			m_oGeneralUserSettings.PrimaryLabelFillColor =
+				(KnownColor)cbxPrimaryLabelFillColor.SelectedValue;
+
 			m_oGeneralUserSettings.SelectedVertexColor =
 				(KnownColor)cbxSelectedVertexColor.SelectedValue;
 
 			m_oGeneralUserSettings.AutoSelect = chkAutoSelect.Checked;
+
+			m_oGeneralUserSettings.Font = m_oFont;
 		}
 		else
 		{
@@ -241,14 +250,61 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
 			nudVertexAlpha.Value = (Decimal)m_oGeneralUserSettings.VertexAlpha;
 
+			cbxPrimaryLabelFillColor.SelectedValue =
+				m_oGeneralUserSettings.PrimaryLabelFillColor;
+
 			cbxSelectedVertexColor.SelectedValue =
 				m_oGeneralUserSettings.SelectedVertexColor;
 
 			chkAutoSelect.Checked = m_oGeneralUserSettings.AutoSelect;
+
+			m_oFont = m_oGeneralUserSettings.Font;
 		}
 
 		return (true);
 	}
+
+	//*************************************************************************
+	//	Method: btnFont_Click()
+	//
+	/// <summary>
+	///	Handles the Click event on the btnFont button.
+	/// </summary>
+	///
+	/// <param name="sender">
+	///	Standard event argument.
+	/// </param>
+	///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+	//*************************************************************************
+
+    private void
+	btnFont_Click
+	(
+		object sender,
+		EventArgs e
+	)
+    {
+		AssertValid();
+
+		FontDialog oFontDialog = new FontDialog();
+
+		oFontDialog.Font = m_oFont;
+		oFontDialog.FontMustExist = true;
+
+		// The FontConverter class implicity used by ApplicationsSettingsBase
+		// to persist GeneralUserSettings.Font does not persist the script, so
+		// don't allow the user to change the script from the default.
+
+		oFontDialog.AllowScriptChange = false;
+
+		if (oFontDialog.ShowDialog() == DialogResult.OK)
+		{
+			m_oFont = oFontDialog.Font;
+		}
+    }
 
 	//*************************************************************************
 	//	Method: btnResetAll_Click()
@@ -327,6 +383,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         base.AssertValid();
 
 		Debug.Assert(m_oGeneralUserSettings != null);
+		Debug.Assert(m_oFont != null);
 		Debug.Assert(m_oGeneralUserSettingsDialogUserSettings != null);
 	}
 
@@ -338,6 +395,11 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 	/// Object whose properties are being edited.
 
 	protected GeneralUserSettings m_oGeneralUserSettings;
+
+	/// Font property of m_oGeneralUserSettings.  This gets edited by a
+	/// FontDialog.
+
+	protected Font m_oFont;
 
 	/// User settings for this dialog.
 
@@ -359,7 +421,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GeneralUserSettingsDialog") ]
+[ SettingsGroupNameAttribute("GeneralUserSettingsDialog2") ]
 
 public class GeneralUserSettingsDialogUserSettings : FormSettings
 {

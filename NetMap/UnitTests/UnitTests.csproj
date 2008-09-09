@@ -79,6 +79,7 @@
     <Compile Include="DesktopApplication\UIComponents\ExceptionNotifierTest.cs" />
     <Compile Include="DesktopApplication\Util\CommandLineParserTest.cs" />
     <Compile Include="DesktopApplication\Util\GraphAdapterManagerTest.cs" />
+    <Compile Include="ExcelTemplate\Util\DuplicateEdgeDetectorTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ReadWorkbookContextTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\AlphaConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\BooleanConverterTest.cs" />

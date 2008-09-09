@@ -167,6 +167,29 @@ public partial class TaskPane : UserControl
 	public event VertexMovedEventHandler VertexMoved;
 
 
+	//*************************************************************************
+	//	Property: Workbook
+	//
+	/// <summary>
+	/// Gets the workbook attached to this TaskPane.
+	/// </summary>
+	///
+	/// <value>
+	/// The workbook attached to this TaskPane.
+	/// </value>
+	//*************************************************************************
+
+	protected Microsoft.Office.Interop.Excel.Workbook
+	Workbook
+	{
+		get
+		{
+			AssertValid();
+
+			return (Globals.ThisWorkbook.InnerObject);
+		}
+	}
+
     //*************************************************************************
     //  Method: InitializeNetMapControl()
     //
@@ -208,10 +231,13 @@ public partial class TaskPane : UserControl
 			return;
 		}
 
-        Workbook oWorkbook = Globals.ThisWorkbook.InnerObject;
+        Workbook oWorkbook = this.Workbook;
 
 		if (oWorkbook == null)
 		{
+			// (This is a vestige of a previous design and probably can no
+			// longer occur.)
+
 			FormUtil.ShowWarning( ErrorUtil.GetNoOpenWorkbookMessage() );
 
 			return;
@@ -222,6 +248,7 @@ public partial class TaskPane : UserControl
         oReadWorkbookContext.IgnoreVertexLocations = false;
         oReadWorkbookContext.GraphRectangle = oNetMapControl.ClientRectangle;
         oReadWorkbookContext.FillIDColumns = true;
+        oReadWorkbookContext.AutoFillWorkbook = true;
 
 		// Populate the vertex worksheet.  This isn't strictly necessary, but
 		// it does enable the vertex worksheet to be updated when the user
@@ -1290,7 +1317,8 @@ public partial class TaskPane : UserControl
 
 		IVertex oVertex = null;
 
-		if (iVertexID != WorksheetContextMenuManager.NoID)
+		if (iVertexID != WorksheetContextMenuManager.NoID &&
+			m_oVertexIDDictionary != null)
 		{
 			// Convert the worksheet ID to an IVertex.
 
@@ -1341,7 +1369,8 @@ public partial class TaskPane : UserControl
 
 		IEdge oEdge = null;
 
-		if (iEdgeID != WorksheetContextMenuManager.NoID)
+		if (iEdgeID != WorksheetContextMenuManager.NoID &&
+			m_oEdgeIDDictionary != null)
 		{
 			// Convert the worksheet ID to an IEdge.
 

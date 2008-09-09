@@ -111,8 +111,10 @@
     <Compile Include="GraphDrawers\GraphDrawerBase.cs" />
     <Compile Include="GraphDrawers\MultiSelectionGraphDrawer.cs" />
     <Compile Include="HitTestAreas\CircularHitTestArea.cs" />
+    <Compile Include="HitTestAreas\DiamondHitTestArea.cs" />
     <Compile Include="HitTestAreas\HitTestArea.cs" />
     <Compile Include="HitTestAreas\RectangularHitTestArea.cs" />
+    <Compile Include="HitTestAreas\TriangularHitTestArea.cs" />
     <Compile Include="Interfaces\IAsyncGraphDrawer.cs" />
     <Compile Include="Interfaces\IAsyncLayout.cs" />
     <Compile Include="Interfaces\IEdgeDrawer.cs">

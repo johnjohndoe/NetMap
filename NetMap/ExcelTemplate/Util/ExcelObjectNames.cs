@@ -45,6 +45,18 @@ public static class WorksheetNames
 	/// </summary>
 
 	public const String ClusterVertices = "Cluster Vertices";
+
+	/// <summary>
+	/// Name of the optional worksheet that contains overall graph metrics.
+	/// </summary>
+
+	public const String OverallMetrics = "Overall Metrics";
+
+	/// <summary>
+	/// Name of the optional worksheet that contains miscellaneous information.
+	/// </summary>
+
+	public const String Miscellaneous = "Misc";
 }
 
 
@@ -87,6 +99,18 @@ public static class TableNames
 	/// </summary>
 
 	public const String ClusterVertices = "ClusterVertices";
+
+	/// <summary>
+	/// Name of the optional table that contains overall graph metrics.
+	/// </summary>
+
+	public const String OverallMetrics = "OverallMetrics";
+
+	/// <summary>
+	/// Name of the optional table that contains per-workbook settings.
+	/// </summary>
+
+	public const String PerWorkbookSettings = "PerWorkbookSettings";
 }
 
 
@@ -192,6 +216,11 @@ public static class EdgeTableColumnNames
 	/// </summary>
 
 	public const String TieStrength = "Tie Strength";
+
+	// IMPORTANT NOTE:
+	//
+	// If a new column name is added, AutoFillUserSettingsDialog may need to be
+	// modified to exclude the new column name from its ComboBoxes.
 }
 
 
@@ -242,6 +271,13 @@ public static class VertexTableColumnNames
 	/// </summary>
 
 	public const String PrimaryLabel = "Primary Label";
+
+	/// <summary>
+	/// Name of the optional table column containing the vertex's primary
+	/// label fill color.
+	/// </summary>
+
+	public const String PrimaryLabelFillColor = "Primary Label Fill Color";
 
 	/// <summary>
 	/// Name of the optional table column containing the vertex's secondary
@@ -373,6 +409,11 @@ public static class VertexTableColumnNames
 
 	public const String BetweennessCentrality =
 		"Betweenness Centrality";
+
+	// IMPORTANT NOTE:
+	//
+	// If a new column name is added, AutoFillUserSettingsDialog may need to be
+	// modified to exclude the new column name from its ComboBoxes.
 }
 
 
@@ -416,7 +457,7 @@ public static class ClusterTableColumnNames
 	/// Name of the optional table column containing the cluster name.
 	/// </summary>
 
-	public const String ClusterName = "Cluster";
+	public const String Name = "Cluster";
 }
 
 
@@ -441,6 +482,54 @@ public static class ClusterVerticesTableColumnNames
 	/// </summary>
 
 	public const String VertexName = "Vertex";
+}
+
+
+//*****************************************************************************
+//  Class: OverallMetricsTableColumnNames
+//
+/// <summary>
+/// Provides the names of the columns in the overall metrics table.
+/// </summary>
+//*****************************************************************************
+
+public static class OverallMetricsTableColumnNames
+{
+	/// <summary>
+	/// Name of the optional table column containing the metric name.
+	/// </summary>
+
+	public const String Name = "Metric";
+
+	/// <summary>
+	/// Name of the optional table column containing the metric value.
+	/// </summary>
+
+	public const String Value = "Value";
+}
+
+
+//*****************************************************************************
+//  Class: PerWorkbookSettingsTableColumnNames
+//
+/// <summary>
+/// Provides the names of the columns in the per-workbook settings table.
+/// </summary>
+//*****************************************************************************
+
+public static class PerWorkbookSettingsTableColumnNames
+{
+	/// <summary>
+	/// Name of the optional table column containing the setting name.
+	/// </summary>
+
+	public const String Name = "Per-Workbook Setting";
+
+	/// <summary>
+	/// Name of the optional table column containing the setting value.
+	/// </summary>
+
+	public const String Value = "Value";
 }
 
 

@@ -87,6 +87,7 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 			cbxVertexRadiusSourceColumnName,
 			cbxVertexAlphaSourceColumnName,
 			cbxVertexPrimaryLabelSourceColumnName,
+			cbxVertexPrimaryLabelFillColorSourceColumnName,
 			cbxVertexSecondaryLabelSourceColumnName,
 			cbxVertexToolTipSourceColumnName,
 			cbxVertexVisibilitySourceColumnName,
@@ -256,6 +257,7 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 				VertexTableColumnNames.Radius,
 				VertexTableColumnNames.ImageKey,
 				VertexTableColumnNames.PrimaryLabel,
+				VertexTableColumnNames.PrimaryLabelFillColor,
 				VertexTableColumnNames.SecondaryLabel,
 				VertexTableColumnNames.Alpha,
 				VertexTableColumnNames.ToolTip,
@@ -264,6 +266,7 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 				VertexTableColumnNames.Locked,
 				VertexTableColumnNames.X,
 				VertexTableColumnNames.Y,
+				VertexTableColumnNames.SubgraphImage,
 				CommonTableColumnNames.ID,
 				};
 
@@ -309,6 +312,9 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 
 		cbxVertexPrimaryLabelSourceColumnName.Tag =
 			VertexTableColumnNames.PrimaryLabel;
+
+		cbxVertexPrimaryLabelFillColorSourceColumnName.Tag =
+			VertexTableColumnNames.PrimaryLabelFillColor;
 
 		cbxVertexSecondaryLabelSourceColumnName.Tag =
 			VertexTableColumnNames.SecondaryLabel;
@@ -427,6 +433,10 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 				GetSourceColumnNameFromComboBox(
 					cbxVertexPrimaryLabelSourceColumnName);
 
+			m_oAutoFillUserSettings.VertexPrimaryLabelFillColorSourceColumnName
+				= GetSourceColumnNameFromComboBox(
+					cbxVertexPrimaryLabelFillColorSourceColumnName);
+
 			m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName =
 				GetSourceColumnNameFromComboBox(
 					cbxVertexSecondaryLabelSourceColumnName);
@@ -475,6 +485,10 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 
 			cbxVertexPrimaryLabelSourceColumnName.Text =
 				m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName;
+
+			cbxVertexPrimaryLabelFillColorSourceColumnName.Text =
+				m_oAutoFillUserSettings.
+					VertexPrimaryLabelFillColorSourceColumnName;
 
 			cbxVertexSecondaryLabelSourceColumnName.Text =
 				m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName;
@@ -900,6 +914,41 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
     }
 
 	//*************************************************************************
+	//	Method: btnVertexPrimaryLabelFillColorDetails_Click()
+	//
+	/// <summary>
+	///	Handles the Click event on the btnVertexPrimaryLabelFillColorDetails
+	/// button.
+	/// </summary>
+	///
+	/// <param name="sender">
+	///	Standard event argument.
+	/// </param>
+	///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+	//*************************************************************************
+
+    private void
+	btnVertexPrimaryLabelFillColorDetails_Click
+	(
+		object sender,
+		EventArgs e
+	)
+    {
+		AssertValid();
+
+		ColorColumnAutoFillUserSettingsDialog
+			oColorColumnAutoFillUserSettingsDialog =
+			new ColorColumnAutoFillUserSettingsDialog(
+				m_oAutoFillUserSettings.VertexPrimaryLabelFillColorDetails,
+                "Vertex Primary Label Fill Color Options");
+
+		oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+    }
+
+	//*************************************************************************
 	//	Method: btnVertexVisibilityDetails_Click()
 	//
 	/// <summary>
@@ -1171,7 +1220,7 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AutoFillUserSettingsDialog") ]
+[ SettingsGroupNameAttribute("AutoFillUserSettingsDialog2") ]
 
 public class AutoFillUserSettingsDialogUserSettings : FormSettings
 {

@@ -188,6 +188,12 @@ public static class WorkbookAutoFiller : Object
 			VertexTableColumnNames.PrimaryLabel
 			);
 
+		AutoFillColorColumn(oVertexTable,
+			oAutoFillUserSettings.VertexPrimaryLabelFillColorSourceColumnName,
+			VertexTableColumnNames.PrimaryLabelFillColor,
+			oAutoFillUserSettings.VertexPrimaryLabelFillColorDetails
+			);
+
 		AutoFillColumnViaCopy(oVertexTable,
 			oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName,
 			VertexTableColumnNames.SecondaryLabel

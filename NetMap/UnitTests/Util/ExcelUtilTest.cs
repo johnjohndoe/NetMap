@@ -114,6 +114,54 @@ public class ExcelUtilTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestGetColumnLetter()
+    //
+    /// <summary>
+    /// Tests the GetColumnLetter() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetColumnLetter()
+    {
+		TestGetColumnLetter("A1", "A");
+    }
+
+    //*************************************************************************
+    //  Method: TestGetColumnLetter2()
+    //
+    /// <summary>
+    /// Tests the GetColumnLetter() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetColumnLetter2()
+    {
+		TestGetColumnLetter("B429", "B");
+    }
+
+    //*************************************************************************
+    //  Method: TestGetColumnLetter3()
+    //
+    /// <summary>
+    /// Tests the GetColumnLetter() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetColumnLetter3()
+    {
+		TestGetColumnLetter("XDF1048576", "XDF");
+    }
+
+    //*************************************************************************
     //  Method: TestGetOneBasedRowNumbers()
     //
     /// <summary>
@@ -219,6 +267,33 @@ public class ExcelUtilTest : Object
     {
 		Assert.AreEqual( iExpectedRowNumber,
 			ExcelUtil.GetOneBasedRowNumber(sCellAddress) );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetColumnLetter()
+    //
+    /// <summary>
+    /// Tests the GetColumnLetter() method.
+    /// </summary>
+	///
+	/// <param name="sCellAddress">
+	/// Cell address.
+	/// </param>
+	///
+	/// <param name="sExpectedColumnLetter`">
+	/// Expected column letter.
+	/// </param>
+    //*************************************************************************
+
+    protected void
+    TestGetColumnLetter
+	(
+		String sCellAddress,
+		String sExpectedColumnLetter
+	)
+    {
+		Assert.AreEqual( sExpectedColumnLetter,
+			ExcelUtil.GetColumnLetter(sCellAddress) );
     }
 
     //*************************************************************************

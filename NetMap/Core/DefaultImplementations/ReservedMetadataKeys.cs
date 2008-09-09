@@ -88,6 +88,13 @@ public static class ReservedMetadataKeys : Object
 	/// Key added to a vertex to aid in hit-testing.  The value is the
 	/// Microsoft.NetMap.Visualization.HitTestArea object that defines the area
 	/// occupied by the vertex.
+	///
+	/// <para>
+	/// Hiding a vertex by adding the <see cref="Hide" /> key to it
+	/// automatically clears the <see cref="HitTestArea" /> key.  This prevents
+	/// a hidden vertex from responding positively to a hit test.
+	/// </para>
+	///
 	/// </summary>
 
 	public static readonly String HitTestArea =
@@ -100,6 +107,13 @@ public static class ReservedMetadataKeys : Object
 
 	/// <summary>
 	/// Key added to a vertex or edge to hide it.  The value is null.
+	///
+	/// <para>
+	/// Hiding a vertex by adding this key to it automatically clears any
+	/// <see cref="HitTestArea" /> key that might have been set on the vertex.
+	/// This prevents a hidden vertex from responding positively to a hit test.
+	/// </para>
+	///
 	/// </summary>
 
 	public static readonly String Hide =
@@ -176,6 +190,16 @@ public static class ReservedMetadataKeys : Object
 
 	public static readonly String PerVertexPrimaryLabel =
 		FirstChar + "PVLDPrimaryLabel";
+
+	/// <summary>
+	/// Key added to a vertex to force it to have a specified fill color.  The
+	/// key's value is a Color.  Used only if <see
+	/// cref="PerVertexPrimaryLabel" /> is specified.
+	/// </summary>
+
+	public static readonly String PerVertexPrimaryLabelFillColor =
+		FirstChar + "PVLDPrimaryLabelFillColor";
+
 
 	/// <summary>
 	/// Key added to a vertex by PerVertexWithLabelDrawer.PreDrawVertex when a

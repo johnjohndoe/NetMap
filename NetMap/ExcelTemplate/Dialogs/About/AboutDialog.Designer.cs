@@ -41,6 +41,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lnkContact = new System.Windows.Forms.LinkLabel();
+            this.btnEnableAllNotifications = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,7 +51,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(495, 228);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 0;
+            this.btnOK.TabIndex = 7;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -61,7 +62,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label1.Location = new System.Drawing.Point(277, 27);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(94, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Microsoft .NetMap";
             // 
             // pictureBox1
@@ -80,7 +81,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.lblVersion.Location = new System.Drawing.Point(277, 60);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(126, 13);
-            this.lblVersion.TabIndex = 3;
+            this.lblVersion.TabIndex = 1;
             this.lblVersion.Text = "Version [gets set in code]";
             // 
             // lblCopyright
@@ -89,7 +90,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.lblCopyright.Location = new System.Drawing.Point(277, 85);
             this.lblCopyright.Name = "lblCopyright";
             this.lblCopyright.Size = new System.Drawing.Size(135, 13);
-            this.lblCopyright.TabIndex = 4;
+            this.lblCopyright.TabIndex = 2;
             this.lblCopyright.Text = "Copyright [gets set in code]";
             // 
             // label2
@@ -97,7 +98,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label2.Location = new System.Drawing.Point(277, 121);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(293, 54);
-            this.label2.TabIndex = 5;
+            this.label2.TabIndex = 3;
             this.label2.Text = "The Microsoft .NetMap team includes Marc Smith, Tony Capone, Natasa Milic-Fraylin" +
                 "g, Eduarda Mendes Rodrigues, Eric Gleave, Adam Perer, and Ben Shneiderman";
             // 
@@ -107,7 +108,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.label3.Location = new System.Drawing.Point(277, 185);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(157, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 4;
             this.label3.Text = "Questions, comments?  Contact";
             // 
             // lnkContact
@@ -116,17 +117,29 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.lnkContact.Location = new System.Drawing.Point(277, 201);
             this.lnkContact.Name = "lnkContact";
             this.lnkContact.Size = new System.Drawing.Size(90, 13);
-            this.lnkContact.TabIndex = 1;
+            this.lnkContact.TabIndex = 5;
             this.lnkContact.TabStop = true;
             this.lnkContact.Text = "[Gets set in code]";
             this.lnkContact.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkContact_LinkClicked);
             // 
+            // btnEnableAllNotifications
+            // 
+            this.btnEnableAllNotifications.Location = new System.Drawing.Point(280, 228);
+            this.btnEnableAllNotifications.Name = "btnEnableAllNotifications";
+            this.btnEnableAllNotifications.Size = new System.Drawing.Size(154, 23);
+            this.btnEnableAllNotifications.TabIndex = 6;
+            this.btnEnableAllNotifications.Text = "&Turn On All Notifications";
+            this.btnEnableAllNotifications.UseVisualStyleBackColor = true;
+            this.btnEnableAllNotifications.Click += new System.EventHandler(this.btnEnableAllNotifications_Click);
+            // 
             // AboutDialog
             // 
+            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
             this.ClientSize = new System.Drawing.Size(582, 263);
+            this.Controls.Add(this.btnEnableAllNotifications);
             this.Controls.Add(this.lnkContact);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -156,5 +169,6 @@ namespace Microsoft.NetMap.ExcelTemplate
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel lnkContact;
+        private System.Windows.Forms.Button btnEnableAllNotifications;
     }
 }

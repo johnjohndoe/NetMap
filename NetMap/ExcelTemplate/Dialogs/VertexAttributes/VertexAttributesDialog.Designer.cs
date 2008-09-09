@@ -83,7 +83,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.cbxShape.FormattingEnabled = true;
             this.cbxShape.Location = new System.Drawing.Point(94, 49);
             this.cbxShape.Name = "cbxShape";
-            this.cbxShape.Size = new System.Drawing.Size(86, 21);
+            this.cbxShape.Size = new System.Drawing.Size(118, 21);
             this.cbxShape.TabIndex = 3;
             // 
             // label1

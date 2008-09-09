@@ -9,7 +9,7 @@ using Microsoft.NetMap.Core;
 namespace Microsoft.NetMap.ExcelTemplate
 {
 //*****************************************************************************
-//  Interface: GraphMetricCalculatorBase
+//  Class: GraphMetricCalculatorBase
 //
 /// <summary>
 /// Base class for classes that implement <see
@@ -64,23 +64,14 @@ public abstract class GraphMetricCalculatorBase :
     /// </summary>
     ///
     /// <param name="graph">
-    /// The graph to calculate metrics for.
-    /// </param>
-    ///
-    /// <param name="graphMetricUserSettings">
-    /// The user's settings for calculating graph metrics.
-    /// </param>
-    ///
-    /// <param name="backgroundWorker">
-    /// The <see cref="BackgroundWorker" /> object that is performing all graph
-	/// metric calculations.
-    /// </param>
-    ///
-    /// <param name="doWorkEventArgs">
-    /// The <see cref="DoWorkEventArgs" /> object that was passed to <see
-	/// cref="BackgroundWorker.DoWork" />.
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+	/// edges and self-loops.
     /// </param>
 	///
+    /// <param name="calculateGraphMetricsContext">
+	/// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
 	/// <returns>
 	/// An array of GraphMetricColumn objects, one for each related metric
 	/// calculated by this method.
@@ -96,9 +87,7 @@ public abstract class GraphMetricCalculatorBase :
     CalculateGraphMetrics
     (
 		IGraph graph,
-		GraphMetricUserSettings graphMetricUserSettings,
-		BackgroundWorker backgroundWorker,
-		DoWorkEventArgs doWorkEventArgs
+		CalculateGraphMetricsContext calculateGraphMetricsContext
     );
 
     //*************************************************************************
@@ -216,6 +205,10 @@ public abstract class GraphMetricCalculatorBase :
     /// The number of the vertex's adjacent vertices.
     /// </param>
     ///
+    /// <param name="bGraphIsDirected">
+    /// true if the graph is directed, false if it's undirected.
+    /// </param>
+    ///
 	/// <returns>
 	/// The number of edges in the fully connected neighborhood.
 	/// </returns>
@@ -224,13 +217,15 @@ public abstract class GraphMetricCalculatorBase :
     protected Int32
     CalculateEdgesInFullyConnectedNeighborhood
     (
-		Int32 iAdjacentVertices
+		Int32 iAdjacentVertices,
+		Boolean bGraphIsDirected
     )
 	{
 		Debug.Assert(iAdjacentVertices >= 0);
 		AssertValid();
 
-        return ( ( iAdjacentVertices * (iAdjacentVertices - 1) ) / 2 );
+        return ( ( iAdjacentVertices * (iAdjacentVertices - 1) ) /
+			(bGraphIsDirected ? 1: 2) );
 	}
 
 

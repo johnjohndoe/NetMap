@@ -43,7 +43,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(259, 222);
+            this.btnCancel.Location = new System.Drawing.Point(269, 222);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 5;
@@ -52,7 +52,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(173, 222);
+            this.btnOK.Location = new System.Drawing.Point(183, 222);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 4;
@@ -64,7 +64,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(327, 38);
+            this.label1.Size = new System.Drawing.Size(337, 38);
             this.label1.TabIndex = 0;
             this.label1.Text = "&When the Calculate Graph Metrics button is clicked, calculate these metrics and " +
                 "insert the results into the workbook:";
@@ -75,12 +75,12 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.clbGraphMetrics.FormattingEnabled = true;
             this.clbGraphMetrics.Location = new System.Drawing.Point(15, 50);
             this.clbGraphMetrics.Name = "clbGraphMetrics";
-            this.clbGraphMetrics.Size = new System.Drawing.Size(238, 154);
+            this.clbGraphMetrics.Size = new System.Drawing.Size(248, 154);
             this.clbGraphMetrics.TabIndex = 1;
             // 
             // btnCheckAll
             // 
-            this.btnCheckAll.Location = new System.Drawing.Point(264, 67);
+            this.btnCheckAll.Location = new System.Drawing.Point(274, 67);
             this.btnCheckAll.Name = "btnCheckAll";
             this.btnCheckAll.Size = new System.Drawing.Size(75, 23);
             this.btnCheckAll.TabIndex = 2;
@@ -90,7 +90,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             // 
             // btnUncheckAll
             // 
-            this.btnUncheckAll.Location = new System.Drawing.Point(264, 96);
+            this.btnUncheckAll.Location = new System.Drawing.Point(274, 96);
             this.btnUncheckAll.Name = "btnUncheckAll";
             this.btnUncheckAll.Size = new System.Drawing.Size(75, 23);
             this.btnUncheckAll.TabIndex = 3;
@@ -104,7 +104,7 @@ namespace Microsoft.NetMap.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(355, 260);
+            this.ClientSize = new System.Drawing.Size(365, 260);
             this.Controls.Add(this.btnUncheckAll);
             this.Controls.Add(this.btnCheckAll);
             this.Controls.Add(this.clbGraphMetrics);

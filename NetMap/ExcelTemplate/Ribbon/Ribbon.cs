@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
+using Microsoft.NetMap.Core;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NetMap.ExcelTemplate
@@ -36,6 +37,48 @@ public partial class Ribbon : OfficeRibbon
 		AssertValid();
 	}
 
+	//*************************************************************************
+	//	Property: GraphDirectedness
+	//
+	/// <summary>
+	/// Gets or sets the graph directedness of the active workbook.
+	/// </summary>
+	///
+	/// <value>
+	/// A GraphDirectedness value.
+	/// </value>
+	//*************************************************************************
+
+	public GraphDirectedness
+	GraphDirectedness
+	{
+		get
+		{
+			AssertValid();
+
+			// The user selects the directedness with the rddGraphDirectedness
+			// RibbonDropDown.  The GraphDirectedness for each item is stored
+			// in the item's Tag.
+
+			return ( (GraphDirectedness)rddGraphDirectedness.SelectedItem.Tag );
+		}
+
+		set
+		{
+			foreach (RibbonDropDownItem oItem in rddGraphDirectedness.Items)
+			{
+				if ( (GraphDirectedness)oItem.Tag == value )
+				{
+					rddGraphDirectedness.SelectedItem = oItem;
+
+					break;
+				}
+			}
+
+			AssertValid();
+		}
+	}
+
     //*************************************************************************
     //  Method: Ribbon_Load()
     //
@@ -61,8 +104,93 @@ public partial class Ribbon : OfficeRibbon
 	{
 		AssertValid();
 
-		// (Do nothing.)
+		PerWorkbookSettings oPerWorkbookSettings = new PerWorkbookSettings(
+			Globals.ThisWorkbook.InnerObject);
+
+		// The graph directedness RibbonDropDown should be enabled only if the
+		// template the workbook is based on supports changing the
+		// directedness.
+
+		Int32 iTemplateVersion = oPerWorkbookSettings.TemplateVersion;
+
+		rddGraphDirectedness.Enabled = (iTemplateVersion >= 51);
+
+		// The ability to create clusters depends on the template version.
+
+		btnCreateClusters.Enabled = (iTemplateVersion >= 54);
 	}
+
+    //*************************************************************************
+    //  Method: btnImportEdges_Click()
+    //
+    /// <summary>
+	/// Handles the Click event on the btnImportEdges button.
+    /// </summary>
+    ///
+	/// <param name="sender">
+	/// Standard event argument.
+	/// </param>
+    ///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+    private void
+	btnImportEdges_Click
+	(
+		object sender,
+		RibbonControlEventArgs e
+	)
+    {
+		AssertValid();
+
+        Globals.ThisWorkbook.ImportEdges();
+    }
+
+    //*************************************************************************
+    //  Method: rddGraphDirectedness_SelectionChanged()
+    //
+    /// <summary>
+	/// Handles the SelectionChanged event on the rddGraphDirectedness
+	/// RibbonDropDown.
+    /// </summary>
+    ///
+	/// <param name="sender">
+	/// Standard event argument.
+	/// </param>
+    ///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+    private void
+	rddGraphDirectedness_SelectionChanged
+	(
+		object sender,
+		RibbonControlEventArgs e
+	)
+    {
+		AssertValid();
+
+		GraphDirectedness eGraphDirectedness = this.GraphDirectedness;
+
+		if ( !Globals.ThisWorkbook.ExcelApplicationIsReady(true) )
+		{
+			// Cancel the change.
+
+			this.GraphDirectedness =
+				(eGraphDirectedness == GraphDirectedness.Directed) ?
+				GraphDirectedness.Undirected : GraphDirectedness.Directed;
+		}
+		else
+		{
+			// Notify the workbook.
+
+			Globals.ThisWorkbook.GraphDirectedness = eGraphDirectedness;
+		}
+    }
 
     //*************************************************************************
     //  Method: btnToggleGraphVisibility_Click()
@@ -96,6 +224,34 @@ public partial class Ribbon : OfficeRibbon
 
         Globals.ThisWorkbook.ToggleGraphVisibility();
 	}
+
+    //*************************************************************************
+    //  Method: btnMergeDuplicateEdges_Click()
+    //
+    /// <summary>
+	/// Handles the Click event on the btnMergeDuplicateEdges button.
+    /// </summary>
+    ///
+	/// <param name="sender">
+	/// Standard event argument.
+	/// </param>
+    ///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+    private void
+	btnMergeDuplicateEdges_Click
+	(
+		object sender,
+		RibbonControlEventArgs e
+	)
+    {
+		AssertValid();
+
+        Globals.ThisWorkbook.MergeDuplicateEdges();
+    }
 
     //*************************************************************************
     //  Method: btnPopulateVertexWorksheet_Click()
@@ -207,6 +363,34 @@ public partial class Ribbon : OfficeRibbon
 		AssertValid();
 
         Globals.ThisWorkbook.CalculateGraphMetrics();
+    }
+
+    //*************************************************************************
+    //  Method: btnCreateClusters_Click()
+    //
+    /// <summary>
+	/// Handles the Click event on the btnCreateClusters button.
+    /// </summary>
+    ///
+	/// <param name="sender">
+	/// Standard event argument.
+	/// </param>
+    ///
+	/// <param name="e">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+    private void
+	btnCreateClusters_Click
+	(
+		object sender,
+		RibbonControlEventArgs e
+	)
+    {
+		AssertValid();
+
+        Globals.ThisWorkbook.CreateClusters();
     }
 
     //*************************************************************************

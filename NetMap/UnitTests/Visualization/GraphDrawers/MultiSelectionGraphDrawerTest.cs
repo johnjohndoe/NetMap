@@ -95,7 +95,7 @@ public class MultiSelectionGraphDrawerTest : GraphDrawerTest
 
         m_oGraphDrawer = new MultiSelectionGraphDrawer();
 
-		m_oGraphDrawer.Layout = new KamadaKawaiiLayout();
+		m_oGraphDrawer.Layout = new GridLayout();
 
 		m_oGraphDrawer.VertexDrawer = new VertexDrawer();
 

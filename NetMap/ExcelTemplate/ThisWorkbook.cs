@@ -4,11 +4,13 @@
 
 using System;
 using System.Windows.Forms;
+using System.Drawing;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Core;
 using System.Reflection;
+using Microsoft.NetMap.Core;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NetMap.ExcelTemplate
@@ -40,6 +42,117 @@ public partial class ThisWorkbook
 	}
 
 	//*************************************************************************
+	//	Property: GraphDirectedness
+	//
+	/// <summary>
+	/// Gets or sets the graph directedness of the workbook.
+	/// </summary>
+	///
+	/// <value>
+	/// A GraphDirectedness value.
+	/// </value>
+	//*************************************************************************
+
+	public GraphDirectedness
+	GraphDirectedness
+	{
+		get
+		{
+			AssertValid();
+
+			// Retrive the directedness from the per-workbook settings.
+
+			return (this.PerWorkbookSettings.GraphDirectedness);
+		}
+
+		set
+		{
+			// Store the directedness in the per-workbook settings.
+
+			this.PerWorkbookSettings.GraphDirectedness = value;
+
+			// Update the user settings.
+
+			GeneralUserSettings oGeneralUserSettings =
+				new GeneralUserSettings();
+
+			oGeneralUserSettings.NewWorkbookGraphDirectedness = value;
+			oGeneralUserSettings.Save();
+
+			AssertValid();
+		}
+	}
+
+    //*************************************************************************
+    //  Method: ExcelApplicationIsReady
+    //
+    /// <summary>
+    /// Determines whether the Excel application is ready to accept method
+	/// calls.
+    /// </summary>
+	///
+	/// <param name="showBusyMessage">
+	/// true if a busy message should be displayed if the application is not
+	/// ready.
+	/// </param>
+    ///
+    /// <returns>
+	/// true if the Excel application is ready to accept method calls.
+    /// </returns>
+    //*************************************************************************
+
+	public Boolean
+	ExcelApplicationIsReady
+	(
+		Boolean showBusyMessage
+	)
+    {
+		AssertValid();
+
+		if ( !ExcelUtil.ExcelApplicationIsReady(this.Application) )
+		{
+			if (showBusyMessage)
+			{
+				FormUtil.ShowWarning(
+					"This feature isn't available while a worksheet cell is"
+					+ " being edited.  Press Enter to finish editing the cell,"
+					+ " then try again."
+				);
+			}
+
+			return (false);
+		}
+
+		return (true);
+    }
+
+	//*************************************************************************
+	//	Method: ImportEdges()
+	//
+	/// <summary>
+	/// Imports edges from another open workbook.
+	/// </summary>
+	//*************************************************************************
+
+	public void
+	ImportEdges()
+	{
+		AssertValid();
+
+		if ( !this.ExcelApplicationIsReady(true) )
+		{
+			return;
+		}
+
+		// The ImportEdgesDialog does all the work.
+
+		ImportEdgesDialog oImportEdgesDialog =
+			new ImportEdgesDialog(this.InnerObject);
+
+		oImportEdgesDialog.ShowDialog();
+	}
+
+	//*************************************************************************
 	//	Method: ToggleGraphVisibility()
 	//
 	/// <summary>
@@ -57,45 +170,54 @@ public partial class ThisWorkbook
 			return;
 		}
 
-		Microsoft.Office.Core.CommandBar oDocumentActionsCommandBar=
-			Application.CommandBars["Document Actions"];
+		this.GraphVisibility = !this.GraphVisibility;
+	}
 
-		if (oDocumentActionsCommandBar.Visible)
+    //*************************************************************************
+    //  Method: MergeDuplicateEdges()
+    //
+    /// <summary>
+	/// Merges duplicate edges in the edge worksheet.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+	MergeDuplicateEdges()
+    {
+		AssertValid();
+
+		if ( !this.ExcelApplicationIsReady(true) )
 		{
-			oDocumentActionsCommandBar.Visible = false;
-
 			return;
 		}
 
-		// The NetMap task pane is created in a lazy manner.
+		// Create and use the object that merges duplicate edges.
 
-		if (!m_bTaskPaneCreated)
+		DuplicateEdgeMerger oDuplicateEdgeMerger = new DuplicateEdgeMerger();
+
+		this.Application.Cursor =
+			Microsoft.Office.Interop.Excel.XlMousePointer.xlWait;
+
+        this.ScreenUpdating = false;
+
+		try
 		{
-			TaskPane oTaskPane = new TaskPane(this);
+			oDuplicateEdgeMerger.MergeDuplicateEdges(this.InnerObject);
 
-			this.ActionsPane.Controls.Add(oTaskPane);
+			this.ScreenUpdating = true;
+		}
+		catch (Exception oException)
+		{
+			// Don't let Excel handle unhandled exceptions.
 
-            oTaskPane.Dock = DockStyle.Fill;
+			this.ScreenUpdating = true;
 
-			oTaskPane.SelectionChangedInGraph +=
-				new SelectionChangedEventHandler(
-					this.TaskPane_SelectionChangedInGraph);
-
-			oTaskPane.VertexAttributesEditedInGraph +=
-				new VertexAttributesEditedEventHandler(
-					this.TaskPane_VertexAttributesEditedInGraph);
-
-			oTaskPane.GraphDrawn += new GraphDrawnEventHandler(
-				this.TaskPane_GraphDrawn);
-
-			oTaskPane.VertexMoved += new VertexMovedEventHandler(
-				this.TaskPane_VertexMoved);
-
-			m_bTaskPaneCreated = true;
+			ErrorUtil.OnException(oException);
 		}
 
-		oDocumentActionsCommandBar.Visible = true;
-	}
+		this.Application.Cursor =
+			Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
+    }
 
     //*************************************************************************
     //  Method: PopulateVertexWorksheet()
@@ -291,8 +413,10 @@ public partial class ThisWorkbook
 		{
 			oTableColumnAdder.AddColumnPair(this.InnerObject,
 				WorksheetNames.Vertices, TableNames.Vertices,
-				VertexTableColumnNames.CustomMenuItemTextBase, 25,
-				VertexTableColumnNames.CustomMenuItemActionBase, 26
+				VertexTableColumnNames.CustomMenuItemTextBase,
+				VertexTableColumnWidths.CustomMenuItemText,
+				VertexTableColumnNames.CustomMenuItemActionBase,
+				VertexTableColumnWidths.CustomMenuItemAction
 				);
 
 			this.ScreenUpdating = true;
@@ -436,9 +560,9 @@ public partial class ThisWorkbook
 
 		if (!oGraphMetricUserSettings.AtLeastOneMetricSelected)
 		{
-			FormUtil.ShowWarning(
+			FormUtil.ShowInformation(
 				"No graph metrics have been selected.  To select one or more"
-				+ " graph metrics, click the arrow to the right of the"
+				+ " graph metrics, click the down-arrow to the right of the"
 				+ " \"Calculate Graph Metrics\" button, then click the"
 				+ " \"Select Graph Metrics\" button."
 				);
@@ -450,10 +574,106 @@ public partial class ThisWorkbook
 
 		CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
 			new CalculateGraphMetricsDialog( this.InnerObject,
-			oGraphMetricUserSettings
+			oGraphMetricUserSettings, new NotificationUserSettings()
 			);
 
 		oCalculateGraphMetricsDialog.ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: CreateClusters()
+    //
+    /// <summary>
+	/// Partitions the graph into clusters.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+	CreateClusters()
+    {
+		AssertValid();
+
+		if ( !this.ExcelApplicationIsReady(true) )
+		{
+			return;
+		}
+
+		NotificationUserSettings oNotificationUserSettings =
+			new NotificationUserSettings();
+
+		if (oNotificationUserSettings.CreateClusters)
+		{
+			const String Message =
+				"This will partition the graph into clusters of closely"
+				+ " connected vertices.  Vertices in the same cluster will be"
+				+ " drawn with the same color and shape -- red disks, for"
+				+ " example."
+				+ "\r\n\r\n"
+				+ "Do you want to create clusters?"
+				;
+
+			NotificationDialog oNotificationDialog = new NotificationDialog(
+				"Create Clusters", SystemIcons.Information, Message);
+
+			DialogResult eDialogResult = oNotificationDialog.ShowDialog();
+
+			if (oNotificationDialog.DisableFutureNotifications)
+			{
+				oNotificationUserSettings.CreateClusters = false;
+				oNotificationUserSettings.Save();
+			}
+
+			if (eDialogResult != DialogResult.Yes)
+			{
+                return;
+            }
+		}
+
+		AutoFillUserSettings oAutoFillUserSettings =
+			new AutoFillUserSettings();
+
+		if (
+		 	oAutoFillUserSettings.UseAutoFill &&
+				(
+				!String.IsNullOrEmpty(
+					oAutoFillUserSettings.VertexColorSourceColumnName)
+				||
+				!String.IsNullOrEmpty(
+					oAutoFillUserSettings.VertexShapeSourceColumnName)
+				)
+			)
+		{
+			const String Message =
+
+				"Your AutoFill Columns settings indicate that you want to"
+				+ " autofill the vertex shape or color columns when the"
+				+ " workbook is read.  Because clustering uses the same"
+				+ " columns, the AutoFill Columns settings for vertex shape"
+				+ " and color need to be turned off."
+				+ "\r\n\r\n"
+				+ "Do you want to turn off the AutoFill Columns settings for"
+				+ " vertex shape and color?  If you answer \"No,\" clusters"
+				+ " will not be created."
+				;
+
+			if (MessageBox.Show(Message, FormUtil.ApplicationName,
+					MessageBoxButtons.YesNo, MessageBoxIcon.Warning) !=
+					DialogResult.Yes)
+			{
+				return;
+			}
+
+			oAutoFillUserSettings.VertexColorSourceColumnName = String.Empty;
+            oAutoFillUserSettings.VertexShapeSourceColumnName = String.Empty;
+			oAutoFillUserSettings.Save();
+		}
+
+		// The CreateClustersDialog does all the work.
+
+		CreateClustersDialog oCreateClustersDialog =
+			new CreateClustersDialog(this.InnerObject);
+
+		oCreateClustersDialog.ShowDialog();
     }
 
 	//*************************************************************************
@@ -548,6 +768,112 @@ public partial class ThisWorkbook
 
 
 	//*************************************************************************
+	//	Property: GraphVisibility
+	//
+	/// <summary>
+	/// Gets or sets the visibility of the NetMap graph.
+	/// </summary>
+	///
+	/// <value>
+	/// true if the NetMap graph is visible.
+	/// </value>
+	//*************************************************************************
+
+	private Boolean
+	GraphVisibility
+	{
+		get
+		{
+			AssertValid();
+
+			return (this.DocumentActionsCommandBar.Visible &&
+				m_bTaskPaneCreated);
+		}
+
+		set
+		{
+			if (value && !m_bTaskPaneCreated)
+			{
+				// The NetMap task pane is created in a lazy manner.
+
+				TaskPane oTaskPane = new TaskPane(this);
+
+				this.ActionsPane.Clear();
+				this.ActionsPane.Controls.Add(oTaskPane);
+
+				oTaskPane.Dock = DockStyle.Fill;
+
+				oTaskPane.SelectionChangedInGraph +=
+					new SelectionChangedEventHandler(
+						this.TaskPane_SelectionChangedInGraph);
+
+				oTaskPane.VertexAttributesEditedInGraph +=
+					new VertexAttributesEditedEventHandler(
+						this.TaskPane_VertexAttributesEditedInGraph);
+
+				oTaskPane.GraphDrawn += new GraphDrawnEventHandler(
+					this.TaskPane_GraphDrawn);
+
+				oTaskPane.VertexMoved += new VertexMovedEventHandler(
+					this.TaskPane_VertexMoved);
+
+				m_bTaskPaneCreated = true;
+			}
+
+			this.DocumentActionsCommandBar.Visible = value;
+
+			AssertValid();
+		}
+	}
+
+	//*************************************************************************
+	//	Property: DocumentActionsCommandBar
+	//
+	/// <summary>
+	/// Gets the document actions CommandBar.
+	/// </summary>
+	///
+	/// <value>
+	/// The document actions CommandBar, which is where the NetMap graph is
+	/// displayed.
+	/// </value>
+	//*************************************************************************
+
+	private Microsoft.Office.Core.CommandBar
+	DocumentActionsCommandBar
+	{
+		get
+		{
+			AssertValid();
+
+			return ( Application.CommandBars["Document Actions"] );
+		}
+	}
+
+	//*************************************************************************
+	//	Property: PerWorkbookSettings
+	//
+	/// <summary>
+	/// Gets a new PerWorkbookSettings object.
+	/// </summary>
+	///
+	/// <value>
+	/// A new PerWorkbookSettings object.
+	/// </value>
+	//*************************************************************************
+
+	private PerWorkbookSettings
+	PerWorkbookSettings
+	{
+		get
+		{
+			AssertValid();
+
+			return ( new PerWorkbookSettings(this.InnerObject) );
+		}
+	}
+
+	//*************************************************************************
 	//	Property: ScreenUpdating
 	//
 	/// <summary>
@@ -569,50 +895,6 @@ public partial class ThisWorkbook
 			AssertValid();
 		}
 	}
-
-    //*************************************************************************
-    //  Method: ExcelApplicationIsReady
-    //
-    /// <summary>
-    /// Determines whether the Excel application is ready to accept method
-	/// calls.
-    /// </summary>
-	///
-	/// <param name="bShowBusyMessage">
-	/// true if a busy message should be displayed if the application is not
-	/// ready.
-	/// </param>
-    ///
-    /// <returns>
-	/// true if the Excel application is ready to accept method calls.
-    /// </returns>
-    //*************************************************************************
-
-	private Boolean
-	ExcelApplicationIsReady
-	(
-		Boolean bShowBusyMessage
-	)
-    {
-		AssertValid();
-
-		if ( !ExcelUtil.ExcelApplicationIsReady(this.Application) )
-		{
-			if (bShowBusyMessage)
-			{
-				FormUtil.ShowWarning(
-					"This feature isn't available while a worksheet cell is"
-					+ " being edited.  Press Enter to finish editing the cell,"
-					+ " then try again."
-				);
-			}
-
-			return (false);
-		}
-
-		return (true);
-    }
-
 
     //*************************************************************************
     //  Method: FireSelectionChangedInWorkbook()
@@ -694,12 +976,6 @@ public partial class ThisWorkbook
 			this, Globals.Sheet1, Globals.Sheet1.Edges, Globals.Sheet2,
 			Globals.Sheet2.Vertices);
 
-		// Prevent this situation: The user doesn't close the actions pane
-		// before saving the document.  When the document is reopened, an empty
-		// actions pane is shown.
-
-		this.ActionsPane.Clear();
-
 		// In message boxes, show the name of this document customization
 		// instead of the default, which is the name of the Excel application.
 
@@ -713,7 +989,51 @@ public partial class ThisWorkbook
             new TableSelectionChangedEventHandler(
 				this.Sheet2_VertexSelectionChanged);
 
+		// Show the .NetMap graph by default.
+
+		this.GraphVisibility = true;
+
         AssertValid();
+	}
+
+    //*************************************************************************
+    //  Method: Workbook_New()
+    //
+    /// <summary>
+	/// Handles the New event on the workbook.
+    /// </summary>
+    //*************************************************************************
+
+	private void
+	ThisWorkbook_New()
+	{
+		AssertValid();
+
+		// Get the graph directedness for new workbooks and store it in the
+		// per-workbook settings.
+
+		GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+
+		this.PerWorkbookSettings.GraphDirectedness =
+			oGeneralUserSettings.NewWorkbookGraphDirectedness;
+	}
+
+    //*************************************************************************
+    //  Method: Workbook_ActivateEvent()
+    //
+    /// <summary>
+	/// Handles the ActivateEvent event on the workbook.
+    /// </summary>
+    //*************************************************************************
+
+	private void
+	ThisWorkbook_ActivateEvent()
+	{
+		AssertValid();
+
+		// Pass the workbook's directedness to the Ribbon.
+
+		Globals.Ribbons.Ribbon.GraphDirectedness = this.GraphDirectedness;
 	}
 
     //*************************************************************************
@@ -1056,6 +1376,15 @@ public partial class ThisWorkbook
 	private void InternalStartup()
 	{
 		this.Startup += new System.EventHandler(ThisWorkbook_Startup);
+
+		this.New += new
+			Microsoft.Office.Tools.Excel.WorkbookEvents_NewEventHandler(
+				ThisWorkbook_New);
+
+		this.ActivateEvent += new
+			Microsoft.Office.Interop.Excel.WorkbookEvents_ActivateEventHandler(
+				ThisWorkbook_ActivateEvent);
+
 		this.Shutdown += new System.EventHandler(ThisWorkbook_Shutdown);
 	}
         

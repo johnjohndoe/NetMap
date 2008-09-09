@@ -258,7 +258,7 @@ public static class TableImagePopulator : Object
 			&&
 				(
 				!ExcelUtil.TryInsertTableColumn(oTable, sImageColumnName,
-					iOneBasedImageColumnIndex, ImageColumnWidthChars,
+					iOneBasedImageColumnIndex, ImageColumnWidthChars, null,
 					out oImageColumn)
 				||
 				!ExcelUtil.TryGetTableColumnData(oTable, sImageColumnName,

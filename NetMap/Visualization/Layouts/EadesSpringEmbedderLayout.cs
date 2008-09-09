@@ -19,6 +19,12 @@ namespace Microsoft.NetMap.Visualization
 /// <remarks>
 ///	For details on the layout algorithm, see P. Eades, "A heuristic for graph
 ///	drawing", Congressus Numerantium, 42:149{ 160, 1984.
+///
+/// <para>
+/// Important Note: As of August 2008, this class is not implemented.  <see
+/// cref="LayOutGraphCore" /> throws a NotImplementedException.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -88,6 +94,11 @@ public class EadesSpringEmbedderLayout : AsyncLayoutBase
 	/// The arguments have already been checked for validity.
 	/// </para>
 	///
+	/// <para>
+	/// Important Note: As of August 2008, this method is not implemented.  It
+	/// throws a NotImplementedException.
+	/// </para>
+	///
     /// </remarks>
     //*************************************************************************
 
@@ -105,7 +116,7 @@ public class EadesSpringEmbedderLayout : AsyncLayoutBase
 
 		// TODO
 
-		return (false);
+		throw new NotImplementedException();
 	}
 
 

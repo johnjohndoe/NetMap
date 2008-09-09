@@ -20,6 +20,12 @@ namespace Microsoft.NetMap.Visualization
 ///	For details on the layout algorithm, see Kamada, T., and Kawai, S., "A
 ///	General Framework for Visualizing Abstract Objects and Relations", ACM
 ///	Transactions on Graphics (TOG) 10, 1 (1991), 1--39.
+///
+/// <para>
+/// Important Note: As of August 2008, this class is not implemented.  <see
+/// cref="LayOutGraphCore" /> throws a NotImplementedException.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -89,6 +95,11 @@ public class KamadaKawaiiLayout : AsyncLayoutBase
 	/// The arguments have already been checked for validity.
 	/// </para>
 	///
+	/// <para>
+	/// Important Note: As of August 2008, this method is not implemented.  It
+	/// throws a NotImplementedException.
+	/// </para>
+	///
     /// </remarks>
     //*************************************************************************
 
@@ -104,58 +115,7 @@ public class KamadaKawaiiLayout : AsyncLayoutBase
 		Debug.Assert(layoutContext != null);
 		AssertValid();
 
-		// TODO: Simulate a long layout.
-
-		const Int32 Iterations = 5;
-
-		for (Int32 i = 0; i < Iterations; i++)
-		{
-			if (backgroundWorker != null &&
-				backgroundWorker.CancellationPending)
-			{
-				return (false);
-			}
-
-            #if false
-			if (i == 5)
-			{
-				throw new ApplicationException("TODO: Testing exceptions.");
-			}
-            #endif
-
-			RandomizeVertexLocations(graph, layoutContext, 1);
-
-			/*
-			Trace.WriteLine(DateTime.Now.ToLongTimeString() + ": "
-				+ "BackgroundWorker_DoWork: About to sleep."
-				);
-			*/
-
-			System.Threading.Thread.Sleep(100);
-
-			/*
-			Trace.WriteLine(DateTime.Now.ToLongTimeString() + ": "
-				+ "BackgroundWorker_DoWork: Awoke from sleep."
-				);
-
-			Trace.WriteLine(DateTime.Now.ToLongTimeString() + ": "
-				+ "BackgroundWorker_DoWork: About to fire event."
-				);
-			*/
-
-			if (backgroundWorker != null)
-			{
-				FireLayOutGraphIterationCompleted();
-			}
-
-			/*
-			Trace.WriteLine(DateTime.Now.ToLongTimeString() + ": "
-				+ "BackgroundWorker_DoWork: Returned from event."
-				);
-			*/
-		}
-
-		return (true);
+		throw new NotImplementedException();
 	}
 
 

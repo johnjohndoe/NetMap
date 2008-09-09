@@ -79,6 +79,66 @@ public class WorkbookReader : Object
 		Debug.Assert(workbook != null);
         AssertValid();
 
+		IGraph oGraph = null;
+
+		// Turn off screen updating.  Reading the workbook involves writing to
+		// edge and vertex ID columns, which can be slow when updating is
+		// turned on.
+
+		Application oApplication = workbook.Application;
+		Boolean bOldScreenUpdating = oApplication.ScreenUpdating;
+		oApplication.ScreenUpdating = false;
+
+		try
+		{
+			oGraph = ReadWorkbookInternal(workbook, readWorkbookContext);
+		}
+		finally
+		{
+			oApplication.ScreenUpdating = bOldScreenUpdating;
+		}
+
+		return (oGraph);
+    }
+
+    //*************************************************************************
+    //  Method: ReadWorkbookInternal()
+    //
+    /// <summary>
+	/// Creates a NetMap graph from the contents of an Excel workbook.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+	/// Workbook containing the graph data.
+    /// </param>
+    ///
+    /// <param name="readWorkbookContext">
+	/// Provides access to objects needed for converting an Excel workbook to a
+	/// NetMap graph.
+    /// </param>
+	///
+    /// <returns>
+	/// A new graph.
+    /// </returns>
+    ///
+    /// <remarks>
+	/// If <paramref name="workbook" /> contains valid graph data, a new <see
+	/// cref="IGraph" /> is created from the workbook contents and returned.
+	/// Otherwise, a <see cref="WorkbookFormatException" /> is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    protected IGraph
+    ReadWorkbookInternal
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+		ReadWorkbookContext readWorkbookContext
+    )
+    {
+		Debug.Assert(readWorkbookContext != null);
+		Debug.Assert(workbook != null);
+        AssertValid();
+
 		if (readWorkbookContext.PopulateVertexWorksheet)
 		{
 			// Create and use the object that fills in the vertex worksheet.
@@ -98,14 +158,17 @@ public class WorkbookReader : Object
 			}
 		}
 
-		// Run the autofill feature on the workbook.
+		if (readWorkbookContext.AutoFillWorkbook)
+		{
+			// Run the autofill feature on the workbook.
 
-		WorkbookAutoFiller.AutoFillWorkbook(
-			workbook, new AutoFillUserSettings() );
+			WorkbookAutoFiller.AutoFillWorkbook(
+				workbook, new AutoFillUserSettings() );
+		}
 
-		// For now, support only directed graphs.
+		// Create a graph with the appropriate directedness.
 
-		IGraph oGraph = new Graph(GraphDirectedness.Directed);
+		IGraph oGraph = new Graph( GetGraphDirectedness(workbook) );
 
 		// Tell the FruchtermanReingoldLayout to initialize the layout by
 		// randomizing only those vertices whose locations haven't been
@@ -146,6 +209,36 @@ public class WorkbookReader : Object
 			oGraph);
 
 		return (oGraph);
+    }
+
+    //*************************************************************************
+    //  Method: GetGraphDirectedness()
+    //
+    /// <summary>
+	/// Gets the directedness that should be used for the new graph.
+    /// </summary>
+    ///
+    /// <param name="oWorkbook">
+	/// Workbook containing the graph data.
+    /// </param>
+    ///
+    /// <returns>
+	/// The GraphDirectedness that should be used for the new graph.
+    /// </returns>
+    //*************************************************************************
+
+    protected GraphDirectedness
+    GetGraphDirectedness
+    (
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook
+    )
+    {
+		Debug.Assert(oWorkbook != null);
+        AssertValid();
+
+		// Retrive the directedness from the per-workbook settings.
+
+		return ( (new PerWorkbookSettings(oWorkbook) ).GraphDirectedness );
     }
 
 

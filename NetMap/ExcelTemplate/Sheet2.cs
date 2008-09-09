@@ -126,6 +126,11 @@ public partial class Sheet2
 		Microsoft.Office.Interop.Excel.Range oDataBodyRange =
 			Vertices.DataBodyRange;
 
+		if (oDataBodyRange == null)
+		{
+			return;
+		}
+
 		Microsoft.Office.Interop.Excel.Range oVisibleDataBodyRange;
 
 		if ( !ExcelUtil.TryGetVisibleRange(oDataBodyRange,
@@ -662,7 +667,8 @@ public partial class Sheet2
 			Microsoft.Office.Interop.Excel.ListColumn oMarkedColumn;
 
 			if ( !ExcelUtil.TryAddTableColumn(oVertexTable,
-					VertexTableColumnNames.Marked, 11F, out oMarkedColumn)
+					VertexTableColumnNames.Marked,
+					ExcelUtil.AutoColumnWidth, null, out oMarkedColumn)
 				||
 				!ExcelUtil.TryGetTableColumnData(oVertexTable,
 					VertexTableColumnNames.Marked, out oMarkedColumnData)

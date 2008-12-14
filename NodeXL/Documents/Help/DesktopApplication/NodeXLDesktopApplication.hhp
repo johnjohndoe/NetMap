@@ -1,0 +1,21 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=NodeXLDesktopApplication.chm
+Contents file=TableOfContents.hhc
+Default topic=Topics\Overview.htm
+Display compile progress=No
+Language=0x409 English (United States)
+Title=Microsoft NodeXL
+
+
+[FILES]
+Topics\Overview.htm
+Topics\SetOptions.htm
+Topics\CommandLine.htm
+Topics\OpenGraphFile.htm
+Topics\SimpleFileFormat.htm
+Topics\PajekFileFormat.htm
+Topics\Layouts.htm
+
+[INFOTYPES]
+

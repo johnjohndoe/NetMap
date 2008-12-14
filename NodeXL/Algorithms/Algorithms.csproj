@@ -1,0 +1,146 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1E286552-2364-419B-B8A0-D21B860BC60F}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Microsoft.NodeXL.Algorithms</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\Common\KeyFile.snk</AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.NodeXL.Algorithms</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>true</SignAssembly>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Microsoft.NodeXL.Algorithms.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Delegates\EdgeDelegate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Delegates\VertexDelegate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DistanceCalculators\BreadthFirstDistanceCalculator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DistanceCalculators\DijkstraDistanceCalculator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphTransformers\DirectedToUndirectedGraphTransformer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphTransformers\GraphFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphTransformers\KNeighborhoodGraphTransformer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphTransformers\MixedToDirectedGraphTransformer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphTransformers\UndirectedToDirectedGraphTransformer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IDistanceCalculator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IGraphTransformer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IVertexIterator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SubgraphCalculator.cs" />
+    <Compile Include="VertexIterators\BreadthFirstVertexIterator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VertexIterators\DepthFirstVertexIterator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

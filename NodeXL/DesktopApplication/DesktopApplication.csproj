@@ -1,0 +1,166 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{54F31DDE-AC01-4E96-A90E-FD270FC4D6BA}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DesktopApplication</RootNamespace>
+    <AssemblyName>NodeXL</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\NodeXL.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NET20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\ArgumentChecker.cs">
+      <Link>Util\ArgumentChecker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\MenuItemWithObject.cs">
+      <Link>Util\MenuItemWithObject.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\..\Common\MruList.cs">
+      <Link>Util\MruList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\PropertiesListView.cs">
+      <Link>Util\PropertiesListView.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\..\Common\StringMruList.cs">
+      <Link>Util\StringMruList.cs</Link>
+    </Compile>
+    <Compile Include="Dialogs\GraphSettings\GraphSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GraphSettings\GraphSettingsDialog.designer.cs">
+      <DependentUpon>GraphSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\OpenDocumentFileDialog.cs" />
+    <Compile Include="Dialogs\SaveDocumentFileDialog.cs" />
+    <Compile Include="DocumentViewFramework\Document.cs" />
+    <Compile Include="DocumentViewFramework\GraphData.cs" />
+    <Compile Include="DocumentViewFramework\NewDocumentTitleCreator.cs" />
+    <Compile Include="DocumentViewFramework\View.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DocumentViewFramework\View.designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentViewFramework\ViewSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Dialogs\GraphSettings\GraphSettingsDialog.resx">
+      <DependentUpon>GraphSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DocumentViewFramework\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="UIComponents\DesktopApplicationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UIComponents\ExceptionNotifier.cs" />
+    <Compile Include="Util\CommandLineParser.cs" />
+    <Compile Include="Util\GeneralUserSettings.cs" />
+    <Compile Include="Util\GraphAdapterManager.cs" />
+    <Compile Include="Util\GraphSettings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Adapters\Adapters.csproj">
+      <Project>{49BF210B-2FB1-4955-9553-B4C9DB275352}</Project>
+      <Name>Adapters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ApplicationUtil\ApplicationUtil.csproj">
+      <Project>{F7845042-B212-4D74-9343-DA2052F83234}</Project>
+      <Name>ApplicationUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\Control.csproj">
+      <Project>{56727BA5-D9A8-480C-8D71-380C449784BC}</Project>
+      <Name>Control</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
+      <Name>Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Visualization\Visualization.csproj">
+      <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>
+      <Name>Visualization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

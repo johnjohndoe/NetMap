@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="rddGraphDirectedness.SuperTip" xml:space="preserve">
+    <value>Specify whether the graph is directed or undirected.
+
+In a directed graph, "A,B" and "B,A" are different edges.  In an undirected graph, they are the same edge.
+
+Arrows are included on the edges in a directed graph.  You can set the arrow size by clicking Options in the .NetMap graph pane.
+
+Graph metrics are calculated differently for directed and undirected graphs.</value>
+  </data>
+  <data name="btnToggleGraphVisibility.SuperTip" xml:space="preserve">
+    <value>Show or hide the .NetMap graph pane.
+
+The .NetMap graph pane appears at the right edge of the Excel window by default.  Use this button to hide it.
+
+You can move the .NetMap graph pane by clicking and dragging the pane's title bar.  (The title bar says "Document Actions," but that's only because Excel doesn't allow the title to be changed.)  The dragging behavior is finicky, so it might take some practice.
+</value>
+  </data>
+  <data name="btnEditAutoFillUserSettings.SuperTip" xml:space="preserve">
+    <value>Automatically fill in the edge and vertex attribute columns when the workbook is read into the graph.
+
+Use this feature to automatically calculate and fill in the graph's visual attribute columns, such as edge width and vertex shape, using values from other columns.  The visual attribute columns get filled in when the workbook is read into the graph.</value>
+  </data>
+  <data name="btnMergeDuplicateEdges.SuperTip" xml:space="preserve">
+    <value>Merge edges that connect the same vertices and add a Tie Strength column to the Edges worksheet.
+
+If the Edges worksheet contains two "A,B" rows, for example, then one of the rows is removed and the Tie Strength cell in the remaining row is set to 2.
+
+In a directed graph, "A,B" and "B,A" are not considered duplicates.  In an undirected graph, they are considered duplicates.
+
+This feature removes any filters that are applied to the Edges worksheet.</value>
+  </data>
+  <data name="btnPopulateVertexWorksheet.SuperTip" xml:space="preserve">
+    <value>Copy each unique vertex name from the Edges worksheet to the Vertices worksheet.
+
+This occurs automatically when you read the workbook into the graph, but you can click this to copy the vertex names at any time.
+
+Vertex names that are already in the Vertices worksheet do not get overwritten.</value>
+  </data>
+  <data name="spltCalculateGraphMetrics.SuperTip" xml:space="preserve">
+    <value>
+Calculate the selected graph metrics and insert the results into the workbook.
+
+To select the graph metrics to calculate, click the down-arrow at the right edge of this button, then click Select Graph Metrics.
+	</value>
+  </data>
+  <data name="btnCreateClusters.SuperTip" xml:space="preserve">
+    <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
+	
+The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.
+
+The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Create Clusters will clear any manually-entered clusters.
+
+The Show Clusters checkbox must be checked if you want the clusters to be read when the workbook is read into the graph.</value>
+  </data>
+  <data name="chkReadClusters.SuperTip" xml:space="preserve">
+    <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
+	
+When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
+	
+You can fill in these worksheets manually, or click the Create Clusters button to fill them in automatically.  Create Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.</value>
+  </data>
+  <data name="btnImportPajekFile.SuperTip" xml:space="preserve">
+    <value>Import edge and vertex lists from a Pajek text file.
+
+This clears the workbook, then imports the "vertices," "edges," "edgeslist," "arcs," and "arcslist" sections of a Pajek text file into the workbook.  Only the vertex names are imported; all edge and vertex attributes are ignored.</value>
+  </data>
+  <data name="btnImportEdgesFromWorkbook.SuperTip" xml:space="preserve">
+    <value>Import edges from another open workbook that contains at least two columns, one for Vertex 1 and one for Vertex 2.  You can import additional edge columns as well.
+
+Excel can read comma-delimited, tab-delimited, and various other file formats, so this feature can be used to import edges from a wide variety of sources.</value>
+  </data>
+  <data name="btnAnalyzeEmailNetwork.SuperTip" xml:space="preserve">
+    <value>Analyze the relationships between the people in my email network.
+
+If your computer has Windows Desktop Search and you use Outlook, Outlook Express, or Windows Mail, you can use this feature to analyze the relationships between the people you communicate with via email.  (Windows Desktop Search is included with Windows Vista.  It can also be downloaded and installed on Windows XP.)</value>
+  </data>
+</root>

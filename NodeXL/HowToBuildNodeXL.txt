@@ -1,0 +1,34 @@
+
+Contents
+--------
+
+This directory contains a Visual Studio solution that builds the NodeXL system.
+For a list of projects in the solution, see .\ReadMe.txt.
+
+
+Required Tools
+--------------
+
+1. Visual Studio 2008.  NodeXL has been built and tested in the following
+   environment:
+   
+   * Microsoft Visual Studio 2008 Professional Edition, Version 9.0.21022.8
+   RTM and Microsoft .NET Framework Version 3.5.
+
+2. If you want to build the help file for the NodeXL API (NodeXLApi.chm), you
+   will need the NDoc documentation tool.  See
+   .\Documents\Help\Api\HowToBuildNodeXLApiHelp.txt for details
+
+
+
+How to Build This Solution
+--------------------------
+
+The following instructions assume that you have a Zip file that contains the
+.NodeXL source files.
+
+1. Unzip the Zip file into any directory.
+
+2. Open NodeXL\NodeXL.sln in Visual Studio.
+
+3. Run Build | Rebuild Solution.

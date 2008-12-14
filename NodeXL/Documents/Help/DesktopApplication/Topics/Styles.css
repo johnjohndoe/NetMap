@@ -1,0 +1,51 @@
+<!--
+
+Styles.css
+
+Contains styles shared by all the topic files.
+-->
+
+<style>
+<!--
+
+BODY, TD
+{
+	font-family: Arial;
+	font-size: 11pt;
+}
+
+LI
+{
+	margin-bottom: 1em;
+}
+
+.Level1
+{
+	font-size: 13pt;
+	background-color: lightblue;
+	padding-left: 1em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	border: 1px solid black;
+}
+
+.Level2
+{
+	margin-top: 2em;
+	font-weight: bold;
+}
+
+.SampleFile
+{
+	font-family: courier;
+	margin-left: 3em;
+}
+
+.SeeAlso
+{
+	margin-top: 2em;
+	font-weight: bold;
+}
+
+-->
+</style>

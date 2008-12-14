@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<project SchemaVersion="2.0">
+    <assemblies>
+        <assembly location="..\..\..\ApplicationUtil\bin\Debug\Microsoft.NodeXL.ApplicationUtil.dll" documentation="..\..\..\ApplicationUtil\bin\Debug\Microsoft.NodeXL.ApplicationUtil.xml" />
+        <assembly location="..\..\..\Core\bin\Debug\Microsoft.NodeXL.Core.dll" documentation="..\..\..\Core\bin\Debug\Microsoft.NodeXL.Core.xml" />
+        <assembly location="..\..\..\Adapters\bin\Debug\Microsoft.NodeXL.Adapters.dll" documentation="..\..\..\Adapters\bin\Debug\Microsoft.NodeXL.Adapters.xml" />
+        <assembly location="..\..\..\Control\bin\Debug\Microsoft.NodeXL.Control.dll" documentation="..\..\..\Control\bin\Debug\Microsoft.NodeXL.Control.xml" />
+        <assembly location="..\..\..\Visualization\bin\Debug\Microsoft.NodeXL.Visualization.dll" documentation="..\..\..\Visualization\bin\Debug\Microsoft.NodeXL.Visualization.xml" />
+        <assembly location="..\..\..\WpfControl\bin\Debug\Microsoft.NodeXL.Control.Wpf.dll" documentation="..\..\..\WpfControl\bin\Debug\Microsoft.NodeXL.Control.Wpf.xml" />
+        <assembly location="..\..\..\WpfVisualization\bin\Debug\Microsoft.NodeXL.Visualization.Wpf.dll" documentation="..\..\..\WpfVisualization\bin\Debug\Microsoft.NodeXL.Visualization.Wpf.xml" />
+    </assemblies>
+    <namespaces>
+        <namespace name="Microsoft.NodeXL.ApplicationUtil">Utility classes for use in NodeXL applications.</namespace>
+        <namespace name="Microsoft.SocialNetworkLib">Utility classes for analyzing social networks.</namespace>
+        <namespace name="Microsoft.NodeXL.Adapters">Interfaces and classes for converting NodeXL graphs to and from a variety of data formats.</namespace>
+        <namespace name="Microsoft.NodeXL.Core">Core interfaces that define graphs, vertices, and edges.  Includes default graph, vertex, and edge implementations that can be used as-is or extended by your application via inheritance.  You can also create graph, vertex, and edge classes from scratch.  The only requirement is that your classes must implement the corresponding core interface.  All graph classes must implement IGraph, for example.</namespace>
+        <namespace name="Microsoft.NodeXL.Visualization">Interfaces that define layout and drawing operations that can be performed on NodeXL graphs.  Includes a basic set of implementations.</namespace>
+        <namespace name="Microsoft.NodeXL.Visualization.Wpf">Classes used to draw NodeXL graphs in the WPF environment.</namespace>
+        <namespace name="UnfinishedTopics">Fake namespace to document topics in the spec that haven't yet been incorporated into the NodeXL object model.</namespace>
+    </namespaces>
+    <documenters>
+        <documenter name="MSDN-CHM">
+            <property name="RootPageContainsNamespaces" value="True" />
+            <property name="OutputDirectory" value=".\" />
+            <property name="HtmlHelpName" value="NodeXLApi" />
+            <property name="Title" value="Microsoft Research NodeXL" />
+            <property name="DocumentProtected" value="False" />
+            <property name="SkipNamespacesWithoutSummaries" value="True" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+    </documenters>
+</project>

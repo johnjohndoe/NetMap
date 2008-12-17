@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.Research.WinFormsControls;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -61,10 +60,11 @@ public class DynamicFilterRangeTrackBar :
 	{
 		AssertValid();
 		Debug.Assert(dynamicFilterParameters != null);
+		Debug.Assert(dynamicFilterParameters is NumericFilterParameters);
+
+		SetDecimalPlaces( (NumericFilterParameters)dynamicFilterParameters );
 
 		Decimal decSmallChange;
-
-		SetDecimalPlaces();
 
 		if (this.DecimalPlaces == 0)
 		{
@@ -86,38 +86,28 @@ public class DynamicFilterRangeTrackBar :
 	///	Sets the number of decimal places to show.
 	/// </summary>
 	///
-	/// <remarks>
-	/// It's assumed that the RangeTrackBar's available range has already been
-	/// set.
-	/// </remarks>
+	/// <param name="oNumericFilterParameters">
+	/// Parameters for the range track bar.
+	/// </param>
 	//*************************************************************************
 
 	protected void
-	SetDecimalPlaces()
+	SetDecimalPlaces
+	(
+		NumericFilterParameters oNumericFilterParameters
+	)
 	{
 		AssertValid();
+		Debug.Assert(oNumericFilterParameters != null);
 
-		Int32 iDecimalPlaces;
+		Int32 iDecimalPlaces = oNumericFilterParameters.DecimalPlaces;
 
-		Int32 iAvailableMinimumDecimalPlaces =
-			MathUtil.CountDecimalPlaces(this.AvailableMinimum);
-
-		Int32 iAvailableMaximumDecimalPlaces =
-			MathUtil.CountDecimalPlaces(this.AvailableMaximum);
-
-		if (iAvailableMinimumDecimalPlaces == 0 &&
-			iAvailableMaximumDecimalPlaces == 0)
+		if (iDecimalPlaces > 0)
 		{
-			iDecimalPlaces = 0;
-		}
-		else
-		{
-			// Start with 1 plus the maximum number of decimal places in the
-			// available range.
+			// Start with the number of decimal places displayed in the column
+			// plus 1.
 
-			iDecimalPlaces = 1 + Math.Max(
-				iAvailableMinimumDecimalPlaces, iAvailableMaximumDecimalPlaces
-				);
+			iDecimalPlaces++;
 
 			// Show at least 2.
 

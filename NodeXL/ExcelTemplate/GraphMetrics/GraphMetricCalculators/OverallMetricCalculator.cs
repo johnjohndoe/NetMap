@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
-using Microsoft.NodeXL.ApplicationUtil;
+using Microsoft.NodeXL.Common;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {

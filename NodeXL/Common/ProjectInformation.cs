@@ -19,19 +19,20 @@ public static class ProjectInformation
     //  Public constants
     //*************************************************************************
 
-	/// Project's home page.
+	/// URL or the project's home page.
 
-	public const String HomePage = "http://www.codeplex.com/NodeXL";
+	public const String HomePageUrl = "http://www.codeplex.com/NodeXL";
 
-	/// Page from which the latest release of the application can be
+	/// URL of the project's discussion list.
+
+	public const String DiscussionUrl =
+		"http://www.codeplex.com/NodeXL/Thread/List.aspx";
+
+	/// URL of the page from which the latest release of the application can be
 	/// downloaded.
 
-	public const String DownloadPage =
+	public const String DownloadPageUrl =
 		"http://www.codeplex.com/NodeXL/Release/ProjectReleases.aspx";
-
-	/// Email address to send bug reports to.
-
-	public const String BugReportEmailAddress = "nodexl@microsoft.com";
 
 	/// Project's team members, separated by line breaks, ordered by last name.
 

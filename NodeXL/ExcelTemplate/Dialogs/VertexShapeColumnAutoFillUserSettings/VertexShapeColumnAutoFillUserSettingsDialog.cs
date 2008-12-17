@@ -160,8 +160,7 @@ public partial class VertexShapeColumnAutoFillUserSettingsDialog :
 				SourceNumberToCompareTo = dSourceNumberToCompareTo;
 
 			m_oNumericComparisonColumnAutoFillUserSettings.DestinationString1 =
-				( (VertexDrawer.VertexShape)cbxVertexShape.SelectedValue ).
-					ToString();
+				cbxVertexShape.Text;
 
 			m_oNumericComparisonColumnAutoFillUserSettings.DestinationString2
 				= null;
@@ -174,13 +173,11 @@ public partial class VertexShapeColumnAutoFillUserSettingsDialog :
 
 			txbSourceNumber.Text =
 				m_oNumericComparisonColumnAutoFillUserSettings.
-					SourceNumberToCompareTo.ToString(
-						ExcelTemplateForm.DoubleFormat);
+					SourceNumberToCompareTo.ToString();
 
-			cbxVertexShape.SelectedValue = Enum.Parse(
-				typeof(VertexDrawer.VertexShape), 
+			cbxVertexShape.Text = 
 				m_oNumericComparisonColumnAutoFillUserSettings.
-					DestinationString1);
+					DestinationString1;
 		}
 
 		return (true);

@@ -62,6 +62,9 @@
     <Compile Include="..\..\Common\StringMruList.cs">
       <Link>Util\StringMruList.cs</Link>
     </Compile>
+    <Compile Include="..\Common\AssemblyUtil2.cs">
+      <Link>Util\AssemblyUtil2.cs</Link>
+    </Compile>
     <Compile Include="Dialogs\GraphSettings\GraphSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>

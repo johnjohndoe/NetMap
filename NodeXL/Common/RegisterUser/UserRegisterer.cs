@@ -113,11 +113,22 @@ public class UserRegisterer : Object
 			"<Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 			+ " xmlns:x=\"http://www.w3.org/2001/XMLSchema\""
 			+ " xmlns:s=\"http://schemas.microsoft.com/sitka/2008/03/\">"
+
 			+ "<s:Id>{0}</s:Id>"
+
+			+ "<NodeXLVersion xsi:type='x:string'>{1}</NodeXLVersion>"
+
+			+ "<RegistrationTimeUtc xsi:type='x:string'>{2}"
+			+ "</RegistrationTimeUtc>"
+
 			+ "</Entity>"
 			;
 
-		String sEntity = String.Format(EntityTemplate, emailAddress);
+		String sEntity = String.Format( EntityTemplate,
+			emailAddress,
+			AssemblyUtil2.GetFileVersion(),
+			DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")
+			);
 
 		UTF8Encoding oUtf8Encoding = new UTF8Encoding();
 
@@ -323,15 +334,15 @@ public class UserRegisterer : Object
 
 	/// User name and password of the SDS account.
 
-	protected const String UserName = "kdjrek3i2k*j";
+	protected const String UserName = "UserRegistration";
 	///
-	protected const String Password = "3k*3k*3j4hjIUq";
+	protected const String Password = "7m%DpH4#!2";
 
-	/// URL of the SDS containter.  The SDS authority is "j9iGhF" and the
-	/// container is "jk*6tT".
+	/// URL of the SDS containter.  The SDS authority is "users2" and the
+	/// container is "users".
 
 	protected const String ContainerUrl =
-		"https://j9iGhF.data.database.windows.net/v1/jk*6tT";
+		"https://users2.data.database.windows.net/v1/users";
 
 
     //*************************************************************************

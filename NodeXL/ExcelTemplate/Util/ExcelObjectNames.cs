@@ -608,6 +608,13 @@ public static class CommonTableColumnNames
 	public const String ID = "ID";
 
 	/// <summary>
+	/// Name of the optional table column indicating to users where their own
+	/// columns can be added.
+	/// </summary>
+
+	public const String AddColumnsHere = "Add Your Own Columns Here";
+
+	/// <summary>
 	/// Name of the optional table column used by the dynamic filter feature.
 	/// </summary>
 

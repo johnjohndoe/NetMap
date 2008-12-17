@@ -34,7 +34,7 @@ public static class ApplicationUtil
     public static void
 	OpenHomePage()
     {
-		Process.Start(ProjectInformation.HomePage);
+		Process.Start(ProjectInformation.HomePageUrl);
     }
 
     //*************************************************************************
@@ -111,7 +111,7 @@ public static class ApplicationUtil
 				    MessageBoxButtons.YesNo, MessageBoxIcon.Information) ==
 				    DialogResult.Yes)
 			{
-				Process.Start(ProjectInformation.DownloadPage);
+				Process.Start(ProjectInformation.DownloadPageUrl);
 			}
 		}
 		else
@@ -171,7 +171,7 @@ public static class ApplicationUtil
         // page.  Attempt to get the home page contents.
 
 		WebRequest oWebRequest =
-            WebRequest.Create(ProjectInformation.HomePage);
+            WebRequest.Create(ProjectInformation.HomePageUrl);
 
 		HttpWebResponse oHttpWebResponse = null;
 		Stream oStream = null;

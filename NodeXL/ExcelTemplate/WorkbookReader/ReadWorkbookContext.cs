@@ -135,7 +135,7 @@ public class ReadWorkbookContext : Object
 	///
 	/// <remarks>
 	/// The ID is used to link rows in the edge and vertex tables to edges and
-	/// vertices in the .Netmap graph.
+	/// vertices in the NodeXL graph.
 	/// </remarks>
     //*************************************************************************
 

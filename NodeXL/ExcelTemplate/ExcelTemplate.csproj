@@ -163,6 +163,9 @@
     <Compile Include="..\..\Common\MathUtil.cs">
       <Link>Util\MathUtil.cs</Link>
     </Compile>
+    <Compile Include="..\Common\AssemblyUtil2.cs">
+      <Link>Util\AssemblyUtil2.cs</Link>
+    </Compile>
     <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.cs">
       <Link>Controls\RegisterUser\RegisterUser.cs</Link>
       <SubType>UserControl</SubType>

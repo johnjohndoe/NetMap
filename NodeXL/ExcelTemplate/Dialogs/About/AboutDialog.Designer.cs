@@ -40,7 +40,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblCopyright = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lnkContact = new System.Windows.Forms.LinkLabel();
+            this.lnkDiscussionUrl = new System.Windows.Forms.LinkLabel();
             this.btnEnableAllNotifications = new System.Windows.Forms.Button();
             this.ttToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -56,7 +56,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnOK.Location = new System.Drawing.Point(460, 228);
+            this.btnOK.Location = new System.Drawing.Point(479, 228);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 7;
@@ -69,7 +69,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(277, 27);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(94, 13);
+            this.label1.Size = new System.Drawing.Size(92, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Microsoft NodeXL";
             // 
@@ -106,20 +106,20 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(157, 13);
+            this.label3.Size = new System.Drawing.Size(179, 13);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Questions, comments?  Contact";
+            this.label3.Text = "Questions, comments?  Please go to";
             // 
-            // lnkContact
+            // lnkDiscussionUrl
             // 
-            this.lnkContact.AutoSize = true;
-            this.lnkContact.Location = new System.Drawing.Point(3, 13);
-            this.lnkContact.Name = "lnkContact";
-            this.lnkContact.Size = new System.Drawing.Size(90, 13);
-            this.lnkContact.TabIndex = 5;
-            this.lnkContact.TabStop = true;
-            this.lnkContact.Text = "[Gets set in code]";
-            this.lnkContact.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkContact_LinkClicked);
+            this.lnkDiscussionUrl.AutoSize = true;
+            this.lnkDiscussionUrl.Location = new System.Drawing.Point(3, 13);
+            this.lnkDiscussionUrl.Name = "lnkDiscussionUrl";
+            this.lnkDiscussionUrl.Size = new System.Drawing.Size(90, 13);
+            this.lnkDiscussionUrl.TabIndex = 5;
+            this.lnkDiscussionUrl.TabStop = true;
+            this.lnkDiscussionUrl.Text = "[Gets set in code]";
+            this.lnkDiscussionUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkDiscussionUrl_LinkClicked);
             // 
             // btnEnableAllNotifications
             // 
@@ -135,10 +135,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.label3);
-            this.flowLayoutPanel1.Controls.Add(this.lnkContact);
+            this.flowLayoutPanel1.Controls.Add(this.lnkDiscussionUrl);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(277, 170);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(258, 49);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(277, 49);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
             // flowLayoutPanel2
@@ -148,7 +148,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.flowLayoutPanel2.Controls.Add(this.label4);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(277, 115);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(258, 41);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(277, 41);
             this.flowLayoutPanel2.TabIndex = 9;
             // 
             // label2
@@ -167,7 +167,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkTeam.Location = new System.Drawing.Point(79, 0);
             this.lnkTeam.Margin = new System.Windows.Forms.Padding(0);
             this.lnkTeam.Name = "lnkTeam";
-            this.lnkTeam.Size = new System.Drawing.Size(74, 13);
+            this.lnkTeam.Size = new System.Drawing.Size(72, 13);
             this.lnkTeam.TabIndex = 1;
             this.lnkTeam.TabStop = true;
             this.lnkTeam.Text = "NodeXL team";
@@ -176,7 +176,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 13);
+            this.label4.Location = new System.Drawing.Point(154, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(111, 13);
             this.label4.TabIndex = 2;
@@ -188,7 +188,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(550, 263);
+            this.ClientSize = new System.Drawing.Size(566, 263);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.btnEnableAllNotifications);
@@ -220,7 +220,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label lblCopyright;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.LinkLabel lnkContact;
+        private System.Windows.Forms.LinkLabel lnkDiscussionUrl;
         private System.Windows.Forms.Button btnEnableAllNotifications;
         private System.Windows.Forms.ToolTip ttToolTip;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;

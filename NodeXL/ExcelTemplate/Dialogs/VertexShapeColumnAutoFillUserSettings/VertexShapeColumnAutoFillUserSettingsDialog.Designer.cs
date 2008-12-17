@@ -57,7 +57,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexShape.FormattingEnabled = true;
             this.cbxVertexShape.Location = new System.Drawing.Point(12, 82);
             this.cbxVertexShape.Name = "cbxVertexShape";
-            this.cbxVertexShape.Size = new System.Drawing.Size(86, 21);
+            this.cbxVertexShape.Size = new System.Drawing.Size(133, 21);
             this.cbxVertexShape.TabIndex = 4;
             // 
             // label1

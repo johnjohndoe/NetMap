@@ -145,7 +145,6 @@
     <Compile Include="LayoutManagers\LayoutManagerForMenu.cs" />
     <Compile Include="LayoutManagers\LayoutType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\AssemblyUtil2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Control\Control.csproj">

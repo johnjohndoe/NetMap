@@ -48,7 +48,7 @@ public class NumericFilterParametersTest : Object
     SetUp()
     {
         m_oNumericFilterParameters = new NumericFilterParameters(
-			ColumnName, MinimumCellValue, MaximumCellValue);
+			ColumnName, MinimumCellValue, MaximumCellValue, DecimalPlaces);
     }
 
     //*************************************************************************
@@ -87,6 +87,9 @@ public class NumericFilterParametersTest : Object
 
 		Assert.AreEqual(MaximumCellValue,
 			m_oNumericFilterParameters.MaximumCellValue);
+
+        Assert.AreEqual(DecimalPlaces,
+            m_oNumericFilterParameters.DecimalPlaces);
     }
 
 
@@ -100,6 +103,8 @@ public class NumericFilterParametersTest : Object
 	protected const Double MinimumCellValue = -123.456;
 	///
 	protected const Double MaximumCellValue = 987.654;
+    ///
+    protected const Int32 DecimalPlaces = 8;
 
 
     //*************************************************************************

@@ -122,16 +122,16 @@
 
 In a directed graph, "A,B" and "B,A" are different edges.  In an undirected graph, they are the same edge.
 
-Arrows are included on the edges in a directed graph.  You can set the arrow size by clicking Options in the .NetMap graph pane.
+Arrows are included on the edges in a directed graph.  You can set the arrow size by clicking Options in the NodeXL graph pane.
 
 Graph metrics are calculated differently for directed and undirected graphs.</value>
   </data>
   <data name="btnToggleGraphVisibility.SuperTip" xml:space="preserve">
-    <value>Show or hide the .NetMap graph pane.
+    <value>Show or hide the NodeXL graph pane.
 
-The .NetMap graph pane appears at the right edge of the Excel window by default.  Use this button to hide it.
+The NodeXL graph pane appears at the right edge of the Excel window by default.  Use this button to hide it.
 
-You can move the .NetMap graph pane by clicking and dragging the pane's title bar.  (The title bar says "Document Actions," but that's only because Excel doesn't allow the title to be changed.)  The dragging behavior is finicky, so it might take some practice.
+You can move the NodeXL graph pane by clicking and dragging the pane's title bar.  (The title bar says "Document Actions," but that's only because Excel doesn't allow the title to be changed.)  The dragging behavior is finicky, so it might take some practice.
 </value>
   </data>
   <data name="btnEditAutoFillUserSettings.SuperTip" xml:space="preserve">
@@ -169,14 +169,18 @@ The clusters are indicated by vertex color and shape when the workbook is read i
 
 The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Create Clusters will clear any manually-entered clusters.
 
-The Show Clusters checkbox must be checked if you want the clusters to be read when the workbook is read into the graph.</value>
+The Show Clusters checkbox must be checked if you want the clusters to be read when the workbook is read into the graph.
+
+Create Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
   <data name="chkReadClusters.SuperTip" xml:space="preserve">
     <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
 	
 When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
 	
-You can fill in these worksheets manually, or click the Create Clusters button to fill them in automatically.  Create Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.</value>
+You can fill in these worksheets manually, or click the Create Clusters button to fill them in automatically.  Create Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
+
+Create Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
   <data name="btnImportPajekFile.SuperTip" xml:space="preserve">
     <value>Import edge and vertex lists from a Pajek text file.

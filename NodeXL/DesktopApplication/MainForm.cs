@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.NodeXL.ApplicationUtil;
 using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Common;
 
 namespace Microsoft.NodeXL.DesktopApplication
 {

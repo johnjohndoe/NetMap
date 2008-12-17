@@ -35,6 +35,18 @@ public class NodeXLControl : FrameworkElement
     {
 		m_oGraph = new Graph();
         m_oGraphVisualCollection = new GraphVisualCollection(m_oGraph, this);
+		m_oAsyncLayout = new FruchtermanReingoldLayout();
+
+		m_oAsyncLayout.LayOutGraphIterationCompleted +=
+			new EventHandler(this.AsyncLayout_LayOutGraphIterationCompleted);
+
+		m_oAsyncLayout.LayOutGraphCompleted +=
+			new AsyncCompletedEventHandler(
+				this.AsyncLayout_LayOutGraphCompleted);
+
+		m_eLayoutState = LayoutState.Stable;
+
+		this.AddLogicalChild(m_oGraphVisualCollection.VisualCollection);
 
 		if (
 			this.SelectionChanged != null &&
@@ -519,7 +531,12 @@ public class NodeXLControl : FrameworkElement
 	{
 		AssertValid();
 
-		// TODO
+		// TODO: Guard against IsBusy.
+
+		// Start laying out the graph.
+
+		m_eLayoutState = LayoutState.LayoutRequired;
+		this.InvalidateVisual();
 	}
 
 	//*************************************************************************
@@ -933,6 +950,54 @@ public class NodeXLControl : FrameworkElement
 
 
 	//*************************************************************************
+	//  Enum: LayoutState
+	//
+	/// <summary>
+	/// Indicates the state of the graph's layout.
+	/// </summary>
+	//*************************************************************************
+
+	protected enum
+	LayoutState
+	{
+		/// <summary>
+		/// The graph is empty, or it's layout is complete and
+		/// m_oGraphVisualCollection has been populated with the graph's
+		/// contents.
+		/// </summary>
+
+		Stable,
+
+		/// <summary>
+		/// The graph needs to be laid out.
+		/// </summary>
+
+		LayoutRequired,
+
+		/// <summary>
+		/// The graph is being asynchronously laid out.
+		/// </summary>
+
+		LayingOut,
+
+		/// <summary>
+		/// An iteration of the asynchronous layout has completed and now the
+		/// m_oGraphVisualCollection needs to be populated with the graph's
+		/// contents.
+		/// </summary>
+
+		LayoutIterationCompleted,
+
+		/// <summary>
+		/// The asynchronous layout has completed and now the
+		/// m_oGraphVisualCollection needs to be populated with the graph's
+		/// contents.
+		/// </summary>
+
+		LayoutCompleted,
+	}
+
+	//*************************************************************************
 	//	Property: ClassName
 	//
 	/// <summary>
@@ -1029,6 +1094,56 @@ public class NodeXLControl : FrameworkElement
 	}
 
     //*************************************************************************
+    //  Method: OnInitialized()
+    //
+    /// <summary>
+	/// Raises the Initialized event. 
+    /// </summary>
+	///
+	/// <param name="e">
+	/// Standard event arguments.
+	/// </param>
+    //*************************************************************************
+
+	protected override void
+	OnInitialized
+	(
+		EventArgs e
+	)
+	{
+		AssertValid();
+
+		Debug.WriteLine("TODO: OnInitialized()");
+	}
+
+    //*************************************************************************
+    //  Method: OnRenderSizeChanged()
+    //
+    /// <summary>
+	/// Raises the SizeChanged event, using the specified information as part
+	/// of the eventual event data.
+    /// </summary>
+	///
+	/// <param name="sizeInfo">
+	/// Details of the old and new size involved in the change.
+	/// </param>
+    //*************************************************************************
+
+	protected override void
+	OnRenderSizeChanged
+	(
+		SizeChangedInfo sizeInfo
+	)
+	{
+		AssertValid();
+
+		Debug.WriteLine("TODO: OnRenderSizeChanged()");
+		Debug.WriteLine("TODO: sizeInfo.NewSize = " + sizeInfo.NewSize);
+
+		base.OnRenderSizeChanged(sizeInfo);
+	}
+
+    //*************************************************************************
     //  Method: OnRender()
     //
     /// <summary>
@@ -1049,13 +1164,143 @@ public class NodeXLControl : FrameworkElement
 	{
 		AssertValid();
 
-		// TODO
+		Debug.WriteLine("TODO: OnRender(), m_eLayoutState = " + m_eLayoutState);
 
-        m_oGraphVisualCollection.Populate( new RectangleF(
+		RectangleF oGraphRectangleF = new RectangleF(
 			System.Drawing.PointF.Empty,
 			new System.Drawing.SizeF(
 				(Single)this.ActualWidth, (Single)this.ActualHeight)
-			) );
+			);
+
+		switch (m_eLayoutState)
+		{
+			case LayoutState.Stable:
+
+				break;
+
+			case LayoutState.LayoutRequired:
+
+				Debug.Assert(!m_oAsyncLayout.IsBusy);
+
+				Rectangle oGraphRectangle =
+					Rectangle.Truncate(oGraphRectangleF);
+
+				LayoutContext oLayoutContext =
+					new LayoutContext(oGraphRectangle);
+
+				m_eLayoutState = LayoutState.LayingOut;
+
+				m_oAsyncLayout.LayOutGraphAsync(m_oGraph, oLayoutContext);
+
+				break;
+
+			case LayoutState.LayingOut:
+
+				break;
+
+			case LayoutState.LayoutIterationCompleted:
+
+				m_oGraphVisualCollection.Populate(oGraphRectangleF);
+
+				m_eLayoutState = LayoutState.LayingOut;
+
+				break;
+
+			case LayoutState.LayoutCompleted:
+
+				m_oGraphVisualCollection.Populate(oGraphRectangleF);
+
+				m_eLayoutState = LayoutState.Stable;
+
+				break;
+
+			default:
+
+				Debug.Assert(false);
+				break;
+		}
+	}
+
+    //*************************************************************************
+    //  Method: AsyncLayout_LayOutGraphIterationCompleted()
+    //
+    /// <summary>
+	/// Handles the LayOutGraphIterationCompleted event on the m_oAsyncLayout
+	/// object.
+    /// </summary>
+	///
+	/// <param name="oSender">
+	/// Standard event argument.
+	/// </param>
+	///
+	/// <param name="oEventArgs">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+	protected void
+    AsyncLayout_LayOutGraphIterationCompleted
+	(
+		Object oSender,
+		EventArgs oEventArgs
+	)
+	{
+		AssertValid();
+
+		Debug.WriteLine("TODO: AsyncLayout_LayOutGraphIterationCompleted()");
+
+		// An iteration of the asynchronous layout has completed and now the
+		// m_oGraphVisualCollection needs to be populated with the graph's
+		// contents.
+
+		m_eLayoutState = LayoutState.LayoutIterationCompleted;
+		this.InvalidateVisual();
+	}
+
+    //*************************************************************************
+    //  Method: AsyncLayout_LayOutGraphCompleted()
+    //
+    /// <summary>
+	/// Handles the LayOutGraphCompleted event on the m_oAsyncLayout object.
+    /// </summary>
+	///
+	/// <param name="oSender">
+	/// Standard event argument.
+	/// </param>
+	///
+	/// <param name="oAsyncCompletedEventArgs">
+	/// Standard event argument.
+	/// </param>
+    //*************************************************************************
+
+	protected void
+    AsyncLayout_LayOutGraphCompleted
+	(
+		Object oSender,
+		AsyncCompletedEventArgs oAsyncCompletedEventArgs
+	)
+	{
+		AssertValid();
+
+		Debug.WriteLine("TODO: AsyncLayout_LayOutGraphCompleted()");
+
+		if (oAsyncCompletedEventArgs.Error != null)
+		{
+			// TODO
+		}
+		else if (oAsyncCompletedEventArgs.Cancelled)
+		{
+			// TODO
+		}
+		else
+		{
+			// The asynchronous layout has completed and now the
+			// m_oGraphVisualCollection needs to be populated with the graph's
+			// contents.
+
+			m_eLayoutState = LayoutState.LayoutCompleted;
+			this.InvalidateVisual();
+		}
 	}
 
 
@@ -1074,6 +1319,8 @@ public class NodeXLControl : FrameworkElement
     {
 		Debug.Assert(m_oGraph != null);
 		Debug.Assert(m_oGraphVisualCollection != null);
+		Debug.Assert(m_oAsyncLayout != null);
+		// m_eLayoutState
     }
 
 
@@ -1089,6 +1336,14 @@ public class NodeXLControl : FrameworkElement
 	/// vertices and edges.
 
 	protected GraphVisualCollection m_oGraphVisualCollection;
+
+	/// Object used to lay out the graph.
+
+	protected IAsyncLayout m_oAsyncLayout;
+
+	/// Indicates the state of the graph's layout.
+
+	protected LayoutState m_eLayoutState;
 }
 
 }

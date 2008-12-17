@@ -182,56 +182,6 @@ public class GraphVisualCollection : Object
 		}
 
 		m_oVisualCollection.Add(m_oVertexDrawingVisual);
-
-
-		#if false
-
-		// Draw a line between the first vertex and every other vertex.
-		// These lines do not need to be individually hit-tested, so put
-		// them all in the same DrawingVisual.  (The lines are drawn first
-		// to make the vertices cover the ends of the lines.)
-
-		DrawingVisual oLineDrawingVisual = new DrawingVisual();
-		DrawingContext oDrawingContext = oLineDrawingVisual.RenderOpen();
-
-		Int32 iMaxVertexX = (Int32)graphRectangle.Width - 10;
-
-		Point oFirstVertexLocation = GetVertexLocation(0, iMaxVertexX);
-
-		for (Int32 i = 1; i < Vertices; i++)
-		{
-			oDrawingContext.DrawLine( oEdgePen,
-				oFirstVertexLocation,
-				GetVertexLocation(i, iMaxVertexX) );
-		}
-
-		oDrawingContext.Close();
-		m_oVisualCollection.Add(oLineDrawingVisual);
-
-		// Draw the vertices.  Each vertex needs to be individually
-		// hit-tested, so put each one in its own DrawingVisual.
-
-		m_oVertexDrawingVisual = new DrawingVisual();
-
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			DrawingVisual oVertexChildDrawingVisual = new DrawingVisual();
-			oDrawingContext = oVertexChildDrawingVisual.RenderOpen();
-
-			oDrawingContext.DrawEllipse(oBrush, oVertexPen,
-				GetVertexLocation(i, iMaxVertexX), VertexRadius,
-				VertexRadius);
-
-			oDrawingContext.Close();
-			m_oVertexDrawingVisual.Children.Add(oVertexChildDrawingVisual);
-		}
-
-		m_oVisualCollection.Add(m_oVertexDrawingVisual);
-
-		Debug.WriteLine("Milliseconds : " +
-			(DateTime.Now - oStartTime).TotalMilliseconds);
-
-		#endif
     }
 
     //*************************************************************************
@@ -259,35 +209,6 @@ public class GraphVisualCollection : Object
 		// TODO
     }
 
-		/// <summary>
-		/// TODO: Temporary
-		/// </summary>
-
-		protected Point
-		GetVertexLocation
-		(
-			Int32 iIndex,
-			Int32 iMaxVertexX
-		)
-		{
-			// Lay out the vertices in a simple grid for now.
-
-			Int32 iX = FirstVertexX;
-			Int32 iY = FirstVertexY;
-
-			if (iIndex > 0)
-			{
-				Int32 iMultiplier = iIndex * DistanceBetweenVertices;
-
-				iX += iMultiplier % iMaxVertexX;
-
-				iY += ( 1 + (iMultiplier / iMaxVertexX) )
-					* DistanceBetweenVertices;
-			}
-
-			return ( new Point(iX, iY) );
-		}
-
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -313,15 +234,7 @@ public class GraphVisualCollection : Object
     //*************************************************************************
 
 	/// TODO
-	protected const Int32 Vertices = 2000;
-	/// TODO
-	protected const Single VertexRadius = 4F;
-	/// TODO
-	protected const Int32 FirstVertexX = 10;
-	/// TODO
-	protected const Int32 FirstVertexY = 10;
-	/// TODO
-	protected const Int32 DistanceBetweenVertices = 10;
+	protected const Single VertexRadius = 3F;
 
 
     //*************************************************************************

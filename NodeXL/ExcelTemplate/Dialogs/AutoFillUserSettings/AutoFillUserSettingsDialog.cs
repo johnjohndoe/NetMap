@@ -192,6 +192,7 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 				EdgeTableColumnNames.Alpha,
 				EdgeTableColumnNames.Visibility,
 				CommonTableColumnNames.ID,
+				CommonTableColumnNames.AddColumnsHere,
 				};
 
 			String [] asEdgeTableColumnNameBasesToExclude = new String [] {};
@@ -268,6 +269,7 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 				VertexTableColumnNames.Y,
 				VertexTableColumnNames.SubgraphImage,
 				CommonTableColumnNames.ID,
+                CommonTableColumnNames.AddColumnsHere,
 				};
 
 			String [] asVertexTableColumnNameBasesToExclude = new String [] {

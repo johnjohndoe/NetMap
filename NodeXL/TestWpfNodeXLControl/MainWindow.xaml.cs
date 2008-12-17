@@ -30,7 +30,7 @@ public partial class MainWindow : Window
 		Double dHeight = this.Height;
 		Random oRandom = new Random();
 
-		Int32 Vertices = 20;
+		Int32 Vertices = 1500;
 
 		IVertex oFirstVertex = oVertices.Add();
 

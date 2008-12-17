@@ -229,11 +229,11 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
 
 			txbSourceNumber1.Text =
 				m_oNumericRangeColumnAutoFillUserSettings.SourceNumber1.
-					ToString(ExcelTemplateForm.DoubleFormat);
+					ToString();
 
 			txbSourceNumber2.Text =
 				m_oNumericRangeColumnAutoFillUserSettings.SourceNumber2.
-					ToString(ExcelTemplateForm.DoubleFormat);
+					ToString();
 
 			nudDestinationNumber1.Value = (Decimal)
 				m_oNumericRangeColumnAutoFillUserSettings.DestinationNumber1;

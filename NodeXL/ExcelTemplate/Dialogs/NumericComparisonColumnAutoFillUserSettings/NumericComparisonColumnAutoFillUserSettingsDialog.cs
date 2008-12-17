@@ -175,8 +175,7 @@ public partial class NumericComparisonColumnAutoFillUserSettingsDialog :
 
 			txbSourceNumber.Text =
 				m_oNumericComparisonColumnAutoFillUserSettings.
-					SourceNumberToCompareTo.ToString(
-						ExcelTemplateForm.DoubleFormat);
+					SourceNumberToCompareTo.ToString();
 		}
 
 		return (true);

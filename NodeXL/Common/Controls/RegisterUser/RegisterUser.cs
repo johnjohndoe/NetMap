@@ -203,11 +203,19 @@ public partial class RegisterUser : UserControl
 			+ " individuals or organizations.  This list is only for the"
 			+ " NodeXL project."
 			+ "\r\n\r\n"
-			+ "For more information, please contact {0}."
+			+ "The following information will be registered:"
 			+ "\r\n\r\n"
-			+ "(Last updated December 1, 2008.)"
+			+ "1. Your email address"
+			+ "\r\n"
+			+ "2. The version number of NodeXL"
+			+ "\r\n"
+			+ "3. The time you registered"
+			+ "\r\n\r\n"
+			+ "If you have questions or comments, please go to {0}."
+			+ "\r\n\r\n"
+			+ "(Last updated December 15, 2008.)"
 			,
-			ProjectInformation.BugReportEmailAddress
+			ProjectInformation.DiscussionUrl
 			) );
     }
 

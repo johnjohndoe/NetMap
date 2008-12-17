@@ -59,14 +59,14 @@ public static class ErrorUtil
 
 			"An unexpected problem occurred.  If it occurs again, please"
 			+ " copy the details to the clipboard by typing Ctrl-C, then"
-			+ " email the details to {0}."
+			+ " post the details to {0}."
 			+ "\r\n\r\n"
 			+ "Details:\r\n\r\n"
 			+ "{1}"
 			+ "\r\n\r\n"
 			+ "{2}"
 			,
-			ProjectInformation.BugReportEmailAddress,
+			ProjectInformation.DiscussionUrl,
 			ExceptionUtil.GetMessageTrace(exception),
 			exception.StackTrace
 			) );

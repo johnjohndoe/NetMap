@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace Microsoft.NodeXL.ApplicationUtil
+namespace Microsoft.NodeXL.Common
 {
 //*****************************************************************************
 //  Class: AssemblyUtil2

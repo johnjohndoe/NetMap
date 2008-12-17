@@ -188,12 +188,10 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
 				m_oColorColumnAutoFillUserSettings.UseSourceNumber2;
 
 			txbSourceNumber1.Text =
-				m_oColorColumnAutoFillUserSettings.SourceNumber1.ToString(
-					ExcelTemplateForm.DoubleFormat);
+				m_oColorColumnAutoFillUserSettings.SourceNumber1.ToString();
 
 			txbSourceNumber2.Text =
-				m_oColorColumnAutoFillUserSettings.SourceNumber2.ToString(
-					ExcelTemplateForm.DoubleFormat);
+				m_oColorColumnAutoFillUserSettings.SourceNumber2.ToString();
 
 			cbxDestinationColor1.SelectedValue =
 				m_oColorColumnAutoFillUserSettings.DestinationColor1;

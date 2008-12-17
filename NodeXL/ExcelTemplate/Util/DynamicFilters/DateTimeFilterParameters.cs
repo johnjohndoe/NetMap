@@ -64,7 +64,7 @@ public class DateTimeFilterParameters : NumericFilterParameters
 		Double maximumCellValue,
 		ExcelColumnFormat format
 	)
-	: base(columnName, minimumCellValue, maximumCellValue)
+	: base(columnName, minimumCellValue, maximumCellValue, 0)
     {
 		m_eFormat = format;
 

@@ -59,13 +59,13 @@ public partial class AboutDialog : ExcelTemplateForm
 			DateTime.Now.Year
 			);
 
-		lnkContact.Text = ProjectInformation.BugReportEmailAddress;
+		lnkDiscussionUrl.Text = ProjectInformation.DiscussionUrl;
 
-		ttToolTip.SetToolTip(lnkContact, String.Format(
+		ttToolTip.SetToolTip(lnkDiscussionUrl, String.Format(
 		
-			"Send an email to {0}"
+			"Go to {0}"
 			,
-			ProjectInformation.BugReportEmailAddress
+			ProjectInformation.DiscussionUrl
 			) );
 
 		// AssertValid();
@@ -105,10 +105,10 @@ public partial class AboutDialog : ExcelTemplateForm
     }
 
 	//*************************************************************************
-	//	Method: lnkContact_LinkClicked()
+	//	Method: lnkDiscussionUrl_LinkClicked()
 	//
 	/// <summary>
-	///	Handles the LinkClicked event on the lnkContact LinkLabel.
+	///	Handles the LinkClicked event on the lnkDiscussionUrl LinkLabel.
 	/// </summary>
 	///
 	/// <param name="sender">
@@ -121,7 +121,7 @@ public partial class AboutDialog : ExcelTemplateForm
 	//*************************************************************************
 
     private void
-	lnkContact_LinkClicked
+	lnkDiscussionUrl_LinkClicked
 	(
 		object sender,
 		LinkLabelLinkClickedEventArgs e
@@ -129,9 +129,7 @@ public partial class AboutDialog : ExcelTemplateForm
     {
 		AssertValid();
 
-		System.Diagnostics.Process.Start(
-			"mailto:" + ProjectInformation.BugReportEmailAddress
-			);
+		System.Diagnostics.Process.Start(ProjectInformation.DiscussionUrl);
     }
 
 	//*************************************************************************
@@ -236,7 +234,7 @@ public partial class AboutDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AboutDialog3") ]
+[ SettingsGroupNameAttribute("AboutDialog4") ]
 
 public class AboutDialogUserSettings : FormSettings
 {

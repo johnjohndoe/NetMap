@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -17,7 +17,7 @@ using System.Diagnostics;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: AnalyzeTwitterNetworkDialog
+//  Class: AnalyzeTwitterNetworkDialog
 //
 /// <summary>
 /// Dialog that analyzes a Twitter network and writes the results to the edge
@@ -33,826 +33,826 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
 {
-	//*************************************************************************
-	//	Constructor: AnalyzeTwitterNetworkDialog()
-	//
-	/// <overloads>
-	///	Initializes a new instance of the <see
-	/// cref="AnalyzeTwitterNetworkDialog" /> class.
-	/// </overloads>
-	///
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="AnalyzeTwitterNetworkDialog" /> class with a workbook.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Constructor: AnalyzeTwitterNetworkDialog()
+    //
+    /// <overloads>
+    /// Initializes a new instance of the <see
+    /// cref="AnalyzeTwitterNetworkDialog" /> class.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="AnalyzeTwitterNetworkDialog" /> class with a workbook.
+    /// </summary>
+    ///
     /// <param name="workbook">
-	/// Workbook containing the graph data.
+    /// Workbook containing the graph data.
     /// </param>
-	//*************************************************************************
+    //*************************************************************************
 
-	public AnalyzeTwitterNetworkDialog
-	(
+    public AnalyzeTwitterNetworkDialog
+    (
         Microsoft.Office.Interop.Excel.Workbook workbook
-	)
-	: this()
-	{
-		// Instantiate an object that saves and retrieves the user settings for
-		// this dialog.  Note that the object automatically saves the settings
-		// when the form closes.
+    )
+    : this()
+    {
+        // Instantiate an object that saves and retrieves the user settings for
+        // this dialog.  Note that the object automatically saves the settings
+        // when the form closes.
 
-		m_oAnalyzeTwitterNetworkDialogUserSettings =
-			new AnalyzeTwitterNetworkDialogUserSettings(this);
+        m_oAnalyzeTwitterNetworkDialogUserSettings =
+            new AnalyzeTwitterNetworkDialogUserSettings(this);
 
-		m_sCredentialsPassword = String.Empty;
+        m_sCredentialsPassword = String.Empty;
 
-		m_oWorkbook = workbook;
+        m_oWorkbook = workbook;
 
-		m_oTwitterNetworkAnalyzer = new TwitterNetworkAnalyzer();
+        m_oTwitterNetworkAnalyzer = new TwitterNetworkAnalyzer();
 
-		m_oTwitterNetworkAnalyzer.HttpWebRequestTimeoutMs =
-			HttpWebRequestTimeoutMs;
+        m_oTwitterNetworkAnalyzer.HttpWebRequestTimeoutMs =
+            HttpWebRequestTimeoutMs;
 
-		m_oTwitterNetworkAnalyzer.AnalysisCompleted +=
-			new RunWorkerCompletedEventHandler(
-				TwitterNetworkAnalyzer_AnalysisCompleted);
+        m_oTwitterNetworkAnalyzer.AnalysisCompleted +=
+            new RunWorkerCompletedEventHandler(
+                TwitterNetworkAnalyzer_AnalysisCompleted);
 
-		m_oEdgeTable = null;
+        m_oEdgeTable = null;
 
-		DoDataExchange(false);
+        DoDataExchange(false);
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
-	//*************************************************************************
-	//	Constructor: AnalyzeTwitterNetworkDialog()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="AnalyzeTwitterNetworkDialog" /> class for the Visual Studio
-	/// designer.
-	/// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for use by the Visual Studio
-	/// designer only.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: AnalyzeTwitterNetworkDialog()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="AnalyzeTwitterNetworkDialog" /> class for the Visual Studio
+    /// designer.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for use by the Visual Studio
+    /// designer only.
+    /// </remarks>
+    //*************************************************************************
 
-	public AnalyzeTwitterNetworkDialog()
-	{
-		InitializeComponent();
+    public AnalyzeTwitterNetworkDialog()
+    {
+        InitializeComponent();
 
-		// AssertValid();
-	}
+        // AssertValid();
+    }
 
-	//*************************************************************************
-	//	Method: DoDataExchange()
-	//
-	/// <summary>
-	///	Transfers data between the dialog's fields and its controls.
-	/// </summary>
-	///
-	/// <param name="bFromControls">
-	///	true to transfer data from the dialog's controls to its fields, false
-	///	for the other direction.
-	/// </param>
-	///
-	/// <returns>
-	///	true if the transfer was successful.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: DoDataExchange()
+    //
+    /// <summary>
+    /// Transfers data between the dialog's fields and its controls.
+    /// </summary>
+    ///
+    /// <param name="bFromControls">
+    /// true to transfer data from the dialog's controls to its fields, false
+    /// for the other direction.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the transfer was successful.
+    /// </returns>
+    //*************************************************************************
 
-	protected Boolean
-	DoDataExchange
-	(
-		Boolean bFromControls
-	)
-	{
-		if (bFromControls)
-		{
-			// Validate the controls.
+    protected Boolean
+    DoDataExchange
+    (
+        Boolean bFromControls
+    )
+    {
+        if (bFromControls)
+        {
+            // Validate the controls.
 
-			String sScreenNameToAnalyze;
+            String sScreenNameToAnalyze;
 
-			if ( !ValidateRequiredTextBox(txbScreenNameToAnalyze,
-				"Enter the screen name of a Twitter user.",
-				out sScreenNameToAnalyze) )
-			{
-				return (false);
-			}
+            if ( !ValidateRequiredTextBox(txbScreenNameToAnalyze,
+                "Enter the screen name of a Twitter user.",
+                out sScreenNameToAnalyze) )
+            {
+                return (false);
+            }
 
-			String sCredentialsScreenName =
-				txbCredentialsScreenName.Text.Trim();
+            String sCredentialsScreenName =
+                txbCredentialsScreenName.Text.Trim();
 
-			if ( !String.IsNullOrEmpty(sCredentialsScreenName) )
-			{
-				txbCredentialsScreenName.Text = sCredentialsScreenName;
+            if ( !String.IsNullOrEmpty(sCredentialsScreenName) )
+            {
+                txbCredentialsScreenName.Text = sCredentialsScreenName;
 
-				if ( !ValidateRequiredTextBox(txbCredentialsPassword,
+                if ( !ValidateRequiredTextBox(txbCredentialsPassword,
 
-					"If you want to use your Twitter account information, you"
-					+ " must enter a password.  Otherwise, clear your Twitter"
-					+ " screen name."
-					,
-					out m_sCredentialsPassword) )
-				{
-					return (false);
-				}
-			}
-			else
-			{
-				sCredentialsScreenName = null;
-				m_sCredentialsPassword = null;
-			}
+                    "If you want to use your Twitter account information, you"
+                    + " must enter a password.  Otherwise, clear your Twitter"
+                    + " screen name."
+                    ,
+                    out m_sCredentialsPassword) )
+                {
+                    return (false);
+                }
+            }
+            else
+            {
+                sCredentialsScreenName = null;
+                m_sCredentialsPassword = null;
+            }
 
-			m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze =
-				sScreenNameToAnalyze;
+            m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze =
+                sScreenNameToAnalyze;
 
-			m_oAnalyzeTwitterNetworkDialogUserSettings.Levels =
-				cbxAnalyzeTwoLevels.Checked ? 2 : 1;
+            m_oAnalyzeTwitterNetworkDialogUserSettings.Levels =
+                cbxAnalyzeTwoLevels.Checked ? 2 : 1;
 
-			m_oAnalyzeTwitterNetworkDialogUserSettings.CredentialsScreenName =
-				sCredentialsScreenName;
+            m_oAnalyzeTwitterNetworkDialogUserSettings.CredentialsScreenName =
+                sCredentialsScreenName;
 
-			m_oAnalyzeTwitterNetworkDialogUserSettings.PopulatePrimaryLabels =
-				cbxPopulatePrimaryLabels.Checked;
-		}
-		else
-		{
-			txbScreenNameToAnalyze.Text =
-				m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze;
+            m_oAnalyzeTwitterNetworkDialogUserSettings.PopulatePrimaryLabels =
+                cbxPopulatePrimaryLabels.Checked;
+        }
+        else
+        {
+            txbScreenNameToAnalyze.Text =
+                m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze;
 
-			cbxAnalyzeTwoLevels.Checked =
-				(m_oAnalyzeTwitterNetworkDialogUserSettings.Levels == 2);
+            cbxAnalyzeTwoLevels.Checked =
+                (m_oAnalyzeTwitterNetworkDialogUserSettings.Levels == 2);
 
-			txbCredentialsScreenName.Text =
-				m_oAnalyzeTwitterNetworkDialogUserSettings.
-					CredentialsScreenName;
+            txbCredentialsScreenName.Text =
+                m_oAnalyzeTwitterNetworkDialogUserSettings.
+                    CredentialsScreenName;
 
-			txbCredentialsPassword.Text = m_sCredentialsPassword;
+            txbCredentialsPassword.Text = m_sCredentialsPassword;
 
-			cbxPopulatePrimaryLabels.Checked =
-				m_oAnalyzeTwitterNetworkDialogUserSettings.
-					PopulatePrimaryLabels;
+            cbxPopulatePrimaryLabels.Checked =
+                m_oAnalyzeTwitterNetworkDialogUserSettings.
+                    PopulatePrimaryLabels;
 
-			EnableControls();
-		}
+            EnableControls();
+        }
 
-		return (true);
-	}
+        return (true);
+    }
 
     //*************************************************************************
     //  Method: StartAnalysis()
     //
     /// <summary>
-	/// Starts the Twitter analysis.
+    /// Starts the Twitter analysis.
     /// </summary>
-	///
-	/// <remarks>
-	/// It's assumed that m_oAnalyzeTwitterNetworkDialogUserSettings contains
-	/// valid settings.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// It's assumed that m_oAnalyzeTwitterNetworkDialogUserSettings contains
+    /// valid settings.
+    /// </remarks>
     //*************************************************************************
 
     protected void
-	StartAnalysis()
+    StartAnalysis()
     {
-		AssertValid();
+        AssertValid();
 
-		m_oTwitterNetworkAnalyzer.AnalyzeTwitterNetworkAsync(
-			m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze,
-			m_oAnalyzeTwitterNetworkDialogUserSettings.Levels,
-			m_oAnalyzeTwitterNetworkDialogUserSettings.CredentialsScreenName,
-			m_sCredentialsPassword
-			);
-	}
+        m_oTwitterNetworkAnalyzer.AnalyzeTwitterNetworkAsync(
+            m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze,
+            m_oAnalyzeTwitterNetworkDialogUserSettings.Levels,
+            m_oAnalyzeTwitterNetworkDialogUserSettings.CredentialsScreenName,
+            m_sCredentialsPassword
+            );
+    }
 
-	//*************************************************************************
-	//	Method: EnableControls()
-	//
-	/// <summary>
-	///	Enables or disables the dialog's controls.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: EnableControls()
+    //
+    /// <summary>
+    /// Enables or disables the dialog's controls.
+    /// </summary>
+    //*************************************************************************
 
-	protected void
-	EnableControls()
-	{
-		AssertValid();
+    protected void
+    EnableControls()
+    {
+        AssertValid();
 
-		Boolean bIsBusy = m_oTwitterNetworkAnalyzer.IsBusy;
+        Boolean bIsBusy = m_oTwitterNetworkAnalyzer.IsBusy;
 
-		btnAnalyze.Text = bIsBusy ? "Stop" : "Start";
-		EnableControls(!bIsBusy, pnlUserInputs);
-		this.UseWaitCursor = bIsBusy;
-	}
+        btnAnalyze.Text = bIsBusy ? "Stop" : "Start";
+        EnableControls(!bIsBusy, pnlUserInputs);
+        this.UseWaitCursor = bIsBusy;
+    }
 
     //*************************************************************************
     //  Method: OnLoad()
     //
     /// <summary>
-	/// Handles the Load event.
+    /// Handles the Load event.
     /// </summary>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected override void
-	OnLoad
-	(
-		EventArgs e
-	)
+    OnLoad
+    (
+        EventArgs e
+    )
     {
         AssertValid();
 
-		base.OnLoad(e);
+        base.OnLoad(e);
 
-		// Get the required edge table before the user does anything in the
-		// dialog.
+        // Get the required edge table before the user does anything in the
+        // dialog.
 
-		EdgeWorksheetReader oEdgeWorksheetReader = new EdgeWorksheetReader();
+        EdgeWorksheetReader oEdgeWorksheetReader = new EdgeWorksheetReader();
 
-		try
-		{
-			m_oEdgeTable = oEdgeWorksheetReader.GetEdgeTable(m_oWorkbook);
-		}
-		catch (Exception oException)
-		{
-			// The edge table couldn't be found.  Tell the user and close the
-			// dialog.
+        try
+        {
+            m_oEdgeTable = oEdgeWorksheetReader.GetEdgeTable(m_oWorkbook);
+        }
+        catch (Exception oException)
+        {
+            // The edge table couldn't be found.  Tell the user and close the
+            // dialog.
 
-			ErrorUtil.OnException(oException);
+            ErrorUtil.OnException(oException);
 
-			this.Close();
+            this.Close();
 
-			return;
-		}
+            return;
+        }
     }
 
     //*************************************************************************
     //  Method: OnAnalysisCompleted()
     //
     /// <summary>
-	/// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
-	/// object.
+    /// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
+    /// object.
     /// </summary>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	OnAnalysisCompleted
-	(
-		RunWorkerCompletedEventArgs e
-	)
-	{
-		AssertValid();
+    protected void
+    OnAnalysisCompleted
+    (
+        RunWorkerCompletedEventArgs e
+    )
+    {
+        AssertValid();
 
-		EnableControls();
-		btnAnalyze.Enabled = true;
+        EnableControls();
+        btnAnalyze.Enabled = true;
 
         if (e.Cancelled)
         {
-			// (Do nothing.)
+            // (Do nothing.)
         }
         else if (e.Error != null)
         {
-			OnAnalysisException(e);
+            OnAnalysisException(e);
         }
         else
         {
-			OnAnalysisSuccess(e);
+            OnAnalysisSuccess(e);
         }
-	}
+    }
 
     //*************************************************************************
     //  Method: OnAnalysisException()
     //
     /// <summary>
-	/// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
-	/// object when an exception occurs.
+    /// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
+    /// object when an exception occurs.
     /// </summary>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	OnAnalysisException
-	(
-		RunWorkerCompletedEventArgs e
-	)
-	{
-		AssertValid();
+    protected void
+    OnAnalysisException
+    (
+        RunWorkerCompletedEventArgs e
+    )
+    {
+        AssertValid();
 
-		Exception oException = e.Error;
+        Exception oException = e.Error;
 
-		String sMessage = null;
+        String sMessage = null;
 
-		const String TimeoutMessage =
-			"The Twitter Web service didn't respond.";
+        const String TimeoutMessage =
+            "The Twitter Web service didn't respond.";
 
-		if (oException is WebException)
-		{
-			WebException oWebException = (WebException)oException;
+        if (oException is WebException)
+        {
+            WebException oWebException = (WebException)oException;
 
-			if (oWebException.Response is HttpWebResponse)
-			{
-				HttpWebResponse oHttpWebResponse =
-					(HttpWebResponse)oWebException.Response;
+            if (oWebException.Response is HttpWebResponse)
+            {
+                HttpWebResponse oHttpWebResponse =
+                    (HttpWebResponse)oWebException.Response;
 
-				switch (oHttpWebResponse.StatusCode)
-				{
-					case HttpStatusCode.NotFound:  // HTTP 404.
+                switch (oHttpWebResponse.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:  // HTTP 404.
 
-						sMessage =
-							"There is no Twitter user with that screen name."
-							;
+                        sMessage =
+                            "There is no Twitter user with that screen name."
+                            ;
 
-						break;
+                        break;
 
-					case HttpStatusCode.RequestTimeout:  // HTTP 408.
+                    case HttpStatusCode.RequestTimeout:  // HTTP 408.
 
-						sMessage = TimeoutMessage;
+                        sMessage = TimeoutMessage;
 
-						break;
+                        break;
 
-					case HttpStatusCode.BadRequest:  // HTTP 400.
+                    case HttpStatusCode.BadRequest:  // HTTP 400.
 
-						sMessage = String.Format(
+                        sMessage = String.Format(
 
-							"The Twitter Web service refuses to provide any"
-							+ " more user information because {0} has made too"
-							+ " many requests in the last hour.  (Twitter"
-							+ " limits information requests to prevent its"
-							+ " service from being attacked.  Click the '{1}'"
-							+ " link for details.)"
-							+ "\r\n\r\n"
-							+ " Wait 60 minutes and try again."
-							,
-							ApplicationUtil.ApplicationName,
-							lnkRateLimiting.Text
-							);
+                            "The Twitter Web service refuses to provide any"
+                            + " more user information because {0} has made too"
+                            + " many requests in the last hour.  (Twitter"
+                            + " limits information requests to prevent its"
+                            + " service from being attacked.  Click the '{1}'"
+                            + " link for details.)"
+                            + "\r\n\r\n"
+                            + " Wait 60 minutes and try again."
+                            ,
+                            ApplicationUtil.ApplicationName,
+                            lnkRateLimiting.Text
+                            );
 
-						break;
+                        break;
 
-					case HttpStatusCode.Forbidden:  // HTTP 403.
+                    case HttpStatusCode.Forbidden:  // HTTP 403.
 
-						sMessage =
-							"The Twitter Web service refused to provide"
-							+ " information about the user."
-							;
+                        sMessage =
+                            "The Twitter Web service refused to provide"
+                            + " information about the user."
+                            ;
 
-						break;
+                        break;
 
-					default:
+                    default:
 
-						break;
-				}
-			}
-			else
-			{
-				switch (oWebException.Status)
-				{
-					case WebExceptionStatus.Timeout:
+                        break;
+                }
+            }
+            else
+            {
+                switch (oWebException.Status)
+                {
+                    case WebExceptionStatus.Timeout:
 
-						sMessage = TimeoutMessage;
+                        sMessage = TimeoutMessage;
 
-						break;
+                        break;
 
-					default:
+                    default:
 
-						break;
-				}
-			}
-		}
+                        break;
+                }
+            }
+        }
 
-		if (sMessage == null)
-		{
-			sMessage =
-				"The Twitter network information couldn't be obtained."
-				+ "\r\n\r\nDetails:\r\n\r\n"
-				+ ExceptionUtil.GetMessageTrace(oException)
-				;
-		}
+        if (sMessage == null)
+        {
+            sMessage =
+                "The Twitter network information couldn't be obtained."
+                + "\r\n\r\nDetails:\r\n\r\n"
+                + ExceptionUtil.GetMessageTrace(oException)
+                ;
+        }
 
-		this.ShowWarning(sMessage);
-	}
+        this.ShowWarning(sMessage);
+    }
 
     //*************************************************************************
     //  Method: OnAnalysisSuccess()
     //
     /// <summary>
-	/// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
-	/// object when the analysis is successful.
+    /// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
+    /// object when the analysis is successful.
     /// </summary>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	OnAnalysisSuccess
-	(
-		RunWorkerCompletedEventArgs e
-	)
-	{
-		Debug.Assert(e != null);
-		AssertValid();
+    protected void
+    OnAnalysisSuccess
+    (
+        RunWorkerCompletedEventArgs e
+    )
+    {
+        Debug.Assert(e != null);
+        AssertValid();
 
-		// Clear the required edge table and other optional tables.
+        // Clear the required edge table and other optional tables.
 
-		NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
+        NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
 
-		Debug.Assert(e.Result is TwitterNetworkAnalysisResults);
+        Debug.Assert(e.Result is TwitterNetworkAnalysisResults);
 
-		TwitterNetworkAnalysisResults oTwitterNetworkAnalysisResults =
-			(TwitterNetworkAnalysisResults)e.Result;
+        TwitterNetworkAnalysisResults oTwitterNetworkAnalysisResults =
+            (TwitterNetworkAnalysisResults)e.Result;
 
-		ParticipantPair [] aoParticipantPairs =
-			oTwitterNetworkAnalysisResults.ParticipantPairs;
+        ParticipantPair [] aoParticipantPairs =
+            oTwitterNetworkAnalysisResults.ParticipantPairs;
 
-		if (aoParticipantPairs.Length == 0)
-		{
-			this.ShowInformation(
-				"That Twitter user has no friends."
-				);
+        if (aoParticipantPairs.Length == 0)
+        {
+            this.ShowInformation(
+                "That Twitter user has no friends."
+                );
 
-			return;
-		}
+            return;
+        }
 
-		// Populate the edge table with participant pairs.
+        // Populate the edge table with participant pairs.
 
-		NodeXLWorkbookUtil.PopulateEdgeTableWithParticipantPairs(
-			m_oEdgeTable, aoParticipantPairs);
+        NodeXLWorkbookUtil.PopulateEdgeTableWithParticipantPairs(
+            m_oEdgeTable, aoParticipantPairs);
 
-		// Populate the vertex table with the screen name of each participant
-		// and optionally his latest post.
+        // Populate the vertex table with the screen name of each participant
+        // and optionally his latest post.
 
-		PopulateVertexTable(oTwitterNetworkAnalysisResults);
-	}
+        PopulateVertexTable(oTwitterNetworkAnalysisResults);
+    }
 
     //*************************************************************************
     //  Method: PopulateVertexTable()
     //
     /// <summary>
-	/// Populates the vertex table with the screen name of each participant and
-	/// optionally his latest post.
+    /// Populates the vertex table with the screen name of each participant and
+    /// optionally his latest post.
     /// </summary>
     ///
-	/// <param name="oTwitterNetworkAnalysisResults">
-	/// Results of the successful Twitter network analysis.
-	/// </param>
+    /// <param name="oTwitterNetworkAnalysisResults">
+    /// Results of the successful Twitter network analysis.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	PopulateVertexTable
-	(
-		TwitterNetworkAnalysisResults oTwitterNetworkAnalysisResults
-	)
-	{
-		Debug.Assert(oTwitterNetworkAnalysisResults != null);
-		AssertValid();
+    protected void
+    PopulateVertexTable
+    (
+        TwitterNetworkAnalysisResults oTwitterNetworkAnalysisResults
+    )
+    {
+        Debug.Assert(oTwitterNetworkAnalysisResults != null);
+        AssertValid();
 
-		// Populate the vertex table with the screen name of each participant.
+        // Populate the vertex table with the screen name of each participant.
 
-		VertexWorksheetPopulator oVertexWorksheetPopulator =
-			new VertexWorksheetPopulator();
+        VertexWorksheetPopulator oVertexWorksheetPopulator =
+            new VertexWorksheetPopulator();
 
-		ListObject oVertexTable =
-			oVertexWorksheetPopulator.PopulateVertexWorksheet(
-				m_oWorkbook, false);
+        ListObject oVertexTable =
+            oVertexWorksheetPopulator.PopulateVertexWorksheet(
+                m_oWorkbook, false);
 
-		if (!m_oAnalyzeTwitterNetworkDialogUserSettings.PopulatePrimaryLabels)
-		{
-			return;
-		}
+        if (!m_oAnalyzeTwitterNetworkDialogUserSettings.PopulatePrimaryLabels)
+        {
+            return;
+        }
 
-		// Get the vertex name and primary label column ranges.
+        // Get the vertex name and primary label column ranges.
 
-		Range oVertexNameRange, oPrimaryLabelRange;
-		
-		if ( !ExcelUtil.TryGetTableColumnData(oVertexTable,
-				VertexTableColumnNames.VertexName, out oVertexNameRange)
-			||
-			!ExcelUtil.TryGetTableColumnData(oVertexTable,
-				VertexTableColumnNames.PrimaryLabel, out oPrimaryLabelRange)
-			)
-		{
-			return;
-		}
+        Range oVertexNameRange, oPrimaryLabelRange;
+        
+        if ( !ExcelUtil.TryGetTableColumnData(oVertexTable,
+                VertexTableColumnNames.VertexName, out oVertexNameRange)
+            ||
+            !ExcelUtil.TryGetTableColumnData(oVertexTable,
+                VertexTableColumnNames.PrimaryLabel, out oPrimaryLabelRange)
+            )
+        {
+            return;
+        }
 
-		Dictionary<String, TwitterParticipant> oTwitterParticipants =
-			oTwitterNetworkAnalysisResults.Participants;
+        Dictionary<String, TwitterParticipant> oTwitterParticipants =
+            oTwitterNetworkAnalysisResults.Participants;
 
-		// Read the vertex names in the vertex table all at once.
+        // Read the vertex names in the vertex table all at once.
 
-		Object [,] aoVertexNameValues =
-			ExcelUtil.GetRangeValues(oVertexNameRange);
+        Object [,] aoVertexNameValues =
+            ExcelUtil.GetRangeValues(oVertexNameRange);
 
-		Int32 iVertexNames = aoVertexNameValues.GetUpperBound(0);
+        Int32 iVertexNames = aoVertexNameValues.GetUpperBound(0);
 
-		if (iVertexNames == 1 && aoVertexNameValues[1, 1] == null)
-		{
-			// This is the case when the user has no Twitter friends.
+        if (iVertexNames == 1 && aoVertexNameValues[1, 1] == null)
+        {
+            // This is the case when the user has no Twitter friends.
 
-			return;
-		}
+            return;
+        }
 
-		// Create an array to hold the primary labels and write them to the
-		// vertex table.
+        // Create an array to hold the primary labels and write them to the
+        // vertex table.
 
-		String [,] asPrimaryLabelValues =
-			ExcelUtil.GetSingleColumn2DStringArray(iVertexNames);
+        String [,] asPrimaryLabelValues =
+            ExcelUtil.GetSingleColumn2DStringArray(iVertexNames);
 
-		for (Int32 iRowOneBased = 1; iRowOneBased <= iVertexNames;
-			iRowOneBased++)
-		{
-			// VertexWorksheetPopulator.PopulateVertexWorksheet() writes
-			// strings to the vertex column of the vertex table, so the values
-			// must all be strings.
+        for (Int32 iRowOneBased = 1; iRowOneBased <= iVertexNames;
+            iRowOneBased++)
+        {
+            // VertexWorksheetPopulator.PopulateVertexWorksheet() writes
+            // strings to the vertex column of the vertex table, so the values
+            // must all be strings.
 
-			Debug.Assert(aoVertexNameValues[iRowOneBased, 1] is String);
+            Debug.Assert(aoVertexNameValues[iRowOneBased, 1] is String);
 
-			asPrimaryLabelValues[iRowOneBased, 1] =
-				ScreenNameToPrimaryLabel(
-					(String)aoVertexNameValues[iRowOneBased, 1],
-					oTwitterParticipants);
-		}
+            asPrimaryLabelValues[iRowOneBased, 1] =
+                ScreenNameToPrimaryLabel(
+                    (String)aoVertexNameValues[iRowOneBased, 1],
+                    oTwitterParticipants);
+        }
 
-		oPrimaryLabelRange.set_Value(Missing.Value, asPrimaryLabelValues);
-	}
+        oPrimaryLabelRange.set_Value(Missing.Value, asPrimaryLabelValues);
+    }
 
     //*************************************************************************
     //  Method: ScreenNameToPrimaryLabel()
     //
     /// <summary>
-	/// Coverts a Twitter screen name to a vertex primary label.
+    /// Coverts a Twitter screen name to a vertex primary label.
     /// </summary>
     ///
-	/// <param name="sTwitterScreenName">
-	/// Screen name to convert.
-	/// </param>
+    /// <param name="sTwitterScreenName">
+    /// Screen name to convert.
+    /// </param>
     ///
-	/// <param name="oTwitterParticipants">
-	/// A dictionary of participants.  The key is the participant's Twitter
-	/// screen name and the key is the TwitterParticipant object for the
-	/// participant.
-	/// </param>
-	///
-	/// <returns>
-	/// A primary label to insert into the vertex table.
-	/// </returns>
+    /// <param name="oTwitterParticipants">
+    /// A dictionary of participants.  The key is the participant's Twitter
+    /// screen name and the key is the TwitterParticipant object for the
+    /// participant.
+    /// </param>
+    ///
+    /// <returns>
+    /// A primary label to insert into the vertex table.
+    /// </returns>
     //*************************************************************************
 
-	protected String
-	ScreenNameToPrimaryLabel
-	(
-		String sTwitterScreenName,
-		Dictionary<String, TwitterParticipant> oTwitterParticipants
-	)
-	{
-		Debug.Assert( !String.IsNullOrEmpty(sTwitterScreenName) );
-		Debug.Assert(oTwitterParticipants != null);
-		AssertValid();
+    protected String
+    ScreenNameToPrimaryLabel
+    (
+        String sTwitterScreenName,
+        Dictionary<String, TwitterParticipant> oTwitterParticipants
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sTwitterScreenName) );
+        Debug.Assert(oTwitterParticipants != null);
+        AssertValid();
 
-		TwitterParticipant oTwitterParticipant;
+        TwitterParticipant oTwitterParticipant;
 
-		if ( !oTwitterParticipants.TryGetValue(
-			sTwitterScreenName, out oTwitterParticipant) )
-		{
-			Debug.Assert(false);
+        if ( !oTwitterParticipants.TryGetValue(
+            sTwitterScreenName, out oTwitterParticipant) )
+        {
+            Debug.Assert(false);
 
-			return (String.Empty);
-		}
+            return (String.Empty);
+        }
 
-		DateTime oLatestStatusTime = oTwitterParticipant.LatestStatusTime;
-		String sLatestStatusTime = String.Empty;
+        DateTime oLatestStatusTime = oTwitterParticipant.LatestStatusTime;
+        String sLatestStatusTime = String.Empty;
 
-		if (oLatestStatusTime != DateTime.MinValue)
-		{
-			oLatestStatusTime = oLatestStatusTime.ToLocalTime();
+        if (oLatestStatusTime != DateTime.MinValue)
+        {
+            oLatestStatusTime = oLatestStatusTime.ToLocalTime();
 
-			sLatestStatusTime = "\r\n\r\n"
-				+ oLatestStatusTime.ToShortDateString() + " "
-				+ oLatestStatusTime.ToShortTimeString();
-		}
+            sLatestStatusTime = "\r\n\r\n"
+                + oLatestStatusTime.ToShortDateString() + " "
+                + oLatestStatusTime.ToShortTimeString();
+        }
 
-		String sLatestStatus = oTwitterParticipant.LatestStatus;
+        String sLatestStatus = oTwitterParticipant.LatestStatus;
 
-		if ( String.IsNullOrEmpty(sLatestStatus) )
-		{
-			sLatestStatus = "(No posts)";
-		}
+        if ( String.IsNullOrEmpty(sLatestStatus) )
+        {
+            sLatestStatus = "(No posts)";
+        }
 
-		return ( String.Format(
+        return ( String.Format(
 
-			"{0}{1}\r\n\r\n{2}"
-			,
-			sTwitterScreenName,
-			sLatestStatusTime,
-			sLatestStatus
-			) );
-	}
+            "{0}{1}\r\n\r\n{2}"
+            ,
+            sTwitterScreenName,
+            sLatestStatusTime,
+            sLatestStatus
+            ) );
+    }
 
     //*************************************************************************
     //  Method: OnClosed()
     //
     /// <summary>
-	/// Handles the Closed event.
+    /// Handles the Closed event.
     /// </summary>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected override void
-	OnClosed
-	(
-		EventArgs e
-	)
-	{
-		AssertValid();
+    protected override void
+    OnClosed
+    (
+        EventArgs e
+    )
+    {
+        AssertValid();
 
-		if (m_oTwitterNetworkAnalyzer.IsBusy)
-		{
-			// Let the background thread cancel its task, but don't try to
-			// notify this dialog.
+        if (m_oTwitterNetworkAnalyzer.IsBusy)
+        {
+            // Let the background thread cancel its task, but don't try to
+            // notify this dialog.
 
-			m_oTwitterNetworkAnalyzer.AnalysisCompleted -=
-				new RunWorkerCompletedEventHandler(
-					TwitterNetworkAnalyzer_AnalysisCompleted);
+            m_oTwitterNetworkAnalyzer.AnalysisCompleted -=
+                new RunWorkerCompletedEventHandler(
+                    TwitterNetworkAnalyzer_AnalysisCompleted);
 
-			m_oTwitterNetworkAnalyzer.CancelAsync();
-		}
-	}
+            m_oTwitterNetworkAnalyzer.CancelAsync();
+        }
+    }
 
     //*************************************************************************
     //  Method: lnkRateLimiting_LinkClicked()
     //
     /// <summary>
-	/// Handles the LinkClicked event on the lnkRateLimiting LinkLabel.
+    /// Handles the LinkClicked event on the lnkRateLimiting LinkLabel.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	lnkRateLimiting_LinkClicked
-	(
-		object sender, LinkLabelLinkClickedEventArgs e
-	)
+    lnkRateLimiting_LinkClicked
+    (
+        object sender, LinkLabelLinkClickedEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		this.ShowInformation( String.Format(
+        this.ShowInformation( String.Format(
 
-			"To protect its Web service from attacks, Twitter limits the"
-			+ " number of information requests that can be made within a"
-			+ " one-hour period.  They call this \"rate limiting.\"  If you"
-			+ " attempt to show the friends of a Twitter user AND those"
-			+ " friends' friends, you can easily reach Twitter's limit."
-			+ "\r\n\r\n"
-			+ "We recommend that you either leave the \"{0}\" checkbox"
-			+ " unchecked, or ask Twitter to lift the limit for you.  You can"
-			+ " do this by clicking the \"{1}\" link.  You must be a"
-			+ " registered Twitter user to do this.  Once Twitter has lifted"
-			+ " the limit for you, you should enter your Twitter account"
-			+ " information when you analyze a Twitter network."
-			,
-			cbxAnalyzeTwoLevels.Text.Replace("&", String.Empty),
-			lnkRequestWhitelist.Text
-			) );
+            "To protect its Web service from attacks, Twitter limits the"
+            + " number of information requests that can be made within a"
+            + " one-hour period.  They call this \"rate limiting.\"  If you"
+            + " attempt to show the friends of a Twitter user AND those"
+            + " friends' friends, you can easily reach Twitter's limit."
+            + "\r\n\r\n"
+            + "We recommend that you either leave the \"{0}\" checkbox"
+            + " unchecked, or ask Twitter to lift the limit for you.  You can"
+            + " do this by clicking the \"{1}\" link.  You must be a"
+            + " registered Twitter user to do this.  Once Twitter has lifted"
+            + " the limit for you, you should enter your Twitter account"
+            + " information when you analyze a Twitter network."
+            ,
+            cbxAnalyzeTwoLevels.Text.Replace("&", String.Empty),
+            lnkRequestWhitelist.Text
+            ) );
     }
 
     //*************************************************************************
     //  Method: lnkRequestWhitelist_LinkClicked()
     //
     /// <summary>
-	/// Handles the LinkClicked event on the lnkRequestWhitelist LinkLabel.
+    /// Handles the LinkClicked event on the lnkRequestWhitelist LinkLabel.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	lnkRequestWhitelist_LinkClicked
-	(
-		object sender, LinkLabelLinkClickedEventArgs e
-	)
+    lnkRequestWhitelist_LinkClicked
+    (
+        object sender, LinkLabelLinkClickedEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		Process.Start(TwitterRequestWhitelistUrl);
+        Process.Start(TwitterRequestWhitelistUrl);
     }
 
     //*************************************************************************
     //  Method: btnAnalyze_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnAnalyze button.
+    /// Handles the Click event on the btnAnalyze button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnAnalyze_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnAnalyze_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		Boolean bCancelling = false;
+        Boolean bCancelling = false;
 
-		if (!m_oTwitterNetworkAnalyzer.IsBusy)
-		{
-			if ( DoDataExchange(true) )
-			{
-				StartAnalysis();
-			}
-		}
-		else
-		{
-			// Request to cancel the analysis.  When the request is completed,
-			// TwitterNetworkAnalyzer_AnalysisCompleted() will be called.
+        if (!m_oTwitterNetworkAnalyzer.IsBusy)
+        {
+            if ( DoDataExchange(true) )
+            {
+                StartAnalysis();
+            }
+        }
+        else
+        {
+            // Request to cancel the analysis.  When the request is completed,
+            // TwitterNetworkAnalyzer_AnalysisCompleted() will be called.
 
-			m_oTwitterNetworkAnalyzer.CancelAsync();
+            m_oTwitterNetworkAnalyzer.CancelAsync();
 
-			bCancelling = true;
-		}
+            bCancelling = true;
+        }
 
-		EnableControls();
+        EnableControls();
 
-		if (bCancelling)
-		{
-			btnAnalyze.Enabled = false;
-		}
+        if (bCancelling)
+        {
+            btnAnalyze.Enabled = false;
+        }
     }
 
     //*************************************************************************
     //  Method: TwitterNetworkAnalyzer_AnalysisCompleted()
     //
     /// <summary>
-	/// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
-	/// object.
+    /// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
+    /// object.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	private void
-	TwitterNetworkAnalyzer_AnalysisCompleted
-	(
-		object sender,
-		RunWorkerCompletedEventArgs e
-	)
-	{
-		AssertValid();
+    private void
+    TwitterNetworkAnalyzer_AnalysisCompleted
+    (
+        object sender,
+        RunWorkerCompletedEventArgs e
+    )
+    {
+        AssertValid();
 
-		try
-		{
+        try
+        {
             OnAnalysisCompleted(e);
-		}
-		catch (Exception oException)
-		{
-			ErrorUtil.OnException(oException);
-		}
-	}
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
 
 
     //*************************************************************************
@@ -868,13 +868,13 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oAnalyzeTwitterNetworkDialogUserSettings != null);
-		// m_sCredentialsPassword
-		Debug.Assert(m_oWorkbook != null);
-		Debug.Assert(m_oTwitterNetworkAnalyzer != null);
-		// m_oEdgeTable
+        Debug.Assert(m_oAnalyzeTwitterNetworkDialogUserSettings != null);
+        // m_sCredentialsPassword
+        Debug.Assert(m_oWorkbook != null);
+        Debug.Assert(m_oTwitterNetworkAnalyzer != null);
+        // m_oEdgeTable
     }
 
 
@@ -882,43 +882,43 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
     //  Protected constants
     //*************************************************************************
 
-	/// Twitter Web page for requesting whitelisting.
+    /// Twitter Web page for requesting whitelisting.
 
-	protected const String TwitterRequestWhitelistUrl =
-		"http://twitter.com/help/request_whitelisting";
+    protected const String TwitterRequestWhitelistUrl =
+        "http://twitter.com/help/request_whitelisting";
 
-	/// The timeout to use for Twitter Web requests, in milliseconds.
+    /// The timeout to use for Twitter Web requests, in milliseconds.
 
-	protected const Int32 HttpWebRequestTimeoutMs = 20000;
+    protected const Int32 HttpWebRequestTimeoutMs = 20000;
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	/// User settings for this dialog.
+    /// User settings for this dialog.
 
-	protected AnalyzeTwitterNetworkDialogUserSettings
-		m_oAnalyzeTwitterNetworkDialogUserSettings;
+    protected AnalyzeTwitterNetworkDialogUserSettings
+        m_oAnalyzeTwitterNetworkDialogUserSettings;
 
     /// The password of the Twitter user whose credentials should be used.  Not
-	/// used if credentials aren't used.  This is stored separately from the
-	/// dialog's user settings to prevent the password from being stored in the
-	/// application's settings file in plain text.
+    /// used if credentials aren't used.  This is stored separately from the
+    /// dialog's user settings to prevent the password from being stored in the
+    /// application's settings file in plain text.
 
-	protected String m_sCredentialsPassword;
+    protected String m_sCredentialsPassword;
 
-	/// Workbook containing the graph data.
+    /// Workbook containing the graph data.
 
-	protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
+    protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
 
-	/// Object that does most of the work.
+    /// Object that does most of the work.
 
-	protected TwitterNetworkAnalyzer m_oTwitterNetworkAnalyzer;
+    protected TwitterNetworkAnalyzer m_oTwitterNetworkAnalyzer;
 
-	/// Edge table, or null if the edge table couldn't be obtained.
+    /// Edge table, or null if the edge table couldn't be obtained.
 
-	protected ListObject m_oEdgeTable;
+    protected ListObject m_oEdgeTable;
 }
 
 
@@ -944,25 +944,25 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="AnalyzeTwitterNetworkDialogUserSettings" /> class.
+    /// cref="AnalyzeTwitterNetworkDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public AnalyzeTwitterNetworkDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -970,17 +970,17 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets the screen name of the Twitter user whose network should
-	/// be analyzed.
+    /// be analyzed.
     /// </summary>
     ///
     /// <value>
-	/// The screen name of the Twitter user whose network should be analyzed.
-	/// The default is "bob".
+    /// The screen name of the Twitter user whose network should be analyzed.
+    /// The default is "bob".
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("bob") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("bob") ]
 
     public String
     ScreenNameToAnalyze
@@ -989,9 +989,9 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			String sScreenNameToAnalyze = (String)this[ScreenNameToAnalyzeKey];
+            String sScreenNameToAnalyze = (String)this[ScreenNameToAnalyzeKey];
 
-			return (sScreenNameToAnalyze);
+            return (sScreenNameToAnalyze);
         }
 
         set
@@ -1007,17 +1007,17 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets the number of friendship levels to include in the
-	/// analysis.
+    /// analysis.
     /// </summary>
     ///
     /// <value>
     /// The number of friendship levels to include in the analysis.  The
-	/// default is 1.
+    /// default is 1.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("1") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("1") ]
 
     public Int32
     Levels
@@ -1026,9 +1026,9 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			Int32 iLevels = (Int32)this[LevelsKey];
+            Int32 iLevels = (Int32)this[LevelsKey];
 
-			return (iLevels);
+            return (iLevels);
         }
 
         set
@@ -1044,17 +1044,17 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets the screen name of the Twitter user whose credentials
-	/// should be used.
+    /// should be used.
     /// </summary>
     ///
     /// <value>
-	/// The screen name of the Twitter user whose credentials should be used.
-	/// The default is String.Empty.
+    /// The screen name of the Twitter user whose credentials should be used.
+    /// The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     CredentialsScreenName
@@ -1063,10 +1063,10 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			String sCredentialsScreenName =
-				(String)this[CredentialsScreenNameKey];
+            String sCredentialsScreenName =
+                (String)this[CredentialsScreenNameKey];
 
-			return (sCredentialsScreenName);
+            return (sCredentialsScreenName);
         }
 
         set
@@ -1082,16 +1082,16 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the primary label column on the
-	/// vertex worksheet should be populated with the Twitter user's friends.
+    /// vertex worksheet should be populated with the Twitter user's friends.
     /// </summary>
     ///
     /// <value>
-	/// true to populate the primary label column.  The default is true.
+    /// true to populate the primary label column.  The default is true.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
     PopulatePrimaryLabels
@@ -1100,10 +1100,10 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			Boolean bPopulatePrimaryLabels =
-				(Boolean)this[PopulatePrimaryLabelsKey];
+            Boolean bPopulatePrimaryLabels =
+                (Boolean)this[PopulatePrimaryLabelsKey];
 
-			return (bPopulatePrimaryLabels);
+            return (bPopulatePrimaryLabels);
         }
 
         set
@@ -1128,7 +1128,7 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }
@@ -1138,21 +1138,21 @@ public class AnalyzeTwitterNetworkDialogUserSettings : FormSettings
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the ScreenNameToAnalyze property.
+    /// Name of the settings key for the ScreenNameToAnalyze property.
 
-	protected const String ScreenNameToAnalyzeKey = "ScreenNameToAnalyze";
+    protected const String ScreenNameToAnalyzeKey = "ScreenNameToAnalyze";
 
-	/// Name of the settings key for the Levels property.
+    /// Name of the settings key for the Levels property.
 
-	protected const String LevelsKey = "Levels";
+    protected const String LevelsKey = "Levels";
 
-	/// Name of the settings key for the CredentialsScreenName property.
+    /// Name of the settings key for the CredentialsScreenName property.
 
-	protected const String CredentialsScreenNameKey = "CredentialsScreenName";
+    protected const String CredentialsScreenNameKey = "CredentialsScreenName";
 
-	/// Name of the settings key for the PopulatePrimaryLabels property.
+    /// Name of the settings key for the PopulatePrimaryLabels property.
 
-	protected const String PopulatePrimaryLabelsKey = "PopulatePrimaryLabels";
+    protected const String PopulatePrimaryLabelsKey = "PopulatePrimaryLabels";
 
 
     //*************************************************************************

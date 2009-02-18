@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using Microsoft.Office.Interop.Excel;
 namespace Microsoft.Research.CommunityTechnologies.AppLib
 {
 //*****************************************************************************
-//	Class: ExcelActiveWorksheetRestorer
+//  Class: ExcelActiveWorksheetRestorer
 //
 /// <summary>
 /// Saves and restores the active worksheet of an Excel workbook.
@@ -33,28 +33,28 @@ namespace Microsoft.Research.CommunityTechnologies.AppLib
 
 public class ExcelActiveWorksheetRestorer : Object
 {
-	//*************************************************************************
-	//	Constructor: ExcelActiveWorksheetRestorer()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="ExcelActiveWorksheetRestorer" /> class.
-	/// </summary>
-	///
-	/// <param name="workbook">
-	/// Workbook containing the worksheet that will be activated.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: ExcelActiveWorksheetRestorer()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="ExcelActiveWorksheetRestorer" /> class.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the worksheet that will be activated.
+    /// </param>
+    //*************************************************************************
 
-	public ExcelActiveWorksheetRestorer
-	(
+    public ExcelActiveWorksheetRestorer
+    (
         Microsoft.Office.Interop.Excel.Workbook workbook
-	)
-	{
-		m_oWorkbook = workbook;
+    )
+    {
+        m_oWorkbook = workbook;
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
     //*************************************************************************
     //  Method: ActivateWorksheet()
@@ -62,84 +62,84 @@ public class ExcelActiveWorksheetRestorer : Object
     /// <summary>
     /// Activates a worksheet.
     /// </summary>
-	///
-	/// <param name="worksheet">
-	/// The worksheet to activate.
-	/// </param>
-	///
-	/// <returns>
-	/// An <see cref="ExcelActiveWorksheetState" /> object to pass to <see
-	/// cref="Restore" />.
-	/// </returns>
-	///
+    ///
+    /// <param name="worksheet">
+    /// The worksheet to activate.
+    /// </param>
+    ///
+    /// <returns>
+    /// An <see cref="ExcelActiveWorksheetState" /> object to pass to <see
+    /// cref="Restore" />.
+    /// </returns>
+    ///
     /// <remarks>
-	/// Excel's screen updating is turned off.
+    /// Excel's screen updating is turned off.
     /// </remarks>
     //*************************************************************************
 
-	public ExcelActiveWorksheetState
-	ActivateWorksheet
-	(
-		Worksheet worksheet
-	)
+    public ExcelActiveWorksheetState
+    ActivateWorksheet
+    (
+        Worksheet worksheet
+    )
     {
-		Debug.Assert(worksheet != null);
-		AssertValid();
+        Debug.Assert(worksheet != null);
+        AssertValid();
 
-		Worksheet oActiveWorksheet = null;
+        Worksheet oActiveWorksheet = null;
 
-		if (m_oWorkbook.ActiveSheet is Worksheet)
-		{
-			oActiveWorksheet = (Worksheet)m_oWorkbook.ActiveSheet;
-		}
+        if (m_oWorkbook.ActiveSheet is Worksheet)
+        {
+            oActiveWorksheet = (Worksheet)m_oWorkbook.ActiveSheet;
+        }
 
-		Boolean bScreenUpdating = m_oWorkbook.Application.ScreenUpdating;
+        Boolean bScreenUpdating = m_oWorkbook.Application.ScreenUpdating;
 
-		m_oWorkbook.Application.ScreenUpdating = false;
+        m_oWorkbook.Application.ScreenUpdating = false;
 
-		ExcelUtil.ActivateWorksheet(worksheet);
+        ExcelUtil.ActivateWorksheet(worksheet);
 
-		return ( new ExcelActiveWorksheetState(oActiveWorksheet, 
-			bScreenUpdating) );
+        return ( new ExcelActiveWorksheetState(oActiveWorksheet, 
+            bScreenUpdating) );
     }
 
     //*************************************************************************
     //  Method: Restore()
     //
     /// <summary>
-	/// Activates the worksheet that was active before <see
-	/// cref="ActivateWorksheet" /> was called.
+    /// Activates the worksheet that was active before <see
+    /// cref="ActivateWorksheet" /> was called.
     /// </summary>
-	///
-	/// <param name="excelActiveWorksheetState">
-	/// The object that was returned by <see cref="ActivateWorksheet" />.
-	/// </param>
-	///
+    ///
+    /// <param name="excelActiveWorksheetState">
+    /// The object that was returned by <see cref="ActivateWorksheet" />.
+    /// </param>
+    ///
     /// <remarks>
-	/// Excel's screen updating is turned back on if it was on before <see
-	/// cref="ActivateWorksheet" /> was called.
+    /// Excel's screen updating is turned back on if it was on before <see
+    /// cref="ActivateWorksheet" /> was called.
     /// </remarks>
     //*************************************************************************
 
-	public void
-	Restore
-	(
-		ExcelActiveWorksheetState excelActiveWorksheetState
-	)
+    public void
+    Restore
+    (
+        ExcelActiveWorksheetState excelActiveWorksheetState
+    )
     {
-		Debug.Assert(excelActiveWorksheetState != null);
-		AssertValid();
+        Debug.Assert(excelActiveWorksheetState != null);
+        AssertValid();
 
-		Worksheet oWorksheetToActivate =
-			excelActiveWorksheetState.ActiveWorksheet;
+        Worksheet oWorksheetToActivate =
+            excelActiveWorksheetState.ActiveWorksheet;
 
-		if (oWorksheetToActivate != null)
-		{
-			ExcelUtil.ActivateWorksheet(oWorksheetToActivate);
-		}
+        if (oWorksheetToActivate != null)
+        {
+            ExcelUtil.ActivateWorksheet(oWorksheetToActivate);
+        }
 
-		m_oWorkbook.Application.ScreenUpdating =
-			excelActiveWorksheetState.ScreenUpdating;
+        m_oWorkbook.Application.ScreenUpdating =
+            excelActiveWorksheetState.ScreenUpdating;
     }
 
 
@@ -156,7 +156,7 @@ public class ExcelActiveWorksheetRestorer : Object
     public void
     AssertValid()
     {
-		Debug.Assert(m_oWorkbook != null);
+        Debug.Assert(m_oWorkbook != null);
     }
 
 
@@ -164,8 +164,8 @@ public class ExcelActiveWorksheetRestorer : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Workbook containing the worksheet that will be activated.
+    /// Workbook containing the worksheet that will be activated.
 
-	protected Workbook m_oWorkbook;
+    protected Workbook m_oWorkbook;
 }
 }

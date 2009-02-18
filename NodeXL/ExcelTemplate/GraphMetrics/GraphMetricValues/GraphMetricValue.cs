@@ -24,20 +24,20 @@ public abstract class GraphMetricValue : Object
     //
     /// <overloads>
     /// Initializes a new instance of the <see cref="GraphMetricValue" />
-	/// class.
+    /// class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricValue" />
-	/// class with default values.
+    /// class with default values.
     /// </summary>
     //*************************************************************************
 
     public GraphMetricValue()
-	:
-	this (null)
+    :
+    this (null)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -45,22 +45,22 @@ public abstract class GraphMetricValue : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricValue" />
-	/// class with specified values.
+    /// class with specified values.
     /// </summary>
-	///
-	/// <param name="value">
-	/// Graph metric value for the row.
-	/// </param>
+    ///
+    /// <param name="value">
+    /// Graph metric value for the row.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricValue
-	(
-		Object value
-	)
+    (
+        Object value
+    )
     {
-		m_oValue = value;
+        m_oValue = value;
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -87,7 +87,7 @@ public abstract class GraphMetricValue : Object
 
         set
         {
-			m_oValue = value;
+            m_oValue = value;
 
             AssertValid();
         }
@@ -107,7 +107,7 @@ public abstract class GraphMetricValue : Object
     public virtual void
     AssertValid()
     {
-		// m_oValue
+        // m_oValue
     }
 
 
@@ -116,11 +116,11 @@ public abstract class GraphMetricValue : Object
     //*************************************************************************
 
     /// Graph metric value for the worksheet row.  This is an Object because
-	/// Excel cell values can be one of several types.   This does not
-	/// introduce boxing, because Excel's API uses the Object type for cell
-	/// values and so boxing occurs no matter what.
+    /// Excel cell values can be one of several types.   This does not
+    /// introduce boxing, because Excel's API uses the Object type for cell
+    /// values and so boxing occurs no matter what.
 
-	protected Object m_oValue;
+    protected Object m_oValue;
 }
 
 }

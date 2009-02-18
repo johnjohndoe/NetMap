@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -37,20 +37,20 @@ public class IDGenerator : NodeXLBase
     /// <overloads>
     /// Initializes a new instance of the <see cref="IDGenerator" /> class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="IDGenerator" /> class with
-	/// a first ID of 1.
+    /// a first ID of 1.
     /// </summary>
     //*************************************************************************
 
     public IDGenerator()
-	:
-	this(1)
+    :
+    this(1)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -58,71 +58,71 @@ public class IDGenerator : NodeXLBase
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="IDGenerator" /> class with
-	/// a specified first ID.
+    /// a specified first ID.
     /// </summary>
-	///
-	/// <param name="firstID">
-	/// First ID to return from <see cref="GetNextID" />.  Can't be <see
-	/// cref="Int32.MaxValue" />.
-	/// </param>
+    ///
+    /// <param name="firstID">
+    /// First ID to return from <see cref="GetNextID" />.  Can't be <see
+    /// cref="Int32.MaxValue" />.
+    /// </param>
     //*************************************************************************
 
     public IDGenerator
-	(
-		Int32 firstID
-	)
+    (
+        Int32 firstID
+    )
     {
-		const String MethodName = "Constructor";
+        const String MethodName = "Constructor";
 
-		if (firstID == Int32.MaxValue)
-		{
-			this.ArgumentChecker.ThrowArgumentException(MethodName, "firstID",
-			
-				String.Format(
+        if (firstID == Int32.MaxValue)
+        {
+            this.ArgumentChecker.ThrowArgumentException(MethodName, "firstID",
+            
+                String.Format(
 
-					"The first ID can't be Int32.MaxValue ({0})."
-					,
-					Int32.MaxValue
-				) );
-		}
+                    "The first ID can't be Int32.MaxValue ({0})."
+                    ,
+                    Int32.MaxValue
+                ) );
+        }
 
-		m_iNextID = firstID;
+        m_iNextID = firstID;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Method: GetNextID()
     //
     /// <summary>
-	/// Returns the ID to use for the next created object.
+    /// Returns the ID to use for the next created object.
     /// </summary>
     ///
     /// <returns>
-	/// The ID to use for the next created object.
+    /// The ID to use for the next created object.
     /// </returns>
     //*************************************************************************
 
-	public Int32
-	GetNextID()
-	{
-		if (m_iNextID == Int32.MaxValue)
-		{
-			throw new ApplicationException( String.Format(
+    public Int32
+    GetNextID()
+    {
+        if (m_iNextID == Int32.MaxValue)
+        {
+            throw new ApplicationException( String.Format(
 
-				"{0}.GetNextID: The maximum ID ({1}) has been reached."
-				,
-				this.ClassName,
-				Int32.MaxValue
-				) );
-		}
+                "{0}.GetNextID: The maximum ID ({1}) has been reached."
+                ,
+                this.ClassName,
+                Int32.MaxValue
+                ) );
+        }
 
-		Int32 iNextID = m_iNextID;
+        Int32 iNextID = m_iNextID;
 
-		m_iNextID++;
+        m_iNextID++;
 
-		return (iNextID);
-	}
+        return (iNextID);
+    }
 
 
     //*************************************************************************
@@ -138,9 +138,9 @@ public class IDGenerator : NodeXLBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_iNextID != Int32.MaxValue);
+        Debug.Assert(m_iNextID != Int32.MaxValue);
     }
 
 
@@ -148,9 +148,9 @@ public class IDGenerator : NodeXLBase
     //  Protected fields
     //*************************************************************************
 
-	/// ID to use for the next created object.
+    /// ID to use for the next created object.
 
-	protected Int32 m_iNextID;
+    protected Int32 m_iNextID;
 }
 
 }

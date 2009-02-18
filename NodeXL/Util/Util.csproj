@@ -63,6 +63,9 @@
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>GraphicsUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\MathUtil.cs">
+      <Link>MathUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\StringUtil.cs">
       <Link>StringUtil.cs</Link>
     </Compile>

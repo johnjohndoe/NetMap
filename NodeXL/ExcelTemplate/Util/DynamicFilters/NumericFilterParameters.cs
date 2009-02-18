@@ -34,38 +34,38 @@ public class NumericFilterParameters : RangeFilterParameters<Double>
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="NumericFilterParameters" /> class.
+    /// cref="NumericFilterParameters" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="columnName">
     /// Name of the column that can be filtered on.
     /// </param>
-	///
+    ///
     /// <param name="minimumCellValue">
     /// Minimum cell value in the column.
     /// </param>
-	///
+    ///
     /// <param name="maximumCellValue">
     /// Maximum cell value in the column.
     /// </param>
-	///
+    ///
     /// <param name="decimalPlaces">
     /// The number of decimal places displayed in the column.
     /// </param>
     //*************************************************************************
 
     public NumericFilterParameters
-	(
-		String columnName,
-		Double minimumCellValue,
-		Double maximumCellValue,
-		Int32 decimalPlaces
-	)
-	: base(columnName, minimumCellValue, maximumCellValue)
+    (
+        String columnName,
+        Double minimumCellValue,
+        Double maximumCellValue,
+        Int32 decimalPlaces
+    )
+    : base(columnName, minimumCellValue, maximumCellValue)
     {
-		m_iDecimalPlaces = decimalPlaces;
+        m_iDecimalPlaces = decimalPlaces;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -105,8 +105,8 @@ public class NumericFilterParameters : RangeFilterParameters<Double>
     public override void
     AssertValid()
     {
-		base.AssertValid();
-		Debug.Assert(m_iDecimalPlaces >= 0);
+        base.AssertValid();
+        Debug.Assert(m_iDecimalPlaces >= 0);
     }
 
 
@@ -116,7 +116,7 @@ public class NumericFilterParameters : RangeFilterParameters<Double>
 
     /// The number of decimal places displayed in the column.
 
-	protected Int32 m_iDecimalPlaces;
+    protected Int32 m_iDecimalPlaces;
 }
 
 }

@@ -1,8 +1,8 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Visualization.Wpf;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -23,18 +23,18 @@ public class VertexRadiusConverter : NumericValueConverterBase
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexRadiusConverter" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public VertexRadiusConverter()
-	:
-	base(MinimumRadiusWorkbook, MaximumRadiusWorkbook, MinimumRadiusGraph,
-		MaximumRadiusGraph)
+    :
+    base(MinimumRadiusWorkbook, MaximumRadiusWorkbook, MinimumRadiusGraph,
+        MaximumRadiusGraph)
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -51,9 +51,9 @@ public class VertexRadiusConverter : NumericValueConverterBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -61,40 +61,40 @@ public class VertexRadiusConverter : NumericValueConverterBase
     //  Public constants
     //*************************************************************************
 
-	/// <summary>
-	/// Minimum value that can be specified in the workbook for a vertex
-	/// radius.
-	/// </summary>
+    /// <summary>
+    /// Minimum value that can be specified in the workbook for a vertex
+    /// radius.
+    /// </summary>
 
-	public static readonly Single MinimumRadiusWorkbook = 1F;
+    public static readonly Single MinimumRadiusWorkbook = 1F;
 
-	/// <summary>
-	/// Maximum value that can be specified in the workbook for a vertex
-	/// radius.
-	/// </summary>
+    /// <summary>
+    /// Maximum value that can be specified in the workbook for a vertex
+    /// radius.
+    /// </summary>
 
-	public static readonly Single MaximumRadiusWorkbook = 10F;
+    public static readonly Single MaximumRadiusWorkbook = 10F;
 
-	/// <summary>
-	/// Minimum radius in the NodeXL graph.
-	/// </summary>
+    /// <summary>
+    /// Minimum radius in the NodeXL graph.
+    /// </summary>
 
-	public static readonly Single MinimumRadiusGraph =
-		PerVertexDrawer.MinimumRadius;
+    public static readonly Single MinimumRadiusGraph =
+        (Single)VertexDrawer.MinimumRadius;
 
-	/// <summary>
-	/// Maximum radius in the NodeXL graph.
-	/// </summary>
+    /// <summary>
+    /// Maximum radius in the NodeXL graph.
+    /// </summary>
 
-	public static readonly Single MaximumRadiusGraph =
-		PerVertexDrawer.MaximumRadius;
+    public static readonly Single MaximumRadiusGraph =
+        (Single)VertexDrawer.MaximumRadius;
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

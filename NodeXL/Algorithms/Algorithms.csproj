@@ -86,54 +86,33 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Delegates\EdgeDelegate.cs">
+    <Compile Include="GraphMetricCalculators\AllPathsShortestPathCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\BetweennessCentralityCalculator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Delegates\VertexDelegate.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DistanceCalculators\BreadthFirstDistanceCalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DistanceCalculators\DijkstraDistanceCalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GraphTransformers\DirectedToUndirectedGraphTransformer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GraphTransformers\GraphFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GraphTransformers\KNeighborhoodGraphTransformer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GraphTransformers\MixedToDirectedGraphTransformer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GraphTransformers\UndirectedToDirectedGraphTransformer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interfaces\IDistanceCalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interfaces\IGraphTransformer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interfaces\IVertexIterator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SubgraphCalculator.cs" />
-    <Compile Include="VertexIterators\BreadthFirstVertexIterator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="VertexIterators\DepthFirstVertexIterator.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="GraphMetricCalculators\ClosenessCentralityCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\ClusteringCoefficientCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Cluster\ClusterCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Cluster\Community.cs" />
+    <Compile Include="GraphMetricCalculators\Cluster\CommunityPair.cs" />
+    <Compile Include="GraphMetricCalculators\Cluster\DeltaQMaxHeap.cs" />
+    <Compile Include="GraphMetricCalculators\EigenvectorCentralityCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\GraphMetricCalculatorBase.cs" />
+    <Compile Include="GraphMetricCalculators\GraphMetricException.cs" />
+    <Compile Include="GraphMetricCalculators\IGraphMetricCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\OverallMetricCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\VertexDegreeCalculator.cs" />
+    <Compile Include="Miscellaneous\DuplicateEdgeDetector.cs" />
+    <Compile Include="Miscellaneous\SubgraphCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
+      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

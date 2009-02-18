@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections;
@@ -27,13 +27,13 @@ public class ByMetadataVertexSorterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="ByMetadataVertexSorterTest" /> class.
+    /// cref="ByMetadataVertexSorterTest" /> class.
     /// </summary>
     //*************************************************************************
 
     public ByMetadataVertexSorterTest()
     {
-		m_oByMetadataVertexSorter = null;
+        m_oByMetadataVertexSorter = null;
     }
 
     //*************************************************************************
@@ -49,7 +49,7 @@ public class ByMetadataVertexSorterTest : Object
     public void
     SetUp()
     {
-		m_oByMetadataVertexSorter = new ByMetadataVertexSorter<Int32>(SortKey);
+        m_oByMetadataVertexSorter = new ByMetadataVertexSorter<Int32>(SortKey);
     }
 
     //*************************************************************************
@@ -65,7 +65,7 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TearDown()
     {
-		m_oByMetadataVertexSorter = null;
+        m_oByMetadataVertexSorter = null;
     }
 
     //*************************************************************************
@@ -81,8 +81,8 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestConstructor()
     {
-		Assert.AreEqual(SortKey, m_oByMetadataVertexSorter.SortKey);
-		Assert.IsTrue(m_oByMetadataVertexSorter.SortAscending);
+        Assert.AreEqual(SortKey, m_oByMetadataVertexSorter.SortKey);
+        Assert.IsTrue(m_oByMetadataVertexSorter.SortAscending);
     }
 
     //*************************************************************************
@@ -94,34 +94,34 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestConstructorBad()
     {
-		// Null sortKey.
+        // Null sortKey.
 
-		try
-		{
-			m_oByMetadataVertexSorter =
-				new ByMetadataVertexSorter<Int32>(null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oByMetadataVertexSorter =
+                new ByMetadataVertexSorter<Int32>(null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Constructor: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Constructor: "
 
-				+ "sortKey argument can't be null.\r\n"
-				+ "Parameter name: sortKey"
-				,
-				oArgumentNullException.Message
-				);
+                + "sortKey argument can't be null.\r\n"
+                + "Parameter name: sortKey"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -133,34 +133,34 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestConstructorBad2()
     {
-		// Empty sortKey.
+        // Empty sortKey.
 
-		try
-		{
-			m_oByMetadataVertexSorter =
-				new ByMetadataVertexSorter<Int32>(String.Empty);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oByMetadataVertexSorter =
+                new ByMetadataVertexSorter<Int32>(String.Empty);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Constructor: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Constructor: "
 
-				+ "sortKey argument must have a length greater than zero.\r\n"
-				+ "Parameter name: sortKey"
-				,
-				oArgumentException.Message
-				);
+                + "sortKey argument must have a length greater than zero.\r\n"
+                + "Parameter name: sortKey"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -176,11 +176,11 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSortKey()
     {
-		const String SortKey2 = "jkrejkre";
+        const String SortKey2 = "jkrejkre";
 
-		m_oByMetadataVertexSorter.SortKey = SortKey2;
+        m_oByMetadataVertexSorter.SortKey = SortKey2;
 
-		Assert.AreEqual(SortKey2, m_oByMetadataVertexSorter.SortKey);
+        Assert.AreEqual(SortKey2, m_oByMetadataVertexSorter.SortKey);
     }
 
     //*************************************************************************
@@ -192,32 +192,32 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestSortKeyBad()
     {
-		// null SortKey.
+        // null SortKey.
 
-		try
-		{
-			m_oByMetadataVertexSorter.SortKey = null;
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oByMetadataVertexSorter.SortKey = null;
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].SortKey: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].SortKey: "
 
-				+ "Can't be null."
-				,
-				oApplicationException.Message
-				);
+                + "Can't be null."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -229,32 +229,32 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestSortKeyBad2()
     {
-		// Empty SortKey.
+        // Empty SortKey.
 
-		try
-		{
-			m_oByMetadataVertexSorter.SortKey = String.Empty;
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oByMetadataVertexSorter.SortKey = String.Empty;
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].SortKey: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].SortKey: "
 
-				+ "Must have a length greater than zero."
-				,
-				oApplicationException.Message
-				);
+                + "Must have a length greater than zero."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -270,13 +270,13 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSortAscending()
     {
-		m_oByMetadataVertexSorter.SortAscending = false;
+        m_oByMetadataVertexSorter.SortAscending = false;
 
-		Assert.IsFalse(m_oByMetadataVertexSorter.SortAscending);
+        Assert.IsFalse(m_oByMetadataVertexSorter.SortAscending);
 
-		m_oByMetadataVertexSorter.SortAscending = true;
+        m_oByMetadataVertexSorter.SortAscending = true;
 
-		Assert.IsTrue(m_oByMetadataVertexSorter.SortAscending);
+        Assert.IsTrue(m_oByMetadataVertexSorter.SortAscending);
     }
 
     //*************************************************************************
@@ -292,37 +292,37 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort()
     {
-		// Ascending sort on Int32.
+        // Ascending sort on Int32.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
+        }
 
-		IVertex [] aoSortedVertices =
-			m_oByMetadataVertexSorter.Sort(oVertexCollection);
+        IVertex [] aoSortedVertices =
+            m_oByMetadataVertexSorter.Sort(oVertexCollection);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				i + 1,
+                i + 1,
 
-				(Int32)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Int32) )
-				);
-		}
+                (Int32)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Int32) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -338,39 +338,39 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort2()
     {
-		// Descending sort on Int32.
+        // Descending sort on Int32.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
+        }
 
-		m_oByMetadataVertexSorter.SortAscending = false;
+        m_oByMetadataVertexSorter.SortAscending = false;
 
-		IVertex [] aoSortedVertices =
-			m_oByMetadataVertexSorter.Sort(oVertexCollection);
+        IVertex [] aoSortedVertices =
+            m_oByMetadataVertexSorter.Sort(oVertexCollection);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				Vertices - i,
+                Vertices - i,
 
-				(Int32)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Int32) )
-				);
-		}
+                (Int32)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Int32) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -386,40 +386,40 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort3()
     {
-		// Ascending sort on Double.
+        // Ascending sort on Double.
 
-		ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
-			new ByMetadataVertexSorter<Double>(SortKey);
+        ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
+            new ByMetadataVertexSorter<Double>(SortKey);
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
+        }
 
-		IVertex [] aoSortedVertices =
-			oByMetadataVertexSorter.Sort(oVertexCollection);
+        IVertex [] aoSortedVertices =
+            oByMetadataVertexSorter.Sort(oVertexCollection);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				(Double)i + 1,
+                (Double)i + 1,
 
-				(Double)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Double) )
-				);
-		}
+                (Double)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Double) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -435,42 +435,42 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort4()
     {
-		// Descending sort on Double.
+        // Descending sort on Double.
 
-		ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
-			new ByMetadataVertexSorter<Double>(SortKey);
+        ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
+            new ByMetadataVertexSorter<Double>(SortKey);
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
+        }
 
         oByMetadataVertexSorter.SortAscending = false;
 
-		IVertex [] aoSortedVertices =
-			oByMetadataVertexSorter.Sort(oVertexCollection);
+        IVertex [] aoSortedVertices =
+            oByMetadataVertexSorter.Sort(oVertexCollection);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				(Double)(Vertices - i),
+                (Double)(Vertices - i),
 
-				(Double)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Double) )
-				);
-		}
+                (Double)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Double) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -482,35 +482,35 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSortBad()
     {
-		// null vertexCollection.
+        // null vertexCollection.
 
-		try
-		{
-			IVertexCollection oVertexCollection = null;
+        try
+        {
+            IVertexCollection oVertexCollection = null;
 
-			m_oByMetadataVertexSorter.Sort(oVertexCollection);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(oVertexCollection);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
 
-				+ "vertexCollection argument can't be null.\r\n"
-				+ "Parameter name: vertexCollection"
-				,
-				oArgumentNullException.Message
-				);
+                + "vertexCollection argument can't be null.\r\n"
+                + "Parameter name: vertexCollection"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -522,38 +522,38 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestSortBad2()
     {
-		// Missing key.
+        // Missing key.
 
-		try
-		{
-			IGraph oGraph = new Graph();
+        try
+        {
+            IGraph oGraph = new Graph();
 
-			oGraph.Vertices.Add();
+            oGraph.Vertices.Add();
 
-			m_oByMetadataVertexSorter.Sort(oGraph.Vertices);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(oGraph.Vertices);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
 
-				+ "One of the vertices does not have the specified sort key,"
-				+ " or the key's value is the wrong type.\r\n"
-				+ "Parameter name: key"
-				,
-				oArgumentException.Message
-				);
+                + "One of the vertices does not have the specified sort key,"
+                + " or the key's value is the wrong type.\r\n"
+                + "Parameter name: key"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -565,40 +565,40 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestSortBad3()
     {
-		// Value is wrong type.
+        // Value is wrong type.
 
-		try
-		{
-			IGraph oGraph = new Graph();
+        try
+        {
+            IGraph oGraph = new Graph();
 
-			IVertex oVertex = oGraph.Vertices.Add();
+            IVertex oVertex = oGraph.Vertices.Add();
 
-			oVertex.SetValue(SortKey, "String");
+            oVertex.SetValue(SortKey, "String");
 
-			m_oByMetadataVertexSorter.Sort(oGraph.Vertices);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(oGraph.Vertices);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
 
-				+ "One of the vertices does not have the specified sort key,"
-				+ " or the key's value is the wrong type.\r\n"
-				+ "Parameter name: key"
-				,
-				oArgumentException.Message
-				);
+                + "One of the vertices does not have the specified sort key,"
+                + " or the key's value is the wrong type.\r\n"
+                + "Parameter name: key"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -614,37 +614,37 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort2_()
     {
-		// Ascending sort on Int32.
+        // Ascending sort on Int32.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
+        }
 
-		IVertex [] aoSortedVertices =
-			m_oByMetadataVertexSorter.Sort(aoUnsortedVertices);
+        IVertex [] aoSortedVertices =
+            m_oByMetadataVertexSorter.Sort(aoUnsortedVertices);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				i + 1,
+                i + 1,
 
-				(Int32)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Int32) )
-				);
-		}
+                (Int32)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Int32) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -660,39 +660,39 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort2_2()
     {
-		// Descending sort on Int32.
+        // Descending sort on Int32.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
+        }
 
-		m_oByMetadataVertexSorter.SortAscending = false;
+        m_oByMetadataVertexSorter.SortAscending = false;
 
-		IVertex [] aoSortedVertices =
-			m_oByMetadataVertexSorter.Sort(aoUnsortedVertices);
+        IVertex [] aoSortedVertices =
+            m_oByMetadataVertexSorter.Sort(aoUnsortedVertices);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				Vertices - i,
+                Vertices - i,
 
-				(Int32)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Int32) )
-				);
-		}
+                (Int32)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Int32) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -708,40 +708,40 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort2_3()
     {
-		// Ascending sort on Double.
+        // Ascending sort on Double.
 
-		ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
-			new ByMetadataVertexSorter<Double>(SortKey);
+        ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
+            new ByMetadataVertexSorter<Double>(SortKey);
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
+        }
 
-		IVertex [] aoSortedVertices =
-			oByMetadataVertexSorter.Sort(aoUnsortedVertices);
+        IVertex [] aoSortedVertices =
+            oByMetadataVertexSorter.Sort(aoUnsortedVertices);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				(Double)i + 1,
+                (Double)i + 1,
 
-				(Double)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Double) )
-				);
-		}
+                (Double)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Double) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -757,42 +757,42 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort2_4()
     {
-		// Descending sort on Double.
+        // Descending sort on Double.
 
-		ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
-			new ByMetadataVertexSorter<Double>(SortKey);
+        ByMetadataVertexSorter<Double> oByMetadataVertexSorter =
+            new ByMetadataVertexSorter<Double>(SortKey);
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue( SortKey, (Double)(Vertices - i) );
+        }
 
         oByMetadataVertexSorter.SortAscending = false;
 
-		IVertex [] aoSortedVertices =
-			oByMetadataVertexSorter.Sort(aoUnsortedVertices);
+        IVertex [] aoSortedVertices =
+            oByMetadataVertexSorter.Sort(aoUnsortedVertices);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				(Double)(Vertices - i),
+                (Double)(Vertices - i),
 
-				(Double)aoSortedVertices[i].GetRequiredValue(
-					SortKey, typeof(Double) )
-				);
-		}
+                (Double)aoSortedVertices[i].GetRequiredValue(
+                    SortKey, typeof(Double) )
+                );
+        }
     }
 
     //*************************************************************************
@@ -804,35 +804,35 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSort2_Bad()
     {
-		// null vertices.
+        // null vertices.
 
-		try
-		{
-			IVertex [] vertices = null;
+        try
+        {
+            IVertex [] vertices = null;
 
-			m_oByMetadataVertexSorter.Sort(vertices);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(vertices);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
 
-				+ "vertices argument can't be null.\r\n"
-				+ "Parameter name: vertices"
-				,
-				oArgumentNullException.Message
-				);
+                + "vertices argument can't be null.\r\n"
+                + "Parameter name: vertices"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -844,42 +844,42 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestSort2_Bad2()
     {
-		// Missing key.
+        // Missing key.
 
-		try
-		{
-			IGraph oGraph = new Graph();
+        try
+        {
+            IGraph oGraph = new Graph();
 
-			oGraph.Vertices.Add();
+            oGraph.Vertices.Add();
 
-			IVertex [] vertices = new IVertex[oGraph.Vertices.Count];
+            IVertex [] vertices = new IVertex[oGraph.Vertices.Count];
 
-			oGraph.Vertices.CopyTo(vertices, 0);
+            oGraph.Vertices.CopyTo(vertices, 0);
 
-			m_oByMetadataVertexSorter.Sort(vertices);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(vertices);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
-				
-				+ "One of the vertices does not have the specified sort key,"
-				+ " or the key's value is the wrong type.\r\n"
-				+ "Parameter name: key"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
+                
+                + "One of the vertices does not have the specified sort key,"
+                + " or the key's value is the wrong type.\r\n"
+                + "Parameter name: key"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -891,44 +891,44 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestSort2_Bad3()
     {
-		// Value is wrong type.
+        // Value is wrong type.
 
-		try
-		{
-			IGraph oGraph = new Graph();
+        try
+        {
+            IGraph oGraph = new Graph();
 
-			IVertex oVertex = oGraph.Vertices.Add();
+            IVertex oVertex = oGraph.Vertices.Add();
 
-			oVertex.SetValue(SortKey, "String");
+            oVertex.SetValue(SortKey, "String");
 
-			IVertex [] vertices = new IVertex[oGraph.Vertices.Count];
+            IVertex [] vertices = new IVertex[oGraph.Vertices.Count];
 
-			oGraph.Vertices.CopyTo(vertices, 0);
+            oGraph.Vertices.CopyTo(vertices, 0);
 
-			m_oByMetadataVertexSorter.Sort(vertices);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(vertices);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
-				
-				+ "One of the vertices does not have the specified sort key,"
-				+ " or the key's value is the wrong type.\r\n"
-				+ "Parameter name: key"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
+                
+                + "One of the vertices does not have the specified sort key,"
+                + " or the key's value is the wrong type.\r\n"
+                + "Parameter name: key"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -944,45 +944,45 @@ public class ByMetadataVertexSorterTest : Object
     public void
     TestSort3_()
     {
-		// Descending sort on Int32.
+        // Descending sort on Int32.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		Int32 i;
+        Int32 i;
 
-		for (i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
-		}
+        for (i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].SetValue(SortKey, Vertices - i);
+        }
 
-		m_oByMetadataVertexSorter.SortAscending = false;
+        m_oByMetadataVertexSorter.SortAscending = false;
 
-		ICollection oSortedVertices =
-			m_oByMetadataVertexSorter.Sort( (ICollection)aoUnsortedVertices );
+        ICollection oSortedVertices =
+            m_oByMetadataVertexSorter.Sort( (ICollection)aoUnsortedVertices );
 
-		Assert.AreEqual(Vertices, oSortedVertices.Count);
+        Assert.AreEqual(Vertices, oSortedVertices.Count);
 
-		i = 0;
+        i = 0;
 
         foreach (IVertex oSortedVertex in oSortedVertices)
-		{
-			Assert.AreEqual(
+        {
+            Assert.AreEqual(
 
-				Vertices - i,
+                Vertices - i,
 
-				(Int32)oSortedVertex.GetRequiredValue(
-					SortKey, typeof(Int32) )
-				);
+                (Int32)oSortedVertex.GetRequiredValue(
+                    SortKey, typeof(Int32) )
+                );
 
-			i++;
-		}
+            i++;
+        }
     }
 
     //*************************************************************************
@@ -994,35 +994,35 @@ public class ByMetadataVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSort3_Bad()
     {
-		// null vertices.
+        // null vertices.
 
-		try
-		{
-			ICollection vertices = null;
+        try
+        {
+            ICollection vertices = null;
 
-			m_oByMetadataVertexSorter.Sort(vertices);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oByMetadataVertexSorter.Sort(vertices);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-				+ " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-				+ "=b77a5c561934e089]].Sort: "
+                "Microsoft.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
+                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
+                + "=b77a5c561934e089]].Sort: "
 
-				+ "vertices argument can't be null.\r\n"
-				+ "Parameter name: vertices"
-				,
-				oArgumentNullException.Message
-				);
+                + "vertices argument can't be null.\r\n"
+                + "Parameter name: vertices"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
 
@@ -1030,16 +1030,16 @@ public class ByMetadataVertexSorterTest : Object
     //  Protected constants
     //*************************************************************************
 
-	protected const String SortKey = "abcdefg";
+    protected const String SortKey = "abcdefg";
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// Object being tested.
+    // Object being tested.
 
-	protected ByMetadataVertexSorter<Int32> m_oByMetadataVertexSorter;
+    protected ByMetadataVertexSorter<Int32> m_oByMetadataVertexSorter;
 }
 
 }

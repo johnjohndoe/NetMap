@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -26,48 +26,48 @@ public class TableSelectionChangedEventArgs : EventArgs
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="TableSelectionChangedEventArgs" /> class.
+    /// cref="TableSelectionChangedEventArgs" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="selectedIDs">
-	/// Array of unique IDs of table rows that have at least one selected cell.
+    /// Array of unique IDs of table rows that have at least one selected cell.
     /// </param>
-	///
+    ///
     /// <param name="eventOrigin">
-	/// Specifies how the event originated.
+    /// Specifies how the event originated.
     /// </param>
     //*************************************************************************
 
     public TableSelectionChangedEventArgs
-	(
-		Int32 [] selectedIDs,
-		TableSelectionChangedEventOrigin eventOrigin
-	)
+    (
+        Int32 [] selectedIDs,
+        TableSelectionChangedEventOrigin eventOrigin
+    )
     {
-		m_aiSelectedIDs = selectedIDs;
-		m_eEventOrigin = eventOrigin;
+        m_aiSelectedIDs = selectedIDs;
+        m_eEventOrigin = eventOrigin;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: SelectedIDs
     //
     /// <summary>
-	/// Gets an array of unique IDs of rows that have at least one selected
-	/// cell.
+    /// Gets an array of unique IDs of rows that have at least one selected
+    /// cell.
     /// </summary>
     ///
     /// <value>
-	/// An array of unique IDs of rows that have at least one selected cell.
-	/// Can be empty, but is never null.
+    /// An array of unique IDs of rows that have at least one selected cell.
+    /// Can be empty, but is never null.
     /// </value>
-	///
-	/// <remarks>
-	/// The IDs are those that are stored in the table's ID column and
-	/// are different from the IEdge.ID and IVertex.ID values used within the
-	/// NodeXL graph.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The IDs are those that are stored in the table's ID column and
+    /// are different from the IEdge.ID and IVertex.ID values used within the
+    /// NodeXL graph.
+    /// </remarks>
     //*************************************************************************
 
     public Int32 []
@@ -85,12 +85,12 @@ public class TableSelectionChangedEventArgs : EventArgs
     //  Property: EventOrigin
     //
     /// <summary>
-	/// Gets a value that specifies how the event originated.
+    /// Gets a value that specifies how the event originated.
     /// </summary>
     ///
     /// <value>
-	/// An <see cref="EventOrigin" /> value that specifies how the event
-	/// originated.
+    /// An <see cref="EventOrigin" /> value that specifies how the event
+    /// originated.
     /// </value>
     //*************************************************************************
 
@@ -119,8 +119,8 @@ public class TableSelectionChangedEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_aiSelectedIDs != null);
-		// m_eEventOrigin
+        Debug.Assert(m_aiSelectedIDs != null);
+        // m_eEventOrigin
     }
 
 
@@ -128,13 +128,13 @@ public class TableSelectionChangedEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-	/// Array of unique IDs of table rows that have at least one selected cell.
+    /// Array of unique IDs of table rows that have at least one selected cell.
 
-	protected Int32 [] m_aiSelectedIDs;
+    protected Int32 [] m_aiSelectedIDs;
 
-	/// Specifies how the event originated.
+    /// Specifies how the event originated.
 
-	protected TableSelectionChangedEventOrigin m_eEventOrigin;
+    protected TableSelectionChangedEventOrigin m_eEventOrigin;
 }
 
 
@@ -149,17 +149,17 @@ public class TableSelectionChangedEventArgs : EventArgs
 public enum
 TableSelectionChangedEventOrigin
 {
-	/// <summary>
-	/// The user changed the selection in the table.
-	/// </summary>
+    /// <summary>
+    /// The user changed the selection in the table.
+    /// </summary>
 
-	SelectionChangedInTable,
+    SelectionChangedInTable,
 
-	/// <summary>
-	/// The user changed the selection in the NodeXL graph.
-	/// </summary>
+    /// <summary>
+    /// The user changed the selection in the NodeXL graph.
+    /// </summary>
 
-	SelectionChangedInGraph,
+    SelectionChangedInGraph,
 }
 
 
@@ -176,7 +176,7 @@ TableSelectionChangedEventOrigin
 /// </param>
 ///
 /// <param name="e">
-///	An <see cref="TableSelectionChangedEventArgs" /> object that contains the
+/// An <see cref="TableSelectionChangedEventArgs" /> object that contains the
 /// event data.
 /// </param>
 //*****************************************************************************
@@ -184,8 +184,8 @@ TableSelectionChangedEventOrigin
 public delegate void
 TableSelectionChangedEventHandler
 (
-	Object sender,
-	TableSelectionChangedEventArgs e
+    Object sender,
+    TableSelectionChangedEventArgs e
 );
 
 }

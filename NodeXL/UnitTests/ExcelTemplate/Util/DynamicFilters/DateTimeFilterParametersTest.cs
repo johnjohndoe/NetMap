@@ -26,7 +26,7 @@ public class DateTimeFilterParametersTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="DateTimeFilterParametersTest" /> class.
+    /// cref="DateTimeFilterParametersTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -49,7 +49,7 @@ public class DateTimeFilterParametersTest : Object
     SetUp()
     {
         m_oDateTimeFilterParameters = new DateTimeFilterParameters(
-			ColumnName, MinimumCellValue, MaximumCellValue, Format);
+            ColumnName, MinimumCellValue, MaximumCellValue, Format);
     }
 
     //*************************************************************************
@@ -81,16 +81,16 @@ public class DateTimeFilterParametersTest : Object
     public void
     TestConstructor()
     {
-		Assert.AreEqual(ColumnName, m_oDateTimeFilterParameters.ColumnName);
+        Assert.AreEqual(ColumnName, m_oDateTimeFilterParameters.ColumnName);
 
-		Assert.AreEqual(MinimumCellValue,
-			m_oDateTimeFilterParameters.MinimumCellValue);
+        Assert.AreEqual(MinimumCellValue,
+            m_oDateTimeFilterParameters.MinimumCellValue);
 
-		Assert.AreEqual(MaximumCellValue,
-			m_oDateTimeFilterParameters.MaximumCellValue);
+        Assert.AreEqual(MaximumCellValue,
+            m_oDateTimeFilterParameters.MaximumCellValue);
 
-		Assert.AreEqual(Format,
-			m_oDateTimeFilterParameters.Format);
+        Assert.AreEqual(Format,
+            m_oDateTimeFilterParameters.Format);
     }
 
 
@@ -98,14 +98,14 @@ public class DateTimeFilterParametersTest : Object
     //  Protected constants
     //*************************************************************************
 
-	///
-	protected const String ColumnName = "The column";
-	///
-	protected const Double MinimumCellValue = 123.456789;
-	///
-	protected const Double MaximumCellValue = 987.654321;
-	///
-	protected const ExcelColumnFormat Format = ExcelColumnFormat.Time;
+    ///
+    protected const String ColumnName = "The column";
+    ///
+    protected const Double MinimumCellValue = 123.456789;
+    ///
+    protected const Double MaximumCellValue = 987.654321;
+    ///
+    protected const ExcelColumnFormat Format = ExcelColumnFormat.Time;
 
 
     //*************************************************************************

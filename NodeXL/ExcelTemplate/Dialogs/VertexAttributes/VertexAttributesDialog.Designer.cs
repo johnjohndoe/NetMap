@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -52,7 +52,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVisibility = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.lnkVisibility = new System.Windows.Forms.LinkLabel();
             this.label8 = new System.Windows.Forms.Label();
-            this.cbxVertexDrawerPrecedence = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
+            this.cbxVertexDrawingPrecedence = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             ((System.ComponentModel.ISupportInitialize)(this.nudRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAlpha)).BeginInit();
             this.SuspendLayout();
@@ -241,14 +241,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label8.TabIndex = 9;
             this.label8.Text = "&What to show:";
             // 
-            // cbxVertexDrawerPrecedence
+            // cbxVertexDrawingPrecedence
             // 
-            this.cbxVertexDrawerPrecedence.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxVertexDrawerPrecedence.FormattingEnabled = true;
-            this.cbxVertexDrawerPrecedence.Location = new System.Drawing.Point(94, 148);
-            this.cbxVertexDrawerPrecedence.Name = "cbxVertexDrawerPrecedence";
-            this.cbxVertexDrawerPrecedence.Size = new System.Drawing.Size(118, 21);
-            this.cbxVertexDrawerPrecedence.TabIndex = 10;
+            this.cbxVertexDrawingPrecedence.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxVertexDrawingPrecedence.FormattingEnabled = true;
+            this.cbxVertexDrawingPrecedence.Location = new System.Drawing.Point(94, 148);
+            this.cbxVertexDrawingPrecedence.Name = "cbxVertexDrawingPrecedence";
+            this.cbxVertexDrawingPrecedence.Size = new System.Drawing.Size(118, 21);
+            this.cbxVertexDrawingPrecedence.TabIndex = 10;
             // 
             // VertexAttributesDialog
             // 
@@ -257,7 +257,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(343, 332);
-            this.Controls.Add(this.cbxVertexDrawerPrecedence);
+            this.Controls.Add(this.cbxVertexDrawingPrecedence);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lnkVisibility);
             this.Controls.Add(this.cbxVisibility);
@@ -312,6 +312,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVisibility;
         private System.Windows.Forms.LinkLabel lnkVisibility;
         private System.Windows.Forms.Label label8;
-        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexDrawerPrecedence;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexDrawingPrecedence;
     }
 }

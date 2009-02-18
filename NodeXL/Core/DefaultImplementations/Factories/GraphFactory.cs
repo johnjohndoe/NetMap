@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ namespace Microsoft.NodeXL.Core
 /// </summary>
 ///
 /// <remarks>
-///	This class implements <see cref="IGraphFactory" />, which allows the core
+/// This class implements <see cref="IGraphFactory" />, which allows the core
 /// NodeXL system to create graph objects without knowing their type.
 /// </remarks>
 ///
@@ -33,9 +33,9 @@ public class GraphFactory : GraphFactoryBase, IGraphFactory
 
     public GraphFactory()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -46,31 +46,31 @@ public class GraphFactory : GraphFactoryBase, IGraphFactory
     /// </summary>
     ///
     /// <param name="directedness">
-	///	Specifies the type of edges that can be added to the graph.
+    /// Specifies the type of edges that can be added to the graph.
     /// </param>
-	///
+    ///
     /// <param name="restrictions">
-	///	Specifies restrictions imposed by the graph.
+    /// Specifies restrictions imposed by the graph.
     /// </param>
-	///
+    ///
     /// <returns>
-	///	The <see cref="IGraph" /> interface on a newly created graph object.
+    /// The <see cref="IGraph" /> interface on a newly created graph object.
     /// </returns>
-	///
-	/// <remarks>
-	/// The arguments have already been checked for validity.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The arguments have already been checked for validity.
+    /// </remarks>
     //*************************************************************************
 
-	protected override IGraph
-	CreateGraphCore
-	(
-		GraphDirectedness directedness,
-		GraphRestrictions restrictions
-	)
-	{
-		return ( new Graph(directedness, restrictions) );
-	}
+    protected override IGraph
+    CreateGraphCore
+    (
+        GraphDirectedness directedness,
+        GraphRestrictions restrictions
+    )
+    {
+        return ( new Graph(directedness, restrictions) );
+    }
 
 
     //*************************************************************************
@@ -86,9 +86,9 @@ public class GraphFactory : GraphFactoryBase, IGraphFactory
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -96,7 +96,7 @@ public class GraphFactory : GraphFactoryBase, IGraphFactory
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

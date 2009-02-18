@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -29,9 +29,9 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
 
     public GraphMetricUserSettings()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -39,26 +39,28 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets a flag indicating whether at least one set of graph metrics should
-	/// be calculated.
+    /// be calculated.
     /// </summary>
     ///
     /// <value>
-	/// true if at least one set of graph metrics should be calculated.
+    /// true if at least one set of graph metrics should be calculated.
     /// </value>
     //*************************************************************************
 
     public Boolean
-	AtLeastOneMetricSelected
+    AtLeastOneMetricSelected
     {
         get
         {
             AssertValid();
 
-			return(this.CalculateInDegree || this.CalculateOutDegree ||
-				this.CalculateDegree || this.CalculateClusteringCoefficient ||
-				this.CalculateBetweennessCentrality ||
-				this.CalculateOverallMetrics
-				);
+            return(this.CalculateInDegree || this.CalculateOutDegree ||
+                this.CalculateDegree || this.CalculateClusteringCoefficient ||
+                this.CalculateBetweennessCentrality ||
+                this.CalculateEigenvectorCentrality ||
+                this.CalculateClosenessCentrality ||
+                this.CalculateOverallMetrics
+                );
         }
     }
 
@@ -67,30 +69,30 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether vertex in-degrees should be
-	/// calculated.
+    /// calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to calculate vertex in-degrees.  The default is true.
+    /// true to calculate vertex in-degrees.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateInDegree
+    CalculateInDegree
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateInDegreeKey] );
+            return ( (Boolean)this[CalculateInDegreeKey] );
         }
 
         set
         {
-			this[CalculateInDegreeKey] = value;
+            this[CalculateInDegreeKey] = value;
 
             AssertValid();
         }
@@ -101,30 +103,30 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether vertex out-degrees should be
-	/// calculated.
+    /// calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to calculate vertex out-degrees.  The default is true.
+    /// true to calculate vertex out-degrees.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateOutDegree
+    CalculateOutDegree
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateOutDegreeKey] );
+            return ( (Boolean)this[CalculateOutDegreeKey] );
         }
 
         set
         {
-			this[CalculateOutDegreeKey] = value;
+            this[CalculateOutDegreeKey] = value;
 
             AssertValid();
         }
@@ -135,30 +137,30 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether vertex degrees should be
-	/// calculated.
+    /// calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to calculate vertex degrees.  The default is true.
+    /// true to calculate vertex degrees.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateDegree
+    CalculateDegree
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateDegreeKey] );
+            return ( (Boolean)this[CalculateDegreeKey] );
         }
 
         set
         {
-			this[CalculateDegreeKey] = value;
+            this[CalculateDegreeKey] = value;
 
             AssertValid();
         }
@@ -169,30 +171,30 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether clustering coefficients should
-	/// be calculated.
+    /// be calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to calculate clustering coefficients.  The default is true.
+    /// true to calculate clustering coefficients.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateClusteringCoefficient
+    CalculateClusteringCoefficient
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateClusteringCoefficientKey] );
+            return ( (Boolean)this[CalculateClusteringCoefficientKey] );
         }
 
         set
         {
-			this[CalculateClusteringCoefficientKey] = value;
+            this[CalculateClusteringCoefficientKey] = value;
 
             AssertValid();
         }
@@ -203,30 +205,98 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether betweenness centralities should
-	/// be calculated.
+    /// be calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to calculate betweenness centralities.  The default is false.
+    /// true to calculate betweenness centralities.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateBetweennessCentrality
+    CalculateBetweennessCentrality
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateBetweennessCentralityKey] );
+            return ( (Boolean)this[CalculateBetweennessCentralityKey] );
         }
 
         set
         {
-			this[CalculateBetweennessCentralityKey] = value;
+            this[CalculateBetweennessCentralityKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: CalculateEigenvectorCentrality
+    //
+    /// <summary>
+    /// Gets or sets a flag specifying whether eigenvector centralities should
+    /// be calculated.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to calculate eigenvector centralities.  The default is false.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public Boolean
+    CalculateEigenvectorCentrality
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[CalculateEigenvectorCentralityKey] );
+        }
+
+        set
+        {
+            this[CalculateEigenvectorCentralityKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: CalculateClosenessCentrality
+    //
+    /// <summary>
+    /// Gets or sets a flag specifying whether closeness centralities should be
+    /// calculated.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to calculate closeness centralities.  The default is false.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public Boolean
+    CalculateClosenessCentrality
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[CalculateClosenessCentralityKey] );
+        }
+
+        set
+        {
+            this[CalculateClosenessCentralityKey] = value;
 
             AssertValid();
         }
@@ -237,30 +307,30 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether overall graph metrics should be
-	/// calculated.
+    /// calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to calculate overall graph metrics.  The default is true.
+    /// true to calculate overall graph metrics.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-	CalculateOverallMetrics
+    CalculateOverallMetrics
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[CalculateOverallMetricsKey] );
+            return ( (Boolean)this[CalculateOverallMetricsKey] );
         }
 
         set
         {
-			this[CalculateOverallMetricsKey] = value;
+            this[CalculateOverallMetricsKey] = value;
 
             AssertValid();
         }
@@ -288,37 +358,49 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the CalculateInDegree property.
+    /// Name of the settings key for the CalculateInDegree property.
 
-	protected const String CalculateInDegreeKey =
-		"CalculateInDegree";
+    protected const String CalculateInDegreeKey =
+        "CalculateInDegree";
 
-	/// Name of the settings key for the CalculateOutDegree property.
+    /// Name of the settings key for the CalculateOutDegree property.
 
-	protected const String CalculateOutDegreeKey =
-		"CalculateOutDegree";
+    protected const String CalculateOutDegreeKey =
+        "CalculateOutDegree";
 
-	/// Name of the settings key for the CalculateDegree property.
+    /// Name of the settings key for the CalculateDegree property.
 
-	protected const String CalculateDegreeKey =
-		"CalculateDegree";
+    protected const String CalculateDegreeKey =
+        "CalculateDegree";
 
-	/// Name of the settings key for the CalculateClusteringCoefficient
-	/// property.
+    /// Name of the settings key for the CalculateClusteringCoefficient
+    /// property.
 
-	protected const String CalculateClusteringCoefficientKey =
-		"CalculateClusteringCoefficient";
+    protected const String CalculateClusteringCoefficientKey =
+        "CalculateClusteringCoefficient";
 
-	/// Name of the settings key for the CalculateBetweennessCentrality
-	/// property.
+    /// Name of the settings key for the CalculateBetweennessCentrality
+    /// property.
 
-	protected const String CalculateBetweennessCentralityKey =
-		"CalculateBetweennessCentrality";
+    protected const String CalculateBetweennessCentralityKey =
+        "CalculateBetweennessCentrality";
 
-	/// Name of the settings key for the CalculateOverallMetrics property.
+    /// Name of the settings key for the CalculateEigenvectorCentrality
+    /// property.
 
-	protected const String CalculateOverallMetricsKey =
-		"CalculateOverallMetrics";
+    protected const String CalculateEigenvectorCentralityKey =
+        "CalculateEigenvectorCentrality";
+
+    /// Name of the settings key for the CalculateClosenessCentrality
+    /// property.
+
+    protected const String CalculateClosenessCentralityKey =
+        "CalculateClosenessCentrality";
+
+    /// Name of the settings key for the CalculateOverallMetrics property.
+
+    protected const String CalculateOverallMetricsKey =
+        "CalculateOverallMetrics";
 
 
     //*************************************************************************

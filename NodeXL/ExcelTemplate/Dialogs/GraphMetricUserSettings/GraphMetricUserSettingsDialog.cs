@@ -1,6 +1,5 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -11,14 +10,14 @@ using System.Diagnostics;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: GraphMetricUserSettingsDialog
+//  Class: GraphMetricUserSettingsDialog
 //
 /// <summary>
-///	Edits a <see cref="GraphMetricUserSettings" /> object.
+/// Edits a <see cref="GraphMetricUserSettings" /> object.
 /// </summary>
 ///
 /// <remarks>
-///	Pass a <see cref="GraphMetricUserSettings" /> object to the constructor.
+/// Pass a <see cref="GraphMetricUserSettings" /> object to the constructor.
 /// If the user edits the object, <see cref="Form.ShowDialog()" /> returns
 /// DialogResult.OK.  Otherwise, the object is not modified and <see
 /// cref="Form.ShowDialog()" /> returns DialogResult.Cancel.
@@ -27,456 +26,303 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
 {
-	//*************************************************************************
-	//	Constructor: GraphMetricUserSettingsDialog()
-	//
-	/// <overloads>
-	///	Initializes a new instance of the <see
-	/// cref="GraphMetricUserSettingsDialog" /> class.
-	/// </overloads>
-	///
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="GraphMetricUserSettingsDialog" /> class with a
-	/// GraphMetricUserSettings object.
-	/// </summary>
-	///
-    /// <param name="graphMetricUserSettings">
-	/// The object being edited.
-    /// </param>
-	//*************************************************************************
-
-	public GraphMetricUserSettingsDialog
-	(
-		GraphMetricUserSettings graphMetricUserSettings
-	)
-	: this()
-	{
-		Debug.Assert(graphMetricUserSettings != null);
-
-		m_oGraphMetricUserSettings = graphMetricUserSettings;
-
-		// Instantiate an object that saves and retrieves the position of this
-		// dialog.  Note that the object automatically saves the settings when
-		// the form closes.
-
-		m_oGraphMetricUserSettingsDialogUserSettings =
-			new GraphMetricUserSettingsDialogUserSettings(this);
-
-		clbGraphMetrics.Items.AddRange( new Object [] {
-
-			new ObjectWithText( GraphMetric.InDegree,
-				"In-Degree  (directed graphs only)"),
-
-			new ObjectWithText( GraphMetric.OutDegree,
-				"Out-Degree  (directed graphs only)"),
-
-			new ObjectWithText( GraphMetric.Degree,
-				"Degree  (undirected graphs only)"),
-
-			new ObjectWithText( GraphMetric.ClusteringCoefficient,
-				"Clustering Coefficient"),
-
-			new ObjectWithText( GraphMetric.BetweennessCentrality,
-				"Betweenness Centrality"),
-
-			new ObjectWithText( GraphMetric.OverallMetrics,
-				"Overall Metrics"),
-			} );
-
-		DoDataExchange(false);
-
-		AssertValid();
-	}
-
-	//*************************************************************************
-	//	Constructor: GraphMetricUserSettingsDialog()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="GraphMetricUserSettingsDialog" /> class for the Visual Studio
-	/// designer.
-	/// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for use by the Visual Studio
-	/// designer only.
-	/// </remarks>
-	//*************************************************************************
-
-	public GraphMetricUserSettingsDialog()
-	{
-		InitializeComponent();
-
-		// AssertValid();
-	}
-
     //*************************************************************************
-    //  Enum: GraphMetric
+    //  Constructor: GraphMetricUserSettingsDialog()
     //
+    /// <overloads>
+    /// Initializes a new instance of the <see
+    /// cref="GraphMetricUserSettingsDialog" /> class.
+    /// </overloads>
+    ///
     /// <summary>
-	/// Graph metric identifiers.
+    /// Initializes a new instance of the <see
+    /// cref="GraphMetricUserSettingsDialog" /> class with a
+    /// GraphMetricUserSettings object.
     /// </summary>
+    ///
+    /// <param name="graphMetricUserSettings">
+    /// The object being edited.
+    /// </param>
     //*************************************************************************
 
-    protected enum
-    GraphMetric
+    public GraphMetricUserSettingsDialog
+    (
+        GraphMetricUserSettings graphMetricUserSettings
+    )
+    : this()
     {
-        /// In-degree.
+        Debug.Assert(graphMetricUserSettings != null);
 
-        InDegree,
+        m_oGraphMetricUserSettings = graphMetricUserSettings;
 
-        /// Out-degree.
+        // Instantiate an object that saves and retrieves the position of this
+        // dialog.  Note that the object automatically saves the settings when
+        // the form closes.
 
-        OutDegree,
+        m_oGraphMetricUserSettingsDialogUserSettings =
+            new GraphMetricUserSettingsDialogUserSettings(this);
 
-        /// Degree.
+        DoDataExchange(false);
 
-        Degree,
-
-		/// Clustering coefficient.
-
-		ClusteringCoefficient,
-
-		/// Betweenness centrality.
-
-		BetweennessCentrality,
-
-		/// Overall graph metrics.
-
-		OverallMetrics,
+        AssertValid();
     }
 
     //*************************************************************************
-    //  Method: GraphMetricCheckBoxIsChecked
+    //  Constructor: GraphMetricUserSettingsDialog()
     //
     /// <summary>
-    /// Gets a flag indicating whether a checkbox for a graph metric is
-	/// checked.
+    /// Initializes a new instance of the <see
+    /// cref="GraphMetricUserSettingsDialog" /> class for the Visual Studio
+    /// designer.
     /// </summary>
     ///
-	/// <param name="eGraphMetric">
-	///	The GraphMetric corresponding to the checkbox.
-	/// </param>
-	///
+    /// <remarks>
+    /// Do not use this constructor.  It is for use by the Visual Studio
+    /// designer only.
+    /// </remarks>
+    //*************************************************************************
+
+    public GraphMetricUserSettingsDialog()
+    {
+        InitializeComponent();
+
+        // AssertValid();
+    }
+
+    //*************************************************************************
+    //  Method: DoDataExchange()
+    //
+    /// <summary>
+    /// Transfers data between the dialog's fields and its controls.
+    /// </summary>
+    ///
+    /// <param name="bFromControls">
+    /// true to transfer data from the dialog's controls to its fields, false
+    /// for the other direction.
+    /// </param>
+    ///
     /// <returns>
-	/// true if the specified checkbox is checked.
+    /// true if the transfer was successful.
     /// </returns>
     //*************************************************************************
 
     protected Boolean
-    GraphMetricCheckBoxIsChecked
-	(
-		GraphMetric eGraphMetric
-	)
+    DoDataExchange
+    (
+        Boolean bFromControls
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		// Loop through the checked checkbox items in the list of graph
-		// metrics.
+        if (bFromControls)
+        {
+            m_oGraphMetricUserSettings.CalculateInDegree = cbxInDegree.Checked;
 
-		foreach (Object oCheckedItem in clbGraphMetrics.CheckedItems)
-		{
-			if (ListBoxItemToGraphMetric(oCheckedItem) == eGraphMetric)
-			{
-				return (true);
-			}
-		}
+            m_oGraphMetricUserSettings.CalculateOutDegree =
+                cbxOutDegree.Checked;
 
-		return (false);
+            m_oGraphMetricUserSettings.CalculateDegree = cbxDegree.Checked;
+
+            m_oGraphMetricUserSettings.CalculateBetweennessCentrality =
+                cbxBetweennessCentrality.Checked;
+
+            m_oGraphMetricUserSettings.CalculateClosenessCentrality =
+                cbxClosenessCentrality.Checked;
+
+            m_oGraphMetricUserSettings.CalculateEigenvectorCentrality =
+                cbxEigenvectorCentrality.Checked;
+
+            m_oGraphMetricUserSettings.CalculateClusteringCoefficient =
+                cbxClusteringCoefficient.Checked;
+
+            m_oGraphMetricUserSettings.CalculateOverallMetrics =
+                cbxOverallMetrics.Checked;
+        }
+        else
+        {
+            cbxInDegree.Checked = m_oGraphMetricUserSettings.CalculateInDegree;
+
+            cbxOutDegree.Checked =
+                m_oGraphMetricUserSettings.CalculateOutDegree;
+
+            cbxDegree.Checked = m_oGraphMetricUserSettings.CalculateDegree;
+
+            cbxBetweennessCentrality.Checked =
+                m_oGraphMetricUserSettings.CalculateBetweennessCentrality;
+
+            cbxClosenessCentrality.Checked =
+                m_oGraphMetricUserSettings.CalculateClosenessCentrality;
+
+            cbxEigenvectorCentrality.Checked =
+                m_oGraphMetricUserSettings.CalculateEigenvectorCentrality;
+
+            cbxClusteringCoefficient.Checked =
+                m_oGraphMetricUserSettings.CalculateClusteringCoefficient;
+
+            cbxOverallMetrics.Checked =
+                m_oGraphMetricUserSettings.CalculateOverallMetrics;
+        }
+
+        return (true);
     }
 
-	//*************************************************************************
-	//	Method: DoDataExchange()
-	//
-	/// <summary>
-	///	Transfers data between the dialog's fields and its controls.
-	/// </summary>
-	///
-	/// <param name="bFromControls">
-	///	true to transfer data from the dialog's controls to its fields, false
-	///	for the other direction.
-	/// </param>
-	///
-	/// <returns>
-	///	true if the transfer was successful.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: CheckAllCheckBoxes()
+    //
+    /// <summary>
+    /// Checks or unchecks all the dialog's CheckBoxes.
+    /// </summary>
+    ///
+    /// <param name="oControl">
+    /// Control whose CheckBoxes should be checked or unchecked.
+    /// </param>
+    ///
+    /// <param name="bCheck">
+    /// true to check all CheckBoxes, false to uncheck them.
+    /// </param>
+    //*************************************************************************
 
-	protected Boolean
-	DoDataExchange
-	(
-		Boolean bFromControls
-	)
-	{
+    protected void
+    CheckAllCheckBoxes
+    (
+        Control oControl,
+        Boolean bCheck
+    )
+    {
+        Debug.Assert(oControl != null);
         AssertValid();
 
-		CheckedListBox.ObjectCollection oGraphMetricItems =
-			clbGraphMetrics.Items;
+        foreach (Control oChildControl in oControl.Controls)
+        {
+            if (oChildControl is CheckBox)
+            {
+                ( (CheckBox)oChildControl ).Checked = bCheck;
+            }
+            else
+            {
+                CheckAllCheckBoxes(oChildControl, bCheck);
+            }
+        }
+    }
 
-		Int32 iGraphMetricItems = oGraphMetricItems.Count;
+    //*************************************************************************
+    //  Method: btnCheckAll_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCheckAll button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
-		// Loop through the checkbox items in the list of graph metrics.
-
-		for (Int32 i = 0; i < iGraphMetricItems; i++)
-		{
-			Boolean bItemIsChecked = clbGraphMetrics.GetItemChecked(i);
-
-			switch ( ListBoxItemToGraphMetric( oGraphMetricItems[i] ) )
-			{
-				case GraphMetric.InDegree:
-
-					if (bFromControls)
-					{
-						m_oGraphMetricUserSettings.CalculateInDegree =
-							bItemIsChecked;
-					}
-					else
-					{
-						bItemIsChecked =
-							m_oGraphMetricUserSettings.CalculateInDegree;
-					}
-
-					break;
-
-				case GraphMetric.OutDegree:
-
-					if (bFromControls)
-					{
-						m_oGraphMetricUserSettings.CalculateOutDegree =
-							bItemIsChecked;
-					}
-					else
-					{
-						bItemIsChecked =
-							m_oGraphMetricUserSettings.CalculateOutDegree;
-					}
-
-					break;
-
-				case GraphMetric.Degree:
-
-					if (bFromControls)
-					{
-						m_oGraphMetricUserSettings.CalculateDegree =
-							bItemIsChecked;
-					}
-					else
-					{
-						bItemIsChecked =
-							m_oGraphMetricUserSettings.CalculateDegree;
-					}
-
-					break;
-
-				case GraphMetric.ClusteringCoefficient:
-
-					if (bFromControls)
-					{
-						m_oGraphMetricUserSettings.
-							CalculateClusteringCoefficient = bItemIsChecked;
-					}
-					else
-					{
-						bItemIsChecked = m_oGraphMetricUserSettings.
-							CalculateClusteringCoefficient;
-					}
-
-					break;
-
-				case GraphMetric.BetweennessCentrality:
-
-					if (bFromControls)
-					{
-						m_oGraphMetricUserSettings.
-							CalculateBetweennessCentrality = bItemIsChecked;
-					}
-					else
-					{
-						bItemIsChecked = m_oGraphMetricUserSettings.
-							CalculateBetweennessCentrality;
-					}
-
-					break;
-
-				case GraphMetric.OverallMetrics:
-
-					if (bFromControls)
-					{
-						m_oGraphMetricUserSettings.
-							CalculateOverallMetrics = bItemIsChecked;
-					}
-					else
-					{
-						bItemIsChecked = m_oGraphMetricUserSettings.
-							CalculateOverallMetrics;
-					}
-
-					break;
-
-				default:
-
-					Debug.Assert(false);
-					break;
-			}
-
-			if (!bFromControls)
-			{
-				clbGraphMetrics.SetItemChecked(i, bItemIsChecked);
-			}
-		}
-
-		return (true);
-	}
-
-	//*************************************************************************
-	//	Method: CheckAllListBoxItems()
-	//
-	/// <summary>
-	/// Checks or unchecks all items in the clbGraphMetrics CheckedListBox.
-	/// </summary>
-	///
-	/// <param name="bCheck">
-	///	true to check all items, false to uncheck them.
-	/// </param>
-	//*************************************************************************
-
-	protected void
-	CheckAllListBoxItems
-	(
-		Boolean bCheck
-	)
-	{
+    private void
+    btnCheckAll_Click
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
         AssertValid();
 
-		Int32 iGraphMetricItems = clbGraphMetrics.Items.Count;
+        CheckAllCheckBoxes(this, true);
+    }
 
-		for (Int32 i = 0; i < iGraphMetricItems; i++)
-		{
-			clbGraphMetrics.SetItemChecked(i, bCheck);
-		}
-	}
+    //*************************************************************************
+    //  Method: btnUncheckAll_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnUncheckAll button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
-	//*************************************************************************
-	//	Method: ListBoxItemToGraphMetric()
-	//
-	/// <summary>
-	///	Retrieves the GraphMetric value stored in an item from the
-	/// clbGraphMetrics CheckedListBox.
-	/// </summary>
-	///
-	/// <param name="oListBoxItem">
-	///	Item from the clbGraphMetrics CheckedListBox.
-	/// </param>
-	///
-	/// <returns>
-	///	The GraphMetric value stored within <paramref name="oListBoxItem" />.
-	/// </returns>
-	//*************************************************************************
-
-	protected GraphMetric
-	ListBoxItemToGraphMetric
-	(
-		Object oListBoxItem
-	)
-	{
-		Debug.Assert(oListBoxItem != null);
+    private void
+    btnUncheckAll_Click
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
         AssertValid();
 
-		Debug.Assert(oListBoxItem is ObjectWithText);
+        CheckAllCheckBoxes(this, false);
+    }
 
-		ObjectWithText oObjectWithText = (ObjectWithText)oListBoxItem;
+    //*************************************************************************
+    //  Method: lnkHelpLink_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on all of the help LinkLabels.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
-		Debug.Assert(oObjectWithText.Object is GraphMetric);
+    private void
+    lnkHelpLink_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
+    {
+        AssertValid();
 
-		return ( (GraphMetric)oObjectWithText.Object );
-	}
+        // The help text is stored in the LinkLabel's Tag.
 
-	//*************************************************************************
-	//	Method: btnCheckAll_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnCheckAll button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+        Debug.Assert(sender is LinkLabel);
+        Debug.Assert( ( (LinkLabel)sender ).Tag is String );
 
-	private void
-	btnCheckAll_Click
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		AssertValid();
+        this.ShowInformation( (String)( (LinkLabel)sender ).Tag );
+    }
 
-		CheckAllListBoxItems(true);
-	}
+    //*************************************************************************
+    //  Method: btnOK_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnOK button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
-	//*************************************************************************
-	//	Method: btnUncheckAll_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnUncheckAll button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
-
-	private void
-	btnUncheckAll_Click
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		AssertValid();
-
-		CheckAllListBoxItems(false);
-	}
-
-	//*************************************************************************
-	//	Method: btnOK_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnOK button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
-
-	private void
-	btnOK_Click
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		if ( DoDataExchange(true) )
-		{
-			DialogResult = DialogResult.OK;
-			this.Close();
-		}
-	}
+    private void
+    btnOK_Click
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
+        if ( DoDataExchange(true) )
+        {
+            DialogResult = DialogResult.OK;
+            this.Close();
+        }
+    }
 
 
     //*************************************************************************
@@ -492,10 +338,10 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oGraphMetricUserSettings != null);
-		Debug.Assert(m_oGraphMetricUserSettingsDialogUserSettings != null);
+        Debug.Assert(m_oGraphMetricUserSettings != null);
+        Debug.Assert(m_oGraphMetricUserSettingsDialogUserSettings != null);
     }
 
 
@@ -503,14 +349,14 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-	/// Object whose properties are being edited.
+    /// Object whose properties are being edited.
 
-	protected GraphMetricUserSettings m_oGraphMetricUserSettings;
+    protected GraphMetricUserSettings m_oGraphMetricUserSettings;
 
-	/// User settings for this dialog.
+    /// User settings for this dialog.
 
-	protected GraphMetricUserSettingsDialogUserSettings
-		m_oGraphMetricUserSettingsDialogUserSettings;
+    protected GraphMetricUserSettingsDialogUserSettings
+        m_oGraphMetricUserSettingsDialogUserSettings;
 }
 
 
@@ -527,7 +373,7 @@ public partial class GraphMetricUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GraphMetricUserSettingsDialog") ]
+[ SettingsGroupNameAttribute("GraphMetricUserSettingsDialog2") ]
 
 public class GraphMetricUserSettingsDialogUserSettings : FormSettings
 {
@@ -536,25 +382,25 @@ public class GraphMetricUserSettingsDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="GraphMetricUserSettingsDialogUserSettings" /> class.
+    /// cref="GraphMetricUserSettingsDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricUserSettingsDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -571,7 +417,7 @@ public class GraphMetricUserSettingsDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

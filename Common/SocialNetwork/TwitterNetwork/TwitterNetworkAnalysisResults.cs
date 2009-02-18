@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -28,37 +28,37 @@ public class TwitterNetworkAnalysisResults : Object
     //
     /// <overloads>
     /// Initializes a new instance of the <see
-	/// cref="TwitterNetworkAnalysisResults" /> class.
+    /// cref="TwitterNetworkAnalysisResults" /> class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="TwitterNetworkAnalysisResults" /> class with specified values.
+    /// cref="TwitterNetworkAnalysisResults" /> class with specified values.
     /// </summary>
-	///
+    ///
     /// <param name="participantPairs">
-	/// An array of <see cref="TwitterParticipantPair" /> objects, one for each
-	/// participant pair in the network.  Can be empty but not null.
+    /// An array of <see cref="TwitterParticipantPair" /> objects, one for each
+    /// participant pair in the network.  Can be empty but not null.
     /// </param>
-	///
+    ///
     /// <param name="participants">
-	/// A dictionary of participants, one for each participant in <paramref
-	/// name="participantPairs" />.  The key is the participant's Twitter
-	/// screen name and the value is the <see cref="TwitterParticipant" />
-	/// object for the participant.  Can be empty but not null.
+    /// A dictionary of participants, one for each participant in <paramref
+    /// name="participantPairs" />.  The key is the participant's Twitter
+    /// screen name and the value is the <see cref="TwitterParticipant" />
+    /// object for the participant.  Can be empty but not null.
     /// </param>
     //*************************************************************************
 
     public TwitterNetworkAnalysisResults
-	(
-		TwitterParticipantPair [] participantPairs,
-		Dictionary<String, TwitterParticipant> participants
-	)
+    (
+        TwitterParticipantPair [] participantPairs,
+        Dictionary<String, TwitterParticipant> participants
+    )
     {
-		m_aoParticipantPairs = participantPairs;
-		m_oParticipants = participants;
+        m_aoParticipantPairs = participantPairs;
+        m_oParticipants = participants;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -66,34 +66,34 @@ public class TwitterNetworkAnalysisResults : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="TwitterNetworkAnalysisResults" /> class with default values.
+    /// cref="TwitterNetworkAnalysisResults" /> class with default values.
     /// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for XML serialization only.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for XML serialization only.
+    /// </remarks>
     //*************************************************************************
 
     public TwitterNetworkAnalysisResults()
-	:
-	this( new TwitterParticipantPair[0],
-		new Dictionary<String, TwitterParticipant>() )
+    :
+    this( new TwitterParticipantPair[0],
+        new Dictionary<String, TwitterParticipant>() )
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: ParticipantPairs
     //
     /// <summary>
-	/// Gets or sets an array of <see cref="TwitterParticipantPair" /> objects.
+    /// Gets or sets an array of <see cref="TwitterParticipantPair" /> objects.
     /// </summary>
     ///
     /// <value>
-	/// An array of <see cref="TwitterParticipantPair" /> objects, one for each
-	/// participant pair in the network.  Can be empty but not null.
+    /// An array of <see cref="TwitterParticipantPair" /> objects, one for each
+    /// participant pair in the network.  Can be empty but not null.
     /// </value>
     //*************************************************************************
 
@@ -109,7 +109,7 @@ public class TwitterNetworkAnalysisResults : Object
 
         set
         {
-			m_aoParticipantPairs = value;
+            m_aoParticipantPairs = value;
 
             AssertValid();
         }
@@ -119,14 +119,14 @@ public class TwitterNetworkAnalysisResults : Object
     //  Property: Participants
     //
     /// <summary>
-	/// Gets or sets a dictionary of participants.
+    /// Gets or sets a dictionary of participants.
     /// </summary>
     ///
     /// <value>
-	/// A dictionary of participants, one for each participant in <paramref
-	/// name="participantPairs" />.  The key is the participant's Twitter
-	/// screen name and the value is the <see cref="TwitterParticipant" />
-	/// object for the participant.  Can be empty but not null.
+    /// A dictionary of participants, one for each participant in <paramref
+    /// name="participantPairs" />.  The key is the participant's Twitter
+    /// screen name and the value is the <see cref="TwitterParticipant" />
+    /// object for the participant.  Can be empty but not null.
     /// </value>
     //*************************************************************************
 
@@ -142,7 +142,7 @@ public class TwitterNetworkAnalysisResults : Object
 
         set
         {
-			m_oParticipants = value;
+            m_oParticipants = value;
 
             AssertValid();
         }
@@ -162,8 +162,8 @@ public class TwitterNetworkAnalysisResults : Object
     public void
     AssertValid()
     {
-		Debug.Assert(m_aoParticipantPairs != null);
-		Debug.Assert(m_oParticipants != null);
+        Debug.Assert(m_aoParticipantPairs != null);
+        Debug.Assert(m_oParticipants != null);
     }
 
 
@@ -171,17 +171,17 @@ public class TwitterNetworkAnalysisResults : Object
     //  Protected fields
     //*************************************************************************
 
-	/// An array of TwitterParticipantPair objects, one for each participant
-	/// pair in the network.  Can be empty but not null.
+    /// An array of TwitterParticipantPair objects, one for each participant
+    /// pair in the network.  Can be empty but not null.
 
-	protected TwitterParticipantPair [] m_aoParticipantPairs;
+    protected TwitterParticipantPair [] m_aoParticipantPairs;
 
-	/// A dictionary of participants, one for each participant in
-	/// m_aoParticipantPairs.  The key is the participant's Twitter screen name
-	/// and the value is the TwitterParticipant object for the participant.
-	/// Can be empty but not null.
+    /// A dictionary of participants, one for each participant in
+    /// m_aoParticipantPairs.  The key is the participant's Twitter screen name
+    /// and the value is the TwitterParticipant object for the participant.
+    /// Can be empty but not null.
 
-	protected Dictionary<String, TwitterParticipant> m_oParticipants;
+    protected Dictionary<String, TwitterParticipant> m_oParticipants;
 }
 
 }

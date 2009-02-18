@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -27,15 +27,15 @@ public class EdgeFactoryTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="EdgeFactoryTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public EdgeFactoryTest()
     {
         m_oEdgeFactory = null;
-		m_oVertex1 = null;
-		m_oVertex2 = null;
+        m_oVertex1 = null;
+        m_oVertex2 = null;
     }
 
     //*************************************************************************
@@ -53,17 +53,17 @@ public class EdgeFactoryTest : Object
     {
         m_oEdgeFactory = new EdgeFactory();
 
-		// Add two vertices to a graph.
+        // Add two vertices to a graph.
 
-		VertexFactory oVertexFactory = new VertexFactory();
+        VertexFactory oVertexFactory = new VertexFactory();
 
-		m_oVertex1 = oVertexFactory.CreateVertex();
-		m_oVertex2 = oVertexFactory.CreateVertex();
+        m_oVertex1 = oVertexFactory.CreateVertex();
+        m_oVertex2 = oVertexFactory.CreateVertex();
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		oGraph.Vertices.Add(m_oVertex1);
-		oGraph.Vertices.Add(m_oVertex2);
+        oGraph.Vertices.Add(m_oVertex1);
+        oGraph.Vertices.Add(m_oVertex2);
     }
 
     //*************************************************************************
@@ -80,8 +80,8 @@ public class EdgeFactoryTest : Object
     TearDown()
     {
         m_oEdgeFactory = null;
-		m_oVertex1 = null;
-		m_oVertex2 = null;
+        m_oVertex1 = null;
+        m_oVertex2 = null;
     }
 
     //*************************************************************************
@@ -97,7 +97,7 @@ public class EdgeFactoryTest : Object
     public void
     TestConstructor()
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -113,59 +113,59 @@ public class EdgeFactoryTest : Object
     public void
     TestCreateEdge()
     {
-		Int32 iFirstEdgeID = Int32.MinValue;
+        Int32 iFirstEdgeID = Int32.MinValue;
 
-		foreach ( Int32 iEdges in new Int32 [] {1, 1000} )
+        foreach ( Int32 iEdges in new Int32 [] {1, 1000} )
 
-		foreach (Boolean bDirected in GraphUtil.AllBoolean)
+        foreach (Boolean bDirected in TestGraphUtil.AllBoolean)
 
-		for (Int32 i = 0; i < iEdges; i++)
+        for (Int32 i = 0; i < iEdges; i++)
 
-		{
-		IEdge oEdge = m_oEdgeFactory.CreateEdge(
-			m_oVertex1, m_oVertex2, bDirected);
+        {
+        IEdge oEdge = m_oEdgeFactory.CreateEdge(
+            m_oVertex1, m_oVertex2, bDirected);
 
-		Assert.IsNotNull(oEdge);
-		Assert.IsTrue(oEdge is Edge);
+        Assert.IsNotNull(oEdge);
+        Assert.IsTrue(oEdge is Edge);
 
-		Assert.IsNull(oEdge.Name);
+        Assert.IsNull(oEdge.Name);
 
-		if (i == 0)
-		{
-			iFirstEdgeID = oEdge.ID;
-		}
-		else
-		{
-			// Make sure the assigned IDs are consecutive.
+        if (i == 0)
+        {
+            iFirstEdgeID = oEdge.ID;
+        }
+        else
+        {
+            // Make sure the assigned IDs are consecutive.
 
-			Assert.AreEqual(iFirstEdgeID + i, oEdge.ID);
-		}
+            Assert.AreEqual(iFirstEdgeID + i, oEdge.ID);
+        }
 
-		if (bDirected)
-		{
-			Assert.IsNotNull(oEdge.BackVertex);
-			Assert.AreEqual(m_oVertex1, oEdge.BackVertex);
+        if (bDirected)
+        {
+            Assert.IsNotNull(oEdge.BackVertex);
+            Assert.AreEqual(m_oVertex1, oEdge.BackVertex);
 
-			Assert.IsNotNull(oEdge.FrontVertex);
-			Assert.AreEqual(m_oVertex2, oEdge.FrontVertex);
-		}
+            Assert.IsNotNull(oEdge.FrontVertex);
+            Assert.AreEqual(m_oVertex2, oEdge.FrontVertex);
+        }
 
-		Boolean bIsDirected = oEdge.IsDirected;
+        Boolean bIsDirected = oEdge.IsDirected;
 
-		Assert.AreEqual(bIsDirected, bDirected);
+        Assert.AreEqual(bIsDirected, bDirected);
 
-		Assert.IsFalse(oEdge.IsSelfLoop);
+        Assert.IsFalse(oEdge.IsSelfLoop);
 
-		Assert.AreEqual(m_oVertex1.ParentGraph, oEdge.ParentGraph);
-		Assert.AreEqual(m_oVertex2.ParentGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oVertex1.ParentGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oVertex2.ParentGraph, oEdge.ParentGraph);
 
-		Assert.IsNull(oEdge.Tag);
+        Assert.IsNull(oEdge.Tag);
 
-		Assert.IsNotNull(oEdge.Vertices);
-		Assert.AreEqual(2, oEdge.Vertices.Length);
-		Assert.AreEqual( m_oVertex1, oEdge.Vertices[0] );
-		Assert.AreEqual( m_oVertex2, oEdge.Vertices[1] );
-		}
+        Assert.IsNotNull(oEdge.Vertices);
+        Assert.AreEqual(2, oEdge.Vertices.Length);
+        Assert.AreEqual( m_oVertex1, oEdge.Vertices[0] );
+        Assert.AreEqual( m_oVertex2, oEdge.Vertices[1] );
+        }
     }
 
     //*************************************************************************
@@ -177,30 +177,30 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCreateEdgeBad()
     {
-		// null vertex1.
+        // null vertex1.
 
-		try
-		{
-			IEdge oEdge = m_oEdgeFactory.CreateEdge(null, m_oVertex2, false);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IEdge oEdge = m_oEdgeFactory.CreateEdge(null, m_oVertex2, false);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeFactory.CreateEdge: vertex1 argument can't be null.\r\n"
-				+ "Parameter name: vertex1"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "EdgeFactory.CreateEdge: vertex1 argument can't be null.\r\n"
+                + "Parameter name: vertex1"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -212,35 +212,35 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateEdgeBad2()
     {
-		// vertex1 not part of a graph.
+        // vertex1 not part of a graph.
 
-		try
-		{
-			IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			IEdge oEdge =
-				m_oEdgeFactory.CreateEdge(oNonGraphVertex, m_oVertex2, false);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge =
+                m_oEdgeFactory.CreateEdge(oNonGraphVertex, m_oVertex2, false);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 has not been added to a graph.  A"
-				+ " vertex must be added to a graph before it can be connected"
-				+ " to an edge.\r\n"
-				+ "Parameter name: vertex1"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 has not been added to a graph.  A"
+                + " vertex must be added to a graph before it can be connected"
+                + " to an edge.\r\n"
+                + "Parameter name: vertex1"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -252,30 +252,30 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCreateEdgeBad3()
     {
-		// null vertex2.
+        // null vertex2.
 
-		try
-		{
-			IEdge oEdge = m_oEdgeFactory.CreateEdge(m_oVertex1, null, false);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IEdge oEdge = m_oEdgeFactory.CreateEdge(m_oVertex1, null, false);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeFactory.CreateEdge: vertex2 argument can't be null.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "EdgeFactory.CreateEdge: vertex2 argument can't be null.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -287,35 +287,35 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateEdgeBad4()
     {
-		// vertex2 not part of a graph.
+        // vertex2 not part of a graph.
 
-		try
-		{
-			IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			IEdge oEdge =
-				m_oEdgeFactory.CreateEdge(m_oVertex1, oNonGraphVertex, false);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge =
+                m_oEdgeFactory.CreateEdge(m_oVertex1, oNonGraphVertex, false);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex2 has not been added to a graph.  A"
-				+ " vertex must be added to a graph before it can be connected"
-				+ " to an edge.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex2 has not been added to a graph.  A"
+                + " vertex must be added to a graph before it can be connected"
+                + " to an edge.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -327,37 +327,37 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateEdgeBad5()
     {
-		// vertex1 and vertex2 belong to different graphs.
+        // vertex1 and vertex2 belong to different graphs.
 
-		try
-		{
-			IVertex oOtherGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oOtherGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			( new Graph() ).Vertices.Add(oOtherGraphVertex);
+            ( new Graph() ).Vertices.Add(oOtherGraphVertex);
 
-			IEdge oEdge =
-				m_oEdgeFactory.CreateEdge(m_oVertex1, oOtherGraphVertex, false);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge =
+                m_oEdgeFactory.CreateEdge(m_oVertex1, oOtherGraphVertex, false);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 and vertex2 have been added to"
-				+ " different graphs.  An edge can't connect vertices from"
-				+ " different graphs.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 and vertex2 have been added to"
+                + " different graphs.  An edge can't connect vertices from"
+                + " different graphs.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -373,33 +373,33 @@ public class EdgeFactoryTest : Object
     public void
     TestCreateUndirectedEdge()
     {
-		IEdge oEdge =
-			m_oEdgeFactory.CreateUndirectedEdge(m_oVertex1, m_oVertex2);
+        IEdge oEdge =
+            m_oEdgeFactory.CreateUndirectedEdge(m_oVertex1, m_oVertex2);
 
-		Assert.IsNotNull(oEdge);
-		Assert.IsTrue(oEdge is Edge);
+        Assert.IsNotNull(oEdge);
+        Assert.IsTrue(oEdge is Edge);
 
-		Assert.IsNull(oEdge.Name);
+        Assert.IsNull(oEdge.Name);
 
-		// Assert.IsNotNull(oEdge.BackVertex);
-		// Assert.AreEqual(m_oVertex1, oEdge.BackVertex);
+        // Assert.IsNotNull(oEdge.BackVertex);
+        // Assert.AreEqual(m_oVertex1, oEdge.BackVertex);
 
-		// Assert.IsNotNull(oEdge.FrontVertex);
-		// Assert.AreEqual(m_oVertex2, oEdge.FrontVertex);
+        // Assert.IsNotNull(oEdge.FrontVertex);
+        // Assert.AreEqual(m_oVertex2, oEdge.FrontVertex);
 
-		Assert.IsFalse(oEdge.IsDirected);
+        Assert.IsFalse(oEdge.IsDirected);
 
-		Assert.IsFalse(oEdge.IsSelfLoop);
+        Assert.IsFalse(oEdge.IsSelfLoop);
 
-		Assert.AreEqual(m_oVertex1.ParentGraph, oEdge.ParentGraph);
-		Assert.AreEqual(m_oVertex2.ParentGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oVertex1.ParentGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oVertex2.ParentGraph, oEdge.ParentGraph);
 
-		Assert.IsNull(oEdge.Tag);
+        Assert.IsNull(oEdge.Tag);
 
-		Assert.IsNotNull(oEdge.Vertices);
-		Assert.AreEqual(2, oEdge.Vertices.Length);
-		Assert.AreEqual( m_oVertex1, oEdge.Vertices[0] );
-		Assert.AreEqual( m_oVertex2, oEdge.Vertices[1] );
+        Assert.IsNotNull(oEdge.Vertices);
+        Assert.AreEqual(2, oEdge.Vertices.Length);
+        Assert.AreEqual( m_oVertex1, oEdge.Vertices[0] );
+        Assert.AreEqual( m_oVertex2, oEdge.Vertices[1] );
     }
 
     //*************************************************************************
@@ -411,32 +411,32 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCreateUndirectedEdgeBad()
     {
-		// null vertex1.
+        // null vertex1.
 
-		try
-		{
-			IEdge oEdge =
-				m_oEdgeFactory.CreateUndirectedEdge(null, m_oVertex2);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IEdge oEdge =
+                m_oEdgeFactory.CreateUndirectedEdge(null, m_oVertex2);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeFactory.CreateUndirectedEdge: vertex1 argument can't"
+                "Microsoft.NodeXL.Core."
+                + "EdgeFactory.CreateUndirectedEdge: vertex1 argument can't"
                 + " be null.\r\n"
-				+ "Parameter name: vertex1"
-				,
-				oArgumentNullException.Message
-				);
+                + "Parameter name: vertex1"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -448,35 +448,35 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateUndirectedEdgeBad2()
     {
-		// vertex1 not part of a graph.
+        // vertex1 not part of a graph.
 
-		try
-		{
-			IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			IEdge oEdge = m_oEdgeFactory.CreateUndirectedEdge(
-				oNonGraphVertex, m_oVertex2);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge = m_oEdgeFactory.CreateUndirectedEdge(
+                oNonGraphVertex, m_oVertex2);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 has not been added to a graph.  A"
-				+ " vertex must be added to a graph before it can be connected"
-				+ " to an edge.\r\n"
-				+ "Parameter name: vertex1"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 has not been added to a graph.  A"
+                + " vertex must be added to a graph before it can be connected"
+                + " to an edge.\r\n"
+                + "Parameter name: vertex1"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -488,32 +488,32 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCreateUndirectedEdgeBad3()
     {
-		// null vertex2.
+        // null vertex2.
 
-		try
-		{
-			IEdge oEdge =
-				m_oEdgeFactory.CreateUndirectedEdge(m_oVertex1, null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IEdge oEdge =
+                m_oEdgeFactory.CreateUndirectedEdge(m_oVertex1, null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeFactory.CreateUndirectedEdge: vertex2 argument can't"
+                "Microsoft.NodeXL.Core."
+                + "EdgeFactory.CreateUndirectedEdge: vertex2 argument can't"
                 + " be null.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentNullException.Message
-				);
+                + "Parameter name: vertex2"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -525,35 +525,35 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateUndirectedEdgeBad4()
     {
-		// vertex2 not part of a graph.
+        // vertex2 not part of a graph.
 
-		try
-		{
-			IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			IEdge oEdge = m_oEdgeFactory.CreateUndirectedEdge(
-				m_oVertex1, oNonGraphVertex);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge = m_oEdgeFactory.CreateUndirectedEdge(
+                m_oVertex1, oNonGraphVertex);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex2 has not been added to a graph.  A"
-				+ " vertex must be added to a graph before it can be connected"
-				+ " to an edge.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex2 has not been added to a graph.  A"
+                + " vertex must be added to a graph before it can be connected"
+                + " to an edge.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -565,37 +565,37 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateUndirectedEdgeBad5()
     {
-		// vertex1 and vertex2 belong to different graphs.
+        // vertex1 and vertex2 belong to different graphs.
 
-		try
-		{
-			IVertex oOtherGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oOtherGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			( new Graph() ).Vertices.Add(oOtherGraphVertex);
+            ( new Graph() ).Vertices.Add(oOtherGraphVertex);
 
-			IEdge oEdge = m_oEdgeFactory.CreateUndirectedEdge(
-				m_oVertex1, oOtherGraphVertex);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge = m_oEdgeFactory.CreateUndirectedEdge(
+                m_oVertex1, oOtherGraphVertex);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 and vertex2 have been added to"
-				+ " different graphs.  An edge can't connect vertices from"
-				+ " different graphs.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 and vertex2 have been added to"
+                + " different graphs.  An edge can't connect vertices from"
+                + " different graphs.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -611,33 +611,33 @@ public class EdgeFactoryTest : Object
     public void
     TestCreateDirectedEdge()
     {
-		IEdge oEdge =
-			m_oEdgeFactory.CreateDirectedEdge(m_oVertex1, m_oVertex2);
+        IEdge oEdge =
+            m_oEdgeFactory.CreateDirectedEdge(m_oVertex1, m_oVertex2);
 
-		Assert.IsNotNull(oEdge);
-		Assert.IsTrue(oEdge is Edge);
+        Assert.IsNotNull(oEdge);
+        Assert.IsTrue(oEdge is Edge);
 
-		Assert.IsNull(oEdge.Name);
+        Assert.IsNull(oEdge.Name);
 
-		Assert.IsNotNull(oEdge.BackVertex);
-		Assert.AreEqual(m_oVertex1, oEdge.BackVertex);
+        Assert.IsNotNull(oEdge.BackVertex);
+        Assert.AreEqual(m_oVertex1, oEdge.BackVertex);
 
-		Assert.IsNotNull(oEdge.FrontVertex);
-		Assert.AreEqual(m_oVertex2, oEdge.FrontVertex);
+        Assert.IsNotNull(oEdge.FrontVertex);
+        Assert.AreEqual(m_oVertex2, oEdge.FrontVertex);
 
-		Assert.IsTrue(oEdge.IsDirected);
+        Assert.IsTrue(oEdge.IsDirected);
 
-		Assert.IsFalse(oEdge.IsSelfLoop);
+        Assert.IsFalse(oEdge.IsSelfLoop);
 
-		Assert.AreEqual(m_oVertex1.ParentGraph, oEdge.ParentGraph);
-		Assert.AreEqual(m_oVertex2.ParentGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oVertex1.ParentGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oVertex2.ParentGraph, oEdge.ParentGraph);
 
-		Assert.IsNull(oEdge.Tag);
+        Assert.IsNull(oEdge.Tag);
 
-		Assert.IsNotNull(oEdge.Vertices);
-		Assert.AreEqual(2, oEdge.Vertices.Length);
-		Assert.AreEqual( m_oVertex1, oEdge.Vertices[0] );
-		Assert.AreEqual( m_oVertex2, oEdge.Vertices[1] );
+        Assert.IsNotNull(oEdge.Vertices);
+        Assert.AreEqual(2, oEdge.Vertices.Length);
+        Assert.AreEqual( m_oVertex1, oEdge.Vertices[0] );
+        Assert.AreEqual( m_oVertex2, oEdge.Vertices[1] );
     }
 
     //*************************************************************************
@@ -649,32 +649,32 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCreateDirectedEdgeBad()
     {
-		// null vertex1.
+        // null vertex1.
 
-		try
-		{
-			IEdge oEdge =
-				m_oEdgeFactory.CreateDirectedEdge(null, m_oVertex2);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IEdge oEdge =
+                m_oEdgeFactory.CreateDirectedEdge(null, m_oVertex2);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeFactory.CreateDirectedEdge: backVertex argument can't"
+                "Microsoft.NodeXL.Core."
+                + "EdgeFactory.CreateDirectedEdge: backVertex argument can't"
                 + " be null.\r\n"
-				+ "Parameter name: backVertex"
-				,
-				oArgumentNullException.Message
-				);
+                + "Parameter name: backVertex"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -686,35 +686,35 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateDirectedEdgeBad2()
     {
-		// vertex1 not part of a graph.
+        // vertex1 not part of a graph.
 
-		try
-		{
-			IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			IEdge oEdge = m_oEdgeFactory.CreateDirectedEdge(
-				oNonGraphVertex, m_oVertex2);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge = m_oEdgeFactory.CreateDirectedEdge(
+                oNonGraphVertex, m_oVertex2);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 has not been added to a graph.  A"
-				+ " vertex must be added to a graph before it can be connected"
-				+ " to an edge.\r\n"
-				+ "Parameter name: vertex1"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 has not been added to a graph.  A"
+                + " vertex must be added to a graph before it can be connected"
+                + " to an edge.\r\n"
+                + "Parameter name: vertex1"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -726,32 +726,32 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCreateDirectedEdgeBad3()
     {
-		// null vertex2.
+        // null vertex2.
 
-		try
-		{
-			IEdge oEdge =
-				m_oEdgeFactory.CreateDirectedEdge(m_oVertex1, null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IEdge oEdge =
+                m_oEdgeFactory.CreateDirectedEdge(m_oVertex1, null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeFactory.CreateDirectedEdge: frontVertex argument"
+                "Microsoft.NodeXL.Core."
+                + "EdgeFactory.CreateDirectedEdge: frontVertex argument"
                 + " can't be null.\r\n"
-				+ "Parameter name: frontVertex"
-				,
-				oArgumentNullException.Message
-				);
+                + "Parameter name: frontVertex"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -763,35 +763,35 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateDirectedEdgeBad4()
     {
-		// vertex2 not part of a graph.
+        // vertex2 not part of a graph.
 
-		try
-		{
-			IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oNonGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			IEdge oEdge = m_oEdgeFactory.CreateDirectedEdge(
-				m_oVertex1, oNonGraphVertex);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge = m_oEdgeFactory.CreateDirectedEdge(
+                m_oVertex1, oNonGraphVertex);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex2 has not been added to a graph.  A"
-				+ " vertex must be added to a graph before it can be connected"
-				+ " to an edge.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex2 has not been added to a graph.  A"
+                + " vertex must be added to a graph before it can be connected"
+                + " to an edge.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -803,37 +803,37 @@ public class EdgeFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateDirectedEdgeBad5()
     {
-		// vertex1 and vertex2 belong to different graphs.
+        // vertex1 and vertex2 belong to different graphs.
 
-		try
-		{
-			IVertex oOtherGraphVertex = ( new VertexFactory() ).CreateVertex();
+        try
+        {
+            IVertex oOtherGraphVertex = ( new VertexFactory() ).CreateVertex();
 
-			( new Graph() ).Vertices.Add(oOtherGraphVertex);
+            ( new Graph() ).Vertices.Add(oOtherGraphVertex);
 
-			IEdge oEdge = m_oEdgeFactory.CreateDirectedEdge(
-				m_oVertex1, oOtherGraphVertex);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            IEdge oEdge = m_oEdgeFactory.CreateDirectedEdge(
+                m_oVertex1, oOtherGraphVertex);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 and vertex2 have been added to"
-				+ " different graphs.  An edge can't connect vertices from"
-				+ " different graphs.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 and vertex2 have been added to"
+                + " different graphs.  An edge can't connect vertices from"
+                + " different graphs.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
 
@@ -845,13 +845,13 @@ public class EdgeFactoryTest : Object
 
     protected IEdgeFactory m_oEdgeFactory;
 
-	/// First vertex to connect with an edge.
+    /// First vertex to connect with an edge.
 
-	protected IVertex m_oVertex1;
+    protected IVertex m_oVertex1;
 
-	/// Second vertex to connect with an edge.
+    /// Second vertex to connect with an edge.
 
-	protected IVertex m_oVertex2;
+    protected IVertex m_oVertex2;
 }
 
 }

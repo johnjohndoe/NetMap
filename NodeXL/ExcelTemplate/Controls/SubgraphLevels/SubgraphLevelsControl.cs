@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: SubgraphLevelsControl
+//  Class: SubgraphLevelsControl
 //
 /// <summary>
 /// UserControl that contains a ComboBox for selecting the number of adjacent
@@ -32,20 +32,20 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class SubgraphLevelsControl : UserControl
 {
-	//*************************************************************************
-	//	Constructor: SubgraphLevelsControl()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see cref="SubgraphLevelsControl" />
-	/// class.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: SubgraphLevelsControl()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SubgraphLevelsControl" />
+    /// class.
+    /// </summary>
+    //*************************************************************************
 
-	public SubgraphLevelsControl()
-	{
-		InitializeComponent();
+    public SubgraphLevelsControl()
+    {
+        InitializeComponent();
 
-		cbxLevels.PopulateWithObjectsAndText(
+        cbxLevels.PopulateWithObjectsAndText(
             1.0M, "1.0",
             1.5M, "1.5",
             2.0M, "2.0",
@@ -55,77 +55,77 @@ public partial class SubgraphLevelsControl : UserControl
             4.0M, "4.0",
             4.5M, "4.5"
             );
-	}
+    }
 
     //*************************************************************************
     //  Property: Levels
     //
     /// <summary>
     /// Gets or sets the number of adjacent vertex levels to include in a
-	/// subgraph.
+    /// subgraph.
     /// </summary>
     ///
     /// <value>
-	/// The number of adjacent vertex levels to include in a subgraph, as a
-	/// Decimal.  The default is 1.0M.
+    /// The number of adjacent vertex levels to include in a subgraph, as a
+    /// Decimal.  The default is 1.0M.
     /// </value>
     //*************************************************************************
 
     public Decimal
-	Levels
+    Levels
     {
         get
         {
             AssertValid();
 
-			return ( (Decimal)cbxLevels.SelectedValue );
+            return ( (Decimal)cbxLevels.SelectedValue );
         }
 
         set
         {
-			cbxLevels.SelectedValue = value;
+            cbxLevels.SelectedValue = value;
 
             AssertValid();
         }
     }
 
-	//*************************************************************************
-	//	Method: cbxLevels_SelectedIndexChanged()
-	//
-	/// <summary>
-	///	Handles the SelectedIndexChanged event on the cbxLevels ComboBox.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: cbxLevels_SelectedIndexChanged()
+    //
+    /// <summary>
+    /// Handles the SelectedIndexChanged event on the cbxLevels ComboBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	cbxLevels_SelectedIndexChanged
-	(
-		object sender,
-		EventArgs e
-	)
+    cbxLevels_SelectedIndexChanged
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		// The sample images displayed in the picSampleSubgraph PictureBox are
-		// stored as embedded resources.  The file names, without namespaces,
-		// are "1.0.jpg", "1.5.jpg", etc.
+        // The sample images displayed in the picSampleSubgraph PictureBox are
+        // stored as embedded resources.  The file names, without namespaces,
+        // are "1.0.jpg", "1.5.jpg", etc.
 
-		String sResourceName = String.Format(
+        String sResourceName = String.Format(
 
-			"Images.SampleSubgraphs.{0}.jpg"
-			,
-			cbxLevels.Text  // Sample text: "1.5"
-			);
+            "Images.SampleSubgraphs.{0}.jpg"
+            ,
+            cbxLevels.Text  // Sample text: "1.5"
+            );
 
-		picSampleSubgraph.Image = new Bitmap(this.GetType(), sResourceName);
+        picSampleSubgraph.Image = new Bitmap(this.GetType(), sResourceName);
     }
 
 
@@ -142,7 +142,7 @@ public partial class SubgraphLevelsControl : UserControl
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,14 +25,14 @@ public class VertexEventArgsTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexEventArgsTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public VertexEventArgsTest()
     {
         m_oVertexEventArgs = null;
-		m_oVertex = null;
+        m_oVertex = null;
     }
 
     //*************************************************************************
@@ -48,9 +48,9 @@ public class VertexEventArgsTest : Object
     public void
     SetUp()
     {
-		VertexFactory oVertexFactory = new VertexFactory();
+        VertexFactory oVertexFactory = new VertexFactory();
 
-		m_oVertex = oVertexFactory.CreateVertex();
+        m_oVertex = oVertexFactory.CreateVertex();
 
         m_oVertexEventArgs = new VertexEventArgs(m_oVertex);
     }
@@ -84,7 +84,7 @@ public class VertexEventArgsTest : Object
     public void
     TestConstructor()
     {
-		Assert.AreEqual(m_oVertex, m_oVertexEventArgs.Vertex);
+        Assert.AreEqual(m_oVertex, m_oVertexEventArgs.Vertex);
     }
 
     //*************************************************************************
@@ -96,31 +96,31 @@ public class VertexEventArgsTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestConstructorBad()
     {
-		// Null argument.
+        // Null argument.
 
-		try
-		{
-			m_oVertexEventArgs = new VertexEventArgs(null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oVertexEventArgs = new VertexEventArgs(null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "VertexEventArgs.Constructor: vertex argument can't be"
-				+ " null.\r\n"
-				+ "Parameter name: vertex"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "VertexEventArgs.Constructor: vertex argument can't be"
+                + " null.\r\n"
+                + "Parameter name: vertex"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
 
@@ -132,9 +132,9 @@ public class VertexEventArgsTest : Object
 
     protected VertexEventArgs m_oVertexEventArgs;
 
-	/// Vertex in m_oVertexEventArgs.
+    /// Vertex in m_oVertexEventArgs.
 
-	protected IVertex m_oVertex;
+    protected IVertex m_oVertex;
 }
 
 }

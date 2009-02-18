@@ -1,10 +1,10 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
 using System.Diagnostics;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Visualization.Wpf;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -18,7 +18,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <remarks>
 /// The list of vertices whose attributes were edited can be obtained from <see
-/// cref="Microsoft.NodeXL.Visualization.NodeXLControl.SelectedVertices" />.
+/// cref="NodeXLControl.SelectedVertices" />.
 /// </remarks>
 //*****************************************************************************
 
@@ -31,24 +31,24 @@ public class EditedVertexAttributes : Object
     /// Initializes a new instance of the <see
     /// cref="EditedVertexAttributes" /> class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see
     /// cref="EditedVertexAttributes" /> class with default values.
     /// </summary>
-	///
+    ///
     /// <remarks>
-	/// All values are set to null.
+    /// All values are set to null.
     /// </remarks>
     //*************************************************************************
 
     public EditedVertexAttributes()
-	:
-	this(null, null, null, null, null, null, null, null, false)
+    :
+    this(null, null, null, null, null, null, null, null, false)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -58,80 +58,80 @@ public class EditedVertexAttributes : Object
     /// Initializes a new instance of the <see
     /// cref="EditedVertexAttributes" /> class with specified values.
     /// </summary>
-	///
-	/// <param name="color">
+    ///
+    /// <param name="color">
     /// The color that was applied to the selected vertices, or null if a color
-	/// wasn't applied.
-	/// </param>
-	///
-	/// <param name="shape">
+    /// wasn't applied.
+    /// </param>
+    ///
+    /// <param name="shape">
     /// The shape that was applied to the selected vertices, or null if a shape
-	/// wasn't applied.
-	/// </param>
-	///
-	/// <param name="radius">
+    /// wasn't applied.
+    /// </param>
+    ///
+    /// <param name="radius">
     /// The radius that was applied to the selected vertices, or null if a
-	/// radius wasn't applied.  If not null, the radius must be between <see
-	/// cref="VertexRadiusConverter.MinimumRadiusWorkbook" /> and <see
-	/// cref="VertexRadiusConverter.MaximumRadiusWorkbook" />.
-	/// </param>
-	///
-	/// <param name="alpha">
+    /// radius wasn't applied.  If not null, the radius must be between <see
+    /// cref="VertexRadiusConverter.MinimumRadiusWorkbook" /> and <see
+    /// cref="VertexRadiusConverter.MaximumRadiusWorkbook" />.
+    /// </param>
+    ///
+    /// <param name="alpha">
     /// The alpha that was applied to the selected vertices, or null if an
-	/// alpha wasn't applied.  If not null, the alpha must be between <see
-	/// cref="AlphaConverter.MinimumAlphaWorkbook" /> and <see
-	/// cref="AlphaConverter.MaximumAlphaWorkbook" />.
-	/// </param>
-	///
-	/// <param name="vertexDrawerPrecedence">
-    /// The vertex drawer precedence that was applied to the selected vertices,
-	/// or null if a vertex drawer precedence wasn't applied.
-	/// </param>
-	///
-	/// <param name="visibility">
+    /// alpha wasn't applied.  If not null, the alpha must be between <see
+    /// cref="AlphaConverter.MinimumAlphaWorkbook" /> and <see
+    /// cref="AlphaConverter.MaximumAlphaWorkbook" />.
+    /// </param>
+    ///
+    /// <param name="vertexDrawingPrecedence">
+    /// The vertex drawing precedence that was applied to the selected
+    /// vertices, or null if a vertex drawing precedence wasn't applied.
+    /// </param>
+    ///
+    /// <param name="visibility">
     /// The visibility that was applied to the selected vertices, or null if a
-	/// visibility wasn't applied.
-	/// </param>
-	///
-	/// <param name="locked">
+    /// visibility wasn't applied.
+    /// </param>
+    ///
+    /// <param name="locked">
     /// The locked flag that was applied to the selected vertices, or null if a
-	/// locked flag wasn't applied.
-	/// </param>
-	///
-	/// <param name="marked">
+    /// locked flag wasn't applied.
+    /// </param>
+    ///
+    /// <param name="marked">
     /// The "marked" flag that was applied to the selected vertices, or null if
-	/// a marked flag wasn't applied.
-	/// </param>
-	///
-	/// <param name="workbookMustBeReread">
-	/// true if the caller must read the workbook again.
-	/// </param>
+    /// a marked flag wasn't applied.
+    /// </param>
+    ///
+    /// <param name="workbookMustBeReread">
+    /// true if the caller must read the workbook again.
+    /// </param>
     //*************************************************************************
 
     public EditedVertexAttributes
-	(
-		Nullable<Color> color,
-		Nullable<VertexDrawer.VertexShape> shape,
-		Nullable<Single> radius,
-		Nullable<Single> alpha,
-		Nullable<VertexDrawerPrecedence> vertexDrawerPrecedence,
-		Nullable<VertexWorksheetReader.Visibility> visibility,
-		Nullable<Boolean> locked,
-		Nullable<Boolean> marked,
-		Boolean workbookMustBeReread
-	)
+    (
+        Nullable<Color> color,
+        Nullable<VertexShape> shape,
+        Nullable<Single> radius,
+        Nullable<Single> alpha,
+        Nullable<VertexDrawingPrecedence> vertexDrawingPrecedence,
+        Nullable<VertexWorksheetReader.Visibility> visibility,
+        Nullable<Boolean> locked,
+        Nullable<Boolean> marked,
+        Boolean workbookMustBeReread
+    )
     {
-		m_oColor = color;
-		m_eShape = shape;
-		m_fRadius = radius;
-		m_fAlpha = alpha;
-		m_eVertexDrawerPrecedence = vertexDrawerPrecedence;
-		m_eVisibility = visibility;
-		m_bLocked = locked;
-		m_bMarked = marked;
-		m_bWorkbookMustBeReread = workbookMustBeReread;
+        m_oColor = color;
+        m_eShape = shape;
+        m_fRadius = radius;
+        m_fAlpha = alpha;
+        m_eVertexDrawingPrecedence = vertexDrawingPrecedence;
+        m_eVisibility = visibility;
+        m_bLocked = locked;
+        m_bMarked = marked;
+        m_bWorkbookMustBeReread = workbookMustBeReread;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -139,13 +139,13 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the color that was applied to the selected vertices, or
-	/// null if a color wasn't applied.
+    /// null if a color wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The color that was applied to the selected vertices, or null if a color
-	/// wasn't applied.
-	/// </value>
+    /// wasn't applied.
+    /// </value>
     //*************************************************************************
 
     public Nullable<Color>
@@ -158,12 +158,12 @@ public class EditedVertexAttributes : Object
             return (m_oColor);
         }
 
-		set
-		{
-			m_oColor = value;
+        set
+        {
+            m_oColor = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -171,31 +171,31 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the shape that was applied to the selected vertices, or
-	/// null if a shape wasn't applied.
+    /// null if a shape wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The shape that was applied to the selected vertices, or null if a shape
-	/// wasn't applied.
+    /// wasn't applied.
     /// </value>
     //*************************************************************************
 
-    public Nullable<VertexDrawer.VertexShape>
+    public Nullable<VertexShape>
     Shape
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_eShape);
-		}
+            return (m_eShape);
+        }
 
-		set
-		{
-			m_eShape = value;
+        set
+        {
+            m_eShape = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -203,37 +203,37 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the radius that was applied to the selected vertices, or
-	/// null if a radius wasn't applied.
+    /// null if a radius wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The radius that was applied to the selected vertices, or null if a
-	/// radius wasn't applied.
+    /// radius wasn't applied.
     /// </value>
-	///
-	/// <remarks>
-	/// If not null, the value is between <see
-	/// cref="VertexRadiusConverter.MinimumRadiusWorkbook" /> and <see
-	/// cref="VertexRadiusConverter.MaximumRadiusWorkbook" />.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If not null, the value is between <see
+    /// cref="VertexRadiusConverter.MinimumRadiusWorkbook" /> and <see
+    /// cref="VertexRadiusConverter.MaximumRadiusWorkbook" />.
+    /// </remarks>
     //*************************************************************************
 
     public Nullable<Single>
     Radius
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_fRadius);
-		}
+            return (m_fRadius);
+        }
 
-		set
-		{
-			m_fRadius = value;
+        set
+        {
+            m_fRadius = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -241,70 +241,70 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the alpha that was applied to the selected vertices, or
-	/// null if an alpha wasn't applied.
+    /// null if an alpha wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The alpha that was applied to the selected vertices, or null if an
-	/// alpha wasn't applied.
+    /// alpha wasn't applied.
     /// </value>
-	///
-	/// <remarks>
-	/// If not null, the value is between <see
-	/// cref="AlphaConverter.MinimumAlphaWorkbook" /> and <see
-	/// cref="AlphaConverter.MaximumAlphaWorkbook" />.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If not null, the value is between <see
+    /// cref="AlphaConverter.MinimumAlphaWorkbook" /> and <see
+    /// cref="AlphaConverter.MaximumAlphaWorkbook" />.
+    /// </remarks>
     //*************************************************************************
 
     public Nullable<Single>
     Alpha
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_fAlpha);
-		}
+            return (m_fAlpha);
+        }
 
-		set
-		{
-			m_fAlpha = value;
+        set
+        {
+            m_fAlpha = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
-    //  Property: VertexDrawerPrecedence
+    //  Property: VertexDrawingPrecedence
     //
     /// <summary>
     /// Gets or sets the vertex drawer precedence that was applied to the
-	/// selected vertices, or null if a vertex drawer precedence wasn't
-	/// applied.
+    /// selected vertices, or null if a vertex drawer precedence wasn't
+    /// applied.
     /// </summary>
     ///
     /// <value>
     /// The vertex drawer precedence that was applied to the selected vertices,
-	/// or null if a vertex drawer precedence wasn't applied.
+    /// or null if a vertex drawer precedence wasn't applied.
     /// </value>
     //*************************************************************************
 
-    public Nullable<VertexDrawerPrecedence>
-    VertexDrawerPrecedence
+    public Nullable<VertexDrawingPrecedence>
+    VertexDrawingPrecedence
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_eVertexDrawerPrecedence);
-		}
+            return (m_eVertexDrawingPrecedence);
+        }
 
-		set
-		{
-			m_eVertexDrawerPrecedence = value;
+        set
+        {
+            m_eVertexDrawingPrecedence = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -312,12 +312,12 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the visibility that was applied to the selected vertices,
-	/// or null if a visibility wasn't applied.
+    /// or null if a visibility wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The visibility that was applied to the selected vertices, or null if a
-	/// visibility wasn't applied.
+    /// visibility wasn't applied.
     /// </value>
     //*************************************************************************
 
@@ -325,18 +325,18 @@ public class EditedVertexAttributes : Object
     Visibility
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_eVisibility);
-		}
+            return (m_eVisibility);
+        }
 
-		set
-		{
-			m_eVisibility = value;
+        set
+        {
+            m_eVisibility = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -344,12 +344,12 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the locked flag that was applied to the selected vertices,
-	/// or null if a locked flag wasn't applied.
+    /// or null if a locked flag wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The locked flag that was applied to the selected vertices, or null if a
-	/// locked flag wasn't applied.
+    /// locked flag wasn't applied.
     /// </value>
     //*************************************************************************
 
@@ -357,18 +357,18 @@ public class EditedVertexAttributes : Object
     Locked
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_bLocked);
-		}
+            return (m_bLocked);
+        }
 
-		set
-		{
-			m_bLocked = value;
+        set
+        {
+            m_bLocked = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -376,12 +376,12 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets the "marked" flag that was applied to the selected
-	/// vertices, or null if a marked flag wasn't applied.
+    /// vertices, or null if a marked flag wasn't applied.
     /// </summary>
     ///
     /// <value>
     /// The marked flag that was applied to the selected vertices, or null if a
-	/// marked flag wasn't applied.
+    /// marked flag wasn't applied.
     /// </value>
     //*************************************************************************
 
@@ -389,18 +389,18 @@ public class EditedVertexAttributes : Object
     Marked
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_bMarked);
-		}
+            return (m_bMarked);
+        }
 
-		set
-		{
-			m_bMarked = value;
+        set
+        {
+            m_bMarked = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -408,7 +408,7 @@ public class EditedVertexAttributes : Object
     //
     /// <summary>
     /// Gets or sets a flag indicating if the caller must read the workbook
-	/// again.
+    /// again.
     /// </summary>
     ///
     /// <value>
@@ -420,18 +420,18 @@ public class EditedVertexAttributes : Object
     WorkbookMustBeReread
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_bWorkbookMustBeReread);
-		}
+            return (m_bWorkbookMustBeReread);
+        }
 
-		set
-		{
-			m_bWorkbookMustBeReread = value;
+        set
+        {
+            m_bWorkbookMustBeReread = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
 
@@ -448,26 +448,26 @@ public class EditedVertexAttributes : Object
     public void
     AssertValid()
     {
-		// m_oColor
-		// m_eShape
+        // m_oColor
+        // m_eShape
 
-		Debug.Assert(!m_fRadius.HasValue ||
-			m_fRadius.Value >= VertexRadiusConverter.MinimumRadiusWorkbook);
+        Debug.Assert(!m_fRadius.HasValue ||
+            m_fRadius.Value >= VertexRadiusConverter.MinimumRadiusWorkbook);
 
-		Debug.Assert(!m_fRadius.HasValue ||
-			m_fRadius.Value <= VertexRadiusConverter.MaximumRadiusWorkbook);
+        Debug.Assert(!m_fRadius.HasValue ||
+            m_fRadius.Value <= VertexRadiusConverter.MaximumRadiusWorkbook);
 
-		Debug.Assert(!m_fAlpha.HasValue ||
-			m_fAlpha.Value >= AlphaConverter.MinimumAlphaWorkbook);
+        Debug.Assert(!m_fAlpha.HasValue ||
+            m_fAlpha.Value >= AlphaConverter.MinimumAlphaWorkbook);
 
-		Debug.Assert(!m_fAlpha.HasValue ||
-			m_fAlpha.Value <= AlphaConverter.MaximumAlphaWorkbook);
+        Debug.Assert(!m_fAlpha.HasValue ||
+            m_fAlpha.Value <= AlphaConverter.MaximumAlphaWorkbook);
 
-		// m_eVertexDrawerPrecedence
-		// m_eVisibility
-		// m_bLocked
-		// m_bMarked
-		// m_bWorkbookMustBeReread
+        // m_eVertexDrawingPrecedence
+        // m_eVisibility
+        // m_bLocked
+        // m_bMarked
+        // m_bWorkbookMustBeReread
     }
 
 
@@ -475,49 +475,49 @@ public class EditedVertexAttributes : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Color that was applied to the selected vertices, or null if a color
-	/// wasn't applied.
+    /// Color that was applied to the selected vertices, or null if a color
+    /// wasn't applied.
 
-	protected Nullable<Color> m_oColor;
+    protected Nullable<Color> m_oColor;
 
-	/// Shape that was applied to the selected vertices, or null if a shape
-	/// wasn't applied.
+    /// Shape that was applied to the selected vertices, or null if a shape
+    /// wasn't applied.
 
-	protected Nullable<VertexDrawer.VertexShape> m_eShape;
+    protected Nullable<VertexShape> m_eShape;
 
-	/// Radius that was applied to the selected vertices, or null if a radius
-	/// wasn't applied.
+    /// Radius that was applied to the selected vertices, or null if a radius
+    /// wasn't applied.
 
-	protected Nullable<Single> m_fRadius;
+    protected Nullable<Single> m_fRadius;
 
-	/// Alpha that was applied to the selected vertices, or null if an alpha
-	/// wasn't applied.
+    /// Alpha that was applied to the selected vertices, or null if an alpha
+    /// wasn't applied.
 
-	protected Nullable<Single> m_fAlpha;
+    protected Nullable<Single> m_fAlpha;
 
-	/// Vertex drawer precedence that was applied to the selected vertices, or
-	/// null if a vertex drawer precedence wasn't applied.
+    /// Vertex drawer precedence that was applied to the selected vertices, or
+    /// null if a vertex drawer precedence wasn't applied.
 
-	protected Nullable<VertexDrawerPrecedence> m_eVertexDrawerPrecedence;
+    protected Nullable<VertexDrawingPrecedence> m_eVertexDrawingPrecedence;
 
-	/// Visibility that was applied to the selected vertices, or null if a
-	/// visibility wasn't applied.
+    /// Visibility that was applied to the selected vertices, or null if a
+    /// visibility wasn't applied.
 
-	protected Nullable<VertexWorksheetReader.Visibility> m_eVisibility;
+    protected Nullable<VertexWorksheetReader.Visibility> m_eVisibility;
 
-	/// Locked flag that was applied to the selected vertices, or null if a
-	/// locked flag wasn't applied.
+    /// Locked flag that was applied to the selected vertices, or null if a
+    /// locked flag wasn't applied.
 
-	protected Nullable<Boolean> m_bLocked;
+    protected Nullable<Boolean> m_bLocked;
 
     /// "Mark" flag that should be set in the workbook for the selected
-	/// vertices, or null if a marked flag shouldn't be set.
+    /// vertices, or null if a marked flag shouldn't be set.
 
-	protected Nullable<Boolean> m_bMarked;
+    protected Nullable<Boolean> m_bMarked;
 
-	/// true if the caller must read the workbook again.
+    /// true if the caller must read the workbook again.
 
-	protected Boolean m_bWorkbookMustBeReread;
+    protected Boolean m_bWorkbookMustBeReread;
 }
 
 }

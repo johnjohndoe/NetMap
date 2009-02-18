@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -26,7 +26,7 @@ public class ReadWorkbookContextTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="ReadWorkbookContextTest" /> class.
+    /// cref="ReadWorkbookContextTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,8 +48,8 @@ public class ReadWorkbookContextTest : Object
     public void
     SetUp()
     {
-		m_oReadWorkbookContext = new ReadWorkbookContext();
-	}
+        m_oReadWorkbookContext = new ReadWorkbookContext();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -80,13 +80,13 @@ public class ReadWorkbookContextTest : Object
     public void
     TestConstructor()
     {
-		Assert.IsTrue(m_oReadWorkbookContext.IgnoreVertexLocations);
+        Assert.IsTrue(m_oReadWorkbookContext.IgnoreVertexLocations);
 
-		Assert.IsFalse(m_oReadWorkbookContext.FillIDColumns);
-		Assert.IsFalse(m_oReadWorkbookContext.PopulateVertexWorksheet);
+        Assert.IsFalse(m_oReadWorkbookContext.FillIDColumns);
+        Assert.IsFalse(m_oReadWorkbookContext.PopulateVertexWorksheet);
 
-		Assert.AreEqual(Rectangle.FromLTRB(0, 0, 100, 100),
-			m_oReadWorkbookContext.GraphRectangle);
+        Assert.AreEqual(Rectangle.FromLTRB(0, 0, 100, 100),
+            m_oReadWorkbookContext.GraphRectangle);
     }
 
     //*************************************************************************
@@ -102,15 +102,15 @@ public class ReadWorkbookContextTest : Object
     public void
     TestIgnoreVertexLocations()
     {
-		Assert.IsTrue(m_oReadWorkbookContext.IgnoreVertexLocations);
+        Assert.IsTrue(m_oReadWorkbookContext.IgnoreVertexLocations);
 
-		m_oReadWorkbookContext.IgnoreVertexLocations = false;
+        m_oReadWorkbookContext.IgnoreVertexLocations = false;
 
-		Assert.IsFalse(m_oReadWorkbookContext.IgnoreVertexLocations);
+        Assert.IsFalse(m_oReadWorkbookContext.IgnoreVertexLocations);
 
-		m_oReadWorkbookContext.IgnoreVertexLocations = true;
+        m_oReadWorkbookContext.IgnoreVertexLocations = true;
 
-		Assert.IsTrue(m_oReadWorkbookContext.IgnoreVertexLocations);
+        Assert.IsTrue(m_oReadWorkbookContext.IgnoreVertexLocations);
     }
 
     //*************************************************************************
@@ -126,7 +126,7 @@ public class ReadWorkbookContextTest : Object
     public void
     TestFillIDColumns()
     {
-		Assert.IsFalse(m_oReadWorkbookContext.FillIDColumns);
+        Assert.IsFalse(m_oReadWorkbookContext.FillIDColumns);
 
         m_oReadWorkbookContext.FillIDColumns = true;
 
@@ -150,7 +150,7 @@ public class ReadWorkbookContextTest : Object
     public void
     TestPopulateVertexWorksheet()
     {
-		Assert.IsFalse(m_oReadWorkbookContext.PopulateVertexWorksheet);
+        Assert.IsFalse(m_oReadWorkbookContext.PopulateVertexWorksheet);
 
         m_oReadWorkbookContext.PopulateVertexWorksheet = true;
 
@@ -174,10 +174,10 @@ public class ReadWorkbookContextTest : Object
     public void
     TestGraphRectangle()
     {
-		m_oReadWorkbookContext.GraphRectangle = GraphRectangle;
+        m_oReadWorkbookContext.GraphRectangle = GraphRectangle;
 
-		Assert.AreEqual(GraphRectangle,
-			m_oReadWorkbookContext.GraphRectangle);
+        Assert.AreEqual(GraphRectangle,
+            m_oReadWorkbookContext.GraphRectangle);
     }
 
 
@@ -185,10 +185,10 @@ public class ReadWorkbookContextTest : Object
     //  Protected constants
     //*************************************************************************
 
-	/// Graph rectangle.
+    /// Graph rectangle.
 
-	protected static readonly Rectangle GraphRectangle =
-		Rectangle.FromLTRB(5, 6, 10, 20);
+    protected static readonly Rectangle GraphRectangle =
+        Rectangle.FromLTRB(5, 6, 10, 20);
 
 
     //*************************************************************************

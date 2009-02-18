@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -32,23 +32,23 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //*****************************************************************************
 
 public class DynamicFilterDateTimeRangeTrackBar :
-	DateTimeRangeTrackBar, IDynamicFilterRangeTrackBar
+    DateTimeRangeTrackBar, IDynamicFilterRangeTrackBar
 {
-	//*************************************************************************
-	//	Constructor: DynamicFilterDateTimeRangeTrackBar()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="DynamicFilterDateTimeRangeTrackBar" /> class.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: DynamicFilterDateTimeRangeTrackBar()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="DynamicFilterDateTimeRangeTrackBar" /> class.
+    /// </summary>
+    //*************************************************************************
 
-	public DynamicFilterDateTimeRangeTrackBar()
-	{
-		// (Do nothing.)
+    public DynamicFilterDateTimeRangeTrackBar()
+    {
+        // (Do nothing.)
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
     //*************************************************************************
     //  Property: AvailableMinimum
@@ -66,12 +66,12 @@ public class DynamicFilterDateTimeRangeTrackBar :
     AvailableMinimum
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
-				base.AvailableMinimum) );
-		}
+            return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
+                base.AvailableMinimum) );
+        }
     }
 
     //*************************************************************************
@@ -90,12 +90,12 @@ public class DynamicFilterDateTimeRangeTrackBar :
     AvailableMaximum
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
-				base.AvailableMaximum) );
-		}
+            return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
+                base.AvailableMaximum) );
+        }
     }
 
     //*************************************************************************
@@ -114,12 +114,12 @@ public class DynamicFilterDateTimeRangeTrackBar :
     SelectedMinimum
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
-				base.SelectedMinimum) );
-		}
+            return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
+                base.SelectedMinimum) );
+        }
     }
 
     //*************************************************************************
@@ -138,150 +138,150 @@ public class DynamicFilterDateTimeRangeTrackBar :
     SelectedMaximum
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
-				base.SelectedMaximum) );
-		}
+            return ( ExcelDateTimeUtil.DateTimeToExcelDecimal(
+                base.SelectedMaximum) );
+        }
     }
 
-	//*************************************************************************
-	//	Method: SetAvailableRange()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetAvailableRange()
+    //
+    /// <summary>
     /// Sets the available range.
-	/// </summary>
-	///
-	/// <param name="availableMinimum">
+    /// </summary>
+    ///
+    /// <param name="availableMinimum">
     /// The minimum value in the available range.  Must be less than or equal
-	/// to <paramref name="availableMaximum" />.
-	/// </param>
-	///
-	/// <param name="availableMaximum">
+    /// to <paramref name="availableMaximum" />.
+    /// </param>
+    ///
+    /// <param name="availableMaximum">
     /// The maximum value in the available range.  Must be greater than or
-	/// equal to <paramref name="availableMinimum" />.
-	/// </param>
-	//*************************************************************************
+    /// equal to <paramref name="availableMinimum" />.
+    /// </param>
+    //*************************************************************************
 
-	public void
-	SetAvailableRange
-	(
-		Decimal availableMinimum,
-		Decimal availableMaximum
-	)
-	{
-		AssertValid();
+    public void
+    SetAvailableRange
+    (
+        Decimal availableMinimum,
+        Decimal availableMaximum
+    )
+    {
+        AssertValid();
 
-		base.SetAvailableRange(
-			ExcelDateTimeUtil.ExcelDecimalToDateTime(availableMinimum),
-			ExcelDateTimeUtil.ExcelDecimalToDateTime(availableMaximum)
-			);
-	}
+        base.SetAvailableRange(
+            ExcelDateTimeUtil.ExcelDecimalToDateTime(availableMinimum),
+            ExcelDateTimeUtil.ExcelDecimalToDateTime(availableMaximum)
+            );
+    }
 
-	//*************************************************************************
-	//	Method: SetSelectedRange()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetSelectedRange()
+    //
+    /// <summary>
     /// Sets the available range.
-	/// </summary>
-	///
-	/// <param name="selectedMinimum">
+    /// </summary>
+    ///
+    /// <param name="selectedMinimum">
     /// The minimum value in the selected range.  Must be less than or equal to
-	/// <paramref name="selectedMaximum" />.
-	/// </param>
-	///
-	/// <param name="selectedMaximum">
+    /// <paramref name="selectedMaximum" />.
+    /// </param>
+    ///
+    /// <param name="selectedMaximum">
     /// The maximum value in the selected range.  Must be greater than or equal
-	/// to <paramref name="selectedMinimum" />.
-	/// </param>
-	//*************************************************************************
+    /// to <paramref name="selectedMinimum" />.
+    /// </param>
+    //*************************************************************************
 
-	public void
-	SetSelectedRange
-	(
-		Decimal selectedMinimum,
-		Decimal selectedMaximum
-	)
-	{
-		AssertValid();
+    public void
+    SetSelectedRange
+    (
+        Decimal selectedMinimum,
+        Decimal selectedMaximum
+    )
+    {
+        AssertValid();
 
-		base.SetSelectedRange(
-			ExcelDateTimeUtil.ExcelDecimalToDateTime(selectedMinimum),
-			ExcelDateTimeUtil.ExcelDecimalToDateTime(selectedMaximum)
-			);
-	}
+        base.SetSelectedRange(
+            ExcelDateTimeUtil.ExcelDecimalToDateTime(selectedMinimum),
+            ExcelDateTimeUtil.ExcelDecimalToDateTime(selectedMaximum)
+            );
+    }
 
-	//*************************************************************************
-	//	Method: SetCustomProperties()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetCustomProperties()
+    //
+    /// <summary>
     /// Sets the properties specific to the wrapped control.
-	/// </summary>
-	///
-	/// <param name="dynamicFilterParameters">
-	/// Parameters for the range track bar.
-	/// </param>
-	///
-	/// <remarks>
-	/// The <see cref="DynamicFilterDialog" /> calls this after it has called
-	/// <see cref="IDynamicFilterRangeTrackBar.SetAvailableRange" /> and <see
-	/// cref="IDynamicFilterRangeTrackBar.SetSelectedRange" />.  The
-	/// implementation should set any custom properties that are specific to
-	/// the wrapped control and not otherwise exposed via this interface.
-	/// </remarks>
-	//*************************************************************************
+    /// </summary>
+    ///
+    /// <param name="dynamicFilterParameters">
+    /// Parameters for the range track bar.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The <see cref="DynamicFilterDialog" /> calls this after it has called
+    /// <see cref="IDynamicFilterRangeTrackBar.SetAvailableRange" /> and <see
+    /// cref="IDynamicFilterRangeTrackBar.SetSelectedRange" />.  The
+    /// implementation should set any custom properties that are specific to
+    /// the wrapped control and not otherwise exposed via this interface.
+    /// </remarks>
+    //*************************************************************************
 
-	public void
-	SetCustomProperties
-	(
-		DynamicFilterParameters dynamicFilterParameters
-	)
-	{
-		AssertValid();
-		Debug.Assert(dynamicFilterParameters is DateTimeFilterParameters);
+    public void
+    SetCustomProperties
+    (
+        DynamicFilterParameters dynamicFilterParameters
+    )
+    {
+        AssertValid();
+        Debug.Assert(dynamicFilterParameters is DateTimeFilterParameters);
 
-		DateTimeFilterParameters oDateTimeFilterParameters =
-			(DateTimeFilterParameters)dynamicFilterParameters;
+        DateTimeFilterParameters oDateTimeFilterParameters =
+            (DateTimeFilterParameters)dynamicFilterParameters;
 
-		// Set the format of the wrapped control based on the Excel column
-		// format.
+        // Set the format of the wrapped control based on the Excel column
+        // format.
 
-		DateTimeRangeTrackBarFormat eDateTimeRangeTrackBarFormat =
-			DateTimeRangeTrackBarFormat.Date;
+        DateTimeRangeTrackBarFormat eDateTimeRangeTrackBarFormat =
+            DateTimeRangeTrackBarFormat.Date;
 
-		switch (oDateTimeFilterParameters.Format)
-		{
-			case ExcelColumnFormat.Date:
+        switch (oDateTimeFilterParameters.Format)
+        {
+            case ExcelColumnFormat.Date:
 
-				break;
+                break;
 
-			case ExcelColumnFormat.Time:
+            case ExcelColumnFormat.Time:
 
-				eDateTimeRangeTrackBarFormat =
-					DateTimeRangeTrackBarFormat.Time;
+                eDateTimeRangeTrackBarFormat =
+                    DateTimeRangeTrackBarFormat.Time;
 
-				break;
+                break;
 
-			case ExcelColumnFormat.DateAndTime:
+            case ExcelColumnFormat.DateAndTime:
 
-				eDateTimeRangeTrackBarFormat =
-					DateTimeRangeTrackBarFormat.DateAndTime;
+                eDateTimeRangeTrackBarFormat =
+                    DateTimeRangeTrackBarFormat.DateAndTime;
 
-				break;
+                break;
 
-			default:
+            default:
 
-				Debug.Assert(false);
-				break;
-		}
+                Debug.Assert(false);
+                break;
+        }
 
-		this.Format = eDateTimeRangeTrackBarFormat;
+        this.Format = eDateTimeRangeTrackBarFormat;
 
-		this.SmallChangeMinutes = Math.Max(1,
-			(Decimal)( (base.AvailableMaximum - base.AvailableMinimum).
-				TotalMinutes / 100.0 ) );
-	}
+        this.SmallChangeMinutes = Math.Max(1,
+            (Decimal)( (base.AvailableMaximum - base.AvailableMinimum).
+                TotalMinutes / 100.0 ) );
+    }
 
 
     //*************************************************************************
@@ -297,9 +297,9 @@ public class DynamicFilterDateTimeRangeTrackBar :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -307,7 +307,7 @@ public class DynamicFilterDateTimeRangeTrackBar :
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

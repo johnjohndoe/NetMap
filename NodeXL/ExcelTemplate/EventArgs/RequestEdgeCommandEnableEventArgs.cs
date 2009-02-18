@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -22,29 +22,29 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="RequestEdgeCommandEnableEventArgs" /> class.
+    /// cref="RequestEdgeCommandEnableEventArgs" /> class.
     /// </summary>
-	///
-	/// <param name="edgeID">
+    ///
+    /// <param name="edgeID">
     /// ID of the edge that was right-clicked in the edge table in the edge
-	/// worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if an
-	/// edge wasn't right-clicked.  This is an ID that is stored in the
-	/// worksheet, NOT an IEdge.ID value.
-	/// </param>
+    /// worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if an
+    /// edge wasn't right-clicked.  This is an ID that is stored in the
+    /// worksheet, NOT an IEdge.ID value.
+    /// </param>
     //*************************************************************************
 
     public RequestEdgeCommandEnableEventArgs
-	(
-		Int32 edgeID
-	)
+    (
+        Int32 edgeID
+    )
     {
         m_iEdgeID = edgeID;
-		m_bEnableSelectAllEdges = false;
-		m_bEnableDeselectAllEdges = false;
-		m_bEnableSelectAdjacentVertices = false;
-		m_bEnableDeselectAdjacentVertices = false;
+        m_bEnableSelectAllEdges = false;
+        m_bEnableDeselectAllEdges = false;
+        m_bEnableSelectAdjacentVertices = false;
+        m_bEnableDeselectAdjacentVertices = false;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -52,14 +52,14 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets the ID of the edge that was right-clicked in the edge table in the
-	/// edge worksheet.
+    /// edge worksheet.
     /// </summary>
     ///
     /// <value>
     /// The ID of the right-clicked edge, or <see
-	/// cref="WorksheetContextMenuManager.NoID" /> if an edge wasn't right-
-	/// clicked.  This is an ID that is stored in the worksheet, NOT an
-	/// IEdge.ID value.
+    /// cref="WorksheetContextMenuManager.NoID" /> if an edge wasn't right-
+    /// clicked.  This is an ID that is stored in the worksheet, NOT an
+    /// IEdge.ID value.
     /// </value>
     //*************************************************************************
 
@@ -79,11 +79,11 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Select All Edges command
-	/// should be enabled.
+    /// should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -97,12 +97,12 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
             return (m_bEnableSelectAllEdges);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableSelectAllEdges = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -110,11 +110,11 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Deselect All Edges command
-	/// should be enabled.
+    /// should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -128,12 +128,12 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
             return (m_bEnableDeselectAllEdges);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableDeselectAllEdges = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -141,11 +141,11 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Select Adjacent Vertices
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -159,12 +159,12 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
             return (m_bEnableSelectAdjacentVertices);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableSelectAdjacentVertices = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -172,11 +172,11 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Deselect Adjacent Vertices
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -190,12 +190,12 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
             return (m_bEnableDeselectAdjacentVertices);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableDeselectAdjacentVertices = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
 
@@ -212,13 +212,13 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_iEdgeID == WorksheetContextMenuManager.NoID ||
-			m_iEdgeID > 0);
+        Debug.Assert(m_iEdgeID == WorksheetContextMenuManager.NoID ||
+            m_iEdgeID > 0);
 
-		// m_bEnableSelectAllEdges
-		// m_bEnableDeselectAllEdges
-		// m_bEnableSelectAdjacentVertices
-		// m_bEnableDeselectAdjacentVertices
+        // m_bEnableSelectAllEdges
+        // m_bEnableDeselectAllEdges
+        // m_bEnableSelectAdjacentVertices
+        // m_bEnableDeselectAdjacentVertices
     }
 
 
@@ -227,26 +227,26 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
     //*************************************************************************
 
     /// ID of the edge that was right-clicked in the edge table in the edge
-	/// worksheet, or WorksheetContextMenuManager.NoID if an edge wasn't right-
-	/// clicked.
+    /// worksheet, or WorksheetContextMenuManager.NoID if an edge wasn't right-
+    /// clicked.
 
-	protected Int32 m_iEdgeID;
+    protected Int32 m_iEdgeID;
 
-	/// true to enable the Select All Edges command.
+    /// true to enable the Select All Edges command.
 
-	protected Boolean m_bEnableSelectAllEdges;
+    protected Boolean m_bEnableSelectAllEdges;
 
-	/// true to enable the Deselect All Edges command.
+    /// true to enable the Deselect All Edges command.
 
-	protected Boolean m_bEnableDeselectAllEdges;
+    protected Boolean m_bEnableDeselectAllEdges;
 
-	/// true to enable the Select Adjacent Vertices command.
+    /// true to enable the Select Adjacent Vertices command.
 
-	protected Boolean m_bEnableSelectAdjacentVertices;
+    protected Boolean m_bEnableSelectAdjacentVertices;
 
-	/// true to enable the Deselect Adjacent Vertices command.
+    /// true to enable the Deselect Adjacent Vertices command.
 
-	protected Boolean m_bEnableDeselectAdjacentVertices;
+    protected Boolean m_bEnableDeselectAdjacentVertices;
 }
 
 
@@ -263,7 +263,7 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="e">
-///	A <see cref="RequestEdgeCommandEnableEventArgs" /> object that contains
+/// A <see cref="RequestEdgeCommandEnableEventArgs" /> object that contains
 /// the event data.
 /// </param>
 //*****************************************************************************
@@ -271,8 +271,8 @@ public class RequestEdgeCommandEnableEventArgs : EventArgs
 public delegate void
 RequestEdgeCommandEnableEventHandler
 (
-	Object sender,
-	RequestEdgeCommandEnableEventArgs e
+    Object sender,
+    RequestEdgeCommandEnableEventArgs e
 );
 
 }

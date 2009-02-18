@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.IO;
@@ -18,10 +18,10 @@ namespace Microsoft.NodeXL.Adapters
 /// <remarks>
 /// The NodeXL core components do not know anything about the various formats
 /// commonly used to store graph data.  Instead, data conversion is
-///	accomplished with a family of classes that implement the <see
+/// accomplished with a family of classes that implement the <see
 /// cref="IGraphAdapter" /> interface.  Each such class knows how to load a
-///	graph with data that is in a particular format, and to save a graph to that
-///	format.
+/// graph with data that is in a particular format, and to save a graph to that
+/// format.
 /// </remarks>
 //*****************************************************************************
 
@@ -33,31 +33,31 @@ public interface IGraphAdapter
     /// <overloads>
     /// Creates a graph and loads it with graph data.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Creates a graph of type <see cref="Graph" /> and loads it with graph
-	/// data read from a file.
+    /// data read from a file.
     /// </summary>
     ///
     /// <param name="filename">
     /// Full path to the file containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new <see cref="Graph" /> loaded with graph data read from <paramref
-	/// name="filename" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a <see cref="Graph" /> and loads it with the graph
-	/// data read from <paramref name="filename" />.
-	/// </remarks>
+    /// <returns>
+    /// A new <see cref="Graph" /> loaded with graph data read from <paramref
+    /// name="filename" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a <see cref="Graph" /> and loads it with the graph
+    /// data read from <paramref name="filename" />.
+    /// </remarks>
     //*************************************************************************
 
     IGraph
     LoadGraph
     (
-		String filename
+        String filename
     );
 
     //*************************************************************************
@@ -65,34 +65,34 @@ public interface IGraphAdapter
     //
     /// <summary>
     /// Creates a graph of a specified type and loads it with graph data read
-	/// from a <see cref="Stream" />.
+    /// from a <see cref="Stream" />.
     /// </summary>
     ///
     /// <param name="graphFactory">
     /// Object that knows how to create a graph.
     /// </param>
-	///
+    ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new graph created by <paramref name="graphFactory" /> and loaded with
-	/// graph data read from <paramref name="stream" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a graph using <paramref name="graphFactory" /> and
-	/// loads it with the graph data read from <paramref name="stream" />.  It
-	/// does not close <paramref name="stream" />.
-	/// </remarks>
+    /// <returns>
+    /// A new graph created by <paramref name="graphFactory" /> and loaded with
+    /// graph data read from <paramref name="stream" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a graph using <paramref name="graphFactory" /> and
+    /// loads it with the graph data read from <paramref name="stream" />.  It
+    /// does not close <paramref name="stream" />.
+    /// </remarks>
     //*************************************************************************
 
     IGraph
     LoadGraph
     (
-		IGraphFactory graphFactory,
-		Stream stream
+        IGraphFactory graphFactory,
+        Stream stream
     );
 
     //*************************************************************************
@@ -100,33 +100,33 @@ public interface IGraphAdapter
     //
     /// <summary>
     /// Creates a graph of a specified type and loads it with graph data read
-	/// from a <see cref="String" />.
+    /// from a <see cref="String" />.
     /// </summary>
     ///
     /// <param name="graphFactory">
     /// Object that knows how to create a graph.
     /// </param>
-	///
+    ///
     /// <param name="theString">
     /// <see cref="String" /> containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new graph created by <paramref name="graphFactory" /> and loaded with
-	/// graph data read from <paramref name="theString" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a graph using <paramref name="graphFactory" /> and
-	/// loads it with the graph data read from <paramref name="theString" />.
-	/// </remarks>
+    /// <returns>
+    /// A new graph created by <paramref name="graphFactory" /> and loaded with
+    /// graph data read from <paramref name="theString" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a graph using <paramref name="graphFactory" /> and
+    /// loads it with the graph data read from <paramref name="theString" />.
+    /// </remarks>
     //*************************************************************************
 
     IGraph
     LoadGraph
     (
-		IGraphFactory graphFactory,
-		String theString
+        IGraphFactory graphFactory,
+        String theString
     );
 
     //*************************************************************************
@@ -135,7 +135,7 @@ public interface IGraphAdapter
     /// <overloads>
     /// Saves graph data.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Saves graph data to a file.
     /// </summary>
@@ -145,20 +145,20 @@ public interface IGraphAdapter
     /// </param>
     ///
     /// <param name="filename">
-	/// Full path to the file to save to.  If the file exists, it gets
-	/// overwritten.
+    /// Full path to the file to save to.  If the file exists, it gets
+    /// overwritten.
     /// </param>
     ///
     /// <remarks>
-	/// This method saves <paramref name="graph" /> to <paramref
-	///	name="filename" />.
-	///
-	/// <para>
-	///	If the <see cref="IGraph.Directedness" /> property on <paramref
-	/// name="graph" /> is set to a value that is incompatible with the graph
-	/// adapter, an exception is thrown.
-	/// </para>
-	///
+    /// This method saves <paramref name="graph" /> to <paramref
+    /// name="filename" />.
+    ///
+    /// <para>
+    /// If the <see cref="IGraph.Directedness" /> property on <paramref
+    /// name="graph" /> is set to a value that is incompatible with the graph
+    /// adapter, an exception is thrown.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -166,7 +166,7 @@ public interface IGraphAdapter
     SaveGraph
     (
         IGraph graph,
-		String filename
+        String filename
     );
 
     //*************************************************************************
@@ -185,15 +185,15 @@ public interface IGraphAdapter
     /// </param>
     ///
     /// <remarks>
-	/// This method saves <paramref name="graph" /> to <paramref
-	///	name="stream" />.  It does not close <paramref name="stream" />.
-	///
-	/// <para>
-	///	If the <see cref="IGraph.Directedness" /> property on <paramref
-	/// name="graph" /> is set to a value that is incompatible with the graph
-	/// adapter, an exception is thrown.
-	/// </para>
-	///
+    /// This method saves <paramref name="graph" /> to <paramref
+    /// name="stream" />.  It does not close <paramref name="stream" />.
+    ///
+    /// <para>
+    /// If the <see cref="IGraph.Directedness" /> property on <paramref
+    /// name="graph" /> is set to a value that is incompatible with the graph
+    /// adapter, an exception is thrown.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -201,7 +201,7 @@ public interface IGraphAdapter
     SaveGraph
     (
         IGraph graph,
-		Stream stream
+        Stream stream
     );
 
     //*************************************************************************
@@ -209,17 +209,17 @@ public interface IGraphAdapter
     //
     /// <summary>
     /// Returns a flag indicating whether the graph adapter can be used with
-	/// graphs of a specified <see cref="GraphDirectedness" />.
+    /// graphs of a specified <see cref="GraphDirectedness" />.
     /// </summary>
     ///
     /// <param name="directedness">
-	/// A <see cref="GraphDirectedness" /> value.
+    /// A <see cref="GraphDirectedness" /> value.
     /// </param>
     ///
-	/// <returns>
-	/// true if the graph adapter can be used with graphs of the specified
-	/// directedness.
-	/// </returns>
+    /// <returns>
+    /// true if the graph adapter can be used with graphs of the specified
+    /// directedness.
+    /// </returns>
     //*************************************************************************
 
     Boolean

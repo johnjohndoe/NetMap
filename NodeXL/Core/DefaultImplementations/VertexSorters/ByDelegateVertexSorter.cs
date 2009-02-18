@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -29,8 +29,8 @@ namespace Microsoft.NodeXL.Core
 ///
 /// </remarks>
 ///
-///	<example>
-///	The following code sorts a graph's vertices using a delegate that sorts by
+/// <example>
+/// The following code sorts a graph's vertices using a delegate that sorts by
 /// vertex name.  The code assumes that every vertex's <see
 /// cref="IIdentityProvider.Name" /> has been set to a non-null value.
 ///
@@ -59,7 +59,7 @@ namespace Microsoft.NodeXL.Core
 /// }
 /// </code>
 ///
-///	</example>
+/// </example>
 //*****************************************************************************
 
 public class ByDelegateVertexSorter : VertexSorterBase
@@ -69,15 +69,15 @@ public class ByDelegateVertexSorter : VertexSorterBase
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="ByDelegateVertexSorter" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public ByDelegateVertexSorter()
     {
-		m_oVertexComparer = this.CompareVerticesByID;
+        m_oVertexComparer = this.CompareVerticesByID;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -88,8 +88,8 @@ public class ByDelegateVertexSorter : VertexSorterBase
     /// </summary>
     ///
     /// <value>
-	///	A delegate that compares two vertices.  The default value is <see
-	/// cref="CompareVerticesByID" />, a delegate that sorts vertices by ID.
+    /// A delegate that compares two vertices.  The default value is <see
+    /// cref="CompareVerticesByID" />, a delegate that sorts vertices by ID.
     /// </value>
     //*************************************************************************
 
@@ -97,22 +97,22 @@ public class ByDelegateVertexSorter : VertexSorterBase
     VertexComparer
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_oVertexComparer);
-		}
+            return (m_oVertexComparer);
+        }
 
-		set
-		{
-			const String PropertyName = "VertexComparer";
+        set
+        {
+            const String PropertyName = "VertexComparer";
 
             this.ArgumentChecker.CheckPropertyNotNull(PropertyName, value);
 
-			m_oVertexComparer = value;
+            m_oVertexComparer = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -127,32 +127,32 @@ public class ByDelegateVertexSorter : VertexSorterBase
     /// </param>
     ///
     /// <returns>
-	/// Sorted <paramref name="vertices" />.
+    /// Sorted <paramref name="vertices" />.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	/// This method sorts <paramref name="vertices" /> in place and returns the
-	/// sorted vertices.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
+    /// This method sorts <paramref name="vertices" /> in place and returns the
+    /// sorted vertices.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
     protected override IVertex [] 
     SortCore
     (
-		IVertex [] vertices
+        IVertex [] vertices
     )
     {
-		Debug.Assert(vertices != null);
-		AssertValid();
+        Debug.Assert(vertices != null);
+        AssertValid();
 
-		Array.Sort<IVertex>(vertices, m_oVertexComparer);
+        Array.Sort<IVertex>(vertices, m_oVertexComparer);
 
-		return (vertices);
+        return (vertices);
     }
 
     //*************************************************************************
@@ -165,35 +165,35 @@ public class ByDelegateVertexSorter : VertexSorterBase
     /// <param name="vertex1">
     /// First vertex to compare.
     /// </param>
-	///
+    ///
     /// <param name="vertex2">
     /// Second vertex to compare.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// See <see cref="System.Collections.IComparer.Compare" />.
+    /// See <see cref="System.Collections.IComparer.Compare" />.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method is used as the default delegate for the <see
-	/// cref="VertexComparer" /> property.  If you use the default delegate and
-	/// call <see cref="IVertexSorter.Sort(IVertexCollection)" />, the returned
-	/// array will be sorted in order of ascending vertex IDs.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method is used as the default delegate for the <see
+    /// cref="VertexComparer" /> property.  If you use the default delegate and
+    /// call <see cref="IVertexSorter.Sort(IVertexCollection)" />, the returned
+    /// array will be sorted in order of ascending vertex IDs.
+    /// </remarks>
     //*************************************************************************
 
-	public Int32
-	CompareVerticesByID
-	(
-		IVertex vertex1,
-		IVertex vertex2
-	)
-	{
-		AssertValid();
+    public Int32
+    CompareVerticesByID
+    (
+        IVertex vertex1,
+        IVertex vertex2
+    )
+    {
+        AssertValid();
 
-		const String MethodName = "CompareVerticesByID";
+        const String MethodName = "CompareVerticesByID";
 
-		ArgumentChecker oArgumentChecker = this.ArgumentChecker;
+        ArgumentChecker oArgumentChecker = this.ArgumentChecker;
 
         oArgumentChecker.CheckArgumentNotNull(
             MethodName, "vertex1", vertex1);
@@ -201,8 +201,8 @@ public class ByDelegateVertexSorter : VertexSorterBase
         oArgumentChecker.CheckArgumentNotNull(
             MethodName, "vertex2", vertex2);
 
-		return ( vertex1.ID.CompareTo(vertex2.ID) );
-	}
+        return ( vertex1.ID.CompareTo(vertex2.ID) );
+    }
 
 
     //*************************************************************************
@@ -218,9 +218,9 @@ public class ByDelegateVertexSorter : VertexSorterBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oVertexComparer != null);
+        Debug.Assert(m_oVertexComparer != null);
     }
 
 
@@ -230,7 +230,7 @@ public class ByDelegateVertexSorter : VertexSorterBase
 
     /// Delegate used to compare two vertices.
 
-	protected Comparison<IVertex> m_oVertexComparer;
+    protected Comparison<IVertex> m_oVertexComparer;
 }
 
 }

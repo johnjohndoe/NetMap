@@ -1,10 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.ExcelTemplate;
-using Microsoft.NodeXL.Visualization;
 
 namespace Microsoft.NodeXL.UnitTests
 {
@@ -26,7 +25,7 @@ public class EdgeWidthConverterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="EdgeWidthConverterTest" /> class.
+    /// cref="EdgeWidthConverterTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,8 +47,8 @@ public class EdgeWidthConverterTest : Object
     public void
     SetUp()
     {
-		m_oEdgeWidthConverter = new EdgeWidthConverter();
-	}
+        m_oEdgeWidthConverter = new EdgeWidthConverter();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -80,16 +79,16 @@ public class EdgeWidthConverterTest : Object
     public void
     TestWorkbookToGraph()
     {
-		// Minimum.
+        // Minimum.
 
-		Single fWidthWorkbook = EdgeWidthConverter.MinimumWidthWorkbook;
+        Single fWidthWorkbook = EdgeWidthConverter.MinimumWidthWorkbook;
 
-		Int32 iExpectedWidthGraph = EdgeWidthConverter.MinimumWidthGraph;
+        Single fExpectedWidthGraph = EdgeWidthConverter.MinimumWidthGraph;
 
-		Int32 iWidthGraph =
-			m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
+        Single fWidthGraph =
+            m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
 
-		Assert.AreEqual(iExpectedWidthGraph, iWidthGraph);
+        Assert.AreEqual(fExpectedWidthGraph, fWidthGraph);
     }
 
     //*************************************************************************
@@ -105,16 +104,16 @@ public class EdgeWidthConverterTest : Object
     public void
     TestWorkbookToGraph2()
     {
-		// Maximum.
+        // Maximum.
 
-		Single fWidthWorkbook = EdgeWidthConverter.MaximumWidthWorkbook;
+        Single fWidthWorkbook = EdgeWidthConverter.MaximumWidthWorkbook;
 
-		Int32 iExpectedWidthGraph = EdgeWidthConverter.MaximumWidthGraph;
+        Single fExpectedWidthGraph = EdgeWidthConverter.MaximumWidthGraph;
 
-		Int32 iWidthGraph =
-			m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
+        Single fWidthGraph =
+            m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
 
-		Assert.AreEqual(iExpectedWidthGraph, iWidthGraph);
+        Assert.AreEqual(fExpectedWidthGraph, fWidthGraph);
     }
 
     //*************************************************************************
@@ -130,22 +129,22 @@ public class EdgeWidthConverterTest : Object
     public void
     TestWorkbookToGraph3()
     {
-		// Midpoint.
+        // Midpoint.
 
-		Single fWidthWorkbook = EdgeWidthConverter.MinimumWidthWorkbook
-			+ (EdgeWidthConverter.MaximumWidthWorkbook -
-				EdgeWidthConverter.MinimumWidthWorkbook) / 2F;
+        Single fWidthWorkbook = EdgeWidthConverter.MinimumWidthWorkbook
+            + (EdgeWidthConverter.MaximumWidthWorkbook -
+                EdgeWidthConverter.MinimumWidthWorkbook) / 2;
 
-		Int32 iExpectedWidthGraph = (Int32)(
-			(Single)EdgeWidthConverter.MinimumWidthGraph
-			+ ( (Single)EdgeWidthConverter.MaximumWidthGraph -
-				(Single)EdgeWidthConverter.MinimumWidthGraph) / 2F
-			);
+        Single fExpectedWidthGraph = 
+            EdgeWidthConverter.MinimumWidthGraph
+            + ( EdgeWidthConverter.MaximumWidthGraph -
+                EdgeWidthConverter.MinimumWidthGraph) / 2
+            ;
 
-		Int32 iWidthGraph =
-			m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
+        Single fWidthGraph =
+            m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
 
-		Assert.AreEqual(iExpectedWidthGraph, iWidthGraph);
+        Assert.AreEqual(fExpectedWidthGraph, fWidthGraph);
     }
 
     //*************************************************************************
@@ -161,16 +160,16 @@ public class EdgeWidthConverterTest : Object
     public void
     TestWorkbookToGraph4()
     {
-		// Below minimum.
+        // Below minimum.
 
-		Single fWidthWorkbook = EdgeWidthConverter.MinimumWidthWorkbook - 1F;
+        Single fWidthWorkbook = EdgeWidthConverter.MinimumWidthWorkbook - 1;
 
-		Int32 iExpectedWidthGraph = EdgeWidthConverter.MinimumWidthGraph;
+        Single fExpectedWidthGraph = EdgeWidthConverter.MinimumWidthGraph;
 
-		Int32 iWidthGraph =
-			m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
+        Single fWidthGraph =
+            m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
 
-		Assert.AreEqual(iExpectedWidthGraph, iWidthGraph);
+        Assert.AreEqual(fExpectedWidthGraph, fWidthGraph);
     }
 
     //*************************************************************************
@@ -186,16 +185,16 @@ public class EdgeWidthConverterTest : Object
     public void
     TestWorkbookToGraph5()
     {
-		// Above maximum.
+        // Above maximum.
 
-		Single fWidthWorkbook = EdgeWidthConverter.MaximumWidthWorkbook + 1F;
+        Single fWidthWorkbook = EdgeWidthConverter.MaximumWidthWorkbook + 1;
 
-		Int32 iExpectedWidthGraph = EdgeWidthConverter.MaximumWidthGraph;
+        Single fExpectedWidthGraph = EdgeWidthConverter.MaximumWidthGraph;
 
-		Int32 iWidthGraph =
-			m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
+        Single fWidthGraph =
+            m_oEdgeWidthConverter.WorkbookToGraph(fWidthWorkbook);
 
-		Assert.AreEqual(iExpectedWidthGraph, iWidthGraph);
+        Assert.AreEqual(fExpectedWidthGraph, fWidthGraph);
     }
 
 

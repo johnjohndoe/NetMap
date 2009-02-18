@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -23,50 +23,50 @@ public class SelectionChangedEventArgs : EventArgs
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="SelectionChangedEventArgs" /> class.
+    /// cref="SelectionChangedEventArgs" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="selectedEdgeIDs">
-	/// Array of unique IDs of edges that have at least one selected cell.  Can
-	/// be empty but not null.
+    /// Array of unique IDs of edges that have at least one selected cell.  Can
+    /// be empty but not null.
     /// </param>
-	///
+    ///
     /// <param name="selectedVertexIDs">
-	/// Array of unique IDs of vertices that have at least one selected cell.
-	/// Can be empty but not null.
+    /// Array of unique IDs of vertices that have at least one selected cell.
+    /// Can be empty but not null.
     /// </param>
     //*************************************************************************
 
     public SelectionChangedEventArgs
-	(
-		Int32 [] selectedEdgeIDs,
-		Int32 [] selectedVertexIDs
-	)
+    (
+        Int32 [] selectedEdgeIDs,
+        Int32 [] selectedVertexIDs
+    )
     {
-		m_aiSelectedEdgeIDs = selectedEdgeIDs;
-		m_aiSelectedVertexIDs = selectedVertexIDs;
+        m_aiSelectedEdgeIDs = selectedEdgeIDs;
+        m_aiSelectedVertexIDs = selectedVertexIDs;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: SelectedEdgeIDs
     //
     /// <summary>
-	/// Gets an array of unique IDs of edges that have at least one selected
-	/// cell.
+    /// Gets an array of unique IDs of edges that have at least one selected
+    /// cell.
     /// </summary>
     ///
     /// <value>
-	/// An array of unique IDs of edges that have at least one selected cell.
-	/// Can be empty but not null.
+    /// An array of unique IDs of edges that have at least one selected cell.
+    /// Can be empty but not null.
     /// </value>
-	///
-	/// <remarks>
-	/// The IDs are those that are stored in the edge worksheet's ID column and
-	/// are different from the IEdge.ID values in the graph, which the edge
-	/// worksheet knows nothing about.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The IDs are those that are stored in the edge worksheet's ID column and
+    /// are different from the IEdge.ID values in the graph, which the edge
+    /// worksheet knows nothing about.
+    /// </remarks>
     //*************************************************************************
 
     public Int32 []
@@ -84,20 +84,20 @@ public class SelectionChangedEventArgs : EventArgs
     //  Property: SelectedVertexIDs
     //
     /// <summary>
-	/// Gets an array of unique IDs of vertices that have at least one selected
-	/// cell.
+    /// Gets an array of unique IDs of vertices that have at least one selected
+    /// cell.
     /// </summary>
     ///
     /// <value>
-	/// An array of unique IDs of vertices that have at least one selected
-	/// cell.  Can be empty but not null.
+    /// An array of unique IDs of vertices that have at least one selected
+    /// cell.  Can be empty but not null.
     /// </value>
-	///
-	/// <remarks>
-	/// The IDs are those that are stored in the vertex worksheet's ID column
-	/// and are different from the IVertex.ID values in the graph, which the
-	/// vertex worksheet knows nothing about.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The IDs are those that are stored in the vertex worksheet's ID column
+    /// and are different from the IVertex.ID values in the graph, which the
+    /// vertex worksheet knows nothing about.
+    /// </remarks>
     //*************************************************************************
 
     public Int32 []
@@ -125,8 +125,8 @@ public class SelectionChangedEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_aiSelectedEdgeIDs != null);
-		Debug.Assert(m_aiSelectedVertexIDs != null);
+        Debug.Assert(m_aiSelectedEdgeIDs != null);
+        Debug.Assert(m_aiSelectedVertexIDs != null);
     }
 
 
@@ -134,13 +134,13 @@ public class SelectionChangedEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-	/// Array of unique IDs of edges that have at least one selected cell.
+    /// Array of unique IDs of edges that have at least one selected cell.
 
-	protected Int32 [] m_aiSelectedEdgeIDs;
+    protected Int32 [] m_aiSelectedEdgeIDs;
 
-	/// Array of unique IDs of vertices that have at least one selected cell.
+    /// Array of unique IDs of vertices that have at least one selected cell.
 
-	protected Int32 [] m_aiSelectedVertexIDs;
+    protected Int32 [] m_aiSelectedVertexIDs;
 }
 
 
@@ -158,7 +158,7 @@ public class SelectionChangedEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="e">
-///	An <see cref="SelectionChangedEventArgs" /> object that contains the
+/// An <see cref="SelectionChangedEventArgs" /> object that contains the
 /// event data.
 /// </param>
 //*****************************************************************************
@@ -166,8 +166,8 @@ public class SelectionChangedEventArgs : EventArgs
 public delegate void
 SelectionChangedEventHandler
 (
-	Object sender,
-	SelectionChangedEventArgs e
+    Object sender,
+    SelectionChangedEventArgs e
 );
 
 }

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections;
@@ -27,13 +27,13 @@ public class ByDelegateVertexSorterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="ByDelegateVertexSorterTest" /> class.
+    /// cref="ByDelegateVertexSorterTest" /> class.
     /// </summary>
     //*************************************************************************
 
     public ByDelegateVertexSorterTest()
     {
-		m_oByDelegateVertexSorter = null;
+        m_oByDelegateVertexSorter = null;
     }
 
     //*************************************************************************
@@ -49,7 +49,7 @@ public class ByDelegateVertexSorterTest : Object
     public void
     SetUp()
     {
-		m_oByDelegateVertexSorter = new ByDelegateVertexSorter();
+        m_oByDelegateVertexSorter = new ByDelegateVertexSorter();
     }
 
     //*************************************************************************
@@ -65,7 +65,7 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TearDown()
     {
-		m_oByDelegateVertexSorter = null;
+        m_oByDelegateVertexSorter = null;
     }
 
     //*************************************************************************
@@ -81,7 +81,7 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TestConstructor()
     {
-		Assert.IsNotNull(m_oByDelegateVertexSorter.VertexComparer);
+        Assert.IsNotNull(m_oByDelegateVertexSorter.VertexComparer);
     }
 
     //*************************************************************************
@@ -97,35 +97,35 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TestSort()
     {
-		// Ascending sort using default comparer, which sorts by ID.
+        // Ascending sort using default comparer, which sorts by ID.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		IVertex [] aoSortedVertices =
-			m_oByDelegateVertexSorter.Sort(oVertexCollection);
+        IVertex [] aoSortedVertices =
+            m_oByDelegateVertexSorter.Sort(oVertexCollection);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		Int32 iPreviousID = -1;
+        Int32 iPreviousID = -1;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Int32 iID = aoSortedVertices[i].ID;
-			
-			if (i > 0)
-			{
-				Assert.AreEqual(iPreviousID + 1, iID);
-			}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Int32 iID = aoSortedVertices[i].ID;
+            
+            if (i > 0)
+            {
+                Assert.AreEqual(iPreviousID + 1, iID);
+            }
 
-			iPreviousID = iID;
-		}
+            iPreviousID = iID;
+        }
     }
 
     //*************************************************************************
@@ -141,38 +141,38 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TestSort2()
     {
-		// Ascending sort on IVertex.Name.
+        // Ascending sort on IVertex.Name.
 
-		m_oByDelegateVertexSorter.VertexComparer = this.CompareVerticesByName;
+        m_oByDelegateVertexSorter.VertexComparer = this.CompareVerticesByName;
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].Name = (Vertices - i).ToString("D3");
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].Name = (Vertices - i).ToString("D3");
+        }
 
-		IVertex [] aoSortedVertices =
-			m_oByDelegateVertexSorter.Sort(oVertexCollection);
+        IVertex [] aoSortedVertices =
+            m_oByDelegateVertexSorter.Sort(oVertexCollection);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				(i + 1).ToString("D3"),
+                (i + 1).ToString("D3"),
 
-				aoSortedVertices[i].Name
-				);
-		}
+                aoSortedVertices[i].Name
+                );
+        }
     }
 
     //*************************************************************************
@@ -184,32 +184,32 @@ public class ByDelegateVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSortBad()
     {
-		// null vertexCollection.
+        // null vertexCollection.
 
-		try
-		{
-			IVertexCollection oVertexCollection = null;
+        try
+        {
+            IVertexCollection oVertexCollection = null;
 
-			m_oByDelegateVertexSorter.Sort(oVertexCollection);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oByDelegateVertexSorter.Sort(oVertexCollection);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByDelegateVertexSorter.Sort:"
+                "Microsoft.NodeXL.Core.ByDelegateVertexSorter.Sort:"
                 + " vertexCollection argument can't be null.\r\n"
-				+ "Parameter name: vertexCollection"
-				,
-				oArgumentNullException.Message
-				);
+                + "Parameter name: vertexCollection"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -225,35 +225,35 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TestSort2_()
     {
-		// Ascending sort using default comparer, which sorts by ID.
+        // Ascending sort using default comparer, which sorts by ID.
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		IVertex [] aoSortedVertices =
-			m_oByDelegateVertexSorter.Sort(aoUnsortedVertices);
+        IVertex [] aoSortedVertices =
+            m_oByDelegateVertexSorter.Sort(aoUnsortedVertices);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		Int32 iPreviousID = -1;
+        Int32 iPreviousID = -1;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Int32 iID = aoSortedVertices[i].ID;
-			
-			if (i > 0)
-			{
-				Assert.AreEqual(iPreviousID + 1, iID);
-			}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Int32 iID = aoSortedVertices[i].ID;
+            
+            if (i > 0)
+            {
+                Assert.AreEqual(iPreviousID + 1, iID);
+            }
 
-			iPreviousID = iID;
-		}
+            iPreviousID = iID;
+        }
     }
 
     //*************************************************************************
@@ -269,38 +269,38 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TestSort2_2()
     {
-		// Ascending sort on IVertex.Name.
+        // Ascending sort on IVertex.Name.
 
-		m_oByDelegateVertexSorter.VertexComparer = this.CompareVerticesByName;
+        m_oByDelegateVertexSorter.VertexComparer = this.CompareVerticesByName;
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].Name = (Vertices - i).ToString("D3");
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].Name = (Vertices - i).ToString("D3");
+        }
 
-		IVertex [] aoSortedVertices =
-			m_oByDelegateVertexSorter.Sort(aoUnsortedVertices);
+        IVertex [] aoSortedVertices =
+            m_oByDelegateVertexSorter.Sort(aoUnsortedVertices);
 
-		Assert.AreEqual(Vertices, aoSortedVertices.Length);
+        Assert.AreEqual(Vertices, aoSortedVertices.Length);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			Assert.AreEqual(
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            Assert.AreEqual(
 
-				(i + 1).ToString("D3"),
+                (i + 1).ToString("D3"),
 
-				aoSortedVertices[i].Name
-				);
-		}
+                aoSortedVertices[i].Name
+                );
+        }
     }
 
     //*************************************************************************
@@ -312,32 +312,32 @@ public class ByDelegateVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSort2_Bad()
     {
-		// null vertices.
+        // null vertices.
 
-		try
-		{
-			IVertex [] aoVertices = null;
+        try
+        {
+            IVertex [] aoVertices = null;
 
-			m_oByDelegateVertexSorter.Sort(aoVertices);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oByDelegateVertexSorter.Sort(aoVertices);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByDelegateVertexSorter.Sort: vertices"
-				+ " argument can't be null.\r\n"
-				+ "Parameter name: vertices"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core.ByDelegateVertexSorter.Sort: vertices"
+                + " argument can't be null.\r\n"
+                + "Parameter name: vertices"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -353,42 +353,42 @@ public class ByDelegateVertexSorterTest : Object
     public void
     TestSort3_()
     {
-		// Ascending sort on IVertex.Name.
+        // Ascending sort on IVertex.Name.
 
-		m_oByDelegateVertexSorter.VertexComparer = this.CompareVerticesByName;
+        m_oByDelegateVertexSorter.VertexComparer = this.CompareVerticesByName;
 
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex [] aoUnsortedVertices =
-			GraphUtil.AddVertices(oGraph, Vertices);
+        IVertex [] aoUnsortedVertices =
+            TestGraphUtil.AddVertices(oGraph, Vertices);
 
-		IVertexCollection oVertexCollection = oGraph.Vertices;
+        IVertexCollection oVertexCollection = oGraph.Vertices;
 
-		Int32 i;
+        Int32 i;
 
-		for (i = 0; i < Vertices; i++)
-		{
-			aoUnsortedVertices[i].Name = (Vertices - i).ToString("D3");
-		}
+        for (i = 0; i < Vertices; i++)
+        {
+            aoUnsortedVertices[i].Name = (Vertices - i).ToString("D3");
+        }
 
-		ICollection oSortedVertices =
-			m_oByDelegateVertexSorter.Sort( (ICollection)oVertexCollection );
+        ICollection oSortedVertices =
+            m_oByDelegateVertexSorter.Sort( (ICollection)oVertexCollection );
 
-		Assert.AreEqual(Vertices, oSortedVertices.Count);
+        Assert.AreEqual(Vertices, oSortedVertices.Count);
 
-		i = 0;
+        i = 0;
 
         foreach (IVertex oSortedVertex in oSortedVertices)
         {
-			Assert.AreEqual(
+            Assert.AreEqual(
 
-				(i + 1).ToString("D3"),
-				oSortedVertex.Name
-				);
+                (i + 1).ToString("D3"),
+                oSortedVertex.Name
+                );
 
-			i++;
+            i++;
         }
     }
 
@@ -401,32 +401,32 @@ public class ByDelegateVertexSorterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSort3_Bad()
     {
-		// null vertices.
+        // null vertices.
 
-		try
-		{
-			ICollection oVertices = null;
+        try
+        {
+            ICollection oVertices = null;
 
-			m_oByDelegateVertexSorter.Sort(oVertices);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oByDelegateVertexSorter.Sort(oVertices);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core.ByDelegateVertexSorter.Sort: vertices"
-				+ " argument can't be null.\r\n"
-				+ "Parameter name: vertices"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core.ByDelegateVertexSorter.Sort: vertices"
+                + " argument can't be null.\r\n"
+                + "Parameter name: vertices"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -435,41 +435,41 @@ public class ByDelegateVertexSorterTest : Object
     /// <summary>
     /// Compares two vertices by name.
     /// </summary>
-	///
-	/// <param name="oVertex1">
-	/// First vertex to compare.
-	/// </param>
-	///
-	/// <param name="oVertex2">
-	/// Second vertex to compare.
-	/// </param>
-	///
-	/// <returns>
-	/// See IComparable.Compare().
-	/// </returns>
+    ///
+    /// <param name="oVertex1">
+    /// First vertex to compare.
+    /// </param>
+    ///
+    /// <param name="oVertex2">
+    /// Second vertex to compare.
+    /// </param>
+    ///
+    /// <returns>
+    /// See IComparable.Compare().
+    /// </returns>
     //*************************************************************************
 
-	protected Int32
-	CompareVerticesByName
-	(
-		IVertex oVertex1,
-		IVertex oVertex2
-	)
-	{
-		Assert.IsNotNull(oVertex1.Name);
-		Assert.IsNotNull(oVertex2.Name);
+    protected Int32
+    CompareVerticesByName
+    (
+        IVertex oVertex1,
+        IVertex oVertex2
+    )
+    {
+        Assert.IsNotNull(oVertex1.Name);
+        Assert.IsNotNull(oVertex2.Name);
 
-		return ( oVertex1.Name.CompareTo(oVertex2.Name) );
-	}
+        return ( oVertex1.Name.CompareTo(oVertex2.Name) );
+    }
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// Object being tested.
+    // Object being tested.
 
-	protected ByDelegateVertexSorter m_oByDelegateVertexSorter;
+    protected ByDelegateVertexSorter m_oByDelegateVertexSorter;
 }
 
 }

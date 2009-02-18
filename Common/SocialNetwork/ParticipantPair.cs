@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -22,31 +22,31 @@ public class ParticipantPair : Object
     /// <overloads>
     /// Initializes a new instance of the <see cref="ParticipantPair" /> class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="ParticipantPair" /> class
-	/// with specified values.
+    /// with specified values.
     /// </summary>
-	///
+    ///
     /// <param name="participant1">
-	/// The first participant.  Can't be null or empty.
+    /// The first participant.  Can't be null or empty.
     /// </param>
-	///
+    ///
     /// <param name="participant2">
-	/// The second participant.  Can't be null or empty.
+    /// The second participant.  Can't be null or empty.
     /// </param>
     //*************************************************************************
 
     public ParticipantPair
-	(
-		String participant1,
-		String participant2
-	)
+    (
+        String participant1,
+        String participant2
+    )
     {
-		m_sParticipant1 = participant1;
-		m_sParticipant2 = participant2;
+        m_sParticipant1 = participant1;
+        m_sParticipant2 = participant2;
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -54,32 +54,32 @@ public class ParticipantPair : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="ParticipantPair" /> class
-	/// with default values.
+    /// with default values.
     /// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for XML serialization only.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for XML serialization only.
+    /// </remarks>
     //*************************************************************************
 
     public ParticipantPair()
-	:
-	this("Participant1", "Participant2")
+    :
+    this("Participant1", "Participant2")
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
     //  Property: Participant1
     //
     /// <summary>
-	/// Gets or sets the first participant.
+    /// Gets or sets the first participant.
     /// </summary>
     ///
     /// <value>
-	/// The first participant, as a String.  Can't be null or empty.
+    /// The first participant, as a String.  Can't be null or empty.
     /// </value>
     //*************************************************************************
 
@@ -95,7 +95,7 @@ public class ParticipantPair : Object
 
         set
         {
-			m_sParticipant1 = value;
+            m_sParticipant1 = value;
 
             AssertValid();
         }
@@ -105,11 +105,11 @@ public class ParticipantPair : Object
     //  Property: Participant2
     //
     /// <summary>
-	/// Gets or sets the second participant.
+    /// Gets or sets the second participant.
     /// </summary>
     ///
     /// <value>
-	/// The second participant, as a String.  Can't be null or empty.
+    /// The second participant, as a String.  Can't be null or empty.
     /// </value>
     //*************************************************************************
 
@@ -125,37 +125,37 @@ public class ParticipantPair : Object
 
         set
         {
-			m_sParticipant2 = value;
+            m_sParticipant2 = value;
 
             AssertValid();
         }
     }
 
-	//*************************************************************************
-	//	Method: ToString()
-	//
-	/// <summary>
-	/// Returns a String that represents the current object. 
-	/// </summary>
-	///
-	/// <returns>
-	/// A string representation of the object.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: ToString()
+    //
+    /// <summary>
+    /// Returns a String that represents the current object. 
+    /// </summary>
+    ///
+    /// <returns>
+    /// A string representation of the object.
+    /// </returns>
+    //*************************************************************************
 
-	public override String
-	ToString()
-	{
-		AssertValid();
+    public override String
+    ToString()
+    {
+        AssertValid();
 
-		return ( String.Format(
+        return ( String.Format(
 
-			"{0}\t{1}"
-			,
-			m_sParticipant1,
-			m_sParticipant2
-			) );
-	}
+            "{0}\t{1}"
+            ,
+            m_sParticipant1,
+            m_sParticipant2
+            ) );
+    }
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -170,8 +170,8 @@ public class ParticipantPair : Object
     public virtual void
     AssertValid()
     {
-		Debug.Assert( !String.IsNullOrEmpty(m_sParticipant1) );
-		Debug.Assert( !String.IsNullOrEmpty(m_sParticipant2) );
+        Debug.Assert( !String.IsNullOrEmpty(m_sParticipant1) );
+        Debug.Assert( !String.IsNullOrEmpty(m_sParticipant2) );
     }
 
 
@@ -179,13 +179,13 @@ public class ParticipantPair : Object
     //  Protected fields
     //*************************************************************************
 
-	/// The first participant.
+    /// The first participant.
 
-	protected String m_sParticipant1;
+    protected String m_sParticipant1;
 
-	/// The second participant.
+    /// The second participant.
 
-	protected String m_sParticipant2;
+    protected String m_sParticipant2;
 }
 
 }

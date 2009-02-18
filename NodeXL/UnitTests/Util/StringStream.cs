@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.IO;
@@ -22,20 +22,20 @@ public class StringStream : MemoryStream
     /// <summary>
     /// Initializes a new instance of the <see cref="StringStream" /> class.
     /// </summary>
-	///
-	/// <param name="stringToWrap">
-	/// String to wrap into a MemoryStream.
-	/// </param>
+    ///
+    /// <param name="stringToWrap">
+    /// String to wrap into a MemoryStream.
+    /// </param>
     //*************************************************************************
 
     public StringStream
-	(
-		String stringToWrap
-	)
-	: 
-	base(System.Text.Encoding.UTF8.GetBytes(stringToWrap), false)
-	{
-	}
+    (
+        String stringToWrap
+    )
+    : 
+    base(System.Text.Encoding.UTF8.GetBytes(stringToWrap), false)
+    {
+    }
 }
 
 

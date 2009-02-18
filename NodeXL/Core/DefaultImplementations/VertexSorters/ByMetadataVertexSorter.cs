@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -32,8 +32,8 @@ namespace Microsoft.NodeXL.Core
 ///
 /// </remarks>
 ///
-///	<example>
-///	The following code sorts a graph's vertices in ascending order of a
+/// <example>
+/// The following code sorts a graph's vertices in ascending order of a
 /// metadata value named Weight, which is of type Int32.  The code assumes that
 /// a Weight metadata value has been set on every vertex.
 ///
@@ -44,12 +44,12 @@ namespace Microsoft.NodeXL.Core
 /// IVertex [] aoSortedVertices = oByMetadataVertexSorter.Sort(oGraph.Vertices);
 /// </code>
 ///
-///	</example>
+/// </example>
 //*****************************************************************************
 
 public class ByMetadataVertexSorter<TValue> : VertexSorterBase
 
-	where TValue : System.IComparable<TValue>
+    where TValue : System.IComparable<TValue>
 {
     //*************************************************************************
     //  Constructor: ByMetadataVertexSorter()
@@ -58,28 +58,28 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     /// Initializes a new instance of the <see
     /// cref="ByMetadataVertexSorter{TValue}" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="sortKey">
-	/// The metadata key whose values should be sorted on.  Can't be null or
-	/// empty.  The key must exist on each vertex and the corresponding value
-	/// must be of type TValue.
+    /// The metadata key whose values should be sorted on.  Can't be null or
+    /// empty.  The key must exist on each vertex and the corresponding value
+    /// must be of type TValue.
     /// </param>
     //*************************************************************************
 
     public ByMetadataVertexSorter
-	(
-		String sortKey
-	)
+    (
+        String sortKey
+    )
     {
-		const String MethodName = "Constructor";
+        const String MethodName = "Constructor";
 
-		this.ArgumentChecker.CheckArgumentNotEmpty(
-			MethodName, "sortKey", sortKey);
+        this.ArgumentChecker.CheckArgumentNotEmpty(
+            MethodName, "sortKey", sortKey);
 
-		m_sSortKey = sortKey;
-		m_bSortAscending = true;
+        m_sSortKey = sortKey;
+        m_bSortAscending = true;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -90,36 +90,36 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     /// </summary>
     ///
     /// <value>
-	/// The metadata key whose values should be sorted on.  Can't be null or
-	/// empty.
+    /// The metadata key whose values should be sorted on.  Can't be null or
+    /// empty.
     /// </value>
-	///
-	/// <remarks>
-	/// The key must exist on each vertex and the corresponding value must be
-	/// of type TValue.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The key must exist on each vertex and the corresponding value must be
+    /// of type TValue.
+    /// </remarks>
     //*************************************************************************
 
     public String
     SortKey
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_sSortKey);
-		}
+            return (m_sSortKey);
+        }
 
-		set
-		{
-			const String PropertyName = "SortKey";
+        set
+        {
+            const String PropertyName = "SortKey";
 
             this.ArgumentChecker.CheckPropertyNotEmpty(PropertyName, value);
 
-			m_sSortKey = value;
+            m_sSortKey = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -127,13 +127,13 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether the sort is ascending or
-	/// descending.
+    /// descending.
     /// </summary>
     ///
     /// <value>
-	/// true to sort the collection of vertices in ascending order of the
-	/// values specified by <see cref="SortKey" />, false to sort the
-	/// collection in descending order.  The default value is true.
+    /// true to sort the collection of vertices in ascending order of the
+    /// values specified by <see cref="SortKey" />, false to sort the
+    /// collection in descending order.  The default value is true.
     /// </value>
     //*************************************************************************
 
@@ -141,18 +141,18 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     SortAscending
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return (m_bSortAscending);
-		}
+            return (m_bSortAscending);
+        }
 
-		set
-		{
-			m_bSortAscending = value;
+        set
+        {
+            m_bSortAscending = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -167,75 +167,75 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     /// </param>
     ///
     /// <returns>
-	/// Sorted <paramref name="vertices" />.
+    /// Sorted <paramref name="vertices" />.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	/// This method sorts <paramref name="vertices" /> in place and returns the
-	/// sorted vertices.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
+    /// This method sorts <paramref name="vertices" /> in place and returns the
+    /// sorted vertices.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
     protected override IVertex [] 
     SortCore
     (
-		IVertex [] vertices
+        IVertex [] vertices
     )
     {
-		Debug.Assert(vertices != null);
+        Debug.Assert(vertices != null);
 
-		const String MethodName = "Sort";
+        const String MethodName = "Sort";
 
-		// Create an array that contains the specified metadata value from each
-		// vertex.  The two arrays will get sorted in parallel.
-		//
-		// This two-array technique allows the metadata values to be retrieved
-		// just once per object, instead of every time two array elements are
-		// compared.
+        // Create an array that contains the specified metadata value from each
+        // vertex.  The two arrays will get sorted in parallel.
+        //
+        // This two-array technique allows the metadata values to be retrieved
+        // just once per object, instead of every time two array elements are
+        // compared.
 
-		Int32 iCount = vertices.Length;
+        Int32 iCount = vertices.Length;
 
-		TValue [] aoValues = new TValue[iCount];
+        TValue [] aoValues = new TValue[iCount];
 
-		for (Int32 i = 0; i < iCount; i++)
-		{
-			IVertex oVertex = vertices[i];
+        for (Int32 i = 0; i < iCount; i++)
+        {
+            IVertex oVertex = vertices[i];
 
-			Object oValue = null;
+            Object oValue = null;
 
-			try
-			{
-				oValue = oVertex.GetRequiredValue(
-					m_sSortKey, typeof(TValue) );
-			}
-			catch (ArgumentException oArgumentException)
-			{
-				// Wrap the "missing value" exception in a more information
-				// exception.
+            try
+            {
+                oValue = oVertex.GetRequiredValue(
+                    m_sSortKey, typeof(TValue) );
+            }
+            catch (ArgumentException oArgumentException)
+            {
+                // Wrap the "missing value" exception in a more information
+                // exception.
 
-				ArgumentChecker.ThrowArgumentException(
-					MethodName, oArgumentException.ParamName, 
+                ArgumentChecker.ThrowArgumentException(
+                    MethodName, oArgumentException.ParamName, 
 
-					"One of the vertices does not have the specified sort key,"
-					+ " or the key's value is the wrong type."
-					,
-					oArgumentException
-					);
-			}
+                    "One of the vertices does not have the specified sort key,"
+                    + " or the key's value is the wrong type."
+                    ,
+                    oArgumentException
+                    );
+            }
 
-			aoValues[i] = (TValue)oValue;
-		}
+            aoValues[i] = (TValue)oValue;
+        }
 
-		// Sort the two arrays using a ValueComparer that sorts in a specified
-		// direction.
+        // Sort the two arrays using a ValueComparer that sorts in a specified
+        // direction.
 
-		Array.Sort<TValue, IVertex>(
-			aoValues, vertices, new ValueComparer(m_bSortAscending) );
+        Array.Sort<TValue, IVertex>(
+            aoValues, vertices, new ValueComparer(m_bSortAscending) );
 
         return (vertices);
     }
@@ -254,10 +254,10 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert( !String.IsNullOrEmpty(m_sSortKey) );
-		// m_bSortAscending
+        Debug.Assert( !String.IsNullOrEmpty(m_sSortKey) );
+        // m_bSortAscending
     }
 
 
@@ -265,117 +265,117 @@ public class ByMetadataVertexSorter<TValue> : VertexSorterBase
     //  Protected fields
     //*************************************************************************
 
-	/// Key whose values should be sorted on.
+    /// Key whose values should be sorted on.
 
-	protected String m_sSortKey;
+    protected String m_sSortKey;
 
-	/// true to sort in ascending order, false to sort in descending order.
+    /// true to sort in ascending order, false to sort in descending order.
 
-	protected Boolean m_bSortAscending;
-
-
-	//*************************************************************************
-	//  Nested class: ValueComparer
-	//
-	/// <summary>
-	/// Compares two metadata values.
-	/// </summary>
-	///
-	/// <remarks>
-	/// This is nested within the MetadataSorter class, so its type is
-	/// VertexSorter.Comparer.
-	/// </remarks>
-	//*************************************************************************
-
-	private class ValueComparer : Comparer<TValue>
-	{
-		//*********************************************************************
-		//  Constructor: ValueComparer()
-		//
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ValueComparer" />
-		/// class.
-		/// </summary>
-		///
-		/// <param name="sortAscending">
-		/// true to sort in ascending order of metadata values, false to sort
-		/// in descending order.
-		/// </param>
-		//*********************************************************************
-
-		public ValueComparer
-		(
-			Boolean sortAscending
-		)
-		{
-			m_bSortAscending = sortAscending;
-
-			AssertValid();
-		}
-
-		//*********************************************************************
-		//  Method: Compare()
-		//
-		/// <summary>
-		/// Compares two values.
-		/// </summary>
-		///
-		/// <param name="value1">
-		/// First value to compare.
-		/// </param>
-		///
-		/// <param name="value2">
-		/// Second value to compare.
-		/// </param>
-		///
-		/// <returns>
-		/// See <see cref="Comparer{T}.Compare" />.
-		/// </returns>
-		//*********************************************************************
-
-		public override Int32
-		Compare
-		(
-			TValue value1,
-			TValue value2
-		)
-		{
-			AssertValid();
-
-			if (m_bSortAscending)
-			{
-				return ( value1.CompareTo(value2) );
-			}
-
-			return ( value2.CompareTo(value1) );
-		}
+    protected Boolean m_bSortAscending;
 
 
-		//*********************************************************************
-		//  Method: AssertValid()
-		//
-		/// <summary>
-		/// Asserts if the object is in an invalid state.  Debug-only.
-		/// </summary>
-		//*********************************************************************
+    //*************************************************************************
+    //  Nested class: ValueComparer
+    //
+    /// <summary>
+    /// Compares two metadata values.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This is nested within the MetadataSorter class, so its type is
+    /// VertexSorter.Comparer.
+    /// </remarks>
+    //*************************************************************************
 
-		[Conditional("DEBUG")]
+    private class ValueComparer : Comparer<TValue>
+    {
+        //*********************************************************************
+        //  Constructor: ValueComparer()
+        //
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueComparer" />
+        /// class.
+        /// </summary>
+        ///
+        /// <param name="sortAscending">
+        /// true to sort in ascending order of metadata values, false to sort
+        /// in descending order.
+        /// </param>
+        //*********************************************************************
 
-		public void
-		AssertValid()
-		{
-			// m_bSortAscending
-		}
+        public ValueComparer
+        (
+            Boolean sortAscending
+        )
+        {
+            m_bSortAscending = sortAscending;
+
+            AssertValid();
+        }
+
+        //*********************************************************************
+        //  Method: Compare()
+        //
+        /// <summary>
+        /// Compares two values.
+        /// </summary>
+        ///
+        /// <param name="value1">
+        /// First value to compare.
+        /// </param>
+        ///
+        /// <param name="value2">
+        /// Second value to compare.
+        /// </param>
+        ///
+        /// <returns>
+        /// See <see cref="Comparer{T}.Compare" />.
+        /// </returns>
+        //*********************************************************************
+
+        public override Int32
+        Compare
+        (
+            TValue value1,
+            TValue value2
+        )
+        {
+            AssertValid();
+
+            if (m_bSortAscending)
+            {
+                return ( value1.CompareTo(value2) );
+            }
+
+            return ( value2.CompareTo(value1) );
+        }
 
 
-		//*********************************************************************
-		//  Protected fields
-		//*********************************************************************
+        //*********************************************************************
+        //  Method: AssertValid()
+        //
+        /// <summary>
+        /// Asserts if the object is in an invalid state.  Debug-only.
+        /// </summary>
+        //*********************************************************************
 
-		/// true to sort in ascending order, false to sort in descending order.
+        [Conditional("DEBUG")]
 
-		protected Boolean m_bSortAscending;
-	}
+        public void
+        AssertValid()
+        {
+            // m_bSortAscending
+        }
+
+
+        //*********************************************************************
+        //  Protected fields
+        //*********************************************************************
+
+        /// true to sort in ascending order, false to sort in descending order.
+
+        protected Boolean m_bSortAscending;
+    }
 }
 
 }

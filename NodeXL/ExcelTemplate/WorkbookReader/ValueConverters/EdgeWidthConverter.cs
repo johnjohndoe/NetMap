@@ -1,8 +1,8 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Visualization.Wpf;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -23,49 +23,18 @@ public class EdgeWidthConverter : NumericValueConverterBase
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="EdgeWidthConverter" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public EdgeWidthConverter()
-	:
-	base(MinimumWidthWorkbook, MaximumWidthWorkbook, MinimumWidthGraph,
-		MaximumWidthGraph)
+    :
+    base(MinimumWidthWorkbook, MaximumWidthWorkbook, MinimumWidthGraph,
+        MaximumWidthGraph)
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
-    }
-
-    //*************************************************************************
-    //  Method: WorkbookToGraph()
-    //
-    /// <summary>
-	/// Converts an edge width from an Excel workbook value to a value suitable
-	/// for use in a NodeXL graph.
-    /// </summary>
-    ///
-    /// <param name="workbookValue">
-    /// Edge width read from the Excel workbook.  If less than <see
-	/// cref="MinimumWidthWorkbook" />, <see cref="MinimumWidthGraph" />
-	/// is returned.  If greater than <see cref="MaximumWidthWorkbook" />,
-	/// <see cref="MaximumWidthGraph" /> is returned.
-    /// </param>
-    ///
-    /// <returns>
-	/// An edge width suitable for use in a NodeXL graph.
-    /// </returns>
-    //*************************************************************************
-
-    public new Int32
-    WorkbookToGraph
-    (
-		Single workbookValue
-    )
-    {
         AssertValid();
-
-		return ( (Int32)base.WorkbookToGraph(workbookValue) );
     }
 
 
@@ -82,9 +51,9 @@ public class EdgeWidthConverter : NumericValueConverterBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -92,38 +61,38 @@ public class EdgeWidthConverter : NumericValueConverterBase
     //  Public constants
     //*************************************************************************
 
-	/// <summary>
-	/// Minimum value that can be specified in the workbook for an edge width.
-	/// </summary>
+    /// <summary>
+    /// Minimum value that can be specified in the workbook for an edge width.
+    /// </summary>
 
-	public static readonly Single MinimumWidthWorkbook = 1F;
+    public static readonly Single MinimumWidthWorkbook = 1F;
 
-	/// <summary>
-	/// Maximum value that can be specified in the workbook for an edge width.
-	/// </summary>
+    /// <summary>
+    /// Maximum value that can be specified in the workbook for an edge width.
+    /// </summary>
 
-	public static readonly Single MaximumWidthWorkbook = 10F;
+    public static readonly Single MaximumWidthWorkbook = 10F;
 
-	/// <summary>
-	/// Minimum edge width in the NodeXL graph.
-	/// </summary>
+    /// <summary>
+    /// Minimum edge width in the NodeXL graph.
+    /// </summary>
 
-	public static readonly Int32 MinimumWidthGraph =
-		PerEdgeDrawer.MinimumWidth;
+    public static readonly Single MinimumWidthGraph =
+        (Single)EdgeDrawer.MinimumWidth;
 
-	/// <summary>
-	/// Maximum edge width in the NodeXL graph.
-	/// </summary>
+    /// <summary>
+    /// Maximum edge width in the NodeXL graph.
+    /// </summary>
 
-	public static readonly Int32 MaximumWidthGraph =
-		PerEdgeDrawer.MaximumWidth;
+    public static readonly Single MaximumWidthGraph = 
+        (Single)EdgeDrawer.MaximumWidth;
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

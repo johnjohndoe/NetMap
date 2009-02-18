@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -29,7 +29,7 @@ public class EdgeUtilTest : Object
 
     public EdgeUtilTest()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -45,7 +45,7 @@ public class EdgeUtilTest : Object
     public void
     SetUp()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -61,7 +61,7 @@ public class EdgeUtilTest : Object
     public void
     TearDown()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -77,25 +77,25 @@ public class EdgeUtilTest : Object
     public void
     TestEdgeToVertices()
     {
-		// Valid vertices.
+        // Valid vertices.
 
-		MockVertex oVertex1 = new MockVertex();
-		MockVertex oVertex2 = new MockVertex();
+        MockVertex oVertex1 = new MockVertex();
+        MockVertex oVertex2 = new MockVertex();
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		oVertex1.ParentGraph = oGraph;
-		oVertex2.ParentGraph = oGraph;
+        oVertex1.ParentGraph = oGraph;
+        oVertex2.ParentGraph = oGraph;
 
-		IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
+        IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
 
-		IVertex oVertexA, oVertexB;
+        IVertex oVertexA, oVertexB;
 
-		EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-			out oVertexA, out oVertexB);
+        EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+            out oVertexA, out oVertexB);
 
-		Assert.AreEqual(oVertex1, oVertexA);
-		Assert.AreEqual(oVertex2, oVertexB);
+        Assert.AreEqual(oVertex1, oVertexA);
+        Assert.AreEqual(oVertex2, oVertexB);
     }
 
     //*************************************************************************
@@ -107,34 +107,34 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad()
     {
-		// Null Edge.Vertices.
+        // Null Edge.Vertices.
 
-		try
-		{
-			IEdge oEdge = new MockEdge(null, null, false, true, 0);
+        try
+        {
+            IEdge oEdge = new MockEdge(null, null, false, true, 0);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException ApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException ApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge's Vertices property is"
-				+ " null."
-				,
-				ApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge's Vertices property is"
+                + " null."
+                ,
+                ApplicationException.Message
+                );
 
-			throw ApplicationException;
-		}
+            throw ApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -146,34 +146,34 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad2()
     {
-		// Edge.Vertices contains 0 vertices.
+        // Edge.Vertices contains 0 vertices.
 
-		try
-		{
-			IEdge oEdge = new MockEdge(null, null, false, false, 0);
+        try
+        {
+            IEdge oEdge = new MockEdge(null, null, false, false, 0);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge does not connect two"
-				+ " vertices."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge does not connect two"
+                + " vertices."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -185,34 +185,34 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad3()
     {
-		// Edge.Vertices contains 1 vertex only.
+        // Edge.Vertices contains 1 vertex only.
 
-		try
-		{
-			IEdge oEdge = new MockEdge(null, null, false, false, 1);
+        try
+        {
+            IEdge oEdge = new MockEdge(null, null, false, false, 1);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge does not connect two"
-				+ " vertices."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge does not connect two"
+                + " vertices."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -224,35 +224,35 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad4()
     {
-		// First vertex is null.
+        // First vertex is null.
 
-		try
-		{
-			IEdge oEdge = new MockEdge(
-				null, new MockVertex(), false, false, 2);
+        try
+        {
+            IEdge oEdge = new MockEdge(
+                null, new MockVertex(), false, false, 2);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge's first vertex is"
-				+ " null."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge's first vertex is"
+                + " null."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -264,35 +264,35 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad5()
     {
-		// Second vertex is null.
+        // Second vertex is null.
 
-		try
-		{
-			IEdge oEdge = new MockEdge(
-				new MockVertex(), null, false, false, 2);
+        try
+        {
+            IEdge oEdge = new MockEdge(
+                new MockVertex(), null, false, false, 2);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge's second vertex is"
-				+ " null."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge's second vertex is"
+                + " null."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -304,42 +304,42 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad6()
     {
-		// First vertex has no parent.
+        // First vertex has no parent.
 
-		try
-		{
-			MockVertex oVertex1 = new MockVertex();
-			MockVertex oVertex2 = new MockVertex();
+        try
+        {
+            MockVertex oVertex1 = new MockVertex();
+            MockVertex oVertex2 = new MockVertex();
 
-			IGraph oGraph = new Graph();
+            IGraph oGraph = new Graph();
 
-			// oVertex1.ParentGraph = oGraph;
-			oVertex2.ParentGraph = oGraph;
+            // oVertex1.ParentGraph = oGraph;
+            oVertex2.ParentGraph = oGraph;
 
-			IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
+            IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge's first vertex does"
-				+ " not belong to a graph."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge's first vertex does"
+                + " not belong to a graph."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -351,42 +351,42 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad7()
     {
-		// Second vertex has no parent.
+        // Second vertex has no parent.
 
-		try
-		{
-			MockVertex oVertex1 = new MockVertex();
-			MockVertex oVertex2 = new MockVertex();
+        try
+        {
+            MockVertex oVertex1 = new MockVertex();
+            MockVertex oVertex2 = new MockVertex();
 
-			IGraph oGraph = new Graph();
+            IGraph oGraph = new Graph();
 
-			oVertex1.ParentGraph = oGraph;
-			// oVertex2.ParentGraph = oGraph;
+            oVertex1.ParentGraph = oGraph;
+            // oVertex2.ParentGraph = oGraph;
 
-			IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
+            IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge's second vertex does"
-				+ " not belong to a graph."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge's second vertex does"
+                + " not belong to a graph."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
     //*************************************************************************
@@ -398,43 +398,43 @@ public class EdgeUtilTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestEdgeToVerticesBad8()
     {
-		// Vertices not part of the same graph.
+        // Vertices not part of the same graph.
 
-		try
-		{
-			MockVertex oVertex1 = new MockVertex();
-			MockVertex oVertex2 = new MockVertex();
+        try
+        {
+            MockVertex oVertex1 = new MockVertex();
+            MockVertex oVertex2 = new MockVertex();
 
-			IGraph oGraph1 = new Graph(GraphDirectedness.Mixed);
-			IGraph oGraph2 = new Graph(GraphDirectedness.Mixed);
+            IGraph oGraph1 = new Graph(GraphDirectedness.Mixed);
+            IGraph oGraph2 = new Graph(GraphDirectedness.Mixed);
 
-			oVertex1.ParentGraph = oGraph1;
-			oVertex2.ParentGraph = oGraph2;
+            oVertex1.ParentGraph = oGraph1;
+            oVertex2.ParentGraph = oGraph2;
 
-			IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
+            IEdge oEdge = new MockEdge(oVertex1, oVertex2, false, false, 2);
 
-			IVertex oVertexA, oVertexB;
+            IVertex oVertexA, oVertexB;
 
-			EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
-				out oVertexA, out oVertexB);
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+            EdgeUtil.EdgeToVertices(oEdge, ClassName, MethodOrPropertyName,
+                out oVertexA, out oVertexB);
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"TheClass.TheMethodOrProperty: The edge connects vertices not"
-				+ " in the same graph."
-				,
-				oApplicationException.Message
-				);
+                "TheClass.TheMethodOrProperty: The edge connects vertices not"
+                + " in the same graph."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
 
@@ -442,11 +442,11 @@ public class EdgeUtilTest : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Arguments to pass to EdgeUtil methods.
+    /// Arguments to pass to EdgeUtil methods.
 
-	protected const String ClassName = "TheClass";
-	///
-	protected const String MethodOrPropertyName = "TheMethodOrProperty";
+    protected const String ClassName = "TheClass";
+    ///
+    protected const String MethodOrPropertyName = "TheMethodOrProperty";
 }
 
 }

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -21,39 +21,39 @@ public class EmailParticipantPair : ParticipantPair
     //
     /// <overloads>
     /// Initializes a new instance of the <see cref="EmailParticipantPair" />
-	/// class.
+    /// class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="EmailParticipantPair" />
-	/// class with specified values.
+    /// class with specified values.
     /// </summary>
-	///
+    ///
     /// <param name="participant1">
-	/// The first participant, as an email address.  Can't be null or empty.
+    /// The first participant, as an email address.  Can't be null or empty.
     /// </param>
-	///
+    ///
     /// <param name="participant2">
-	/// The second participant, as an email address.  Can't be null or empty.
+    /// The second participant, as an email address.  Can't be null or empty.
     /// </param>
-	///
+    ///
     /// <param name="tieStrength">
-	/// The strength of the tie between the participants.  Must be
-	/// non-negative.
+    /// The strength of the tie between the participants.  Must be
+    /// non-negative.
     /// </param>
     //*************************************************************************
 
     public EmailParticipantPair
-	(
-		String participant1,
-		String participant2,
-		Int32 tieStrength
-	)
-	: base(participant1, participant2)
+    (
+        String participant1,
+        String participant2,
+        Int32 tieStrength
+    )
+    : base(participant1, participant2)
     {
-		m_iTieStrength = tieStrength;
+        m_iTieStrength = tieStrength;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -61,33 +61,33 @@ public class EmailParticipantPair : ParticipantPair
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="EmailParticipantPair" />
-	/// class with default values.
+    /// class with default values.
     /// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for XML serialization only.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for XML serialization only.
+    /// </remarks>
     //*************************************************************************
 
     public EmailParticipantPair()
-	:
-	this("Participant1", "Participant2", 0)
+    :
+    this("Participant1", "Participant2", 0)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: TieStrength
     //
     /// <summary>
-	/// Gets or sets the strength of the tie between the participants.
+    /// Gets or sets the strength of the tie between the participants.
     /// </summary>
     ///
     /// <value>
-	/// The strength of the tie between the participants, as an Int32.  Must be
-	/// non-negative.
+    /// The strength of the tie between the participants, as an Int32.  Must be
+    /// non-negative.
     /// </value>
     //*************************************************************************
 
@@ -103,7 +103,7 @@ public class EmailParticipantPair : ParticipantPair
 
         set
         {
-			m_iTieStrength = value;
+            m_iTieStrength = value;
 
             AssertValid();
         }
@@ -123,9 +123,9 @@ public class EmailParticipantPair : ParticipantPair
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_iTieStrength >= 0);
+        Debug.Assert(m_iTieStrength >= 0);
     }
 
 
@@ -133,9 +133,9 @@ public class EmailParticipantPair : ParticipantPair
     //  Protected fields
     //*************************************************************************
 
-	/// The strength of the tie between the participants.
+    /// The strength of the tie between the participants.
 
-	protected Int32 m_iTieStrength;
+    protected Int32 m_iTieStrength;
 }
 
 }

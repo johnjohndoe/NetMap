@@ -11,7 +11,7 @@ namespace Microsoft.NodeXL.Adapters
 //  Class: GraphAdapterBase
 //
 /// <summary>
-///	Base class for graph adapters.
+/// Base class for graph adapters.
 /// </summary>
 ///
 /// <remarks>
@@ -29,13 +29,13 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphAdapterBase" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public GraphAdapterBase()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -44,112 +44,112 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// <overloads>
     /// Creates a graph and loads it with graph data.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Creates a graph of type <see cref="Graph" /> and loads it with graph
-	/// data read from a file.
+    /// data read from a file.
     /// </summary>
     ///
     /// <param name="filename">
     /// Full path to the file containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new <see cref="Graph" /> loaded with graph data read from <paramref
-	/// name="filename" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a <see cref="Graph" /> and loads it with the graph
-	/// data read from <paramref name="filename" />.
-	/// </remarks>
+    /// <returns>
+    /// A new <see cref="Graph" /> loaded with graph data read from <paramref
+    /// name="filename" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a <see cref="Graph" /> and loads it with the graph
+    /// data read from <paramref name="filename" />.
+    /// </remarks>
     //*************************************************************************
 
     public IGraph
     LoadGraph
     (
-		String filename
+        String filename
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		const String MethodName = "LoadGraph";
+        const String MethodName = "LoadGraph";
 
-		this.ArgumentChecker.CheckArgumentNotEmpty(
-			MethodName, "filename", filename);
+        this.ArgumentChecker.CheckArgumentNotEmpty(
+            MethodName, "filename", filename);
 
-		Stream oStream = null;
+        Stream oStream = null;
 
-		IGraph oGraph;
+        IGraph oGraph;
 
-		try
-		{
-			oStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+        try
+        {
+            oStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
 
-			oGraph = LoadGraph(new GraphFactory(), oStream);
-		}
-		finally
-		{
+            oGraph = LoadGraph(new GraphFactory(), oStream);
+        }
+        finally
+        {
             if (oStream != null)
             {
                 oStream.Close();
                 oStream = null;
             }
-		}
+        }
 
-		return (oGraph);
-	}
+        return (oGraph);
+    }
 
     //*************************************************************************
     //  Method: LoadGraph()
     //
     /// <summary>
     /// Creates a graph of a specified type and loads it with graph data read
-	/// from a <see cref="String" />.
+    /// from a <see cref="String" />.
     /// </summary>
     ///
     /// <param name="graphFactory">
     /// Object that knows how to create a graph.
     /// </param>
-	///
+    ///
     /// <param name="theString">
     /// <see cref="String" /> containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new graph created by <paramref name="graphFactory" /> and loaded with
-	/// graph data read from <paramref name="theString" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a graph using <paramref name="graphFactory" /> and
-	/// loads it with the graph data read from <paramref name="theString" />.
-	/// </remarks>
+    /// <returns>
+    /// A new graph created by <paramref name="graphFactory" /> and loaded with
+    /// graph data read from <paramref name="theString" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a graph using <paramref name="graphFactory" /> and
+    /// loads it with the graph data read from <paramref name="theString" />.
+    /// </remarks>
     //*************************************************************************
 
     public IGraph
     LoadGraph
     (
-		IGraphFactory graphFactory,
-		String theString
+        IGraphFactory graphFactory,
+        String theString
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		const String MethodName = "LoadGraph";
+        const String MethodName = "LoadGraph";
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "graphFactory", graphFactory);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "graphFactory", graphFactory);
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "theString", theString);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "theString", theString);
 
         MemoryStream oMemoryStream = null;
 
         try
         {
             oMemoryStream = new MemoryStream(
-				Encoding.UTF8.GetBytes(theString), false);
+                Encoding.UTF8.GetBytes(theString), false);
 
             return ( LoadGraph(graphFactory, oMemoryStream) );
         }
@@ -160,55 +160,55 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
                 oMemoryStream.Close();
             }
         }
-	}
+    }
 
     //*************************************************************************
     //  Method: LoadGraph()
     //
     /// <summary>
     /// Creates a graph of a specified type and loads it with graph data read
-	/// from a <see cref="Stream" />.
+    /// from a <see cref="Stream" />.
     /// </summary>
     ///
     /// <param name="graphFactory">
     /// Object that knows how to create a graph.
     /// </param>
-	///
+    ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new graph created by <paramref name="graphFactory" /> and loaded with
-	/// graph data read from <paramref name="stream" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a graph using <paramref name="graphFactory" /> and
-	/// loads it with the graph data read from <paramref name="stream" />.  It
-	/// does not close <paramref name="stream" />.
-	/// </remarks>
+    /// <returns>
+    /// A new graph created by <paramref name="graphFactory" /> and loaded with
+    /// graph data read from <paramref name="stream" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a graph using <paramref name="graphFactory" /> and
+    /// loads it with the graph data read from <paramref name="stream" />.  It
+    /// does not close <paramref name="stream" />.
+    /// </remarks>
     //*************************************************************************
 
     public IGraph
     LoadGraph
     (
-		IGraphFactory graphFactory,
-		Stream stream
+        IGraphFactory graphFactory,
+        Stream stream
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		const String MethodName = "LoadGraph";
+        const String MethodName = "LoadGraph";
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "graphFactory", graphFactory);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "graphFactory", graphFactory);
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "stream", stream);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "stream", stream);
 
-		return ( LoadGraphCore(graphFactory, stream) );
-	}
+        return ( LoadGraphCore(graphFactory, stream) );
+    }
 
     //*************************************************************************
     //  Method: SaveGraph()
@@ -216,7 +216,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// <overloads>
     /// Saves graph data.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Saves graph data to a file.
     /// </summary>
@@ -226,20 +226,20 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <param name="filename">
-	/// Full path to the file to save to.  If the file exists, it gets
-	/// overwritten.
+    /// Full path to the file to save to.  If the file exists, it gets
+    /// overwritten.
     /// </param>
     ///
     /// <remarks>
-	/// This method saves <paramref name="graph" /> to <paramref
-	///	name="filename" />.
-	///
-	/// <para>
-	///	If the <see cref="IGraph.Directedness" /> property on <paramref
-	/// name="graph" /> is set to a value that is incompatible with the graph
-	/// adapter, an exception is thrown.
-	/// </para>
-	///
+    /// This method saves <paramref name="graph" /> to <paramref
+    /// name="filename" />.
+    ///
+    /// <para>
+    /// If the <see cref="IGraph.Directedness" /> property on <paramref
+    /// name="graph" /> is set to a value that is incompatible with the graph
+    /// adapter, an exception is thrown.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -247,36 +247,36 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     SaveGraph
     (
         IGraph graph,
-		String filename
+        String filename
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		const String MethodName = "SaveGraph";
+        const String MethodName = "SaveGraph";
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "graph", graph);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "graph", graph);
 
-		this.ArgumentChecker.CheckArgumentNotEmpty(
-			MethodName, "filename", filename);
+        this.ArgumentChecker.CheckArgumentNotEmpty(
+            MethodName, "filename", filename);
 
-		Stream oStream = null;
+        Stream oStream = null;
 
-		try
-		{
-			oStream = new FileStream(filename, FileMode.Create);
+        try
+        {
+            oStream = new FileStream(filename, FileMode.Create);
 
-			SaveGraph(graph, oStream);
-		}
-		finally
-		{
+            SaveGraph(graph, oStream);
+        }
+        finally
+        {
             if (oStream != null)
             {
                 oStream.Close();
                 oStream = null;
             }
-		}
-	}
+        }
+    }
 
     //*************************************************************************
     //  Method: SaveGraph()
@@ -294,15 +294,15 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <remarks>
-	/// This method saves <paramref name="graph" /> to <paramref
-	///	name="stream" />.  It does not close <paramref name="stream" />.
-	///
-	/// <para>
-	///	If the <see cref="IGraph.Directedness" /> property on <paramref
-	/// name="graph" /> is set to a value that is incompatible with the graph
-	/// adapter, an exception is thrown.
-	/// </para>
-	///
+    /// This method saves <paramref name="graph" /> to <paramref
+    /// name="stream" />.  It does not close <paramref name="stream" />.
+    ///
+    /// <para>
+    /// If the <see cref="IGraph.Directedness" /> property on <paramref
+    /// name="graph" /> is set to a value that is incompatible with the graph
+    /// adapter, an exception is thrown.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -310,152 +310,152 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     SaveGraph
     (
         IGraph graph,
-		Stream stream
+        Stream stream
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		const String MethodName = "SaveGraph";
+        const String MethodName = "SaveGraph";
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "graph", graph);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "graph", graph);
 
-		CheckGraphDirectedness(graph, false);
+        CheckGraphDirectedness(graph, false);
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "stream", stream);
+        this.ArgumentChecker.CheckArgumentNotNull(
+            MethodName, "stream", stream);
 
-		SaveGraphCore(graph, stream);
-	}
+        SaveGraphCore(graph, stream);
+    }
 
     //*************************************************************************
     //  Method: SupportsDirectedness()
     //
     /// <summary>
     /// Returns a flag indicating whether the graph adapter can be used with
-	/// graphs of a specified <see cref="GraphDirectedness" />.
+    /// graphs of a specified <see cref="GraphDirectedness" />.
     /// </summary>
     ///
     /// <param name="directedness">
-	/// A <see cref="GraphDirectedness" /> value.
+    /// A <see cref="GraphDirectedness" /> value.
     /// </param>
     ///
-	/// <returns>
-	/// true if the graph adapter can be used with graphs of the specified
-	/// directedness.
-	/// </returns>
+    /// <returns>
+    /// true if the graph adapter can be used with graphs of the specified
+    /// directedness.
+    /// </returns>
     //*************************************************************************
 
     public Boolean
     SupportsDirectedness
     (
-		GraphDirectedness directedness
+        GraphDirectedness directedness
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		const String MethodName = "SupportsDirectedness";
-		const String ArgumentName = "directedness";
+        const String MethodName = "SupportsDirectedness";
+        const String ArgumentName = "directedness";
 
-		this.ArgumentChecker.CheckArgumentIsDefined(
-			MethodName, ArgumentName, directedness, typeof(GraphDirectedness)
-			);
+        this.ArgumentChecker.CheckArgumentIsDefined(
+            MethodName, ArgumentName, directedness, typeof(GraphDirectedness)
+            );
 
-		Boolean bSupportsDirected, bSupportsUndirected, bSupportsMixed;
+        Boolean bSupportsDirected, bSupportsUndirected, bSupportsMixed;
 
-		GetSupportedDirectedness(
-			out bSupportsDirected, out bSupportsUndirected, out bSupportsMixed);
+        GetSupportedDirectedness(
+            out bSupportsDirected, out bSupportsUndirected, out bSupportsMixed);
 
-		switch (directedness)
-		{
-			case GraphDirectedness.Directed:
+        switch (directedness)
+        {
+            case GraphDirectedness.Directed:
 
-				return (bSupportsDirected);
+                return (bSupportsDirected);
 
-			case GraphDirectedness.Undirected:
+            case GraphDirectedness.Undirected:
 
-				return (bSupportsUndirected);
+                return (bSupportsUndirected);
 
-			case GraphDirectedness.Mixed:
+            case GraphDirectedness.Mixed:
 
-				return (bSupportsMixed);
+                return (bSupportsMixed);
 
-			default:
+            default:
 
-				Debug.Assert(false);
-				return (false);
-		}
-	}
+                Debug.Assert(false);
+                return (false);
+        }
+    }
 
     //*************************************************************************
     //  Method: GetSupportedDirectedness()
     //
     /// <summary>
-	///	Gets a set of flags indicating the directedness of the graphs that the
-	/// implementation can load and save.
+    /// Gets a set of flags indicating the directedness of the graphs that the
+    /// implementation can load and save.
     /// </summary>
     ///
     /// <param name="supportsDirected">
-	/// Gets set to true if the implementation can load and save directed
-	/// graphs.
+    /// Gets set to true if the implementation can load and save directed
+    /// graphs.
     /// </param>
-	///
+    ///
     /// <param name="supportsUndirected">
-	/// Gets set to true if the implementation can load and save undirected
-	/// graphs.
+    /// Gets set to true if the implementation can load and save undirected
+    /// graphs.
     /// </param>
-	///
+    ///
     /// <param name="supportsMixed">
-	/// Gets set to true if the implementation can load and save mixed graphs.
+    /// Gets set to true if the implementation can load and save mixed graphs.
     /// </param>
     //*************************************************************************
 
     protected abstract void
     GetSupportedDirectedness
-	(
-		out Boolean supportsDirected,
-		out Boolean supportsUndirected,
-		out Boolean supportsMixed
-	);
+    (
+        out Boolean supportsDirected,
+        out Boolean supportsUndirected,
+        out Boolean supportsMixed
+    );
 
     //*************************************************************************
     //  Method: LoadGraphCore()
     //
     /// <summary>
     /// Creates a graph of a specified type and loads it with graph data read
-	/// from a <see cref="Stream" />.
+    /// from a <see cref="Stream" />.
     /// </summary>
     ///
     /// <param name="graphFactory">
     /// Object that can create a graph.
     /// </param>
-	///
+    ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new graph created by <paramref name="graphFactory" /> and loaded with
-	/// graph data read from <paramref name="stream" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a graph using <paramref name="graphFactory" /> and
-	/// loads it with the graph data read from <paramref name="stream" />.  It
-	/// does not close <paramref name="stream" />.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
-	/// </remarks>
+    /// <returns>
+    /// A new graph created by <paramref name="graphFactory" /> and loaded with
+    /// graph data read from <paramref name="stream" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a graph using <paramref name="graphFactory" /> and
+    /// loads it with the graph data read from <paramref name="stream" />.  It
+    /// does not close <paramref name="stream" />.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     protected abstract IGraph
     LoadGraphCore
     (
         IGraphFactory graphFactory,
-		Stream stream
+        Stream stream
     );
 
     //*************************************************************************
@@ -474,13 +474,13 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <remarks>
-	/// This method saves <paramref name="graph" /> to <paramref
-	///	name="stream" />.  It does not close <paramref name="stream" />.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
+    /// This method saves <paramref name="graph" /> to <paramref
+    /// name="stream" />.  It does not close <paramref name="stream" />.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -488,7 +488,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     SaveGraphCore
     (
         IGraph graph,
-		Stream stream
+        Stream stream
     );
 
     //*************************************************************************
@@ -496,7 +496,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     //
     /// <summary>
     /// Checks whether the directedness of a graph is supported by the
-	/// implementation.
+    /// implementation.
     /// </summary>
     ///
     /// <param name="graph">
@@ -505,43 +505,43 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     ///
     /// <param name="loading">
     /// true if this method is being called while a graph is being loaded,
-	/// false if it is being called while a graph is being saved.
+    /// false if it is being called while a graph is being saved.
     /// </param>
     ///
     /// <remarks>
-	/// An exception is thrown if the directedness of <paramref name="graph" />
-	/// is not supported by the implementation.
+    /// An exception is thrown if the directedness of <paramref name="graph" />
+    /// is not supported by the implementation.
     /// </remarks>
     //*************************************************************************
 
-	protected void
-	CheckGraphDirectedness
-	(
-		IGraph graph,
-		Boolean loading
-	)
-	{
-		AssertValid();
+    protected void
+    CheckGraphDirectedness
+    (
+        IGraph graph,
+        Boolean loading
+    )
+    {
+        AssertValid();
 
-		GraphDirectedness eDirectedness = graph.Directedness;
+        GraphDirectedness eDirectedness = graph.Directedness;
 
-		if ( SupportsDirectedness(eDirectedness) )
-		{
-			return;
-		}
+        if ( SupportsDirectedness(eDirectedness) )
+        {
+            return;
+        }
 
-		throw new IOException( String.Format(
+        throw new IOException( String.Format(
 
-			"The graph can't be {0} as the file type you've selected, because"
-			+ " the graph is {1} and the file type can't be used with {1}"
-			+ " graphs."
-			,
-			loading ? "loaded" : "saved",
+            "The graph can't be {0} as the file type you've selected, because"
+            + " the graph is {1} and the file type can't be used with {1}"
+            + " graphs."
+            ,
+            loading ? "loaded" : "saved",
 
-			EnumUtil.SplitName(eDirectedness.ToString(),
-				EnumSplitStyle.AllWordsStartLowerCase)
-			) );
-	}
+            EnumUtil.SplitName(eDirectedness.ToString(),
+                EnumSplitStyle.AllWordsStartLowerCase)
+            ) );
+    }
 
     //*************************************************************************
     //  Method: VertexCountToString()
@@ -554,27 +554,27 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// Number of vertices.  Must be non-negative.
     /// </param>
     ///
-	/// <returns>
-	/// A string describing <paramref name="vertices" />, in the format
-	/// "N vertices".
-	/// </returns>
+    /// <returns>
+    /// A string describing <paramref name="vertices" />, in the format
+    /// "N vertices".
+    /// </returns>
     //*************************************************************************
 
     protected String
     VertexCountToString
     (
-		Int32 vertices
+        Int32 vertices
     )
-	{
-		Debug.Assert(vertices >= 0);
+    {
+        Debug.Assert(vertices >= 0);
 
-		return ( String.Format(
-			"{0} {1}"
-			,
-			vertices.ToString(NodeXLBase.Int32Format),
-			(vertices == 1) ? "vertex" : "vertices"
-			) );
-	}
+        return ( String.Format(
+            "{0} {1}"
+            ,
+            vertices.ToString(NodeXLBase.Int32Format),
+            (vertices == 1) ? "vertex" : "vertices"
+            ) );
+    }
 
     //*************************************************************************
     //  Method: OnLoadFormatError()
@@ -590,41 +590,41 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// <param name="lineNumber">
     /// One-based line number of <paramref name="line" />.
     /// </param>
-	///
+    ///
     /// <param name="expectedFormat">
     /// Description of what a correctly-formatted line should look like.
     /// </param>
-	///
-	/// <remarks>
-	/// If the derived class reads from a line-oriented text file and detects
-	/// a formatting error on a line, it should handle the error by calling
-	/// this method or <see cref="OnLoadFormatError2" />.  A <see
-	/// cref="FormatException" /> is thrown.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If the derived class reads from a line-oriented text file and detects
+    /// a formatting error on a line, it should handle the error by calling
+    /// this method or <see cref="OnLoadFormatError2" />.  A <see
+    /// cref="FormatException" /> is thrown.
+    /// </remarks>
     //*************************************************************************
 
     protected void
     OnLoadFormatError
     (
-		String line,
-		Int32 lineNumber,
-		String expectedFormat
+        String line,
+        Int32 lineNumber,
+        String expectedFormat
     )
-	{
-		Debug.Assert(line != null);
-		Debug.Assert(lineNumber >= 1);
-		Debug.Assert( !String.IsNullOrEmpty(expectedFormat) );
-		AssertValid();
+    {
+        Debug.Assert(line != null);
+        Debug.Assert(lineNumber >= 1);
+        Debug.Assert( !String.IsNullOrEmpty(expectedFormat) );
+        AssertValid();
 
-		OnLoadFormatError2(line, lineNumber,
-	
-			String.Format(
+        OnLoadFormatError2(line, lineNumber,
+    
+            String.Format(
 
-				"The expected format is \"{0}\"."
-				,
-				expectedFormat
-			) );
-	}
+                "The expected format is \"{0}\"."
+                ,
+                expectedFormat
+            ) );
+    }
 
     //*************************************************************************
     //  Method: OnLoadFormatError2()
@@ -640,61 +640,61 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// <param name="lineNumber">
     /// One-based line number of <paramref name="line" />.
     /// </param>
-	///
+    ///
     /// <param name="errorDetails">
-	/// Description of the formatting error.
+    /// Description of the formatting error.
     /// </param>
-	///
-	/// <remarks>
-	/// If the derived class reads from a line-oriented text file and detects
-	/// a formatting error on a line, it should handle the error by calling
-	/// this method or <see cref="OnLoadFormatError" />.  A <see
-	/// cref="FormatException" /> is thrown.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If the derived class reads from a line-oriented text file and detects
+    /// a formatting error on a line, it should handle the error by calling
+    /// this method or <see cref="OnLoadFormatError" />.  A <see
+    /// cref="FormatException" /> is thrown.
+    /// </remarks>
     //*************************************************************************
 
     protected void
     OnLoadFormatError2
     (
-		String line,
-		Int32 lineNumber,
-		String errorDetails
+        String line,
+        Int32 lineNumber,
+        String errorDetails
     )
-	{
-		Debug.Assert(line != null);
-		Debug.Assert(lineNumber >= 1);
-		Debug.Assert( !String.IsNullOrEmpty(errorDetails) );
-		AssertValid();
+    {
+        Debug.Assert(line != null);
+        Debug.Assert(lineNumber >= 1);
+        Debug.Assert( !String.IsNullOrEmpty(errorDetails) );
+        AssertValid();
 
-		// Truncate the line if necessary.
+        // Truncate the line if necessary.
 
-		const Int32 MaxLineLengthToDisplay = 80;
+        const Int32 MaxLineLengthToDisplay = 80;
 
-		String sLineToDisplay = (line.Length > MaxLineLengthToDisplay) ?
-			line.Substring(0, MaxLineLengthToDisplay) + "..."
-			:
-			line
-			;
+        String sLineToDisplay = (line.Length > MaxLineLengthToDisplay) ?
+            line.Substring(0, MaxLineLengthToDisplay) + "..."
+            :
+            line
+            ;
 
-		// Replace control characters with a Unicode box.
+        // Replace control characters with a Unicode box.
 
-		sLineToDisplay =
-			StringUtil.ReplaceControlCharacters(sLineToDisplay, '\u25A1');
+        sLineToDisplay =
+            StringUtil.ReplaceControlCharacters(sLineToDisplay, '\u25A1');
 
-		// Do not include the class or method name in the exception message.
-		// The message appears when the user attempts to open an invalid file,
-		// and the user doesn't care about class names.
-	
-		throw new FormatException( String.Format(
+        // Do not include the class or method name in the exception message.
+        // The message appears when the user attempts to open an invalid file,
+        // and the user doesn't care about class names.
+    
+        throw new FormatException( String.Format(
 
-			"Line {0} is not in the expected format.  This is"
-			+ " line {0}: \"{1}\".  {2}"
-			,
-			lineNumber.ToString(NodeXLBase.Int32Format),
-			sLineToDisplay,
-			errorDetails
-			) );
-	}
+            "Line {0} is not in the expected format.  This is"
+            + " line {0}: \"{1}\".  {2}"
+            ,
+            lineNumber.ToString(NodeXLBase.Int32Format),
+            sLineToDisplay,
+            errorDetails
+            ) );
+    }
 
 
     //*************************************************************************
@@ -710,7 +710,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

@@ -17,7 +17,9 @@ various file formats.
 Algorithms
 ----------
 Visual Studio project, contains classes that implement graph algorithms.  As of
-June 2007, most of the classes have not been implemented.
+June 2007, most of the classes have not been implemented.  Graph algorithms are
+implemented in ExcelTemplate, which is the wrong place.  ExcelTemplate's graph
+algorithms need to be refactored to make them available to other applications.
 
 
 ApplicationUtil
@@ -32,27 +34,10 @@ contained in a shared assembly.  The classes are linked to the projects via the
 Add as Link option in Visual Studio's Add Existing Item dialog.
 
 
-Control
--------
-Visual Studio project, contains a Windows Forms control that draws graphs.
-
-
 Core
 ----
 Visual Studio project, contains core classes representing graphs, vertices, and
 edges.
-
-
-DesktopApplication
-------------------
-Visual Studio project, contains a Windows Forms application that displays
-graphs.  As of May 2008, further development of this project has been halted in
-favor of its replacement, ExcelTemplate.  The application still works, however.
-
-
-DesktopApplicationSetup
------------------------
-Visual Studio deployment project, installs DesktopApplication.
 
 
 Documents
@@ -83,16 +68,9 @@ ExcelTemplateSetupCustomActions
 Custom action classes used by ExcelTemplateSetup.
 
 
-MultithreadingTests
--------------------
-Visual Studio project, contains a Windows Forms application for testing
-multithreaded classes that are too difficult to test with unit tests.
-
-
-TestNodeXLControl
------------------
-Visual Studio project, contains a Windows Forms application for testing
-the NodeXLControl.
+Layouts
+-------------
+Visual Studio project, contains classes that lay out graphs.
 
 
 TestWpfNodeXLControl
@@ -111,11 +89,6 @@ Util
 ----
 Visual Studio project, contains classes used by two or more Visual Studio
 projects.
-
-
-Visualization
--------------
-Visual Studio project, contains classes that lay out and draw graphs.
 
 
 WpfControl

@@ -25,7 +25,7 @@ public class DynamicFilterParametersTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="DynamicFilterParametersTest" /> class.
+    /// cref="DynamicFilterParametersTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -79,7 +79,7 @@ public class DynamicFilterParametersTest : Object
     public void
     TestConstructor()
     {
-		Assert.AreEqual(ColumnName, m_oDynamicFilterParameters.ColumnName);
+        Assert.AreEqual(ColumnName, m_oDynamicFilterParameters.ColumnName);
     }
 
 
@@ -87,8 +87,8 @@ public class DynamicFilterParametersTest : Object
     //  Protected constants
     //*************************************************************************
 
-	///
-	protected const String ColumnName = "The column";
+    ///
+    protected const String ColumnName = "The column";
 
 
     //*************************************************************************

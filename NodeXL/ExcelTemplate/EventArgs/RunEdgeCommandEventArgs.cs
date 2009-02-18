@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -22,31 +22,31 @@ public class RunEdgeCommandEventArgs : EventArgs
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="RunEdgeCommandEventArgs" /> class.
+    /// cref="RunEdgeCommandEventArgs" /> class.
     /// </summary>
-	///
-	/// <param name="edgeID">
+    ///
+    /// <param name="edgeID">
     /// ID of the edge that was right-clicked in the edge table in the edge
-	/// worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
-	/// an edge wasn't right-clicked.  This is an ID that is stored in the
-	/// worksheet, NOT an IEdge.ID value.
-	/// </param>
-	///
-	/// <param name="edgeCommand">
-	/// Command to run.
-	/// </param>
+    /// worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
+    /// an edge wasn't right-clicked.  This is an ID that is stored in the
+    /// worksheet, NOT an IEdge.ID value.
+    /// </param>
+    ///
+    /// <param name="edgeCommand">
+    /// Command to run.
+    /// </param>
     //*************************************************************************
 
     public RunEdgeCommandEventArgs
-	(
-		Int32 edgeID,
-		WorksheetContextMenuManager.EdgeCommand edgeCommand
-	)
+    (
+        Int32 edgeID,
+        WorksheetContextMenuManager.EdgeCommand edgeCommand
+    )
     {
         m_iEdgeID = edgeID;
-		m_eEdgeCommand = edgeCommand;
+        m_eEdgeCommand = edgeCommand;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -54,14 +54,14 @@ public class RunEdgeCommandEventArgs : EventArgs
     //
     /// <summary>
     /// Gets the ID of the edge that was right-clicked in the edge table in the
-	/// edge worksheet.
+    /// edge worksheet.
     /// </summary>
     ///
     /// <value>
     /// The ID of the right-clicked edge, or <see
-	/// cref="WorksheetContextMenuManager.NoID" /> if an edge wasn't right-
-	/// clicked.  This is an ID that is stored in the worksheet, NOT an
-	/// IEdge.ID value.
+    /// cref="WorksheetContextMenuManager.NoID" /> if an edge wasn't right-
+    /// clicked.  This is an ID that is stored in the worksheet, NOT an
+    /// IEdge.ID value.
     /// </value>
     //*************************************************************************
 
@@ -113,10 +113,10 @@ public class RunEdgeCommandEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_iEdgeID == WorksheetContextMenuManager.NoID ||
-			m_iEdgeID > 0);
+        Debug.Assert(m_iEdgeID == WorksheetContextMenuManager.NoID ||
+            m_iEdgeID > 0);
 
-		// m_eEdgeCommand
+        // m_eEdgeCommand
     }
 
 
@@ -125,12 +125,12 @@ public class RunEdgeCommandEventArgs : EventArgs
     //*************************************************************************
 
     /// ID of the edge that was right-clicked in the edge table in the edge
-	/// worksheet, or WorksheetContextMenuManager.NoID if an edge wasn't right-
-	/// clicked.
+    /// worksheet, or WorksheetContextMenuManager.NoID if an edge wasn't right-
+    /// clicked.
 
-	protected Int32 m_iEdgeID;
+    protected Int32 m_iEdgeID;
 
-	/// The command to run.
+    /// The command to run.
 
     protected WorksheetContextMenuManager.EdgeCommand m_eEdgeCommand;
 }
@@ -149,7 +149,7 @@ public class RunEdgeCommandEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="e">
-///	A <see cref="RunEdgeCommandEventArgs" /> object that contains the event
+/// A <see cref="RunEdgeCommandEventArgs" /> object that contains the event
 /// data.
 /// </param>
 //*****************************************************************************
@@ -157,8 +157,8 @@ public class RunEdgeCommandEventArgs : EventArgs
 public delegate void
 RunEdgeCommandEventHandler
 (
-	Object sender,
-	RunEdgeCommandEventArgs e
+    Object sender,
+    RunEdgeCommandEventArgs e
 );
 
 }

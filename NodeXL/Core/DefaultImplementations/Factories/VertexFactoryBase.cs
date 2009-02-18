@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ namespace Microsoft.NodeXL.Core
 //  Class: VertexFactoryBase
 //
 /// <summary>
-///	Base class for vertex factories.
+/// Base class for vertex factories.
 /// </summary>
 ///
 /// <remarks>
@@ -24,22 +24,22 @@ namespace Microsoft.NodeXL.Core
 //*****************************************************************************
 
 public abstract class VertexFactoryBase :
-	GraphVertexEdgeFactoryBase, IVertexFactory
+    GraphVertexEdgeFactoryBase, IVertexFactory
 {
     //*************************************************************************
     //  Constructor: VertexFactoryBase()
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexFactoryBase" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public VertexFactoryBase()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -50,18 +50,18 @@ public abstract class VertexFactoryBase :
     /// </summary>
     ///
     /// <returns>
-	///	The <see cref="IVertex" /> interface on a newly created <see
-	///	cref="Vertex" /> object.
+    /// The <see cref="IVertex" /> interface on a newly created <see
+    /// cref="Vertex" /> object.
     /// </returns>
     //*************************************************************************
 
-	public IVertex
-	CreateVertex()
-	{
-		AssertValid();
+    public IVertex
+    CreateVertex()
+    {
+        AssertValid();
 
-		return ( CreateVertexCore() );
-	}
+        return ( CreateVertexCore() );
+    }
 
     //*************************************************************************
     //  Method: CreateVertexCore()
@@ -71,13 +71,13 @@ public abstract class VertexFactoryBase :
     /// </summary>
     ///
     /// <returns>
-	///	The <see cref="IVertex" /> interface on a newly created <see
-	///	cref="Vertex" /> object.
+    /// The <see cref="IVertex" /> interface on a newly created <see
+    /// cref="Vertex" /> object.
     /// </returns>
     //*************************************************************************
 
-	protected abstract IVertex
-	CreateVertexCore();
+    protected abstract IVertex
+    CreateVertexCore();
 
 
     //*************************************************************************
@@ -93,9 +93,9 @@ public abstract class VertexFactoryBase :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -103,7 +103,7 @@ public abstract class VertexFactoryBase :
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Runtime.Serialization;
@@ -25,23 +25,23 @@ public class WdsConnectionFailureException : Exception
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="WdsConnectionFailureException" />  class.
+    /// cref="WdsConnectionFailureException" />  class.
     /// </summary>
-	///
-	/// <param name="innerException">
-	/// The exception that was caught while attempting to connect to the
-	/// Windows Desktop Search index.
-	/// </param>
+    ///
+    /// <param name="innerException">
+    /// The exception that was caught while attempting to connect to the
+    /// Windows Desktop Search index.
+    /// </param>
     //*************************************************************************
 
     public WdsConnectionFailureException
-	(
-		Exception innerException
-	)
-	:
-	base("The Windows Desktop Search index can't be found.", innerException)
+    (
+        Exception innerException
+    )
+    :
+    base("The Windows Desktop Search index can't be found.", innerException)
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -53,27 +53,27 @@ public class WdsConnectionFailureException : Exception
     //*************************************************************************
 
     protected WdsConnectionFailureException
-	(
-		SerializationInfo oSerializationInfo,
-		StreamingContext oStreamingContext
-	)
-	:
-	base
-	(
-		oSerializationInfo,
-		oStreamingContext
-	)
+    (
+        SerializationInfo oSerializationInfo,
+        StreamingContext oStreamingContext
+    )
+    :
+    base
+    (
+        oSerializationInfo,
+        oStreamingContext
+    )
     {
-		// Do not use this constructor.  It is for binary serialization only.
-		//
-		// This is required because the System.Exception base class implements
-		// ISerializable.  All serializable classes derived from an
-		// ISerializable implementor must have a constructor with this
-		// signature.
+        // Do not use this constructor.  It is for binary serialization only.
+        //
+        // This is required because the System.Exception base class implements
+        // ISerializable.  All serializable classes derived from an
+        // ISerializable implementor must have a constructor with this
+        // signature.
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -90,7 +90,7 @@ public class WdsConnectionFailureException : Exception
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -98,7 +98,7 @@ public class WdsConnectionFailureException : Exception
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

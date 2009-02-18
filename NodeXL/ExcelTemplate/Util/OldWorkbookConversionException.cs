@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Runtime.Serialization;
@@ -25,21 +25,21 @@ public class OldWorkbookConversionException : Exception
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="OldWorkbookConversionException" /> class.
+    /// cref="OldWorkbookConversionException" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="message">
-	/// Error message, suitable for displaying to the user.
+    /// Error message, suitable for displaying to the user.
     /// </param>
     //*************************************************************************
 
     public OldWorkbookConversionException
-	(
-		String message
-	)
-	: base(message)
+    (
+        String message
+    )
+    : base(message)
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -56,7 +56,7 @@ public class OldWorkbookConversionException : Exception
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -64,6 +64,6 @@ public class OldWorkbookConversionException : Exception
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 }

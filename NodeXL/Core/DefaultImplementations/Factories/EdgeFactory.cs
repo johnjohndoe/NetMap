@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ namespace Microsoft.NodeXL.Core
 /// </summary>
 ///
 /// <remarks>
-///	This class implements <see cref="IEdgeFactory" />, which allows the core
+/// This class implements <see cref="IEdgeFactory" />, which allows the core
 /// NodeXL system to create edge objects without knowing their type.
 /// </remarks>
 ///
@@ -33,9 +33,9 @@ public class EdgeFactory : EdgeFactoryBase, IEdgeFactory
 
     public EdgeFactory()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -44,46 +44,46 @@ public class EdgeFactory : EdgeFactoryBase, IEdgeFactory
     /// <summary>
     /// Creates an edge object with a specified directedness.
     /// </summary>
-	///
+    ///
     /// <param name="vertex1">
-	///	The edge's first vertex.  The vertex must have already been added to
-	/// the graph to which the new edge will be added.
+    /// The edge's first vertex.  The vertex must have already been added to
+    /// the graph to which the new edge will be added.
     /// </param>
     ///
     /// <param name="vertex2">
-	///	The edge's second vertex.  The vertex must have already been added to
-	/// the graph to which the new edge will be added.
+    /// The edge's second vertex.  The vertex must have already been added to
+    /// the graph to which the new edge will be added.
     /// </param>
     ///
     /// <param name="isDirected">
-	///	If true, <paramref name="vertex1" /> is the edge's back vertex and
-	///	<paramref name="vertex2" /> is the edge's front vertex.  If false, the
-	/// edge is undirected.
+    /// If true, <paramref name="vertex1" /> is the edge's back vertex and
+    /// <paramref name="vertex2" /> is the edge's front vertex.  If false, the
+    /// edge is undirected.
     /// </param>
     ///
     /// <returns>
-	///	The <see cref="IEdge" /> interface on a newly created edge object.
+    /// The <see cref="IEdge" /> interface on a newly created edge object.
     /// </returns>
-	///
-	/// <remarks>
-	/// The arguments have already been checked for validity.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The arguments have already been checked for validity.
+    /// </remarks>
     //*************************************************************************
 
-	protected override IEdge
-	CreateEdgeCore
-	(
-		IVertex vertex1,
-		IVertex vertex2,
-		Boolean isDirected
-	)
-	{
-		Debug.Assert(vertex1 != null);
-		Debug.Assert(vertex2 != null);
-		AssertValid();
+    protected override IEdge
+    CreateEdgeCore
+    (
+        IVertex vertex1,
+        IVertex vertex2,
+        Boolean isDirected
+    )
+    {
+        Debug.Assert(vertex1 != null);
+        Debug.Assert(vertex2 != null);
+        AssertValid();
 
-		return ( new Edge(vertex1, vertex2, isDirected) );
-	}
+        return ( new Edge(vertex1, vertex2, isDirected) );
+    }
 
 
     //*************************************************************************
@@ -99,9 +99,9 @@ public class EdgeFactory : EdgeFactoryBase, IEdgeFactory
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -109,7 +109,7 @@ public class EdgeFactory : EdgeFactoryBase, IEdgeFactory
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

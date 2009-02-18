@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ namespace Microsoft.NodeXL.Core
 /// </summary>
 ///
 /// <remarks>
-///	This class implements <see cref="IVertexFactory" />, which allows the core
+/// This class implements <see cref="IVertexFactory" />, which allows the core
 /// NodeXL system to create vertex objects without knowing their type.
 /// </remarks>
 ///
@@ -33,9 +33,9 @@ public class VertexFactory : VertexFactoryBase, IVertexFactory
 
     public VertexFactory()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -46,18 +46,18 @@ public class VertexFactory : VertexFactoryBase, IVertexFactory
     /// </summary>
     ///
     /// <returns>
-	///	The <see cref="IVertex" /> interface on a newly created <see
-	///	cref="Vertex" /> object.
+    /// The <see cref="IVertex" /> interface on a newly created <see
+    /// cref="Vertex" /> object.
     /// </returns>
     //*************************************************************************
 
-	protected override IVertex
-	CreateVertexCore()
-	{
-		AssertValid();
+    protected override IVertex
+    CreateVertexCore()
+    {
+        AssertValid();
 
-		return ( new Vertex() );
-	}
+        return ( new Vertex() );
+    }
 
 
     //*************************************************************************
@@ -73,9 +73,9 @@ public class VertexFactory : VertexFactoryBase, IVertexFactory
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -83,7 +83,7 @@ public class VertexFactory : VertexFactoryBase, IVertexFactory
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

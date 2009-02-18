@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -22,7 +22,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public static class EdgeTableColumnWidths
 {
-	// (There are no such columns.)
+    // (There are no such columns.)
 }
 
 
@@ -42,29 +42,51 @@ public static class EdgeTableColumnWidths
 
 public static class VertexTableColumnWidths
 {
-	/// <summary>
-	/// Width of the custom menu item text columns, in characters.
-	/// </summary>
+    // (For some reason, autosizing the degree and out-degree columns works
+    // fine, but autosizing the in-degree column results in the final "ee"
+    // getting trucated by the dynamic filter down-arrow.
 
-	public const Single CustomMenuItemText = 14.8F;
+    /// <summary>
+    /// Width of the in-degree text column, in characters.
+    /// </summary>
 
-	/// <summary>
-	/// Width of the custom menu item action columns, in characters.
-	/// </summary>
+    public const Single InDegree = 8.57F;
 
-	public const Single CustomMenuItemAction = 14.8F;
+    /// <summary>
+    /// Width of the custom menu item text columns, in characters.
+    /// </summary>
 
-	/// <summary>
-	/// Width of the betweenness centrality column, in characters.
-	/// </summary>
+    public const Single CustomMenuItemText = 14.8F;
 
-	public const Single BetweennessCentrality = 13.6F;
+    /// <summary>
+    /// Width of the custom menu item action columns, in characters.
+    /// </summary>
 
-	/// <summary>
-	/// Width of the clustering coefficient column, in characters.
-	/// </summary>
+    public const Single CustomMenuItemAction = 14.8F;
 
-	public const Single ClusteringCoefficient = 13.7F;
+    /// <summary>
+    /// Width of the betweenness centrality column, in characters.
+    /// </summary>
+
+    public const Single BetweennessCentrality = 13.6F;
+
+    /// <summary>
+    /// Width of the eigenvector centrality column, in characters.
+    /// </summary>
+
+    public const Single EigenvectorCentrality = 13.6F;
+
+    /// <summary>
+    /// Width of the closeness centrality column, in characters.
+    /// </summary>
+
+    public const Single ClosenessCentrality = 13.6F;
+
+    /// <summary>
+    /// Width of the clustering coefficient column, in characters.
+    /// </summary>
+
+    public const Single ClusteringCoefficient = 13.7F;
 }
 
 //*****************************************************************************
@@ -82,7 +104,7 @@ public static class VertexTableColumnWidths
 
 public static class ClusterTableColumnWidths
 {
-	// (There are no such columns.)
+    // (There are no such columns.)
 }
 
 
@@ -103,7 +125,7 @@ public static class ClusterTableColumnWidths
 
 public static class ClusterVertexTableColumnWidths
 {
-	// (There are no such columns.)
+    // (There are no such columns.)
 }
 
 
@@ -124,17 +146,17 @@ public static class ClusterVertexTableColumnWidths
 
 public static class OverallMetricsTableColumnWidths
 {
-	/// <summary>
-	/// Width of the metric name column, in characters.
-	/// </summary>
+    /// <summary>
+    /// Width of the metric name column, in characters.
+    /// </summary>
 
-	public const Single Name = 20.2F;
+    public const Single Name = 20.2F;
 
-	/// <summary>
-	/// Width of the metric value column, in characters.
-	/// </summary>
+    /// <summary>
+    /// Width of the metric value column, in characters.
+    /// </summary>
 
-	public const Single Value = 13.2F;
+    public const Single Value = 13.2F;
 }
 
 }

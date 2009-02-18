@@ -1,4 +1,4 @@
-﻿
+
 namespace Microsoft.NodeXL.Common
 {
     partial class RegisterUser

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -78,7 +78,7 @@ public class IDGeneratorTest : Object
     public void
     TestConstructor()
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -94,10 +94,10 @@ public class IDGeneratorTest : Object
     public void
     TestGetNextID()
     {
-		for (Int32 i = 1; i < 100; i++)
-		{
-			Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
-		}
+        for (Int32 i = 1; i < 100; i++)
+        {
+            Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
+        }
     }
 
     //*************************************************************************
@@ -113,16 +113,16 @@ public class IDGeneratorTest : Object
     public void
     TestGetNextID2()
     {
-		// Use the second constructor.
+        // Use the second constructor.
 
-		const Int32 FirstID = Int32.MinValue;
+        const Int32 FirstID = Int32.MinValue;
 
         m_oIDGenerator = new IDGenerator(FirstID);
 
-		for (Int32 i = FirstID; i < FirstID + 100; i++)
-		{
-			Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
-		}
+        for (Int32 i = FirstID; i < FirstID + 100; i++)
+        {
+            Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
+        }
     }
 
     //*************************************************************************
@@ -138,16 +138,16 @@ public class IDGeneratorTest : Object
     public void
     TestGetNextID3()
     {
-		// Use the second constructor.
+        // Use the second constructor.
 
-		const Int32 FirstID = 0;
+        const Int32 FirstID = 0;
 
         m_oIDGenerator = new IDGenerator(FirstID);
 
-		for (Int32 i = FirstID; i < FirstID + 100; i++)
-		{
-			Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
-		}
+        for (Int32 i = FirstID; i < FirstID + 100; i++)
+        {
+            Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
+        }
     }
 
     //*************************************************************************
@@ -163,16 +163,16 @@ public class IDGeneratorTest : Object
     public void
     TestGetNextID4()
     {
-		// Use the second constructor.
+        // Use the second constructor.
 
-		const Int32 FirstID = 100000;
+        const Int32 FirstID = 100000;
 
         m_oIDGenerator = new IDGenerator(FirstID);
 
-		for (Int32 i = FirstID; i < FirstID + 100; i++)
-		{
-			Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
-		}
+        for (Int32 i = FirstID; i < FirstID + 100; i++)
+        {
+            Assert.AreEqual( i, m_oIDGenerator.GetNextID() );
+        }
     }
 
     //*************************************************************************
@@ -184,33 +184,33 @@ public class IDGeneratorTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestGetNextIDBad()
     {
-		// Use the second constructor with an invalid argument.
+        // Use the second constructor with an invalid argument.
 
-		const Int32 FirstID = Int32.MaxValue;
+        const Int32 FirstID = Int32.MaxValue;
 
-		try
-		{
-			m_oIDGenerator = new IDGenerator(FirstID);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oIDGenerator = new IDGenerator(FirstID);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "IDGenerator.Constructor: The first ID can't be"
-				+ " Int32.MaxValue (2147483647).\r\n"
-				+ "Parameter name: firstID"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "IDGenerator.Constructor: The first ID can't be"
+                + " Int32.MaxValue (2147483647).\r\n"
+                + "Parameter name: firstID"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -222,36 +222,36 @@ public class IDGeneratorTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestGetNextIDBad2()
     {
-		// Use the second constructor with an argument that will overflow.
+        // Use the second constructor with an argument that will overflow.
 
-		const Int32 FirstID = Int32.MaxValue - 1;
+        const Int32 FirstID = Int32.MaxValue - 1;
 
-		m_oIDGenerator = new IDGenerator(FirstID);
+        m_oIDGenerator = new IDGenerator(FirstID);
 
-		Assert.AreEqual( FirstID, m_oIDGenerator.GetNextID() );
+        Assert.AreEqual( FirstID, m_oIDGenerator.GetNextID() );
 
-		try
-		{
-			m_oIDGenerator.GetNextID();
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oIDGenerator.GetNextID();
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "IDGenerator.GetNextID: The maximum ID (2147483647) has"
-				+ " been reached."
-				,
-				oApplicationException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "IDGenerator.GetNextID: The maximum ID (2147483647) has"
+                + " been reached."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
 
 

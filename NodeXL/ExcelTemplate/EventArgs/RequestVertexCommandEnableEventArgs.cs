@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -22,33 +22,33 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="RequestVertexCommandEnableEventArgs" /> class.
+    /// cref="RequestVertexCommandEnableEventArgs" /> class.
     /// </summary>
-	///
-	/// <param name="vertexID">
+    ///
+    /// <param name="vertexID">
     /// ID of the vertex that was right-clicked in the vertex table in the
-	/// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
-	/// a vertex wasn't right-clicked.  This is an ID that is stored in the
-	/// worksheet, NOT an IEdge.ID value.
-	/// </param>
+    /// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
+    /// a vertex wasn't right-clicked.  This is an ID that is stored in the
+    /// worksheet, NOT an IEdge.ID value.
+    /// </param>
     //*************************************************************************
 
     public RequestVertexCommandEnableEventArgs
-	(
-		Int32 vertexID
-	)
+    (
+        Int32 vertexID
+    )
     {
         m_iVertexID = vertexID;
-		m_bEnableSelectAllVertices = false;
-		m_bEnableDeselectAllVertices = false;
-		m_bEnableSelectAdjacentVertices = false;
-		m_bEnableDeselectAdjacentVertices = false;
-		m_bEnableSelectIncidentEdges = false;
-		m_bEnableDeselectIncidentEdges = false;
-		m_bEnableEditVertexAttributes = false;
-		m_bEnableSelectSubgraphs = false;
+        m_bEnableSelectAllVertices = false;
+        m_bEnableDeselectAllVertices = false;
+        m_bEnableSelectAdjacentVertices = false;
+        m_bEnableDeselectAdjacentVertices = false;
+        m_bEnableSelectIncidentEdges = false;
+        m_bEnableDeselectIncidentEdges = false;
+        m_bEnableEditVertexAttributes = false;
+        m_bEnableSelectSubgraphs = false;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -56,14 +56,14 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets the ID of the vertex that was right-clicked in the vertex table in
-	/// the vertex worksheet.
+    /// the vertex worksheet.
     /// </summary>
     ///
     /// <value>
     /// The ID of the right-clicked vertex, or <see
-	/// cref="WorksheetContextMenuManager.NoID" /> if a vertex wasn't right-
-	/// clicked.  This is an ID that is stored in the worksheet, NOT an
-	/// IEdge.ID value.
+    /// cref="WorksheetContextMenuManager.NoID" /> if a vertex wasn't right-
+    /// clicked.  This is an ID that is stored in the worksheet, NOT an
+    /// IEdge.ID value.
     /// </value>
     //*************************************************************************
 
@@ -83,11 +83,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Select All Vertices command
-	/// should be enabled.
+    /// should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -101,12 +101,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableSelectAllVertices);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableSelectAllVertices = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -114,11 +114,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Deselect All Vertices
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -132,12 +132,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableDeselectAllVertices);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableDeselectAllVertices = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -145,11 +145,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Select Adjacent Vertices
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -163,12 +163,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableSelectAdjacentVertices);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableSelectAdjacentVertices = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -176,11 +176,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Deselect Adjacent Vertices
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -194,12 +194,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableDeselectAdjacentVertices);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableDeselectAdjacentVertices = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -207,11 +207,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Select Incident Edges
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -225,12 +225,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableSelectIncidentEdges);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableSelectIncidentEdges = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -238,11 +238,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Deselect Incident Edges
-	/// command should be enabled.
+    /// command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -256,12 +256,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableDeselectIncidentEdges);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableDeselectIncidentEdges = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -269,11 +269,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Edit Selected Vertex
-	/// Attributes command should be enabled.
+    /// Attributes command should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -287,12 +287,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableEditVertexAttributes);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableEditVertexAttributes = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -300,11 +300,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Select Subgraphs command
-	/// should be enabled.
+    /// should be enabled.
     /// </summary>
     ///
     /// <value>
-	/// true to enable the command.  The default is false.
+    /// true to enable the command.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -318,12 +318,12 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
             return (m_bEnableSelectSubgraphs);
         }
 
-		set
-		{
+        set
+        {
             m_bEnableSelectSubgraphs = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
 
@@ -340,17 +340,17 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_iVertexID == WorksheetContextMenuManager.NoID ||
-			m_iVertexID > 0);
+        Debug.Assert(m_iVertexID == WorksheetContextMenuManager.NoID ||
+            m_iVertexID > 0);
 
-		// m_bEnableSelectAllVertices
-		// m_bEnableDeselectAllVertices
-		// m_bEnableSelectAdjacentVertices
-		// m_bEnableDeselectAdjacentVertices
-		// m_bEnableSelectIncidentEdges
-		// m_bEnableDeselectIncidentEdges
-		// m_bEnableEditVertexAttributes
-		// m_bEnableSelectSubgraphs
+        // m_bEnableSelectAllVertices
+        // m_bEnableDeselectAllVertices
+        // m_bEnableSelectAdjacentVertices
+        // m_bEnableDeselectAdjacentVertices
+        // m_bEnableSelectIncidentEdges
+        // m_bEnableDeselectIncidentEdges
+        // m_bEnableEditVertexAttributes
+        // m_bEnableSelectSubgraphs
     }
 
 
@@ -359,42 +359,42 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //*************************************************************************
 
     /// ID of the vertex that was right-clicked in the vertex table in the
-	/// vertex worksheet, or WorksheetContextMenuManager.NoID if a vertex
-	/// wasn't right-clicked.
+    /// vertex worksheet, or WorksheetContextMenuManager.NoID if a vertex
+    /// wasn't right-clicked.
 
-	protected Int32 m_iVertexID;
+    protected Int32 m_iVertexID;
 
-	/// true to enable the Select All Vertices command.
+    /// true to enable the Select All Vertices command.
 
-	protected Boolean m_bEnableSelectAllVertices;
+    protected Boolean m_bEnableSelectAllVertices;
 
-	/// true to enable the Deselect All Vertices command.
+    /// true to enable the Deselect All Vertices command.
 
-	protected Boolean m_bEnableDeselectAllVertices;
+    protected Boolean m_bEnableDeselectAllVertices;
 
-	/// true to enable the Select Adjacent Vertices command.
+    /// true to enable the Select Adjacent Vertices command.
 
-	protected Boolean m_bEnableSelectAdjacentVertices;
+    protected Boolean m_bEnableSelectAdjacentVertices;
 
-	/// true to enable the Deselect Adjacent Vertices command.
+    /// true to enable the Deselect Adjacent Vertices command.
 
-	protected Boolean m_bEnableDeselectAdjacentVertices;
+    protected Boolean m_bEnableDeselectAdjacentVertices;
 
-	/// true to enable the Select Incident Edges command.
+    /// true to enable the Select Incident Edges command.
 
-	protected Boolean m_bEnableSelectIncidentEdges;
+    protected Boolean m_bEnableSelectIncidentEdges;
 
-	/// true to enable the Deselect Incident Edges command.
+    /// true to enable the Deselect Incident Edges command.
 
-	protected Boolean m_bEnableDeselectIncidentEdges;
+    protected Boolean m_bEnableDeselectIncidentEdges;
 
-	/// true to enable the Edit Selected Vertex Attributes command.
+    /// true to enable the Edit Selected Vertex Attributes command.
 
-	protected Boolean m_bEnableEditVertexAttributes;
+    protected Boolean m_bEnableEditVertexAttributes;
 
-	/// true to enable the Select Subgraphs command.
+    /// true to enable the Select Subgraphs command.
 
-	protected Boolean m_bEnableSelectSubgraphs;
+    protected Boolean m_bEnableSelectSubgraphs;
 }
 
 
@@ -411,7 +411,7 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="e">
-///	A <see cref="RequestVertexCommandEnableEventArgs" /> object that contains
+/// A <see cref="RequestVertexCommandEnableEventArgs" /> object that contains
 /// the event data.
 /// </param>
 //*****************************************************************************
@@ -419,8 +419,8 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
 public delegate void
 RequestVertexCommandEnableEventHandler
 (
-	Object sender,
-	RequestVertexCommandEnableEventArgs e
+    Object sender,
+    RequestVertexCommandEnableEventArgs e
 );
 
 }

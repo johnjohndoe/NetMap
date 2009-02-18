@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -43,17 +43,17 @@ public class ColorConverter2 : Object
 
     public ColorConverter2()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Method: TryWorkbookToGraph()
     //
     /// <summary>
-	/// Attempts to convert an Excel workbook value to a value suitable for use
-	/// in a NodeXL graph.
+    /// Attempts to convert an Excel workbook value to a value suitable for use
+    /// in a NodeXL graph.
     /// </summary>
     ///
     /// <param name="workbookValue">
@@ -61,71 +61,71 @@ public class ColorConverter2 : Object
     /// </param>
     ///
     /// <param name="graphValue">
-	/// Where a value suitable for use in a NodeXL graph gets stored if true is
-	/// returned.
+    /// Where a value suitable for use in a NodeXL graph gets stored if true is
+    /// returned.
     /// </param>
     ///
     /// <returns>
-	/// true if <paramref name="workbookValue" /> contains a valid workbook
-	/// value.
+    /// true if <paramref name="workbookValue" /> contains a valid workbook
+    /// value.
     /// </returns>
-	///
-	/// <remarks>
-	/// If <paramref name="workbookValue" /> contains a valid workbook value,
-	/// the corresponding graph value gets stored at <paramref
-	/// name="graphValue" /> and true is returned.  Otherwise, false is
-	/// returned.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If <paramref name="workbookValue" /> contains a valid workbook value,
+    /// the corresponding graph value gets stored at <paramref
+    /// name="graphValue" /> and true is returned.  Otherwise, false is
+    /// returned.
+    /// </remarks>
     //*************************************************************************
 
-	public Boolean
-	TryWorkbookToGraph
-	(
-		String workbookValue,
-		out Color graphValue
-	)
-	{
-		Debug.Assert(workbookValue != null);
+    public Boolean
+    TryWorkbookToGraph
+    (
+        String workbookValue,
+        out Color graphValue
+    )
+    {
+        Debug.Assert(workbookValue != null);
         AssertValid();
 
-		graphValue = Color.Empty;
+        graphValue = Color.Empty;
 
-		// Colors can include optional spaces between words: the color
-		// LightBlue can be specified as either "Light Blue" or "LightBlue",
-		// for example.
+        // Colors can include optional spaces between words: the color
+        // LightBlue can be specified as either "Light Blue" or "LightBlue",
+        // for example.
 
-		workbookValue = workbookValue.Replace(" ", String.Empty);
+        workbookValue = workbookValue.Replace(" ", String.Empty);
 
         if (workbookValue.Length == 0)
         {
             // ColorConverter converts an empty string to Color.Black.  Bypass
-			// ColorConverter.
+            // ColorConverter.
 
             return (false);
         }
 
-		try
-		{
-			graphValue = (Color)( new System.Drawing.ColorConverter() ).
-				ConvertFromString(workbookValue);
-		}
-		catch (Exception)
-		{
+        try
+        {
+            graphValue = (Color)( new System.Drawing.ColorConverter() ).
+                ConvertFromString(workbookValue);
+        }
+        catch (Exception)
+        {
             // (Format errors raise a System.Exception with an inner exception
-			// of type FormatException.  Go figure.)
+            // of type FormatException.  Go figure.)
 
-			return (false);
-		}
+            return (false);
+        }
 
-		return (true);
-	}
+        return (true);
+    }
 
     //*************************************************************************
     //  Method: GraphToWorkbook()
     //
     /// <summary>
-	/// Converts a NodeXL graph value to a value suitable for use in an Excel
-	/// workbook.
+    /// Converts a NodeXL graph value to a value suitable for use in an Excel
+    /// workbook.
     /// </summary>
     ///
     /// <param name="graphValue">
@@ -133,157 +133,157 @@ public class ColorConverter2 : Object
     /// </param>
     ///
     /// <returns>
-	/// A value suitable for use in an Excel workbook.
+    /// A value suitable for use in an Excel workbook.
     /// </returns>
     //*************************************************************************
 
     public String
     GraphToWorkbook
     (
-		Color graphValue
+        Color graphValue
     )
     {
         AssertValid();
 
-		// Split LightBlue into "Light Blue", for example.
+        // Split LightBlue into "Light Blue", for example.
 
-		return ( EnumUtil.SplitName( graphValue.ToKnownColor().ToString(),
-			EnumSplitStyle.AllWordsStartUpperCase) );
+        return ( EnumUtil.SplitName( graphValue.ToKnownColor().ToString(),
+            EnumSplitStyle.AllWordsStartUpperCase) );
     }
 
-	//*************************************************************************
-	//	Method: PopulateComboBox()
-	//
-	/// <summary>
-	///	Populates a ComboBoxPlus with graph/workbook value pairs.
-	/// </summary>
-	///
-	/// <param name="comboBoxPlus">
-	/// The ComboBoxPlus to populate.
-	/// </param>
-	///
-	/// <param name="includeEmptyValue">
-	///	If true, a graph/workbook pair of empty strings is included at the top
-	/// of the list.
-	/// </param>
-	///
-	/// <remarks>
-	/// The ComboBox is populated in such a way that the user sees the workbook
-	/// values while the SelectedValue property returns a value of type
-	/// KnownColor.
-	///
-	/// <para>
-	/// Important Note:
-	/// </para>
-	///
-	/// <para>
-	/// Colors are stored in the NodeXL graph as type Color, but because Excel
-	/// doesn't have a color picker that can be inserted in a worksheet cell,
-	/// colors are specified in the workbook as type KnownColor.  Unlike Color
-	/// values, KnownColor values can be specified in a worksheet via a
-	/// drop-down list.
-	/// </para>
-	///
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: PopulateComboBox()
+    //
+    /// <summary>
+    /// Populates a ComboBoxPlus with graph/workbook value pairs.
+    /// </summary>
+    ///
+    /// <param name="comboBoxPlus">
+    /// The ComboBoxPlus to populate.
+    /// </param>
+    ///
+    /// <param name="includeEmptyValue">
+    /// If true, a graph/workbook pair of empty strings is included at the top
+    /// of the list.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The ComboBox is populated in such a way that the user sees the workbook
+    /// values while the SelectedValue property returns a value of type
+    /// KnownColor.
+    ///
+    /// <para>
+    /// Important Note:
+    /// </para>
+    ///
+    /// <para>
+    /// Colors are stored in the NodeXL graph as type Color, but because Excel
+    /// doesn't have a color picker that can be inserted in a worksheet cell,
+    /// colors are specified in the workbook as type KnownColor.  Unlike Color
+    /// values, KnownColor values can be specified in a worksheet via a
+    /// drop-down list.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
 
-	public void
-	PopulateComboBox
-	(
-		ComboBoxPlus comboBoxPlus,
-		Boolean includeEmptyValue
-	)
-	{
-		Debug.Assert(comboBoxPlus != null);
-		AssertValid();
+    public void
+    PopulateComboBox
+    (
+        ComboBoxPlus comboBoxPlus,
+        Boolean includeEmptyValue
+    )
+    {
+        Debug.Assert(comboBoxPlus != null);
+        AssertValid();
 
-		comboBoxPlus.PopulateWithObjectsAndText(
+        comboBoxPlus.PopulateWithObjectsAndText(
             GetAllGraphAndWorkbookValues(includeEmptyValue));
-	}
+    }
 
-	//*************************************************************************
-	//	Method: GetAllGraphAndWorkbookValues()
-	//
-	/// <summary>
-	///	Gets an array of all graph/workbook value pairs.
-	/// </summary>
-	///
-	/// <param name="includeEmptyValue">
-	///	If true, a graph/workbook value pair of empty strings is included at
-	/// the start of the array.
-	/// </param>
-	///
-	/// <returns>
-	/// An array of graph/workbook value pairs, as objects.  The first element
-	/// of each pair is a value used in the NodeXL graph, of type KnownColor,
-	/// and the second element is a corresponding string suitable for use in a
-	/// workbook.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: GetAllGraphAndWorkbookValues()
+    //
+    /// <summary>
+    /// Gets an array of all graph/workbook value pairs.
+    /// </summary>
+    ///
+    /// <param name="includeEmptyValue">
+    /// If true, a graph/workbook value pair of empty strings is included at
+    /// the start of the array.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of graph/workbook value pairs, as objects.  The first element
+    /// of each pair is a value used in the NodeXL graph, of type KnownColor,
+    /// and the second element is a corresponding string suitable for use in a
+    /// workbook.
+    /// </returns>
+    //*************************************************************************
 
-	public Object []
-	GetAllGraphAndWorkbookValues
-	(
-		Boolean includeEmptyValue
-	)
-	{
-		AssertValid();
+    public Object []
+    GetAllGraphAndWorkbookValues
+    (
+        Boolean includeEmptyValue
+    )
+    {
+        AssertValid();
 
-		List<Object> oGraphAndWorkbookValues = new List<Object>();
+        List<Object> oGraphAndWorkbookValues = new List<Object>();
 
-		if (includeEmptyValue)
-		{
-			oGraphAndWorkbookValues.Add(String.Empty);
-			oGraphAndWorkbookValues.Add(String.Empty);
-		}
+        if (includeEmptyValue)
+        {
+            oGraphAndWorkbookValues.Add(String.Empty);
+            oGraphAndWorkbookValues.Add(String.Empty);
+        }
 
-		oGraphAndWorkbookValues.AddRange( GetAllGraphAndWorkbookValues() );
+        oGraphAndWorkbookValues.AddRange( GetAllGraphAndWorkbookValues() );
 
-		return ( oGraphAndWorkbookValues.ToArray() );
-	}
+        return ( oGraphAndWorkbookValues.ToArray() );
+    }
 
-	//*************************************************************************
-	//	Method: GetAllGraphAndWorkbookValues()
-	//
-	/// <summary>
-	///	Gets an array of all graph/workbook value pairs.
-	/// </summary>
-	///
-	/// <returns>
-	/// An array of graph/workbook value pairs, as objects.  The first element
-	/// of each pair is a value used in the NodeXL graph, of type KnownColor,
-	/// and the second element is a corresponding string suitable for use in a
-	/// workbook.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: GetAllGraphAndWorkbookValues()
+    //
+    /// <summary>
+    /// Gets an array of all graph/workbook value pairs.
+    /// </summary>
+    ///
+    /// <returns>
+    /// An array of graph/workbook value pairs, as objects.  The first element
+    /// of each pair is a value used in the NodeXL graph, of type KnownColor,
+    /// and the second element is a corresponding string suitable for use in a
+    /// workbook.
+    /// </returns>
+    //*************************************************************************
 
-	protected Object []
-	GetAllGraphAndWorkbookValues()
-	{
-		AssertValid();
+    protected Object []
+    GetAllGraphAndWorkbookValues()
+    {
+        AssertValid();
 
-		List<Object> oGraphAndWorkbookValues = new List<Object>();
+        List<Object> oGraphAndWorkbookValues = new List<Object>();
 
-		// Use the known colors.
+        // Use the known colors.
 
-		foreach ( KnownColor eKnownColor in
-			Enum.GetValues( typeof(KnownColor) ) )
-		{
-			Color oColor = Color.FromKnownColor(eKnownColor);
+        foreach ( KnownColor eKnownColor in
+            Enum.GetValues( typeof(KnownColor) ) )
+        {
+            Color oColor = Color.FromKnownColor(eKnownColor);
 
-			if (oColor.IsSystemColor || eKnownColor == KnownColor.Transparent)
-			{
-				// Skip system colors.
+            if (oColor.IsSystemColor || eKnownColor == KnownColor.Transparent)
+            {
+                // Skip system colors.
 
-				continue;
-			}
+                continue;
+            }
 
-			oGraphAndWorkbookValues.Add(eKnownColor);
-			oGraphAndWorkbookValues.Add( GraphToWorkbook(oColor) );
-		}
+            oGraphAndWorkbookValues.Add(eKnownColor);
+            oGraphAndWorkbookValues.Add( GraphToWorkbook(oColor) );
+        }
 
-		return ( oGraphAndWorkbookValues.ToArray() );
-	}
+        return ( oGraphAndWorkbookValues.ToArray() );
+    }
 
 
     //*************************************************************************
@@ -299,7 +299,7 @@ public class ColorConverter2 : Object
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -307,7 +307,7 @@ public class ColorConverter2 : Object
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

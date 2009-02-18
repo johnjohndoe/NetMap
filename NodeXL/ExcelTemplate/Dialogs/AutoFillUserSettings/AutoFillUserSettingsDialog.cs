@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -12,14 +12,14 @@ using Microsoft.Office.Interop.Excel;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: AutoFillUserSettingsDialog
+//  Class: AutoFillUserSettingsDialog
 //
 /// <summary>
-///	Edits a <see cref="AutoFillUserSettings" /> object.
+/// Edits a <see cref="AutoFillUserSettings" /> object.
 /// </summary>
 ///
 /// <remarks>
-///	Pass a <see cref="AutoFillUserSettings" /> object to the constructor, which
+/// Pass a <see cref="AutoFillUserSettings" /> object to the constructor, which
 /// makes a copy of it.  If the user edits the copy, <see
 /// cref="Form.ShowDialog()" /> returns DialogResult.OK and the edited copy can
 /// be obtained from the <see cref="AutoFillUserSettings" /> property.
@@ -29,101 +29,101 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 {
-	//*************************************************************************
-	//	Constructor: AutoFillUserSettingsDialog()
-	//
-	/// <overloads>
-	///	Initializes a new instance of the <see
-	/// cref="AutoFillUserSettingsDialog" /> class.
-	/// </overloads>
-	///
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="AutoFillUserSettingsDialog" /> class with an AutoFillUserSettings
-	/// object.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Constructor: AutoFillUserSettingsDialog()
+    //
+    /// <overloads>
+    /// Initializes a new instance of the <see
+    /// cref="AutoFillUserSettingsDialog" /> class.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="AutoFillUserSettingsDialog" /> class with an AutoFillUserSettings
+    /// object.
+    /// </summary>
+    ///
     /// <param name="workbook">
-	/// Workbook containing the graph data.
+    /// Workbook containing the graph data.
     /// </param>
-	///
-	/// <param name="autoFillUserSettings">
-	/// The object to copy and edit.
-	/// </param>
-	//*************************************************************************
+    ///
+    /// <param name="autoFillUserSettings">
+    /// The object to copy and edit.
+    /// </param>
+    //*************************************************************************
 
-	public AutoFillUserSettingsDialog
-	(
+    public AutoFillUserSettingsDialog
+    (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-		AutoFillUserSettings autoFillUserSettings
-	)
-	: this()
-	{
-		Debug.Assert(workbook != null);
-		Debug.Assert(autoFillUserSettings != null);
+        AutoFillUserSettings autoFillUserSettings
+    )
+    : this()
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert(autoFillUserSettings != null);
 
-		m_oAutoFillUserSettings = autoFillUserSettings.Copy();
+        m_oAutoFillUserSettings = autoFillUserSettings.Copy();
 
-		// Instantiate an object that retrieves and saves the position of this
-		// dialog.  Note that the object automatically saves the settings when
-		// the form closes.
+        // Instantiate an object that retrieves and saves the position of this
+        // dialog.  Note that the object automatically saves the settings when
+        // the form closes.
 
-		m_oAutoFillUserSettingsDialogUserSettings =
-			new AutoFillUserSettingsDialogUserSettings(this);
+        m_oAutoFillUserSettingsDialogUserSettings =
+            new AutoFillUserSettingsDialogUserSettings(this);
 
-		// Initialize the ComboBoxes used to specify the data sources for the
-		// edge and vertex table columns.
+        // Initialize the ComboBoxes used to specify the data sources for the
+        // edge and vertex table columns.
 
-		m_aoEdgeSourceColumnNameComboBoxes = new ComboBox [] {
-			cbxEdgeColorSourceColumnName,
-			cbxEdgeWidthSourceColumnName,
-			cbxEdgeAlphaSourceColumnName,
-			cbxEdgeVisibilitySourceColumnName,
-			};
+        m_aoEdgeSourceColumnNameComboBoxes = new ComboBox [] {
+            cbxEdgeColorSourceColumnName,
+            cbxEdgeWidthSourceColumnName,
+            cbxEdgeAlphaSourceColumnName,
+            cbxEdgeVisibilitySourceColumnName,
+            };
 
-		m_aoVertexSourceColumnNameComboBoxes = new ComboBox [] {
-			cbxVertexColorSourceColumnName,
-			cbxVertexShapeSourceColumnName,
-			cbxVertexRadiusSourceColumnName,
-			cbxVertexAlphaSourceColumnName,
-			cbxVertexPrimaryLabelSourceColumnName,
-			cbxVertexPrimaryLabelFillColorSourceColumnName,
-			cbxVertexSecondaryLabelSourceColumnName,
-			cbxVertexToolTipSourceColumnName,
-			cbxVertexVisibilitySourceColumnName,
-			cbxVertexXSourceColumnName,
-			cbxVertexYSourceColumnName,
-			};
+        m_aoVertexSourceColumnNameComboBoxes = new ComboBox [] {
+            cbxVertexColorSourceColumnName,
+            cbxVertexShapeSourceColumnName,
+            cbxVertexRadiusSourceColumnName,
+            cbxVertexAlphaSourceColumnName,
+            cbxVertexPrimaryLabelSourceColumnName,
+            cbxVertexPrimaryLabelFillColorSourceColumnName,
+            cbxVertexSecondaryLabelSourceColumnName,
+            cbxVertexToolTipSourceColumnName,
+            cbxVertexVisibilitySourceColumnName,
+            cbxVertexXSourceColumnName,
+            cbxVertexYSourceColumnName,
+            };
 
-		InitializeEdgeComboBoxes(workbook);
-		InitializeVertexComboBoxes(workbook);
+        InitializeEdgeComboBoxes(workbook);
+        InitializeVertexComboBoxes(workbook);
 
-		DoDataExchange(false);
+        DoDataExchange(false);
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
-	//*************************************************************************
-	//	Constructor: AutoFillUserSettingsDialog()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="AutoFillUserSettingsDialog" /> class for the Visual Studio
-	/// designer.
-	/// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for use by the Visual Studio
-	/// designer only.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: AutoFillUserSettingsDialog()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="AutoFillUserSettingsDialog" /> class for the Visual Studio
+    /// designer.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for use by the Visual Studio
+    /// designer only.
+    /// </remarks>
+    //*************************************************************************
 
-	public AutoFillUserSettingsDialog()
-	{
-		InitializeComponent();
+    public AutoFillUserSettingsDialog()
+    {
+        InitializeComponent();
 
-		// AssertValid();
-	}
+        // AssertValid();
+    }
 
     //*************************************************************************
     //  Property: AutoFillUserSettings
@@ -133,965 +133,965 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
     /// </summary>
     ///
     /// <value>
-	/// The edited AutoFillUserSettings object.  This is an edited copy of the
-	/// object that was passed to the constructor.
+    /// The edited AutoFillUserSettings object.  This is an edited copy of the
+    /// object that was passed to the constructor.
     /// </value>
-	///
+    ///
     /// <remarks>
-	/// Read this property only if <see cref="Form.ShowDialog()" /> returns
-	/// DialogResult.OK.  It is invalid otherwise.
+    /// Read this property only if <see cref="Form.ShowDialog()" /> returns
+    /// DialogResult.OK.  It is invalid otherwise.
     /// </remarks>
     //*************************************************************************
 
     public AutoFillUserSettings
-	AutoFillUserSettings
+    AutoFillUserSettings
     {
         get
         {
-			AssertValid();
-			Debug.Assert(DialogResult == DialogResult.OK);
+            AssertValid();
+            Debug.Assert(DialogResult == DialogResult.OK);
 
-			return (m_oAutoFillUserSettings);
+            return (m_oAutoFillUserSettings);
         }
     }
 
-	//*************************************************************************
-	//	Method: InitializeEdgeComboBoxes()
-	//
-	/// <summary>
-	///	Initializes the ComboBoxes used to specify the data sources for the
-	/// edge table columns.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Method: InitializeEdgeComboBoxes()
+    //
+    /// <summary>
+    /// Initializes the ComboBoxes used to specify the data sources for the
+    /// edge table columns.
+    /// </summary>
+    ///
     /// <param name="oWorkbook">
-	/// Workbook containing the graph data.
+    /// Workbook containing the graph data.
     /// </param>
-	//*************************************************************************
+    //*************************************************************************
 
-	protected void
-	InitializeEdgeComboBoxes
-	(
+    protected void
+    InitializeEdgeComboBoxes
+    (
         Microsoft.Office.Interop.Excel.Workbook oWorkbook
-	)
-	{
-		Debug.Assert(oWorkbook != null);
+    )
+    {
+        Debug.Assert(oWorkbook != null);
 
-		ListObject oEdgeTable;
+        ListObject oEdgeTable;
 
-		if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Edges,
-			TableNames.Edges, out oEdgeTable) )
-		{
-			// Get the names of the edge table columns that can be used as a
-			// data source.
+        if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Edges,
+            TableNames.Edges, out oEdgeTable) )
+        {
+            // Get the names of the edge table columns that can be used as a
+            // data source.
 
-			String [] asEdgeTableColumnNamesToExclude = new String [] {
-				EdgeTableColumnNames.Vertex1Name,
-				EdgeTableColumnNames.Vertex2Name,
-				EdgeTableColumnNames.Color,
-				EdgeTableColumnNames.Width,
-				EdgeTableColumnNames.Alpha,
-				EdgeTableColumnNames.Visibility,
-				CommonTableColumnNames.ID,
-				CommonTableColumnNames.AddColumnsHere,
-				};
-
-			String [] asEdgeTableColumnNameBasesToExclude = new String [] {};
-
-			String [] asEdgeTableSourceColumnNames =
-				ExcelUtil.GetTableColumnNames(oEdgeTable,
-					asEdgeTableColumnNamesToExclude,
-					asEdgeTableColumnNameBasesToExclude
-					);
-
-			// Populate the edge table column ComboBoxes with the source column
-			// names.
-
-			foreach (ComboBox oComboBox in m_aoEdgeSourceColumnNameComboBoxes)
-			{
-				oComboBox.Items.AddRange(asEdgeTableSourceColumnNames);
-			}
-		}
-
-		// Store the name of the column corresponding to the ComboBox in each
-		// ComboBox's Tag.  This gets used for error checking by
-		// DoDataExchange().
-
-		cbxEdgeColorSourceColumnName.Tag = EdgeTableColumnNames.Color;
-		cbxEdgeWidthSourceColumnName.Tag = EdgeTableColumnNames.Width;
-		cbxEdgeAlphaSourceColumnName.Tag = EdgeTableColumnNames.Alpha;
-		cbxEdgeVisibilitySourceColumnName.Tag = EdgeTableColumnNames.Visibility;
-	}
-
-	//*************************************************************************
-	//	Method: InitializeVertexComboBoxes()
-	//
-	/// <summary>
-	///	Initializes the ComboBoxes used to specify the data sources for the
-	/// vertex table columns.
-	/// </summary>
-	///
-    /// <param name="oWorkbook">
-	/// Workbook containing the graph data.
-    /// </param>
-	//*************************************************************************
-
-	protected void
-	InitializeVertexComboBoxes
-	(
-        Microsoft.Office.Interop.Excel.Workbook oWorkbook
-	)
-	{
-		Debug.Assert(oWorkbook != null);
-
-		ListObject oVertexTable;
-
-		if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Vertices,
-			TableNames.Vertices, out oVertexTable) )
-		{
-			// Get the names of the vertex table columns that can be used as a
-			// data source.
-
-			String [] asVertexTableColumnNamesToExclude = new String [] {
-				VertexTableColumnNames.VertexName,
-				VertexTableColumnNames.Color,
-				VertexTableColumnNames.Shape,
-				VertexTableColumnNames.Radius,
-				VertexTableColumnNames.ImageKey,
-				VertexTableColumnNames.PrimaryLabel,
-				VertexTableColumnNames.PrimaryLabelFillColor,
-				VertexTableColumnNames.SecondaryLabel,
-				VertexTableColumnNames.Alpha,
-				VertexTableColumnNames.ToolTip,
-				VertexTableColumnNames.VertexDrawerPrecedence,
-				VertexTableColumnNames.Visibility,
-				VertexTableColumnNames.Locked,
-				VertexTableColumnNames.X,
-				VertexTableColumnNames.Y,
-				VertexTableColumnNames.SubgraphImage,
-				CommonTableColumnNames.ID,
+            String [] asEdgeTableColumnNamesToExclude = new String [] {
+                EdgeTableColumnNames.Vertex1Name,
+                EdgeTableColumnNames.Vertex2Name,
+                EdgeTableColumnNames.Color,
+                EdgeTableColumnNames.Width,
+                EdgeTableColumnNames.Alpha,
+                EdgeTableColumnNames.Visibility,
+                CommonTableColumnNames.ID,
                 CommonTableColumnNames.AddColumnsHere,
-				};
+                };
 
-			String [] asVertexTableColumnNameBasesToExclude = new String [] {
-				VertexTableColumnNames.CustomMenuItemTextBase,
-				VertexTableColumnNames.CustomMenuItemActionBase,
-				};
+            String [] asEdgeTableColumnNameBasesToExclude = new String [] {};
 
-			String [] asVertexTableSourceColumnNames =
-				ExcelUtil.GetTableColumnNames(oVertexTable,
-					asVertexTableColumnNamesToExclude,
-					asVertexTableColumnNameBasesToExclude
-					);
+            String [] asEdgeTableSourceColumnNames =
+                ExcelUtil.GetTableColumnNames(oEdgeTable,
+                    asEdgeTableColumnNamesToExclude,
+                    asEdgeTableColumnNameBasesToExclude
+                    );
 
-			// Populate the vertex table column ComboBoxes with the source
-			// column names.
+            // Populate the edge table column ComboBoxes with the source column
+            // names.
 
-			foreach (ComboBox oComboBox in m_aoVertexSourceColumnNameComboBoxes)
-			{
-				oComboBox.Items.AddRange(asVertexTableSourceColumnNames);
-			}
+            foreach (ComboBox oComboBox in m_aoEdgeSourceColumnNameComboBoxes)
+            {
+                oComboBox.Items.AddRange(asEdgeTableSourceColumnNames);
+            }
+        }
 
-			// Add a few special items.
+        // Store the name of the column corresponding to the ComboBox in each
+        // ComboBox's Tag.  This gets used for error checking by
+        // DoDataExchange().
 
-			String sVertexColumnName = VertexTableColumnNames.VertexName;
+        cbxEdgeColorSourceColumnName.Tag = EdgeTableColumnNames.Color;
+        cbxEdgeWidthSourceColumnName.Tag = EdgeTableColumnNames.Width;
+        cbxEdgeAlphaSourceColumnName.Tag = EdgeTableColumnNames.Alpha;
+        cbxEdgeVisibilitySourceColumnName.Tag = EdgeTableColumnNames.Visibility;
+    }
 
-			cbxVertexPrimaryLabelSourceColumnName.Items.Add(sVertexColumnName);
+    //*************************************************************************
+    //  Method: InitializeVertexComboBoxes()
+    //
+    /// <summary>
+    /// Initializes the ComboBoxes used to specify the data sources for the
+    /// vertex table columns.
+    /// </summary>
+    ///
+    /// <param name="oWorkbook">
+    /// Workbook containing the graph data.
+    /// </param>
+    //*************************************************************************
 
-			cbxVertexSecondaryLabelSourceColumnName.Items.Add(
-				sVertexColumnName);
+    protected void
+    InitializeVertexComboBoxes
+    (
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook
+    )
+    {
+        Debug.Assert(oWorkbook != null);
 
-			cbxVertexToolTipSourceColumnName.Items.Add(sVertexColumnName);
-		}
+        ListObject oVertexTable;
 
-		// Store the name of the column corresponding to the ComboBox in each
-		// ComboBox's Tag.  This gets used for error checking by
-		// DoDataExchange().
+        if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Vertices,
+            TableNames.Vertices, out oVertexTable) )
+        {
+            // Get the names of the vertex table columns that can be used as a
+            // data source.
 
-		cbxVertexColorSourceColumnName.Tag = VertexTableColumnNames.Color;
-		cbxVertexShapeSourceColumnName.Tag = VertexTableColumnNames.Shape;
-		cbxVertexRadiusSourceColumnName.Tag = VertexTableColumnNames.Radius;
-		cbxVertexAlphaSourceColumnName.Tag = VertexTableColumnNames.Alpha;
+            String [] asVertexTableColumnNamesToExclude = new String [] {
+                VertexTableColumnNames.VertexName,
+                VertexTableColumnNames.Color,
+                VertexTableColumnNames.Shape,
+                VertexTableColumnNames.Radius,
+                VertexTableColumnNames.ImageKey,
+                VertexTableColumnNames.PrimaryLabel,
+                VertexTableColumnNames.PrimaryLabelFillColor,
+                VertexTableColumnNames.SecondaryLabel,
+                VertexTableColumnNames.Alpha,
+                VertexTableColumnNames.ToolTip,
+                VertexTableColumnNames.VertexDrawingPrecedence,
+                VertexTableColumnNames.Visibility,
+                VertexTableColumnNames.Locked,
+                VertexTableColumnNames.X,
+                VertexTableColumnNames.Y,
+                VertexTableColumnNames.SubgraphImage,
+                CommonTableColumnNames.ID,
+                CommonTableColumnNames.AddColumnsHere,
+                };
 
-		cbxVertexPrimaryLabelSourceColumnName.Tag =
-			VertexTableColumnNames.PrimaryLabel;
+            String [] asVertexTableColumnNameBasesToExclude = new String [] {
+                VertexTableColumnNames.CustomMenuItemTextBase,
+                VertexTableColumnNames.CustomMenuItemActionBase,
+                };
 
-		cbxVertexPrimaryLabelFillColorSourceColumnName.Tag =
-			VertexTableColumnNames.PrimaryLabelFillColor;
+            String [] asVertexTableSourceColumnNames =
+                ExcelUtil.GetTableColumnNames(oVertexTable,
+                    asVertexTableColumnNamesToExclude,
+                    asVertexTableColumnNameBasesToExclude
+                    );
 
-		cbxVertexSecondaryLabelSourceColumnName.Tag =
-			VertexTableColumnNames.SecondaryLabel;
+            // Populate the vertex table column ComboBoxes with the source
+            // column names.
 
-		cbxVertexToolTipSourceColumnName.Tag = VertexTableColumnNames.ToolTip;
+            foreach (ComboBox oComboBox in m_aoVertexSourceColumnNameComboBoxes)
+            {
+                oComboBox.Items.AddRange(asVertexTableSourceColumnNames);
+            }
 
-		cbxVertexVisibilitySourceColumnName.Tag =
-			VertexTableColumnNames.Visibility;
+            // Add a few special items.
 
-		cbxVertexXSourceColumnName.Tag = VertexTableColumnNames.X;
-		cbxVertexYSourceColumnName.Tag = VertexTableColumnNames.Y;
-	}
+            String sVertexColumnName = VertexTableColumnNames.VertexName;
 
-	//*************************************************************************
-	//	Method: EnableControls()
-	//
-	/// <summary>
-	///	Enables or disables the dialog's controls.
-	/// </summary>
-	//*************************************************************************
+            cbxVertexPrimaryLabelSourceColumnName.Items.Add(sVertexColumnName);
 
-	protected void
-	EnableControls()
-	{
-		AssertValid();
+            cbxVertexSecondaryLabelSourceColumnName.Items.Add(
+                sVertexColumnName);
+
+            cbxVertexToolTipSourceColumnName.Items.Add(sVertexColumnName);
+        }
+
+        // Store the name of the column corresponding to the ComboBox in each
+        // ComboBox's Tag.  This gets used for error checking by
+        // DoDataExchange().
+
+        cbxVertexColorSourceColumnName.Tag = VertexTableColumnNames.Color;
+        cbxVertexShapeSourceColumnName.Tag = VertexTableColumnNames.Shape;
+        cbxVertexRadiusSourceColumnName.Tag = VertexTableColumnNames.Radius;
+        cbxVertexAlphaSourceColumnName.Tag = VertexTableColumnNames.Alpha;
+
+        cbxVertexPrimaryLabelSourceColumnName.Tag =
+            VertexTableColumnNames.PrimaryLabel;
+
+        cbxVertexPrimaryLabelFillColorSourceColumnName.Tag =
+            VertexTableColumnNames.PrimaryLabelFillColor;
+
+        cbxVertexSecondaryLabelSourceColumnName.Tag =
+            VertexTableColumnNames.SecondaryLabel;
+
+        cbxVertexToolTipSourceColumnName.Tag = VertexTableColumnNames.ToolTip;
+
+        cbxVertexVisibilitySourceColumnName.Tag =
+            VertexTableColumnNames.Visibility;
+
+        cbxVertexXSourceColumnName.Tag = VertexTableColumnNames.X;
+        cbxVertexYSourceColumnName.Tag = VertexTableColumnNames.Y;
+    }
+
+    //*************************************************************************
+    //  Method: EnableControls()
+    //
+    /// <summary>
+    /// Enables or disables the dialog's controls.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    EnableControls()
+    {
+        AssertValid();
 
         tlpTableLayoutPanel.Enabled = cbxUseAutoFill.Checked;
-	}
-
-	//*************************************************************************
-	//	Method: DoDataExchange()
-	//
-	/// <summary>
-	///	Transfers data between the dialog's fields and its controls.
-	/// </summary>
-	///
-	/// <param name="bFromControls">
-	///	true to transfer data from the dialog's controls to its fields, false
-	///	for the other direction.
-	/// </param>
-	///
-	/// <returns>
-	///	true if the transfer was successful.
-	/// </returns>
-	//*************************************************************************
-
-	protected Boolean
-	DoDataExchange
-	(
-		Boolean bFromControls
-	)
-	{
-		if (bFromControls)
-		{
-			if ( !ValidateSourceColumnNameComboBoxes(
-					m_aoEdgeSourceColumnNameComboBoxes)
-				||
-				!ValidateSourceColumnNameComboBoxes(
-					m_aoVertexSourceColumnNameComboBoxes)
-				)
-			{
-				return (false);
-			}
-
-			String sVertexXSourceColumnName = GetSourceColumnNameFromComboBox(
-				cbxVertexXSourceColumnName);
-
-			String sVertexYSourceColumnName = GetSourceColumnNameFromComboBox(
-				cbxVertexYSourceColumnName);
-
-			if (
-				(sVertexXSourceColumnName.Length == 0 &&
-					sVertexYSourceColumnName.Length > 0)
-				||
-				(sVertexYSourceColumnName.Length == 0 &&
-					sVertexXSourceColumnName.Length > 0)
-				)
-			{
-				return ( this.OnInvalidComboBox(cbxVertexXSourceColumnName,
-					"If you autofill one of the Vertex X or Vertex Y columns,"
-					+ " you must autofill both of them."
-					) );
-			}
-
-			m_oAutoFillUserSettings.UseAutoFill = cbxUseAutoFill.Checked;
-
-			m_oAutoFillUserSettings.EdgeColorSourceColumnName =
-				GetSourceColumnNameFromComboBox(cbxEdgeColorSourceColumnName);
-
-			m_oAutoFillUserSettings.EdgeWidthSourceColumnName =
-				GetSourceColumnNameFromComboBox(cbxEdgeWidthSourceColumnName);
-
-			m_oAutoFillUserSettings.EdgeAlphaSourceColumnName =
-				GetSourceColumnNameFromComboBox(cbxEdgeAlphaSourceColumnName);
-
-			m_oAutoFillUserSettings.EdgeVisibilitySourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxEdgeVisibilitySourceColumnName);
-
-			m_oAutoFillUserSettings.VertexColorSourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexColorSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexShapeSourceColumnName =
-				GetSourceColumnNameFromComboBox(cbxVertexShapeSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexRadiusSourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexRadiusSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexAlphaSourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexAlphaSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexPrimaryLabelSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexPrimaryLabelFillColorSourceColumnName
-				= GetSourceColumnNameFromComboBox(
-					cbxVertexPrimaryLabelFillColorSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexSecondaryLabelSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexToolTipSourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexToolTipSourceColumnName);
-
-			m_oAutoFillUserSettings.VertexVisibilitySourceColumnName =
-				GetSourceColumnNameFromComboBox(
-					cbxVertexVisibilitySourceColumnName);
-
-			m_oAutoFillUserSettings.VertexXSourceColumnName =
-				sVertexXSourceColumnName;
-
-			m_oAutoFillUserSettings.VertexYSourceColumnName =
-				sVertexYSourceColumnName;
-		}
-		else
-		{
-			cbxUseAutoFill.Checked = m_oAutoFillUserSettings.UseAutoFill;
-
-			cbxEdgeColorSourceColumnName.Text =
-				m_oAutoFillUserSettings.EdgeColorSourceColumnName;
-
-			cbxEdgeWidthSourceColumnName.Text =
-				m_oAutoFillUserSettings.EdgeWidthSourceColumnName;
-
-			cbxEdgeAlphaSourceColumnName.Text =
-				m_oAutoFillUserSettings.EdgeAlphaSourceColumnName;
-
-			cbxEdgeVisibilitySourceColumnName.Text =
-				m_oAutoFillUserSettings.EdgeVisibilitySourceColumnName;
-
-			cbxVertexColorSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexColorSourceColumnName;
-
-			cbxVertexShapeSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexShapeSourceColumnName;
-
-			cbxVertexRadiusSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexRadiusSourceColumnName;
-
-			cbxVertexAlphaSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexAlphaSourceColumnName;
-
-			cbxVertexPrimaryLabelSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName;
-
-			cbxVertexPrimaryLabelFillColorSourceColumnName.Text =
-				m_oAutoFillUserSettings.
-					VertexPrimaryLabelFillColorSourceColumnName;
-
-			cbxVertexSecondaryLabelSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName;
-
-			cbxVertexToolTipSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexToolTipSourceColumnName;
-
-			cbxVertexVisibilitySourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexVisibilitySourceColumnName;
-
-			cbxVertexXSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexXSourceColumnName;
-
-			cbxVertexYSourceColumnName.Text =
-				m_oAutoFillUserSettings.VertexYSourceColumnName;
-		}
-
-		return (true);
-	}
-
-	//*************************************************************************
-	//	Method: ValidateSourceColumnNameComboBoxes()
-	//
-	/// <summary>
-	///	Validates the text in an array of ComboBoxes that may contain source
-	/// column names.
-	/// </summary>
-	///
-	/// <param name="aoSourceColumnNameComboBoxes">
-	///	Array of ComboBoxes that may contain source column names.
-	/// </param>
-	///
-	/// <returns>
-	///	true if the ComboBoxes all contain valid text.
-	/// </returns>
-	//*************************************************************************
-
-	protected Boolean
-	ValidateSourceColumnNameComboBoxes
-	(
-		ComboBox [] aoSourceColumnNameComboBoxes
-	)
-	{
-		Debug.Assert(aoSourceColumnNameComboBoxes != null);
-
-		foreach (ComboBox oComboBox in aoSourceColumnNameComboBoxes)
-		{
-			if (oComboBox.Tag is String)
-			{
-				// The name of the column corresponding to each ComboBox is
-				// stored in the ComboBox's Tag.  Use the column name to
-				// prevent the user from trying to autofill a column with
-				// itself.
-
-				if (oComboBox.Text.ToLower() ==
-					( (String)oComboBox.Tag ).ToLower() )
-				{
-					this.OnInvalidComboBox(oComboBox,
-						"You can't autofill a column with itself."
-						);
-
-					return (false);
-				}
-			}
-		}
-
-		return (true);
-	}
-
-	//*************************************************************************
-	//	Method: GetSourceColumnNameFromComboBox()
-	//
-	/// <summary>
-	///	Gets a source column name from a ComboBox.
-	/// </summary>
-	///
-	/// <param name="oComboBox">
-	/// ComboBox to get a source column name from.
-	/// </param>
-	///
-	/// <returns>
-	///	The text in <paramref name="oComboBox" />, or String.Empty if the
-	/// ComboBox contains nothing but spaces.
-	/// </returns>
-	//*************************************************************************
-
-	protected String
-	GetSourceColumnNameFromComboBox
-	(
-		ComboBox oComboBox
-	)
-	{
-		Debug.Assert(oComboBox != null);
-		AssertValid();
-
-		String sSourceColumnName = oComboBox.Text;
-
-		if (sSourceColumnName.Trim().Length == 0)
-		{
-			sSourceColumnName = String.Empty;
-		}
-
-		return (sSourceColumnName);
-	}
-
-	//*************************************************************************
-	//	Method: cbxUseAutoFill_CheckedChanged()
-	//
-	/// <summary>
-	///	Handles the CheckedChanged event on the cbxUseAutoFill ComboBox.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
-
-    private void
-	cbxUseAutoFill_CheckedChanged
-	(
-		object sender,
-		EventArgs e
-	)
-    {
-		AssertValid();
-
-		EnableControls();
     }
 
-	//*************************************************************************
-	//	Method: btnEdgeColorDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnEdgeColorDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: DoDataExchange()
+    //
+    /// <summary>
+    /// Transfers data between the dialog's fields and its controls.
+    /// </summary>
+    ///
+    /// <param name="bFromControls">
+    /// true to transfer data from the dialog's controls to its fields, false
+    /// for the other direction.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the transfer was successful.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    DoDataExchange
+    (
+        Boolean bFromControls
+    )
+    {
+        if (bFromControls)
+        {
+            if ( !ValidateSourceColumnNameComboBoxes(
+                    m_aoEdgeSourceColumnNameComboBoxes)
+                ||
+                !ValidateSourceColumnNameComboBoxes(
+                    m_aoVertexSourceColumnNameComboBoxes)
+                )
+            {
+                return (false);
+            }
+
+            String sVertexXSourceColumnName = GetSourceColumnNameFromComboBox(
+                cbxVertexXSourceColumnName);
+
+            String sVertexYSourceColumnName = GetSourceColumnNameFromComboBox(
+                cbxVertexYSourceColumnName);
+
+            if (
+                (sVertexXSourceColumnName.Length == 0 &&
+                    sVertexYSourceColumnName.Length > 0)
+                ||
+                (sVertexYSourceColumnName.Length == 0 &&
+                    sVertexXSourceColumnName.Length > 0)
+                )
+            {
+                return ( this.OnInvalidComboBox(cbxVertexXSourceColumnName,
+                    "If you autofill one of the Vertex X or Vertex Y columns,"
+                    + " you must autofill both of them."
+                    ) );
+            }
+
+            m_oAutoFillUserSettings.UseAutoFill = cbxUseAutoFill.Checked;
+
+            m_oAutoFillUserSettings.EdgeColorSourceColumnName =
+                GetSourceColumnNameFromComboBox(cbxEdgeColorSourceColumnName);
+
+            m_oAutoFillUserSettings.EdgeWidthSourceColumnName =
+                GetSourceColumnNameFromComboBox(cbxEdgeWidthSourceColumnName);
+
+            m_oAutoFillUserSettings.EdgeAlphaSourceColumnName =
+                GetSourceColumnNameFromComboBox(cbxEdgeAlphaSourceColumnName);
+
+            m_oAutoFillUserSettings.EdgeVisibilitySourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxEdgeVisibilitySourceColumnName);
+
+            m_oAutoFillUserSettings.VertexColorSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexColorSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexShapeSourceColumnName =
+                GetSourceColumnNameFromComboBox(cbxVertexShapeSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexRadiusSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexRadiusSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexAlphaSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexAlphaSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexPrimaryLabelSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexPrimaryLabelFillColorSourceColumnName
+                = GetSourceColumnNameFromComboBox(
+                    cbxVertexPrimaryLabelFillColorSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexSecondaryLabelSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexToolTipSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexToolTipSourceColumnName);
+
+            m_oAutoFillUserSettings.VertexVisibilitySourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxVertexVisibilitySourceColumnName);
+
+            m_oAutoFillUserSettings.VertexXSourceColumnName =
+                sVertexXSourceColumnName;
+
+            m_oAutoFillUserSettings.VertexYSourceColumnName =
+                sVertexYSourceColumnName;
+        }
+        else
+        {
+            cbxUseAutoFill.Checked = m_oAutoFillUserSettings.UseAutoFill;
+
+            cbxEdgeColorSourceColumnName.Text =
+                m_oAutoFillUserSettings.EdgeColorSourceColumnName;
+
+            cbxEdgeWidthSourceColumnName.Text =
+                m_oAutoFillUserSettings.EdgeWidthSourceColumnName;
+
+            cbxEdgeAlphaSourceColumnName.Text =
+                m_oAutoFillUserSettings.EdgeAlphaSourceColumnName;
+
+            cbxEdgeVisibilitySourceColumnName.Text =
+                m_oAutoFillUserSettings.EdgeVisibilitySourceColumnName;
+
+            cbxVertexColorSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexColorSourceColumnName;
+
+            cbxVertexShapeSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexShapeSourceColumnName;
+
+            cbxVertexRadiusSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexRadiusSourceColumnName;
+
+            cbxVertexAlphaSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexAlphaSourceColumnName;
+
+            cbxVertexPrimaryLabelSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName;
+
+            cbxVertexPrimaryLabelFillColorSourceColumnName.Text =
+                m_oAutoFillUserSettings.
+                    VertexPrimaryLabelFillColorSourceColumnName;
+
+            cbxVertexSecondaryLabelSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName;
+
+            cbxVertexToolTipSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexToolTipSourceColumnName;
+
+            cbxVertexVisibilitySourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexVisibilitySourceColumnName;
+
+            cbxVertexXSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexXSourceColumnName;
+
+            cbxVertexYSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexYSourceColumnName;
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: ValidateSourceColumnNameComboBoxes()
+    //
+    /// <summary>
+    /// Validates the text in an array of ComboBoxes that may contain source
+    /// column names.
+    /// </summary>
+    ///
+    /// <param name="aoSourceColumnNameComboBoxes">
+    /// Array of ComboBoxes that may contain source column names.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the ComboBoxes all contain valid text.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    ValidateSourceColumnNameComboBoxes
+    (
+        ComboBox [] aoSourceColumnNameComboBoxes
+    )
+    {
+        Debug.Assert(aoSourceColumnNameComboBoxes != null);
+
+        foreach (ComboBox oComboBox in aoSourceColumnNameComboBoxes)
+        {
+            if (oComboBox.Tag is String)
+            {
+                // The name of the column corresponding to each ComboBox is
+                // stored in the ComboBox's Tag.  Use the column name to
+                // prevent the user from trying to autofill a column with
+                // itself.
+
+                if (oComboBox.Text.ToLower() ==
+                    ( (String)oComboBox.Tag ).ToLower() )
+                {
+                    this.OnInvalidComboBox(oComboBox,
+                        "You can't autofill a column with itself."
+                        );
+
+                    return (false);
+                }
+            }
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: GetSourceColumnNameFromComboBox()
+    //
+    /// <summary>
+    /// Gets a source column name from a ComboBox.
+    /// </summary>
+    ///
+    /// <param name="oComboBox">
+    /// ComboBox to get a source column name from.
+    /// </param>
+    ///
+    /// <returns>
+    /// The text in <paramref name="oComboBox" />, or String.Empty if the
+    /// ComboBox contains nothing but spaces.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    GetSourceColumnNameFromComboBox
+    (
+        ComboBox oComboBox
+    )
+    {
+        Debug.Assert(oComboBox != null);
+        AssertValid();
+
+        String sSourceColumnName = oComboBox.Text;
+
+        if (sSourceColumnName.Trim().Length == 0)
+        {
+            sSourceColumnName = String.Empty;
+        }
+
+        return (sSourceColumnName);
+    }
+
+    //*************************************************************************
+    //  Method: cbxUseAutoFill_CheckedChanged()
+    //
+    /// <summary>
+    /// Handles the CheckedChanged event on the cbxUseAutoFill ComboBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnEdgeColorDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    cbxUseAutoFill_CheckedChanged
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		ColorColumnAutoFillUserSettingsDialog
-			oColorColumnAutoFillUserSettingsDialog =
-			new ColorColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.EdgeColorDetails,
+        EnableControls();
+    }
+
+    //*************************************************************************
+    //  Method: btnEdgeColorDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEdgeColorDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnEdgeColorDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        ColorColumnAutoFillUserSettingsDialog
+            oColorColumnAutoFillUserSettingsDialog =
+            new ColorColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.EdgeColorDetails,
                 "Edge Color Options");
 
-		oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+        oColorColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnEdgeWidthDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnEdgeWidthDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnEdgeWidthDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEdgeWidthDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnEdgeWidthDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnEdgeWidthDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericRangeColumnAutoFillUserSettingsDialog
-			oNumericRangeColumnAutoFillUserSettingsDialog =
-			new NumericRangeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.EdgeWidthDetails,
+        NumericRangeColumnAutoFillUserSettingsDialog
+            oNumericRangeColumnAutoFillUserSettingsDialog =
+            new NumericRangeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.EdgeWidthDetails,
                 "Edge Width Options",
                 "edge width",
                 EdgeWidthConverter.MinimumWidthWorkbook,
                 EdgeWidthConverter.MaximumWidthWorkbook
                 );
 
-		oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnEdgeAlphaDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnEdgeAlphaDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnEdgeAlphaDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEdgeAlphaDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnEdgeAlphaDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnEdgeAlphaDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericRangeColumnAutoFillUserSettingsDialog
-			oNumericRangeColumnAutoFillUserSettingsDialog =
-			new NumericRangeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.EdgeAlphaDetails,
+        NumericRangeColumnAutoFillUserSettingsDialog
+            oNumericRangeColumnAutoFillUserSettingsDialog =
+            new NumericRangeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.EdgeAlphaDetails,
                 "Edge Opacity Options",
                 "edge opacity",
                 AlphaConverter.MinimumAlphaWorkbook,
                 AlphaConverter.MaximumAlphaWorkbook
                 );
 
-		oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnEdgeVisibilityDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnEdgeVisibilityDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnEdgeVisibilityDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEdgeVisibilityDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnEdgeVisibilityDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnEdgeVisibilityDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericComparisonColumnAutoFillUserSettingsDialog
-			oNumericComparisonColumnAutoFillUserSettingsDialog =
-			new NumericComparisonColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.EdgeVisibilityDetails,
+        NumericComparisonColumnAutoFillUserSettingsDialog
+            oNumericComparisonColumnAutoFillUserSettingsDialog =
+            new NumericComparisonColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.EdgeVisibilityDetails,
                 "Edge Visibility Options",
                 "&Show the edge if the source column number is:",
-				"Otherwise, skip the edge"
+                "Otherwise, skip the edge"
                 );
 
-		oNumericComparisonColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericComparisonColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexColorDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexColorDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexColorDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexColorDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexColorDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexColorDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		ColorColumnAutoFillUserSettingsDialog
-			oColorColumnAutoFillUserSettingsDialog =
-			new ColorColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexColorDetails,
+        ColorColumnAutoFillUserSettingsDialog
+            oColorColumnAutoFillUserSettingsDialog =
+            new ColorColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexColorDetails,
                 "Vertex Color Options");
 
-		oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+        oColorColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexShapeDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexShapeDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexShapeDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexShapeDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexShapeDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexShapeDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		VertexShapeColumnAutoFillUserSettingsDialog
-			oVertexShapeColumnAutoFillUserSettingsDialog =
-			new VertexShapeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexShapeDetails
+        VertexShapeColumnAutoFillUserSettingsDialog
+            oVertexShapeColumnAutoFillUserSettingsDialog =
+            new VertexShapeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexShapeDetails
                 );
 
-		oVertexShapeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oVertexShapeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexRadiusDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexRadiusDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexRadiusDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexRadiusDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexRadiusDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexRadiusDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericRangeColumnAutoFillUserSettingsDialog
-			oNumericRangeColumnAutoFillUserSettingsDialog =
-			new NumericRangeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexRadiusDetails,
+        NumericRangeColumnAutoFillUserSettingsDialog
+            oNumericRangeColumnAutoFillUserSettingsDialog =
+            new NumericRangeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexRadiusDetails,
                 "Vertex Radius Options",
                 "vertex radius",
                 VertexRadiusConverter.MinimumRadiusWorkbook,
                 VertexRadiusConverter.MaximumRadiusWorkbook
                 );
 
-		oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexAlphaDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexAlphaDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexAlphaDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexAlphaDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexAlphaDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexAlphaDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericRangeColumnAutoFillUserSettingsDialog
-			oNumericRangeColumnAutoFillUserSettingsDialog =
-			new NumericRangeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexAlphaDetails,
+        NumericRangeColumnAutoFillUserSettingsDialog
+            oNumericRangeColumnAutoFillUserSettingsDialog =
+            new NumericRangeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexAlphaDetails,
                 "Vertex Opacity Options",
                 "vertex opacity",
                 AlphaConverter.MinimumAlphaWorkbook,
                 AlphaConverter.MaximumAlphaWorkbook
                 );
 
-		oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexPrimaryLabelFillColorDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexPrimaryLabelFillColorDetails
-	/// button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexPrimaryLabelFillColorDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexPrimaryLabelFillColorDetails
+    /// button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexPrimaryLabelFillColorDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexPrimaryLabelFillColorDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		ColorColumnAutoFillUserSettingsDialog
-			oColorColumnAutoFillUserSettingsDialog =
-			new ColorColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexPrimaryLabelFillColorDetails,
+        ColorColumnAutoFillUserSettingsDialog
+            oColorColumnAutoFillUserSettingsDialog =
+            new ColorColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexPrimaryLabelFillColorDetails,
                 "Vertex Primary Label Fill Color Options");
 
-		oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+        oColorColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexVisibilityDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexVisibilityDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexVisibilityDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexVisibilityDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexVisibilityDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexVisibilityDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericComparisonColumnAutoFillUserSettingsDialog
-			oNumericComparisonColumnAutoFillUserSettingsDialog =
-			new NumericComparisonColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexVisibilityDetails,
+        NumericComparisonColumnAutoFillUserSettingsDialog
+            oNumericComparisonColumnAutoFillUserSettingsDialog =
+            new NumericComparisonColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexVisibilityDetails,
                 "Vertex Visibility Options",
 
                 "&Show the vertex if it is part of an edge and the source"
-					+ " column number is:",
+                    + " column number is:",
 
-				"Otherwise, skip the vertex"
+                "Otherwise, skip the vertex"
                 );
 
-		oNumericComparisonColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericComparisonColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexXDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexXDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexXDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexXDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexXDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexXDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericRangeColumnAutoFillUserSettingsDialog
-			oNumericRangeColumnAutoFillUserSettingsDialog =
-			new NumericRangeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexXDetails,
+        NumericRangeColumnAutoFillUserSettingsDialog
+            oNumericRangeColumnAutoFillUserSettingsDialog =
+            new NumericRangeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexXDetails,
                 "Vertex X Options",
                 "vertex x-coordinate",
                 VertexLocationConverter.MinimumXYWorkbook,
                 VertexLocationConverter.MaximumXYWorkbook
                 );
 
-		oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: btnVertexYDetails_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnVertexYDetails button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnVertexYDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexYDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnVertexYDetails_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnVertexYDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NumericRangeColumnAutoFillUserSettingsDialog
-			oNumericRangeColumnAutoFillUserSettingsDialog =
-			new NumericRangeColumnAutoFillUserSettingsDialog(
-				m_oAutoFillUserSettings.VertexYDetails,
+        NumericRangeColumnAutoFillUserSettingsDialog
+            oNumericRangeColumnAutoFillUserSettingsDialog =
+            new NumericRangeColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexYDetails,
                 "Vertex Y Options",
                 "vertex y-coordinate",
                 VertexLocationConverter.MinimumXYWorkbook,
                 VertexLocationConverter.MaximumXYWorkbook
                 );
 
-		oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
     }
 
-	//*************************************************************************
-	//	Method: lnkHowAutoFillWorks_LinkClicked()
-	//
-	/// <summary>
-	///	Handles the Click event on the lnkHowAutoFillWorks LinkButton.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: lnkHowAutoFillWorks_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the Click event on the lnkHowAutoFillWorks LinkButton.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	lnkHowAutoFillWorks_LinkClicked
-	(
-		object sender,
-		LinkLabelLinkClickedEventArgs e
-	)
+    lnkHowAutoFillWorks_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		const String Message =
+        const String Message =
 "Use the AutoFill Columns feature to automatically calculate and fill in the graph's visual attribute columns, such as edge width and vertex shape, using values from other columns."
 + "\r\n\r\n"
 + "There are three ways to control the graph's visual attributes.  Take edge width, for example.  If you leave the Width column on the Edges worksheet empty, the edges are drawn in the graph using the default edge width you enter in the Options dialog box, accessible from the graph pane."
@@ -1109,40 +1109,40 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
 + "* Your AutoFill Columns settings apply to all NodeXL workbooks."
 + "\r\n\r\n"
 + "* Autofilling multiple columns in a large workbook can slow down Read Workbook, especially if one of your worksheets is filtered."
-			;
+            ;
 
-		this.ShowInformation(Message);
+        this.ShowInformation(Message);
     }
 
-	//*************************************************************************
-	//	Method: btnOK_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnOK button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnOK_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnOK button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
-	private void
-	btnOK_Click
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		if ( DoDataExchange(true) )
-		{
-			DialogResult = DialogResult.OK;
-			this.Close();
-		}
-	}
+    private void
+    btnOK_Click
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
+        if ( DoDataExchange(true) )
+        {
+            DialogResult = DialogResult.OK;
+            this.Close();
+        }
+    }
 
 
     //*************************************************************************
@@ -1158,54 +1158,54 @@ public partial class AutoFillUserSettingsDialog : ExcelTemplateForm
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oAutoFillUserSettingsDialogUserSettings != null);
-		Debug.Assert(m_oAutoFillUserSettings != null);
-		Debug.Assert(m_aoEdgeSourceColumnNameComboBoxes != null);
-		Debug.Assert(m_aoVertexSourceColumnNameComboBoxes != null);
+        Debug.Assert(m_oAutoFillUserSettingsDialogUserSettings != null);
+        Debug.Assert(m_oAutoFillUserSettings != null);
+        Debug.Assert(m_aoEdgeSourceColumnNameComboBoxes != null);
+        Debug.Assert(m_aoVertexSourceColumnNameComboBoxes != null);
     }
 
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
 
-	/// Message to display when the user asks for an explanation of how
-	/// outliers are ignored.
+    /// Message to display when the user asks for an explanation of how
+    /// outliers are ignored.
 
-	protected internal const String IgnoreOutliersMessage =
+    protected internal const String IgnoreOutliersMessage =
 
-		"If you map from the smallest and largest numbers in the source"
-		+ " column, the results may be skewed by a few unusually small or"
-		+ " large numbers, or \"outliers.\"  You can prevent this by checking"
-		+ " the \"Ignore outliers\" checkbox, which causes all source column"
-		+ " numbers that fall outside one standard deviation of the average"
-		+ " number to be ignored in the internal calculations that determine"
-		+ " how the numbers are mapped."
-		;
+        "If you map from the smallest and largest numbers in the source"
+        + " column, the results may be skewed by a few unusually small or"
+        + " large numbers, or \"outliers.\"  You can prevent this by checking"
+        + " the \"Ignore outliers\" checkbox, which causes all source column"
+        + " numbers that fall outside one standard deviation of the average"
+        + " number to be ignored in the internal calculations that determine"
+        + " how the numbers are mapped."
+        ;
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	/// User settings for this dialog.
+    /// User settings for this dialog.
 
-	protected AutoFillUserSettingsDialogUserSettings
-		m_oAutoFillUserSettingsDialogUserSettings;
+    protected AutoFillUserSettingsDialogUserSettings
+        m_oAutoFillUserSettingsDialogUserSettings;
 
-	/// Object being edited.  This is a copy of the object passed to the
-	/// constructor.
+    /// Object being edited.  This is a copy of the object passed to the
+    /// constructor.
 
-	protected AutoFillUserSettings m_oAutoFillUserSettings;
+    protected AutoFillUserSettings m_oAutoFillUserSettings;
 
-	/// Array of ComboBoxes for the edge source column names.
+    /// Array of ComboBoxes for the edge source column names.
 
-	protected ComboBox [] m_aoEdgeSourceColumnNameComboBoxes;
+    protected ComboBox [] m_aoEdgeSourceColumnNameComboBoxes;
 
-	/// Array of ComboBoxes for the vertex source column names.
+    /// Array of ComboBoxes for the vertex source column names.
 
-	protected ComboBox [] m_aoVertexSourceColumnNameComboBoxes;
+    protected ComboBox [] m_aoVertexSourceColumnNameComboBoxes;
 }
 
 
@@ -1231,25 +1231,25 @@ public class AutoFillUserSettingsDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="AutoFillUserSettingsDialogUserSettings" /> class.
+    /// cref="AutoFillUserSettingsDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public AutoFillUserSettingsDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -1266,7 +1266,7 @@ public class AutoFillUserSettingsDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }
@@ -1276,6 +1276,6 @@ public class AutoFillUserSettingsDialogUserSettings : FormSettings
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 }

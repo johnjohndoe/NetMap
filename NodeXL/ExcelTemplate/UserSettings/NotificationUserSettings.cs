@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -30,9 +30,9 @@ public class NotificationUserSettings : ApplicationSettingsBase
 
     public NotificationUserSettings()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -40,30 +40,30 @@ public class NotificationUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets a flag specifying whether the user should be warned that
-	/// the graph has a duplicate edge before graph metrics are calculated.
+    /// the graph has a duplicate edge before graph metrics are calculated.
     /// </summary>
     ///
     /// <value>
-	/// true to warn the user.  The default is true.
+    /// true to warn the user.  The default is true.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
-	GraphHasDuplicateEdge
+    GraphHasDuplicateEdge
     {
         get
         {
             AssertValid();
 
-			return ( (Boolean)this[GraphHasDuplicateEdgeKey] );
+            return ( (Boolean)this[GraphHasDuplicateEdgeKey] );
         }
 
         set
         {
-			this[GraphHasDuplicateEdgeKey] = value;
+            this[GraphHasDuplicateEdgeKey] = value;
 
             AssertValid();
         }
@@ -73,14 +73,14 @@ public class NotificationUserSettings : ApplicationSettingsBase
     //  Method: EnableAllNotifications()
     //
     /// <summary>
-	/// Enables all user notifications maintained by this class.
+    /// Enables all user notifications maintained by this class.
     /// </summary>
     //*************************************************************************
 
-	public void
+    public void
     EnableAllNotifications()
     {
-		this.GraphHasDuplicateEdge = true;
+        this.GraphHasDuplicateEdge = true;
     }
 
 
@@ -105,10 +105,10 @@ public class NotificationUserSettings : ApplicationSettingsBase
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the GraphHasDuplicateEdge property.
+    /// Name of the settings key for the GraphHasDuplicateEdge property.
 
-	protected const String GraphHasDuplicateEdgeKey =
-		"GraphHasDuplicateEdge";
+    protected const String GraphHasDuplicateEdgeKey =
+        "GraphHasDuplicateEdge";
 
 
     //*************************************************************************

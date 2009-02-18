@@ -1,4 +1,4 @@
-﻿namespace Microsoft.NodeXL.ExcelTemplate
+namespace Microsoft.NodeXL.ExcelTemplate
 {
     partial class SelectSubgraphsDialog
     {

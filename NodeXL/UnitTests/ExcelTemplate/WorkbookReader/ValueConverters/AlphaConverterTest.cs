@@ -1,10 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.ExcelTemplate;
-using Microsoft.NodeXL.Visualization;
 
 namespace Microsoft.NodeXL.UnitTests
 {
@@ -26,7 +25,7 @@ public class AlphaConverterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="AlphaConverterTest" /> class.
+    /// cref="AlphaConverterTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,8 +47,8 @@ public class AlphaConverterTest : Object
     public void
     SetUp()
     {
-		m_oAlphaConverter = new AlphaConverter();
-	}
+        m_oAlphaConverter = new AlphaConverter();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -80,15 +79,15 @@ public class AlphaConverterTest : Object
     public void
     TestWorkbookToGraph()
     {
-		// Minimum.
+        // Minimum.
 
-		Single fAlphaWorkbook = AlphaConverter.MinimumAlphaWorkbook;
+        Single fAlphaWorkbook = AlphaConverter.MinimumAlphaWorkbook;
 
-		Int32 iExpectedAlphaGraph = 0;
+        Byte btExpectedAlphaGraph = 0;
 
-		Int32 iAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
 
-		Assert.AreEqual(iExpectedAlphaGraph, iAlphaGraph);
+        Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
@@ -104,15 +103,15 @@ public class AlphaConverterTest : Object
     public void
     TestWorkbookToGraph2()
     {
-		// Maximum.
+        // Maximum.
 
-		Single fAlphaWorkbook = AlphaConverter.MaximumAlphaWorkbook;
+        Single fAlphaWorkbook = AlphaConverter.MaximumAlphaWorkbook;
 
-		Int32 iExpectedAlphaGraph = 255;
+        Byte btExpectedAlphaGraph = 255;
 
-		Int32 iAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
 
-		Assert.AreEqual(iExpectedAlphaGraph, iAlphaGraph);
+        Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
@@ -128,17 +127,17 @@ public class AlphaConverterTest : Object
     public void
     TestWorkbookToGraph3()
     {
-		// Midpoint.
+        // Midpoint.
 
-		Single fAlphaWorkbook = AlphaConverter.MinimumAlphaWorkbook
-			+ (AlphaConverter.MaximumAlphaWorkbook -
-				AlphaConverter.MinimumAlphaWorkbook) / 2F;
+        Single fAlphaWorkbook = AlphaConverter.MinimumAlphaWorkbook
+            + (AlphaConverter.MaximumAlphaWorkbook -
+                AlphaConverter.MinimumAlphaWorkbook) / 2;
 
-		Int32 iExpectedAlphaGraph = (Int32)(0 + (255 - 0) / 2F);
+        Byte btExpectedAlphaGraph = (Byte)(0 + (255 - 0) / 2);
 
-		Int32 iAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
 
-		Assert.AreEqual(iExpectedAlphaGraph, iAlphaGraph);
+        Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
@@ -154,15 +153,15 @@ public class AlphaConverterTest : Object
     public void
     TestWorkbookToGraph4()
     {
-		// Below minimum.
+        // Below minimum.
 
-		Single fAlphaWorkbook = AlphaConverter.MinimumAlphaWorkbook - 1F;
+        Single fAlphaWorkbook = AlphaConverter.MinimumAlphaWorkbook - 1;
 
-		Int32 iExpectedAlphaGraph = 0;
+        Byte btExpectedAlphaGraph = 0;
 
-		Int32 iAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
 
-		Assert.AreEqual(iExpectedAlphaGraph, iAlphaGraph);
+        Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
@@ -178,16 +177,15 @@ public class AlphaConverterTest : Object
     public void
     TestWorkbookToGraph5()
     {
-		// Above maximum.
+        // Above maximum.
 
-		Single fAlphaWorkbook =
-			AlphaConverter.MaximumAlphaWorkbook + 1F;
+        Single fAlphaWorkbook = AlphaConverter.MaximumAlphaWorkbook + 1;
 
-		Int32 iExpectedAlphaGraph = 255;
+        Byte btExpectedAlphaGraph = 255;
 
-		Int32 iAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
 
-		Assert.AreEqual(iExpectedAlphaGraph, iAlphaGraph);
+        Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
 

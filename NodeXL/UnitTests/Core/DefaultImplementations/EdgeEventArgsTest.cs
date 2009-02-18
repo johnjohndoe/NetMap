@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,14 +25,14 @@ public class EdgeEventArgsTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="EdgeEventArgsTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public EdgeEventArgsTest()
     {
         m_oEdgeEventArgs = null;
-		m_oEdge = null;
+        m_oEdge = null;
     }
 
     //*************************************************************************
@@ -48,21 +48,21 @@ public class EdgeEventArgsTest : Object
     public void
     SetUp()
     {
-		VertexFactory oVertexFactory = new VertexFactory();
+        VertexFactory oVertexFactory = new VertexFactory();
 
-		IVertex oVertex1 = oVertexFactory.CreateVertex();
-		IVertex oVertex2 = oVertexFactory.CreateVertex();
+        IVertex oVertex1 = oVertexFactory.CreateVertex();
+        IVertex oVertex2 = oVertexFactory.CreateVertex();
 
-		GraphFactory oGraphFactory = new GraphFactory();
+        GraphFactory oGraphFactory = new GraphFactory();
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		oGraph.Vertices.Add(oVertex1);
-		oGraph.Vertices.Add(oVertex2);
+        oGraph.Vertices.Add(oVertex1);
+        oGraph.Vertices.Add(oVertex2);
 
-		EdgeFactory oEdgeFactory = new EdgeFactory();
+        EdgeFactory oEdgeFactory = new EdgeFactory();
 
-		m_oEdge = oEdgeFactory.CreateEdge(oVertex1, oVertex2, true);
+        m_oEdge = oEdgeFactory.CreateEdge(oVertex1, oVertex2, true);
 
         m_oEdgeEventArgs = new EdgeEventArgs(m_oEdge);
     }
@@ -96,7 +96,7 @@ public class EdgeEventArgsTest : Object
     public void
     TestConstructor()
     {
-		Assert.AreEqual(m_oEdge, m_oEdgeEventArgs.Edge);
+        Assert.AreEqual(m_oEdge, m_oEdgeEventArgs.Edge);
     }
 
     //*************************************************************************
@@ -108,30 +108,30 @@ public class EdgeEventArgsTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestConstructorBad()
     {
-		// Null argument.
+        // Null argument.
 
-		try
-		{
-			m_oEdgeEventArgs = new EdgeEventArgs(null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oEdgeEventArgs = new EdgeEventArgs(null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "EdgeEventArgs.Constructor: edge argument can't be null.\r\n"
-				+ "Parameter name: edge"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "EdgeEventArgs.Constructor: edge argument can't be null.\r\n"
+                + "Parameter name: edge"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
 
@@ -143,9 +143,9 @@ public class EdgeEventArgsTest : Object
 
     protected EdgeEventArgs m_oEdgeEventArgs;
 
-	/// Edge in m_oEdgeEventArgs.
+    /// Edge in m_oEdgeEventArgs.
 
-	protected IEdge m_oEdge;
+    protected IEdge m_oEdge;
 }
 
 }

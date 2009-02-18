@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Windows.Forms;
@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace Microsoft.NodeXL.ExcelTemplateRegisterUser
 {
 //*****************************************************************************
-//	Class: Program
+//  Class: Program
 //
 /// <summary>
 /// The application's entry point.
@@ -17,21 +17,21 @@ namespace Microsoft.NodeXL.ExcelTemplateRegisterUser
 
 static class Program
 {
-	//*************************************************************************
-	//	Method: Main()
-	//
-	/// <summary>
-	/// The main entry point for the application.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: Main()
+    //
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    //*************************************************************************
 
-	[STAThread]
+    [STAThread]
 
-	static void Main()
-	{
-		Application.EnableVisualStyles();
-		Application.SetCompatibleTextRenderingDefault(false);
-		Application.Run(new MainForm());
-	}
+    static void Main()
+    {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new MainForm());
+    }
 }
 }

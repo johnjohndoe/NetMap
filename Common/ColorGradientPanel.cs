@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -35,8 +35,8 @@ public class ColorGradientPanel : Panel
 
     public ColorGradientPanel()
     {
-		m_oMinimumColor = Color.White;
-		m_oMaximumColor = Color.Black;
+        m_oMinimumColor = Color.White;
+        m_oMaximumColor = Color.Black;
     }
 
     //*************************************************************************
@@ -47,7 +47,7 @@ public class ColorGradientPanel : Panel
     /// </summary>
     ///
     /// <value>
-	/// The color of the left edge of the panel.
+    /// The color of the left edge of the panel.
     /// </value>
     //*************************************************************************
 
@@ -63,9 +63,9 @@ public class ColorGradientPanel : Panel
 
         set
         {
-			m_oMinimumColor = value;
+            m_oMinimumColor = value;
 
-			Invalidate();
+            Invalidate();
 
             AssertValid();
         }
@@ -79,7 +79,7 @@ public class ColorGradientPanel : Panel
     /// </summary>
     ///
     /// <value>
-	/// The color of the right edge of the panel.
+    /// The color of the right edge of the panel.
     /// </value>
     //*************************************************************************
 
@@ -95,9 +95,9 @@ public class ColorGradientPanel : Panel
 
         set
         {
-			m_oMaximumColor = value;
+            m_oMaximumColor = value;
 
-			Invalidate();
+            Invalidate();
 
             AssertValid();
         }
@@ -115,23 +115,23 @@ public class ColorGradientPanel : Panel
     /// </param>
     //*************************************************************************
 
-	protected override void
-	OnPaint
-	(
-		PaintEventArgs e
-	)
+    protected override void
+    OnPaint
+    (
+        PaintEventArgs e
+    )
     {
         AssertValid();
 
-		FillRectangleWithLinearGradient(e.Graphics, this.ClientRectangle,
-			m_oMinimumColor, m_oMaximumColor);
+        FillRectangleWithLinearGradient(e.Graphics, this.ClientRectangle,
+            m_oMinimumColor, m_oMaximumColor);
     }
 
     //*************************************************************************
     //  Method: FillRectangleWithLinearGradient()
     //
     /// <summary>
-	/// Fills a rectangle with a linear gradient from left to right.
+    /// Fills a rectangle with a linear gradient from left to right.
     /// </summary>
     ///
     /// <param name="oGraphics">
@@ -151,40 +151,40 @@ public class ColorGradientPanel : Panel
     /// </param>
     //*************************************************************************
 
-	protected void
-	FillRectangleWithLinearGradient
-	(
-		Graphics oGraphics,
-		Rectangle oRectangle,
-		Color oLeftColor,
-		Color oRightColor
-	)
-	{
-		Debug.Assert(oGraphics != null);
+    protected void
+    FillRectangleWithLinearGradient
+    (
+        Graphics oGraphics,
+        Rectangle oRectangle,
+        Color oLeftColor,
+        Color oRightColor
+    )
+    {
+        Debug.Assert(oGraphics != null);
 
-		// There is an oddity with the LinearGradientBrush.  If the rectangle
-		// passed to it has an even Right property value, the color at the
-		// right edge (oRightColor) wraps around to the vertical line of pixels
-		// at the left edge, which should actually be oLeftColor.  This does
-		// not occur if the Right value is odd.  Is this a Framework bug?
-		// 
-		// Compensate by extending the brush.
+        // There is an oddity with the LinearGradientBrush.  If the rectangle
+        // passed to it has an even Right property value, the color at the
+        // right edge (oRightColor) wraps around to the vertical line of pixels
+        // at the left edge, which should actually be oLeftColor.  This does
+        // not occur if the Right value is odd.  Is this a Framework bug?
+        // 
+        // Compensate by extending the brush.
 
-		Rectangle oBrushRectangle = Rectangle.FromLTRB(
-			oRectangle.Left - 1,
-			oRectangle.Top,
-			oRectangle.Right,
-			oRectangle.Bottom
-			);
+        Rectangle oBrushRectangle = Rectangle.FromLTRB(
+            oRectangle.Left - 1,
+            oRectangle.Top,
+            oRectangle.Right,
+            oRectangle.Bottom
+            );
 
-		LinearGradientBrush oLinearGradientBrush = new LinearGradientBrush(
-			oBrushRectangle, oLeftColor, oRightColor,
-			LinearGradientMode.Horizontal);
+        LinearGradientBrush oLinearGradientBrush = new LinearGradientBrush(
+            oBrushRectangle, oLeftColor, oRightColor,
+            LinearGradientMode.Horizontal);
 
-		oGraphics.FillRectangle(oLinearGradientBrush, oRectangle);
+        oGraphics.FillRectangle(oLinearGradientBrush, oRectangle);
 
-		oLinearGradientBrush.Dispose();
-	}
+        oLinearGradientBrush.Dispose();
+    }
 
 
     //*************************************************************************
@@ -200,8 +200,8 @@ public class ColorGradientPanel : Panel
     public virtual void
     AssertValid()
     {
-		// m_oMinimumColor
-		// m_oMaximumColor
+        // m_oMinimumColor
+        // m_oMaximumColor
     }
 
 
@@ -209,13 +209,13 @@ public class ColorGradientPanel : Panel
     //  Protected fields
     //*************************************************************************
 
-	/// Color to use at the left edge of the panel.
+    /// Color to use at the left edge of the panel.
 
-	protected Color m_oMinimumColor;
+    protected Color m_oMinimumColor;
 
-	/// Color to use at the right edge of the panel.
+    /// Color to use at the right edge of the panel.
 
-	protected Color m_oMaximumColor;
+    protected Color m_oMaximumColor;
 }
 
 }

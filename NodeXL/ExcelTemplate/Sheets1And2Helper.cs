@@ -1,9 +1,10 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Text;
 using System.Reflection;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -49,47 +50,47 @@ public class Sheets1And2Helper : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="Sheets1And2Helper" />
-	/// class.
+    /// class.
     /// </summary>
     ///
-	/// <param name="worksheet">
-	/// The worksheet that owns this object.
-	/// </param>
+    /// <param name="worksheet">
+    /// The worksheet that owns this object.
+    /// </param>
     ///
-	/// <param name="table">
-	/// The edge or vertex table.
-	/// </param>
+    /// <param name="table">
+    /// The edge or vertex table.
+    /// </param>
     //*************************************************************************
 
     public Sheets1And2Helper
-	(
-		Microsoft.Office.Tools.Excel.Worksheet worksheet,
+    (
+        Microsoft.Office.Tools.Excel.Worksheet worksheet,
         Microsoft.Office.Tools.Excel.ListObject table
-	)
+    )
     {
-		m_oWorksheet = worksheet;
-		m_oTable = table;
-		m_bIgnoreSelectionEvents = false;
-		m_aiRowIDsToSelectOnActivation = null;
+        m_oWorksheet = worksheet;
+        m_oTable = table;
+        m_bIgnoreSelectionEvents = false;
+        m_aiRowIDsToSelectOnActivation = null;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: TableExists
     //
     /// <summary>
-	/// Gets a flag indicating whether the edge or vertex table still exists.
+    /// Gets a flag indicating whether the edge or vertex table still exists.
     /// </summary>
     ///
     /// <value>
     /// true if the edge or vertex table still exists.
     /// </value>
-	///
-	/// <remarks>
-	/// The user can close the edge or vertex worksheet after the workbook has
-	/// been read.  If he has done so, this property returns false.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The user can close the edge or vertex worksheet after the workbook has
+    /// been read.  If he has done so, this property returns false.
+    /// </remarks>
     //*************************************************************************
 
     public Boolean
@@ -99,20 +100,20 @@ public class Sheets1And2Helper : Object
         {
             AssertValid();
 
-			try
-			{
-				// Most of the ListObject properties and methods throw an
-				// exception once the ListObject has been deleted.
-				// ListObject.Name is one of them.
+            try
+            {
+                // Most of the ListObject properties and methods throw an
+                // exception once the ListObject has been deleted.
+                // ListObject.Name is one of them.
 
-				String sName = m_oTable.Name;
+                String sName = m_oTable.Name;
 
-				return (true);
-			}
-			catch (COMException)
-			{
-				return (false);
-			}
+                return (true);
+            }
+            catch (COMException)
+            {
+                return (false);
+            }
         }
     }
 
@@ -120,934 +121,948 @@ public class Sheets1And2Helper : Object
     //  Method: Sheet_Startup()
     //
     /// <summary>
-	/// Handles the Startup event on the worksheet.
+    /// Handles the Startup event on the worksheet.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	public void
-	Sheet_Startup
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		AssertValid();
+    public void
+    Sheet_Startup
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
+        AssertValid();
 
-		m_oWorksheet.ActivateEvent += new DocEvents_ActivateEventHandler(
-			this.Sheet_ActivateEvent);
+        m_oWorksheet.ActivateEvent += new DocEvents_ActivateEventHandler(
+            this.Sheet_ActivateEvent);
 
-		m_oTable.SelectionChange += new DocEvents_SelectionChangeEventHandler(
-			Table_SelectionChange);
+        m_oTable.SelectionChange += new DocEvents_SelectionChangeEventHandler(
+            Table_SelectionChange);
 
-		m_oTable.Deselected += new DocEvents_SelectionChangeEventHandler(
-			Table_Deselected);
+        m_oTable.Deselected += new DocEvents_SelectionChangeEventHandler(
+            Table_Deselected);
 
-		Globals.ThisWorkbook.SelectionChangedInGraph +=
+        Globals.ThisWorkbook.SelectionChangedInGraph +=
             new SelectionChangedEventHandler(
-				this.ThisWorkbook_SelectionChangedInGraph);
-	}
+                this.ThisWorkbook_SelectionChangedInGraph);
+    }
 
     //*************************************************************************
     //  Method: Sheet_Shutdown()
     //
     /// <summary>
-	/// Handles the Shutdown event on the worksheet.
+    /// Handles the Shutdown event on the worksheet.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	public void
-	Sheet_Shutdown
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		AssertValid();
+    public void
+    Sheet_Shutdown
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
+        AssertValid();
 
-		// (Do nothing.)
-	}
+        // (Do nothing.)
+    }
 
     //*************************************************************************
     //  Method: TryGetIDsOfVisibleRows()
     //
     /// <summary>
-	/// Attempts to get a dictionary containing the ID of each visible row in
-	/// the table.
+    /// Attempts to get a dictionary containing the ID of each visible row in
+    /// the table.
     /// </summary>
     ///
-	/// <param name="rowIDDictionary">
-	/// Where a dictionary gets stored if true is returned.  There is one
-	/// dictionary entry for each visible row in the table that has an ID.  The
-	/// key is the ID stored in the table's ID column and the value is the
-	/// one-based row number relative to the worksheet.
-	/// </param>
-	///
-	/// <returns>
-	/// true if the dictionary was obtained, false if there is no ID column or
-	/// all IDs are hidden.
-	/// </returns>
+    /// <param name="rowIDDictionary">
+    /// Where a dictionary gets stored if true is returned.  There is one
+    /// dictionary entry for each visible row in the table that has an ID.  The
+    /// key is the ID stored in the table's ID column and the value is the
+    /// one-based row number relative to the worksheet.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the dictionary was obtained, false if there is no ID column or
+    /// all IDs are hidden.
+    /// </returns>
     //*************************************************************************
 
     public Boolean
-	TryGetIDsOfVisibleRows
-	(
-		out Dictionary<Int32, Int32> rowIDDictionary
-	)
-	{
-		AssertValid();
+    TryGetIDsOfVisibleRows
+    (
+        out Dictionary<Int32, Int32> rowIDDictionary
+    )
+    {
+        AssertValid();
 
-		rowIDDictionary = null;
+        rowIDDictionary = null;
 
-		if (!TableExists)
-		{
-			return (false);
-		}
+        if (!TableExists)
+        {
+            return (false);
+        }
 
-		Range oIDColumnData;
+        Range oIDColumnData;
 
-		// Get data for the ID column.  This includes hidden rows but excludes
-		// the header row.
+        // Get data for the ID column.  This includes hidden rows but excludes
+        // the header row.
 
-		if ( !TryGetIDColumnData(out oIDColumnData) )
-		{
-			return (false);
-		}
+        if ( !TryGetIDColumnData(out oIDColumnData) )
+        {
+            return (false);
+        }
 
-		// Remove hidden rows, which occur when the table is filtered.
-		//
-		// Excel wierdness: SpecialCells() causes the SelectionChange event on
-		// the table to fire.  Why?  In any case, the m_bIgnoreSelectionEvents
-		// flag prevents this from causing an endless loop.
+        // Remove hidden rows, which occur when the table is filtered.
+        //
+        // Excel wierdness: SpecialCells() causes the SelectionChange event on
+        // the table to fire.  Why?  In any case, the m_bIgnoreSelectionEvents
+        // flag prevents this from causing an endless loop.
 
         Range oVisibleIDColumnData;
 
-		if ( !ExcelUtil.TryGetVisibleRange(
-			oIDColumnData, out oVisibleIDColumnData) )
-		{
-			return (false);
-		}
+        if ( !ExcelUtil.TryGetVisibleRange(
+            oIDColumnData, out oVisibleIDColumnData) )
+        {
+            return (false);
+        }
 
-		// Read the ID column.
+        // Read the ID column.
 
-		Object [,] aoIDValues = ExcelUtil.GetRangeValues(oIDColumnData);
+        Object [,] aoIDValues = ExcelUtil.GetRangeValues(oIDColumnData);
 
-		// Create a dictionary that maps row IDs to row numbers.
+        // Create a dictionary that maps row IDs to row numbers.
 
-		rowIDDictionary = new Dictionary<Int32, Int32>();
+        rowIDDictionary = new Dictionary<Int32, Int32>();
 
-		Range oDataBodyRange = m_oTable.DataBodyRange;
+        Range oDataBodyRange = m_oTable.DataBodyRange;
 
-		if (oDataBodyRange == null)
-		{
-			return (false);
-		}
+        if (oDataBodyRange == null)
+        {
+            return (false);
+        }
 
-		Int32 iDataBodyRangeRow = oDataBodyRange.Row;
+        Int32 iDataBodyRangeRow = oDataBodyRange.Row;
 
-		// Loop through the visible areas.
+        // Loop through the visible areas.
 
-		foreach (Range oVisibleIDColumnDataArea in oVisibleIDColumnData.Areas)
-		{
-			Int32 iFirstRowOneBased =
-				oVisibleIDColumnDataArea.Row - iDataBodyRangeRow + 1;
+        foreach (Range oVisibleIDColumnDataArea in oVisibleIDColumnData.Areas)
+        {
+            Int32 iFirstRowOneBased =
+                oVisibleIDColumnDataArea.Row - iDataBodyRangeRow + 1;
 
-			Int32 iLastRowOneBased =
-				iFirstRowOneBased + oVisibleIDColumnDataArea.Rows.Count - 1;
+            Int32 iLastRowOneBased =
+                iFirstRowOneBased + oVisibleIDColumnDataArea.Rows.Count - 1;
 
-			for (Int32 iRowOneBased = iFirstRowOneBased;
-				iRowOneBased <= iLastRowOneBased; iRowOneBased++)
-			{
-				Int32 iID;
+            for (Int32 iRowOneBased = iFirstRowOneBased;
+                iRowOneBased <= iLastRowOneBased; iRowOneBased++)
+            {
+                Int32 iID;
 
-				if ( !TryGetID(aoIDValues, iRowOneBased, out iID) )
-				{
-					// The user may have added a row since the workbook was
-					// read into the graph.  Ignore this row.
+                if ( !TryGetID(aoIDValues, iRowOneBased, out iID) )
+                {
+                    // The user may have added a row since the workbook was
+                    // read into the graph.  Ignore this row.
 
-					continue;
-				}
+                    continue;
+                }
 
-				rowIDDictionary[iID] = iRowOneBased + iDataBodyRangeRow - 1;
-			}
-		}
+                rowIDDictionary[iID] = iRowOneBased + iDataBodyRangeRow - 1;
+            }
+        }
 
-		return (true);
-	}
+        return (true);
+    }
 
     //*************************************************************************
     //  Method: TryGetID()
     //
     /// <summary>
-	/// Attempts to get an ID from an ID column.
+    /// Attempts to get an ID from an ID column.
     /// </summary>
     ///
     /// <param name="IDValues">
-	/// Two-dimensional array of ID values read from an ID column.  The array
-	/// is one column wide.
+    /// Two-dimensional array of ID values read from an ID column.  The array
+    /// is one column wide.
     /// </param>
-	///
+    ///
     /// <param name="rowOneBased">
-	/// One-based row number to read.
+    /// One-based row number to read.
     /// </param>
-	///
+    ///
     /// <param name="ID">
-	/// Where an ID gets stored if true is returned.
+    /// Where an ID gets stored if true is returned.
     /// </param>
-	///
-	/// <returns>
-	/// true if successful.
-	/// </returns>
-	///
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
     /// <remarks>
-	/// If the specified cell value contains a valid ID, the ID is stored at
-	/// <paramref name="ID" />, and true is returned.  false is returned
-	/// otherwise.
+    /// If the specified cell value contains a valid ID, the ID is stored at
+    /// <paramref name="ID" />, and true is returned.  false is returned
+    /// otherwise.
     /// </remarks>
     //*************************************************************************
 
     public Boolean
-	TryGetID
-	(
-		Object [,] IDValues,
-		Int32 rowOneBased,
-		out Int32 ID
-	)
+    TryGetID
+    (
+        Object [,] IDValues,
+        Int32 rowOneBased,
+        out Int32 ID
+    )
     {
-		Debug.Assert(IDValues != null);
-		Debug.Assert(rowOneBased >= 1);
-		AssertValid();
+        Debug.Assert(IDValues != null);
+        Debug.Assert(rowOneBased >= 1);
+        AssertValid();
 
-		ID = Int32.MinValue;
+        ID = Int32.MinValue;
 
-		String sID;
+        String sID;
 
-		return (
-			ExcelUtil.TryGetNonEmptyStringFromCell(IDValues, rowOneBased, 1,
-				out sID)
-			&&
-			Int32.TryParse(sID, out ID)
-			);
-	}
+        return (
+            ExcelUtil.TryGetNonEmptyStringFromCell(IDValues, rowOneBased, 1,
+                out sID)
+            &&
+            Int32.TryParse(sID, out ID)
+            );
+    }
 
-	//*************************************************************************
-	//	Method: TryGetIDRow()
-	//
-	/// <summary>
-	/// Attempts to get the row number of an ID within an ID column.
-	/// </summary>
-	///
-	/// <param name="IDColumn">
-	/// Column containing the IDs.
-	/// </param>
-	///
-	/// <param name="ID">
-	/// The ID to look for.
-	/// </param>
-	///
-	/// <param name="rowOneBased">
-	/// Where the one-based row number gets stored if true is returned.
-	/// </param>
-	///
-	/// <returns>
-	/// true if the row number was obtained.
-	/// </returns>
-	///
-	/// <remarks>
-	/// This method looks for <paramref name="ID" /> in <paramref
-	/// name="IDColumn" />.  If found, the one-based row number of the row
-	/// containing the ID is stored at <paramref name="rowOneBased" /> and
-	/// true is returned.  false is returned otherwise.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: TryGetIDRow()
+    //
+    /// <summary>
+    /// Attempts to get the row number of an ID within an ID column.
+    /// </summary>
+    ///
+    /// <param name="IDColumn">
+    /// Column containing the IDs.
+    /// </param>
+    ///
+    /// <param name="ID">
+    /// The ID to look for.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// Where the one-based row number gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the row number was obtained.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method looks for <paramref name="ID" /> in <paramref
+    /// name="IDColumn" />.  If found, the one-based row number of the row
+    /// containing the ID is stored at <paramref name="rowOneBased" /> and
+    /// true is returned.  false is returned otherwise.
+    /// </remarks>
+    //*************************************************************************
 
-	public Boolean
-	TryGetIDRow
-	(
-		Microsoft.Office.Interop.Excel.ListColumn IDColumn,
-		Int32 ID,
-		out Int32 rowOneBased
-	)
-	{
-		Debug.Assert(IDColumn != null);
-		AssertValid();
+    public Boolean
+    TryGetIDRow
+    (
+        Microsoft.Office.Interop.Excel.ListColumn IDColumn,
+        Int32 ID,
+        out Int32 rowOneBased
+    )
+    {
+        Debug.Assert(IDColumn != null);
+        AssertValid();
 
-		rowOneBased = Int32.MinValue;
+        rowOneBased = Int32.MinValue;
 
-		// Look for the cell in the ID column that contains the specified ID.
+        // Look for the cell in the ID column that contains the specified ID.
 
-		Microsoft.Office.Interop.Excel.Range oIDCell = IDColumn.Range.Find(
-			ID.ToString(),
-			Missing.Value,
-			Microsoft.Office.Interop.Excel.XlFindLookIn.xlValues,
-			Microsoft.Office.Interop.Excel.XlLookAt.xlWhole,
-			Microsoft.Office.Interop.Excel.XlSearchOrder.xlByRows,
-			Microsoft.Office.Interop.Excel.XlSearchDirection.xlNext,
-			true,
-			true,
-			Missing.Value
-			);
+        Microsoft.Office.Interop.Excel.Range oIDCell = IDColumn.Range.Find(
+            ID.ToString(),
+            Missing.Value,
+            Microsoft.Office.Interop.Excel.XlFindLookIn.xlValues,
+            Microsoft.Office.Interop.Excel.XlLookAt.xlWhole,
+            Microsoft.Office.Interop.Excel.XlSearchOrder.xlByRows,
+            Microsoft.Office.Interop.Excel.XlSearchDirection.xlNext,
+            true,
+            true,
+            Missing.Value
+            );
 
-		if (oIDCell == null)
-		{
-			return (false);
-		}
+        if (oIDCell == null)
+        {
+            return (false);
+        }
 
-		rowOneBased = oIDCell.Row;
+        rowOneBased = oIDCell.Row;
 
-		return (true);
-	}
+        return (true);
+    }
 
     //*************************************************************************
     //  Method: GetSelectedColumnValues()
     //
     /// <summary>
-	/// Gets a dictionary of values from one column for all rows in the table
-	/// that have at least one selected cell.
+    /// Gets a dictionary of values from one column for all rows in the table
+    /// that have at least one selected cell.
     /// </summary>
     ///
-	/// <param name="selectedRange">
-	/// Range that contains the selected cells in the table.  The range may
-	/// contain multiple areas.
-	/// </param>
-	///
-	/// <param name="columnName">
-	/// Name of the column to get the values from.
-	/// </param>
-	///
-	/// <returns>
-	/// A dictionary of zero or more cell values.  The dictionary can be empty
-	/// but is never null.  The dictionary keys are the cell values, which are
-	/// guaranteed to be non-null, non-empty, and unique.  The dictionary
-	/// values aren't used.
-	/// </returns>
-	///
-	/// <remarks>
-	/// For each row in the table that has at least one selected cell, this
-	/// method reads the string from the row's <paramref name="columnName" />
-	/// cell and stores it in the returned dictionary.
-	/// </remarks>
+    /// <param name="selectedRange">
+    /// Range that contains the selected cells in the table.  The range may
+    /// contain multiple areas.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to get the values from.
+    /// </param>
+    ///
+    /// <returns>
+    /// A dictionary of zero or more cell values.  The dictionary can be empty
+    /// but is never null.  The dictionary keys are the cell values, which are
+    /// guaranteed to be non-null, non-empty, and unique.  The dictionary
+    /// values aren't used.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// For each row in the table that has at least one selected cell, this
+    /// method reads the string from the row's <paramref name="columnName" />
+    /// cell and stores it in the returned dictionary.
+    /// </remarks>
     //*************************************************************************
 
     public Dictionary<String, Char>
-	GetSelectedColumnValues
-	(
-		Range selectedRange,
-		String columnName
-	)
+    GetSelectedColumnValues
+    (
+        Range selectedRange,
+        String columnName
+    )
     {
-		Debug.Assert(selectedRange != null);
-		Debug.Assert( !String.IsNullOrEmpty(columnName) );
-		AssertValid();
+        Debug.Assert(selectedRange != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        AssertValid();
 
-		// Create a dictionary for the selected values.  The dictionary key is
-		// the cell value and the dictionary value is not used.
+        // Create a dictionary for the selected values.  The dictionary key is
+        // the cell value and the dictionary value is not used.
 
-		Dictionary<String, Char> oSelectedValues =
-			new Dictionary<String, Char>();
+        Dictionary<String, Char> oSelectedValues =
+            new Dictionary<String, Char>();
 
-		if (!this.TableExists)
-		{
-			goto Done;
-		}
+        if (!this.TableExists)
+        {
+            goto Done;
+        }
 
-		// The selected range can extend outside the table.  Get the
-		// intersection of the table with the selection.
+        // The selected range can extend outside the table.  Get the
+        // intersection of the table with the selection.
 
         Range oSelectedTableRange;
 
-		if ( !ExcelUtil.TryGetSelectedTableRange(m_oTable.InnerObject,
-			selectedRange, out oSelectedTableRange) )
+        if ( !ExcelUtil.TryGetSelectedTableRange(m_oTable.InnerObject,
+            selectedRange, out oSelectedTableRange) )
         {
-			goto Done;
+            goto Done;
         }
 
         Range oDataBodyRange = m_oTable.DataBodyRange;
 
-		Debug.Assert(oDataBodyRange != null);
+        Debug.Assert(oDataBodyRange != null);
 
-		// Get data for the specified column.  This includes hidden rows but
-		// excludes the header row.
+        // Get data for the specified column.  This includes hidden rows but
+        // excludes the header row.
 
-		Range oColumnData;
+        Range oColumnData;
 
-		if ( !ExcelUtil.TryGetTableColumnData(m_oTable.InnerObject, columnName,
-			out oColumnData) )
-		{
-			goto Done;
-		}
+        if ( !ExcelUtil.TryGetTableColumnData(m_oTable.InnerObject, columnName,
+            out oColumnData) )
+        {
+            goto Done;
+        }
 
-		Int32 iRows = oDataBodyRange.Rows.Count;
+        Int32 iRows = oDataBodyRange.Rows.Count;
 
-		// Read the column.
+        // Read the column.
 
-		Object [,] aoValues = ExcelUtil.GetRangeValues(oColumnData);
+        Object [,] aoValues = ExcelUtil.GetRangeValues(oColumnData);
 
-		foreach (Range oSelectedTableRangeArea in oSelectedTableRange.Areas)
-		{
-			Int32 iFirstRowOneBased =
-				oSelectedTableRangeArea.Row - oDataBodyRange.Row + 1;
+        foreach (Range oSelectedTableRangeArea in oSelectedTableRange.Areas)
+        {
+            Int32 iFirstRowOneBased =
+                oSelectedTableRangeArea.Row - oDataBodyRange.Row + 1;
 
-			Int32 iLastRowOneBased =
-				iFirstRowOneBased + oSelectedTableRangeArea.Rows.Count - 1;
+            Int32 iLastRowOneBased =
+                iFirstRowOneBased + oSelectedTableRangeArea.Rows.Count - 1;
 
-			for (Int32 iRowOneBased = iFirstRowOneBased;
-				iRowOneBased <= iLastRowOneBased; iRowOneBased++)
-			{
-				String sValue;
+            for (Int32 iRowOneBased = iFirstRowOneBased;
+                iRowOneBased <= iLastRowOneBased; iRowOneBased++)
+            {
+                String sValue;
 
-				if ( ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-					iRowOneBased, 1, out sValue) )
-				{
-					// There may be two or more areas that include the same
-					// row, so use Dictionary.Item and not Dictionary.Add().
+                if ( ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
+                    iRowOneBased, 1, out sValue) )
+                {
+                    // There may be two or more areas that include the same
+                    // row, so use Dictionary.Item and not Dictionary.Add().
 
-					oSelectedValues[sValue] = ' ';
-				}
-			}
-		}
+                    oSelectedValues[sValue] = ' ';
+                }
+            }
+        }
 
-		Done:
+        Done:
 
-		return (oSelectedValues);
+        return (oSelectedValues);
     }
 
-	//*************************************************************************
-	//	Event: TableSelectionChanged
-	//
-	/// <summary>
-	///	Occurs when the selection state of the table changes.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: TableSelectionChanged
+    //
+    /// <summary>
+    /// Occurs when the selection state of the table changes.
+    /// </summary>
+    //*************************************************************************
 
-	public event TableSelectionChangedEventHandler TableSelectionChanged;
+    public event TableSelectionChangedEventHandler TableSelectionChanged;
 
 
     //*************************************************************************
     //  Method: SelectTableRows()
     //
     /// <summary>
-	/// Selects rows in the table.
+    /// Selects rows in the table.
     /// </summary>
     ///
-	/// <param name="aiRowIDsToSelect">
-	/// Array of IDs of rows to select.  Any row not included in the array
-	/// gets deselected.
-	/// </param>
-	///
-	/// <remarks>
-	/// This should be called only when the worksheet is active.
-	/// </remarks>
+    /// <param name="aiRowIDsToSelect">
+    /// Array of IDs of rows to select.  Any row not included in the array
+    /// gets deselected.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This should be called only when the worksheet is active.
+    /// </remarks>
     //*************************************************************************
 
     protected void
-	SelectTableRows
-	(
-		Int32 [] aiRowIDsToSelect
-	)
-	{
-		Debug.Assert(aiRowIDsToSelect != null);
-		Debug.Assert( ExcelUtil.WorksheetIsActive(m_oWorksheet.InnerObject) );
-		AssertValid();
+    SelectTableRows
+    (
+        Int32 [] aiRowIDsToSelect
+    )
+    {
+        Debug.Assert(aiRowIDsToSelect != null);
+        Debug.Assert( ExcelUtil.WorksheetIsActive(m_oWorksheet.InnerObject) );
+        AssertValid();
 
-		if (!TableExists)
-		{
-			return;
-		}
+        if (!TableExists)
+        {
+            return;
+        }
 
-		Int32 iRowIDsToSelect = aiRowIDsToSelect.Length;
+        Int32 iRowIDsToSelect = aiRowIDsToSelect.Length;
 
-		if (iRowIDsToSelect == 0)
-		{
-			// Unselect any currently selected rows.
+        if (iRowIDsToSelect == 0)
+        {
+            // Unselect any currently selected rows.
 
-			m_oTable.HeaderRowRange.Select();
+            m_oTable.HeaderRowRange.Select();
 
-			return;
-		}
+            return;
+        }
 
-		// Get a dictionary containing the ID of each visible row in the table.
-		// The key is the ID stored in the table's ID column and the value is
-		// the one-based row number relative to the worksheet.
+        // Get a dictionary containing the ID of each visible row in the table.
+        // The key is the ID stored in the table's ID column and the value is
+        // the one-based row number relative to the worksheet.
 
-		Dictionary<Int32, Int32> oRowIDDictionary;
+        Dictionary<Int32, Int32> oRowIDDictionary;
 
-		if ( !TryGetIDsOfVisibleRows(out oRowIDDictionary) )
-		{
-			return;
-		}
+        if ( !TryGetIDsOfVisibleRows(out oRowIDDictionary) )
+        {
+            return;
+        }
 
-		// Build a range address string that is the union of the rows to
-		// select.  Sample: "3:3,6:6,12:12".  Excel allows this for an address
-		// up to MaximumBuiltRangeAddressLength characters.  (This was
-		// determined experimentally.)  Building a union via a string address
-		// is much more efficient than creating one range per row and using
-		// Application.Union() on all of them.
+        // Build a range address string that is the union of the rows to
+        // select.  Sample: "3:3,6:6,12:12".  Excel allows this for an address
+        // up to MaximumBuiltRangeAddressLength characters.  (This was
+        // determined experimentally.)  Building a union via a string address
+        // is much more efficient than creating one range per row and using
+        // Application.Union() on all of them.
 
-		StringBuilder oBuiltRangeAddress = new StringBuilder();
+        StringBuilder oBuiltRangeAddress = new StringBuilder();
 
-		const Int32 MaximumBuiltRangeAddressLength = 250;
+        const Int32 MaximumBuiltRangeAddressLength = 250;
 
-		Range oAccumulatedRange = null;
+        Range oAccumulatedRange = null;
 
-		for (Int32 i = 0; i < iRowIDsToSelect; i++)
-		{
-			Int32 iRowIDToSelect = aiRowIDsToSelect[i];
-			Int32 iRow;
+		// The ExcelLocale1033(true) attribute in AssemblyInfo.cs is supposed
+		// to make the Excel object model act the same in all locales, so a
+		// hard-coded comma should always work as the list separator for a
+		// union range address.  That's not the case, though; Excel uses the
+		// locale-specified list separator instead.  Is this a bug in the Excel
+		// PIAs?  Here is a posting from someone else who found the same
+		// problem:
+		//
+		// http://social.msdn.microsoft.com/Forums/en-US/vsto/thread/
+		// 0e4bd7dc-37d3-42ea-9ce4-53b9e5a53719/
 
-			if ( oRowIDDictionary.TryGetValue(iRowIDToSelect, out iRow) )
-			{
-				if (oBuiltRangeAddress.Length != 0)
-				{
-					oBuiltRangeAddress.Append(",");
-				}
+		String sListSeparator =
+			CultureInfo.CurrentCulture.TextInfo.ListSeparator;
 
-				oBuiltRangeAddress.Append(String.Format(
-					"{0}:{0}",
-					iRow
-					) );
-			}
+        for (Int32 i = 0; i < iRowIDsToSelect; i++)
+        {
+            Int32 iRowIDToSelect = aiRowIDsToSelect[i];
+            Int32 iRow;
 
-			// In the following test, assume that the next appended address
-			// would be ",1048576:1048576".
+            if ( oRowIDDictionary.TryGetValue(iRowIDToSelect, out iRow) )
+            {
+                if (oBuiltRangeAddress.Length != 0)
+                {
+                    oBuiltRangeAddress.Append(sListSeparator);
+                }
 
-			Int32 iBuiltRangeAddressLength = oBuiltRangeAddress.Length;
+                oBuiltRangeAddress.Append(String.Format(
+                    "{0}:{0}",
+                    iRow
+                    ) );
+            }
 
-			if (
-				iBuiltRangeAddressLength + 1 + 7 + 1 + 7 >
-					MaximumBuiltRangeAddressLength
-				||
-				(i == iRowIDsToSelect - 1 && iBuiltRangeAddressLength > 0)
-				)
-			{
-				// Get the range specified by the StringBuilder.
+            // In the following test, assume that the next appended address
+            // would be ",1048576:1048576".
 
-				Range oBuiltRange = m_oWorksheet.InnerObject.get_Range(
-					oBuiltRangeAddress.ToString(), Missing.Value);
+            Int32 iBuiltRangeAddressLength = oBuiltRangeAddress.Length;
 
-				Debug.Assert(oBuiltRange != null);
+            if (
+                iBuiltRangeAddressLength + 1 + 7 + 1 + 7 >
+                    MaximumBuiltRangeAddressLength
+                ||
+                (i == iRowIDsToSelect - 1 && iBuiltRangeAddressLength > 0)
+                )
+            {
+                // Get the range specified by the StringBuilder.
 
-				// Add it to the total.
+                Range oBuiltRange = m_oWorksheet.InnerObject.get_Range(
+                    oBuiltRangeAddress.ToString(), Missing.Value);
 
-				if ( !ExcelUtil.TryUnionRanges(
-					oAccumulatedRange, oBuiltRange, out oAccumulatedRange) )
-				{
-					Debug.Assert(false);
-				}
+                Debug.Assert(oBuiltRange != null);
+
+                // Add it to the total.
+
+                if ( !ExcelUtil.TryUnionRanges(
+                    oAccumulatedRange, oBuiltRange, out oAccumulatedRange) )
+                {
+                    Debug.Assert(false);
+                }
 
                 oBuiltRangeAddress.Length = 0;
-			}
-		}
+            }
+        }
 
-		// Intersect the accumulated range with the table and select the
-		// intersection.
+        // Intersect the accumulated range with the table and select the
+        // intersection.
 
-		Range oRangeToSelect;
+        Range oRangeToSelect;
 
-		if ( ExcelUtil.TryIntersectRanges(oAccumulatedRange,
-			m_oTable.DataBodyRange, out oRangeToSelect) )
-		{
-			oRangeToSelect.Select();
-		}
-	}
+        if ( ExcelUtil.TryIntersectRanges(oAccumulatedRange,
+            m_oTable.DataBodyRange, out oRangeToSelect) )
+        {
+            oRangeToSelect.Select();
+        }
+    }
 
     //*************************************************************************
     //  Method: GetSelectedRowIDs()
     //
     /// <summary>
-	/// Gets an array of IDs for all rows in the table that have at least one
-	/// cell selected.
+    /// Gets an array of IDs for all rows in the table that have at least one
+    /// cell selected.
     /// </summary>
     ///
-	/// <param name="oSelectedRange">
-	/// Range that contains the selected cells in the table.  The range may
-	/// contain multiple areas.
-	/// </param>
-	///
-	/// <returns>
-	/// An array of unique IDs.  The IDs are the values stored in the table's
-	/// ID column and are different from the IVertex.ID and IEdge.ID values in
-	/// the graph.
-	/// </returns>
+    /// <param name="oSelectedRange">
+    /// Range that contains the selected cells in the table.  The range may
+    /// contain multiple areas.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of unique IDs.  The IDs are the values stored in the table's
+    /// ID column and are different from the IVertex.ID and IEdge.ID values in
+    /// the graph.
+    /// </returns>
     //*************************************************************************
 
     protected Int32 []
-	GetSelectedRowIDs
-	(
-		Range oSelectedRange
-	)
+    GetSelectedRowIDs
+    (
+        Range oSelectedRange
+    )
     {
-		Debug.Assert(oSelectedRange != null);
-		AssertValid();
+        Debug.Assert(oSelectedRange != null);
+        AssertValid();
 
-		// Get the IDs as strings.
+        // Get the IDs as strings.
 
-		Dictionary<String, Char> oSelectedValues =
-			GetSelectedColumnValues(oSelectedRange, CommonTableColumnNames.ID);
+        Dictionary<String, Char> oSelectedValues =
+            GetSelectedColumnValues(oSelectedRange, CommonTableColumnNames.ID);
 
-		// Transfer all numbers to an array.
+        // Transfer all numbers to an array.
 
-		List<Int32> oSelectedRowIDs = new List<Int32>();
+        List<Int32> oSelectedRowIDs = new List<Int32>();
 
-		foreach (String sSelectedValue in oSelectedValues.Keys)
-		{
-			Int32 iSelectedRowID;
+        foreach (String sSelectedValue in oSelectedValues.Keys)
+        {
+            Int32 iSelectedRowID;
 
-			if ( Int32.TryParse(sSelectedValue, out iSelectedRowID) )
-			{
-				oSelectedRowIDs.Add(iSelectedRowID);
-			}
-		}
+            if ( Int32.TryParse(sSelectedValue, out iSelectedRowID) )
+            {
+                oSelectedRowIDs.Add(iSelectedRowID);
+            }
+        }
 
-		return ( oSelectedRowIDs.ToArray() );
+        return ( oSelectedRowIDs.ToArray() );
     }
 
     //*************************************************************************
     //  Method: TryGetIDColumnData()
     //
     /// <summary>
-	/// Attempts to get the ID column data from the table.
+    /// Attempts to get the ID column data from the table.
     /// </summary>
     ///
     /// <param name="oIDColumnData">
-	/// Where the ID column data gets stored if true is returned.  The data
-	/// includes only that part of the ID column within the table's data body
-	/// range.  This excludes any header or totals row.
+    /// Where the ID column data gets stored if true is returned.  The data
+    /// includes only that part of the ID column within the table's data body
+    /// range.  This excludes any header or totals row.
     /// </param>
     ///
     /// <returns>
-	/// true if successful.
+    /// true if successful.
     /// </returns>
     //*************************************************************************
 
     protected Boolean
     TryGetIDColumnData
     (
-		out Range oIDColumnData
+        out Range oIDColumnData
     )
     {
-		AssertValid();
+        AssertValid();
 
-		oIDColumnData = null;
+        oIDColumnData = null;
 
-		return ( ExcelUtil.TryGetTableColumnData(m_oTable.InnerObject,
-			CommonTableColumnNames.ID, out oIDColumnData) );
+        return ( ExcelUtil.TryGetTableColumnData(m_oTable.InnerObject,
+            CommonTableColumnNames.ID, out oIDColumnData) );
     }
 
     //*************************************************************************
     //  Method: OnSelectionChangedInTable()
     //
     /// <summary>
-	/// Handles the SelectionChange event on the table.
+    /// Handles the SelectionChange event on the table.
     /// </summary>
     ///
-	/// <param name="Target">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="Target">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	OnSelectionChangedInTable
-	(
-		Range Target
-	)
+    OnSelectionChangedInTable
+    (
+        Range Target
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		if (!TableExists)
-		{
-			return;
-		}
+        if (!TableExists)
+        {
+            return;
+        }
 
-		TableSelectionChangedEventHandler oTableSelectionChanged =
-			this.TableSelectionChanged;
+        TableSelectionChangedEventHandler oTableSelectionChanged =
+            this.TableSelectionChanged;
 
-		if (oTableSelectionChanged == null)
-		{
-			// No one is handling the event, so there is nothing to do.
+        if (oTableSelectionChanged == null)
+        {
+            // No one is handling the event, so there is nothing to do.
 
-			return;
-		}
+            return;
+        }
 
-		// Get an array of unique row IDs for all rows that have at least one
-		// cell selected.
+        // Get an array of unique row IDs for all rows that have at least one
+        // cell selected.
 
-		Int32 [] aiSelectedRowIDs = GetSelectedRowIDs(Target);
+        Int32 [] aiSelectedRowIDs = GetSelectedRowIDs(Target);
 
-		// Forward the event.
+        // Forward the event.
 
-		FireTableSelectionChanged(aiSelectedRowIDs,
-			TableSelectionChangedEventOrigin.SelectionChangedInTable);
+        FireTableSelectionChanged(aiSelectedRowIDs,
+            TableSelectionChangedEventOrigin.SelectionChangedInTable);
     }
 
     //*************************************************************************
     //  Method: FireTableSelectionChanged()
     //
     /// <summary>
-	/// Fires the <see cref="TableSelectionChanged" /> event if appropriate.
+    /// Fires the <see cref="TableSelectionChanged" /> event if appropriate.
     /// </summary>
     ///
-	/// <param name="aiSelectedIDs">
-	/// Array of IDs of selected rows.
-	/// </param>
+    /// <param name="aiSelectedIDs">
+    /// Array of IDs of selected rows.
+    /// </param>
     ///
-	/// <param name="eEventOrigin">
-	/// Specifies how the event originated.
-	/// </param>
+    /// <param name="eEventOrigin">
+    /// Specifies how the event originated.
+    /// </param>
     //*************************************************************************
 
     protected void
-	FireTableSelectionChanged
-	(
-		Int32 [] aiSelectedIDs,
-		TableSelectionChangedEventOrigin eEventOrigin
-	)
+    FireTableSelectionChanged
+    (
+        Int32 [] aiSelectedIDs,
+        TableSelectionChangedEventOrigin eEventOrigin
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		TableSelectionChangedEventHandler oTableSelectionChanged =
-			this.TableSelectionChanged;
+        TableSelectionChangedEventHandler oTableSelectionChanged =
+            this.TableSelectionChanged;
 
-		if (oTableSelectionChanged != null)
-		{
-			try
-			{
-				oTableSelectionChanged( this,
-					new TableSelectionChangedEventArgs(
-						aiSelectedIDs, eEventOrigin)
-					);
-			}
-			catch (Exception oException)
-			{
-				// If exceptions aren't caught here, Excel consumes them
-				// without indicating that anything is wrong.
+        if (oTableSelectionChanged != null)
+        {
+            try
+            {
+                oTableSelectionChanged( this,
+                    new TableSelectionChangedEventArgs(
+                        aiSelectedIDs, eEventOrigin)
+                    );
+            }
+            catch (Exception oException)
+            {
+                // If exceptions aren't caught here, Excel consumes them
+                // without indicating that anything is wrong.
 
-				ErrorUtil.OnException(oException);
-			}
-		}
+                ErrorUtil.OnException(oException);
+            }
+        }
     }
 
     //*************************************************************************
     //  Method: Sheet_ActivateEvent()
     //
     /// <summary>
-	/// Handles the ActivateEvent event on the worksheet.
+    /// Handles the ActivateEvent event on the worksheet.
     /// </summary>
     //*************************************************************************
 
-	protected void
-	Sheet_ActivateEvent()
-	{
-		AssertValid();
+    protected void
+    Sheet_ActivateEvent()
+    {
+        AssertValid();
 
-		if (m_aiRowIDsToSelectOnActivation == null || !TableExists)
-		{
-			return;
-		}
+        if (m_aiRowIDsToSelectOnActivation == null || !TableExists)
+        {
+            return;
+        }
 
-		// ThisWorkbook_SelectionChangedInGraph() defered the selection of
-		// table rows until the worksheet was activated.  Select the rows now.
+        // ThisWorkbook_SelectionChangedInGraph() defered the selection of
+        // table rows until the worksheet was activated.  Select the rows now.
 
-		m_bIgnoreSelectionEvents = true;
+        m_bIgnoreSelectionEvents = true;
 
-		try
-		{
-			SelectTableRows(m_aiRowIDsToSelectOnActivation);
-		}
-		catch (Exception oException)
-		{
-			// If exceptions aren't caught here, Excel consumes them without
-			// indicating that anything is wrong.
+        try
+        {
+            SelectTableRows(m_aiRowIDsToSelectOnActivation);
+        }
+        catch (Exception oException)
+        {
+            // If exceptions aren't caught here, Excel consumes them without
+            // indicating that anything is wrong.
 
-			ErrorUtil.OnException(oException);
-		}
-		finally
-		{
-			m_aiRowIDsToSelectOnActivation = null;
-			m_bIgnoreSelectionEvents = false;
-		}
-	}
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            m_aiRowIDsToSelectOnActivation = null;
+            m_bIgnoreSelectionEvents = false;
+        }
+    }
 
-	//*************************************************************************
-	//	Method: ThisWorkbook_SelectionChangedInGraph()
-	//
-	/// <summary>
-	/// Handles the SelectionChanged event on ThisWorkbook.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <remarks>
-	/// This event is fired when the user clicks on the NodeXL graph.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: ThisWorkbook_SelectionChangedInGraph()
+    //
+    /// <summary>
+    /// Handles the SelectionChanged event on ThisWorkbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This event is fired when the user clicks on the NodeXL graph.
+    /// </remarks>
+    //*************************************************************************
 
-	protected void
-	ThisWorkbook_SelectionChangedInGraph
-	(
-		Object sender,
-		SelectionChangedEventArgs e
-	)
-	{
-		Debug.Assert(e != null);
-		AssertValid();
+    protected void
+    ThisWorkbook_SelectionChangedInGraph
+    (
+        Object sender,
+        SelectionChangedEventArgs e
+    )
+    {
+        Debug.Assert(e != null);
+        AssertValid();
 
-		if (m_bIgnoreSelectionEvents || !TableExists)
-		{
-			// Prevent an endless loop.
+        if (m_bIgnoreSelectionEvents || !TableExists)
+        {
+            // Prevent an endless loop.
 
-			return;
-		}
+            return;
+        }
 
-		// Get the IDs of the table rows to select.
+        // Get the IDs of the table rows to select.
 
-		Boolean bTableHasEdges = (m_oTable.Name == TableNames.Edges);
+        Boolean bTableHasEdges = (m_oTable.Name == TableNames.Edges);
 
-		Int32 [] aiRowIDsToSelect =
-			(bTableHasEdges ? e.SelectedEdgeIDs : e.SelectedVertexIDs);
+        Int32 [] aiRowIDsToSelect =
+            (bTableHasEdges ? e.SelectedEdgeIDs : e.SelectedVertexIDs);
 
-		if ( !ExcelUtil.WorksheetIsActive(m_oWorksheet.InnerObject) )
-		{
-			// You can't select rows in a worksheet that isn't active, so store
-			// the IDs and let Sheet_ActivateEvent() select them when the sheet
-			// is activated.
+        if ( !ExcelUtil.WorksheetIsActive(m_oWorksheet.InnerObject) )
+        {
+            // You can't select rows in a worksheet that isn't active, so store
+            // the IDs and let Sheet_ActivateEvent() select them when the sheet
+            // is activated.
 
-			m_aiRowIDsToSelectOnActivation = aiRowIDsToSelect;
+            m_aiRowIDsToSelectOnActivation = aiRowIDsToSelect;
 
-			return;
-		}
+            return;
+        }
 
-		m_bIgnoreSelectionEvents = true;
+        m_bIgnoreSelectionEvents = true;
 
-		try
-		{
-			SelectTableRows(aiRowIDsToSelect);
-		}
-		catch (Exception oException)
-		{
-			// If exceptions aren't caught here, Excel consumes them without
-			// indicating that anything is wrong.
+        try
+        {
+            SelectTableRows(aiRowIDsToSelect);
+        }
+        catch (Exception oException)
+        {
+            // If exceptions aren't caught here, Excel consumes them without
+            // indicating that anything is wrong.
 
-			ErrorUtil.OnException(oException);
-		}
-		finally
-		{
-			m_bIgnoreSelectionEvents = false;
-		}
-	}
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            m_bIgnoreSelectionEvents = false;
+        }
+    }
 
     //*************************************************************************
     //  Method: Table_SelectionChange()
     //
     /// <summary>
-	/// Handles the SelectionChange event on the table.
+    /// Handles the SelectionChange event on the table.
     /// </summary>
     ///
-	/// <param name="Target">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="Target">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	Table_SelectionChange
-	(
-		Range Target
-	)
+    Table_SelectionChange
+    (
+        Range Target
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		if (m_bIgnoreSelectionEvents)
-		{
-			// Prevent an endless loop.
+        if (m_bIgnoreSelectionEvents)
+        {
+            // Prevent an endless loop.
 
-			return;
-		}
+            return;
+        }
 
-		m_bIgnoreSelectionEvents = true;
+        m_bIgnoreSelectionEvents = true;
 
-		try
-		{
-			OnSelectionChangedInTable(Target);
-		}
-		catch (Exception oException)
-		{
-			// If exceptions aren't caught here, Excel consumes them without
-			// indicating that anything is wrong.
+        try
+        {
+            OnSelectionChangedInTable(Target);
+        }
+        catch (Exception oException)
+        {
+            // If exceptions aren't caught here, Excel consumes them without
+            // indicating that anything is wrong.
 
-			ErrorUtil.OnException(oException);
-		}
-		finally
-		{
-			m_bIgnoreSelectionEvents = false;
-		}
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            m_bIgnoreSelectionEvents = false;
+        }
     }
 
     //*************************************************************************
     //  Method: Table_Deselected()
     //
     /// <summary>
-	/// Handles the Deselected event on the table.
+    /// Handles the Deselected event on the table.
     /// </summary>
     ///
-	/// <param name="Target">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="Target">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	Table_Deselected
-	(
-		Range Target
-	)
-	{
-		AssertValid();
+    protected void
+    Table_Deselected
+    (
+        Range Target
+    )
+    {
+        AssertValid();
 
-		if (m_bIgnoreSelectionEvents)
-		{
-			// Prevent an endless loop.
+        if (m_bIgnoreSelectionEvents)
+        {
+            // Prevent an endless loop.
 
-			return;
-		}
+            return;
+        }
 
-		// When the user clicks outside of the table,
-		// ListObject.SelectionChange does not fire.  That's why Deselected
-		// must be handled.
+        // When the user clicks outside of the table,
+        // ListObject.SelectionChange does not fire.  That's why Deselected
+        // must be handled.
 
-		// Let the event handler know that there are no table rows selected.
+        // Let the event handler know that there are no table rows selected.
 
-		m_bIgnoreSelectionEvents = true;
+        m_bIgnoreSelectionEvents = true;
 
-		try
-		{
-			FireTableSelectionChanged(WorksheetReaderBase.EmptyIDArray,
-				TableSelectionChangedEventOrigin.SelectionChangedInTable);
-		}
-		finally
-		{
-			m_bIgnoreSelectionEvents = false;
-		}
-	}
+        try
+        {
+            FireTableSelectionChanged(WorksheetReaderBase.EmptyIDArray,
+                TableSelectionChangedEventOrigin.SelectionChangedInTable);
+        }
+        finally
+        {
+            m_bIgnoreSelectionEvents = false;
+        }
+    }
 
 
     //*************************************************************************
@@ -1063,10 +1078,10 @@ public class Sheets1And2Helper : Object
     public void
     AssertValid()
     {
-		Debug.Assert(m_oWorksheet != null);
-		Debug.Assert(m_oTable != null);
-		// m_bIgnoreSelectionEvents
-		// m_aiRowIDsToSelectOnActivation
+        Debug.Assert(m_oWorksheet != null);
+        Debug.Assert(m_oTable != null);
+        // m_bIgnoreSelectionEvents
+        // m_aiRowIDsToSelectOnActivation
     }
 
 
@@ -1074,22 +1089,22 @@ public class Sheets1And2Helper : Object
     //  Protected fields
     //*************************************************************************
 
-	/// The worksheet that owns this object.
+    /// The worksheet that owns this object.
 
-	protected Microsoft.Office.Tools.Excel.Worksheet m_oWorksheet;
+    protected Microsoft.Office.Tools.Excel.Worksheet m_oWorksheet;
 
-	/// The edge or vertex table.
+    /// The edge or vertex table.
 
-	protected Microsoft.Office.Tools.Excel.ListObject m_oTable;
+    protected Microsoft.Office.Tools.Excel.ListObject m_oTable;
 
-	/// true if selection events should be ignored.
+    /// true if selection events should be ignored.
 
-	protected Boolean m_bIgnoreSelectionEvents;
+    protected Boolean m_bIgnoreSelectionEvents;
 
-	/// The IDs of the rows that should be selected when the worksheet is
-	/// activated, or null if no rows should be selected.
+    /// The IDs of the rows that should be selected when the worksheet is
+    /// activated, or null if no rows should be selected.
 
-	protected Int32 [] m_aiRowIDsToSelectOnActivation;
+    protected Int32 [] m_aiRowIDsToSelectOnActivation;
 }
 
 }

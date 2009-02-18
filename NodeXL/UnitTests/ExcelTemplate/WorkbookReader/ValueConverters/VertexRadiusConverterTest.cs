@@ -1,10 +1,10 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.ExcelTemplate;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Visualization.Wpf;
 
 namespace Microsoft.NodeXL.UnitTests
 {
@@ -26,7 +26,7 @@ public class VertexRadiusConverterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="VertexRadiusConverterTest" /> class.
+    /// cref="VertexRadiusConverterTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,8 +48,8 @@ public class VertexRadiusConverterTest : Object
     public void
     SetUp()
     {
-		m_oVertexRadiusConverter = new VertexRadiusConverter();
-	}
+        m_oVertexRadiusConverter = new VertexRadiusConverter();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -80,16 +80,16 @@ public class VertexRadiusConverterTest : Object
     public void
     TestWorkbookToGraph()
     {
-		// Minimum.
+        // Minimum.
 
-		Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook;
+        Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook;
 
-		Single fExpectedRadiusGraph = PerVertexDrawer.MinimumRadius;
+        Single fExpectedRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph;
 
-		Single fRadiusGraph =
-			m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
+        Single fRadiusGraph =
+            m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
 
-		Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
+        Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
     }
 
     //*************************************************************************
@@ -105,16 +105,16 @@ public class VertexRadiusConverterTest : Object
     public void
     TestWorkbookToGraph2()
     {
-		// Maximum.
+        // Maximum.
 
-		Single fRadiusWorkbook = VertexRadiusConverter.MaximumRadiusWorkbook;
+        Single fRadiusWorkbook = VertexRadiusConverter.MaximumRadiusWorkbook;
 
-		Single fExpectedRadiusGraph = PerVertexDrawer.MaximumRadius;
+        Single fExpectedRadiusGraph = VertexRadiusConverter.MaximumRadiusGraph;
 
-		Single fRadiusGraph =
-			m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
+        Single fRadiusGraph =
+            m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
 
-		Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
+        Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
     }
 
     //*************************************************************************
@@ -130,20 +130,20 @@ public class VertexRadiusConverterTest : Object
     public void
     TestWorkbookToGraph3()
     {
-		// Midpoint.
+        // Midpoint.
 
-		Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook
-			+ (VertexRadiusConverter.MaximumRadiusWorkbook -
-				VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
+        Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook
+            + (VertexRadiusConverter.MaximumRadiusWorkbook -
+                VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
 
-		Single fExpectedRadiusGraph = PerVertexDrawer.MinimumRadius
-			+ (PerVertexDrawer.MaximumRadius - PerVertexDrawer.MinimumRadius)
-			/ 2F;
+        Single fExpectedRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph
+            + (VertexRadiusConverter.MaximumRadiusGraph -
+                VertexRadiusConverter.MinimumRadiusGraph) / 2F;
 
-		Single fRadiusGraph =
-			m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
+        Single fRadiusGraph =
+            m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
 
-		Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
+        Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
     }
 
     //*************************************************************************
@@ -159,17 +159,17 @@ public class VertexRadiusConverterTest : Object
     public void
     TestWorkbookToGraph4()
     {
-		// Below minimum.
+        // Below minimum.
 
-		Single fRadiusWorkbook =
-			VertexRadiusConverter.MinimumRadiusWorkbook - 1F;
+        Single fRadiusWorkbook =
+            VertexRadiusConverter.MinimumRadiusWorkbook - 1F;
 
-		Single fExpectedRadiusGraph = PerVertexDrawer.MinimumRadius;
+        Single fExpectedRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph;
 
-		Single fRadiusGraph =
-			m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
+        Single fRadiusGraph =
+            m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
 
-		Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
+        Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
     }
 
     //*************************************************************************
@@ -185,17 +185,17 @@ public class VertexRadiusConverterTest : Object
     public void
     TestWorkbookToGraph5()
     {
-		// Above maximum.
+        // Above maximum.
 
-		Single fRadiusWorkbook =
-			VertexRadiusConverter.MaximumRadiusWorkbook + 1F;
+        Single fRadiusWorkbook =
+            VertexRadiusConverter.MaximumRadiusWorkbook + 1F;
 
-		Single fExpectedRadiusGraph = PerVertexDrawer.MaximumRadius;
+        Single fExpectedRadiusGraph = VertexRadiusConverter.MaximumRadiusGraph;
 
-		Single fRadiusGraph =
-			m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
+        Single fRadiusGraph =
+            m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook);
 
-		Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
+        Assert.AreEqual(fExpectedRadiusGraph, fRadiusGraph);
     }
 
     //*************************************************************************
@@ -211,17 +211,17 @@ public class VertexRadiusConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-		// Minimum.
+        // Minimum.
 
-		Single fRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph;
+        Single fRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph;
 
-		Single fExpectedRadiusWorkbook =
+        Single fExpectedRadiusWorkbook =
             VertexRadiusConverter.MinimumRadiusWorkbook;
 
-		Single fRadiusWorkbook =
-			m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
+        Single fRadiusWorkbook =
+            m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
-		Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
+        Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
     }
 
     //*************************************************************************
@@ -237,17 +237,17 @@ public class VertexRadiusConverterTest : Object
     public void
     TestGraphToWorkbook2()
     {
-		// Maximum.
+        // Maximum.
 
-		Single fRadiusGraph = VertexRadiusConverter.MaximumRadiusGraph;
+        Single fRadiusGraph = VertexRadiusConverter.MaximumRadiusGraph;
 
-		Single fExpectedRadiusWorkbook =
-			VertexRadiusConverter.MaximumRadiusWorkbook;
+        Single fExpectedRadiusWorkbook =
+            VertexRadiusConverter.MaximumRadiusWorkbook;
 
-		Single fRadiusWorkbook =
-			m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
+        Single fRadiusWorkbook =
+            m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
-		Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
+        Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
     }
 
     //*************************************************************************
@@ -263,21 +263,21 @@ public class VertexRadiusConverterTest : Object
     public void
     TestGraphToWorkbook3()
     {
-		// Midpoint.
+        // Midpoint.
 
-		Single fRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph
-			+ (VertexRadiusConverter.MaximumRadiusGraph -
-				VertexRadiusConverter.MinimumRadiusGraph) / 2F;
+        Single fRadiusGraph = VertexRadiusConverter.MinimumRadiusGraph
+            + (VertexRadiusConverter.MaximumRadiusGraph -
+                VertexRadiusConverter.MinimumRadiusGraph) / 2F;
 
-		Single fExpectedRadiusWorkbook =
-			VertexRadiusConverter.MinimumRadiusWorkbook
-			+ (VertexRadiusConverter.MaximumRadiusWorkbook -
-				VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
+        Single fExpectedRadiusWorkbook =
+            VertexRadiusConverter.MinimumRadiusWorkbook
+            + (VertexRadiusConverter.MaximumRadiusWorkbook -
+                VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
 
-		Single fRadiusWorkbook =
-			m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
+        Single fRadiusWorkbook =
+            m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
-		Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
+        Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
     }
 
     //*************************************************************************
@@ -293,18 +293,18 @@ public class VertexRadiusConverterTest : Object
     public void
     TestGraphToWorkbook4()
     {
-		// Below minimum.
+        // Below minimum.
 
-		Single fRadiusGraph =
-			VertexRadiusConverter.MinimumRadiusGraph - 1F;
+        Single fRadiusGraph =
+            VertexRadiusConverter.MinimumRadiusGraph - 1F;
 
-		Single fExpectedRadiusWorkbook =
-			VertexRadiusConverter.MinimumRadiusWorkbook;
+        Single fExpectedRadiusWorkbook =
+            VertexRadiusConverter.MinimumRadiusWorkbook;
 
-		Single fRadiusWorkbook =
-			m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
+        Single fRadiusWorkbook =
+            m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
-		Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
+        Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
     }
 
     //*************************************************************************
@@ -320,18 +320,18 @@ public class VertexRadiusConverterTest : Object
     public void
     TestGraphToWorkbook5()
     {
-		// Above maximum.
+        // Above maximum.
 
-		Single fRadiusGraph =
-			VertexRadiusConverter.MaximumRadiusGraph + 1F;
+        Single fRadiusGraph =
+            VertexRadiusConverter.MaximumRadiusGraph + 1F;
 
-		Single fExpectedRadiusWorkbook =
-			VertexRadiusConverter.MaximumRadiusWorkbook;
+        Single fExpectedRadiusWorkbook =
+            VertexRadiusConverter.MaximumRadiusWorkbook;
 
-		Single fRadiusWorkbook =
-			m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
+        Single fRadiusWorkbook =
+            m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
-		Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
+        Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
     }
 
 

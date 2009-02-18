@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Windows.Forms;
@@ -11,7 +11,7 @@ using Microsoft.Research.CommunityTechnologies.AppLib;
 namespace Microsoft.NodeXL.Common
 {
 //*****************************************************************************
-//	Class: RegisterUser
+//  Class: RegisterUser
 //
 /// <summary>
 /// Registers a user by sending his email address to a Web service.
@@ -26,121 +26,121 @@ namespace Microsoft.NodeXL.Common
 
 public partial class RegisterUser : UserControl
 {
-	//*************************************************************************
-	//	Constructor: RegisterUser()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see cref="RegisterUser" /> class.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: RegisterUser()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RegisterUser" /> class.
+    /// </summary>
+    //*************************************************************************
 
-	public RegisterUser()
-	{
-		InitializeComponent();
+    public RegisterUser()
+    {
+        InitializeComponent();
 
-		m_sEmailAddress = String.Empty;
+        m_sEmailAddress = String.Empty;
 
-		DoDataExchange(false);
+        DoDataExchange(false);
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
-	//*************************************************************************
-	//	Event: Done
-	//
-	/// <summary>
-	///	Occurs when the user registers or cancels.
-	/// </summary>
-	///
-	/// <remarks>
-	/// The parent form should handle this event by closing itself.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: Done
+    //
+    /// <summary>
+    /// Occurs when the user registers or cancels.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The parent form should handle this event by closing itself.
+    /// </remarks>
+    //*************************************************************************
 
-	public event EventHandler Done;
+    public event EventHandler Done;
 
 
-	//*************************************************************************
-	//	Method: DoDataExchange()
-	//
-	/// <summary>
-	///	Transfers data between the dialog's fields and its controls.
-	/// </summary>
-	///
-	/// <param name="bFromControls">
-	///	true to transfer data from the dialog's controls to its fields, false
-	///	for the other direction.
-	/// </param>
-	///
-	/// <returns>
-	///	true if the transfer was successful.
-	/// </returns>
-	//*************************************************************************
-
-	protected Boolean
-	DoDataExchange
-	(
-		Boolean bFromControls
-	)
-	{
-		if (bFromControls)
-		{
-			if ( !FormUtil.ValidateRequiredTextBox(txbEmailAddress,
-				"Enter an email address.", out m_sEmailAddress) )
-			{
-				return (false);
-			}
-		}
-		else
-		{
-			txbEmailAddress.Text = m_sEmailAddress;
-		}
-
-		return (true);
-	}
-
-	//*************************************************************************
-	//	Method: RegisterTheUser()
-	//
-	/// <summary>
-	/// Registers the user.
-	/// </summary>
-	///
-	/// <returns>
-	/// true if successful.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: DoDataExchange()
+    //
+    /// <summary>
+    /// Transfers data between the dialog's fields and its controls.
+    /// </summary>
+    ///
+    /// <param name="bFromControls">
+    /// true to transfer data from the dialog's controls to its fields, false
+    /// for the other direction.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the transfer was successful.
+    /// </returns>
+    //*************************************************************************
 
     protected Boolean
-	RegisterTheUser()
+    DoDataExchange
+    (
+        Boolean bFromControls
+    )
     {
-		AssertValid();
+        if (bFromControls)
+        {
+            if ( !FormUtil.ValidateRequiredTextBox(txbEmailAddress,
+                "Enter an email address.", out m_sEmailAddress) )
+            {
+                return (false);
+            }
+        }
+        else
+        {
+            txbEmailAddress.Text = m_sEmailAddress;
+        }
 
-		UserRegisterer oUserRegisterer = new UserRegisterer();
+        return (true);
+    }
 
-		try
-		{
-			oUserRegisterer.RegisterUser(m_sEmailAddress);
+    //*************************************************************************
+    //  Method: RegisterTheUser()
+    //
+    /// <summary>
+    /// Registers the user.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //*************************************************************************
 
-			return (true);
-		}
-		catch (RegisterUserException oRegisterUserException)
-		{
-			FormUtil.ShowWarning(oRegisterUserException.Message);
-		}
-		catch (Exception oException)
-		{
-			FormUtil.ShowWarning( String.Format(
+    protected Boolean
+    RegisterTheUser()
+    {
+        AssertValid();
 
-				"An unexpected problem occurred.\r\n\r\n"
-				+ "Details:\r\n\r\n"
-				+ "{0}"
-				,
-				ExceptionUtil.GetMessageTrace(oException)
-				) );
-		}
+        UserRegisterer oUserRegisterer = new UserRegisterer();
 
-		return (false);
+        try
+        {
+            oUserRegisterer.RegisterUser(m_sEmailAddress);
+
+            return (true);
+        }
+        catch (RegisterUserException oRegisterUserException)
+        {
+            FormUtil.ShowWarning(oRegisterUserException.Message);
+        }
+        catch (Exception oException)
+        {
+            FormUtil.ShowWarning( String.Format(
+
+                "An unexpected problem occurred.\r\n\r\n"
+                + "Details:\r\n\r\n"
+                + "{0}"
+                ,
+                ExceptionUtil.GetMessageTrace(oException)
+                ) );
+        }
+
+        return (false);
     }
 
 
@@ -148,174 +148,174 @@ public partial class RegisterUser : UserControl
     //  Method: FireDone()
     //
     /// <summary>
-	/// Fires the <see cref="Done" /> event if appropriate.
+    /// Fires the <see cref="Done" /> event if appropriate.
     /// </summary>
     //*************************************************************************
 
     private void
-	FireDone()
+    FireDone()
     {
-		AssertValid();
+        AssertValid();
 
-		EventHandler oDone = this.Done;
+        EventHandler oDone = this.Done;
 
-		if (oDone != null)
-		{
-			oDone(this, EventArgs.Empty);
-		}
+        if (oDone != null)
+        {
+            oDone(this, EventArgs.Empty);
+        }
     }
 
-	//*************************************************************************
-	//	Method: lnkPrivacy_LinkClicked()
-	//
-	/// <summary>
-	/// Handles the LinkClicked event on the lnkPrivacy LinkButton.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: lnkPrivacy_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkPrivacy LinkButton.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	lnkPrivacy_LinkClicked
-	(
-		object sender,
-		LinkLabelLinkClickedEventArgs e
-	)
+    lnkPrivacy_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		FormUtil.ShowInformation( String.Format(
+        FormUtil.ShowInformation( String.Format(
 
-			"We are pleased that you are using Microsoft NodeXL."
-			+ "\r\n\r\n"
-			+ "Because NodeXL is a research project, we are interested in"
-			+ " occasionally contacting you to ask about your experiences with"
-			+ " NodeXL and to inform you about updates, success"
-			+ " stories, related publications, bugs, and so on."
-			+ "\r\n\r\n"
-			+ "We will not sell or share this email list with other"
-			+ " individuals or organizations.  This list is only for the"
-			+ " NodeXL project."
-			+ "\r\n\r\n"
-			+ "The following information will be registered:"
-			+ "\r\n\r\n"
-			+ "1. Your email address"
-			+ "\r\n"
-			+ "2. The version number of NodeXL"
-			+ "\r\n"
-			+ "3. The time you registered"
-			+ "\r\n\r\n"
-			+ "If you have questions or comments, please go to {0}."
-			+ "\r\n\r\n"
-			+ "(Last updated December 15, 2008.)"
-			,
-			ProjectInformation.DiscussionUrl
-			) );
+            "We are pleased that you are using Microsoft NodeXL."
+            + "\r\n\r\n"
+            + "Because NodeXL is a research project, we are interested in"
+            + " occasionally contacting you to ask about your experiences with"
+            + " NodeXL and to inform you about updates, success"
+            + " stories, related publications, bugs, and so on."
+            + "\r\n\r\n"
+            + "We will not sell or share this email list with other"
+            + " individuals or organizations.  This list is only for the"
+            + " NodeXL project."
+            + "\r\n\r\n"
+            + "The following information will be registered:"
+            + "\r\n\r\n"
+            + "1. Your email address"
+            + "\r\n"
+            + "2. The version number of NodeXL"
+            + "\r\n"
+            + "3. The time you registered"
+            + "\r\n\r\n"
+            + "If you have questions or comments, please go to {0}."
+            + "\r\n\r\n"
+            + "(Last updated December 15, 2008.)"
+            ,
+            ProjectInformation.DiscussionUrl
+            ) );
     }
 
-	//*************************************************************************
-	//	Method: btnOK_Click()
-	//
-	/// <summary>
-	/// Handles the Click event on the btnOK button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnOK_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnOK button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnOK_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnOK_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		if ( !DoDataExchange(true) )
-		{
-			return;
-		}
+        if ( !DoDataExchange(true) )
+        {
+            return;
+        }
 
-		this.UseWaitCursor = true;
+        this.UseWaitCursor = true;
 
-		if ( RegisterTheUser() )
-		{
-			FormUtil.ShowInformation(
-				"Thank you for registering."
-				);
+        if ( RegisterTheUser() )
+        {
+            FormUtil.ShowInformation(
+                "Thank you for registering."
+                );
 
-			FireDone();
-		}
+            FireDone();
+        }
 
         this.UseWaitCursor = false;
     }
 
-	//*************************************************************************
-	//	Method: btnCancel_Click()
-	//
-	/// <summary>
-	/// Handles the Click event on the btnCancel button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnCancel_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCancel button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnCancel_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnCancel_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		FireDone();
+        FireDone();
     }
 
 
-	//*************************************************************************
-	//	Method: AssertValid()
-	//
-	/// <summary>
-	///	Asserts if the object is in an invalid state.  Debug-only.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: AssertValid()
+    //
+    /// <summary>
+    /// Asserts if the object is in an invalid state.  Debug-only.
+    /// </summary>
+    //*************************************************************************
 
-	[Conditional("DEBUG")] 
+    [Conditional("DEBUG")] 
 
-	public void
-	AssertValid()
-	{
-		Debug.Assert(m_sEmailAddress != null);
-	}
+    public void
+    AssertValid()
+    {
+        Debug.Assert(m_sEmailAddress != null);
+    }
 
 
-	//*************************************************************************
-	//	Protected fields
-	//*************************************************************************
+    //*************************************************************************
+    //  Protected fields
+    //*************************************************************************
 
-	/// Email address to register.
+    /// Email address to register.
 
-	protected String m_sEmailAddress;
+    protected String m_sEmailAddress;
 }
 
 }

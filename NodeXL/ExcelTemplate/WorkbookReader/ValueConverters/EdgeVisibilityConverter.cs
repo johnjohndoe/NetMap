@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -16,50 +16,50 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //*****************************************************************************
 
 public class EdgeVisibilityConverter :
-	TextValueConverterBase<EdgeWorksheetReader.Visibility>
+    TextValueConverterBase<EdgeWorksheetReader.Visibility>
 {
     //*************************************************************************
     //  Constructor: EdgeVisibilityConverter()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="EdgeVisibilityConverter" /> class.
+    /// cref="EdgeVisibilityConverter" /> class.
     /// </summary>
     //*************************************************************************
 
     public EdgeVisibilityConverter()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
-	//*************************************************************************
-	//	Method: GetGraphValueInfos()
-	//
-	/// <summary>
-	///	Gets an array of GraphValueInfo objects, one for each valid graph
-	/// value.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: GetGraphValueInfos()
+    //
+    /// <summary>
+    /// Gets an array of GraphValueInfo objects, one for each valid graph
+    /// value.
+    /// </summary>
+    //*************************************************************************
 
-	protected override GraphValueInfo []
-	GetGraphValueInfos()
-	{
-		AssertValid();
+    protected override GraphValueInfo []
+    GetGraphValueInfos()
+    {
+        AssertValid();
 
-		return ( new GraphValueInfo [] {
+        return ( new GraphValueInfo [] {
 
-			new GraphValueInfo( EdgeWorksheetReader.Visibility.Show,
-				new String [] {"Show (1)", "1",} ),
+            new GraphValueInfo( EdgeWorksheetReader.Visibility.Show,
+                new String [] {"Show (1)", "1",} ),
 
-			new GraphValueInfo( EdgeWorksheetReader.Visibility.Skip,
-				new String [] {"Skip (0)", "0",} ),
+            new GraphValueInfo( EdgeWorksheetReader.Visibility.Skip,
+                new String [] {"Skip (0)", "0",} ),
 
-			new GraphValueInfo( EdgeWorksheetReader.Visibility.Hide,
-				new String [] {"Hide (2)", "2",} ),
-			} );
-	}
+            new GraphValueInfo( EdgeWorksheetReader.Visibility.Hide,
+                new String [] {"Hide (2)", "2",} ),
+            } );
+    }
 
 
     //*************************************************************************
@@ -75,9 +75,9 @@ public class EdgeVisibilityConverter :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -85,7 +85,7 @@ public class EdgeVisibilityConverter :
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

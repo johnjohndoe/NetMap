@@ -28,22 +28,22 @@ public class BinaryHeapItem<TKey, TValue> : Object
     //
     /// <overloads>
     /// Initializes a new instance of the <see
-	/// cref="BinaryHeapItem{TKey, TValue}" /> class.
+    /// cref="BinaryHeapItem{TKey, TValue}" /> class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="BinaryHeapItem{TKey, TValue}" /> class with default values.
+    /// cref="BinaryHeapItem{TKey, TValue}" /> class with default values.
     /// </summary>
     //*************************************************************************
 
     public BinaryHeapItem()
-	:
-	this( default(TKey), default(TValue) )
+    :
+    this( default(TKey), default(TValue) )
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -51,28 +51,28 @@ public class BinaryHeapItem<TKey, TValue> : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="BinaryHeapItem{TKey, TValue}" /> class with specified values.
+    /// cref="BinaryHeapItem{TKey, TValue}" /> class with specified values.
     /// </summary>
-	///
-	/// <param name="key">
-	/// The item's unique key.
-	/// </param>
-	///
-	/// <param name="value">
-	/// The item's value.
-	/// </param>
+    ///
+    /// <param name="key">
+    /// The item's unique key.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// The item's value.
+    /// </param>
     //*************************************************************************
 
     public BinaryHeapItem
-	(
-		TKey key,
-		TValue value
-	)
+    (
+        TKey key,
+        TValue value
+    )
     {
-		m_oKey = key;
-		m_oValue = value;
+        m_oKey = key;
+        m_oValue = value;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -99,7 +99,7 @@ public class BinaryHeapItem<TKey, TValue> : Object
 
         set
         {
-			m_oKey = value;
+            m_oKey = value;
 
             AssertValid();
         }
@@ -129,7 +129,7 @@ public class BinaryHeapItem<TKey, TValue> : Object
 
         set
         {
-			m_oValue = value;
+            m_oValue = value;
 
             AssertValid();
         }
@@ -149,8 +149,8 @@ public class BinaryHeapItem<TKey, TValue> : Object
     public void
     AssertValid()
     {
-		// m_oKey
-		// m_oValue
+        // m_oKey
+        // m_oValue
     }
 
 
@@ -158,13 +158,13 @@ public class BinaryHeapItem<TKey, TValue> : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Key.
+    /// Key.
 
-	protected TKey m_oKey;
+    protected TKey m_oKey;
 
-	/// Value.
+    /// Value.
 
-	protected TValue m_oValue;
+    protected TValue m_oValue;
 }
 
 }

@@ -1,11 +1,12 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Algorithms;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -35,612 +36,634 @@ public class GraphMetricCalculationManager : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="GraphMetricCalculationManager" /> class.
+    /// cref="GraphMetricCalculationManager" /> class.
     /// </summary>
     //*************************************************************************
 
     public GraphMetricCalculationManager()
     {
-		m_oBackgroundWorker = null;
+        m_oBackgroundWorker = null;
 
-		AssertValid();
+        AssertValid();
     }
 
-	//*************************************************************************
-	//	Property: IsBusy
-	//
-	/// <summary>
-	/// Gets a flag indicating whether an asynchronous operation is in
-	/// progress.
-	/// </summary>
-	///
-	/// <value>
-	/// true if an asynchronous operation is in progress.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: IsBusy
+    //
+    /// <summary>
+    /// Gets a flag indicating whether an asynchronous operation is in
+    /// progress.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if an asynchronous operation is in progress.
+    /// </value>
+    //*************************************************************************
 
-	public Boolean
-	IsBusy
-	{
-		get
-		{
-			return (m_oBackgroundWorker != null && m_oBackgroundWorker.IsBusy);
-		}
-	}
+    public Boolean
+    IsBusy
+    {
+        get
+        {
+            return (m_oBackgroundWorker != null && m_oBackgroundWorker.IsBusy);
+        }
+    }
 
     //*************************************************************************
     //  Method: CalculateGraphMetricsAsync()
     //
     /// <overloads>
-	/// Asynchronously calculates one or more sets of graph metrics and returns
-	/// the results as an array of <see cref="GraphMetricColumn" /> objects.
+    /// Asynchronously calculates one or more sets of graph metrics and returns
+    /// the results as an array of <see cref="GraphMetricColumn" /> objects.
     /// </overloads>
-	///
+    ///
     /// <summary>
-	/// Asynchronously calculates one or more sets of a default list of graph
-	/// metrics and returns the results as an array of <see
-	/// cref="GraphMetricColumn" /> objects.
+    /// Asynchronously calculates one or more sets of a default list of graph
+    /// metrics and returns the results as an array of <see
+    /// cref="GraphMetricColumn" /> objects.
     /// </summary>
-	///
-	/// <param name="workbook">
+    ///
+    /// <param name="workbook">
     /// Workbook containing the graph contents.
-	/// </param>
-	///
-	/// <param name="graphMetricUserSettings">
-	/// User settings for calculating graph metrics.
-	/// </param>
-	///
+    /// </param>
+    ///
+    /// <param name="graphMetricUserSettings">
+    /// User settings for calculating graph metrics.
+    /// </param>
+    ///
     /// <remarks>
-	/// (See the other overload for more details.)
+    /// (See the other overload for more details.)
     /// </remarks>
     //*************************************************************************
 
-	public void
+    public void
     CalculateGraphMetricsAsync
-	(
+    (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-		GraphMetricUserSettings graphMetricUserSettings
-	)
+        GraphMetricUserSettings graphMetricUserSettings
+    )
     {
-		Debug.Assert(workbook != null);
-		Debug.Assert(graphMetricUserSettings != null);
+        Debug.Assert(workbook != null);
+        Debug.Assert(graphMetricUserSettings != null);
         AssertValid();
 
-		// Create the default list of graph metrics.
+        // Create the default list of graph metrics.
 
-		IGraphMetricCalculator[] aoAllGraphMetricCalculators =
-			new IGraphMetricCalculator[] {
+        IGraphMetricCalculator2[] aoAllGraphMetricCalculators =
+            new IGraphMetricCalculator2[] {
 
-				new VertexDegreeCalculator(),
-				new ClusteringCoefficientCalculator(),
-				new BetweennessCentralityCalculator(),
-				new OverallMetricCalculator(),
-				};
+                new VertexDegreeCalculator2(),
+                new BetweennessCentralityCalculator2(),
+                new ClosenessCentralityCalculator2(),
+                new EigenvectorCentralityCalculator2(),
+                new ClusteringCoefficientCalculator2(),
+                new OverallMetricCalculator2(),
+                };
 
-		this.CalculateGraphMetricsAsync(
-			workbook, aoAllGraphMetricCalculators, graphMetricUserSettings);
+        this.CalculateGraphMetricsAsync(
+            workbook, aoAllGraphMetricCalculators, graphMetricUserSettings);
     }
 
     //*************************************************************************
     //  Method: CalculateGraphMetricsAsync()
     //
     /// <summary>
-	/// Asynchronously calculates one or more sets of specified graph metrics
-	/// and returns the results as an array of <see
-	/// cref="GraphMetricColumn" /> objects.
+    /// Asynchronously calculates one or more sets of specified graph metrics
+    /// and returns the results as an array of <see
+    /// cref="GraphMetricColumn" /> objects.
     /// </summary>
-	///
-	/// <param name="workbook">
+    ///
+    /// <param name="workbook">
     /// Workbook containing the graph contents.
-	/// </param>
-	///
-	/// <param name="graphMetricCalculators">
-	/// An array of <see cref="IGraphMetricCalculator" /> implementations, one
-	/// for each set of graph metrics that should be calculated.
-	/// </param>
-	///
-	/// <param name="graphMetricUserSettings">
-	/// User settings for calculating graph metrics.
-	/// </param>
-	///
+    /// </param>
+    ///
+    /// <param name="graphMetricCalculators">
+    /// An array of <see cref="IGraphMetricCalculator2" /> implementations, one
+    /// for each set of graph metrics that should be calculated.
+    /// </param>
+    ///
+    /// <param name="graphMetricUserSettings">
+    /// User settings for calculating graph metrics.
+    /// </param>
+    ///
     /// <remarks>
-	/// For each <see cref="IGraphMetricCalculator" /> implementation in the
-	/// <paramref name="graphMetricCalculators" /> array, this method calls the
-	/// implementation's <see
-	/// cref="IGraphMetricCalculator.CalculateGraphMetrics" /> method.  The
-	/// <see cref="GraphMetricColumn" /> objects returned by each
-	/// implementation are aggregated.  When graph metric calculations
-	/// complete, the <see cref="GraphMetricCalculationCompleted" /> event
-	/// fires and the aggregated results can be obtained via the <see
-	/// cref="RunWorkerCompletedEventArgs.Result" /> property.
-	///
-	/// <para>
-	/// To cancel the calculations, call <see cref="CancelAsync" />.
-	/// </para>
-	///
-	/// <para>
-	/// If <paramref name="workbook" /> contains invalid graph data, a <see
-	/// cref="WorkbookFormatException" /> is thrown on the caller's thread
-	/// before asynchronous calculations begin.
-	/// </para>
-	///
-	/// <para>
-	/// If <paramref name="workbook" /> contains duplicate edges, a <see
-	/// cref="DuplicateEdgeDetected" /> event is fired on the caller's thread
-	/// before asynchronous calculations begin.  Because duplicate edges can
-	/// cause unexpected results with some graph calculators, the event handler
-	/// is given the opportunity to cancel all calculations by setting the
-	/// event's <see cref="CancelEventArgs.Cancel" /> property to true.  If
-	/// there is no event handler or the handler leaves the <see
-	/// cref="CancelEventArgs.Cancel" /> property set to false, calculations
-	/// continue anyway.
-	/// </para>
-	///
+    /// For each <see cref="IGraphMetricCalculator2" /> implementation in the
+    /// <paramref name="graphMetricCalculators" /> array, this method calls the
+    /// implementation's <see
+    /// cref="IGraphMetricCalculator2.TryCalculateGraphMetrics" /> method.  The
+    /// <see cref="GraphMetricColumn" /> objects returned by each
+    /// implementation are aggregated.  When graph metric calculations
+    /// complete, the <see cref="GraphMetricCalculationCompleted" /> event
+    /// fires and the aggregated results can be obtained via the <see
+    /// cref="RunWorkerCompletedEventArgs.Result" /> property.
+    ///
+    /// <para>
+    /// To cancel the calculations, call <see cref="CancelAsync" />.
+    /// </para>
+    ///
+    /// <para>
+    /// If <paramref name="workbook" /> contains invalid graph data, a <see
+    /// cref="WorkbookFormatException" /> is thrown on the caller's thread
+    /// before asynchronous calculations begin.
+    /// </para>
+    ///
+    /// <para>
+    /// If <paramref name="workbook" /> contains duplicate edges, a <see
+    /// cref="DuplicateEdgeDetected" /> event is fired on the caller's thread
+    /// before asynchronous calculations begin.  Because duplicate edges can
+    /// cause unexpected results with some graph calculators, the event handler
+    /// is given the opportunity to cancel all calculations by setting the
+    /// event's <see cref="CancelEventArgs.Cancel" /> property to true.  If
+    /// there is no event handler or the handler leaves the <see
+    /// cref="CancelEventArgs.Cancel" /> property set to false, calculations
+    /// continue anyway.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
-	public void
+    public void
     CalculateGraphMetricsAsync
-	(
+    (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-		IGraphMetricCalculator [] graphMetricCalculators,
-		GraphMetricUserSettings graphMetricUserSettings
-	)
+        IGraphMetricCalculator2 [] graphMetricCalculators,
+        GraphMetricUserSettings graphMetricUserSettings
+    )
     {
-		Debug.Assert(workbook != null);
-		Debug.Assert(graphMetricCalculators != null);
-		Debug.Assert(graphMetricUserSettings != null);
+        Debug.Assert(workbook != null);
+        Debug.Assert(graphMetricCalculators != null);
+        Debug.Assert(graphMetricUserSettings != null);
         AssertValid();
 
-		const String MethodName = "CalculateGraphMetricsAsync";
+        const String MethodName = "CalculateGraphMetricsAsync";
 
-		if (this.IsBusy)
-		{
-			throw new InvalidOperationException( String.Format(
+        if (this.IsBusy)
+        {
+            throw new InvalidOperationException( String.Format(
 
-				"{0}:{1}: An asynchronous operation is already in progress."
-				,
-				this.ClassName,
-				MethodName
-				) );
-		}
+                "{0}:{1}: An asynchronous operation is already in progress."
+                ,
+                this.ClassName,
+                MethodName
+                ) );
+        }
 
-		// Read the workbook into a graph.  Do this from the calling thread to
-		// avoid reading the Excel UI from a background thread.
+        // Read the workbook into a graph.  Do this from the calling thread to
+        // avoid reading the Excel UI from a background thread.
 
-		IGraph oGraph = ReadWorkbook(workbook);
+        IGraph oGraph = ReadWorkbook(workbook);
 
-		// Check for duplicate edges, which can cause unexpected results with
-		// some graph calculators.
+        // Check for duplicate edges, which can cause unexpected results with
+        // some graph calculators.
 
-		DuplicateEdgeDetector oDuplicateEdgeDetector =
-			new DuplicateEdgeDetector(oGraph);
+        DuplicateEdgeDetector oDuplicateEdgeDetector =
+            new DuplicateEdgeDetector(oGraph);
 
-		if (oDuplicateEdgeDetector.GraphContainsDuplicateEdges)
-		{
-			CancelEventHandler oDuplicateEdgeDetected =
-				this.DuplicateEdgeDetected;
+        if (oDuplicateEdgeDetector.GraphContainsDuplicateEdges)
+        {
+            CancelEventHandler oDuplicateEdgeDetected =
+                this.DuplicateEdgeDetected;
 
-			if (oDuplicateEdgeDetected != null)
-			{
-				// Fire a DuplicateEdgeDetected event and give the handler a
-				// chance to cancel calculations.
+            if (oDuplicateEdgeDetected != null)
+            {
+                // Fire a DuplicateEdgeDetected event and give the handler a
+                // chance to cancel calculations.
 
-				CancelEventArgs oCancelEventArgs = new CancelEventArgs(false);
+                CancelEventArgs oCancelEventArgs = new CancelEventArgs(false);
 
-				oDuplicateEdgeDetected(this, oCancelEventArgs);
+                oDuplicateEdgeDetected(this, oCancelEventArgs);
 
-				if (oCancelEventArgs.Cancel)
-				{
-					return;
-				}
-			}
-		}
+                if (oCancelEventArgs.Cancel)
+                {
+                    return;
+                }
+            }
+        }
 
-		// Wrap the arguments in an object that can be passed to
-		// BackgroundWorker.RunWorkerAsync().
+        // Wrap the arguments in an object that can be passed to
+        // BackgroundWorker.RunWorkerAsync().
 
-		CalculateGraphMetricsAsyncArgs oCalculateGraphMetricsAsyncArgs =
-			new CalculateGraphMetricsAsyncArgs();
+        CalculateGraphMetricsAsyncArgs oCalculateGraphMetricsAsyncArgs =
+            new CalculateGraphMetricsAsyncArgs();
 
-		oCalculateGraphMetricsAsyncArgs.Graph = oGraph;
+        oCalculateGraphMetricsAsyncArgs.Graph = oGraph;
 
-		oCalculateGraphMetricsAsyncArgs.GraphMetricCalculators =
-			graphMetricCalculators;
+        oCalculateGraphMetricsAsyncArgs.GraphMetricCalculators =
+            graphMetricCalculators;
 
-		oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings =
-			graphMetricUserSettings;
+        oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings =
+            graphMetricUserSettings;
 
-		oCalculateGraphMetricsAsyncArgs.DuplicateEdgeDetector =
-			oDuplicateEdgeDetector;
+        oCalculateGraphMetricsAsyncArgs.DuplicateEdgeDetector =
+            oDuplicateEdgeDetector;
 
-		// Create a BackgroundWorker and handle its events.
+        // Create a BackgroundWorker and handle its events.
 
-		m_oBackgroundWorker = new BackgroundWorker();
+        m_oBackgroundWorker = new BackgroundWorker();
 
         m_oBackgroundWorker.WorkerReportsProgress = true;
         m_oBackgroundWorker.WorkerSupportsCancellation = true;
 
-		m_oBackgroundWorker.DoWork += new DoWorkEventHandler(
-			BackgroundWorker_DoWork);
+        m_oBackgroundWorker.DoWork += new DoWorkEventHandler(
+            BackgroundWorker_DoWork);
 
-		m_oBackgroundWorker.ProgressChanged +=
-			new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
+        m_oBackgroundWorker.ProgressChanged +=
+            new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
 
-		m_oBackgroundWorker.RunWorkerCompleted +=
-			new RunWorkerCompletedEventHandler(
-				BackgroundWorker_RunWorkerCompleted);
+        m_oBackgroundWorker.RunWorkerCompleted +=
+            new RunWorkerCompletedEventHandler(
+                BackgroundWorker_RunWorkerCompleted);
 
-		m_oBackgroundWorker.RunWorkerAsync(oCalculateGraphMetricsAsyncArgs);
+        m_oBackgroundWorker.RunWorkerAsync(oCalculateGraphMetricsAsyncArgs);
     }
 
     //*************************************************************************
     //  Method: CancelAsync()
     //
     /// <summary>
-	/// Cancels the graph metric calculations started by <see
-	/// cref="CalculateGraphMetricsAsync(
-	/// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
+    /// Cancels the graph metric calculations started by <see
+    /// cref="CalculateGraphMetricsAsync(
+    /// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
     /// </summary>
-	///
+    ///
     /// <remarks>
-	/// When the calculations cancels, the <see
-	/// cref="GraphMetricCalculationCompleted" /> event fires.  The <see
-	/// cref="AsyncCompletedEventArgs.Cancelled" /> property will be true.
+    /// When the calculations cancels, the <see
+    /// cref="GraphMetricCalculationCompleted" /> event fires.  The <see
+    /// cref="AsyncCompletedEventArgs.Cancelled" /> property will be true.
     /// </remarks>
     //*************************************************************************
 
-	public void
+    public void
     CancelAsync()
     {
         AssertValid();
 
-		if (this.IsBusy)
-		{
-			m_oBackgroundWorker.CancelAsync();
-		}
+        if (this.IsBusy)
+        {
+            m_oBackgroundWorker.CancelAsync();
+        }
     }
 
-	//*************************************************************************
-	//	Event: DuplicateEdgeDetected
-	//
-	/// <summary>
-	///	Occurs when a duplicate edge is detected by <see
-	/// cref="CalculateGraphMetricsAsync(
-	/// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Event: DuplicateEdgeDetected
+    //
+    /// <summary>
+    /// Occurs when a duplicate edge is detected by <see
+    /// cref="CalculateGraphMetricsAsync(
+    /// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
+    /// </summary>
+    ///
     /// <remarks>
-	/// Because duplicate edges can cause unexpected results with some graph
-	/// calculators, the event handler is given the opportunity to cancel all
-	/// calculations by setting the event's <see
-	/// cref="CancelEventArgs.Cancel" /> property to true.  If there is no
-	/// event handler or the handler leaves the <see
-	/// cref="CancelEventArgs.Cancel" /> property set to false, calculations
-	/// continue anyway.
+    /// Because duplicate edges can cause unexpected results with some graph
+    /// calculators, the event handler is given the opportunity to cancel all
+    /// calculations by setting the event's <see
+    /// cref="CancelEventArgs.Cancel" /> property to true.  If there is no
+    /// event handler or the handler leaves the <see
+    /// cref="CancelEventArgs.Cancel" /> property set to false, calculations
+    /// continue anyway.
     /// </remarks>
-	//*************************************************************************
+    //*************************************************************************
 
-	public event CancelEventHandler DuplicateEdgeDetected;
+    public event CancelEventHandler DuplicateEdgeDetected;
 
 
-	//*************************************************************************
-	//	Event: GraphMetricCalculationProgressChanged
-	//
-	/// <summary>
-	///	Occurs when progress is made during the graph metric calculations
-	/// started by <see cref="CalculateGraphMetricsAsync(
-	/// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Event: GraphMetricCalculationProgressChanged
+    //
+    /// <summary>
+    /// Occurs when progress is made during the graph metric calculations
+    /// started by <see cref="CalculateGraphMetricsAsync(
+    /// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />.
+    /// </summary>
+    ///
     /// <remarks>
-	/// The <see cref="ProgressChangedEventArgs.UserState" /> argument is a
-	/// string describing the progress.  The string is suitable for display to
-	/// the user.
+    /// The <see cref="ProgressChangedEventArgs.UserState" /> argument is a
+    /// string describing the progress.  The string is suitable for display to
+    /// the user.
     /// </remarks>
-	//*************************************************************************
+    //*************************************************************************
 
-	public event ProgressChangedEventHandler
-		GraphMetricCalculationProgressChanged;
-
-
-	//*************************************************************************
-	//	Event: GraphMetricCalculationCompleted
-	//
-	/// <summary>
-	///	Occurs when the graph metric calculations started by <see
-	/// cref="CalculateGraphMetricsAsync(
-	/// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />
-	/// complete, are cancelled, or encounter an error.
-	/// </summary>
-	///
-	/// <remarks>
-	/// If graph metric calculations complete successfully, the <see
-	/// cref="RunWorkerCompletedEventArgs.Result" /> argument is an array of
-	/// <see cref="GraphMetricColumn" /> objects, one for each column of
-	/// metrics that were calculated.
-	/// </remarks>
-	//*************************************************************************
-
-	public event RunWorkerCompletedEventHandler
-		GraphMetricCalculationCompleted;
+    public event ProgressChangedEventHandler
+        GraphMetricCalculationProgressChanged;
 
 
-	//*************************************************************************
-	//	Property: ClassName
-	//
-	/// <summary>
-	/// Gets the full name of this class.
-	/// </summary>
-	///
-	/// <value>
-	/// The full name of this class, suitable for use in error messages.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: GraphMetricCalculationCompleted
+    //
+    /// <summary>
+    /// Occurs when the graph metric calculations started by <see
+    /// cref="CalculateGraphMetricsAsync(
+    /// Microsoft.Office.Interop.Excel.Workbook, GraphMetricUserSettings)" />
+    /// complete, are cancelled, or encounter an error.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If graph metric calculations complete successfully, the <see
+    /// cref="RunWorkerCompletedEventArgs.Result" /> argument is an array of
+    /// <see cref="GraphMetricColumn" /> objects, one for each column of
+    /// metrics that were calculated.
+    /// </remarks>
+    //*************************************************************************
 
-	protected String
-	ClassName
-	{
-		get
-		{
-			return (this.GetType().FullName);
-		}
-	}
+    public event RunWorkerCompletedEventHandler
+        GraphMetricCalculationCompleted;
+
+
+    //*************************************************************************
+    //  Property: ClassName
+    //
+    /// <summary>
+    /// Gets the full name of this class.
+    /// </summary>
+    ///
+    /// <value>
+    /// The full name of this class, suitable for use in error messages.
+    /// </value>
+    //*************************************************************************
+
+    protected String
+    ClassName
+    {
+        get
+        {
+            return (this.GetType().FullName);
+        }
+    }
 
     //*************************************************************************
     //  Method: ReadWorkbook()
     //
     /// <summary>
-	/// Reads the workbook contents into a NodeXL graph.
+    /// Reads the workbook contents into a NodeXL graph.
     /// </summary>
-	///
-	/// <param name="oWorkbook">
+    ///
+    /// <param name="oWorkbook">
     /// Workbook containing the graph contents.
-	/// </param>
-	///
+    /// </param>
+    ///
     /// <returns>
-	/// The <see cref="IGraph" /> read from the workbook.
+    /// The <see cref="IGraph" /> read from the workbook.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	/// If <paramref name="oWorkbook" /> contains valid graph data, a new <see
-	/// cref="IGraph" /> is created from the workbook contents and returned.
-	/// Otherwise, a <see cref="WorkbookFormatException" /> is thrown.
+    /// If <paramref name="oWorkbook" /> contains valid graph data, a new <see
+    /// cref="IGraph" /> is created from the workbook contents and returned.
+    /// Otherwise, a <see cref="WorkbookFormatException" /> is thrown.
     /// </remarks>
     //*************************************************************************
 
-	protected IGraph
-	ReadWorkbook
-	(
+    protected IGraph
+    ReadWorkbook
+    (
         Microsoft.Office.Interop.Excel.Workbook oWorkbook
-	)
-	{
-		Debug.Assert(oWorkbook != null);
-		AssertValid();
+    )
+    {
+        Debug.Assert(oWorkbook != null);
+        AssertValid();
 
-		ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
-		oReadWorkbookContext.FillIDColumns = true;
-		oReadWorkbookContext.PopulateVertexWorksheet = true;
+        ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
+        oReadWorkbookContext.FillIDColumns = true;
+        oReadWorkbookContext.PopulateVertexWorksheet = true;
 
-		WorkbookReader oWorkbookReader = new WorkbookReader();
+        WorkbookReader oWorkbookReader = new WorkbookReader();
 
-		return ( oWorkbookReader.ReadWorkbook(
-			oWorkbook, oReadWorkbookContext) );
-	}
+        return ( oWorkbookReader.ReadWorkbook(
+            oWorkbook, oReadWorkbookContext) );
+    }
 
     //*************************************************************************
     //  Method: CalculateGraphMetricsAsyncInternal()
     //
     /// <summary>
-	/// Calculates one or more sets of graph metrics and stores the results in
-	/// one or more worksheet columns.
+    /// Calculates one or more sets of graph metrics and stores the results in
+    /// one or more worksheet columns.
     /// </summary>
-	///
-	/// <param name="oCalculateGraphMetricsAsyncArgs">
-	/// Contains the arguments needed to asynchronously calculate graph
-	/// metrics.
-	/// </param>
-	///
-	/// <param name="oBackgroundWorker">
-	/// A BackgroundWorker object.
-	/// </param>
-	///
-	/// <param name="oDoWorkEventArgs">
-	/// A DoWorkEventArgs object.
-	/// </param>
+    ///
+    /// <param name="oCalculateGraphMetricsAsyncArgs">
+    /// Contains the arguments needed to asynchronously calculate graph
+    /// metrics.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// A BackgroundWorker object.
+    /// </param>
+    ///
+    /// <param name="oDoWorkEventArgs">
+    /// A DoWorkEventArgs object.
+    /// </param>
     //*************************************************************************
 
     protected void
     CalculateGraphMetricsAsyncInternal
-	(
-		CalculateGraphMetricsAsyncArgs oCalculateGraphMetricsAsyncArgs,
-		BackgroundWorker oBackgroundWorker,
-		DoWorkEventArgs oDoWorkEventArgs
-	)
+    (
+        CalculateGraphMetricsAsyncArgs oCalculateGraphMetricsAsyncArgs,
+        BackgroundWorker oBackgroundWorker,
+        DoWorkEventArgs oDoWorkEventArgs
+    )
     {
-		Debug.Assert(oCalculateGraphMetricsAsyncArgs != null);
-		Debug.Assert(oBackgroundWorker != null);
-		Debug.Assert(oDoWorkEventArgs != null);
-		AssertValid();
+        Debug.Assert(oCalculateGraphMetricsAsyncArgs != null);
+        Debug.Assert(oBackgroundWorker != null);
+        Debug.Assert(oDoWorkEventArgs != null);
+        AssertValid();
 
-		// Retrieve the graph metric arguments.
+        // Retrieve the graph metric arguments.
 
-		IGraph oGraph = oCalculateGraphMetricsAsyncArgs.Graph;
+        IGraph oGraph = oCalculateGraphMetricsAsyncArgs.Graph;
 
-		IGraphMetricCalculator [] aoGraphMetricCalculators =
-			oCalculateGraphMetricsAsyncArgs.GraphMetricCalculators;
+        IGraphMetricCalculator2 [] aoGraphMetricCalculators =
+            oCalculateGraphMetricsAsyncArgs.GraphMetricCalculators;
 
-		List<GraphMetricColumn> oAggregatedGraphMetricColumns =
-			new List<GraphMetricColumn>();
+        List<GraphMetricColumn> oAggregatedGraphMetricColumns =
+            new List<GraphMetricColumn>();
 
         CalculateGraphMetricsContext oCalculateGraphMetricsContext =
             new CalculateGraphMetricsContext(
-				oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings,
-				oCalculateGraphMetricsAsyncArgs.DuplicateEdgeDetector,
-                oBackgroundWorker, oDoWorkEventArgs);
+                oCalculateGraphMetricsAsyncArgs.GraphMetricUserSettings,
+                oCalculateGraphMetricsAsyncArgs.DuplicateEdgeDetector,
+                oBackgroundWorker);
 
-		// Loop through the IGraphMetricCalculator implementations.
+        // Loop through the IGraphMetricCalculator2 implementations.
 
-		Int32 iGraphMetricCalculators = aoGraphMetricCalculators.Length;
+        Int32 iGraphMetricCalculators = aoGraphMetricCalculators.Length;
 
-		for (Int32 i = 0; i < iGraphMetricCalculators; i++)
-		{
-			IGraphMetricCalculator oGraphMetricCalculator =
-				aoGraphMetricCalculators[i];
+        for (Int32 i = 0; i < iGraphMetricCalculators; i++)
+        {
+            IGraphMetricCalculator2 oGraphMetricCalculator =
+                aoGraphMetricCalculators[i];
 
-			// Calculate the implementation's graph metrics.
+            // Calculate the implementation's graph metrics.
 
-			GraphMetricColumn [] aoGraphMetricColumns =
-				oGraphMetricCalculator.CalculateGraphMetrics(oGraph,
-					oCalculateGraphMetricsContext);
+            GraphMetricColumn [] aoGraphMetricColumns;
 
-			if (oDoWorkEventArgs.Cancel)
-			{
-				oBackgroundWorker.ReportProgress(0,
-					new GraphMetricProgress("Cancelled.", false)
-					);
+            if ( !oGraphMetricCalculator.TryCalculateGraphMetrics(oGraph,
+                oCalculateGraphMetricsContext, out aoGraphMetricColumns) )
+            {
+                // The user cancelled.
 
-				return;
-			}
+                oDoWorkEventArgs.Cancel = true;
 
-			// Aggregate the results.
+                oBackgroundWorker.ReportProgress(0,
+                    new GraphMetricProgress("Cancelled.", false)
+                    );
 
-			oAggregatedGraphMetricColumns.AddRange(aoGraphMetricColumns);
-		}
+                return;
+            }
 
-		oDoWorkEventArgs.Result = oAggregatedGraphMetricColumns.ToArray();
+            // Aggregate the results.
 
-		oBackgroundWorker.ReportProgress(100,
-			new GraphMetricProgress(
-				"Writing results to the workbook.",
-				true)
-			);
+            Debug.Assert(aoGraphMetricColumns != null);
 
-		// Let the dialog the display the final progress report and update its
-		// controls.
+            oAggregatedGraphMetricColumns.AddRange(aoGraphMetricColumns);
+        }
 
-		System.Threading.Thread.Sleep(1);
+        oDoWorkEventArgs.Result = oAggregatedGraphMetricColumns.ToArray();
+
+        oBackgroundWorker.ReportProgress(100,
+            new GraphMetricProgress(
+                "Writing results to the workbook.",
+                true)
+            );
+
+        // Let the dialog the display the final progress report and update its
+        // controls.
+
+        System.Threading.Thread.Sleep(1);
     }
 
-	//*************************************************************************
-	//	Method: BackgroundWorker_DoWork()
-	//
-	/// <summary>
-	///	Handles the DoWork event on the BackgroundWorker object.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Source of the event.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard mouse event arguments.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: BackgroundWorker_DoWork()
+    //
+    /// <summary>
+    /// Handles the DoWork event on the BackgroundWorker object.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Source of the event.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard mouse event arguments.
+    /// </param>
+    //*************************************************************************
 
-	protected void
-	BackgroundWorker_DoWork
-	(
-		object sender,
-		DoWorkEventArgs e
-	)
-	{
-		Debug.Assert(sender is BackgroundWorker);
-		AssertValid();
+    protected void
+    BackgroundWorker_DoWork
+    (
+        object sender,
+        DoWorkEventArgs e
+    )
+    {
+        Debug.Assert(sender is BackgroundWorker);
+        AssertValid();
 
-		BackgroundWorker oBackgroundWorker = (BackgroundWorker)sender;
+        BackgroundWorker oBackgroundWorker = (BackgroundWorker)sender;
 
-		Debug.Assert(e.Argument is CalculateGraphMetricsAsyncArgs);
+        Debug.Assert(e.Argument is CalculateGraphMetricsAsyncArgs);
 
-		CalculateGraphMetricsAsyncArgs oCalculateGraphMetricsAsyncArgs =
-			(CalculateGraphMetricsAsyncArgs)e.Argument;
+        CalculateGraphMetricsAsyncArgs oCalculateGraphMetricsAsyncArgs =
+            (CalculateGraphMetricsAsyncArgs)e.Argument;
 
-		CalculateGraphMetricsAsyncInternal(oCalculateGraphMetricsAsyncArgs,
-			m_oBackgroundWorker, e);
-	}
+        CalculateGraphMetricsAsyncInternal(oCalculateGraphMetricsAsyncArgs,
+            m_oBackgroundWorker, e);
+    }
 
-	//*************************************************************************
-	//	Method: BackgroundWorker_ProgressChanged()
-	//
-	/// <summary>
-	///	Handles the ProgressChanged event on the BackgroundWorker object.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Source of the event.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event arguments.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: BackgroundWorker_ProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the BackgroundWorker object.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Source of the event.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event arguments.
+    /// </param>
+    //*************************************************************************
 
-	protected void
-	BackgroundWorker_ProgressChanged
-	(
-		object sender,
-		ProgressChangedEventArgs e
-	)
-	{
-		AssertValid();
+    protected void
+    BackgroundWorker_ProgressChanged
+    (
+        object sender,
+        ProgressChangedEventArgs e
+    )
+    {
+        AssertValid();
 
-		// Forward the event.
+        // Forward the event.
 
-		ProgressChangedEventHandler oGraphMetricCalculationProgressChanged =
-			this.GraphMetricCalculationProgressChanged;
+        ProgressChangedEventHandler oGraphMetricCalculationProgressChanged =
+            this.GraphMetricCalculationProgressChanged;
 
-		if (oGraphMetricCalculationProgressChanged != null)
-		{
-			oGraphMetricCalculationProgressChanged(this, e);
-		}
-	}
+        if (oGraphMetricCalculationProgressChanged != null)
+        {
+            // There are two sources of this event: the graph metric
+            // calculators in the Algorithms namespace, which set e.UserState
+            // to a simple string ("Calculating vertex degrees," for example);
+            // and this GraphMetricCalculationManager class, which sets
+            // e.UserState to a GraphMetricProgress object.  In the first case,
+            // wrap the simple string in a new GraphMetricProgress object.
 
-	//*************************************************************************
-	//	Method: BackgroundWorker_RunWorkerCompleted()
-	//
-	/// <summary>
-	///	Handles the RunWorkerCompleted event on the BackgroundWorker object.
-	/// </summary>
-	///
-	/// <param name="sender">
-	/// Source of the event.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard mouse event arguments.
-	/// </param>
-	//*************************************************************************
+            if (e.UserState is String)
+            {
+                String sProgressMessage = (String)e.UserState;
 
-	protected void
-	BackgroundWorker_RunWorkerCompleted
-	(
-		object sender,
-		RunWorkerCompletedEventArgs e
-	)
-	{
-		AssertValid();
+                e = new ProgressChangedEventArgs(e.ProgressPercentage,
+                    new GraphMetricProgress(sProgressMessage, false) );
+            }
 
-		// Forward the event.
+            oGraphMetricCalculationProgressChanged(this, e);
+        }
+    }
 
-		RunWorkerCompletedEventHandler oGraphMetricCalculationCompleted =
-			this.GraphMetricCalculationCompleted;
+    //*************************************************************************
+    //  Method: BackgroundWorker_RunWorkerCompleted()
+    //
+    /// <summary>
+    /// Handles the RunWorkerCompleted event on the BackgroundWorker object.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Source of the event.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard mouse event arguments.
+    /// </param>
+    //*************************************************************************
 
-		if (oGraphMetricCalculationCompleted != null)
-		{
-			// If the operation was successful, the
-			// RunWorkerCompletedEventArgs.Result must be a GraphMetricColumn
-			// array.  (Actually, it's always a GraphMetricColumn array
-			// regardless of the operation's outcome, but you can't read the
-			// Result property unless the operation was successful.)
+    protected void
+    BackgroundWorker_RunWorkerCompleted
+    (
+        object sender,
+        RunWorkerCompletedEventArgs e
+    )
+    {
+        AssertValid();
 
-			Debug.Assert( e.Cancelled || e.Error != null ||
-				e.Result is GraphMetricColumn[] );
+        // Forward the event.
 
-			oGraphMetricCalculationCompleted(this, e);
-		}
+        RunWorkerCompletedEventHandler oGraphMetricCalculationCompleted =
+            this.GraphMetricCalculationCompleted;
 
-		m_oBackgroundWorker = null;
-	}
+        if (oGraphMetricCalculationCompleted != null)
+        {
+            // If the operation was successful, the
+            // RunWorkerCompletedEventArgs.Result must be a GraphMetricColumn
+            // array.  (Actually, it's always a GraphMetricColumn array
+            // regardless of the operation's outcome, but you can't read the
+            // Result property unless the operation was successful.)
+
+            Debug.Assert( e.Cancelled || e.Error != null ||
+                e.Result is GraphMetricColumn[] );
+
+            oGraphMetricCalculationCompleted(this, e);
+        }
+
+        m_oBackgroundWorker = null;
+    }
 
 
     //*************************************************************************
@@ -656,7 +679,7 @@ public class GraphMetricCalculationManager : Object
     public void
     AssertValid()
     {
-		// m_oBackgroundWorker
+        // m_oBackgroundWorker
     }
 
 
@@ -664,32 +687,32 @@ public class GraphMetricCalculationManager : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Used for asynchronous calculations.  null if an asynchronous
-	/// calculations are not in progress.
+    /// Used for asynchronous calculations.  null if an asynchronous
+    /// calculations are not in progress.
 
-	protected BackgroundWorker m_oBackgroundWorker;
+    protected BackgroundWorker m_oBackgroundWorker;
 
 
     //*************************************************************************
     //  Embedded class: CalculateGraphMetricsAsyncArguments()
     //
     /// <summary>
-	/// Contains the arguments needed to asynchronously calculate graph
-	/// metrics.
+    /// Contains the arguments needed to asynchronously calculate graph
+    /// metrics.
     /// </summary>
     //*************************************************************************
 
     protected class CalculateGraphMetricsAsyncArgs
-	{
-		///
+    {
+        ///
         public IGraph Graph;
-		///
-		public IGraphMetricCalculator [] GraphMetricCalculators;
-		///
-		public GraphMetricUserSettings GraphMetricUserSettings;
-		///
-		public DuplicateEdgeDetector DuplicateEdgeDetector;
-	};
+        ///
+        public IGraphMetricCalculator2 [] GraphMetricCalculators;
+        ///
+        public GraphMetricUserSettings GraphMetricUserSettings;
+        ///
+        public DuplicateEdgeDetector DuplicateEdgeDetector;
+    };
 }
 
 }

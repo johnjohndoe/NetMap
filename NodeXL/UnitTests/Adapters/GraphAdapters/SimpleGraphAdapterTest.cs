@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.IO;
@@ -28,14 +28,14 @@ public class SimpleGraphAdapterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="SimpleGraphAdapterTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public SimpleGraphAdapterTest()
     {
         m_oGraphAdapter = null;
-		m_sTempFileName = null;
+        m_sTempFileName = null;
     }
 
     //*************************************************************************
@@ -53,7 +53,7 @@ public class SimpleGraphAdapterTest : Object
     {
         m_oGraphAdapter = new SimpleGraphAdapter();
 
-		m_sTempFileName = Path.GetTempFileName();
+        m_sTempFileName = Path.GetTempFileName();
     }
 
     //*************************************************************************
@@ -71,10 +71,10 @@ public class SimpleGraphAdapterTest : Object
     {
         m_oGraphAdapter = null;
 
-		if ( File.Exists(m_sTempFileName) )
-		{
-			File.Delete(m_sTempFileName);
-		}
+        if ( File.Exists(m_sTempFileName) )
+        {
+            File.Delete(m_sTempFileName);
+        }
     }
 
     //*************************************************************************
@@ -106,37 +106,37 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph()
     {
-		const String FileContents =
-			"Vertex1\tVertex2\r\n";
+        const String FileContents =
+            "Vertex1\tVertex2\r\n";
 
-		const String Vertex1Name = "Vertex1";
-		const String Vertex2Name = "Vertex2";
+        const String Vertex1Name = "Vertex1";
+        const String Vertex2Name = "Vertex2";
 
-		using ( StreamWriter oStreamWriter = new StreamWriter(m_sTempFileName) )
-		{
-			oStreamWriter.Write(FileContents);
-		}
+        using ( StreamWriter oStreamWriter = new StreamWriter(m_sTempFileName) )
+        {
+            oStreamWriter.Write(FileContents);
+        }
 
-		IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
 
-		Assert.IsInstanceOfType( oGraph, typeof(Graph) );
+        Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(2, oVertices.Count);
+        Assert.AreEqual(2, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains(Vertex1Name) );
-		Assert.IsTrue( oVertices.Contains(Vertex2Name) );
+        Assert.IsTrue( oVertices.Contains(Vertex1Name) );
+        Assert.IsTrue( oVertices.Contains(Vertex2Name) );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(1, oEdges.Count);
+        Assert.AreEqual(1, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			Assert.AreEqual(Vertex1Name, oEdge.Vertices[0].Name);
-			Assert.AreEqual(Vertex2Name, oEdge.Vertices[1].Name);
-		}
+        foreach (IEdge oEdge in oEdges)
+        {
+            Assert.AreEqual(Vertex1Name, oEdge.Vertices[0].Name);
+            Assert.AreEqual(Vertex2Name, oEdge.Vertices[1].Name);
+        }
     }
 
     //*************************************************************************
@@ -148,33 +148,33 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestLoadGraphBad()
     {
-		// null filename.
+        // null filename.
 
-		try
-		{
+        try
+        {
             String sFileName = null;
 
-			m_oGraphAdapter.LoadGraph(sFileName);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            m_oGraphAdapter.LoadGraph(sFileName);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.LoadGraph: filename argument can't be"
-				+ " null.\r\n"
-				+ "Parameter name: filename"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.LoadGraph: filename argument can't be"
+                + " null.\r\n"
+                + "Parameter name: filename"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -186,33 +186,33 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestLoadGraphBad2()
     {
-		// Empty filename.
+        // Empty filename.
 
-		try
-		{
+        try
+        {
             String sFileName = String.Empty;
 
-			m_oGraphAdapter.LoadGraph(sFileName);
-		}
-		catch (ArgumentNullException oArgumentException)
-		{
-			Assert.AreEqual(
+            m_oGraphAdapter.LoadGraph(sFileName);
+        }
+        catch (ArgumentNullException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.LoadGraph: filename argument must have a"
-				+ " length greater than zero.\r\n"
-				+ "Parameter name: filename"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.LoadGraph: filename argument must have a"
+                + " length greater than zero.\r\n"
+                + "Parameter name: filename"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -224,27 +224,27 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(DirectoryNotFoundException) ) ]
+    [ ExpectedException( typeof(DirectoryNotFoundException) ) ]
 
     public void
     TestLoadGraphBad3()
     {
-		// Non-existent filename.
+        // Non-existent filename.
 
-		try
-		{
+        try
+        {
             String sFileName = "X:\\abc\\def\\ghi.txt";
 
-			m_oGraphAdapter.LoadGraph(sFileName);
-		}
-		catch (DirectoryNotFoundException oDirectoryNotFoundException)
-		{
-			Assert.IsTrue(oDirectoryNotFoundException.Message.Contains(
-				"Could not find a part of the path"
-				) );
+            m_oGraphAdapter.LoadGraph(sFileName);
+        }
+        catch (DirectoryNotFoundException oDirectoryNotFoundException)
+        {
+            Assert.IsTrue(oDirectoryNotFoundException.Message.Contains(
+                "Could not find a part of the path"
+                ) );
 
-			throw oDirectoryNotFoundException;
-		}
+            throw oDirectoryNotFoundException;
+        }
     }
 
     //*************************************************************************
@@ -260,35 +260,35 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_()
     {
-		const String StreamContents =
-			"Vertex1\tVertex2\r\n";
+        const String StreamContents =
+            "Vertex1\tVertex2\r\n";
 
-		const String Vertex1Name = "Vertex1";
-		const String Vertex2Name = "Vertex2";
+        const String Vertex1Name = "Vertex1";
+        const String Vertex2Name = "Vertex2";
 
-		StringStream oStream = new StringStream(StreamContents);
+        StringStream oStream = new StringStream(StreamContents);
 
-		IGraph oGraph =
-			m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph =
+            m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
 
-		Assert.IsInstanceOfType( oGraph, typeof(Graph) );
+        Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(2, oVertices.Count);
+        Assert.AreEqual(2, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains(Vertex1Name) );
-		Assert.IsTrue( oVertices.Contains(Vertex2Name) );
+        Assert.IsTrue( oVertices.Contains(Vertex1Name) );
+        Assert.IsTrue( oVertices.Contains(Vertex2Name) );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(1, oEdges.Count);
+        Assert.AreEqual(1, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			Assert.AreEqual(Vertex1Name, oEdge.Vertices[0].Name);
-			Assert.AreEqual(Vertex2Name, oEdge.Vertices[1].Name);
-		}
+        foreach (IEdge oEdge in oEdges)
+        {
+            Assert.AreEqual(Vertex1Name, oEdge.Vertices[0].Name);
+            Assert.AreEqual(Vertex2Name, oEdge.Vertices[1].Name);
+        }
     }
 
     //*************************************************************************
@@ -304,13 +304,13 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_2()
     {
-		// One edge.
+        // One edge.
 
-		TestLoadGraphSingleEdge(
-			"Vertex1\tVertex2\r\n",
-			"Vertex1",
-			"Vertex2"
-			);
+        TestLoadGraphSingleEdge(
+            "Vertex1\tVertex2\r\n",
+            "Vertex1",
+            "Vertex2"
+            );
     }
 
     //*************************************************************************
@@ -326,13 +326,13 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_3()
     {
-		// One edge, no line terminator.
+        // One edge, no line terminator.
 
-		TestLoadGraphSingleEdge(
-			"Vertex1\tVertex2",
-			"Vertex1",
-			"Vertex2"
-			);
+        TestLoadGraphSingleEdge(
+            "Vertex1\tVertex2",
+            "Vertex1",
+            "Vertex2"
+            );
     }
 
     //*************************************************************************
@@ -348,13 +348,13 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_4()
     {
-		// One edge, line feed only.
+        // One edge, line feed only.
 
-		TestLoadGraphSingleEdge(
-			"Vertex1\tVertex2\n",
-			"Vertex1",
-			"Vertex2"
-			);
+        TestLoadGraphSingleEdge(
+            "Vertex1\tVertex2\n",
+            "Vertex1",
+            "Vertex2"
+            );
     }
 
     //*************************************************************************
@@ -370,13 +370,13 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_5()
     {
-		// One edge, embedded spaces.
+        // One edge, embedded spaces.
 
-		TestLoadGraphSingleEdge(
-			" Vertex 1 \t Vertex 2 \r\n",
-			" Vertex 1 ",
-			" Vertex 2 "
-			);
+        TestLoadGraphSingleEdge(
+            " Vertex 1 \t Vertex 2 \r\n",
+            " Vertex 1 ",
+            " Vertex 2 "
+            );
     }
 
     //*************************************************************************
@@ -392,13 +392,13 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_6()
     {
-		// One edge, spaces for vertex name.
+        // One edge, spaces for vertex name.
 
-		TestLoadGraphSingleEdge(
-			"A\t  \r\n",
-			"A",
-			"  "
-			);
+        TestLoadGraphSingleEdge(
+            "A\t  \r\n",
+            "A",
+            "  "
+            );
     }
 
     //*************************************************************************
@@ -414,13 +414,13 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_7()
     {
-		// One edge, spaces for vertex name.
+        // One edge, spaces for vertex name.
 
-		TestLoadGraphSingleEdge(
-			" \tB\r\n",
-			" ",
-			"B"
-			);
+        TestLoadGraphSingleEdge(
+            " \tB\r\n",
+            " ",
+            "B"
+            );
     }
 
     //*************************************************************************
@@ -436,48 +436,48 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_8()
     {
-		// N edges.
+        // N edges.
 
-		const String StreamContents =
-			"Edge1Vertex1\tEdge1Vertex2\r\n"
-			+ "Edge2Vertex1\tEdge2Vertex2\r\n"
-			+ "Edge3Vertex1\tEdge3Vertex2\r\n"
-			;
+        const String StreamContents =
+            "Edge1Vertex1\tEdge1Vertex2\r\n"
+            + "Edge2Vertex1\tEdge2Vertex2\r\n"
+            + "Edge3Vertex1\tEdge3Vertex2\r\n"
+            ;
 
-		StringStream oStream = new StringStream(StreamContents);
+        StringStream oStream = new StringStream(StreamContents);
 
-		IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(6, oVertices.Count);
+        Assert.AreEqual(6, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains("Edge1Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge1Vertex2") );
-		Assert.IsTrue( oVertices.Contains("Edge2Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge2Vertex2") );
-		Assert.IsTrue( oVertices.Contains("Edge3Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge3Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge1Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge1Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge2Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge2Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge3Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge3Vertex2") );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(3, oEdges.Count);
+        Assert.AreEqual(3, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			String sVertex1Name = oEdge.Vertices[0].Name;
-			String sVertex2Name = oEdge.Vertices[1].Name;
+        foreach (IEdge oEdge in oEdges)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
 
-			Assert.IsTrue( sVertex1Name.StartsWith("Edge") );
+            Assert.IsTrue( sVertex1Name.StartsWith("Edge") );
 
-			Int32 iEdgeNumber = Int32.Parse( sVertex1Name.Substring(4, 1) );
+            Int32 iEdgeNumber = Int32.Parse( sVertex1Name.Substring(4, 1) );
 
-			Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex1",
-				sVertex1Name);
+            Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex1",
+                sVertex1Name);
 
-			Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex2",
-				sVertex2Name);
-		}
+            Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex2",
+                sVertex2Name);
+        }
     }
 
     //*************************************************************************
@@ -493,38 +493,38 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_9()
     {
-		// N edges, repeated vertices.
+        // N edges, repeated vertices.
 
-		const String StreamContents =
-			"Edge1Vertex1\tEdge1Vertex2\r\n"
-			+ "Edge1Vertex1\tEdge1Vertex2\r\n"
-			+ "Edge1Vertex1\tEdge1Vertex2\r\n"
-			;
+        const String StreamContents =
+            "Edge1Vertex1\tEdge1Vertex2\r\n"
+            + "Edge1Vertex1\tEdge1Vertex2\r\n"
+            + "Edge1Vertex1\tEdge1Vertex2\r\n"
+            ;
 
-		StringStream oStream = new StringStream(StreamContents);
+        StringStream oStream = new StringStream(StreamContents);
 
-		IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(2, oVertices.Count);
+        Assert.AreEqual(2, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains("Edge1Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge1Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge1Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge1Vertex2") );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(3, oEdges.Count);
+        Assert.AreEqual(3, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			String sVertex1Name = oEdge.Vertices[0].Name;
-			String sVertex2Name = oEdge.Vertices[1].Name;
+        foreach (IEdge oEdge in oEdges)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
 
-			Assert.AreEqual("Edge1Vertex1", sVertex1Name);
+            Assert.AreEqual("Edge1Vertex1", sVertex1Name);
 
-			Assert.AreEqual("Edge1Vertex2", sVertex2Name);
-		}
+            Assert.AreEqual("Edge1Vertex2", sVertex2Name);
+        }
     }
 
     //*************************************************************************
@@ -540,53 +540,53 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_10()
     {
-		// N edges with empty lines.  (Empty lines should be skipped.)
+        // N edges with empty lines.  (Empty lines should be skipped.)
 
-		const String StreamContents =
-			"\r\n"
-			+ "Edge1Vertex1\tEdge1Vertex2\r\n"
-			+ " \r\n"
-			+ "Edge2Vertex1\tEdge2Vertex2\r\n"
-			+ "\t\r\n"
-			+ "Edge3Vertex1\tEdge3Vertex2\r\n"
-			+ "    \t   \r\n"
-			+ "     \r\n"
-			;
+        const String StreamContents =
+            "\r\n"
+            + "Edge1Vertex1\tEdge1Vertex2\r\n"
+            + " \r\n"
+            + "Edge2Vertex1\tEdge2Vertex2\r\n"
+            + "\t\r\n"
+            + "Edge3Vertex1\tEdge3Vertex2\r\n"
+            + "    \t   \r\n"
+            + "     \r\n"
+            ;
 
-		StringStream oStream = new StringStream(StreamContents);
+        StringStream oStream = new StringStream(StreamContents);
 
-		IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(6, oVertices.Count);
+        Assert.AreEqual(6, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains("Edge1Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge1Vertex2") );
-		Assert.IsTrue( oVertices.Contains("Edge2Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge2Vertex2") );
-		Assert.IsTrue( oVertices.Contains("Edge3Vertex1") );
-		Assert.IsTrue( oVertices.Contains("Edge3Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge1Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge1Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge2Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge2Vertex2") );
+        Assert.IsTrue( oVertices.Contains("Edge3Vertex1") );
+        Assert.IsTrue( oVertices.Contains("Edge3Vertex2") );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(3, oEdges.Count);
+        Assert.AreEqual(3, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			String sVertex1Name = oEdge.Vertices[0].Name;
-			String sVertex2Name = oEdge.Vertices[1].Name;
+        foreach (IEdge oEdge in oEdges)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
 
-			Assert.IsTrue( sVertex1Name.StartsWith("Edge") );
+            Assert.IsTrue( sVertex1Name.StartsWith("Edge") );
 
-			Int32 iEdgeNumber = Int32.Parse( sVertex1Name.Substring(4, 1) );
+            Int32 iEdgeNumber = Int32.Parse( sVertex1Name.Substring(4, 1) );
 
-			Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex1",
-				sVertex1Name);
+            Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex1",
+                sVertex1Name);
 
-			Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex2",
-				sVertex2Name);
-		}
+            Assert.AreEqual("Edge" + iEdgeNumber.ToString() + "Vertex2",
+                sVertex2Name);
+        }
     }
 
     //*************************************************************************
@@ -598,31 +598,31 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestLoadGraph2_Bad()
     {
-		// null graphFactory.
+        // null graphFactory.
 
-		try
-		{
-			m_oGraphAdapter.LoadGraph( null, new MemoryStream() );
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.LoadGraph( null, new MemoryStream() );
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.LoadGraph: graphFactory argument can't"
-				+ " be null.\r\n"
-				+ "Parameter name: graphFactory"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.LoadGraph: graphFactory argument can't"
+                + " be null.\r\n"
+                + "Parameter name: graphFactory"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -634,31 +634,31 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestLoadGraph2_Bad2()
     {
-		// null stream.
+        // null stream.
 
-		try
-		{
-			m_oGraphAdapter.LoadGraph(new GraphFactory(), (Stream)null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.LoadGraph(new GraphFactory(), (Stream)null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.LoadGraph: stream argument can't"
-				+ " be null.\r\n"
-				+ "Parameter name: stream"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.LoadGraph: stream argument can't"
+                + " be null.\r\n"
+                + "Parameter name: stream"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -674,11 +674,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad3()
     {
-		// One edge, multiple tabs.
+        // One edge, multiple tabs.
 
-		TestLoadGraphSingleEdgeBad(
-			"Vertex1\t\tVertex2\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "Vertex1\t\tVertex2\r\n"
+            );
     }
 
     //*************************************************************************
@@ -694,11 +694,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad4()
     {
-		// One edge, no tabs.
+        // One edge, no tabs.
 
-		TestLoadGraphSingleEdgeBad(
-			"Vertex1 Vertex2\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "Vertex1 Vertex2\r\n"
+            );
     }
 
     //*************************************************************************
@@ -714,11 +714,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad5()
     {
-		// One edge, leading tabs.
+        // One edge, leading tabs.
 
-		TestLoadGraphSingleEdgeBad(
-			"\tVertex1\tVertex2\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "\tVertex1\tVertex2\r\n"
+            );
     }
 
     //*************************************************************************
@@ -734,11 +734,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad6()
     {
-		// One edge, trailing tab.
+        // One edge, trailing tab.
 
-		TestLoadGraphSingleEdgeBad(
-			"Vertex1\tVertex2\t\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "Vertex1\tVertex2\t\r\n"
+            );
     }
 
     //*************************************************************************
@@ -754,11 +754,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad7()
     {
-		// One edge, first vertex name is empty.
+        // One edge, first vertex name is empty.
 
-		TestLoadGraphSingleEdgeBad(
-			"\tVertex2\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "\tVertex2\r\n"
+            );
     }
 
     //*************************************************************************
@@ -774,11 +774,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad8()
     {
-		// One edge, second vertex name is empty.
+        // One edge, second vertex name is empty.
 
-		TestLoadGraphSingleEdgeBad(
-			"Vertex1\t\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "Vertex1\t\r\n"
+            );
     }
 
     //*************************************************************************
@@ -794,11 +794,11 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph2_Bad9()
     {
-		// One edge, three tokens.
+        // One edge, three tokens.
 
-		TestLoadGraphSingleEdgeBad(
-			"Vertex1\tVertex2\tXX\r\n"
-			);
+        TestLoadGraphSingleEdgeBad(
+            "Vertex1\tVertex2\tXX\r\n"
+            );
     }
 
     //*************************************************************************
@@ -814,33 +814,33 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestLoadGraph3_()
     {
-		const String String =
-			"Vertex1\tVertex2\r\n";
+        const String String =
+            "Vertex1\tVertex2\r\n";
 
-		const String Vertex1Name = "Vertex1";
-		const String Vertex2Name = "Vertex2";
+        const String Vertex1Name = "Vertex1";
+        const String Vertex2Name = "Vertex2";
 
-		IGraph oGraph =
-			m_oGraphAdapter.LoadGraph(new GraphFactory(), String);
+        IGraph oGraph =
+            m_oGraphAdapter.LoadGraph(new GraphFactory(), String);
 
-		Assert.IsInstanceOfType( oGraph, typeof(Graph) );
+        Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(2, oVertices.Count);
+        Assert.AreEqual(2, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains(Vertex1Name) );
-		Assert.IsTrue( oVertices.Contains(Vertex2Name) );
+        Assert.IsTrue( oVertices.Contains(Vertex1Name) );
+        Assert.IsTrue( oVertices.Contains(Vertex2Name) );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(1, oEdges.Count);
+        Assert.AreEqual(1, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			Assert.AreEqual(Vertex1Name, oEdge.Vertices[0].Name);
-			Assert.AreEqual(Vertex2Name, oEdge.Vertices[1].Name);
-		}
+        foreach (IEdge oEdge in oEdges)
+        {
+            Assert.AreEqual(Vertex1Name, oEdge.Vertices[0].Name);
+            Assert.AreEqual(Vertex2Name, oEdge.Vertices[1].Name);
+        }
     }
 
     //*************************************************************************
@@ -852,31 +852,31 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestLoadGraph3_Bad()
     {
-		// null graphFactory.
+        // null graphFactory.
 
-		try
-		{
-			m_oGraphAdapter.LoadGraph(null, "abc");
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.LoadGraph(null, "abc");
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.LoadGraph: graphFactory argument can't"
-				+ " be null.\r\n"
-				+ "Parameter name: graphFactory"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.LoadGraph: graphFactory argument can't"
+                + " be null.\r\n"
+                + "Parameter name: graphFactory"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -888,31 +888,31 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestLoadGraph3_Bad2()
     {
-		// null string.
+        // null string.
 
-		try
-		{
-			m_oGraphAdapter.LoadGraph(new GraphFactory(), (String)null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.LoadGraph(new GraphFactory(), (String)null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.LoadGraph: theString argument can't"
-				+ " be null.\r\n"
-				+ "Parameter name: theString"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.LoadGraph: theString argument can't"
+                + " be null.\r\n"
+                + "Parameter name: theString"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -928,32 +928,32 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSaveGraph()
     {
-		// One edge.
+        // One edge.
 
-		IGraph oGraph = CreateGraph();
+        IGraph oGraph = CreateGraph();
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		IVertex oVertex1 = oVertices.Add();
-		oVertex1.Name = "Vertex1";
+        IVertex oVertex1 = oVertices.Add();
+        oVertex1.Name = "Vertex1";
 
-		IVertex oVertex2 = oVertices.Add();
-		oVertex2.Name = "Vertex2";
+        IVertex oVertex2 = oVertices.Add();
+        oVertex2.Name = "Vertex2";
 
-		oEdges.Add(oVertex1, oVertex2, true);
+        oEdges.Add(oVertex1, oVertex2, true);
 
-		m_oGraphAdapter.SaveGraph(oGraph, m_sTempFileName);
+        m_oGraphAdapter.SaveGraph(oGraph, m_sTempFileName);
 
-		String sFileContents;
+        String sFileContents;
 
-		using ( StreamReader oStreamReader = new StreamReader(m_sTempFileName) )
-		{
-			sFileContents = oStreamReader.ReadToEnd();
-		}
+        using ( StreamReader oStreamReader = new StreamReader(m_sTempFileName) )
+        {
+            sFileContents = oStreamReader.ReadToEnd();
+        }
 
-		Assert.AreEqual("Vertex1\tVertex2\r\n", sFileContents);
+        Assert.AreEqual("Vertex1\tVertex2\r\n", sFileContents);
     }
 
     //*************************************************************************
@@ -965,31 +965,31 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSaveGraphBad()
     {
-		// null graph.
+        // null graph.
 
-		try
-		{
-			m_oGraphAdapter.SaveGraph(null, "x");
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.SaveGraph(null, "x");
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.SaveGraph: graph argument can't be"
-				+ " null.\r\n"
-				+ "Parameter name: graph"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.SaveGraph: graph argument can't be"
+                + " null.\r\n"
+                + "Parameter name: graph"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -1001,33 +1001,33 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSaveGraphBad2()
     {
-		// null filename.
+        // null filename.
 
         String sFileName = null;
 
-		try
-		{
-			m_oGraphAdapter.SaveGraph(CreateGraph(), sFileName);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.SaveGraph(CreateGraph(), sFileName);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.SaveGraph: filename argument can't be"
-				+ " null.\r\n"
-				+ "Parameter name: filename"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.SaveGraph: filename argument can't be"
+                + " null.\r\n"
+                + "Parameter name: filename"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -1039,33 +1039,33 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestSaveGraphBad3()
     {
-		// Empty filename.
+        // Empty filename.
 
         String sFileName = String.Empty;
 
-		try
-		{
-			m_oGraphAdapter.SaveGraph(CreateGraph(), sFileName);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.SaveGraph(CreateGraph(), sFileName);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.SaveGraph: filename argument must have a"
-				+ " length greater than zero.\r\n"
-				+ "Parameter name: filename"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.SaveGraph: filename argument must have a"
+                + " length greater than zero.\r\n"
+                + "Parameter name: filename"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -1081,22 +1081,22 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSaveGraph2_()
     {
-		// Empty graph.
+        // Empty graph.
 
-		IGraph oGraph = CreateGraph();
+        IGraph oGraph = CreateGraph();
 
-		MemoryStream oMemoryStream = new MemoryStream();
+        MemoryStream oMemoryStream = new MemoryStream();
 
-		m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
 
-		oMemoryStream.Position = 0;
+        oMemoryStream.Position = 0;
 
-		StreamReader oStreamReader =
-			new StreamReader(oMemoryStream, Encoding.UTF8);
+        StreamReader oStreamReader =
+            new StreamReader(oMemoryStream, Encoding.UTF8);
 
-		String sStreamContents = oStreamReader.ReadToEnd();
+        String sStreamContents = oStreamReader.ReadToEnd();
 
-		Assert.AreEqual(0, sStreamContents.Length);
+        Assert.AreEqual(0, sStreamContents.Length);
     }
 
     //*************************************************************************
@@ -1112,34 +1112,34 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSaveGraph2_2()
     {
-		// One edge.
+        // One edge.
 
-		IGraph oGraph = CreateGraph();
+        IGraph oGraph = CreateGraph();
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		IVertex oVertex1 = oVertices.Add();
-		oVertex1.Name = "Vertex1";
+        IVertex oVertex1 = oVertices.Add();
+        oVertex1.Name = "Vertex1";
 
-		IVertex oVertex2 = oVertices.Add();
-		oVertex2.Name = "Vertex2";
+        IVertex oVertex2 = oVertices.Add();
+        oVertex2.Name = "Vertex2";
 
-		oEdges.Add(oVertex1, oVertex2, true);
+        oEdges.Add(oVertex1, oVertex2, true);
 
-		MemoryStream oMemoryStream = new MemoryStream();
+        MemoryStream oMemoryStream = new MemoryStream();
 
-		m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
 
-		oMemoryStream.Position = 0;
+        oMemoryStream.Position = 0;
 
-		StreamReader oStreamReader =
-			new StreamReader(oMemoryStream, Encoding.UTF8);
+        StreamReader oStreamReader =
+            new StreamReader(oMemoryStream, Encoding.UTF8);
 
-		String sStreamContents = oStreamReader.ReadToEnd();
+        String sStreamContents = oStreamReader.ReadToEnd();
 
-		Assert.AreEqual("Vertex1\tVertex2\r\n", sStreamContents);
+        Assert.AreEqual("Vertex1\tVertex2\r\n", sStreamContents);
     }
 
     //*************************************************************************
@@ -1155,34 +1155,34 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSaveGraph2_3()
     {
-		// One edge with spaces for names.
+        // One edge with spaces for names.
 
-		IGraph oGraph = CreateGraph();
+        IGraph oGraph = CreateGraph();
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		IVertex oVertex1 = oVertices.Add();
-		oVertex1.Name = " ";
+        IVertex oVertex1 = oVertices.Add();
+        oVertex1.Name = " ";
 
-		IVertex oVertex2 = oVertices.Add();
-		oVertex2.Name = " ";
+        IVertex oVertex2 = oVertices.Add();
+        oVertex2.Name = " ";
 
-		oEdges.Add(oVertex1, oVertex2, true);
+        oEdges.Add(oVertex1, oVertex2, true);
 
-		MemoryStream oMemoryStream = new MemoryStream();
+        MemoryStream oMemoryStream = new MemoryStream();
 
-		m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
 
-		oMemoryStream.Position = 0;
+        oMemoryStream.Position = 0;
 
-		StreamReader oStreamReader =
-			new StreamReader(oMemoryStream, Encoding.UTF8);
+        StreamReader oStreamReader =
+            new StreamReader(oMemoryStream, Encoding.UTF8);
 
-		String sStreamContents = oStreamReader.ReadToEnd();
+        String sStreamContents = oStreamReader.ReadToEnd();
 
-		Assert.AreEqual(" \t \r\n", sStreamContents);
+        Assert.AreEqual(" \t \r\n", sStreamContents);
     }
 
     //*************************************************************************
@@ -1198,57 +1198,57 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSaveGraph2_4()
     {
-		// N edges.
+        // N edges.
 
-		IGraph oGraph = CreateGraph();
+        IGraph oGraph = CreateGraph();
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		IVertex oEdge1Vertex1 = oVertices.Add();
-		oEdge1Vertex1.Name = "Edge1Vertex1";
+        IVertex oEdge1Vertex1 = oVertices.Add();
+        oEdge1Vertex1.Name = "Edge1Vertex1";
 
-		IVertex oEdge1Vertex2 = oVertices.Add();
-		oEdge1Vertex2.Name = "Edge1Vertex2";
+        IVertex oEdge1Vertex2 = oVertices.Add();
+        oEdge1Vertex2.Name = "Edge1Vertex2";
 
-		IVertex oEdge2Vertex1 = oVertices.Add();
-		oEdge2Vertex1.Name = "Edge2Vertex1";
+        IVertex oEdge2Vertex1 = oVertices.Add();
+        oEdge2Vertex1.Name = "Edge2Vertex1";
 
-		IVertex oEdge2Vertex2 = oVertices.Add();
-		oEdge2Vertex2.Name = "Edge2Vertex2";
+        IVertex oEdge2Vertex2 = oVertices.Add();
+        oEdge2Vertex2.Name = "Edge2Vertex2";
 
-		IVertex oEdge3Vertex1 = oVertices.Add();
-		oEdge3Vertex1.Name = "Edge3Vertex1";
+        IVertex oEdge3Vertex1 = oVertices.Add();
+        oEdge3Vertex1.Name = "Edge3Vertex1";
 
-		IVertex oEdge3Vertex2 = oVertices.Add();
-		oEdge3Vertex2.Name = "Edge3Vertex2";
+        IVertex oEdge3Vertex2 = oVertices.Add();
+        oEdge3Vertex2.Name = "Edge3Vertex2";
 
-		oEdges.Add(oEdge1Vertex1, oEdge1Vertex2, true);
-		oEdges.Add(oEdge2Vertex1, oEdge2Vertex2, true);
-		oEdges.Add(oEdge3Vertex1, oEdge3Vertex2, true);
+        oEdges.Add(oEdge1Vertex1, oEdge1Vertex2, true);
+        oEdges.Add(oEdge2Vertex1, oEdge2Vertex2, true);
+        oEdges.Add(oEdge3Vertex1, oEdge3Vertex2, true);
 
-		MemoryStream oMemoryStream = new MemoryStream();
+        MemoryStream oMemoryStream = new MemoryStream();
 
-		m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
 
-		oMemoryStream.Position = 0;
+        oMemoryStream.Position = 0;
 
-		StreamReader oStreamReader =
-			new StreamReader(oMemoryStream, Encoding.UTF8);
+        StreamReader oStreamReader =
+            new StreamReader(oMemoryStream, Encoding.UTF8);
 
-		String sStreamContents = oStreamReader.ReadToEnd();
+        String sStreamContents = oStreamReader.ReadToEnd();
 
-		// Note: The order of the lines is indeterminate, so this could break
-		// in the future.
+        // Note: The order of the lines is indeterminate, so this could break
+        // in the future.
 
-		Assert.AreEqual(
-			"Edge3Vertex1\tEdge3Vertex2\r\n"
-			+ "Edge2Vertex1\tEdge2Vertex2\r\n"
-			+ "Edge1Vertex1\tEdge1Vertex2\r\n"
-			,
-			sStreamContents
-			);
+        Assert.AreEqual(
+            "Edge3Vertex1\tEdge3Vertex2\r\n"
+            + "Edge2Vertex1\tEdge2Vertex2\r\n"
+            + "Edge1Vertex1\tEdge1Vertex2\r\n"
+            ,
+            sStreamContents
+            );
     }
 
     //*************************************************************************
@@ -1260,31 +1260,31 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSaveGraph2_Bad()
     {
-		// null graph.
+        // null graph.
 
-		try
-		{
-			m_oGraphAdapter.SaveGraph( null, new MemoryStream() );
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.SaveGraph( null, new MemoryStream() );
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.SaveGraph: graph argument can't be"
-				+ " null.\r\n"
-				+ "Parameter name: graph"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.SaveGraph: graph argument can't be"
+                + " null.\r\n"
+                + "Parameter name: graph"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -1296,33 +1296,33 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestSaveGraph2_Bad2()
     {
-		// null stream.
+        // null stream.
 
         Stream oStream = null;
 
-		try
-		{
-			m_oGraphAdapter.SaveGraph(CreateGraph(), oStream);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            m_oGraphAdapter.SaveGraph(CreateGraph(), oStream);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Adapters."
-				+ "SimpleGraphAdapter.SaveGraph: stream argument can't be"
-				+ " null.\r\n"
-				+ "Parameter name: stream"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Adapters."
+                + "SimpleGraphAdapter.SaveGraph: stream argument can't be"
+                + " null.\r\n"
+                + "Parameter name: stream"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -1334,32 +1334,32 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(IOException) ) ]
+    [ ExpectedException( typeof(IOException) ) ]
 
     public void
     TestSaveGraph2_Bad3()
     {
-		// Undirected graph.
+        // Undirected graph.
 
-		try
-		{
-			IGraph oGraph = new Graph(GraphDirectedness.Undirected);
+        try
+        {
+            IGraph oGraph = new Graph(GraphDirectedness.Undirected);
 
-			m_oGraphAdapter.SaveGraph( oGraph, new MemoryStream() );
-		}
-		catch (IOException oIOException)
-		{
-			Assert.AreEqual(
+            m_oGraphAdapter.SaveGraph( oGraph, new MemoryStream() );
+        }
+        catch (IOException oIOException)
+        {
+            Assert.AreEqual(
 
-				"The graph can't be saved as the file type you've selected,"
-				+ " because the graph is undirected and the file type can't be"
-				+ " used with undirected graphs."
-				,
-				oIOException.Message
-				);
+                "The graph can't be saved as the file type you've selected,"
+                + " because the graph is undirected and the file type can't be"
+                + " used with undirected graphs."
+                ,
+                oIOException.Message
+                );
 
-			throw oIOException;
-		}
+            throw oIOException;
+        }
     }
 
     //*************************************************************************
@@ -1371,32 +1371,32 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(IOException) ) ]
+    [ ExpectedException( typeof(IOException) ) ]
 
     public void
     TestSaveGraph2_Bad4()
     {
-		// Mixed graph.
+        // Mixed graph.
 
-		try
-		{
-			IGraph oGraph = new Graph(GraphDirectedness.Mixed);
+        try
+        {
+            IGraph oGraph = new Graph(GraphDirectedness.Mixed);
 
-			m_oGraphAdapter.SaveGraph( oGraph, new MemoryStream() );
-		}
-		catch (IOException oIOException)
-		{
-			Assert.AreEqual(
+            m_oGraphAdapter.SaveGraph( oGraph, new MemoryStream() );
+        }
+        catch (IOException oIOException)
+        {
+            Assert.AreEqual(
 
-				"The graph can't be saved as the file type you've selected,"
-				+ " because the graph is mixed and the file type can't be"
-				+ " used with mixed graphs."
-				,
-				oIOException.Message
-				);
+                "The graph can't be saved as the file type you've selected,"
+                + " because the graph is mixed and the file type can't be"
+                + " used with mixed graphs."
+                ,
+                oIOException.Message
+                );
 
-			throw oIOException;
-		}
+            throw oIOException;
+        }
     }
 
     //*************************************************************************
@@ -1408,52 +1408,52 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(FormatException) ) ]
+    [ ExpectedException( typeof(FormatException) ) ]
 
     public void
     TestSaveGraph2_Bad5()
     {
-		// First vertex has null name.
+        // First vertex has null name.
 
-		IVertex oVertex1 = null;
-		IVertex oVertex2 = null;
+        IVertex oVertex1 = null;
+        IVertex oVertex2 = null;
 
-		try
-		{
-			IGraph oGraph = CreateGraph();
+        try
+        {
+            IGraph oGraph = CreateGraph();
 
-			IVertexCollection oVertices = oGraph.Vertices;
+            IVertexCollection oVertices = oGraph.Vertices;
 
-			IEdgeCollection oEdges = oGraph.Edges;
+            IEdgeCollection oEdges = oGraph.Edges;
 
-			oVertex1 = oVertices.Add();
-			oVertex1.Name = null;
+            oVertex1 = oVertices.Add();
+            oVertex1.Name = null;
 
-			oVertex2 = oVertices.Add();
-			oVertex2.Name = "Edge1Vertex2";
+            oVertex2 = oVertices.Add();
+            oVertex2.Name = "Edge1Vertex2";
 
-			oEdges.Add(oVertex1, oVertex2, true);
+            oEdges.Add(oVertex1, oVertex2, true);
 
-			MemoryStream oMemoryStream = new MemoryStream();
+            MemoryStream oMemoryStream = new MemoryStream();
 
-			m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
-		}
-		catch (FormatException oFormatException)
-		{
-			Assert.AreEqual( String.Format(
+            m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        }
+        catch (FormatException oFormatException)
+        {
+            Assert.AreEqual( String.Format(
 
-				"The vertex with the ID {0} has a null or empty name.  All"
-				+ " vertices must have a name when saving a graph with this"
-				+ " graph adapter."
-				,
-				oVertex1.ID.ToString("N0")
-				),
+                "The vertex with the ID {0} has a null or empty name.  All"
+                + " vertices must have a name when saving a graph with this"
+                + " graph adapter."
+                ,
+                oVertex1.ID.ToString("N0")
+                ),
 
-				oFormatException.Message
-				);
+                oFormatException.Message
+                );
 
-			throw oFormatException;
-		}
+            throw oFormatException;
+        }
     }
 
     //*************************************************************************
@@ -1465,52 +1465,52 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(FormatException) ) ]
+    [ ExpectedException( typeof(FormatException) ) ]
 
     public void
     TestSaveGraph2_Bad6()
     {
-		// First vertex has empty name.
+        // First vertex has empty name.
 
-		IVertex oVertex1 = null;
-		IVertex oVertex2 = null;
+        IVertex oVertex1 = null;
+        IVertex oVertex2 = null;
 
-		try
-		{
-			IGraph oGraph = CreateGraph();
+        try
+        {
+            IGraph oGraph = CreateGraph();
 
-			IVertexCollection oVertices = oGraph.Vertices;
+            IVertexCollection oVertices = oGraph.Vertices;
 
-			IEdgeCollection oEdges = oGraph.Edges;
+            IEdgeCollection oEdges = oGraph.Edges;
 
-			oVertex1 = oVertices.Add();
-			oVertex1.Name = String.Empty;
+            oVertex1 = oVertices.Add();
+            oVertex1.Name = String.Empty;
 
-			oVertex2 = oVertices.Add();
-			oVertex2.Name = "Edge1Vertex2";
+            oVertex2 = oVertices.Add();
+            oVertex2.Name = "Edge1Vertex2";
 
-			oEdges.Add(oVertex1, oVertex2, true);
+            oEdges.Add(oVertex1, oVertex2, true);
 
-			MemoryStream oMemoryStream = new MemoryStream();
+            MemoryStream oMemoryStream = new MemoryStream();
 
-			m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
-		}
-		catch (FormatException oFormatException)
-		{
-			Assert.AreEqual( String.Format(
+            m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        }
+        catch (FormatException oFormatException)
+        {
+            Assert.AreEqual( String.Format(
 
-				"The vertex with the ID {0} has a null or empty name.  All"
-				+ " vertices must have a name when saving a graph with this"
-				+ " graph adapter."
-				,
-				oVertex1.ID.ToString("N0")
-				),
+                "The vertex with the ID {0} has a null or empty name.  All"
+                + " vertices must have a name when saving a graph with this"
+                + " graph adapter."
+                ,
+                oVertex1.ID.ToString("N0")
+                ),
 
-				oFormatException.Message
-				);
+                oFormatException.Message
+                );
 
-			throw oFormatException;
-		}
+            throw oFormatException;
+        }
     }
 
     //*************************************************************************
@@ -1522,52 +1522,52 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(FormatException) ) ]
+    [ ExpectedException( typeof(FormatException) ) ]
 
     public void
     TestSaveGraph2_Bad7()
     {
-		// Second vertex has null name.
+        // Second vertex has null name.
 
-		IVertex oVertex1 = null;
-		IVertex oVertex2 = null;
+        IVertex oVertex1 = null;
+        IVertex oVertex2 = null;
 
-		try
-		{
-			IGraph oGraph = CreateGraph();
+        try
+        {
+            IGraph oGraph = CreateGraph();
 
-			IVertexCollection oVertices = oGraph.Vertices;
+            IVertexCollection oVertices = oGraph.Vertices;
 
-			IEdgeCollection oEdges = oGraph.Edges;
+            IEdgeCollection oEdges = oGraph.Edges;
 
-			oVertex1 = oVertices.Add();
-			oVertex1.Name = "Edge1Vertex1";
+            oVertex1 = oVertices.Add();
+            oVertex1.Name = "Edge1Vertex1";
 
-			oVertex2 = oVertices.Add();
-			oVertex2.Name = null;
+            oVertex2 = oVertices.Add();
+            oVertex2.Name = null;
 
-			oEdges.Add(oVertex1, oVertex2, true);
+            oEdges.Add(oVertex1, oVertex2, true);
 
-			MemoryStream oMemoryStream = new MemoryStream();
+            MemoryStream oMemoryStream = new MemoryStream();
 
-			m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
-		}
-		catch (FormatException oFormatException)
-		{
-			Assert.AreEqual( String.Format(
+            m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        }
+        catch (FormatException oFormatException)
+        {
+            Assert.AreEqual( String.Format(
 
-				"The vertex with the ID {0} has a null or empty name.  All"
-				+ " vertices must have a name when saving a graph with this"
-				+ " graph adapter."
-				,
-				oVertex2.ID.ToString("N0")
-				),
+                "The vertex with the ID {0} has a null or empty name.  All"
+                + " vertices must have a name when saving a graph with this"
+                + " graph adapter."
+                ,
+                oVertex2.ID.ToString("N0")
+                ),
 
-				oFormatException.Message
-				);
+                oFormatException.Message
+                );
 
-			throw oFormatException;
-		}
+            throw oFormatException;
+        }
     }
 
     //*************************************************************************
@@ -1579,52 +1579,52 @@ public class SimpleGraphAdapterTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(FormatException) ) ]
+    [ ExpectedException( typeof(FormatException) ) ]
 
     public void
     TestSaveGraph2_Bad8()
     {
-		// Second vertex has empty name.
+        // Second vertex has empty name.
 
-		IVertex oVertex1 = null;
-		IVertex oVertex2 = null;
+        IVertex oVertex1 = null;
+        IVertex oVertex2 = null;
 
-		try
-		{
-			IGraph oGraph = CreateGraph();
+        try
+        {
+            IGraph oGraph = CreateGraph();
 
-			IVertexCollection oVertices = oGraph.Vertices;
+            IVertexCollection oVertices = oGraph.Vertices;
 
-			IEdgeCollection oEdges = oGraph.Edges;
+            IEdgeCollection oEdges = oGraph.Edges;
 
-			oVertex1 = oVertices.Add();
-			oVertex1.Name = "Edge1Vertex1";
+            oVertex1 = oVertices.Add();
+            oVertex1.Name = "Edge1Vertex1";
 
-			oVertex2 = oVertices.Add();
-			oVertex2.Name = String.Empty;
+            oVertex2 = oVertices.Add();
+            oVertex2.Name = String.Empty;
 
-			oEdges.Add(oVertex1, oVertex2, true);
+            oEdges.Add(oVertex1, oVertex2, true);
 
-			MemoryStream oMemoryStream = new MemoryStream();
+            MemoryStream oMemoryStream = new MemoryStream();
 
-			m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
-		}
-		catch (FormatException oFormatException)
-		{
-			Assert.AreEqual( String.Format(
+            m_oGraphAdapter.SaveGraph(oGraph, oMemoryStream);
+        }
+        catch (FormatException oFormatException)
+        {
+            Assert.AreEqual( String.Format(
 
-				"The vertex with the ID {0} has a null or empty name.  All"
-				+ " vertices must have a name when saving a graph with this"
-				+ " graph adapter."
-				,
-				oVertex2.ID.ToString("N0")
-				),
+                "The vertex with the ID {0} has a null or empty name.  All"
+                + " vertices must have a name when saving a graph with this"
+                + " graph adapter."
+                ,
+                oVertex2.ID.ToString("N0")
+                ),
 
-				oFormatException.Message
-				);
+                oFormatException.Message
+                );
 
-			throw oFormatException;
-		}
+            throw oFormatException;
+        }
     }
 
     //*************************************************************************
@@ -1640,8 +1640,8 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSupportsDirectedness()
     {
-		Assert.IsFalse( m_oGraphAdapter.SupportsDirectedness(
-			GraphDirectedness.Undirected) );
+        Assert.IsFalse( m_oGraphAdapter.SupportsDirectedness(
+            GraphDirectedness.Undirected) );
     }
 
     //*************************************************************************
@@ -1657,8 +1657,8 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSupportsDirectedness2()
     {
-		Assert.IsTrue( m_oGraphAdapter.SupportsDirectedness(
-			GraphDirectedness.Directed) );
+        Assert.IsTrue( m_oGraphAdapter.SupportsDirectedness(
+            GraphDirectedness.Directed) );
     }
 
     //*************************************************************************
@@ -1674,8 +1674,8 @@ public class SimpleGraphAdapterTest : Object
     public void
     TestSupportsDirectedness3()
     {
-		Assert.IsFalse( m_oGraphAdapter.SupportsDirectedness(
-			GraphDirectedness.Mixed) );
+        Assert.IsFalse( m_oGraphAdapter.SupportsDirectedness(
+            GraphDirectedness.Mixed) );
     }
 
     //*************************************************************************
@@ -1683,18 +1683,18 @@ public class SimpleGraphAdapterTest : Object
     //
     /// <summary>
     /// Creates a graph that is compatible with <see
-	/// cref="SimpleGraphAdapter" />.
+    /// cref="SimpleGraphAdapter" />.
     /// </summary>
-	///
-	/// <returns>
-	/// A new compatible graph.
-	/// </returns>
+    ///
+    /// <returns>
+    /// A new compatible graph.
+    /// </returns>
     //*************************************************************************
 
     protected IGraph
     CreateGraph()
     {
-		return ( new Graph(GraphDirectedness.Directed) );
+        return ( new Graph(GraphDirectedness.Directed) );
     }
 
     //*************************************************************************
@@ -1702,50 +1702,50 @@ public class SimpleGraphAdapterTest : Object
     //
     /// <summary>
     /// Tests the LoadGraph(IGraphFactory, Stream) method when the file
-	/// contains one valid edge.
+    /// contains one valid edge.
     /// </summary>
-	///
-	/// <param name="sStreamContents">
-	/// Contents of the stream being tested.
-	/// </param>
-	///
-	/// <param name="sVertex1Name">
-	/// Expected name of the edge's first vertex.
-	/// </param>
-	///
-	/// <param name="sVertex2Name">
-	/// Expected name of the edge's second vertex.
-	/// </param>
+    ///
+    /// <param name="sStreamContents">
+    /// Contents of the stream being tested.
+    /// </param>
+    ///
+    /// <param name="sVertex1Name">
+    /// Expected name of the edge's first vertex.
+    /// </param>
+    ///
+    /// <param name="sVertex2Name">
+    /// Expected name of the edge's second vertex.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestLoadGraphSingleEdge
-	(
-		String sStreamContents,
-		String sVertex1Name,
-		String sVertex2Name
-	)
+    (
+        String sStreamContents,
+        String sVertex1Name,
+        String sVertex2Name
+    )
     {
-		StringStream oStream = new StringStream(sStreamContents);
+        StringStream oStream = new StringStream(sStreamContents);
 
-		IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		Assert.AreEqual(2, oVertices.Count);
+        Assert.AreEqual(2, oVertices.Count);
 
-		Assert.IsTrue( oVertices.Contains(sVertex1Name) );
-		Assert.IsTrue( oVertices.Contains(sVertex2Name) );
+        Assert.IsTrue( oVertices.Contains(sVertex1Name) );
+        Assert.IsTrue( oVertices.Contains(sVertex2Name) );
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		Assert.AreEqual(1, oEdges.Count);
+        Assert.AreEqual(1, oEdges.Count);
 
-		foreach (IEdge oEdge in oEdges)
-		{
-			Assert.AreEqual(sVertex1Name, oEdge.Vertices[0].Name);
-			Assert.AreEqual(sVertex2Name, oEdge.Vertices[1].Name);
-		}
+        foreach (IEdge oEdge in oEdges)
+        {
+            Assert.AreEqual(sVertex1Name, oEdge.Vertices[0].Name);
+            Assert.AreEqual(sVertex2Name, oEdge.Vertices[1].Name);
+        }
     }
 
     //*************************************************************************
@@ -1753,51 +1753,51 @@ public class SimpleGraphAdapterTest : Object
     //
     /// <summary>
     /// Tests the LoadGraph(IGraphFactory, Stream) method when the file
-	/// contains one invalid edge.
+    /// contains one invalid edge.
     /// </summary>
-	///
-	/// <param name="sStreamContents">
-	/// Contents of the stream being tested.
-	/// </param>
+    ///
+    /// <param name="sStreamContents">
+    /// Contents of the stream being tested.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestLoadGraphSingleEdgeBad
-	(
-		String sStreamContents
-	)
+    (
+        String sStreamContents
+    )
     {
-		StringStream oStream = new StringStream(sStreamContents);
+        StringStream oStream = new StringStream(sStreamContents);
 
-		Boolean bExceptionThrown = false;
+        Boolean bExceptionThrown = false;
 
-		try
-		{
-			IGraph oGraph = m_oGraphAdapter.LoadGraph(
-				new GraphFactory(), oStream);
-		}
-		catch (FormatException oFormatException)
-		{
-			bExceptionThrown = true;
+        try
+        {
+            IGraph oGraph = m_oGraphAdapter.LoadGraph(
+                new GraphFactory(), oStream);
+        }
+        catch (FormatException oFormatException)
+        {
+            bExceptionThrown = true;
 
-			oStream.Position = 0;
+            oStream.Position = 0;
 
-			String sLine =
-				( new StreamReader(oStream, Encoding.UTF8) ).ReadLine();
+            String sLine =
+                ( new StreamReader(oStream, Encoding.UTF8) ).ReadLine();
 
-			String sExpectedMessage = String.Format(
+            String sExpectedMessage = String.Format(
 
-				"Line 1 is not in the expected format.  This is line"
-				+ " 1: \"{0}\".  The expected format is"
-				+ " \"Vertex1Name{{tab}}Vertex2Name\"."
-				,
-				sLine.Replace('\t', '\u25A1')
-				);
+                "Line 1 is not in the expected format.  This is line"
+                + " 1: \"{0}\".  The expected format is"
+                + " \"Vertex1Name{{tab}}Vertex2Name\"."
+                ,
+                sLine.Replace('\t', '\u25A1')
+                );
 
-			Assert.AreEqual(sExpectedMessage, oFormatException.Message);
-		}
+            Assert.AreEqual(sExpectedMessage, oFormatException.Message);
+        }
 
-		Assert.IsTrue(bExceptionThrown);
+        Assert.IsTrue(bExceptionThrown);
     }
 
 
@@ -1809,9 +1809,9 @@ public class SimpleGraphAdapterTest : Object
 
     protected IGraphAdapter m_oGraphAdapter;
 
-	/// Name of the temporary file that may be created by the unit tests.
+    /// Name of the temporary file that may be created by the unit tests.
 
-	protected String m_sTempFileName;
+    protected String m_sTempFileName;
 }
 
 }

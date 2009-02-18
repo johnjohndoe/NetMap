@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.Office.Core;
@@ -46,556 +46,556 @@ public class WorksheetContextMenuManager : Object
     /// Initializes a new instance of the <see
     /// cref="WorksheetContextMenuManager" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="workbook">
     /// Excel workbook.
     /// </param>
-	///
+    ///
     /// <param name="edgeWorksheet">
-	/// The edge worksheet in the Excel workbook.
+    /// The edge worksheet in the Excel workbook.
     /// </param>
-	///
+    ///
     /// <param name="edgeTable">
-	/// The edge table on the edge worksheet.
+    /// The edge table on the edge worksheet.
     /// </param>
-	///
+    ///
     /// <param name="vertexWorksheet">
-	/// The vertex worksheet in the Excel workbook.
+    /// The vertex worksheet in the Excel workbook.
     /// </param>
-	///
+    ///
     /// <param name="vertexTable">
-	/// The vertex table on the vertex worksheet.
+    /// The vertex table on the vertex worksheet.
     /// </param>
     //*************************************************************************
 
     public WorksheetContextMenuManager
-	(
-		Microsoft.Office.Tools.Excel.Workbook workbook,
-		Microsoft.Office.Tools.Excel.Worksheet edgeWorksheet,
+    (
+        Microsoft.Office.Tools.Excel.Workbook workbook,
+        Microsoft.Office.Tools.Excel.Worksheet edgeWorksheet,
         Microsoft.Office.Tools.Excel.ListObject edgeTable,
-		Microsoft.Office.Tools.Excel.Worksheet vertexWorksheet,
+        Microsoft.Office.Tools.Excel.Worksheet vertexWorksheet,
         Microsoft.Office.Tools.Excel.ListObject vertexTable
-	)
+    )
     {
-		Debug.Assert(workbook != null);
-		Debug.Assert(edgeWorksheet != null);
-		Debug.Assert(edgeTable != null);
-		Debug.Assert(vertexWorksheet != null);
-		Debug.Assert(vertexTable != null);
+        Debug.Assert(workbook != null);
+        Debug.Assert(edgeWorksheet != null);
+        Debug.Assert(edgeTable != null);
+        Debug.Assert(vertexWorksheet != null);
+        Debug.Assert(vertexTable != null);
 
-		m_oWorkbook = workbook;
-		m_oEdgeTable = edgeTable;
-		m_oVertexTable = vertexTable;
+        m_oWorkbook = workbook;
+        m_oEdgeTable = edgeTable;
+        m_oVertexTable = vertexTable;
 
-		// Handle the events involved in adding, handling, and removing custom
-		// menu items.
+        // Handle the events involved in adding, handling, and removing custom
+        // menu items.
 
         workbook.Deactivate += new Microsoft.Office.Interop.
-			Excel.WorkbookEvents_DeactivateEventHandler(
-				this.Workbook_Deactivate);
+            Excel.WorkbookEvents_DeactivateEventHandler(
+                this.Workbook_Deactivate);
 
         edgeWorksheet.Deactivate += new Microsoft.Office.Interop.
-			Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
+            Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
 
         vertexWorksheet.Deactivate += new Microsoft.Office.Interop.
-			Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
+            Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
 
-		vertexTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
-			DocEvents_BeforeRightClickEventHandler(
-				VertexTable_BeforeRightClick);
+        vertexTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
+            DocEvents_BeforeRightClickEventHandler(
+                VertexTable_BeforeRightClick);
 
-		edgeTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
-			DocEvents_BeforeRightClickEventHandler(EdgeTable_BeforeRightClick);
+        edgeTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
+            DocEvents_BeforeRightClickEventHandler(EdgeTable_BeforeRightClick);
     }
 
-	//*************************************************************************
-	//  Enum: VertexCommand
-	//
-	/// <summary>
-	/// Commands that can be run from the context menu that appears when the
-	/// vertex table is right-clicked.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Enum: VertexCommand
+    //
+    /// <summary>
+    /// Commands that can be run from the context menu that appears when the
+    /// vertex table is right-clicked.
+    /// </summary>
+    //*************************************************************************
 
-	public enum
-	VertexCommand
-	{
-		/// <summary>
-		/// Select all vertices.
-		/// </summary>
+    public enum
+    VertexCommand
+    {
+        /// <summary>
+        /// Select all vertices.
+        /// </summary>
 
-		SelectAllVertices,
+        SelectAllVertices,
 
-		/// <summary>
-		/// Deselect all vertices.
-		/// </summary>
+        /// <summary>
+        /// Deselect all vertices.
+        /// </summary>
 
-		DeselectAllVertices,
+        DeselectAllVertices,
 
-		/// <summary>
-		/// Select the clicked vertex's adjacent vertices.
-		/// </summary>
+        /// <summary>
+        /// Select the clicked vertex's adjacent vertices.
+        /// </summary>
 
-		SelectAdjacentVertices,
+        SelectAdjacentVertices,
 
-		/// <summary>
-		/// Deselect the clicked vertex's adjacent vertices.
-		/// </summary>
+        /// <summary>
+        /// Deselect the clicked vertex's adjacent vertices.
+        /// </summary>
 
-		DeselectAdjacentVertices,
+        DeselectAdjacentVertices,
 
-		/// <summary>
-		/// Select the clicked vertex's incident edges.
-		/// </summary>
+        /// <summary>
+        /// Select the clicked vertex's incident edges.
+        /// </summary>
 
-		SelectIncidentEdges,
+        SelectIncidentEdges,
 
-		/// <summary>
-		/// Deselect the clicked vertex's incident edges.
-		/// </summary>
+        /// <summary>
+        /// Deselect the clicked vertex's incident edges.
+        /// </summary>
 
-		DeselectIncidentEdges,
+        DeselectIncidentEdges,
 
-		/// <summary>
-		/// Edit the attributes of the selected vertices.
-		/// </summary>
+        /// <summary>
+        /// Edit the attributes of the selected vertices.
+        /// </summary>
 
-		EditVertexAttributes,
+        EditVertexAttributes,
 
-		/// <summary>
-		/// Shows a dialog for selecting subgraphs.
-		/// </summary>
+        /// <summary>
+        /// Shows a dialog for selecting subgraphs.
+        /// </summary>
 
-		SelectSubgraphs,
-	}
+        SelectSubgraphs,
+    }
 
-	//*************************************************************************
-	//  Enum: EdgeCommand
-	//
-	/// <summary>
-	/// Commands that can be run from the context menu that appears when the
-	/// edge table is right-clicked.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Enum: EdgeCommand
+    //
+    /// <summary>
+    /// Commands that can be run from the context menu that appears when the
+    /// edge table is right-clicked.
+    /// </summary>
+    //*************************************************************************
 
-	public enum
-	EdgeCommand
-	{
-		/// <summary>
-		/// Select all edges.
-		/// </summary>
+    public enum
+    EdgeCommand
+    {
+        /// <summary>
+        /// Select all edges.
+        /// </summary>
 
-		SelectAllEdges,
+        SelectAllEdges,
 
-		/// <summary>
-		/// Deselect all edges.
-		/// </summary>
+        /// <summary>
+        /// Deselect all edges.
+        /// </summary>
 
-		DeselectAllEdges,
+        DeselectAllEdges,
 
-		/// <summary>
-		/// Select the clicked edges's adjacent vertices.
-		/// </summary>
+        /// <summary>
+        /// Select the clicked edges's adjacent vertices.
+        /// </summary>
 
-		SelectAdjacentVertices,
+        SelectAdjacentVertices,
 
-		/// <summary>
-		/// Deselect the clicked edges's adjacent vertices.
-		/// </summary>
+        /// <summary>
+        /// Deselect the clicked edges's adjacent vertices.
+        /// </summary>
 
-		DeselectAdjacentVertices,
-	}
+        DeselectAdjacentVertices,
+    }
 
-	//*************************************************************************
-	//	Event: RequestVertexCommandEnable
-	//
-	/// <summary>
-	///	Occurs before a context menu is displayed for the vertex table and this
-	/// class needs to know which custom menu items to enable.
-	/// </summary>
-	///
-	/// <remarks>
-	/// By default, none of the custom menu items that this class adds to the
-	/// vertex table's context menu are enabled.  To enable them, handle this
-	/// event and selectively set the flags in the event argument to true.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: RequestVertexCommandEnable
+    //
+    /// <summary>
+    /// Occurs before a context menu is displayed for the vertex table and this
+    /// class needs to know which custom menu items to enable.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// By default, none of the custom menu items that this class adds to the
+    /// vertex table's context menu are enabled.  To enable them, handle this
+    /// event and selectively set the flags in the event argument to true.
+    /// </remarks>
+    //*************************************************************************
 
-	public event RequestVertexCommandEnableEventHandler
-		RequestVertexCommandEnable;
-
-
-	//*************************************************************************
-	//	Event: RequestEdgeCommandEnable
-	//
-	/// <summary>
-	///	Occurs before a context menu is displayed for the edge table and this
-	/// class needs to know which custom menu items to enable.
-	/// </summary>
-	///
-	/// <remarks>
-	/// By default, none of the custom menu items that this class adds to the
-	/// edge table's context menu are enabled.  To enable them, handle this
-	/// event and selectively set the flags in the event argument to true.
-	/// </remarks>
-	//*************************************************************************
-
-	public event RequestEdgeCommandEnableEventHandler RequestEdgeCommandEnable;
+    public event RequestVertexCommandEnableEventHandler
+        RequestVertexCommandEnable;
 
 
-	//*************************************************************************
-	//	Event: RunVertexCommand
-	//
-	/// <summary>
-	/// Occurs when the user clicks a custom menu item that appears when the
-	/// vertex table is right-clicked.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: RequestEdgeCommandEnable
+    //
+    /// <summary>
+    /// Occurs before a context menu is displayed for the edge table and this
+    /// class needs to know which custom menu items to enable.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// By default, none of the custom menu items that this class adds to the
+    /// edge table's context menu are enabled.  To enable them, handle this
+    /// event and selectively set the flags in the event argument to true.
+    /// </remarks>
+    //*************************************************************************
 
-	public event RunVertexCommandEventHandler RunVertexCommand;
-
-
-	//*************************************************************************
-	//	Event: RunEdgeCommand
-	//
-	/// <summary>
-	/// Occurs when the user clicks a custom menu item that appears when the
-	/// edge table is right-clicked.
-	/// </summary>
-	//*************************************************************************
-
-	public event RunEdgeCommandEventHandler RunEdgeCommand;
+    public event RequestEdgeCommandEnableEventHandler RequestEdgeCommandEnable;
 
 
-	//*************************************************************************
-	//	Method: AddVertexContextMenuItems()
-	//
-	/// <summary>
-	/// Adds custom menu items to the context menu that appears when a cell is
-	/// right-clicked in the vertex table.
-	/// </summary>
-	///
-	/// <param name="oClickedRange">
-	/// Range that was right-clicked.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: RunVertexCommand
+    //
+    /// <summary>
+    /// Occurs when the user clicks a custom menu item that appears when the
+    /// vertex table is right-clicked.
+    /// </summary>
+    //*************************************************************************
 
-	protected void
-	AddVertexContextMenuItems
-	(
-		Microsoft.Office.Interop.Excel.Range oClickedRange
-	)
-	{
-		Debug.Assert(oClickedRange != null);
-		AssertValid();
+    public event RunVertexCommandEventHandler RunVertexCommand;
 
-		Int32 iClickedVertexID;
+
+    //*************************************************************************
+    //  Event: RunEdgeCommand
+    //
+    /// <summary>
+    /// Occurs when the user clicks a custom menu item that appears when the
+    /// edge table is right-clicked.
+    /// </summary>
+    //*************************************************************************
+
+    public event RunEdgeCommandEventHandler RunEdgeCommand;
+
+
+    //*************************************************************************
+    //  Method: AddVertexContextMenuItems()
+    //
+    /// <summary>
+    /// Adds custom menu items to the context menu that appears when a cell is
+    /// right-clicked in the vertex table.
+    /// </summary>
+    ///
+    /// <param name="oClickedRange">
+    /// Range that was right-clicked.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddVertexContextMenuItems
+    (
+        Microsoft.Office.Interop.Excel.Range oClickedRange
+    )
+    {
+        Debug.Assert(oClickedRange != null);
+        AssertValid();
+
+        Int32 iClickedVertexID;
         CommandBarPopup oTopLevelPopup;
 
-		// Add a top-level NodeXL popup menu item.
+        // Add a top-level NodeXL popup menu item.
 
-		PrepareToAddChildMenuItems(oClickedRange, m_oVertexTable,
-			CommonTableColumnNames.ID, out iClickedVertexID,
-			out oTopLevelPopup);
+        PrepareToAddChildMenuItems(oClickedRange, m_oVertexTable,
+            CommonTableColumnNames.ID, out iClickedVertexID,
+            out oTopLevelPopup);
 
-		// Add child menu items.
+        // Add child menu items.
 
         CommandBarButton oSelectAllVerticesButton = AddContextMenuItem(
-			oTopLevelPopup, "Select &All Vertices", iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oSelectAllVerticesButton_Click) );
+            oTopLevelPopup, "Select &All Vertices", iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oSelectAllVerticesButton_Click) );
 
         CommandBarButton oDeselectAllVerticesButton = AddContextMenuItem(
-			oTopLevelPopup, "&Deselect All Vertices", iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oDeselectAllVerticesButton_Click) );
+            oTopLevelPopup, "&Deselect All Vertices", iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oDeselectAllVerticesButton_Click) );
 
         CommandBarButton oSelectAdjacentVerticesOfVertexButton =
-			AddContextMenuItem(oTopLevelPopup, "Select Ad&jacent Vertices",
-			iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oSelectAdjacentVerticesOfVertexButton_Click) );
+            AddContextMenuItem(oTopLevelPopup, "Select Ad&jacent Vertices",
+            iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oSelectAdjacentVerticesOfVertexButton_Click) );
 
         CommandBarButton oDeselectAdjacentVerticesOfVertexButton =
-			AddContextMenuItem(oTopLevelPopup, "Deselect Adjace&nt Vertices",
-			iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oDeselectAdjacentVerticesOfVertexButton_Click) );
+            AddContextMenuItem(oTopLevelPopup, "Deselect Adjace&nt Vertices",
+            iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oDeselectAdjacentVerticesOfVertexButton_Click) );
 
         CommandBarButton oSelectIncidentEdgesButton = AddContextMenuItem(
-			oTopLevelPopup, "Select &Incident Edges", iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oSelectIncidentEdgesButton_Click) );
+            oTopLevelPopup, "Select &Incident Edges", iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oSelectIncidentEdgesButton_Click) );
 
         CommandBarButton oDeselectIncidentEdgesButton = AddContextMenuItem(
-			oTopLevelPopup, "Deselec&t Incident Edges", iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oDeselectIncidentEdgesButton_Click) );
+            oTopLevelPopup, "Deselec&t Incident Edges", iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oDeselectIncidentEdgesButton_Click) );
 
         CommandBarButton oSelectSubgraphsButton = AddContextMenuItem(
-			oTopLevelPopup, "Select S&ubgraphs...", iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oSelectSubgraphsButton_Click) );
+            oTopLevelPopup, "Select S&ubgraphs...", iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oSelectSubgraphsButton_Click) );
 
         CommandBarButton oEditVertexAttributesButton = AddContextMenuItem(
-			oTopLevelPopup, "&Edit Selected Vertex Attributes...",
-			iClickedVertexID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oEditVertexAttributesButton_Click) );
+            oTopLevelPopup, "&Edit Selected Vertex Attributes...",
+            iClickedVertexID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oEditVertexAttributesButton_Click) );
 
         oEditVertexAttributesButton.BeginGroup = true;
 
-		// The custom menu items are disabled by default.  To enable them, the
-		// RequestVertexCommandEnable event must be handled.
+        // The custom menu items are disabled by default.  To enable them, the
+        // RequestVertexCommandEnable event must be handled.
 
-		RequestVertexCommandEnableEventHandler oRequestVertexCommandEnable =
-			this.RequestVertexCommandEnable;
+        RequestVertexCommandEnableEventHandler oRequestVertexCommandEnable =
+            this.RequestVertexCommandEnable;
 
-		if (oRequestVertexCommandEnable == null)
-		{
-			return;
-		}
+        if (oRequestVertexCommandEnable == null)
+        {
+            return;
+        }
 
-		RequestVertexCommandEnableEventArgs oEventArgs =
-			new RequestVertexCommandEnableEventArgs(iClickedVertexID);
+        RequestVertexCommandEnableEventArgs oEventArgs =
+            new RequestVertexCommandEnableEventArgs(iClickedVertexID);
 
-		oRequestVertexCommandEnable(this, oEventArgs);
+        oRequestVertexCommandEnable(this, oEventArgs);
 
-		oSelectAllVerticesButton.Enabled = oEventArgs.EnableSelectAllVertices;
+        oSelectAllVerticesButton.Enabled = oEventArgs.EnableSelectAllVertices;
 
-		oDeselectAllVerticesButton.Enabled =
-			oEventArgs.EnableDeselectAllVertices;
+        oDeselectAllVerticesButton.Enabled =
+            oEventArgs.EnableDeselectAllVertices;
 
-		oSelectAdjacentVerticesOfVertexButton.Enabled =
-			oEventArgs.EnableSelectAdjacentVertices;
+        oSelectAdjacentVerticesOfVertexButton.Enabled =
+            oEventArgs.EnableSelectAdjacentVertices;
 
-		oDeselectAdjacentVerticesOfVertexButton.Enabled =
-			oEventArgs.EnableDeselectAdjacentVertices;
+        oDeselectAdjacentVerticesOfVertexButton.Enabled =
+            oEventArgs.EnableDeselectAdjacentVertices;
 
-		oSelectIncidentEdgesButton.Enabled =
-			oEventArgs.EnableSelectIncidentEdges;
+        oSelectIncidentEdgesButton.Enabled =
+            oEventArgs.EnableSelectIncidentEdges;
 
-		oDeselectIncidentEdgesButton.Enabled =
-			oEventArgs.EnableDeselectIncidentEdges;
+        oDeselectIncidentEdgesButton.Enabled =
+            oEventArgs.EnableDeselectIncidentEdges;
 
-		oEditVertexAttributesButton.Enabled =
-			oEventArgs.EnableEditVertexAttributes;
+        oEditVertexAttributesButton.Enabled =
+            oEventArgs.EnableEditVertexAttributes;
 
-		oSelectSubgraphsButton.Enabled = oEventArgs.EnableSelectSubgraphs;
-	}
+        oSelectSubgraphsButton.Enabled = oEventArgs.EnableSelectSubgraphs;
+    }
 
-	//*************************************************************************
-	//	Method: AddEdgeContextMenuItems()
-	//
-	/// <summary>
-	/// Adds custom menu items to the context menu that appears when a cell is
-	/// right-clicked in the edge table.
-	/// </summary>
-	///
-	/// <param name="oClickedRange">
-	/// Range that was right-clicked.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: AddEdgeContextMenuItems()
+    //
+    /// <summary>
+    /// Adds custom menu items to the context menu that appears when a cell is
+    /// right-clicked in the edge table.
+    /// </summary>
+    ///
+    /// <param name="oClickedRange">
+    /// Range that was right-clicked.
+    /// </param>
+    //*************************************************************************
 
-	protected void
-	AddEdgeContextMenuItems
-	(
-		Microsoft.Office.Interop.Excel.Range oClickedRange
-	)
-	{
-		Debug.Assert(oClickedRange != null);
-		AssertValid();
+    protected void
+    AddEdgeContextMenuItems
+    (
+        Microsoft.Office.Interop.Excel.Range oClickedRange
+    )
+    {
+        Debug.Assert(oClickedRange != null);
+        AssertValid();
 
-		Int32 iClickedEdgeID;
+        Int32 iClickedEdgeID;
         CommandBarPopup oTopLevelPopup;
 
-		// Add a top-level NodeXL popup menu item.
+        // Add a top-level NodeXL popup menu item.
 
-		PrepareToAddChildMenuItems(oClickedRange, m_oEdgeTable,
-			CommonTableColumnNames.ID, out iClickedEdgeID,
+        PrepareToAddChildMenuItems(oClickedRange, m_oEdgeTable,
+            CommonTableColumnNames.ID, out iClickedEdgeID,
             out oTopLevelPopup);
 
-		// Add child menu items.
+        // Add child menu items.
 
         CommandBarButton oSelectAllEdgesButton = AddContextMenuItem(
-			oTopLevelPopup, "Select &All Edges", iClickedEdgeID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oSelectAllEdgesButton_Click) );
+            oTopLevelPopup, "Select &All Edges", iClickedEdgeID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oSelectAllEdgesButton_Click) );
 
         CommandBarButton oDeselectAllEdgesButton = AddContextMenuItem(
-			oTopLevelPopup, "&Deselect All Edges", iClickedEdgeID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oDeselectAllEdgesButton_Click) );
+            oTopLevelPopup, "&Deselect All Edges", iClickedEdgeID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oDeselectAllEdgesButton_Click) );
 
         CommandBarButton oSelectAdjacentVerticesOfEdgeButton =
-			AddContextMenuItem(oTopLevelPopup, "Select Ad&jacent Vertices",
-			iClickedEdgeID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oSelectAdjacentVerticesOfEdgeButton_Click) );
+            AddContextMenuItem(oTopLevelPopup, "Select Ad&jacent Vertices",
+            iClickedEdgeID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oSelectAdjacentVerticesOfEdgeButton_Click) );
 
         CommandBarButton oDeselectAdjacentVerticesOfEdgeButton =
-			AddContextMenuItem(oTopLevelPopup, "Deselect Adjace&nt Vertices",
-			iClickedEdgeID,
-			new _CommandBarButtonEvents_ClickEventHandler(
-				oDeselectAdjacentVerticesOfEdgeButton_Click) );
+            AddContextMenuItem(oTopLevelPopup, "Deselect Adjace&nt Vertices",
+            iClickedEdgeID,
+            new _CommandBarButtonEvents_ClickEventHandler(
+                oDeselectAdjacentVerticesOfEdgeButton_Click) );
 
-		// The custom menu items are disabled by default.  To enable them, the
-		// RequestEdgeCommandEnable event must be handled.
+        // The custom menu items are disabled by default.  To enable them, the
+        // RequestEdgeCommandEnable event must be handled.
 
-		RequestEdgeCommandEnableEventHandler oRequestEdgeCommandEnable =
-			this.RequestEdgeCommandEnable;
+        RequestEdgeCommandEnableEventHandler oRequestEdgeCommandEnable =
+            this.RequestEdgeCommandEnable;
 
-		if (oRequestEdgeCommandEnable == null)
-		{
-			return;
-		}
+        if (oRequestEdgeCommandEnable == null)
+        {
+            return;
+        }
 
-		RequestEdgeCommandEnableEventArgs oEventArgs =
-			new RequestEdgeCommandEnableEventArgs(iClickedEdgeID);
+        RequestEdgeCommandEnableEventArgs oEventArgs =
+            new RequestEdgeCommandEnableEventArgs(iClickedEdgeID);
 
-		oRequestEdgeCommandEnable(this, oEventArgs);
+        oRequestEdgeCommandEnable(this, oEventArgs);
 
-		oSelectAllEdgesButton.Enabled = oEventArgs.EnableSelectAllEdges;
+        oSelectAllEdgesButton.Enabled = oEventArgs.EnableSelectAllEdges;
 
-		oDeselectAllEdgesButton.Enabled = oEventArgs.EnableDeselectAllEdges;
+        oDeselectAllEdgesButton.Enabled = oEventArgs.EnableDeselectAllEdges;
 
-		oSelectAdjacentVerticesOfEdgeButton.Enabled =
-			oEventArgs.EnableSelectAdjacentVertices;
+        oSelectAdjacentVerticesOfEdgeButton.Enabled =
+            oEventArgs.EnableSelectAdjacentVertices;
 
-		oDeselectAdjacentVerticesOfEdgeButton.Enabled =
-			oEventArgs.EnableDeselectAdjacentVertices;
-	}
+        oDeselectAdjacentVerticesOfEdgeButton.Enabled =
+            oEventArgs.EnableDeselectAdjacentVertices;
+    }
 
-	//*************************************************************************
-	//	Method: PrepareToAddChildMenuItems()
-	//
-	/// <summary>
-	/// Performs tasks required before custom menu items can be added to the
-	/// context menu that appears when a cell is right-clicked in the edge or
-	/// vertex table.
-	/// </summary>
-	///
-	/// <param name="oClickedRange">
-	/// Range that was right-clicked.
-	/// </param>
-	///
-	/// <param name="oTable">
-	/// Table that was right-clicked.
-	/// </param>
-	///
-	/// <param name="sIDColumnName">
-	/// Name of the table's ID column.
-	/// </param>
-	///
-	/// <param name="iClickedID">
-	/// Where the ID of the edge or vertex that was right-clicked gets stored.
-	/// Can be NoID.
-	/// </param>
-	///
-	/// <param name="oTopLevelPopup">
-	/// Where the added top-level NodeXL popup menu item gets stored.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: PrepareToAddChildMenuItems()
+    //
+    /// <summary>
+    /// Performs tasks required before custom menu items can be added to the
+    /// context menu that appears when a cell is right-clicked in the edge or
+    /// vertex table.
+    /// </summary>
+    ///
+    /// <param name="oClickedRange">
+    /// Range that was right-clicked.
+    /// </param>
+    ///
+    /// <param name="oTable">
+    /// Table that was right-clicked.
+    /// </param>
+    ///
+    /// <param name="sIDColumnName">
+    /// Name of the table's ID column.
+    /// </param>
+    ///
+    /// <param name="iClickedID">
+    /// Where the ID of the edge or vertex that was right-clicked gets stored.
+    /// Can be NoID.
+    /// </param>
+    ///
+    /// <param name="oTopLevelPopup">
+    /// Where the added top-level NodeXL popup menu item gets stored.
+    /// </param>
+    //*************************************************************************
 
-	protected void
-	PrepareToAddChildMenuItems
-	(
-		Microsoft.Office.Interop.Excel.Range oClickedRange,
-		Microsoft.Office.Tools.Excel.ListObject oTable,
-		String sIDColumnName,
-		out Int32 iClickedID,
-		out CommandBarPopup oTopLevelPopup
-	)
-	{
-		Debug.Assert(oClickedRange != null);
-		Debug.Assert(oTable != null);
-		Debug.Assert( !String.IsNullOrEmpty(sIDColumnName) );
-		AssertValid();
+    protected void
+    PrepareToAddChildMenuItems
+    (
+        Microsoft.Office.Interop.Excel.Range oClickedRange,
+        Microsoft.Office.Tools.Excel.ListObject oTable,
+        String sIDColumnName,
+        out Int32 iClickedID,
+        out CommandBarPopup oTopLevelPopup
+    )
+    {
+        Debug.Assert(oClickedRange != null);
+        Debug.Assert(oTable != null);
+        Debug.Assert( !String.IsNullOrEmpty(sIDColumnName) );
+        AssertValid();
 
-		iClickedID = NoID;
+        iClickedID = NoID;
 
-		// Start with a clean slate.
+        // Start with a clean slate.
 
-		RemoveContextMenuItems();
+        RemoveContextMenuItems();
 
-		// Was a single row selected?
+        // Was a single row selected?
 
-		if ( !TryGetClickedID(oClickedRange, oTable.InnerObject, sIDColumnName,
-			out iClickedID) )
-		{
-			// No.
+        if ( !TryGetClickedID(oClickedRange, oTable.InnerObject, sIDColumnName,
+            out iClickedID) )
+        {
+            // No.
 
-			iClickedID = NoID;
-		}
+            iClickedID = NoID;
+        }
 
-		// Get the context menu.
+        // Get the context menu.
 
-		CommandBar oTableContextCommandBar =
-			ExcelUtil.GetTableContextCommandBar(m_oWorkbook.Application);
+        CommandBar oTableContextCommandBar =
+            ExcelUtil.GetTableContextCommandBar(m_oWorkbook.Application);
 
-		// Add a separator at the top of the menu.
+        // Add a separator at the top of the menu.
 
-		AddContextMenuSeparator(oTableContextCommandBar, true);
+        AddContextMenuSeparator(oTableContextCommandBar, true);
 
-		// Add a top-level NodeXL popup menu item.
+        // Add a top-level NodeXL popup menu item.
 
         oTopLevelPopup = AddTopLevelPopup(oTableContextCommandBar);
-	}
+    }
 
-	//*************************************************************************
-	//	Method: AddContextMenuItem()
-	//
-	/// <summary>
-	/// Adds a custom menu item to a parent CommandBarPopup.
-	/// </summary>
-	///
-	/// <param name="oCommandBarPopup">
-	/// Parent CommandBarPopup to add the custom menu item to.
-	/// </param>
-	///
-	/// <param name="sText">
-	/// Menu item text.
-	/// </param>
-	///
-	/// <param name="iClickedID">
-	/// ID of the single edge or vertex that was selected and right-clicked in
-	/// the edge or vertex table.  Can be NoID.
-	/// </param>
-	///
-	/// <param name="oEventHandler">
-	/// The menu item's event handler.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: AddContextMenuItem()
+    //
+    /// <summary>
+    /// Adds a custom menu item to a parent CommandBarPopup.
+    /// </summary>
+    ///
+    /// <param name="oCommandBarPopup">
+    /// Parent CommandBarPopup to add the custom menu item to.
+    /// </param>
+    ///
+    /// <param name="sText">
+    /// Menu item text.
+    /// </param>
+    ///
+    /// <param name="iClickedID">
+    /// ID of the single edge or vertex that was selected and right-clicked in
+    /// the edge or vertex table.  Can be NoID.
+    /// </param>
+    ///
+    /// <param name="oEventHandler">
+    /// The menu item's event handler.
+    /// </param>
+    //*************************************************************************
 
-	protected CommandBarButton
-	AddContextMenuItem
-	(
+    protected CommandBarButton
+    AddContextMenuItem
+    (
         CommandBarPopup oCommandBarPopup,
-		String sText,
-		Int32 iClickedID,
-		_CommandBarButtonEvents_ClickEventHandler oEventHandler
-	)
-	{
-		Debug.Assert(oCommandBarPopup != null);
-		Debug.Assert( !String.IsNullOrEmpty(sText) );
-		Debug.Assert(oEventHandler != null);
-		AssertValid();
+        String sText,
+        Int32 iClickedID,
+        _CommandBarButtonEvents_ClickEventHandler oEventHandler
+    )
+    {
+        Debug.Assert(oCommandBarPopup != null);
+        Debug.Assert( !String.IsNullOrEmpty(sText) );
+        Debug.Assert(oEventHandler != null);
+        AssertValid();
 
-		// Important Note:
-		//
-		// Do not use CommandBarButton.Tag to store the clicked ID.  There is
-		// a bug in VSTO 2008 that causes all CommandBarButtons with the same
-		// Tag to fire their Click events when one such CommandBarButton is
-		// clicked.  Here is an online posting discussing this:
-		//
-		// http://excelusergroup.org/forums/p/700/2153.aspx
-		//
-		// Instead of the Tag, use the CommandBarButton.Parameter property.
+        // Important Note:
+        //
+        // Do not use CommandBarButton.Tag to store the clicked ID.  There is
+        // a bug in VSTO 2008 that causes all CommandBarButtons with the same
+        // Tag to fire their Click events when one such CommandBarButton is
+        // clicked.  Here is an online posting discussing this:
+        //
+        // http://excelusergroup.org/forums/p/700/2153.aspx
+        //
+        // Instead of the Tag, use the CommandBarButton.Parameter property.
 
         CommandBarButton oCommandBarButton =
-			(CommandBarButton)oCommandBarPopup.Controls.Add(
-				MsoControlType.msoControlButton, 1, iClickedID.ToString(),
-				Missing.Value, true);
+            (CommandBarButton)oCommandBarPopup.Controls.Add(
+                MsoControlType.msoControlButton, 1, iClickedID.ToString(),
+                Missing.Value, true);
 
         oCommandBarButton.Caption = sText;
         oCommandBarButton.Style = MsoButtonStyle.msoButtonCaption;
@@ -603,808 +603,808 @@ public class WorksheetContextMenuManager : Object
         oCommandBarButton.Click += oEventHandler;
 
         return (oCommandBarButton);
-	}
+    }
 
-	//*************************************************************************
-	//	Method: AddContextMenuSeparator()
-	//
-	/// <summary>
-	/// Adds or removes a separator at the top of the context menu that appears
-	/// when a cell is right-clicked in the edge or vertex table.
-	/// </summary>
-	///
-	/// <param name="oTableContextCommandBar">
-	/// The context menu that appears when you right-click a table (ListObject)
-	/// cell.
-	/// </param>
-	///
-	/// <param name="bAdd">
-	/// true to add the separator, false to remove it.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: AddContextMenuSeparator()
+    //
+    /// <summary>
+    /// Adds or removes a separator at the top of the context menu that appears
+    /// when a cell is right-clicked in the edge or vertex table.
+    /// </summary>
+    ///
+    /// <param name="oTableContextCommandBar">
+    /// The context menu that appears when you right-click a table (ListObject)
+    /// cell.
+    /// </param>
+    ///
+    /// <param name="bAdd">
+    /// true to add the separator, false to remove it.
+    /// </param>
+    //*************************************************************************
 
-	protected void
-	AddContextMenuSeparator
-	(
-		CommandBar oTableContextCommandBar,
-		Boolean bAdd
-	)
-	{
-		Debug.Assert(oTableContextCommandBar != null);
-		AssertValid();
+    protected void
+    AddContextMenuSeparator
+    (
+        CommandBar oTableContextCommandBar,
+        Boolean bAdd
+    )
+    {
+        Debug.Assert(oTableContextCommandBar != null);
+        AssertValid();
 
-		// The button at the top of Excel's standard menu is Cut.
+        // The button at the top of Excel's standard menu is Cut.
 
-		const Int32 CutCommandID = 21;
+        const Int32 CutCommandID = 21;
 
-		CommandBarButton oCutButton =
-			(CommandBarButton)oTableContextCommandBar.FindControl(
-				Missing.Value, CutCommandID, Missing.Value, Missing.Value,
-				false);
+        CommandBarButton oCutButton =
+            (CommandBarButton)oTableContextCommandBar.FindControl(
+                Missing.Value, CutCommandID, Missing.Value, Missing.Value,
+                false);
 
-		if (oCutButton != null)
-		{
-			oCutButton.BeginGroup = bAdd;
-		}
-	}
+        if (oCutButton != null)
+        {
+            oCutButton.BeginGroup = bAdd;
+        }
+    }
 
-	//*************************************************************************
-	//	Method: AddTopLevelPopup()
-	//
-	/// <summary>
-	/// Adds a top-level NodeXL popup menu item to the context menu that
-	/// appears when a cell is right-clicked in the edge or vertex table.
-	/// </summary>
-	///
-	/// <param name="oTableContextCommandBar">
-	/// The context menu that appears when you right-click a table (ListObject)
-	/// cell.
-	/// </param>
-	///
-	/// <returns>
-	/// The new NodeXL top-level popup menu item.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: AddTopLevelPopup()
+    //
+    /// <summary>
+    /// Adds a top-level NodeXL popup menu item to the context menu that
+    /// appears when a cell is right-clicked in the edge or vertex table.
+    /// </summary>
+    ///
+    /// <param name="oTableContextCommandBar">
+    /// The context menu that appears when you right-click a table (ListObject)
+    /// cell.
+    /// </param>
+    ///
+    /// <returns>
+    /// The new NodeXL top-level popup menu item.
+    /// </returns>
+    //*************************************************************************
 
-	protected CommandBarPopup
-	AddTopLevelPopup
-	(
-		CommandBar oTableContextCommandBar
-	)
-	{
-		Debug.Assert(oTableContextCommandBar != null);
-		AssertValid();
+    protected CommandBarPopup
+    AddTopLevelPopup
+    (
+        CommandBar oTableContextCommandBar
+    )
+    {
+        Debug.Assert(oTableContextCommandBar != null);
+        AssertValid();
 
         CommandBarPopup oTopLevelPopup = (CommandBarPopup)
             oTableContextCommandBar.Controls.Add(
-				MsoControlType.msoControlPopup, 1, Missing.Value, 1, true);
+                MsoControlType.msoControlPopup, 1, Missing.Value, 1, true);
 
         oTopLevelPopup.Caption = TopLevelMenuCaption;
 
-		return (oTopLevelPopup);
-	}
+        return (oTopLevelPopup);
+    }
 
-	//*************************************************************************
-	//	Method: RemoveContextMenuItems()
-	//
-	/// <summary>
-	/// Removes the custom menu items added by <see
-	/// cref="AddEdgeContextMenuItems" /> and <see
-	/// cref="AddVertexContextMenuItems" />.
-	/// </summary>
-	///
-	/// <remarks>
-	/// If the custom menu items don't exist, this method does nothing.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: RemoveContextMenuItems()
+    //
+    /// <summary>
+    /// Removes the custom menu items added by <see
+    /// cref="AddEdgeContextMenuItems" /> and <see
+    /// cref="AddVertexContextMenuItems" />.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If the custom menu items don't exist, this method does nothing.
+    /// </remarks>
+    //*************************************************************************
 
-	protected void
-	RemoveContextMenuItems()
-	{
-		AssertValid();
+    protected void
+    RemoveContextMenuItems()
+    {
+        AssertValid();
 
-		CommandBar oTableContextCommandBar =
-			ExcelUtil.GetTableContextCommandBar(m_oWorkbook.Application);
+        CommandBar oTableContextCommandBar =
+            ExcelUtil.GetTableContextCommandBar(m_oWorkbook.Application);
 
-		// Remove the separator at the top of the menu.
+        // Remove the separator at the top of the menu.
 
-		AddContextMenuSeparator(oTableContextCommandBar, false);
+        AddContextMenuSeparator(oTableContextCommandBar, false);
 
         try
         {
-			// Delete the top-level NodeXL popup menu item, which also deletes
-			// its child menu items.
+            // Delete the top-level NodeXL popup menu item, which also deletes
+            // its child menu items.
 
             oTableContextCommandBar.Controls[TopLevelMenuCaption].Delete(false);
         }
         catch (ArgumentException)
         {
         }
-	}
+    }
 
     //*************************************************************************
     //  Method: TryGetClickedID()
     //
     /// <summary>
-	/// Attempts to get the ID of the edge or vertex that was right-clicked in
-	/// the edge or vertex table.
+    /// Attempts to get the ID of the edge or vertex that was right-clicked in
+    /// the edge or vertex table.
     /// </summary>
     ///
-	/// <param name="oClickedRange">
-	/// Range that was right-clicked.
-	/// </param>
-	///
-	/// <param name="oTable">
-	/// Table containing the range.
-	/// </param>
-	///
-	/// <param name="sIDColumnName">
-	/// Name of the ID column in the table.
-	/// </param>
-	///
-	/// <param name="iClickedID">
-	/// Where the ID gets stored if true is returned.
-	/// </param>
-	///
-	/// <returns>
-	/// true if an edge or vertex was right-clicked and its ID was obtained.
-	/// </returns>
+    /// <param name="oClickedRange">
+    /// Range that was right-clicked.
+    /// </param>
+    ///
+    /// <param name="oTable">
+    /// Table containing the range.
+    /// </param>
+    ///
+    /// <param name="sIDColumnName">
+    /// Name of the ID column in the table.
+    /// </param>
+    ///
+    /// <param name="iClickedID">
+    /// Where the ID gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if an edge or vertex was right-clicked and its ID was obtained.
+    /// </returns>
     //*************************************************************************
 
-	protected Boolean
-	TryGetClickedID
-	(
-		Microsoft.Office.Interop.Excel.Range oClickedRange,
-		Microsoft.Office.Interop.Excel.ListObject oTable,
-		String sIDColumnName,
-		out Int32 iClickedID
-	)
-	{
-		Debug.Assert(oClickedRange != null);
-		AssertValid();
+    protected Boolean
+    TryGetClickedID
+    (
+        Microsoft.Office.Interop.Excel.Range oClickedRange,
+        Microsoft.Office.Interop.Excel.ListObject oTable,
+        String sIDColumnName,
+        out Int32 iClickedID
+    )
+    {
+        Debug.Assert(oClickedRange != null);
+        AssertValid();
 
-		iClickedID = Int32.MinValue;
+        iClickedID = Int32.MinValue;
 
-		// Note: Don't use oClickedRange to get the clicked cell.  This works
-		// if only one cell is selected, but if the selection is larger than
-		// one cell, oClickedRange is the entire selection.
-		//
-		// Instead, get the clicked cell via the Window.RangeFromPoint()
-		// method.
+        // Note: Don't use oClickedRange to get the clicked cell.  This works
+        // if only one cell is selected, but if the selection is larger than
+        // one cell, oClickedRange is the entire selection.
+        //
+        // Instead, get the clicked cell via the Window.RangeFromPoint()
+        // method.
 
-		Point oClickedPoint = Control.MousePosition;
+        Point oClickedPoint = Control.MousePosition;
 
-		Microsoft.Office.Interop.Excel.Range oClickedCell =
-			(Microsoft.Office.Interop.Excel.Range)
-			oClickedRange.Application.ActiveWindow.RangeFromPoint(
-				oClickedPoint.X, oClickedPoint.Y);
+        Microsoft.Office.Interop.Excel.Range oClickedCell =
+            (Microsoft.Office.Interop.Excel.Range)
+            oClickedRange.Application.ActiveWindow.RangeFromPoint(
+                oClickedPoint.X, oClickedPoint.Y);
 
-		if (oClickedCell == null)
-		{
-			return (false);
-		}
+        if (oClickedCell == null)
+        {
+            return (false);
+        }
 
-		// Attempt to get the table's optional ID column.
+        // Attempt to get the table's optional ID column.
 
-		Microsoft.Office.Interop.Excel.ListColumn oIDColumn;
+        Microsoft.Office.Interop.Excel.ListColumn oIDColumn;
 
-		if ( !ExcelUtil.TryGetTableColumn(oTable, sIDColumnName,
-			out oIDColumn) )
-		{
-			return (false);
-		}
+        if ( !ExcelUtil.TryGetTableColumn(oTable, sIDColumnName,
+            out oIDColumn) )
+        {
+            return (false);
+        }
 
-		// Attempt to get an ID from the clicked row.
+        // Attempt to get an ID from the clicked row.
 
-		Debug.Assert(oClickedRange.Parent is
-			Microsoft.Office.Interop.Excel.Worksheet);
+        Debug.Assert(oClickedRange.Parent is
+            Microsoft.Office.Interop.Excel.Worksheet);
 
-		Microsoft.Office.Interop.Excel.Worksheet oWorksheet =
-			(Microsoft.Office.Interop.Excel.Worksheet)oClickedRange.Parent;
+        Microsoft.Office.Interop.Excel.Worksheet oWorksheet =
+            (Microsoft.Office.Interop.Excel.Worksheet)oClickedRange.Parent;
 
-		Microsoft.Office.Interop.Excel.Range oIDRange = 
-			(Microsoft.Office.Interop.Excel.Range)oWorksheet.Cells[
-			oClickedCell.Row, oIDColumn.Range.Column];
+        Microsoft.Office.Interop.Excel.Range oIDRange = 
+            (Microsoft.Office.Interop.Excel.Range)oWorksheet.Cells[
+            oClickedCell.Row, oIDColumn.Range.Column];
 
-		String sID;
+        String sID;
 
-		if ( !ExcelUtil.TryGetNonEmptyStringFromCell(
-			ExcelUtil.GetRangeValues(oIDRange), 1, 1, out sID)
-			||
-			!Int32.TryParse(sID, out iClickedID) )
-		{
-			return (false);
-		}
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(
+            ExcelUtil.GetRangeValues(oIDRange), 1, 1, out sID)
+            ||
+            !Int32.TryParse(sID, out iClickedID) )
+        {
+            return (false);
+        }
 
-		return (true);
-	}
+        return (true);
+    }
 
     //*************************************************************************
     //  Method: RunAVertexCommand()
     //
     /// <summary>
-	/// Runs a vertex command.
+    /// Runs a vertex command.
     /// </summary>
-	///
-	/// <param name="oCommandBarButton">
-	/// CommandBarButton whose Parameter property contains a vertex ID.
-	/// </param>
-	///
-	/// <param name="eVertexCommand">
-	/// Vertex command to run.
-	/// </param>
+    ///
+    /// <param name="oCommandBarButton">
+    /// CommandBarButton whose Parameter property contains a vertex ID.
+    /// </param>
+    ///
+    /// <param name="eVertexCommand">
+    /// Vertex command to run.
+    /// </param>
     //*************************************************************************
 
     protected void
-	RunAVertexCommand
-	(
-		CommandBarButton oCommandBarButton,
-		VertexCommand eVertexCommand
-	)
+    RunAVertexCommand
+    (
+        CommandBarButton oCommandBarButton,
+        VertexCommand eVertexCommand
+    )
     {
-		Debug.Assert(oCommandBarButton != null);
-		AssertValid();
+        Debug.Assert(oCommandBarButton != null);
+        AssertValid();
 
-		RunVertexCommandEventHandler oRunVertexCommand = this.RunVertexCommand;
+        RunVertexCommandEventHandler oRunVertexCommand = this.RunVertexCommand;
 
-		if (oRunVertexCommand == null)
-		{
-			// There is no event handler, so the command can't be run.
+        if (oRunVertexCommand == null)
+        {
+            // There is no event handler, so the command can't be run.
 
-			return;
-		}
+            return;
+        }
 
-		// Retrieve the ID of the vertex that was right-clicked.  This can be
-		// NoID.
+        // Retrieve the ID of the vertex that was right-clicked.  This can be
+        // NoID.
 
-		Int32 iClickedVertexID =
-			CommandBarButtonToClickedID(oCommandBarButton);
+        Int32 iClickedVertexID =
+            CommandBarButtonToClickedID(oCommandBarButton);
 
-		oRunVertexCommand( this,
-			new RunVertexCommandEventArgs(iClickedVertexID, eVertexCommand) );
+        oRunVertexCommand( this,
+            new RunVertexCommandEventArgs(iClickedVertexID, eVertexCommand) );
     }
 
     //*************************************************************************
     //  Method: RunAnEdgeCommand()
     //
     /// <summary>
-	/// Runs an edge command.
+    /// Runs an edge command.
     /// </summary>
-	///
-	/// <param name="oCommandBarButton">
-	/// CommandBarButton whose Parameter property contains an edge ID.
-	/// </param>
-	///
-	/// <param name="eEdgeCommand">
-	/// Edge command to run.
-	/// </param>
+    ///
+    /// <param name="oCommandBarButton">
+    /// CommandBarButton whose Parameter property contains an edge ID.
+    /// </param>
+    ///
+    /// <param name="eEdgeCommand">
+    /// Edge command to run.
+    /// </param>
     //*************************************************************************
 
     protected void
-	RunAnEdgeCommand
-	(
-		CommandBarButton oCommandBarButton,
-		EdgeCommand eEdgeCommand
-	)
+    RunAnEdgeCommand
+    (
+        CommandBarButton oCommandBarButton,
+        EdgeCommand eEdgeCommand
+    )
     {
-		Debug.Assert(oCommandBarButton != null);
-		AssertValid();
+        Debug.Assert(oCommandBarButton != null);
+        AssertValid();
 
-		RunEdgeCommandEventHandler oRunEdgeCommand = this.RunEdgeCommand;
+        RunEdgeCommandEventHandler oRunEdgeCommand = this.RunEdgeCommand;
 
-		if (oRunEdgeCommand == null)
-		{
-			// There is no event handler, so the command can't be run.
+        if (oRunEdgeCommand == null)
+        {
+            // There is no event handler, so the command can't be run.
 
-			return;
-		}
+            return;
+        }
 
-		// Retrieve the ID of the edge that was right-clicked.  This can be
-		// NoID.
+        // Retrieve the ID of the edge that was right-clicked.  This can be
+        // NoID.
 
-		Int32 iClickedEdgeID = CommandBarButtonToClickedID(oCommandBarButton);
+        Int32 iClickedEdgeID = CommandBarButtonToClickedID(oCommandBarButton);
 
-		oRunEdgeCommand( this,
-			new RunEdgeCommandEventArgs(iClickedEdgeID, eEdgeCommand) );
+        oRunEdgeCommand( this,
+            new RunEdgeCommandEventArgs(iClickedEdgeID, eEdgeCommand) );
     }
 
     //*************************************************************************
     //  Method: CommandBarButtonToClickedID()
     //
     /// <summary>
-	/// Retrieves the edge or vertex ID stored in a CommandBarButton's
-	/// Parameter property.
+    /// Retrieves the edge or vertex ID stored in a CommandBarButton's
+    /// Parameter property.
     /// </summary>
-	///
-	/// <param name="oCommandBarButton">
-	/// CommandBarButton whose Parameter property contains an ID.
-	/// </param>
-	///
-	/// <returns>
-	/// The retreived ID, or NoID if a single edge or vertex wasn't
-	/// right-clicked.
-	/// </returns>
+    ///
+    /// <param name="oCommandBarButton">
+    /// CommandBarButton whose Parameter property contains an ID.
+    /// </param>
+    ///
+    /// <returns>
+    /// The retreived ID, or NoID if a single edge or vertex wasn't
+    /// right-clicked.
+    /// </returns>
     //*************************************************************************
 
     protected Int32
-	CommandBarButtonToClickedID
-	(
-		CommandBarButton oCommandBarButton
-	)
+    CommandBarButtonToClickedID
+    (
+        CommandBarButton oCommandBarButton
+    )
     {
-		Debug.Assert(oCommandBarButton != null);
-		AssertValid();
+        Debug.Assert(oCommandBarButton != null);
+        AssertValid();
 
-		Int32 iClickedID;
+        Int32 iClickedID;
 
-		if ( !Int32.TryParse( oCommandBarButton.Parameter, out iClickedID) )
-		{
-			Debug.Assert(false);
-		}
+        if ( !Int32.TryParse( oCommandBarButton.Parameter, out iClickedID) )
+        {
+            Debug.Assert(false);
+        }
 
-		return (iClickedID);
+        return (iClickedID);
     }
 
     //*************************************************************************
     //  Method: VertexTable_BeforeRightClick()
     //
     /// <summary>
-	/// Handles the BeforeRightClick event on the vertex table.
+    /// Handles the BeforeRightClick event on the vertex table.
     /// </summary>
-	///
-	/// <param name="Target">
-	/// Standard event argument.
-	/// </param>
     ///
-	/// <param name="Cancel">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="Target">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="Cancel">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	VertexTable_BeforeRightClick
-	(
-		Microsoft.Office.Interop.Excel.Range Target,
-		ref bool Cancel
-	)
-	{
-		AssertValid();
+    protected void
+    VertexTable_BeforeRightClick
+    (
+        Microsoft.Office.Interop.Excel.Range Target,
+        ref bool Cancel
+    )
+    {
+        AssertValid();
 
-		try
-		{
-			AddVertexContextMenuItems(Target);
-		}
-		catch (Exception oException)
-		{
-			ErrorUtil.OnException(oException);
-		}
-	}
+        try
+        {
+            AddVertexContextMenuItems(Target);
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
 
     //*************************************************************************
     //  Method: EdgeTable_BeforeRightClick()
     //
     /// <summary>
-	/// Handles the BeforeRightClick event on the edge table.
+    /// Handles the BeforeRightClick event on the edge table.
     /// </summary>
-	///
-	/// <param name="Target">
-	/// Standard event argument.
-	/// </param>
     ///
-	/// <param name="Cancel">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="Target">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="Cancel">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	protected void
-	EdgeTable_BeforeRightClick
-	(
-		Microsoft.Office.Interop.Excel.Range Target,
-		ref bool Cancel
-	)
-	{
-		AssertValid();
+    protected void
+    EdgeTable_BeforeRightClick
+    (
+        Microsoft.Office.Interop.Excel.Range Target,
+        ref bool Cancel
+    )
+    {
+        AssertValid();
 
-		try
-		{
-			AddEdgeContextMenuItems(Target);
-		}
-		catch (Exception oException)
-		{
-			ErrorUtil.OnException(oException);
-		}
-	}
+        try
+        {
+            AddEdgeContextMenuItems(Target);
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
 
     //*************************************************************************
     //  Method: Worksheet_Deactivate()
     //
     /// <summary>
-	/// Handles the Deactivate event on the edge and vertex worksheets.
+    /// Handles the Deactivate event on the edge and vertex worksheets.
     /// </summary>
     //*************************************************************************
 
-	protected void
-	Worksheet_Deactivate()
-	{
-		AssertValid();
+    protected void
+    Worksheet_Deactivate()
+    {
+        AssertValid();
 
-		try
-		{
-			RemoveContextMenuItems();
-		}
-		catch (Exception oException)
-		{
-			ErrorUtil.OnException(oException);
-		}
-	}
+        try
+        {
+            RemoveContextMenuItems();
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
 
     //*************************************************************************
     //  Method: Workbook_Deactivate()
     //
     /// <summary>
-	/// Handles the Deactivate event on the workbook.
+    /// Handles the Deactivate event on the workbook.
     /// </summary>
     //*************************************************************************
 
-	protected void
-	Workbook_Deactivate()
-	{
-		AssertValid();
+    protected void
+    Workbook_Deactivate()
+    {
+        AssertValid();
 
-		try
-		{
-			RemoveContextMenuItems();
-		}
-		catch (Exception oException)
-		{
-			ErrorUtil.OnException(oException);
-		}
-	}
+        try
+        {
+            RemoveContextMenuItems();
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
 
     //*************************************************************************
     //  Method: oSelectAllVerticesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oSelectAllVerticesButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oSelectAllVerticesButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oSelectAllVerticesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oSelectAllVerticesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.SelectAllVertices);
+        RunAVertexCommand(Ctrl, VertexCommand.SelectAllVertices);
     }
 
     //*************************************************************************
     //  Method: oDeselectAllVerticesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oDeselectAllVerticesButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oDeselectAllVerticesButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oDeselectAllVerticesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oDeselectAllVerticesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.DeselectAllVertices);
+        RunAVertexCommand(Ctrl, VertexCommand.DeselectAllVertices);
     }
 
     //*************************************************************************
     //  Method: oSelectAdjacentVerticesOfVertexButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oSelectAdjacentVerticesOfVertexButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oSelectAdjacentVerticesOfVertexButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oSelectAdjacentVerticesOfVertexButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oSelectAdjacentVerticesOfVertexButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.SelectAdjacentVertices);
+        RunAVertexCommand(Ctrl, VertexCommand.SelectAdjacentVertices);
     }
 
     //*************************************************************************
     //  Method: oDeselectAdjacentVerticesOfVertexButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oDeselectAdjacentVerticesOfVertexButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oDeselectAdjacentVerticesOfVertexButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oDeselectAdjacentVerticesOfVertexButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oDeselectAdjacentVerticesOfVertexButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.DeselectAdjacentVertices);
+        RunAVertexCommand(Ctrl, VertexCommand.DeselectAdjacentVertices);
     }
 
     //*************************************************************************
     //  Method: oSelectIncidentEdgesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oSelectIncidentEdgesButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oSelectIncidentEdgesButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oSelectIncidentEdgesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oSelectIncidentEdgesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.SelectIncidentEdges);
+        RunAVertexCommand(Ctrl, VertexCommand.SelectIncidentEdges);
     }
 
     //*************************************************************************
     //  Method: oDeselectIncidentEdgesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oDeselectIncidentEdgesButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oDeselectIncidentEdgesButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oDeselectIncidentEdgesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oDeselectIncidentEdgesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.DeselectIncidentEdges);
+        RunAVertexCommand(Ctrl, VertexCommand.DeselectIncidentEdges);
     }
 
     //*************************************************************************
     //  Method: oEditVertexAttributesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oEditVertexAttributesButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oEditVertexAttributesButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oEditVertexAttributesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oEditVertexAttributesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.EditVertexAttributes);
+        RunAVertexCommand(Ctrl, VertexCommand.EditVertexAttributes);
     }
 
     //*************************************************************************
     //  Method: oSelectSubgraphsButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oSelectSubgraphsButton CommandBarButton.
+    /// Handles the Click event on the oSelectSubgraphsButton CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oSelectSubgraphsButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oSelectSubgraphsButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAVertexCommand(Ctrl, VertexCommand.SelectSubgraphs);
+        RunAVertexCommand(Ctrl, VertexCommand.SelectSubgraphs);
     }
 
     //*************************************************************************
     //  Method: oSelectAllEdgesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oSelectAllEdgesButton CommandBarButton.
+    /// Handles the Click event on the oSelectAllEdgesButton CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oSelectAllEdgesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oSelectAllEdgesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAnEdgeCommand(Ctrl, EdgeCommand.SelectAllEdges);
+        RunAnEdgeCommand(Ctrl, EdgeCommand.SelectAllEdges);
     }
 
     //*************************************************************************
     //  Method: oDeselectAllEdgesButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oDeselectAllEdgesButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oDeselectAllEdgesButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oDeselectAllEdgesButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oDeselectAllEdgesButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAnEdgeCommand(Ctrl, EdgeCommand.DeselectAllEdges);
+        RunAnEdgeCommand(Ctrl, EdgeCommand.DeselectAllEdges);
     }
 
     //*************************************************************************
     //  Method: oSelectAdjacentVerticesOfEdgeButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oSelectAdjacentVerticesOfEdgeButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oSelectAdjacentVerticesOfEdgeButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oSelectAdjacentVerticesOfEdgeButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oSelectAdjacentVerticesOfEdgeButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAnEdgeCommand(Ctrl, EdgeCommand.SelectAdjacentVertices);
+        RunAnEdgeCommand(Ctrl, EdgeCommand.SelectAdjacentVertices);
     }
 
     //*************************************************************************
     //  Method: oDeselectAdjacentVerticesOfEdgeButton_Click()
     //
     /// <summary>
-	/// Handles the Click event on the oDeselectAdjacentVerticesOfEdgeButton
-	/// CommandBarButton.
+    /// Handles the Click event on the oDeselectAdjacentVerticesOfEdgeButton
+    /// CommandBarButton.
     /// </summary>
-	///
-	/// <param name="Ctrl">
-	/// Standard event argument.
-	/// </param>
-	///
-	/// <param name="CancelDefault">
-	/// Standard event argument.
-	/// </param>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-	oDeselectAdjacentVerticesOfEdgeButton_Click
-	(
-		CommandBarButton Ctrl,
-		ref bool CancelDefault
-	)
+    oDeselectAdjacentVerticesOfEdgeButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RunAnEdgeCommand(Ctrl, EdgeCommand.DeselectAdjacentVertices);
+        RunAnEdgeCommand(Ctrl, EdgeCommand.DeselectAdjacentVertices);
     }
 
 
@@ -1421,9 +1421,9 @@ public class WorksheetContextMenuManager : Object
     public void
     AssertValid()
     {
-		Debug.Assert(m_oWorkbook != null);
-		Debug.Assert(m_oEdgeTable != null);
-		Debug.Assert(m_oVertexTable != null);
+        Debug.Assert(m_oWorkbook != null);
+        Debug.Assert(m_oEdgeTable != null);
+        Debug.Assert(m_oVertexTable != null);
     }
 
 
@@ -1431,20 +1431,20 @@ public class WorksheetContextMenuManager : Object
     //  Public constants
     //*************************************************************************
 
-	/// <summary>
-	/// Indicates that an edge or vertex ID isn't available.
-	/// </summary>
+    /// <summary>
+    /// Indicates that an edge or vertex ID isn't available.
+    /// </summary>
 
-	public static readonly Int32 NoID = Int32.MinValue;
+    public static readonly Int32 NoID = Int32.MinValue;
 
 
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
 
-	/// Caption of the top-level menu added to context menus.
+    /// Caption of the top-level menu added to context menus.
 
-	protected const String TopLevelMenuCaption = ".Net&Map";
+    protected const String TopLevelMenuCaption = ".Net&Map";
 
 
     //*************************************************************************
@@ -1453,15 +1453,15 @@ public class WorksheetContextMenuManager : Object
 
     /// Excel workbook.
 
-	protected Microsoft.Office.Tools.Excel.Workbook m_oWorkbook;
+    protected Microsoft.Office.Tools.Excel.Workbook m_oWorkbook;
 
-	/// The edge table on the edge worksheet.
+    /// The edge table on the edge worksheet.
 
-	protected Microsoft.Office.Tools.Excel.ListObject m_oEdgeTable;
+    protected Microsoft.Office.Tools.Excel.ListObject m_oEdgeTable;
 
-	/// The vertex table on the vertex worksheet.
+    /// The vertex table on the vertex worksheet.
 
-	protected Microsoft.Office.Tools.Excel.ListObject m_oVertexTable;
+    protected Microsoft.Office.Tools.Excel.ListObject m_oVertexTable;
 }
 
 }

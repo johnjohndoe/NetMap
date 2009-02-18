@@ -16,34 +16,34 @@ namespace Microsoft.Research.CommunityTechnologies.AppLib
 public enum
 ExcelColumnFormat
 {
-	/// <summary>
-	/// The column contains numbers.
-	/// </summary>
+    /// <summary>
+    /// The column contains numbers.
+    /// </summary>
 
-	Number,
+    Number,
 
-	/// <summary>
-	/// The column contains dates.  Sample: 1/1/2008.
-	/// </summary>
+    /// <summary>
+    /// The column contains dates.  Sample: 1/1/2008.
+    /// </summary>
 
-	Date,
+    Date,
 
-	/// <summary>
-	/// The column contains times.  Sample: 3:40 PM.
-	/// </summary>
+    /// <summary>
+    /// The column contains times.  Sample: 3:40 PM.
+    /// </summary>
 
-	Time,
+    Time,
 
-	/// <summary>
-	/// The column contains date/times.  Sample: 1/1/2008 3:40 pm.
-	/// </summary>
+    /// <summary>
+    /// The column contains date/times.  Sample: 1/1/2008 3:40 pm.
+    /// </summary>
 
-	DateAndTime,
+    DateAndTime,
 
-	/// <summary>
-	/// The column contains something else.
-	/// </summary>
+    /// <summary>
+    /// The column contains something else.
+    /// </summary>
 
-	Other,
+    Other,
 }
 }

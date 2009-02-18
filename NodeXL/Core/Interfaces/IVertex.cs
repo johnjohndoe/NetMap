@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -11,19 +11,19 @@ namespace Microsoft.NodeXL.Core
 //  Interface: IVertex
 //
 /// <summary>
-///	Represents a vertex.
+/// Represents a vertex.
 /// </summary>
 ///
 /// <remarks>
 /// A vertex, also known as a node, is a point in a graph that can be connected
-///	to other vertices in the same graph.  The connections are called edges.
+/// to other vertices in the same graph.  The connections are called edges.
 ///
 /// <para>
 /// A vertex can be created via <see cref="IVertexFactory.CreateVertex" /> and
 /// then added to a graph via IGraph.Vertices.<see
 /// cref="IVertexCollection.Add(IVertex)" />, or created and added to a graph
 /// at the same time via IGraph.Vertices.<see
-///	cref="IVertexCollection.Add()" />.
+/// cref="IVertexCollection.Add()" />.
 /// </para>
 ///
 /// <para>
@@ -31,21 +31,19 @@ namespace Microsoft.NodeXL.Core
 /// graph unless it is first removed from the first graph.
 /// </para>
 ///
-///	<para>
-///	The NodeXL system includes a <see cref="Vertex" /> implementation that can
-///	be used as-is in many graphing applications.  You can also derive a class
-///	from <see cref="Vertex" /> or implement your own custom vertex class from
-///	scratch.  The only requirement is that your custom class must implement
-///	<see cref="IVertex" />.
+/// <para>
+/// The NodeXL system includes a <see cref="Vertex" /> implementation that can
+/// be used as-is in many graphing applications.  You can also derive a class
+/// from <see cref="Vertex" /> or implement your own custom vertex class from
+/// scratch.  The only requirement is that your custom class must implement
+/// <see cref="IVertex" />.
 /// </para>
 ///
 /// <para>
 /// If you implement a custom vertex class, you may also want to implement <see
-///	cref="IVertexFactory" /> to allow the NodeXL system to create instances of
-///	your custom vertex.  For example, the IGraphTransformer.Transform method
-///	takes an optional <see cref="IVertexFactory" /> argument that specifies the
-/// type of the vertices in the transformed graph.
-///	</para>
+/// cref="IVertexFactory" /> to allow the NodeXL system to create instances of
+/// your custom vertex.
+/// </para>
 ///
 /// </remarks>
 ///
@@ -53,7 +51,7 @@ namespace Microsoft.NodeXL.Core
 //*****************************************************************************
 
 public interface IVertex : IIdentityProvider, IMetadataProvider,
-	IFormattableNodeXL
+    IFormattableNodeXL
 {
     //*************************************************************************
     //  Property: ParentGraph
@@ -64,15 +62,15 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     ///
     /// <value>
     /// The graph that owns the vertex, as an <see cref="IGraph" />, or null if
-	///	the vertex does not belong to a graph.
+    /// the vertex does not belong to a graph.
     /// </value>
-	///
-	/// <remarks>
-	/// This is a read-only property.  The implementation determines how this
-	/// property gets set.  When the vertex is added to a graph, it must be set
-	/// to that graph.  If the vertex is removed from a graph, it must be set
-	/// to null.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This is a read-only property.  The implementation determines how this
+    /// property gets set.  When the vertex is added to a graph, it must be set
+    /// to that graph.  If the vertex is removed from a graph, it must be set
+    /// to null.
+    /// </remarks>
     //*************************************************************************
 
     IGraph
@@ -85,35 +83,35 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Property: IncomingEdges
     //
     /// <summary>
-	///	Gets an array of the vertex's incoming edges.
+    /// Gets an array of the vertex's incoming edges.
     /// </summary>
     ///
     /// <value>
-	///	An array of the vertex's zero or more incoming edges, as an array of
-	///	<see cref="IEdge" /> objects.
+    /// An array of the vertex's zero or more incoming edges, as an array of
+    /// <see cref="IEdge" /> objects.
     /// </value>
-	///
-	/// <remarks>
-	///	An incoming edge is either a directed edge that has this vertex at its
-	///	front, or an undirected edge connected to this vertex.
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is considered
-	/// one incoming edge.
-	/// </para>
-	///
-	/// <para>
-	///	If there are no incoming edges, the returned array is empty.  The
-	///	returned value is never null.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="OutgoingEdges" />
-	/// <seealso cref="IncidentEdges" />
+    ///
+    /// <remarks>
+    /// An incoming edge is either a directed edge that has this vertex at its
+    /// front, or an undirected edge connected to this vertex.
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is considered
+    /// one incoming edge.
+    /// </para>
+    ///
+    /// <para>
+    /// If there are no incoming edges, the returned array is empty.  The
+    /// returned value is never null.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="OutgoingEdges" />
+    /// <seealso cref="IncidentEdges" />
     //*************************************************************************
 
-	[ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
+    [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
     IEdge []
     IncomingEdges
@@ -125,79 +123,79 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Property: OutgoingEdges
     //
     /// <summary>
-	///	Gets an array of the vertex's outgoing edges.
+    /// Gets an array of the vertex's outgoing edges.
     /// </summary>
     ///
     /// <value>
-	///	An array of the vertex's zero or more outgoing edges, as an array of
-	///	<see cref="IEdge" /> objects.
+    /// An array of the vertex's zero or more outgoing edges, as an array of
+    /// <see cref="IEdge" /> objects.
     /// </value>
-	///
-	/// <remarks>
-	///	An outgoing edge is either a directed edge that has this vertex at its
-	///	back, or an undirected edge connected to this vertex.
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is considered
-	/// one outgoing edge.
-	/// </para>
-	///
-	/// <para>
-	///	If there are no outgoing edges, the returned array is empty.  The
-	///	returned value is never null.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="IncomingEdges" />
-	/// <seealso cref="IncidentEdges" />
+    ///
+    /// <remarks>
+    /// An outgoing edge is either a directed edge that has this vertex at its
+    /// back, or an undirected edge connected to this vertex.
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is considered
+    /// one outgoing edge.
+    /// </para>
+    ///
+    /// <para>
+    /// If there are no outgoing edges, the returned array is empty.  The
+    /// returned value is never null.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="IncomingEdges" />
+    /// <seealso cref="IncidentEdges" />
     //*************************************************************************
 
-	[ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
+    [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
     IEdge []
     OutgoingEdges
     {
-		get;
+        get;
     }
 
     //*************************************************************************
     //  Property: IncidentEdges
     //
     /// <summary>
-	///	Gets an array of the vertex's incident edges.
+    /// Gets an array of the vertex's incident edges.
     /// </summary>
     ///
     /// <value>
-	///	An array of the vertex's zero or more incident edges, as an array of
-	/// <see cref="IEdge" /> objects.
+    /// An array of the vertex's zero or more incident edges, as an array of
+    /// <see cref="IEdge" /> objects.
     /// </value>
-	///
-	/// <remarks>
-	///	An incident edge is an edge that is connected to the vertex.
-	///
-	/// <para>
-	///	The returned array is the union of the <see cref="IncomingEdges" /> and
-	///	<see cref="OutgoingEdges" /> arrays.
-	/// </para>
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is considered
-	/// one incident edge.
-	/// </para>
-	///
-	/// <para>
-	///	If there are no incident edges, the returned array is empty.  The
-	///	returned value is never null.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="IncomingEdges" />
-	/// <seealso cref="IncidentEdges" />
+    ///
+    /// <remarks>
+    /// An incident edge is an edge that is connected to the vertex.
+    ///
+    /// <para>
+    /// The returned array is the union of the <see cref="IncomingEdges" /> and
+    /// <see cref="OutgoingEdges" /> arrays.
+    /// </para>
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is considered
+    /// one incident edge.
+    /// </para>
+    ///
+    /// <para>
+    /// If there are no incident edges, the returned array is empty.  The
+    /// returned value is never null.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="IncomingEdges" />
+    /// <seealso cref="IncidentEdges" />
     //*************************************************************************
 
-	[ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
+    [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
     IEdge []
     IncidentEdges
@@ -209,82 +207,82 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Property: Degree
     //
     /// <summary>
-	///	Gets the vertex's degree.
+    /// Gets the vertex's degree.
     /// </summary>
     ///
     /// <value>
-	///	The vertex's degree, as an Int32.
+    /// The vertex's degree, as an Int32.
     /// </value>
-	///
-	/// <remarks>
-	///	The degree of a vertex is the number of edges that are incident to it.
-	///	(An incident edge is an edge that is connected to this vertex.)
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is considered
-	/// one incident edge.
-	/// </para>
-	///
-	/// <para>
-	///	This property returns the same value as <see
-	///	cref="IncidentEdges" />.Length.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="IncomingEdges" />
-	/// <seealso cref="OutgoingEdges" />
-	/// <seealso cref="IncidentEdges" />
+    ///
+    /// <remarks>
+    /// The degree of a vertex is the number of edges that are incident to it.
+    /// (An incident edge is an edge that is connected to this vertex.)
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is considered
+    /// one incident edge.
+    /// </para>
+    ///
+    /// <para>
+    /// This property returns the same value as <see
+    /// cref="IncidentEdges" />.Length.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="IncomingEdges" />
+    /// <seealso cref="OutgoingEdges" />
+    /// <seealso cref="IncidentEdges" />
     //*************************************************************************
 
-	Int32
-	Degree
-	{
-		get;
-	}
+    Int32
+    Degree
+    {
+        get;
+    }
 
     //*************************************************************************
     //  Property: PredecessorVertices
     //
     /// <summary>
-	///	Gets an array of the vertex's predecessor vertices.
+    /// Gets an array of the vertex's predecessor vertices.
     /// </summary>
     ///
     /// <value>
-	///	An array of the vertex's zero or more predecessor vertices, as an array
-	/// of <see cref="IVertex" /> objects.
+    /// An array of the vertex's zero or more predecessor vertices, as an array
+    /// of <see cref="IVertex" /> objects.
     /// </value>
-	///
-	/// <remarks>
-	///	A predecessor vertex is a vertex at the other side of an incoming edge.
-	///	(An incoming edge is either a directed edge that has this vertex at its
-	///	front, or an undirected edge connected to this vertex.)
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is always
-	/// considered an incoming edge.  Therefore, if there is an edge that
-	/// connects this vertex to itself, then this vertex is included in the
-	/// returned array.
-	/// </para>
-	///
-	/// <para>
-	/// The predecessor vertices in the returned array are unique.  If two or
-	/// more edges connect this vertex with another vertex, the other vertex is
-	/// included once only.
-	/// </para>
-	///
-	/// <para>
-	///	If there are no predecessor vertices, the returned array is empty.  The
-	///	returned value is never null.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="SuccessorVertices" />
-	/// <seealso cref="AdjacentVertices" />
+    ///
+    /// <remarks>
+    /// A predecessor vertex is a vertex at the other side of an incoming edge.
+    /// (An incoming edge is either a directed edge that has this vertex at its
+    /// front, or an undirected edge connected to this vertex.)
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is always
+    /// considered an incoming edge.  Therefore, if there is an edge that
+    /// connects this vertex to itself, then this vertex is included in the
+    /// returned array.
+    /// </para>
+    ///
+    /// <para>
+    /// The predecessor vertices in the returned array are unique.  If two or
+    /// more edges connect this vertex with another vertex, the other vertex is
+    /// included once only.
+    /// </para>
+    ///
+    /// <para>
+    /// If there are no predecessor vertices, the returned array is empty.  The
+    /// returned value is never null.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="SuccessorVertices" />
+    /// <seealso cref="AdjacentVertices" />
     //*************************************************************************
 
-	[ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
+    [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
     IVertex []
     PredecessorVertices
@@ -296,44 +294,44 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Property: SuccessorVertices
     //
     /// <summary>
-	///	Gets an array of the vertex's successor vertices.
+    /// Gets an array of the vertex's successor vertices.
     /// </summary>
     ///
     /// <value>
-	///	An array of the vertex's zero or more successor vertices, as an array
-	///	of <see cref="IVertex" /> objects.
+    /// An array of the vertex's zero or more successor vertices, as an array
+    /// of <see cref="IVertex" /> objects.
     /// </value>
-	///
-	/// <remarks>
-	///	A successor vertex is a vertex at the other side of an outgoing edge.
-	///	(An outgoing edge is either a directed edge that has this vertex at its
-	///	back, or an undirected edge connected to this vertex.)
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is always
-	/// considered an outgoing edge.  Therefore, if there is an edge that
-	/// connects this vertex to itself, then this vertex is included in the
-	/// returned array.
-	/// </para>
-	///
-	/// <para>
-	/// The successor vertices in the returned array are unique.  If two or
-	/// more edges connect this vertex with another vertex, the other vertex is
-	/// included once only.
-	/// </para>
-	///
-	/// <para>
-	///	If there are no successor vertices, the returned array is empty.  The
-	///	returned value is never null.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="PredecessorVertices" />
-	/// <seealso cref="AdjacentVertices" />
+    ///
+    /// <remarks>
+    /// A successor vertex is a vertex at the other side of an outgoing edge.
+    /// (An outgoing edge is either a directed edge that has this vertex at its
+    /// back, or an undirected edge connected to this vertex.)
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is always
+    /// considered an outgoing edge.  Therefore, if there is an edge that
+    /// connects this vertex to itself, then this vertex is included in the
+    /// returned array.
+    /// </para>
+    ///
+    /// <para>
+    /// The successor vertices in the returned array are unique.  If two or
+    /// more edges connect this vertex with another vertex, the other vertex is
+    /// included once only.
+    /// </para>
+    ///
+    /// <para>
+    /// If there are no successor vertices, the returned array is empty.  The
+    /// returned value is never null.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="PredecessorVertices" />
+    /// <seealso cref="AdjacentVertices" />
     //*************************************************************************
 
-	[ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
+    [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
     IVertex []
     SuccessorVertices
@@ -345,49 +343,49 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Property: AdjacentVertices
     //
     /// <summary>
-	///	Gets an array of the vertex's adjacent vertices.
+    /// Gets an array of the vertex's adjacent vertices.
     /// </summary>
     ///
     /// <value>
-	///	An array of the vertex's zero or more adjacent vertices, as an array of
-	///	<see cref="IVertex" /> objects.
+    /// An array of the vertex's zero or more adjacent vertices, as an array of
+    /// <see cref="IVertex" /> objects.
     /// </value>
-	///
-	/// <remarks>
-	///	An adjacent vertex is a vertex at the other side of an incident edge.
-	///	(An incident edge is an edge that is connected to the vertex.)
-	///
-	/// <para>
-	///	The returned collection is the union of the <see
-	///	cref="PredecessorVertices" /> and <see cref="SuccessorVertices" />
-	///	collections.
-	/// </para>
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is always
-	/// considered an incident edge.  Therefore, if there is an edge that
-	/// connects this vertex to itself, then this vertex is included in the
-	/// returned array.
-	/// </para>
-	///
-	/// <para>
-	/// The adjacent vertices in the returned array are unique.  If two or
-	/// more edges connect this vertex with another vertex, the other vertex is
-	/// included once only.
-	/// </para>
-	///
-	/// <para>
-	///	If there are no adjacent vertices, the returned array is empty.  The
-	///	returned value is never null.
-	/// </para>
-	///
-	/// </remarks>
-	///
-	/// <seealso cref="PredecessorVertices" />
-	/// <seealso cref="SuccessorVertices" />
+    ///
+    /// <remarks>
+    /// An adjacent vertex is a vertex at the other side of an incident edge.
+    /// (An incident edge is an edge that is connected to the vertex.)
+    ///
+    /// <para>
+    /// The returned collection is the union of the <see
+    /// cref="PredecessorVertices" /> and <see cref="SuccessorVertices" />
+    /// collections.
+    /// </para>
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is always
+    /// considered an incident edge.  Therefore, if there is an edge that
+    /// connects this vertex to itself, then this vertex is included in the
+    /// returned array.
+    /// </para>
+    ///
+    /// <para>
+    /// The adjacent vertices in the returned array are unique.  If two or
+    /// more edges connect this vertex with another vertex, the other vertex is
+    /// included once only.
+    /// </para>
+    ///
+    /// <para>
+    /// If there are no adjacent vertices, the returned array is empty.  The
+    /// returned value is never null.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="PredecessorVertices" />
+    /// <seealso cref="SuccessorVertices" />
     //*************************************************************************
 
-	[ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
+    [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
     IVertex []
     AdjacentVertices
@@ -399,25 +397,25 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Property: Location
     //
     /// <summary>
-	///	Gets or sets the vertex's location.
+    /// Gets or sets the vertex's location.
     /// </summary>
     ///
     /// <value>
-	///	The vertex's location as a <see cref="PointF" />.  The default value is
-	///	cref="PointF.Empty" />.
+    /// The vertex's location as a <see cref="PointF" />.  The default value is
+    /// cref="PointF.Empty" />.
     /// </value>
-	///
-	/// <remarks>
-	///	This property is set when the graph is laid out by
-	///	ILayout.LayOutGraph and is read when the graph is drawn.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This property is set when the graph is laid out by
+    /// ILayout.LayOutGraph and is read when the graph is drawn.
+    /// </remarks>
     //*************************************************************************
 
     PointF
     Location
     {
         get;
-		set;
+        set;
     }
 
     //*************************************************************************
@@ -429,48 +427,48 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     ///
     /// <summary>
     /// Creates a copy of the vertex, making the copy the same type as the
-	/// original.
+    /// original.
     /// </summary>
     ///
     /// <param name="copyMetadataValues">
-	///	If true, the key/value pairs that were set with <see
-	/// cref="IMetadataProvider.SetValue" /> are copied to the new vertex.
-	/// (This is a shallow copy.  The objects pointed to by the original values
-	/// are NOT cloned.)  If false, the key/value pairs are not copied.
+    /// If true, the key/value pairs that were set with <see
+    /// cref="IMetadataProvider.SetValue" /> are copied to the new vertex.
+    /// (This is a shallow copy.  The objects pointed to by the original values
+    /// are NOT cloned.)  If false, the key/value pairs are not copied.
     /// </param>
     ///
     /// <param name="copyTag">
-	///	If true, the <see cref="IMetadataProvider.Tag" /> property on the new
-	///	vertex is set to the same value as in the original vertex.  (This is a
-	///	shallow copy.  The object pointed to by the original <see
-	///	cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
-	///	cref="IMetadataProvider.Tag "/> property on the new vertex is set to
-	///	null.
+    /// If true, the <see cref="IMetadataProvider.Tag" /> property on the new
+    /// vertex is set to the same value as in the original vertex.  (This is a
+    /// shallow copy.  The object pointed to by the original <see
+    /// cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
+    /// cref="IMetadataProvider.Tag "/> property on the new vertex is set to
+    /// null.
     /// </param>
     ///
     /// <returns>
-	///	The copy of the vertex, as an <see cref="IVertex" />.
+    /// The copy of the vertex, as an <see cref="IVertex" />.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	///	The new vertex is of the same type as the original.  It has no edges
-	/// connected to it.  Its <see cref="IIdentityProvider.Name" /> is set to
-	/// the same value as the original's, but it is assigned a new <see
-	/// cref="IIdentityProvider.ID" />.  Its <see cref="ParentGraph" />
-	/// is null and its <see cref="Location" /> is the default value of <see
-	/// cref="Point.Empty" />.
-	///
-	/// <para>
-	/// The new vertex can be added to the same graph or to a different graph.
-	/// </para>
-	///
+    /// The new vertex is of the same type as the original.  It has no edges
+    /// connected to it.  Its <see cref="IIdentityProvider.Name" /> is set to
+    /// the same value as the original's, but it is assigned a new <see
+    /// cref="IIdentityProvider.ID" />.  Its <see cref="ParentGraph" />
+    /// is null and its <see cref="Location" /> is the default value of <see
+    /// cref="Point.Empty" />.
+    ///
+    /// <para>
+    /// The new vertex can be added to the same graph or to a different graph.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
     IVertex
     Clone
     (
-		Boolean copyMetadataValues,
+        Boolean copyMetadataValues,
         Boolean copyTag
     );
 
@@ -482,51 +480,51 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     /// </summary>
     ///
     /// <param name="copyMetadataValues">
-	///	If true, the key/value pairs that were set with <see
-	/// cref="IMetadataProvider.SetValue" /> are copied to the new vertex.
-	/// (This is a shallow copy.  The objects pointed to by the original values
-	/// are NOT cloned.)  If false, the key/value pairs are not copied.
+    /// If true, the key/value pairs that were set with <see
+    /// cref="IMetadataProvider.SetValue" /> are copied to the new vertex.
+    /// (This is a shallow copy.  The objects pointed to by the original values
+    /// are NOT cloned.)  If false, the key/value pairs are not copied.
     /// </param>
     ///
     /// <param name="copyTag">
-	///	If true, the <see cref="IMetadataProvider.Tag" /> property on the new
-	///	vertex is set to the same value as in the original vertex.  (This is a
-	///	shallow copy.  The object pointed to by the original <see
-	///	cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
-	///	cref="IMetadataProvider.Tag "/> property on the new vertex is set to
-	///	null.
+    /// If true, the <see cref="IMetadataProvider.Tag" /> property on the new
+    /// vertex is set to the same value as in the original vertex.  (This is a
+    /// shallow copy.  The object pointed to by the original <see
+    /// cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
+    /// cref="IMetadataProvider.Tag "/> property on the new vertex is set to
+    /// null.
     /// </param>
     ///
     /// <param name="newVertexFactory">
     /// Object that can create a vertex.
     /// </param>
-	///
+    ///
     /// <returns>
-	///	The copy of the vertex, as an <see cref="IVertex" />.
+    /// The copy of the vertex, as an <see cref="IVertex" />.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	///	The new vertex is created using <paramref name="newVertexFactory" />.
-	///	It has no edges connected to it.  Its <see
-	/// cref="IIdentityProvider.Name" /> is set to the same value as the
-	/// original's, but it is assigned a new <see
-	/// cref="IIdentityProvider.ID" />.  Its <see cref="ParentGraph" /> is null
-	/// and its <see cref="Location" /> is the default value of <see
-	///	cref="Point.Empty" />.
-	///
-	/// <para>
-	/// The new vertex can be added to the same graph or to a different graph.
-	/// </para>
-	///
+    /// The new vertex is created using <paramref name="newVertexFactory" />.
+    /// It has no edges connected to it.  Its <see
+    /// cref="IIdentityProvider.Name" /> is set to the same value as the
+    /// original's, but it is assigned a new <see
+    /// cref="IIdentityProvider.ID" />.  Its <see cref="ParentGraph" /> is null
+    /// and its <see cref="Location" /> is the default value of <see
+    /// cref="Point.Empty" />.
+    ///
+    /// <para>
+    /// The new vertex can be added to the same graph or to a different graph.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
     IVertex
     Clone
     (
-		Boolean copyMetadataValues,
+        Boolean copyMetadataValues,
         Boolean copyTag,
-		IVertexFactory newVertexFactory
+        IVertexFactory newVertexFactory
     );
 
     //*************************************************************************
@@ -541,19 +539,19 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     /// </param>
     ///
     /// <returns>
-	///	An array of zero or more edges that connect this vertex to <paramref
-	///	name="otherVertex" />, as an array of <see cref="IEdge" /> objects.
+    /// An array of zero or more edges that connect this vertex to <paramref
+    /// name="otherVertex" />, as an array of <see cref="IEdge" /> objects.
     /// </returns>
     ///
     /// <remarks>
-	///	If there are no such edges, the returned array is empty.  The returned
-	///	value is never null.
-	///
-	/// <para>
-	/// A self-loop (an edge that connects a vertex to itself) is returned in
-	/// the array only if <paramref name="otherVertex" /> is this vertex.
-	/// </para>
-	///
+    /// If there are no such edges, the returned array is empty.  The returned
+    /// value is never null.
+    ///
+    /// <para>
+    /// A self-loop (an edge that connects a vertex to itself) is returned in
+    /// the array only if <paramref name="otherVertex" /> is this vertex.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -567,7 +565,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Method: IsIncidentEdge()
     //
     /// <summary>
-	/// Determines whether an edge is incident to the vertex.
+    /// Determines whether an edge is incident to the vertex.
     /// </summary>
     ///
     /// <param name="edge">
@@ -575,17 +573,17 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     /// </param>
     ///
     /// <returns>
-	/// true if <paramref name="edge" /> is incident to the vertex, false if
-	/// not.
+    /// true if <paramref name="edge" /> is incident to the vertex, false if
+    /// not.
     /// </returns>
     ///
     /// <remarks>
-	///	An incident edge is an edge that is connected to the vertex.
-	///
-	/// <para>
-	/// This method is an O(1) operation.
-	/// </para>
-	///
+    /// An incident edge is an edge that is connected to the vertex.
+    ///
+    /// <para>
+    /// This method is an O(1) operation.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -599,7 +597,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Method: IsOutgoingEdge()
     //
     /// <summary>
-	/// Determines whether an edge is one of the vertex's outgoing edges.
+    /// Determines whether an edge is one of the vertex's outgoing edges.
     /// </summary>
     ///
     /// <param name="edge">
@@ -607,18 +605,18 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     /// </param>
     ///
     /// <returns>
-	/// true if <paramref name="edge" /> is one of the vertex's outgoing edges,
-	/// false if not.
+    /// true if <paramref name="edge" /> is one of the vertex's outgoing edges,
+    /// false if not.
     /// </returns>
     ///
     /// <remarks>
-	///	An outgoing edge is either a directed edge that has the vertex at its
-	///	back, or an undirected edge connected to the vertex.
-	///
-	/// <para>
-	/// This method is an O(1) operation.
-	/// </para>
-	///
+    /// An outgoing edge is either a directed edge that has the vertex at its
+    /// back, or an undirected edge connected to the vertex.
+    ///
+    /// <para>
+    /// This method is an O(1) operation.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -632,7 +630,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //  Method: IsIncomingEdge()
     //
     /// <summary>
-	/// Determines whether an edge is one of the vertex's incoming edges.
+    /// Determines whether an edge is one of the vertex's incoming edges.
     /// </summary>
     ///
     /// <param name="edge">
@@ -640,18 +638,18 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     /// </param>
     ///
     /// <returns>
-	/// true if <paramref name="edge" /> is one of the vertex's incoming edges,
-	/// false if not.
+    /// true if <paramref name="edge" /> is one of the vertex's incoming edges,
+    /// false if not.
     /// </returns>
     ///
     /// <remarks>
-	///	An incoming edge is either a directed edge that has the vertex at its
-	///	front, or an undirected edge connected to the vertex.
-	///
-	/// <para>
-	/// This method is an O(1) operation.
-	/// </para>
-	///
+    /// An incoming edge is either a directed edge that has the vertex at its
+    /// front, or an undirected edge connected to the vertex.
+    ///
+    /// <para>
+    /// This method is an O(1) operation.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 

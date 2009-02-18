@@ -7,13 +7,13 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: GraphMetricProgress
 //
 /// <summary>
-/// Used by the <see cref="IGraphMetricCalculator" /> implementations to report
-/// progress to the main thread.
+/// Used by the <see cref="IGraphMetricCalculator2" /> implementations to
+/// report progress to the main thread.
 /// </summary>
 ///
 /// <remarks>
-/// An <see cref="IGraphMetricCalculator" /> implementation should periodically
-/// report progress to the main thread by passing a <see
+/// An <see cref="IGraphMetricCalculator2" /> implementation should
+/// periodically report progress to the main thread by passing a <see
 /// cref="GraphMetricProgress" /> object as the userState argument to the
 /// BackgroundWorker.<see
 /// cref="System.ComponentModel.BackgroundWorker.ReportProgress(Int32, Object)"
@@ -28,29 +28,29 @@ public class GraphMetricProgress : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricProgress" />
-	/// class with specified values.
+    /// class with specified values.
     /// </summary>
-	///
-	/// <param name="progressMessage">
-	/// Progress message suitable for display in the UI.
-	/// </param>
-	///
-	/// <param name="allGraphMetricsCalculated">
-	/// true if all <see cref="IGraphMetricCalculator" /> implementations have
-	/// calculated their metrics.
-	/// </param>
+    ///
+    /// <param name="progressMessage">
+    /// Progress message suitable for display in the UI.
+    /// </param>
+    ///
+    /// <param name="allGraphMetricsCalculated">
+    /// true if all <see cref="IGraphMetricCalculator2" /> implementations have
+    /// calculated their metrics.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricProgress
-	(
-		String progressMessage,
-		Boolean allGraphMetricsCalculated
-	)
+    (
+        String progressMessage,
+        Boolean allGraphMetricsCalculated
+    )
     {
-		m_sProgressMessage = progressMessage;
-		m_bAllGraphMetricsCalculated = allGraphMetricsCalculated;
+        m_sProgressMessage = progressMessage;
+        m_bAllGraphMetricsCalculated = allGraphMetricsCalculated;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -63,7 +63,7 @@ public class GraphMetricProgress : Object
 
     private GraphMetricProgress()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -90,7 +90,7 @@ public class GraphMetricProgress : Object
 
         set
         {
-			m_sProgressMessage = value;
+            m_sProgressMessage = value;
 
             AssertValid();
         }
@@ -101,13 +101,13 @@ public class GraphMetricProgress : Object
     //
     /// <summary>
     /// Gets or sets a flag indicating whether all <see
-	/// cref="IGraphMetricCalculator" /> implementations have calculated their
-	/// metrics.
+    /// cref="IGraphMetricCalculator2" /> implementations have calculated their
+    /// metrics.
     /// </summary>
     ///
     /// <value>
-    /// true if all <see cref="IGraphMetricCalculator" /> implementations have
-	/// calculated their metrics.
+    /// true if all <see cref="IGraphMetricCalculator2" /> implementations have
+    /// calculated their metrics.
     /// </value>
     //*************************************************************************
 
@@ -123,7 +123,7 @@ public class GraphMetricProgress : Object
 
         set
         {
-			m_bAllGraphMetricsCalculated = value;
+            m_bAllGraphMetricsCalculated = value;
 
             AssertValid();
         }
@@ -143,8 +143,8 @@ public class GraphMetricProgress : Object
     public void
     AssertValid()
     {
-		Debug.Assert( !String.IsNullOrEmpty(m_sProgressMessage) );
-		// m_bAllGraphMetricsCalculated
+        Debug.Assert( !String.IsNullOrEmpty(m_sProgressMessage) );
+        // m_bAllGraphMetricsCalculated
     }
 
 
@@ -154,12 +154,12 @@ public class GraphMetricProgress : Object
 
     /// The progress message suitable for display in the UI.
 
-	protected String m_sProgressMessage;
+    protected String m_sProgressMessage;
 
-    /// true if all IGraphMetricCalculator implementations have calculated
-	/// their metrics.
+    /// true if all IGraphMetricCalculator2 implementations have calculated
+    /// their metrics.
 
-	protected Boolean m_bAllGraphMetricsCalculated;
+    protected Boolean m_bAllGraphMetricsCalculated;
 }
 
 }

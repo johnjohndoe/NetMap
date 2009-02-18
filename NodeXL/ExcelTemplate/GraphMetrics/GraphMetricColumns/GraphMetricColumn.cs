@@ -25,54 +25,54 @@ public abstract class GraphMetricColumn : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricColumn" />
-	/// class.
+    /// class.
     /// </summary>
-	///
-	/// <param name="worksheetName">
-	/// Name of the worksheet containing the column.
-	/// </param>
-	///
-	/// <param name="tableName">
-	/// Name of the table (ListObject) containing the column.
-	/// </param>
-	///
-	/// <param name="columnName">
-	/// Name of the column.
-	/// </param>
-	///
-	/// <param name="columnWidthChars">
-	/// Width of the column, in characters.
-	/// </param>
-	///
-	/// <param name="numberFormat">
-	/// Number format of the column, or null if the column is not numeric.
-	/// Sample: "0.00".
-	/// </param>
-	///
-	/// <param name="style">
-	/// Style of the column, or null to apply Excel's normal style.  Sample:
-	/// "Bad".
-	/// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Name of the worksheet containing the column.
+    /// </param>
+    ///
+    /// <param name="tableName">
+    /// Name of the table (ListObject) containing the column.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column.
+    /// </param>
+    ///
+    /// <param name="columnWidthChars">
+    /// Width of the column, in characters.
+    /// </param>
+    ///
+    /// <param name="numberFormat">
+    /// Number format of the column, or null if the column is not numeric.
+    /// Sample: "0.00".
+    /// </param>
+    ///
+    /// <param name="style">
+    /// Style of the column, or null to apply Excel's normal style.  Sample:
+    /// "Bad".
+    /// </param>
     //*************************************************************************
 
     public GraphMetricColumn
-	(
-		String worksheetName,
-		String tableName,
-		String columnName,
-		Double columnWidthChars,
-		String numberFormat,
-		String style
-	)
+    (
+        String worksheetName,
+        String tableName,
+        String columnName,
+        Double columnWidthChars,
+        String numberFormat,
+        String style
+    )
     {
-		m_sWorksheetName = worksheetName;
-		m_sTableName = tableName;
-		m_sColumnName = columnName;
-		m_fColumnWidthChars = columnWidthChars;
-		m_sNumberFormat = numberFormat;
-		m_sStyle = style;
+        m_sWorksheetName = worksheetName;
+        m_sTableName = tableName;
+        m_sColumnName = columnName;
+        m_fColumnWidthChars = columnWidthChars;
+        m_sNumberFormat = numberFormat;
+        m_sStyle = style;
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -85,7 +85,7 @@ public abstract class GraphMetricColumn : Object
 
     protected GraphMetricColumn()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -112,7 +112,7 @@ public abstract class GraphMetricColumn : Object
 
         set
         {
-			m_sWorksheetName = value;
+            m_sWorksheetName = value;
 
             AssertValid();
         }
@@ -142,7 +142,7 @@ public abstract class GraphMetricColumn : Object
 
         set
         {
-			m_sTableName = value;
+            m_sTableName = value;
 
             AssertValid();
         }
@@ -172,7 +172,7 @@ public abstract class GraphMetricColumn : Object
 
         set
         {
-			m_sColumnName = value;
+            m_sColumnName = value;
 
             AssertValid();
         }
@@ -203,7 +203,7 @@ public abstract class GraphMetricColumn : Object
 
         set
         {
-			m_fColumnWidthChars = value;
+            m_fColumnWidthChars = value;
 
             AssertValid();
         }
@@ -217,7 +217,7 @@ public abstract class GraphMetricColumn : Object
     /// </summary>
     ///
     /// <value>
-	/// The number format of the column, or null if the column is not numeric.
+    /// The number format of the column, or null if the column is not numeric.
     /// </value>
     //*************************************************************************
 
@@ -233,7 +233,7 @@ public abstract class GraphMetricColumn : Object
 
         set
         {
-			m_sNumberFormat = value;
+            m_sNumberFormat = value;
 
             AssertValid();
         }
@@ -247,8 +247,8 @@ public abstract class GraphMetricColumn : Object
     /// </summary>
     ///
     /// <value>
-	/// The style of the column, or null to apply Excel's normal style.
-	/// Sample: "Bad".
+    /// The style of the column, or null to apply Excel's normal style.
+    /// Sample: "Bad".
     /// </value>
     //*************************************************************************
 
@@ -264,7 +264,7 @@ public abstract class GraphMetricColumn : Object
 
         set
         {
-			m_sStyle = value;
+            m_sStyle = value;
 
             AssertValid();
         }
@@ -284,15 +284,15 @@ public abstract class GraphMetricColumn : Object
     public virtual void
     AssertValid()
     {
-		Debug.Assert( !String.IsNullOrEmpty(m_sWorksheetName) );
-		Debug.Assert( !String.IsNullOrEmpty(m_sTableName) );
-		Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
+        Debug.Assert( !String.IsNullOrEmpty(m_sWorksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(m_sTableName) );
+        Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
 
-		Debug.Assert(m_fColumnWidthChars == ExcelUtil.AutoColumnWidth ||
+        Debug.Assert(m_fColumnWidthChars == ExcelUtil.AutoColumnWidth ||
             m_fColumnWidthChars > 0);
 
-		// m_sNumberFormat
-		// m_sStyle
+        // m_sNumberFormat
+        // m_sStyle
     }
 
 
@@ -300,42 +300,42 @@ public abstract class GraphMetricColumn : Object
     //  Public constants
     //*************************************************************************
 
-	/// Name of Excel's pre-defined "normal" style.
+    /// Name of Excel's pre-defined "normal" style.
 
-	public const String ExcelStyleNormal = "Normal";
+    public const String ExcelStyleNormal = "Normal";
 
-	/// Name of Excel's pre-defined "bad" style.
+    /// Name of Excel's pre-defined "bad" style.
 
-	public const String ExcelStyleBad = "Bad";
+    public const String ExcelStyleBad = "Bad";
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	/// Name of the worksheet containing the column.
+    /// Name of the worksheet containing the column.
 
-	protected String m_sWorksheetName;
+    protected String m_sWorksheetName;
 
-	/// Name of the table (ListObject) containing the column.
+    /// Name of the table (ListObject) containing the column.
 
-	protected String m_sTableName;
+    protected String m_sTableName;
 
-	/// Name of the column.
+    /// Name of the column.
 
-	protected String m_sColumnName;
+    protected String m_sColumnName;
 
-	/// Width of the column, in characters.
+    /// Width of the column, in characters.
 
-	protected Double m_fColumnWidthChars;
+    protected Double m_fColumnWidthChars;
 
-	/// Number format of the column, or null if the column is not numeric.
+    /// Number format of the column, or null if the column is not numeric.
 
-	protected String m_sNumberFormat;
+    protected String m_sNumberFormat;
 
-	/// Style of the column, or null to not apply a style.  Sample: "Bad".
+    /// Style of the column, or null to not apply a style.  Sample: "Bad".
 
-	protected String m_sStyle;
+    protected String m_sStyle;
 }
 
 }

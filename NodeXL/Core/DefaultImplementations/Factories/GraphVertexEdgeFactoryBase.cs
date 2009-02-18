@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ namespace Microsoft.NodeXL.Core
 //  Class: GraphVertexEdgeFactoryBase
 //
 /// <summary>
-///	Base class for the <see cref="GraphFactory" />, <see
+/// Base class for the <see cref="GraphFactory" />, <see
 /// cref="VertexFactory" />, and <see cref="EdgeFactory" /> classes.
 /// </summary>
 //*****************************************************************************
@@ -22,15 +22,15 @@ public class GraphVertexEdgeFactoryBase : NodeXLBase
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="GraphVertexEdgeFactoryBase" /> class.
+    /// cref="GraphVertexEdgeFactoryBase" /> class.
     /// </summary>
     //*************************************************************************
 
     public GraphVertexEdgeFactoryBase()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -47,9 +47,9 @@ public class GraphVertexEdgeFactoryBase : NodeXLBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -57,7 +57,7 @@ public class GraphVertexEdgeFactoryBase : NodeXLBase
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

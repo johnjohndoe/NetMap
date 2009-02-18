@@ -25,7 +25,7 @@ public class NumericFilterParametersTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="NumericFilterParametersTest" /> class.
+    /// cref="NumericFilterParametersTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,7 +48,7 @@ public class NumericFilterParametersTest : Object
     SetUp()
     {
         m_oNumericFilterParameters = new NumericFilterParameters(
-			ColumnName, MinimumCellValue, MaximumCellValue, DecimalPlaces);
+            ColumnName, MinimumCellValue, MaximumCellValue, DecimalPlaces);
     }
 
     //*************************************************************************
@@ -80,13 +80,13 @@ public class NumericFilterParametersTest : Object
     public void
     TestConstructor()
     {
-		Assert.AreEqual(ColumnName, m_oNumericFilterParameters.ColumnName);
+        Assert.AreEqual(ColumnName, m_oNumericFilterParameters.ColumnName);
 
-		Assert.AreEqual(MinimumCellValue,
-			m_oNumericFilterParameters.MinimumCellValue);
+        Assert.AreEqual(MinimumCellValue,
+            m_oNumericFilterParameters.MinimumCellValue);
 
-		Assert.AreEqual(MaximumCellValue,
-			m_oNumericFilterParameters.MaximumCellValue);
+        Assert.AreEqual(MaximumCellValue,
+            m_oNumericFilterParameters.MaximumCellValue);
 
         Assert.AreEqual(DecimalPlaces,
             m_oNumericFilterParameters.DecimalPlaces);
@@ -97,12 +97,12 @@ public class NumericFilterParametersTest : Object
     //  Protected constants
     //*************************************************************************
 
-	///
-	protected const String ColumnName = "The column";
-	///
-	protected const Double MinimumCellValue = -123.456;
-	///
-	protected const Double MaximumCellValue = 987.654;
+    ///
+    protected const String ColumnName = "The column";
+    ///
+    protected const Double MinimumCellValue = -123.456;
+    ///
+    protected const Double MaximumCellValue = 987.654;
     ///
     protected const Int32 DecimalPlaces = 8;
 

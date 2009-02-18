@@ -1,9 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Visualization.Wpf;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -16,69 +16,68 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 //*****************************************************************************
 
-public class VertexShapeConverter :
-	TextValueConverterBase<VertexDrawer.VertexShape>
+public class VertexShapeConverter : TextValueConverterBase<VertexShape>
 {
     //*************************************************************************
     //  Constructor: VertexShapeConverter()
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexShapeConverter" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public VertexShapeConverter()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
-	//*************************************************************************
-	//	Method: GetGraphValueInfos()
-	//
-	/// <summary>
-	///	Gets an array of GraphValueInfo objects, one for each valid graph
-	/// value.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: GetGraphValueInfos()
+    //
+    /// <summary>
+    /// Gets an array of GraphValueInfo objects, one for each valid graph
+    /// value.
+    /// </summary>
+    //*************************************************************************
 
-	protected override GraphValueInfo []
-	GetGraphValueInfos()
-	{
-		AssertValid();
+    protected override GraphValueInfo []
+    GetGraphValueInfos()
+    {
+        AssertValid();
 
-		return ( new GraphValueInfo [] {
+        return ( new GraphValueInfo [] {
 
-			new GraphValueInfo( VertexDrawer.VertexShape.Circle,
-				new String [] {"Circle (1)", "Circle", "1"} ),
+            new GraphValueInfo( VertexShape.Circle,
+                new String [] {"Circle (1)", "Circle", "1"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.Disk,
-				new String [] {"Disk (2)", "Disk", "2"} ),
+            new GraphValueInfo( VertexShape.Disk,
+                new String [] {"Disk (2)", "Disk", "2"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.Sphere,
-				new String [] {"Sphere (3)", "Sphere", "3"} ),
+            new GraphValueInfo( VertexShape.Sphere,
+                new String [] {"Sphere (3)", "Sphere", "3"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.Square,
-				new String [] {"Square (4)", "Square", "4"} ),
+            new GraphValueInfo( VertexShape.Square,
+                new String [] {"Square (4)", "Square", "4"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.SolidSquare,
-				new String [] {"Solid Square (5)", "Solid Square", "5"} ),
+            new GraphValueInfo( VertexShape.SolidSquare,
+                new String [] {"Solid Square (5)", "Solid Square", "5"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.Diamond,
-				new String [] {"Diamond (6)", "Diamond", "6"} ),
+            new GraphValueInfo( VertexShape.Diamond,
+                new String [] {"Diamond (6)", "Diamond", "6"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.SolidDiamond,
-				new String [] {"Solid Diamond (7)", "Solid Diamond", "7"} ),
+            new GraphValueInfo( VertexShape.SolidDiamond,
+                new String [] {"Solid Diamond (7)", "Solid Diamond", "7"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.Triangle,
-				new String [] {"Triangle (8)", "Triangle", "8"} ),
+            new GraphValueInfo( VertexShape.Triangle,
+                new String [] {"Triangle (8)", "Triangle", "8"} ),
 
-			new GraphValueInfo( VertexDrawer.VertexShape.SolidTriangle,
-				new String [] {"Solid Triangle (9)", "Solid Triangle", "9"} ),
-			} );
-	}
+            new GraphValueInfo( VertexShape.SolidTriangle,
+                new String [] {"Solid Triangle (9)", "Solid Triangle", "9"} ),
+            } );
+    }
 
 
     //*************************************************************************
@@ -94,9 +93,9 @@ public class VertexShapeConverter :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -104,7 +103,7 @@ public class VertexShapeConverter :
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -34,25 +34,25 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="CreateSubgraphImagesDialogUserSettings" /> class.
+    /// cref="CreateSubgraphImagesDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public CreateSubgraphImagesDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -60,17 +60,17 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets the number of levels of adjacent vertices to include in
-	/// each subgraph.
+    /// each subgraph.
     /// </summary>
     ///
     /// <value>
     /// The number of levels of adjacent vertices to include in each subgraph.
-	/// The default is 1.5.
+    /// The default is 1.5.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("1.5") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("1.5") ]
 
     public Decimal
     Levels
@@ -79,7 +79,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Decimal)this[LevelsKey] );
+            return ( (Decimal)this[LevelsKey] );
         }
 
         set
@@ -95,16 +95,16 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether subgraph images should be saved
-	/// to a folder.
+    /// to a folder.
     /// </summary>
     ///
     /// <value>
-	/// true to save subgraph images to a folder.  The default is false.
+    /// true to save subgraph images to a folder.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
     SaveToFolder
@@ -113,7 +113,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[SaveToFolderKey] );
+            return ( (Boolean)this[SaveToFolderKey] );
         }
 
         set
@@ -136,8 +136,8 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     Folder
@@ -146,7 +146,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (String)this[FolderKey] );
+            return ( (String)this[FolderKey] );
         }
 
         set
@@ -166,12 +166,12 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     ///
     /// <value>
     /// The size of each subgraph image saved to a folder, in pixels.  The
-	/// default is 200x200.
+    /// default is 200x200.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("200, 200") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("200, 200") ]
 
     public Size
     ImageSizePx
@@ -180,7 +180,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Size)this[ImageSizePxKey] );
+            return ( (Size)this[ImageSizePxKey] );
         }
 
         set
@@ -200,12 +200,12 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     ///
     /// <value>
     /// The format of each subgraph image saved to a folder.  The default is
-	/// ImageFormat.Jpeg.
+    /// ImageFormat.Jpeg.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Jpeg") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Jpeg") ]
 
     public ImageFormat
     ImageFormat
@@ -214,7 +214,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (ImageFormat)this[ImageFormatKey] );
+            return ( (ImageFormat)this[ImageFormatKey] );
         }
 
         set
@@ -230,17 +230,17 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether subgraph thumbnail images should
-	/// be inserted in the vertex worksheet.
+    /// be inserted in the vertex worksheet.
     /// </summary>
     ///
     /// <value>
-	/// true to insert subgraph thumbnail images in the vertex worksheet.  The
-	/// default is true.
+    /// true to insert subgraph thumbnail images in the vertex worksheet.  The
+    /// default is true.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
     InsertThumbnails
@@ -249,7 +249,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[InsertThumbnailsKey] );
+            return ( (Boolean)this[InsertThumbnailsKey] );
         }
 
         set
@@ -265,17 +265,17 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets the size of each thumbnail image inserted in the vertex
-	/// worksheet.
+    /// worksheet.
     /// </summary>
     ///
     /// <value>
     /// The size of each thumbnail image inserted in the vertex worksheet, in
-	/// pixels.  The default is 76x50.
+    /// pixels.  The default is 76x50.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("76, 50") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("76, 50") ]
 
     public Size
     ThumbnailSizePx
@@ -284,7 +284,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Size)this[ThumbnailSizePxKey] );
+            return ( (Size)this[ThumbnailSizePxKey] );
         }
 
         set
@@ -300,17 +300,17 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether subgraph images should be
-	/// created for selected vertices only.
+    /// created for selected vertices only.
     /// </summary>
     ///
     /// <value>
-	/// true to create subgraph images for selected vertices only, false to
-	/// create them for all images.  The default is false.
+    /// true to create subgraph images for selected vertices only, false to
+    /// create them for all images.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
     SelectedVerticesOnly
@@ -319,7 +319,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[SelectedVerticesOnlyKey] );
+            return ( (Boolean)this[SelectedVerticesOnlyKey] );
         }
 
         set
@@ -335,17 +335,17 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether to select the vertex in each
-	/// vertex's subgraph image.
+    /// vertex's subgraph image.
     /// </summary>
     ///
     /// <value>
-	/// true to select the vertex, false to leave it unselected.  The default
-	/// is true.
+    /// true to select the vertex, false to leave it unselected.  The default
+    /// is true.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
     SelectVertex
@@ -354,7 +354,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[SelectVertexKey] );
+            return ( (Boolean)this[SelectVertexKey] );
         }
 
         set
@@ -370,17 +370,17 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether to select the vertex's incident
-	/// edges in each vertex's subgraph image.
+    /// edges in each vertex's subgraph image.
     /// </summary>
     ///
     /// <value>
-	/// true to select the vertex's incident edges, false to leave them
-	/// unselected.  The default is false.
+    /// true to select the vertex's incident edges, false to leave them
+    /// unselected.  The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
     SelectIncidentEdges
@@ -389,7 +389,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[SelectIncidentEdgesKey] );
+            return ( (Boolean)this[SelectIncidentEdgesKey] );
         }
 
         set
@@ -414,7 +414,7 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }
@@ -424,45 +424,45 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the Levels property.
+    /// Name of the settings key for the Levels property.
 
-	protected const String LevelsKey = "Levels";
+    protected const String LevelsKey = "Levels";
 
-	/// Name of the settings key for the SaveToFolder property.
+    /// Name of the settings key for the SaveToFolder property.
 
-	protected const String SaveToFolderKey = "SaveToFolder";
+    protected const String SaveToFolderKey = "SaveToFolder";
 
-	/// Name of the settings key for the Folder property.
+    /// Name of the settings key for the Folder property.
 
-	protected const String FolderKey = "Folder";
+    protected const String FolderKey = "Folder";
 
-	/// Name of the settings key for the ImageSizePx property.
+    /// Name of the settings key for the ImageSizePx property.
 
-	protected const String ImageSizePxKey = "ImageSizePx";
+    protected const String ImageSizePxKey = "ImageSizePx";
 
-	/// Name of the settings key for the ImageFormat property.
+    /// Name of the settings key for the ImageFormat property.
 
-	protected const String ImageFormatKey = "ImageFormat";
+    protected const String ImageFormatKey = "ImageFormat";
 
-	/// Name of the settings key for the InsertThumbnails property.
+    /// Name of the settings key for the InsertThumbnails property.
 
-	protected const String InsertThumbnailsKey = "InsertThumbnails";
+    protected const String InsertThumbnailsKey = "InsertThumbnails";
 
-	/// Name of the settings key for the ThumbnailSizePx property.
+    /// Name of the settings key for the ThumbnailSizePx property.
 
-	protected const String ThumbnailSizePxKey = "ThumbnailSizePx";
+    protected const String ThumbnailSizePxKey = "ThumbnailSizePx";
 
-	/// Name of the settings key for the SelectedVerticesOnly property.
+    /// Name of the settings key for the SelectedVerticesOnly property.
 
-	protected const String SelectedVerticesOnlyKey = "SelectedVerticesOnly";
+    protected const String SelectedVerticesOnlyKey = "SelectedVerticesOnly";
 
-	/// Name of the settings key for the SelectVertex property.
+    /// Name of the settings key for the SelectVertex property.
 
-	protected const String SelectVertexKey = "SelectVertex";
+    protected const String SelectVertexKey = "SelectVertex";
 
-	/// Name of the settings key for the SelectIncidentEdges property.
+    /// Name of the settings key for the SelectIncidentEdges property.
 
-	protected const String SelectIncidentEdgesKey = "SelectIncidentEdges";
+    protected const String SelectIncidentEdgesKey = "SelectIncidentEdges";
 
 
     //*************************************************************************

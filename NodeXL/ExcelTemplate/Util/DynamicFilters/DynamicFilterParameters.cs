@@ -34,22 +34,22 @@ public class DynamicFilterParameters : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="DynamicFilterParameters" /> class.
+    /// cref="DynamicFilterParameters" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="columnName">
     /// Name of the column that can be filtered on.
     /// </param>
     //*************************************************************************
 
     public DynamicFilterParameters
-	(
-		String columnName
-	)
+    (
+        String columnName
+    )
     {
-		m_sColumnName = columnName;
+        m_sColumnName = columnName;
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -89,7 +89,7 @@ public class DynamicFilterParameters : Object
     public virtual void
     AssertValid()
     {
-		Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
+        Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
     }
 
 
@@ -99,7 +99,7 @@ public class DynamicFilterParameters : Object
 
     /// Name of the column that can be filtered on.
 
-	protected String m_sColumnName;
+    protected String m_sColumnName;
 }
 
 }

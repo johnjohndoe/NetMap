@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -23,37 +23,37 @@ public class VertexEventArgs : EventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexEventArgs" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="vertex">
-	/// Vertex associated with the event.  Can't be null.
+    /// Vertex associated with the event.  Can't be null.
     /// </param>
     //*************************************************************************
 
     public VertexEventArgs
-	(
-		IVertex vertex
-	)
+    (
+        IVertex vertex
+    )
     {
-		const String MethodName = "Constructor";
+        const String MethodName = "Constructor";
 
         this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "vertex", vertex);
+            MethodName, "vertex", vertex);
 
-		m_oVertex = vertex;
+        m_oVertex = vertex;
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
     //  Property: Vertex
     //
     /// <summary>
-	/// Gets the vertex associated with the event.
+    /// Gets the vertex associated with the event.
     /// </summary>
     ///
     /// <value>
-	/// The vertex associated with the event, as an <see cref="IVertex" />.
-	/// This is never null.
+    /// The vertex associated with the event, as an <see cref="IVertex" />.
+    /// This is never null.
     /// </value>
     //*************************************************************************
 
@@ -68,26 +68,26 @@ public class VertexEventArgs : EventArgs
         }
     }
 
-	//*************************************************************************
-	//	Property: ArgumentChecker
-	//
-	/// <summary>
-	/// Gets a new initialized ArgumentChecker object.
-	/// </summary>
-	///
-	/// <value>
-	/// A new initialized ArgumentChecker object.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ArgumentChecker
+    //
+    /// <summary>
+    /// Gets a new initialized ArgumentChecker object.
+    /// </summary>
+    ///
+    /// <value>
+    /// A new initialized ArgumentChecker object.
+    /// </value>
+    //*************************************************************************
 
-	private ArgumentChecker
-	ArgumentChecker
-	{
-		get
-		{
-			return ( new ArgumentChecker(this.GetType().FullName) );
-		}
-	}
+    private ArgumentChecker
+    ArgumentChecker
+    {
+        get
+        {
+            return ( new ArgumentChecker(this.GetType().FullName) );
+        }
+    }
 
 
     //*************************************************************************
@@ -103,7 +103,7 @@ public class VertexEventArgs : EventArgs
     public virtual void
     AssertValid()
     {
-		Debug.Assert(m_oVertex != null);
+        Debug.Assert(m_oVertex != null);
     }
 
 
@@ -111,9 +111,9 @@ public class VertexEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-	/// Vertex associated with the event.
+    /// Vertex associated with the event.
 
-	protected IVertex m_oVertex;
+    protected IVertex m_oVertex;
 }
 
 
@@ -129,15 +129,15 @@ public class VertexEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="vertexEventArgs">
-///	An <see cref="VertexEventArgs" /> object that contains the event data.
+/// An <see cref="VertexEventArgs" /> object that contains the event data.
 /// </param>
 //*****************************************************************************
 
 public delegate void
 VertexEventHandler
 (
-	Object sender,
-	VertexEventArgs vertexEventArgs
+    Object sender,
+    VertexEventArgs vertexEventArgs
 );
 
 }

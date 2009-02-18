@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -29,9 +29,9 @@ IncludedIn
 
     None = 0,
 
-	// WARNING: Do not rename the following flags.  They get plugged into
-	// "System.Message.{0}Address" to form the name of a Windows Desktop Search
-	// email message field.
+    // WARNING: Do not rename the following flags.  They get plugged into
+    // "System.Message.{0}Address" to form the name of a Windows Desktop Search
+    // email message field.
 
     /// <summary>
     /// The participant was included in the From field.
@@ -79,16 +79,16 @@ public class EmailParticipantCriteria : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="EmailParticipantCriteria" /> class.
+    /// cref="EmailParticipantCriteria" /> class.
     /// </summary>
     //*************************************************************************
 
     public EmailParticipantCriteria()
     {
-		m_sParticipant = null;
-		m_eIncludedIn = IncludedIn.None;
+        m_sParticipant = null;
+        m_eIncludedIn = IncludedIn.None;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -100,7 +100,7 @@ public class EmailParticipantCriteria : Object
     ///
     /// <value>
     /// The String that identifies the participant.  Can be null or empty.  The
-	/// default is null.
+    /// default is null.
     /// </value>
     //*************************************************************************
 
@@ -116,7 +116,7 @@ public class EmailParticipantCriteria : Object
 
         set
         {
-			m_sParticipant = value;
+            m_sParticipant = value;
 
             AssertValid();
         }
@@ -131,9 +131,9 @@ public class EmailParticipantCriteria : Object
     ///
     /// <value>
     /// The email fields the participant must be included in, as an ORed
-	/// combination of <see cref="Microsoft.SocialNetworkLib.IncludedIn" />
-	/// flags.  The default is <see
-	/// cref="Microsoft.SocialNetworkLib.IncludedIn.None" />.
+    /// combination of <see cref="Microsoft.SocialNetworkLib.IncludedIn" />
+    /// flags.  The default is <see
+    /// cref="Microsoft.SocialNetworkLib.IncludedIn.None" />.
     /// </value>
     //*************************************************************************
 
@@ -149,7 +149,7 @@ public class EmailParticipantCriteria : Object
 
         set
         {
-			m_eIncludedIn = value;
+            m_eIncludedIn = value;
 
             AssertValid();
         }
@@ -169,7 +169,7 @@ public class EmailParticipantCriteria : Object
     public void
     AssertValid()
     {
-		// m_sParticipant
+        // m_sParticipant
         // m_eIncludedIn
     }
 
@@ -180,11 +180,11 @@ public class EmailParticipantCriteria : Object
 
     /// The String that identifies the participant.  Can be null or empty.
 
-	protected String m_sParticipant;
+    protected String m_sParticipant;
 
     /// The email fields the participant must be included in.
 
-	protected IncludedIn m_eIncludedIn;
+    protected IncludedIn m_eIncludedIn;
 }
 
 }

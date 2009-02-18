@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -35,9 +35,9 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
     public AutoFillUserSettings()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -48,12 +48,12 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// true to use AutoFill.   The default is false.
+    /// true to use AutoFill.   The default is false.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
     UseAutoFill
@@ -62,7 +62,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (Boolean)this[UseAutoFillKey] );
+            return ( (Boolean)this[UseAutoFillKey] );
         }
 
         set
@@ -78,17 +78,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// edge color column.
+    /// edge color column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the edge color
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     EdgeColorSourceColumnName
@@ -97,7 +97,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[EdgeColorSourceColumnNameKey] );
+            return ( (String)this[EdgeColorSourceColumnNameKey] );
         }
 
         set
@@ -120,8 +120,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
 
     public ColorColumnAutoFillUserSettings
     EdgeColorDetails
@@ -130,8 +130,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (ColorColumnAutoFillUserSettings)
-				this[EdgeColorDetailsKey] );
+            return ( (ColorColumnAutoFillUserSettings)
+                this[EdgeColorDetailsKey] );
         }
 
         set
@@ -147,17 +147,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// edge width column.
+    /// edge width column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the edge width
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     EdgeWidthSourceColumnName
@@ -166,7 +166,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[EdgeWidthSourceColumnNameKey] );
+            return ( (String)this[EdgeWidthSourceColumnNameKey] );
         }
 
         set
@@ -189,8 +189,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     EdgeWidthDetails
@@ -199,8 +199,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericRangeColumnAutoFillUserSettings)
-				this[EdgeWidthDetailsKey] );
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[EdgeWidthDetailsKey] );
         }
 
         set
@@ -216,17 +216,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// edge alpha column.
+    /// edge alpha column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the edge color
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     EdgeAlphaSourceColumnName
@@ -235,7 +235,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[EdgeAlphaSourceColumnNameKey] );
+            return ( (String)this[EdgeAlphaSourceColumnNameKey] );
         }
 
         set
@@ -258,8 +258,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t10\t1\t10\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\t1\t10\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     EdgeAlphaDetails
@@ -268,8 +268,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericRangeColumnAutoFillUserSettings)
-				this[EdgeAlphaDetailsKey] );
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[EdgeAlphaDetailsKey] );
         }
 
         set
@@ -285,17 +285,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// edge visibility column.
+    /// edge visibility column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the edge visibility
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     EdgeVisibilitySourceColumnName
@@ -304,7 +304,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[EdgeVisibilitySourceColumnNameKey] );
+            return ( (String)this[EdgeVisibilitySourceColumnNameKey] );
         }
 
         set
@@ -327,8 +327,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("GreaterThan\t0\t1\t0") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("GreaterThan\t0\t1\t0") ]
 
     public NumericComparisonColumnAutoFillUserSettings
     EdgeVisibilityDetails
@@ -337,8 +337,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericComparisonColumnAutoFillUserSettings)
-				this[EdgeVisibilityDetailsKey] );
+            return ( (NumericComparisonColumnAutoFillUserSettings)
+                this[EdgeVisibilityDetailsKey] );
         }
 
         set
@@ -354,17 +354,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex color column.
+    /// vertex color column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex color
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexColorSourceColumnName
@@ -373,7 +373,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexColorSourceColumnNameKey] );
+            return ( (String)this[VertexColorSourceColumnNameKey] );
         }
 
         set
@@ -396,8 +396,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
 
     public ColorColumnAutoFillUserSettings
     VertexColorDetails
@@ -406,8 +406,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (ColorColumnAutoFillUserSettings)
-				this[VertexColorDetailsKey] );
+            return ( (ColorColumnAutoFillUserSettings)
+                this[VertexColorDetailsKey] );
         }
 
         set
@@ -423,17 +423,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex shape column.
+    /// vertex shape column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex shape
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexShapeSourceColumnName
@@ -442,7 +442,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexShapeSourceColumnNameKey] );
+            return ( (String)this[VertexShapeSourceColumnNameKey] );
         }
 
         set
@@ -465,8 +465,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("GreaterThan\t0\tSphere\t") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("GreaterThan\t0\tSphere\t") ]
 
     public NumericComparisonColumnAutoFillUserSettings
     VertexShapeDetails
@@ -475,8 +475,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericComparisonColumnAutoFillUserSettings)
-				this[VertexShapeDetailsKey] );
+            return ( (NumericComparisonColumnAutoFillUserSettings)
+                this[VertexShapeDetailsKey] );
         }
 
         set
@@ -492,17 +492,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex radius column.
+    /// vertex radius column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex radius
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexRadiusSourceColumnName
@@ -511,7 +511,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexRadiusSourceColumnNameKey] );
+            return ( (String)this[VertexRadiusSourceColumnNameKey] );
         }
 
         set
@@ -534,8 +534,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexRadiusDetails
@@ -544,8 +544,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericRangeColumnAutoFillUserSettings)
-				this[VertexRadiusDetailsKey] );
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexRadiusDetailsKey] );
         }
 
         set
@@ -561,17 +561,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex alpha column.
+    /// vertex alpha column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex alpha
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexAlphaSourceColumnName
@@ -580,7 +580,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexAlphaSourceColumnNameKey] );
+            return ( (String)this[VertexAlphaSourceColumnNameKey] );
         }
 
         set
@@ -603,8 +603,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t10\t1\t10\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\t1\t10\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexAlphaDetails
@@ -613,8 +613,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericRangeColumnAutoFillUserSettings)
-				this[VertexAlphaDetailsKey] );
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexAlphaDetailsKey] );
         }
 
         set
@@ -630,17 +630,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex primary label column.
+    /// vertex primary label column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex primary
-	/// label column.  The default is String.Empty.
+    /// label column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexPrimaryLabelSourceColumnName
@@ -649,7 +649,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexPrimaryLabelSourceColumnNameKey] );
+            return ( (String)this[VertexPrimaryLabelSourceColumnNameKey] );
         }
 
         set
@@ -665,17 +665,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex primary label fill color column.
+    /// vertex primary label fill color column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex primary
-	/// label fill color column.  The default is String.Empty.
+    /// label fill color column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexPrimaryLabelFillColorSourceColumnName
@@ -684,8 +684,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[
-				VertexPrimaryLabelFillColorSourceColumnNameKey] );
+            return ( (String)this[
+                VertexPrimaryLabelFillColorSourceColumnNameKey] );
         }
 
         set
@@ -701,17 +701,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the details for auto-filling the vertex primary label fill
-	/// color column.
+    /// color column.
     /// </summary>
     ///
     /// <value>
     /// The details for auto-filling the vertex primary label fill color
-	/// column.
+    /// column.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
 
     public ColorColumnAutoFillUserSettings
     VertexPrimaryLabelFillColorDetails
@@ -720,8 +720,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (ColorColumnAutoFillUserSettings)
-				this[VertexPrimaryLabelFillColorDetailsKey] );
+            return ( (ColorColumnAutoFillUserSettings)
+                this[VertexPrimaryLabelFillColorDetailsKey] );
         }
 
         set
@@ -737,17 +737,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex secondary label column.
+    /// vertex secondary label column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex secondary
-	/// label column.  The default is String.Empty.
+    /// label column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexSecondaryLabelSourceColumnName
@@ -756,7 +756,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexSecondaryLabelSourceColumnNameKey] );
+            return ( (String)this[VertexSecondaryLabelSourceColumnNameKey] );
         }
 
         set
@@ -772,17 +772,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex tooltip column.
+    /// vertex tooltip column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex tooltip
-	/// column.  The default is String.Empty.
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexToolTipSourceColumnName
@@ -791,7 +791,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexToolTipSourceColumnNameKey] );
+            return ( (String)this[VertexToolTipSourceColumnNameKey] );
         }
 
         set
@@ -807,17 +807,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex visibility column.
+    /// vertex visibility column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex
-	/// visibility column.  The default is String.Empty.
+    /// visibility column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexVisibilitySourceColumnName
@@ -826,7 +826,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexVisibilitySourceColumnNameKey] );
+            return ( (String)this[VertexVisibilitySourceColumnNameKey] );
         }
 
         set
@@ -849,8 +849,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("GreaterThan\t0\t1\t0") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("GreaterThan\t0\t1\t0") ]
 
     public NumericComparisonColumnAutoFillUserSettings
     VertexVisibilityDetails
@@ -859,8 +859,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericComparisonColumnAutoFillUserSettings)
-				this[VertexVisibilityDetailsKey] );
+            return ( (NumericComparisonColumnAutoFillUserSettings)
+                this[VertexVisibilityDetailsKey] );
         }
 
         set
@@ -876,17 +876,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex X-coordinate column.
+    /// vertex X-coordinate column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex
-	/// X-coordinate column.  The default is String.Empty.
+    /// X-coordinate column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexXSourceColumnName
@@ -895,7 +895,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexXSourceColumnNameKey] );
+            return ( (String)this[VertexXSourceColumnNameKey] );
         }
 
         set
@@ -911,7 +911,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the details for auto-filling the vertex x-coordinate
-	/// column.
+    /// column.
     /// </summary>
     ///
     /// <value>
@@ -919,8 +919,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexXDetails
@@ -929,8 +929,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericRangeColumnAutoFillUserSettings)
-				this[VertexXDetailsKey] );
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexXDetailsKey] );
         }
 
         set
@@ -946,17 +946,17 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-	/// vertex y-coordinate column.
+    /// vertex y-coordinate column.
     /// </summary>
     ///
     /// <value>
     /// The name of the column to use as a data source for the vertex
-	/// y-coordinate column.  The default is String.Empty.
+    /// y-coordinate column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
 
     public String
     VertexYSourceColumnName
@@ -965,7 +965,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (String)this[VertexYSourceColumnNameKey] );
+            return ( (String)this[VertexYSourceColumnNameKey] );
         }
 
         set
@@ -981,7 +981,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the details for auto-filling the vertex y-coordinate
-	/// column.
+    /// column.
     /// </summary>
     ///
     /// <value>
@@ -989,8 +989,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\ttrue") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexYDetails
@@ -999,8 +999,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         {
             AssertValid();
 
-			return ( (NumericRangeColumnAutoFillUserSettings)
-				this[VertexYDetailsKey] );
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexYDetailsKey] );
         }
 
         set
@@ -1017,84 +1017,84 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// <summary>
     /// Creates a deep copy of the object.
     /// </summary>
-	///
-	/// <returns>
-	/// A deep copy of the object.
-	/// </returns>
+    ///
+    /// <returns>
+    /// A deep copy of the object.
+    /// </returns>
     //*************************************************************************
 
     public AutoFillUserSettings
     Copy()
     {
-		AssertValid();
+        AssertValid();
 
-		AutoFillUserSettings oCopy = new AutoFillUserSettings();
+        AutoFillUserSettings oCopy = new AutoFillUserSettings();
 
-		oCopy.EdgeColorSourceColumnName = String.Copy(
-			this.EdgeColorSourceColumnName);
+        oCopy.EdgeColorSourceColumnName = String.Copy(
+            this.EdgeColorSourceColumnName);
 
-		oCopy.EdgeColorDetails = this.EdgeColorDetails.Copy();
+        oCopy.EdgeColorDetails = this.EdgeColorDetails.Copy();
 
-		oCopy.EdgeWidthSourceColumnName = String.Copy(
-			this.EdgeWidthSourceColumnName);
+        oCopy.EdgeWidthSourceColumnName = String.Copy(
+            this.EdgeWidthSourceColumnName);
 
-		oCopy.EdgeWidthDetails = this.EdgeWidthDetails.Copy();
+        oCopy.EdgeWidthDetails = this.EdgeWidthDetails.Copy();
 
-		oCopy.EdgeAlphaSourceColumnName = String.Copy(
-			this.EdgeAlphaSourceColumnName);
+        oCopy.EdgeAlphaSourceColumnName = String.Copy(
+            this.EdgeAlphaSourceColumnName);
 
-		oCopy.EdgeAlphaDetails = this.EdgeAlphaDetails.Copy();
+        oCopy.EdgeAlphaDetails = this.EdgeAlphaDetails.Copy();
 
-		oCopy.EdgeVisibilitySourceColumnName = String.Copy(
-			this.EdgeVisibilitySourceColumnName);
+        oCopy.EdgeVisibilitySourceColumnName = String.Copy(
+            this.EdgeVisibilitySourceColumnName);
 
-		oCopy.EdgeVisibilityDetails = this.EdgeVisibilityDetails.Copy();
+        oCopy.EdgeVisibilityDetails = this.EdgeVisibilityDetails.Copy();
 
-		oCopy.VertexColorSourceColumnName = String.Copy(
-			this.VertexColorSourceColumnName);
+        oCopy.VertexColorSourceColumnName = String.Copy(
+            this.VertexColorSourceColumnName);
 
-		oCopy.VertexColorDetails = this.VertexColorDetails.Copy();
+        oCopy.VertexColorDetails = this.VertexColorDetails.Copy();
 
-		oCopy.VertexShapeSourceColumnName = String.Copy(
-			this.VertexShapeSourceColumnName);
+        oCopy.VertexShapeSourceColumnName = String.Copy(
+            this.VertexShapeSourceColumnName);
 
-		oCopy.VertexShapeDetails = this.VertexShapeDetails.Copy();
+        oCopy.VertexShapeDetails = this.VertexShapeDetails.Copy();
 
-		oCopy.VertexRadiusSourceColumnName = String.Copy(
-			this.VertexRadiusSourceColumnName);
+        oCopy.VertexRadiusSourceColumnName = String.Copy(
+            this.VertexRadiusSourceColumnName);
 
-		oCopy.VertexRadiusDetails = this.VertexRadiusDetails.Copy();
+        oCopy.VertexRadiusDetails = this.VertexRadiusDetails.Copy();
 
-		oCopy.VertexAlphaSourceColumnName = String.Copy(
-			this.VertexAlphaSourceColumnName);
+        oCopy.VertexAlphaSourceColumnName = String.Copy(
+            this.VertexAlphaSourceColumnName);
 
-		oCopy.VertexAlphaDetails = this.VertexAlphaDetails.Copy();
+        oCopy.VertexAlphaDetails = this.VertexAlphaDetails.Copy();
 
-		oCopy.VertexPrimaryLabelSourceColumnName = String.Copy(
-			this.VertexPrimaryLabelSourceColumnName);
+        oCopy.VertexPrimaryLabelSourceColumnName = String.Copy(
+            this.VertexPrimaryLabelSourceColumnName);
 
-		oCopy.VertexSecondaryLabelSourceColumnName = String.Copy(
-			this.VertexSecondaryLabelSourceColumnName);
+        oCopy.VertexSecondaryLabelSourceColumnName = String.Copy(
+            this.VertexSecondaryLabelSourceColumnName);
 
-		oCopy.VertexToolTipSourceColumnName = String.Copy(
-			this.VertexToolTipSourceColumnName);
+        oCopy.VertexToolTipSourceColumnName = String.Copy(
+            this.VertexToolTipSourceColumnName);
 
-		oCopy.VertexVisibilitySourceColumnName = String.Copy(
-			this.VertexVisibilitySourceColumnName);
+        oCopy.VertexVisibilitySourceColumnName = String.Copy(
+            this.VertexVisibilitySourceColumnName);
 
-		oCopy.VertexVisibilityDetails = this.VertexVisibilityDetails.Copy();
+        oCopy.VertexVisibilityDetails = this.VertexVisibilityDetails.Copy();
 
-		oCopy.VertexXSourceColumnName = String.Copy(
-			this.VertexXSourceColumnName);
+        oCopy.VertexXSourceColumnName = String.Copy(
+            this.VertexXSourceColumnName);
 
-		oCopy.VertexXDetails = this.VertexXDetails.Copy();
+        oCopy.VertexXDetails = this.VertexXDetails.Copy();
 
-		oCopy.VertexYSourceColumnName = String.Copy(
-			this.VertexYSourceColumnName);
+        oCopy.VertexYSourceColumnName = String.Copy(
+            this.VertexYSourceColumnName);
 
-		oCopy.VertexYDetails = this.VertexYDetails.Copy();
+        oCopy.VertexYDetails = this.VertexYDetails.Copy();
 
-		return (oCopy);
+        return (oCopy);
     }
 
 
@@ -1119,153 +1119,153 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the UseAutoFill property.
+    /// Name of the settings key for the UseAutoFill property.
 
-	protected const String UseAutoFillKey =
-		"UseAutoFill";
+    protected const String UseAutoFillKey =
+        "UseAutoFill";
 
-	/// Name of the settings key for the EdgeColorSourceColumnName property.
+    /// Name of the settings key for the EdgeColorSourceColumnName property.
 
-	protected const String EdgeColorSourceColumnNameKey =
-		"EdgeColorSourceColumnName";
+    protected const String EdgeColorSourceColumnNameKey =
+        "EdgeColorSourceColumnName";
 
-	/// Name of the settings key for the EdgeColorDetailsKey property.
+    /// Name of the settings key for the EdgeColorDetailsKey property.
 
-	protected const String EdgeColorDetailsKey =
-		"EdgeColorDetails";
+    protected const String EdgeColorDetailsKey =
+        "EdgeColorDetails";
 
-	/// Name of the settings key for the EdgeWidthSourceColumnName property.
+    /// Name of the settings key for the EdgeWidthSourceColumnName property.
 
-	protected const String EdgeWidthSourceColumnNameKey =
-		"EdgeWidthSourceColumnName";
+    protected const String EdgeWidthSourceColumnNameKey =
+        "EdgeWidthSourceColumnName";
 
-	/// Name of the settings key for the EdgeWidthDetailsKey property.
+    /// Name of the settings key for the EdgeWidthDetailsKey property.
 
-	protected const String EdgeWidthDetailsKey =
-		"EdgeWidthDetails";
+    protected const String EdgeWidthDetailsKey =
+        "EdgeWidthDetails";
 
-	/// Name of the settings key for the EdgeAlphaSourceColumnName property.
+    /// Name of the settings key for the EdgeAlphaSourceColumnName property.
 
-	protected const String EdgeAlphaSourceColumnNameKey =
-		"EdgeAlphaSourceColumnName";
+    protected const String EdgeAlphaSourceColumnNameKey =
+        "EdgeAlphaSourceColumnName";
 
-	/// Name of the settings key for the EdgeAlphaDetailsKey property.
+    /// Name of the settings key for the EdgeAlphaDetailsKey property.
 
-	protected const String EdgeAlphaDetailsKey =
-		"EdgeAlphaDetails";
+    protected const String EdgeAlphaDetailsKey =
+        "EdgeAlphaDetails";
 
-	/// Name of the settings key for the EdgeVisibilitySourceColumnName
-	/// property.
+    /// Name of the settings key for the EdgeVisibilitySourceColumnName
+    /// property.
 
-	protected const String EdgeVisibilitySourceColumnNameKey =
-		"EdgeVisibilitySourceColumnName";
+    protected const String EdgeVisibilitySourceColumnNameKey =
+        "EdgeVisibilitySourceColumnName";
 
-	/// Name of the settings key for the EdgeVisibilityDetailsKey property.
+    /// Name of the settings key for the EdgeVisibilityDetailsKey property.
 
-	protected const String EdgeVisibilityDetailsKey =
-		"EdgeVisibilityDetails";
+    protected const String EdgeVisibilityDetailsKey =
+        "EdgeVisibilityDetails";
 
-	/// Name of the settings key for the VertexColorSourceColumnName property.
+    /// Name of the settings key for the VertexColorSourceColumnName property.
 
-	protected const String VertexColorSourceColumnNameKey =
-		"VertexColorSourceColumnName";
+    protected const String VertexColorSourceColumnNameKey =
+        "VertexColorSourceColumnName";
 
-	/// Name of the settings key for the VertexColorDetailsKey property.
+    /// Name of the settings key for the VertexColorDetailsKey property.
 
-	protected const String VertexColorDetailsKey =
-		"VertexColorDetails";
+    protected const String VertexColorDetailsKey =
+        "VertexColorDetails";
 
-	/// Name of the settings key for the VertexShapeSourceColumnName property.
+    /// Name of the settings key for the VertexShapeSourceColumnName property.
 
-	protected const String VertexShapeSourceColumnNameKey =
-		"VertexShapeSourceColumnName";
+    protected const String VertexShapeSourceColumnNameKey =
+        "VertexShapeSourceColumnName";
 
-	/// Name of the settings key for the VertexShapeDetailsKey property.
+    /// Name of the settings key for the VertexShapeDetailsKey property.
 
-	protected const String VertexShapeDetailsKey =
-		"VertexShapeDetails";
+    protected const String VertexShapeDetailsKey =
+        "VertexShapeDetails";
 
-	/// Name of the settings key for the VertexRadiusSourceColumnName property.
+    /// Name of the settings key for the VertexRadiusSourceColumnName property.
 
-	protected const String VertexRadiusSourceColumnNameKey =
-		"VertexRadiusSourceColumnName";
+    protected const String VertexRadiusSourceColumnNameKey =
+        "VertexRadiusSourceColumnName";
 
-	/// Name of the settings key for the VertexRadiusDetailsKey property.
+    /// Name of the settings key for the VertexRadiusDetailsKey property.
 
-	protected const String VertexRadiusDetailsKey =
-		"VertexRadiusDetails";
+    protected const String VertexRadiusDetailsKey =
+        "VertexRadiusDetails";
 
-	/// Name of the settings key for the VertexAlphaSourceColumnName
-	/// property.
+    /// Name of the settings key for the VertexAlphaSourceColumnName
+    /// property.
 
-	protected const String VertexAlphaSourceColumnNameKey =
-		"VertexAlphaSourceColumnName";
+    protected const String VertexAlphaSourceColumnNameKey =
+        "VertexAlphaSourceColumnName";
 
-	/// Name of the settings key for the VertexAlphaDetailsKey property.
+    /// Name of the settings key for the VertexAlphaDetailsKey property.
 
-	protected const String VertexAlphaDetailsKey =
-		"VertexAlphaDetails";
+    protected const String VertexAlphaDetailsKey =
+        "VertexAlphaDetails";
 
-	/// Name of the settings key for the VertexPrimaryLabelSourceColumnName
-	/// property.
+    /// Name of the settings key for the VertexPrimaryLabelSourceColumnName
+    /// property.
 
-	protected const String VertexPrimaryLabelSourceColumnNameKey =
-		"VertexPrimaryLabelSourceColumnName";
+    protected const String VertexPrimaryLabelSourceColumnNameKey =
+        "VertexPrimaryLabelSourceColumnName";
 
-	/// Name of the settings key for the
-	/// VertexPrimaryLabelFillColorSourceColumnName property.
+    /// Name of the settings key for the
+    /// VertexPrimaryLabelFillColorSourceColumnName property.
 
-	protected const String VertexPrimaryLabelFillColorSourceColumnNameKey =
-		"VertexPrimaryLabelFillColorSourceColumnName";
+    protected const String VertexPrimaryLabelFillColorSourceColumnNameKey =
+        "VertexPrimaryLabelFillColorSourceColumnName";
 
-	/// Name of the settings key for the VertexPrimaryLabelFillColorDetailsKey
-	/// property.
+    /// Name of the settings key for the VertexPrimaryLabelFillColorDetailsKey
+    /// property.
 
-	protected const String VertexPrimaryLabelFillColorDetailsKey =
-		"VertexPrimaryLabelFillColorDetails";
+    protected const String VertexPrimaryLabelFillColorDetailsKey =
+        "VertexPrimaryLabelFillColorDetails";
 
-	/// Name of the settings key for the VertexSecondaryLabelSourceColumnName
-	/// property.
+    /// Name of the settings key for the VertexSecondaryLabelSourceColumnName
+    /// property.
 
-	protected const String VertexSecondaryLabelSourceColumnNameKey =
-		"VertexSecondaryLabelSourceColumnName";
+    protected const String VertexSecondaryLabelSourceColumnNameKey =
+        "VertexSecondaryLabelSourceColumnName";
 
-	/// Name of the settings key for the VertexToolTipSourceColumnName
-	/// property.
+    /// Name of the settings key for the VertexToolTipSourceColumnName
+    /// property.
 
-	protected const String VertexToolTipSourceColumnNameKey =
-		"VertexToolTipSourceColumnName";
+    protected const String VertexToolTipSourceColumnNameKey =
+        "VertexToolTipSourceColumnName";
 
-	/// Name of the settings key for the VertexVisibilitySourceColumnName
-	/// property.
+    /// Name of the settings key for the VertexVisibilitySourceColumnName
+    /// property.
 
-	protected const String VertexVisibilitySourceColumnNameKey =
-		"VertexVisibilitySourceColumnName";
+    protected const String VertexVisibilitySourceColumnNameKey =
+        "VertexVisibilitySourceColumnName";
 
-	/// Name of the settings key for the VertexVisibilityDetailsKey property.
+    /// Name of the settings key for the VertexVisibilityDetailsKey property.
 
-	protected const String VertexVisibilityDetailsKey =
-		"VertexVisibilityDetails";
+    protected const String VertexVisibilityDetailsKey =
+        "VertexVisibilityDetails";
 
-	/// Name of the settings key for the VertexXSourceColumnName property.
+    /// Name of the settings key for the VertexXSourceColumnName property.
 
-	protected const String VertexXSourceColumnNameKey =
-		"VertexXSourceColumnName";
+    protected const String VertexXSourceColumnNameKey =
+        "VertexXSourceColumnName";
 
-	/// Name of the settings key for the VertexXDetailsKey property.
+    /// Name of the settings key for the VertexXDetailsKey property.
 
-	protected const String VertexXDetailsKey =
-		"VertexXDetails";
+    protected const String VertexXDetailsKey =
+        "VertexXDetails";
 
-	/// Name of the settings key for the VertexYSourceColumnName property.
+    /// Name of the settings key for the VertexYSourceColumnName property.
 
-	protected const String VertexYSourceColumnNameKey =
-		"VertexYSourceColumnName";
+    protected const String VertexYSourceColumnNameKey =
+        "VertexYSourceColumnName";
 
-	/// Name of the settings key for the VertexYDetailsKey property.
+    /// Name of the settings key for the VertexYDetailsKey property.
 
-	protected const String VertexYDetailsKey =
-		"VertexYDetails";
+    protected const String VertexYDetailsKey =
+        "VertexYDetails";
 
 
     //*************************************************************************

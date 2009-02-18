@@ -27,9 +27,9 @@ public class ToolStripPlus : ToolStrip
 
     public ToolStripPlus()
     {
-		m_bClickThrough = true;
+        m_bClickThrough = true;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -41,25 +41,25 @@ public class ToolStripPlus : ToolStrip
     ///
     /// <value>
     /// true if clicking a control in the ToolStrip activates the ToolStrip AND
-	/// clicks the clicked control.  The default is true.
+    /// clicks the clicked control.  The default is true.
     /// </value>
-	///
-	/// <remarks>
-	/// In a standard ToolStrip, if window B is active when a control in
-	/// window A's ToolStrip is clicked, the click activates window A but
-	/// doesn't click the control.  A second click on the control is then
-	/// required.  When this property is true, only a single click is required 
-	/// to both activate the ToolStrip and click the control.
-	///
-	/// <para>
-	/// The code to accomplish this is borrowed from Rick Brewster:
-	/// </para>
-	///
-	/// <para>
-	/// http://blogs.msdn.com/rickbrew/archive/2006/01/09/511003.aspx
-	/// </para>
-	///
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// In a standard ToolStrip, if window B is active when a control in
+    /// window A's ToolStrip is clicked, the click activates window A but
+    /// doesn't click the control.  A second click on the control is then
+    /// required.  When this property is true, only a single click is required 
+    /// to both activate the ToolStrip and click the control.
+    ///
+    /// <para>
+    /// The code to accomplish this is borrowed from Rick Brewster:
+    /// </para>
+    ///
+    /// <para>
+    /// http://blogs.msdn.com/rickbrew/archive/2006/01/09/511003.aspx
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     public Boolean
@@ -74,7 +74,7 @@ public class ToolStripPlus : ToolStrip
 
         set
         {
-			m_bClickThrough = value;
+            m_bClickThrough = value;
 
             AssertValid();
         }
@@ -93,19 +93,19 @@ public class ToolStripPlus : ToolStrip
     //*************************************************************************
 
     protected override void
-	WndProc
-	(
-		ref Message m
-	)
+    WndProc
+    (
+        ref Message m
+    )
     {
         base.WndProc(ref m);
 
         if (m_bClickThrough
-			&&
+            &&
             m.Msg == WM_MOUSEACTIVATE
-			&&
+            &&
             m.Result == (IntPtr)MA_ACTIVATEANDEAT
-			)
+            )
         {
             m.Result = (IntPtr)MA_ACTIVATE;
         }
@@ -125,7 +125,7 @@ public class ToolStripPlus : ToolStrip
     public void
     AssertValid()
     {
-		// m_bClickThrough
+        // m_bClickThrough
     }
 
 
@@ -133,16 +133,16 @@ public class ToolStripPlus : ToolStrip
     //  Protected constants
     //*************************************************************************
 
-	///
-	protected const UInt32 WM_MOUSEACTIVATE = 0x21;
-	///
-	protected const UInt32 MA_ACTIVATE = 1;
-	///
-	protected const UInt32 MA_ACTIVATEANDEAT = 2;
-	///
-	protected const UInt32 MA_NOACTIVATE = 3;
-	///
-	protected const UInt32 MA_NOACTIVATEANDEAT = 4;
+    ///
+    protected const UInt32 WM_MOUSEACTIVATE = 0x21;
+    ///
+    protected const UInt32 MA_ACTIVATE = 1;
+    ///
+    protected const UInt32 MA_ACTIVATEANDEAT = 2;
+    ///
+    protected const UInt32 MA_NOACTIVATE = 3;
+    ///
+    protected const UInt32 MA_NOACTIVATEANDEAT = 4;
 
 
     //*************************************************************************
@@ -151,7 +151,7 @@ public class ToolStripPlus : ToolStrip
 
     /// Indicates whether click-through is used.
 
-	protected Boolean m_bClickThrough;
+    protected Boolean m_bClickThrough;
 }
 
 }

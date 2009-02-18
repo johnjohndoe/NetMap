@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -56,6 +56,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextForceLayoutSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextLayout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.msiContextShowDynamicFilters = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.msiContextCopyImageToClipboard = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,8 +70,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbShowDynamicFilters = new System.Windows.Forms.ToolStripButton();
             this.tsbOptions = new System.Windows.Forms.ToolStripButton();
-            this.oNodeXLControl = new Microsoft.NodeXL.Visualization.NodeXLControl();
-            this.msiContextShowDynamicFilters = new System.Windows.Forms.ToolStripMenuItem();
+            this.ehNodeXLControlHost = new System.Windows.Forms.Integration.ElementHost();
+            this.usrGraphZoomAndScale = new Microsoft.NodeXL.ApplicationUtil.GraphZoomAndScaleControl();
             this.cmsNodeXLControl.SuspendLayout();
             this.tsToolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -100,7 +101,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextCopyImageToClipboard,
             this.msiContextSaveImageToFile});
             this.cmsNodeXLControl.Name = "cmsNodeXLControl";
-            this.cmsNodeXLControl.Size = new System.Drawing.Size(235, 408);
+            this.cmsNodeXLControl.Size = new System.Drawing.Size(235, 386);
             // 
             // msiContextSelectAll
             // 
@@ -280,6 +281,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(231, 6);
             // 
+            // msiContextShowDynamicFilters
+            // 
+            this.msiContextShowDynamicFilters.Image = ((System.Drawing.Image)(resources.GetObject("msiContextShowDynamicFilters.Image")));
+            this.msiContextShowDynamicFilters.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.msiContextShowDynamicFilters.Name = "msiContextShowDynamicFilters";
+            this.msiContextShowDynamicFilters.Size = new System.Drawing.Size(234, 22);
+            this.msiContextShowDynamicFilters.Text = "Dynamic Filters...";
+            this.msiContextShowDynamicFilters.ToolTipText = "Filter the graph\'s vertices and edges in real time";
+            this.msiContextShowDynamicFilters.Click += new System.EventHandler(this.ShowDynamicFilters_Click);
+            // 
             // msiContextOptions
             // 
             this.msiContextOptions.Image = ((System.Drawing.Image)(resources.GetObject("msiContextOptions.Image")));
@@ -410,39 +421,33 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tsbOptions.ToolTipText = "Specify options that control the graph\'s appearance";
             this.tsbOptions.Click += new System.EventHandler(this.Options_Click);
             // 
-            // oNodeXLControl
+            // ehNodeXLControlHost
             // 
-            this.oNodeXLControl.AllowVertexDrag = true;
-            this.oNodeXLControl.BackColor = System.Drawing.SystemColors.Window;
-            this.oNodeXLControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.oNodeXLControl.Location = new System.Drawing.Point(0, 25);
-            this.oNodeXLControl.MouseSelectionMode = Microsoft.NodeXL.Visualization.MouseSelectionMode.SelectVertexAndIncidentEdges;
-            this.oNodeXLControl.Name = "oNodeXLControl";
-            this.oNodeXLControl.ShowToolTips = false;
-            this.oNodeXLControl.Size = new System.Drawing.Size(575, 349);
-            this.oNodeXLControl.TabIndex = 1;
-            this.oNodeXLControl.GraphMouseUp += new Microsoft.NodeXL.Visualization.GraphMouseEventHandler(this.oNodeXLControl_GraphMouseUp);
-            this.oNodeXLControl.GraphDrawn += new System.EventHandler(this.oNodeXLControl_GraphDrawn);
-            this.oNodeXLControl.SelectionChanged += new System.EventHandler(this.oNodeXLControl_SelectionChanged);
-            this.oNodeXLControl.VertexMoved += new Microsoft.NodeXL.Core.VertexEventHandler(this.oNodeXLControl_VertexMoved);
-            this.oNodeXLControl.DrawingGraph += new System.EventHandler(this.oNodeXLControl_DrawingGraph);
+            this.ehNodeXLControlHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.ehNodeXLControlHost.BackColor = System.Drawing.SystemColors.Control;
+            this.ehNodeXLControlHost.Location = new System.Drawing.Point(0, 60);
+            this.ehNodeXLControlHost.Name = "ehNodeXLControlHost";
+            this.ehNodeXLControlHost.Size = new System.Drawing.Size(575, 314);
+            this.ehNodeXLControlHost.TabIndex = 4;
+            this.ehNodeXLControlHost.Text = "elementHost1";
+            this.ehNodeXLControlHost.Child = null;
             // 
-            // msiContextShowDynamicFilters
+            // usrGraphZoomAndScale
             // 
-            this.msiContextShowDynamicFilters.Image = ((System.Drawing.Image)(resources.GetObject("msiContextShowDynamicFilters.Image")));
-            this.msiContextShowDynamicFilters.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.msiContextShowDynamicFilters.Name = "msiContextShowDynamicFilters";
-            this.msiContextShowDynamicFilters.Size = new System.Drawing.Size(234, 22);
-            this.msiContextShowDynamicFilters.Text = "Dynamic Filters...";
-            this.msiContextShowDynamicFilters.ToolTipText = "Filter the graph\'s vertices and edges in real time";
-            this.msiContextShowDynamicFilters.Click += new System.EventHandler(this.ShowDynamicFilters_Click);
+            this.usrGraphZoomAndScale.Location = new System.Drawing.Point(0, 28);
+            this.usrGraphZoomAndScale.Name = "usrGraphZoomAndScale";
+            this.usrGraphZoomAndScale.Size = new System.Drawing.Size(480, 26);
+            this.usrGraphZoomAndScale.TabIndex = 5;
             // 
             // TaskPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.Controls.Add(this.oNodeXLControl);
+            this.Controls.Add(this.usrGraphZoomAndScale);
+            this.Controls.Add(this.ehNodeXLControlHost);
             this.Controls.Add(this.tsToolStrip);
             this.Name = "TaskPane";
             this.Size = new System.Drawing.Size(575, 374);
@@ -456,7 +461,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
         #endregion
 
-        private Microsoft.NodeXL.Visualization.NodeXLControl oNodeXLControl;
         private Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus tsToolStrip;
         private System.Windows.Forms.ToolStripButton tsbOptions;
         private System.Windows.Forms.ContextMenuStrip cmsNodeXLControl;
@@ -494,5 +498,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.ToolStripButton tsbShowDynamicFilters;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem msiContextShowDynamicFilters;
+        private System.Windows.Forms.Integration.ElementHost ehNodeXLControlHost;
+        private Microsoft.NodeXL.ApplicationUtil.GraphZoomAndScaleControl usrGraphZoomAndScale;
     }
 }

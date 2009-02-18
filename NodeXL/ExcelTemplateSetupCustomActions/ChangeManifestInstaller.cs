@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // 
 //  Copyright (C) Microsoft Corporation.  All rights reserved.
 // 
@@ -65,7 +65,7 @@ namespace Microsoft.NodeXL.ExcelTemplateSetupCustomActions
         : Installer
     {
         static readonly Guid SolutionID =
-			new Guid("aa51c0f3-62b4-4782-83a8-a15dcdd17698");
+            new Guid("aa51c0f3-62b4-4782-83a8-a15dcdd17698");
 
         public override void Install(IDictionary stateSaver)
         {
@@ -90,7 +90,7 @@ namespace Microsoft.NodeXL.ExcelTemplateSetupCustomActions
                     "The location of the document is missing.");
             }
 
-			#if true  // NewCode.
+            #if true  // NewCode.
             string newDocumentName =
                 Context.Parameters["newDocumentName"];
             if (String.IsNullOrEmpty(newDocumentName))
@@ -98,7 +98,7 @@ namespace Microsoft.NodeXL.ExcelTemplateSetupCustomActions
                 throw new InstallException(
                     "The new file name of the document is missing.");
             }
-			#endif
+            #endif
 
             string assemblyLocation =
                 Context.Parameters["assemblyLocation"];
@@ -108,14 +108,14 @@ namespace Microsoft.NodeXL.ExcelTemplateSetupCustomActions
                     "The location of the assembly is missing.");
             }
 
-			#if false  // OriginalCode.
+            #if false  // OriginalCode.
             string targetLocation = CreateTargetLocation(documentLocation);
             File.Copy(documentLocation, targetLocation);
-			#endif
+            #endif
 
-			#if true  // NewCode.
+            #if true  // NewCode.
             string targetLocation = documentLocation;
-			#endif
+            #endif
 
             if (ServerDocument.IsCustomized(targetLocation))
             {
@@ -129,20 +129,20 @@ namespace Microsoft.NodeXL.ExcelTemplateSetupCustomActions
                 true,
                 out nonpublicCachedDataMembers);
 
-			{
-			// NewCode.
+            {
+            // NewCode.
 
-			String sNewDocumentLocation = Path.Combine(
-				Path.GetDirectoryName(documentLocation),
-				newDocumentName);
+            String sNewDocumentLocation = Path.Combine(
+                Path.GetDirectoryName(documentLocation),
+                newDocumentName);
 
-			if ( File.Exists(sNewDocumentLocation) )
-			{
-				File.Delete(sNewDocumentLocation);
-			}
+            if ( File.Exists(sNewDocumentLocation) )
+            {
+                File.Delete(sNewDocumentLocation);
+            }
 
-			File.Move(documentLocation, sNewDocumentLocation);
-			}
+            File.Move(documentLocation, sNewDocumentLocation);
+            }
 
 
             stateSaver.Add("targetLocation", targetLocation);
@@ -161,13 +161,13 @@ namespace Microsoft.NodeXL.ExcelTemplateSetupCustomActions
 
         public override void Uninstall(IDictionary savedState)
         {
-			#if false  // OriginalCode.
+            #if false  // OriginalCode.
             string targetLocation = (string)savedState["targetLocation"];
             if (String.IsNullOrEmpty(targetLocation) == false)
             {
                 File.Delete(targetLocation);
             }
-			#endif
+            #endif
 
             base.Uninstall(savedState);
         }

@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -33,25 +33,25 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="AnalyzeEmailNetworkDialogUserSettings" /> class.
+    /// cref="AnalyzeEmailNetworkDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public AnalyzeEmailNetworkDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, false)
+    (
+        Form oForm
+    )
+    : base (oForm, false)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -62,13 +62,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// true to analyze all email, false to analyze filtered email.  The
-	/// default is true.
+    /// true to analyze all email, false to analyze filtered email.  The
+    /// default is true.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
     AnalyzeAllEmail
@@ -77,9 +77,9 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			Boolean bAnalyzeAllEmail = (Boolean)this[AnalyzeAllEmailKey];
+            Boolean bAnalyzeAllEmail = (Boolean)this[AnalyzeAllEmailKey];
 
-			return (bAnalyzeAllEmail);
+            return (bAnalyzeAllEmail);
         }
 
         set
@@ -99,13 +99,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     ///
     /// <value>
     /// The search criteria for zero or more participants, as an array of <see
-	/// cref="EmailParticipantCriteria" /> objects, or null to not filter on
-	/// participants.
+    /// cref="EmailParticipantCriteria" /> objects, or null to not filter on
+    /// participants.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public EmailParticipantCriteria []
     ParticipantsCriteria
@@ -114,7 +114,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( ( EmailParticipantCriteria [] )
+            return ( ( EmailParticipantCriteria [] )
                 this[ParticipantsCriteriaKey] );
         }
 
@@ -134,13 +134,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// The start time, or null to not filter on the start time.  The default
-	/// is null.
+    /// The start time, or null to not filter on the start time.  The default
+    /// is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<DateTime>
     StartTime
@@ -168,13 +168,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// The end time, or null to not filter on the end time.  The default is
-	/// null.
+    /// The end time, or null to not filter on the end time.  The default is
+    /// null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<DateTime>
     EndTime
@@ -202,12 +202,12 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// The folder, or null to not filter on the folder.  The default is null.
+    /// The folder, or null to not filter on the folder.  The default is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public String
     Folder
@@ -216,7 +216,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (String)this[FolderKey] );
+            return ( (String)this[FolderKey] );
         }
 
         set
@@ -235,13 +235,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// The minimum size, or null to not filter on the minimum size.  The
-	/// default is null.
+    /// The minimum size, or null to not filter on the minimum size.  The
+    /// default is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<Int64>
     MinimumSize
@@ -269,13 +269,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// The maximum size, or null to not filter on the maximum size.  The
-	/// default is null.
+    /// The maximum size, or null to not filter on the maximum size.  The
+    /// default is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<Int64>
     MaximumSize
@@ -303,13 +303,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// true if the email must have a Cc, false if the email must not have a
-	/// Cc, or null to not filter on the Cc.  The default is null.
+    /// true if the email must have a Cc, false if the email must not have a
+    /// Cc, or null to not filter on the Cc.  The default is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<Boolean>
     HasCc
@@ -318,7 +318,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( ( Nullable<Boolean> )this[HasCcKey] );
+            return ( ( Nullable<Boolean> )this[HasCcKey] );
         }
 
         set
@@ -337,13 +337,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// true if the email must have a Bcc, false if the email must not have a
-	/// Bcc, or null to not filter on the Bcc.  The default is null.
+    /// true if the email must have a Bcc, false if the email must not have a
+    /// Bcc, or null to not filter on the Bcc.  The default is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<Boolean>
     HasBcc
@@ -352,7 +352,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( ( Nullable<Boolean> )this[HasBccKey] );
+            return ( ( Nullable<Boolean> )this[HasBccKey] );
         }
 
         set
@@ -371,13 +371,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </summary>
     ///
     /// <value>
-	/// The body text, or null to not filter on body text.  The default is
-	/// null.
+    /// The body text, or null to not filter on body text.  The default is
+    /// null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public String
     BodyText
@@ -386,7 +386,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (String)this[BodyTextKey] );
+            return ( (String)this[BodyTextKey] );
         }
 
         set
@@ -402,17 +402,17 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets the a value indicating how emails are filtered on
-	/// attachments.
+    /// attachments.
     /// </summary>
     ///
     /// <value>
-	/// An AttachmentFilter value, or null to not filter on attachments.  The
-	/// default is null.
+    /// An AttachmentFilter value, or null to not filter on attachments.  The
+    /// default is null.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute(null) ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
 
     public Nullable<AttachmentFilter>
     AttachmentFilter
@@ -421,7 +421,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( ( Nullable<AttachmentFilter> )this[AttachmentFilterKey] );
+            return ( ( Nullable<AttachmentFilter> )this[AttachmentFilterKey] );
         }
 
         set
@@ -437,7 +437,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Cc line should be used when
-	/// calculating tie strengths.
+    /// calculating tie strengths.
     /// </summary>
     ///
     /// <value>
@@ -445,8 +445,8 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
     UseCcForTieStrengths
@@ -455,7 +455,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[UseCcForTieStrengthsKey] );
+            return ( (Boolean)this[UseCcForTieStrengthsKey] );
         }
 
         set
@@ -471,7 +471,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Bcc line should be used when
-	/// calculating tie strengths.
+    /// calculating tie strengths.
     /// </summary>
     ///
     /// <value>
@@ -479,8 +479,8 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("false") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
     UseBccForTieStrengths
@@ -489,7 +489,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
         {
             AssertValid();
 
-			return ( (Boolean)this[UseBccForTieStrengthsKey] );
+            return ( (Boolean)this[UseBccForTieStrengthsKey] );
         }
 
         set
@@ -514,7 +514,7 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }
@@ -524,64 +524,64 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the AnalyzeAllEmail property.
+    /// Name of the settings key for the AnalyzeAllEmail property.
 
-	protected const String AnalyzeAllEmailKey = "AnalyzeAllEmail";
+    protected const String AnalyzeAllEmailKey = "AnalyzeAllEmail";
 
-	/// Name of the settings key for the ParticipantsCriteria property.
+    /// Name of the settings key for the ParticipantsCriteria property.
 
-	protected const String ParticipantsCriteriaKey = "ParticipantsCriteria";
+    protected const String ParticipantsCriteriaKey = "ParticipantsCriteria";
 
-	/// Name of the settings key for the StartTime property.
+    /// Name of the settings key for the StartTime property.
 
-	protected const String StartTimeKey = "StartTime";
+    protected const String StartTimeKey = "StartTime";
 
-	/// Name of the settings key for the EndTime property.
+    /// Name of the settings key for the EndTime property.
 
-	protected const String EndTimeKey = "EndTime";
+    protected const String EndTimeKey = "EndTime";
 
-	/// Name of the settings key for the Folder property.
+    /// Name of the settings key for the Folder property.
 
-	protected const String FolderKey = "Folder";
+    protected const String FolderKey = "Folder";
 
-	/// Name of the settings key for the MinimumSize property.
+    /// Name of the settings key for the MinimumSize property.
 
-	protected const String MinimumSizeKey = "MinimumSize";
+    protected const String MinimumSizeKey = "MinimumSize";
 
-	/// Name of the settings key for the MaximumSize property.
+    /// Name of the settings key for the MaximumSize property.
 
-	protected const String MaximumSizeKey = "MaximumSize";
+    protected const String MaximumSizeKey = "MaximumSize";
 
-	/// Name of the settings key for the HasCc property.
+    /// Name of the settings key for the HasCc property.
 
-	protected const String HasCcKey = "HasCc";
+    protected const String HasCcKey = "HasCc";
 
-	/// Name of the settings key for the HasBcc property.
+    /// Name of the settings key for the HasBcc property.
 
-	protected const String HasBccKey = "HasBcc";
+    protected const String HasBccKey = "HasBcc";
 
-	/// Name of the settings key for the BodyText property.
+    /// Name of the settings key for the BodyText property.
 
-	protected const String BodyTextKey = "BodyText";
+    protected const String BodyTextKey = "BodyText";
 
-	/// Name of the settings key for the AttachmentFilter property.
+    /// Name of the settings key for the AttachmentFilter property.
 
-	protected const String AttachmentFilterKey = "AttachmentFilter";
+    protected const String AttachmentFilterKey = "AttachmentFilter";
 
-	/// Name of the settings key for the UseCcForTieStrengths property.
+    /// Name of the settings key for the UseCcForTieStrengths property.
 
-	protected const String UseCcForTieStrengthsKey = "UseCcForTieStrengths";
+    protected const String UseCcForTieStrengthsKey = "UseCcForTieStrengths";
 
-	/// Name of the settings key for the UseBccForTieStrengths property.
+    /// Name of the settings key for the UseBccForTieStrengths property.
 
-	protected const String UseBccForTieStrengthsKey = "UseBccForTieStrengths";
+    protected const String UseBccForTieStrengthsKey = "UseBccForTieStrengths";
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

@@ -1,12 +1,13 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
 using System.Configuration;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Visualization.Wpf;
+using Microsoft.Research.CommunityTechnologies.GraphicsLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -18,7 +19,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GeneralUserSettings") ]
+[ SettingsGroupNameAttribute("GeneralUserSettings2") ]
 
 public class GeneralUserSettings : ApplicationSettingsBase
 {
@@ -32,9 +33,9 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     public GeneralUserSettings()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -46,65 +47,65 @@ public class GeneralUserSettings : ApplicationSettingsBase
     ///
     /// <value>
     /// The graph directedness applied to a new workbook, as a
-	/// GraphDirectedness.  The default value is GraphDirectedness.Directed.
+    /// GraphDirectedness.  The default value is GraphDirectedness.Directed.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Directed") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Directed") ]
 
     public GraphDirectedness
-	NewWorkbookGraphDirectedness
+    NewWorkbookGraphDirectedness
     {
         get
         {
             AssertValid();
 
-			return ( (GraphDirectedness)
-				this[NewWorkbookGraphDirectednessKey] );
+            return ( (GraphDirectedness)
+                this[NewWorkbookGraphDirectednessKey] );
         }
 
         set
         {
-			this[NewWorkbookGraphDirectednessKey] = value;
+            this[NewWorkbookGraphDirectednessKey] = value;
 
             AssertValid();
         }
     }
 
-	//*************************************************************************
-	//	Property: ReadClusters
-	//
-	/// <summary>
-	/// Gets or sets a flag indicating whether the cluster worksheets should be
-	/// read when the workbook is read into the graph.
-	/// </summary>
-	///
-	/// <value>
-	/// true to read the cluster worksheets.  The default value is true.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ReadClusters
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the cluster worksheets should be
+    /// read when the workbook is read into the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the cluster worksheets.  The default value is true.
+    /// </value>
+    //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
-	public Boolean
-	ReadClusters
-	{
-		get
-		{
-			AssertValid();
+    public Boolean
+    ReadClusters
+    {
+        get
+        {
+            AssertValid();
 
-			return ( (Boolean)this[ReadClustersKey] );
-		}
+            return ( (Boolean)this[ReadClustersKey] );
+        }
 
-		set
-		{
-			this[ReadClustersKey] = value;
+        set
+        {
+            this[ReadClustersKey] = value;
 
-			AssertValid();
-		}
-	}
+            AssertValid();
+        }
+    }
 
     //*************************************************************************
     //  Property: Font
@@ -114,27 +115,31 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The graph's font, as a Font.  The default value is
-	/// Microsoft Sans Serif, 8.25pt.
+    /// The graph's font, as a Font.  The default value is
+    /// Microsoft Sans Serif, 8.25pt.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt") ]
 
     public Font
-	Font
+    Font
     {
+        // Note that the font type is System.Drawing.Font, which is what the
+        // System.Windows.Forms.FontDialog class uses.  It gets converted to
+        // WPF font types in TransferToNodeXLControl().
+
         get
         {
             AssertValid();
 
-			return ( (Font)this[FontKey] );
+            return ( (Font)this[FontKey] );
         }
 
         set
         {
-			this[FontKey] = value;
+            this[FontKey] = value;
 
             AssertValid();
         }
@@ -148,67 +153,30 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The graph's background color, as a KnownColor.  The default value is
-	/// Color.White.
+    /// The graph's background color, as a KnownColor.  The default value is
+    /// Color.White.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("White") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("White") ]
 
     public KnownColor
-	BackColor
+    BackColor
     {
         get
         {
             AssertValid();
 
-			return ( (KnownColor)this[BackColorKey] );
+            return ( (KnownColor)this[BackColorKey] );
         }
 
         set
         {
-			this[BackColorKey] = value;
+            this[BackColorKey] = value;
 
             AssertValid();
         }
-    }
-
-    //*************************************************************************
-    //  Property: Margin
-    //
-    /// <summary>
-	///	Gets or sets the margin to subtract from each edge of the graph
-	/// rectangle before laying out the graph.
-    /// </summary>
-    ///
-    /// <value>
-	/// The margin to subtract from each edge.  Must be greater than or equal
-	/// to zero.  The default value is 6.
-    /// </value>
-    //*************************************************************************
-
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("6") ]
-
-    public Int32
-    Margin
-    {
-        get
-		{
-			AssertValid();
-
-			return ( (Int32)this[MarginKey] );
-		}
-
-		set
-		{
-			Debug.Assert(value >= 0);
-
-            this[MarginKey] = value;
-
-			AssertValid();
-		}
     }
 
     //*************************************************************************
@@ -219,30 +187,30 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The width of unselected edges, as a Single.  Must be between
-	/// EdgeWidthConverter.MinimumWidthWorkbook and
-	/// EdgeWidthConverter.MaximumWidthConverter.  The default value
-	/// is 1.
+    /// The width of unselected edges, as a Single.  Must be between
+    /// EdgeWidthConverter.MinimumWidthWorkbook and
+    /// EdgeWidthConverter.MaximumWidthConverter.  The default value
+    /// is 1.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("1") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("1") ]
 
     public Single
-	EdgeWidth
+    EdgeWidth
     {
         get
         {
             AssertValid();
 
-			return ( (Single)this[EdgeWidthKey] );
+            return ( (Single)this[EdgeWidthKey] );
         }
 
         set
         {
-			Debug.Assert(value >= EdgeWidthConverter.MinimumWidthWorkbook);
-			Debug.Assert(value <= EdgeWidthConverter.MaximumWidthWorkbook);
+            Debug.Assert(value >= EdgeWidthConverter.MinimumWidthWorkbook);
+            Debug.Assert(value <= EdgeWidthConverter.MaximumWidthWorkbook);
 
             this[EdgeWidthKey] = value;
 
@@ -258,29 +226,29 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The width of selected edges, as a Single.  Must be between
-	/// EdgeWidthConverter.MinimumWidthWorkbook and
-	/// EdgeWidthConverter.MaximumWidthWorkbook.  The default value is 2.
+    /// The width of selected edges, as a Single.  Must be between
+    /// EdgeWidthConverter.MinimumWidthWorkbook and
+    /// EdgeWidthConverter.MaximumWidthWorkbook.  The default value is 1.5.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("2") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("1.5") ]
 
     public Single
-	SelectedEdgeWidth
+    SelectedEdgeWidth
     {
         get
         {
             AssertValid();
 
-			return ( (Single)this[SelectedEdgeWidthKey] );
+            return ( (Single)this[SelectedEdgeWidthKey] );
         }
 
         set
         {
-			Debug.Assert(value >= EdgeWidthConverter.MinimumWidthWorkbook);
-			Debug.Assert(value <= EdgeWidthConverter.MaximumWidthWorkbook);
+            Debug.Assert(value >= EdgeWidthConverter.MinimumWidthWorkbook);
+            Debug.Assert(value <= EdgeWidthConverter.MaximumWidthWorkbook);
 
             this[SelectedEdgeWidthKey] = value;
 
@@ -296,27 +264,27 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The color of unselected edges, as a KnownColor.  The default value
-	/// is Color.Black.
+    /// The color of unselected edges, as a KnownColor.  The default value
+    /// is Color.Black.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Black") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Black") ]
 
     public KnownColor
-	EdgeColor
+    EdgeColor
     {
         get
         {
             AssertValid();
 
-			return ( (KnownColor)this[EdgeColorKey] );
+            return ( (KnownColor)this[EdgeColorKey] );
         }
 
         set
         {
-			this[EdgeColorKey] = value;
+            this[EdgeColorKey] = value;
 
             AssertValid();
         }
@@ -329,29 +297,29 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// Gets or sets the alpha component of the color of unselected edges.
     /// </summary>
     ///
-	/// <value>
+    /// <value>
     /// The alpha component of the color of unselected edges.  Must be between
-	/// AlphaConverter.MinimumAlphaWorkbook and
-	/// AlphaConverter.MaximumAlphaConverter.  The default value is 10.
+    /// AlphaConverter.MinimumAlphaWorkbook and
+    /// AlphaConverter.MaximumAlphaConverter.  The default value is 10.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("10") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("10") ]
 
     public Single
-	EdgeAlpha
+    EdgeAlpha
     {
         get
         {
             AssertValid();
 
-			return ( (Single)this[EdgeAlphaKey] );
+            return ( (Single)this[EdgeAlphaKey] );
         }
 
         set
         {
-			this[EdgeAlphaKey] = value;
+            this[EdgeAlphaKey] = value;
 
             AssertValid();
         }
@@ -365,27 +333,27 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The color of selected edges, as a KnownColor.  The default value
-	/// is Color.Red.
+    /// The color of selected edges, as a KnownColor.  The default value
+    /// is Color.Red.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Red") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Red") ]
 
     public KnownColor
-	SelectedEdgeColor
+    SelectedEdgeColor
     {
         get
         {
             AssertValid();
 
-			return ( (KnownColor)this[SelectedEdgeColorKey] );
+            return ( (KnownColor)this[SelectedEdgeColorKey] );
         }
 
         set
         {
-			this[SelectedEdgeColorKey] = value;
+            this[SelectedEdgeColorKey] = value;
 
             AssertValid();
         }
@@ -399,42 +367,42 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	///	The relative size of arrow heads, as a <see cref="Single" />.  Must be
-	/// between <see cref="EdgeDrawer.MinimumRelativeArrowSize" /> and <see
-	/// cref="EdgeDrawer.MaximumRelativeArrowSize" />, inclusive.  The default
-	/// value is 3.
+    /// The relative size of arrow heads, as a <see cref="Single" />.  Must be
+    /// between <see cref="EdgeDrawer.MinimumRelativeArrowSize" /> and <see
+    /// cref="EdgeDrawer.MaximumRelativeArrowSize" />, inclusive.  The default
+    /// value is 3.
     /// </value>
-	///
-	/// <remarks>
-	/// The value is relative to <see cref="EdgeWidth" /> and <see
-	/// cref="SelectedEdgeWidth" />.  If the width or selected width is
-	/// increased, the arrow size on unselected or selected edges is increased
-	/// proportionally.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The value is relative to <see cref="EdgeWidth" /> and <see
+    /// cref="SelectedEdgeWidth" />.  If the width or selected width is
+    /// increased, the arrow size on unselected or selected edges is increased
+    /// proportionally.
+    /// </remarks>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("3") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("3") ]
 
     public Single
     RelativeArrowSize
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( (Single)this[RelativeArrowSizeKey] );
-		}
+            return ( (Single)this[RelativeArrowSizeKey] );
+        }
 
-		set
-		{
-			Debug.Assert(value >= EdgeDrawer.MinimumRelativeArrowSize);
-			Debug.Assert(value <= EdgeDrawer.MaximumRelativeArrowSize);
+        set
+        {
+            Debug.Assert(value >= EdgeDrawer.MinimumRelativeArrowSize);
+            Debug.Assert(value <= EdgeDrawer.MaximumRelativeArrowSize);
 
             this[RelativeArrowSizeKey] = value;
 
             AssertValid();
-		}
+        }
     }
 
     //*************************************************************************
@@ -445,31 +413,30 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	///	The shape of the vertices, as a <see
-	/// cref="VertexDrawer.VertexShape" />.  The default value is <see
-	/// cref="VertexDrawer.VertexShape.Disk" />.
+    /// The shape of the vertices, as a <see cref="VertexShape" />.  The
+    /// default value is <see cref="Visualization.Wpf.VertexShape.Disk" />.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Disk") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Disk") ]
 
-    public VertexDrawer.VertexShape
+    public VertexShape
     VertexShape
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( (VertexDrawer.VertexShape)this[VertexShapeKey] );
-		}
+            return ( (VertexShape)this[VertexShapeKey] );
+        }
 
-		set
-		{
+        set
+        {
             this[VertexShapeKey] = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -480,29 +447,29 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The radius of the vertices, as a Single.  Must be between
-	/// VertexRadiusConverter.MinimumRadiusWorkbook and
-	/// VertexRadiusConverter.MaximumRadiusWorkbook.  The default value is 1.5.
+    /// The radius of the vertices, as a Single.  Must be between
+    /// VertexRadiusConverter.MinimumRadiusWorkbook and
+    /// VertexRadiusConverter.MaximumRadiusWorkbook.  The default value is 1.5.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("1.5") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("1.5") ]
 
     public Single
-	VertexRadius
+    VertexRadius
     {
         get
         {
             AssertValid();
 
-			return ( (Single)this[VertexRadiusKey] );
+            return ( (Single)this[VertexRadiusKey] );
         }
 
         set
         {
-			Debug.Assert(value >= VertexRadiusConverter.MinimumRadiusWorkbook);
-			Debug.Assert(value <= VertexRadiusConverter.MaximumRadiusWorkbook);
+            Debug.Assert(value >= VertexRadiusConverter.MinimumRadiusWorkbook);
+            Debug.Assert(value <= VertexRadiusConverter.MaximumRadiusWorkbook);
 
             this[VertexRadiusKey] = value;
 
@@ -518,27 +485,27 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The color of unselected vertices, as a KnownColor.  The default value
-	/// is Color.Black.
+    /// The color of unselected vertices, as a KnownColor.  The default value
+    /// is Color.Black.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Black") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Black") ]
 
     public KnownColor
-	VertexColor
+    VertexColor
     {
         get
         {
             AssertValid();
 
-			return ( (KnownColor)this[VertexColorKey] );
+            return ( (KnownColor)this[VertexColorKey] );
         }
 
         set
         {
-			this[VertexColorKey] = value;
+            this[VertexColorKey] = value;
 
             AssertValid();
         }
@@ -549,35 +516,35 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //
     /// <summary>
     /// Gets or sets the fill color of vertices that are drawn as primary
-	/// labels.
+    /// labels.
     /// </summary>
     ///
     /// <value>
-	/// The fill color of vertices that are drawn as primary labels, as a
-	/// KnownColor.  The default value is Color.White.
+    /// The fill color of vertices that are drawn as primary labels, as a
+    /// KnownColor.  The default value is Color.White.
     /// </value>
-	///
-	/// <remarks>
-	/// <see cref="VertexColor" /> is used as the primary label's text color.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// <see cref="VertexColor" /> is used as the primary label's text color.
+    /// </remarks>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("White") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("White") ]
 
     public KnownColor
-	PrimaryLabelFillColor
+    PrimaryLabelFillColor
     {
         get
         {
             AssertValid();
 
-			return ( (KnownColor)this[PrimaryLabelFillColorKey] );
+            return ( (KnownColor)this[PrimaryLabelFillColorKey] );
         }
 
         set
         {
-			this[PrimaryLabelFillColorKey] = value;
+            this[PrimaryLabelFillColorKey] = value;
 
             AssertValid();
         }
@@ -592,27 +559,27 @@ public class GeneralUserSettings : ApplicationSettingsBase
     ///
     /// <value>
     /// The alpha component of the color of unselected vertices.  Must be
-	/// between AlphaConverter.MinimumAlphaWorkbook and
-	/// AlphaConverter.MaximumAlphaConverter.  The default value is 10.
+    /// between AlphaConverter.MinimumAlphaWorkbook and
+    /// AlphaConverter.MaximumAlphaConverter.  The default value is 10.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("10") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("10") ]
 
     public Single
-	VertexAlpha
+    VertexAlpha
     {
         get
         {
             AssertValid();
 
-			return ( (Single)this[VertexAlphaKey] );
+            return ( (Single)this[VertexAlphaKey] );
         }
 
         set
         {
-			this[VertexAlphaKey] = value;
+            this[VertexAlphaKey] = value;
 
             AssertValid();
         }
@@ -626,27 +593,100 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-	/// The color of selected vertices, as a KnownColor.  The default value
-	/// is Color.Red.
+    /// The color of selected vertices, as a KnownColor.  The default value
+    /// is Color.Red.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("Red") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("Red") ]
 
     public KnownColor
-	SelectedVertexColor
+    SelectedVertexColor
     {
         get
         {
             AssertValid();
 
-			return ( (KnownColor)this[SelectedVertexColorKey] );
+            return ( (KnownColor)this[SelectedVertexColorKey] );
         }
 
         set
         {
-			this[SelectedVertexColorKey] = value;
+            this[SelectedVertexColorKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: FilteredAlpha
+    //
+    /// <summary>
+    /// Gets or sets the alpha component to use for vertices and edges that are
+    /// filtered.
+    /// </summary>
+    ///
+    /// <value>
+    /// The alpha value to use for vertices and edges that have a <see
+    /// cref="ReservedMetadataKeys.Visibility" /> value of <see
+    /// cref="VisibilityKeyValue.Filtered" />.  Must be between
+    /// AlphaConverter.MinimumAlphaWorkbook and
+    /// AlphaConverter.MaximumAlphaConverter.  The default value is 0.0.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("0.0") ]
+
+    public Single
+    FilteredAlpha
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Single)this[FilteredAlphaKey] );
+        }
+
+        set
+        {
+            this[FilteredAlphaKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: LayoutUserSettings
+    //
+    /// <summary>
+    /// Gets or sets the user's settings for all the graph layouts used by the
+    /// application.
+    /// </summary>
+    ///
+    /// <value>
+    /// The user's settings for all the graph layouts used by the application,
+    /// as a LayoutUserSettings.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("FruchtermanReingold\t6\t3.0\t10") ]
+
+    public LayoutUserSettings
+    LayoutUserSettings
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (LayoutUserSettings)this[LayoutUserSettingsKey] );
+        }
+
+        set
+        {
+            this[LayoutUserSettingsKey] = value;
 
             AssertValid();
         }
@@ -656,35 +696,35 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //  Property: AutoSelect
     //
     /// <summary>
-	/// Gets or sets a flag that determines edge and vertex selection behavior.
+    /// Gets or sets a flag that determines edge and vertex selection behavior.
     /// </summary>
     ///
     /// <value>
-	/// If true, selecting a vertex in the graph or workbook automatically
-	/// selects the vertex's incident edges, and selecting an edge in the
-	/// workbook automatically selects the edge's adjacent vertices.
+    /// If true, selecting a vertex in the graph or workbook automatically
+    /// selects the vertex's incident edges, and selecting an edge in the
+    /// workbook automatically selects the edge's adjacent vertices.
     /// </value>
     //*************************************************************************
 
-	[ UserScopedSettingAttribute() ]
-	[ DefaultSettingValueAttribute("true") ]
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
     AutoSelect
     {
         get
-		{
-			AssertValid();
+        {
+            AssertValid();
 
-			return ( (Boolean)this[AutoSelectKey] );
-		}
+            return ( (Boolean)this[AutoSelectKey] );
+        }
 
         set
-		{
-			this[AutoSelectKey] = value;
+        {
+            this[AutoSelectKey] = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -702,24 +742,19 @@ public class GeneralUserSettings : ApplicationSettingsBase
     public void
     TransferToNodeXLControl
     (
-		NodeXLControl nodeXLControl
+        NodeXLControl nodeXLControl
     )
     {
-		Debug.Assert(nodeXLControl != null);
-		AssertValid();
+        Debug.Assert(nodeXLControl != null);
+        AssertValid();
 
-		const String MethodName = "TransferToNodeXLControl";
+        this.LayoutUserSettings.TransferToLayout(nodeXLControl.Layout);
 
-		TransferToEdgeAndVertexDrawers(nodeXLControl.EdgeDrawer,
-			nodeXLControl.VertexDrawer, MethodName);
+        TransferToGraphDrawer(nodeXLControl.GraphDrawer);
 
-		nodeXLControl.BackColor = Color.FromKnownColor(this.BackColor);
-
-		nodeXLControl.Layout.Margin = this.Margin;
-
-		nodeXLControl.MouseSelectionMode = this.AutoSelect ?
-			MouseSelectionMode.SelectVertexAndIncidentEdges :
-			MouseSelectionMode.SelectVertexOnly;
+        nodeXLControl.MouseSelectionMode = this.AutoSelect ?
+            MouseSelectionMode.SelectVertexAndIncidentEdges :
+            MouseSelectionMode.SelectVertexOnly;
     }
 
     //*************************************************************************
@@ -737,156 +772,85 @@ public class GeneralUserSettings : ApplicationSettingsBase
     public void
     TransferToGraphDrawer
     (
-		GraphDrawer graphDrawer
+        GraphDrawer graphDrawer
     )
     {
-		Debug.Assert(graphDrawer != null);
-		AssertValid();
+        Debug.Assert(graphDrawer != null);
+        AssertValid();
 
-		const String MethodName = "TransferToGraphDrawer";
+        graphDrawer.BackColor =
+            WpfGraphicsUtil.KnownColorToWpfColor(this.BackColor);
 
-		TransferToEdgeAndVertexDrawers(graphDrawer.EdgeDrawer,
-			graphDrawer.VertexDrawer, MethodName);
+        EdgeDrawer oEdgeDrawer = graphDrawer.EdgeDrawer;
+        VertexDrawer oVertexDrawer = graphDrawer.VertexDrawer;
 
-		graphDrawer.BackColor = Color.FromKnownColor(this.BackColor);
+        EdgeWidthConverter oEdgeWidthConverter = new EdgeWidthConverter();
+        AlphaConverter oAlphaConverter = new AlphaConverter();
 
-		graphDrawer.Layout.Margin = this.Margin;
+        oEdgeDrawer.Width =
+            oEdgeWidthConverter.WorkbookToGraph(this.EdgeWidth);
+
+        oEdgeDrawer.SelectedWidth =
+            oEdgeWidthConverter.WorkbookToGraph(this.SelectedEdgeWidth);
+
+        oEdgeDrawer.Color = WpfGraphicsUtil.ColorToWpfColor(
+            Color.FromArgb( oAlphaConverter.WorkbookToGraph(this.EdgeAlpha),
+                Color.FromKnownColor(this.EdgeColor)
+                ) );
+
+        oEdgeDrawer.SelectedColor =
+            WpfGraphicsUtil.KnownColorToWpfColor(this.SelectedEdgeColor);
+
+        oEdgeDrawer.FilteredAlpha = oVertexDrawer.FilteredAlpha =
+            oAlphaConverter.WorkbookToGraph(this.FilteredAlpha);
+
+        oEdgeDrawer.RelativeArrowSize = this.RelativeArrowSize;
+
+        oVertexDrawer.Shape = this.VertexShape;
+
+        oVertexDrawer.Radius = ( new VertexRadiusConverter() ).WorkbookToGraph(
+            this.VertexRadius);
+
+        oVertexDrawer.Color = WpfGraphicsUtil.ColorToWpfColor(
+            Color.FromArgb( oAlphaConverter.WorkbookToGraph(this.VertexAlpha),
+                Color.FromKnownColor(this.VertexColor)
+                ) );
+
+        oVertexDrawer.SelectedColor =
+            WpfGraphicsUtil.KnownColorToWpfColor(this.SelectedVertexColor);
+
+        oVertexDrawer.PrimaryLabelFillColor =
+            WpfGraphicsUtil.KnownColorToWpfColor(this.PrimaryLabelFillColor);
+
+        Font oFont = this.Font;
+
+        // The 0.75 comes from page 571 of "Windows Presentation Foundation
+        // Unleashed," by Adam Nathan.
+
+        oVertexDrawer.SetFont(new System.Windows.Media.FontFamily(oFont.Name),
+            (Double)oFont.Size / 0.75);
     }
 
     //*************************************************************************
-    //  Method: TransferToEdgeAndVertexDrawers()
+    //  Property: ClassName
     //
     /// <summary>
-    /// Transfers the settings to an <see cref="EdgeDrawer" /> and <see
-	/// cref="VertexDrawer" />.
+    /// Gets the full name of the class.
     /// </summary>
     ///
-    /// <param name="oEdgeDrawer">
-    /// IEdgeDrawer to transfer the settings to.  If not an EdgeDrawer object,
-	/// an exception is thrown.
-    /// </param>
-    ///
-    /// <param name="oVertexDrawer">
-    /// IVertexDrawer to transfer the settings to.  If not a VertexDrawer
-	/// object, an exception is thrown.
-    /// </param>
-    ///
-    /// <param name="sCallingMethodName">
-    /// Name of the calling method.  Gets used in exception messages.
-    /// </param>
+    /// <value>
+    /// The full name of the class, suitable for use in error messages.
+    /// </value>
     //*************************************************************************
 
-    protected void
-    TransferToEdgeAndVertexDrawers
-    (
-		IEdgeDrawer oEdgeDrawer,
-		IVertexDrawer oVertexDrawer,
-		String sCallingMethodName
-    )
+    protected String
+    ClassName
     {
-		Debug.Assert(oEdgeDrawer != null);
-		Debug.Assert(oVertexDrawer != null);
-		Debug.Assert( !String.IsNullOrEmpty(sCallingMethodName) );
-		AssertValid();
-
-		if ( !(oEdgeDrawer is EdgeDrawer) )
-		{
-			throw new InvalidOperationException( String.Format(
-
-				"{0}.{1}: The EdgeDrawer was set to an edge drawer that is not"
-				+ " supported."
-				,
-				this.ClassName,
-				sCallingMethodName
-				) );
-		}
-
-		if ( !(oVertexDrawer is VertexDrawer) )
-		{
-			throw new InvalidOperationException( String.Format(
-
-				"{0}.{1}: VertexDrawer was set to a vertex drawer that is not"
-				+ " supported."
-				,
-				this.ClassName,
-				sCallingMethodName
-				) );
-		}
-
-
-		// Transfer settings to the EdgeDrawer.
-
-		EdgeDrawer oEdgeDrawer2 = (EdgeDrawer)oEdgeDrawer;
-
-		EdgeWidthConverter oEdgeWidthConverter = new EdgeWidthConverter();
-		AlphaConverter oAlphaConverter = new AlphaConverter();
-
-		oEdgeDrawer2.Width =
-			oEdgeWidthConverter.WorkbookToGraph(this.EdgeWidth);
-
-		oEdgeDrawer2.SelectedWidth = oEdgeWidthConverter.WorkbookToGraph(
-			this.SelectedEdgeWidth);
-
-		oEdgeDrawer2.Color = Color.FromArgb(
-			oAlphaConverter.WorkbookToGraph(this.EdgeAlpha),
-			Color.FromKnownColor(this.EdgeColor)
-			);
-
-		oEdgeDrawer2.SelectedColor =
-			Color.FromKnownColor(this.SelectedEdgeColor);
-
-        oEdgeDrawer2.RelativeArrowSize = this.RelativeArrowSize;
-
-
-		// Transfer settings to the VertexDrawer.
-
-		VertexDrawer oVertexDrawer2 = (VertexDrawer)oVertexDrawer;
-
-		oVertexDrawer2.Shape = this.VertexShape;
-
-		oVertexDrawer2.Radius = ( new VertexRadiusConverter() ).
-			WorkbookToGraph(this.VertexRadius);
-
-		oVertexDrawer2.Color = Color.FromArgb(
-			oAlphaConverter.WorkbookToGraph(this.VertexAlpha),
-			Color.FromKnownColor(this.VertexColor)
-			);
-
-		oVertexDrawer2.SelectedColor =
-			Color.FromKnownColor(this.SelectedVertexColor);
-
-		if (oVertexDrawer is PerVertexWithLabelDrawer)
-		{
-			PerVertexWithLabelDrawer oPerVertexWithLabelDrawer =
-				(PerVertexWithLabelDrawer)oVertexDrawer;
-
-			oPerVertexWithLabelDrawer.PrimaryLabelFillColor =
-				Color.FromKnownColor(this.PrimaryLabelFillColor);
-
-			oPerVertexWithLabelDrawer.Font = this.Font;
-		}
+        get
+        {
+            return (this.GetType().FullName);
+        }
     }
-
-	//*************************************************************************
-	//	Property: ClassName
-	//
-	/// <summary>
-	/// Gets the full name of the class.
-	/// </summary>
-	///
-	/// <value>
-	/// The full name of the class, suitable for use in error messages.
-	/// </value>
-	//*************************************************************************
-
-	protected String
-	ClassName
-	{
-		get
-		{
-			return (this.GetType().FullName);
-		}
-	}
 
 
     //*************************************************************************
@@ -910,94 +874,99 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //  Protected constants
     //*************************************************************************
 
-	/// Name of the settings key for the ReadClusters property.
+    /// Name of the settings key for the ReadClusters property.
 
-	protected const String ReadClustersKey =
-		"ReadClusters";
+    protected const String ReadClustersKey =
+        "ReadClusters";
 
-	/// Name of the settings key for the NewWorkbookGraphDirectedness property.
+    /// Name of the settings key for the NewWorkbookGraphDirectedness property.
 
-	protected const String NewWorkbookGraphDirectednessKey =
-		"NewWorkbookGraphDirectedness";
+    protected const String NewWorkbookGraphDirectednessKey =
+        "NewWorkbookGraphDirectedness";
 
-	/// Name of the settings key for the Font property.
+    /// Name of the settings key for the Font property.
 
-	protected const String FontKey =
-		"Font";
+    protected const String FontKey =
+        "Font";
 
-	/// Name of the settings key for the BackColor property.
+    /// Name of the settings key for the BackColor property.
 
-	protected const String BackColorKey =
-		"BackColor";
+    protected const String BackColorKey =
+        "BackColor";
 
-	/// Name of the settings key for the Margin property.
+    /// Name of the settings key for the EdgeColor property.
 
-	protected const String MarginKey =
-		"Margin";
+    protected const String EdgeColorKey =
+        "EdgeColor";
 
-	/// Name of the settings key for the EdgeColor property.
+    /// Name of the settings key for the EdgeAlpha property.
 
-	protected const String EdgeColorKey =
-		"EdgeColor";
+    protected const String EdgeAlphaKey =
+        "EdgeAlpha";
 
-	/// Name of the settings key for the EdgeAlpha property.
+    /// Name of the settings key for the SelectedEdgeColor property.
 
-	protected const String EdgeAlphaKey =
-		"EdgeAlpha";
+    protected const String SelectedEdgeColorKey =
+        "SelectedEdgeColor";
+    /// Name of the settings key for the EdgeWidth property.
 
-	/// Name of the settings key for the SelectedEdgeColor property.
+    protected const String EdgeWidthKey =
+        "EdgeWidth";
 
-	protected const String SelectedEdgeColorKey =
-		"SelectedEdgeColor";
-	/// Name of the settings key for the EdgeWidth property.
+    /// Name of the settings key for the SelectedEdgeWidth property.
 
-	protected const String EdgeWidthKey =
-		"EdgeWidth";
+    protected const String SelectedEdgeWidthKey =
+        "SelectedEdgeWidth";
 
-	/// Name of the settings key for the SelectedEdgeWidth property.
+    /// Name of the settings key for the RelativeArrowSize property.
 
-	protected const String SelectedEdgeWidthKey =
-		"SelectedEdgeWidth";
+    protected const String RelativeArrowSizeKey =
+        "RelativeArrowSize";
 
-	/// Name of the settings key for the RelativeArrowSize property.
+    /// Name of the settings key for the VertexShape property.
 
-	protected const String RelativeArrowSizeKey =
-		"RelativeArrowSize";
+    protected const String VertexShapeKey =
+        "VertexShape";
 
-	/// Name of the settings key for the VertexShape property.
+    /// Name of the settings key for the VertexRadius property.
 
-	protected const String VertexShapeKey =
-		"VertexShape";
+    protected const String VertexRadiusKey =
+        "VertexRadius";
 
-	/// Name of the settings key for the VertexRadius property.
+    /// Name of the settings key for the VertexColor property.
 
-	protected const String VertexRadiusKey =
-		"VertexRadius";
+    protected const String VertexColorKey =
+        "VertexColor";
 
-	/// Name of the settings key for the VertexColor property.
+    /// Name of the settings key for the PrimaryLabelFillColor property.
 
-	protected const String VertexColorKey =
-		"VertexColor";
+    protected const String PrimaryLabelFillColorKey =
+        "PrimaryLabelFillColor";
 
-	/// Name of the settings key for the PrimaryLabelFillColor property.
+    /// Name of the settings key for the VertexAlpha property.
 
-	protected const String PrimaryLabelFillColorKey =
-		"PrimaryLabelFillColor";
+    protected const String VertexAlphaKey =
+        "VertexAlpha";
 
-	/// Name of the settings key for the VertexAlpha property.
+    /// Name of the settings key for the SelectedVertexColor property.
 
-	protected const String VertexAlphaKey =
-		"VertexAlpha";
+    protected const String SelectedVertexColorKey =
+        "SelectedVertexColor";
 
-	/// Name of the settings key for the SelectedVertexColor property.
+    /// Name of the settings key for the FilteredAlpha property.
 
-	protected const String SelectedVertexColorKey =
-		"SelectedVertexColor";
+    protected const String FilteredAlphaKey =
+        "FilteredAlpha";
 
-	/// Name of the settings key for the AutoSelect property.
+    /// Name of the settings key for the LayoutUserSettings property.
 
-	protected const String AutoSelectKey =
-		"AutoSelect";
+    protected const String LayoutUserSettingsKey =
+        "LayoutUserSettings";
+
+    /// Name of the settings key for the AutoSelect property.
+
+    protected const String AutoSelectKey =
+        "AutoSelect";
 
 
     //*************************************************************************

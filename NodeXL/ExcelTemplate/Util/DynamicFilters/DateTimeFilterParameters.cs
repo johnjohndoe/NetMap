@@ -36,39 +36,39 @@ public class DateTimeFilterParameters : NumericFilterParameters
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="DateTimeFilterParameters" /> class.
+    /// cref="DateTimeFilterParameters" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="columnName">
     /// Name of the column that can be filtered on.
     /// </param>
-	///
+    ///
     /// <param name="minimumCellValue">
     /// Minimum cell value in the column, in Excel's date/time format.  Sample:
-	/// 39448.583333 (1/1/2008, 2 PM).
+    /// 39448.583333 (1/1/2008, 2 PM).
     /// </param>
-	///
+    ///
     /// <param name="maximumCellValue">
     /// Maximum cell value in the column, in Excel's date/time format.
     /// </param>
-	///
+    ///
     /// <param name="format">
     /// The column format.
     /// </param>
     //*************************************************************************
 
     public DateTimeFilterParameters
-	(
-		String columnName,
-		Double minimumCellValue,
-		Double maximumCellValue,
-		ExcelColumnFormat format
-	)
-	: base(columnName, minimumCellValue, maximumCellValue, 0)
+    (
+        String columnName,
+        Double minimumCellValue,
+        Double maximumCellValue,
+        ExcelColumnFormat format
+    )
+    : base(columnName, minimumCellValue, maximumCellValue, 0)
     {
-		m_eFormat = format;
+        m_eFormat = format;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -108,8 +108,8 @@ public class DateTimeFilterParameters : NumericFilterParameters
     public override void
     AssertValid()
     {
-		base.AssertValid();
-		// m_eFormat
+        base.AssertValid();
+        // m_eFormat
     }
 
 
@@ -119,7 +119,7 @@ public class DateTimeFilterParameters : NumericFilterParameters
 
     /// The format of the column.
 
-	protected ExcelColumnFormat m_eFormat;
+    protected ExcelColumnFormat m_eFormat;
 }
 
 }

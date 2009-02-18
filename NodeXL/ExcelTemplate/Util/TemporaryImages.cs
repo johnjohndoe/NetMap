@@ -40,11 +40,11 @@ public class TemporaryImages : Object
 
     public TemporaryImages()
     {
-		m_sFolder = null;
-		m_oFileNames = new Dictionary<String, String>();
-		m_oImageSizePx = Size.Empty;
+        m_sFolder = null;
+        m_oFileNames = new Dictionary<String, String>();
+        m_oImageSizePx = Size.Empty;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -52,12 +52,12 @@ public class TemporaryImages : Object
     //
     /// <summary>
     /// Gets or sets the full path to the temporary folder that has been
-	/// created.
+    /// created.
     /// </summary>
     ///
     /// <value>
     /// The full path to the temporary folder that has been created, or null if
-	/// a temporary folder hasn't been created.  The default is null.
+    /// a temporary folder hasn't been created.  The default is null.
     /// </value>
     //*************************************************************************
 
@@ -73,7 +73,7 @@ public class TemporaryImages : Object
 
         set
         {
-			m_sFolder = value;
+            m_sFolder = value;
 
             AssertValid();
         }
@@ -87,9 +87,9 @@ public class TemporaryImages : Object
     /// </summary>
     ///
     /// <value>
-	/// A dictionary of temporary image file names.  The key is whatever the
-	/// caller defines it to be and the value is the name of the image file,
-	/// without a path.
+    /// A dictionary of temporary image file names.  The key is whatever the
+    /// caller defines it to be and the value is the name of the image file,
+    /// without a path.
     /// </value>
     //*************************************************************************
 
@@ -128,7 +128,7 @@ public class TemporaryImages : Object
 
         set
         {
-			m_oImageSizePx = value;
+            m_oImageSizePx = value;
 
             AssertValid();
         }
@@ -149,10 +149,10 @@ public class TemporaryImages : Object
     public void
     AssertValid()
     {
-		// m_sFolder
-		Debug.Assert(m_oFileNames != null);
-		Debug.Assert(m_oImageSizePx == Size.Empty || m_oImageSizePx.Width > 0);
-		Debug.Assert(m_oImageSizePx == Size.Empty || m_oImageSizePx.Height > 0);
+        // m_sFolder
+        Debug.Assert(m_oFileNames != null);
+        Debug.Assert(m_oImageSizePx == Size.Empty || m_oImageSizePx.Width > 0);
+        Debug.Assert(m_oImageSizePx == Size.Empty || m_oImageSizePx.Height > 0);
     }
 
 
@@ -160,20 +160,20 @@ public class TemporaryImages : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Full path to the temporary folder, or null if a temporary folder hasn't
-	/// been created.
+    /// Full path to the temporary folder, or null if a temporary folder hasn't
+    /// been created.
 
-	protected String m_sFolder;
+    protected String m_sFolder;
 
-	/// A dictionary of temporary image file names.  The key is whatever the
-	/// caller defines it to be and the value is the name of the image file,
-	/// without a path.
+    /// A dictionary of temporary image file names.  The key is whatever the
+    /// caller defines it to be and the value is the name of the image file,
+    /// without a path.
 
-	protected Dictionary<String, String> m_oFileNames;
+    protected Dictionary<String, String> m_oFileNames;
 
-	/// The size of each image, in pixels.
+    /// The size of each image, in pixels.
 
-	protected Size m_oImageSizePx;
+    protected Size m_oImageSizePx;
 }
 
 }

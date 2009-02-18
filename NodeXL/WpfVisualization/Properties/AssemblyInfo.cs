@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle(".NodeXL WPF Visualization Classes")]
-[assembly: AssemblyDescription("WPF Visualization classes for .NodeXL")]
+[assembly: AssemblyTitle("NodeXL WPF Visualization Classes")]
+[assembly: AssemblyDescription("WPF Visualization classes for NodeXL")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft Research")]
-[assembly: AssemblyProduct("Microsoft .NodeXL")]
-[assembly: AssemblyCopyright("Copyright ©  2008 Microsoft Corporation")]
+[assembly: AssemblyProduct("Microsoft NodeXL")]
+[assembly: AssemblyCopyright("Copyright ©  2009 Microsoft Corporation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.1.66")]
-[assembly: AssemblyFileVersion("1.0.1.66")]
+[assembly: AssemblyVersion("1.0.1.76")]
+[assembly: AssemblyFileVersion("1.0.1.76")]

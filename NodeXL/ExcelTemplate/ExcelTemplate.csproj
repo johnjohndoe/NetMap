@@ -114,6 +114,12 @@
       <HintPath>References\Microsoft.Research.WinFormsControls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Tools.Applications.ServerDocument.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>False</Private>
     </Reference>
@@ -127,6 +133,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsFormsIntegration">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\ColorGradientMapper.cs">
@@ -159,9 +171,6 @@
     </Compile>
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\MathUtil.cs">
-      <Link>Util\MathUtil.cs</Link>
     </Compile>
     <Compile Include="..\Common\AssemblyUtil2.cs">
       <Link>Util\AssemblyUtil2.cs</Link>
@@ -271,6 +280,12 @@
     <Compile Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.designer.cs">
       <DependentUpon>ImportEdgesFromWorkbookDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.designer.cs">
+      <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\Notification\NotificationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -324,18 +339,17 @@
     <Compile Include="EventArgs\SelectionChangedEventArgs.cs" />
     <Compile Include="EventArgs\TableSelectionChangedEventArgs.cs" />
     <Compile Include="EventArgs\VertexAttributesEditedEventArgs.cs" />
-    <Compile Include="EventArgs\VertexMovedEventArgs.cs" />
+    <Compile Include="EventArgs\VerticesMovedEventArgs2.cs" />
     <Compile Include="GraphMetrics\CalculateGraphMetricsContext.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculationManager.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\BetweennessCentralityCalculator.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\ClusterCalculator.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\Community.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\CommunityPair.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\DeltaQMaxHeap.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\OverallMetricCalculator.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\BetweennessCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ClosenessCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ClusterCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\EigenvectorCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\OverallMetricCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnOrdered.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnWithID.cs" />
@@ -344,7 +358,7 @@
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueOrdered.cs" />
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueWithID.cs" />
     <Compile Include="GraphMetrics\GraphMetricWriter.cs" />
-    <Compile Include="GraphMetrics\IGraphMetricCalculator.cs" />
+    <Compile Include="GraphMetrics\IGraphMetricCalculator2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Dialogs\About\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
@@ -495,10 +509,10 @@
     <Compile Include="UserSettings\AutoFill\NumericRangeColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\GeneralUserSettings.cs" />
     <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
+    <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
     <Compile Include="Util\ApplicationUtil.cs" />
     <Compile Include="Util\ComparisonOperator.cs" />
-    <Compile Include="Util\DuplicateEdgeDetector.cs" />
     <Compile Include="Util\DuplicateEdgeMerger.cs" />
     <Compile Include="Util\DynamicFilters\DateTimeFilterParameters.cs" />
     <Compile Include="Util\DynamicFilters\DynamicFilterParameters.cs" />
@@ -533,7 +547,7 @@
     <Compile Include="WorkbookReader\ValueConverters\EdgeWidthConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\NumericValueConverterBase.cs" />
     <Compile Include="WorkbookReader\ValueConverters\TextValueConverterBase.cs" />
-    <Compile Include="WorkbookReader\ValueConverters\VertexDrawerPrecedenceConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexDrawingPrecedenceConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\VertexLocationConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\VertexRadiusConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\VertexShapeConverter.cs" />
@@ -587,10 +601,6 @@
       <Project>{F7845042-B212-4D74-9343-DA2052F83234}</Project>
       <Name>ApplicationUtil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Control\Control.csproj">
-      <Project>{56727BA5-D9A8-480C-8D71-380C449784BC}</Project>
-      <Name>Control</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
@@ -599,9 +609,17 @@
       <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
       <Name>Util</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Visualization\Visualization.csproj">
+    <ProjectReference Include="..\Layouts\Layouts.csproj">
       <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>
-      <Name>Visualization</Name>
+      <Name>Layouts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfControl\WpfControl.csproj">
+      <Project>{5E12EC39-6EC0-4962-97C6-C8506D0C6C67}</Project>
+      <Name>WpfControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfVisualization\WpfVisualization.csproj">
+      <Project>{3228C440-7166-44E1-A1A2-036ECDD9371F}</Project>
+      <Name>WpfVisualization</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -635,6 +653,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.resx">
       <DependentUpon>ImportEdgesFromWorkbookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.resx">
+      <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Notification\NotificationDialog.resx">
       <DependentUpon>NotificationDialog.cs</DependentUpon>

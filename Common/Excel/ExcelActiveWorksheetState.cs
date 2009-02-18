@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using Microsoft.Office.Interop.Excel;
 namespace Microsoft.Research.CommunityTechnologies.AppLib
 {
 //*****************************************************************************
-//	Class: ExcelActiveWorksheetState
+//  Class: ExcelActiveWorksheetState
 //
 /// <summary>
 /// Retains the state of Excel's active worksheet.
@@ -24,61 +24,61 @@ namespace Microsoft.Research.CommunityTechnologies.AppLib
 
 public class ExcelActiveWorksheetState : Object
 {
-	//*************************************************************************
-	//	Constructor: ExcelActiveWorksheetState()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="ExcelActiveWorksheetState" /> class.
-	/// </summary>
-	///
-	/// <param name="activeWorksheet">
-	/// Worksheet that was active before <see
-	/// cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" /> was called, or
-	/// null if there was no active worksheet.
-	/// </param>
-	///
-	/// <param name="screenUpdating">
-	/// true if Excel's screen updating was turned on before <see
-	/// cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" /> was called.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: ExcelActiveWorksheetState()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="ExcelActiveWorksheetState" /> class.
+    /// </summary>
+    ///
+    /// <param name="activeWorksheet">
+    /// Worksheet that was active before <see
+    /// cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" /> was called, or
+    /// null if there was no active worksheet.
+    /// </param>
+    ///
+    /// <param name="screenUpdating">
+    /// true if Excel's screen updating was turned on before <see
+    /// cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" /> was called.
+    /// </param>
+    //*************************************************************************
 
-	public ExcelActiveWorksheetState
-	(
-		Microsoft.Office.Interop.Excel.Worksheet activeWorksheet,
-		Boolean screenUpdating
-	)
-	{
-		m_oActiveWorksheet = activeWorksheet;
-		m_bScreenUpdating = screenUpdating;
+    public ExcelActiveWorksheetState
+    (
+        Microsoft.Office.Interop.Excel.Worksheet activeWorksheet,
+        Boolean screenUpdating
+    )
+    {
+        m_oActiveWorksheet = activeWorksheet;
+        m_bScreenUpdating = screenUpdating;
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
     //*************************************************************************
     //  Property: ActiveWorksheet
     //
     /// <summary>
-	/// Gets the worksheet that was active before <see
-	/// cref="ExcelActiveWorksheetRestorer" /> was called.
+    /// Gets the worksheet that was active before <see
+    /// cref="ExcelActiveWorksheetRestorer" /> was called.
     /// </summary>
     ///
     /// <value>
-	/// The worksheet that was active before <see
-	/// cref="ExcelActiveWorksheetRestorer" /> was called, or null if there was
-	/// no active worksheet.
+    /// The worksheet that was active before <see
+    /// cref="ExcelActiveWorksheetRestorer" /> was called, or null if there was
+    /// no active worksheet.
     /// </value>
     //*************************************************************************
 
     public Microsoft.Office.Interop.Excel.Worksheet
-	ActiveWorksheet
+    ActiveWorksheet
     {
         get
         {
             AssertValid();
 
-			return (m_oActiveWorksheet);
+            return (m_oActiveWorksheet);
         }
     }
 
@@ -86,25 +86,25 @@ public class ExcelActiveWorksheetState : Object
     //  Property: ScreenUpdating
     //
     /// <summary>
-	/// Gets a flag indicating whether Excel's screen updating was turned on
-	/// before <see cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" />
-	/// was called.
+    /// Gets a flag indicating whether Excel's screen updating was turned on
+    /// before <see cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" />
+    /// was called.
     /// </summary>
     ///
     /// <value>
-	/// true if Excel's screen updating was turned on before <see
-	/// cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" /> was called.
+    /// true if Excel's screen updating was turned on before <see
+    /// cref="ExcelActiveWorksheetRestorer.ActivateWorksheet" /> was called.
     /// </value>
     //*************************************************************************
 
     public Boolean
-	ScreenUpdating
+    ScreenUpdating
     {
         get
         {
             AssertValid();
 
-			return (m_bScreenUpdating);
+            return (m_bScreenUpdating);
         }
     }
 
@@ -122,8 +122,8 @@ public class ExcelActiveWorksheetState : Object
     public void
     AssertValid()
     {
-		// m_oActiveWorksheet
-		// m_bScreenUpdating
+        // m_oActiveWorksheet
+        // m_bScreenUpdating
     }
 
 
@@ -131,14 +131,14 @@ public class ExcelActiveWorksheetState : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Worksheet that was active before
-	/// ExcelActiveWorksheetRestorer.ActivateWorksheet() was called, or null.
+    /// Worksheet that was active before
+    /// ExcelActiveWorksheetRestorer.ActivateWorksheet() was called, or null.
 
-	protected Worksheet m_oActiveWorksheet;
+    protected Worksheet m_oActiveWorksheet;
 
-	/// true if Excel's screen updating was turned on before 
-	/// ExcelActiveWorksheetRestorer.ActivateWorksheet() was called.
+    /// true if Excel's screen updating was turned on before 
+    /// ExcelActiveWorksheetRestorer.ActivateWorksheet() was called.
 
-	protected Boolean m_bScreenUpdating;
+    protected Boolean m_bScreenUpdating;
 }
 }

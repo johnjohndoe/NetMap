@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Text;
@@ -27,14 +27,14 @@ public class MetadataProviderTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="MetadataProviderTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public MetadataProviderTest()
     {
-		m_oMetadataProvider = null;
-		m_oCopy = null;
+        m_oMetadataProvider = null;
+        m_oCopy = null;
     }
 
     //*************************************************************************
@@ -50,8 +50,8 @@ public class MetadataProviderTest : Object
     public void
     SetUp()
     {
-		m_oMetadataProvider = new MetadataProvider();
-		m_oCopy = new MockMetadataProvider();
+        m_oMetadataProvider = new MetadataProvider();
+        m_oCopy = new MockMetadataProvider();
     }
 
     //*************************************************************************
@@ -67,8 +67,8 @@ public class MetadataProviderTest : Object
     public void
     TearDown()
     {
-		m_oMetadataProvider = null;
-		m_oCopy = null;
+        m_oMetadataProvider = null;
+        m_oCopy = null;
     }
 
     //*************************************************************************
@@ -84,7 +84,7 @@ public class MetadataProviderTest : Object
     public void
     TestConstructor()
     {
-		Assert.IsNull(m_oMetadataProvider.Tag);
+        Assert.IsNull(m_oMetadataProvider.Tag);
     }
 
     //*************************************************************************
@@ -100,11 +100,11 @@ public class MetadataProviderTest : Object
     public void
     TestTag()
     {
-		const String Value = "abc";
+        const String Value = "abc";
 
-		m_oMetadataProvider.Tag = Value;
+        m_oMetadataProvider.Tag = Value;
 
-		Assert.AreEqual( (String)Value,  (String)m_oMetadataProvider.Tag );
+        Assert.AreEqual( (String)Value,  (String)m_oMetadataProvider.Tag );
     }
 
     //*************************************************************************
@@ -120,9 +120,9 @@ public class MetadataProviderTest : Object
     public void
     TestTag2()
     {
-		m_oMetadataProvider.Tag = null;
+        m_oMetadataProvider.Tag = null;
 
-		Assert.IsNull(m_oMetadataProvider.Tag);
+        Assert.IsNull(m_oMetadataProvider.Tag);
     }
 
     //*************************************************************************
@@ -138,17 +138,17 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue()
     {
-		// No keys.
+        // No keys.
 
-		const String Key = "abc";
+        const String Key = "abc";
 
-		Boolean bContainsKey = m_oMetadataProvider.ContainsKey(Key);
+        Boolean bContainsKey = m_oMetadataProvider.ContainsKey(Key);
 
-		Assert.IsFalse(bContainsKey);
+        Assert.IsFalse(bContainsKey);
 
-		Object oValue;
+        Object oValue;
 
-		Assert.IsFalse( m_oMetadataProvider.TryGetValue(Key, out oValue) );
+        Assert.IsFalse( m_oMetadataProvider.TryGetValue(Key, out oValue) );
     }
 
     //*************************************************************************
@@ -164,19 +164,19 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue2()
     {
-		// Add key, ask for a different key.
+        // Add key, ask for a different key.
 
-		m_oMetadataProvider.SetValue("xyz", 123);
+        m_oMetadataProvider.SetValue("xyz", 123);
 
-		const String Key = "kjrek";
+        const String Key = "kjrek";
 
-		Boolean bContainsKey = m_oMetadataProvider.ContainsKey(Key);
+        Boolean bContainsKey = m_oMetadataProvider.ContainsKey(Key);
 
-		Assert.IsFalse(bContainsKey);
+        Assert.IsFalse(bContainsKey);
 
-		Object oValue;
+        Object oValue;
 
-		Assert.IsFalse( m_oMetadataProvider.TryGetValue(Key, out oValue) );
+        Assert.IsFalse( m_oMetadataProvider.TryGetValue(Key, out oValue) );
     }
 
     //*************************************************************************
@@ -192,24 +192,24 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue3()
     {
-		// Add key, ask for same key.
+        // Add key, ask for same key.
 
-		const String Key = "fdjkre";
-		const Int32 Value = 123456;
+        const String Key = "fdjkre";
+        const Int32 Value = 123456;
 
-		m_oMetadataProvider.SetValue(Key, Value);
+        m_oMetadataProvider.SetValue(Key, Value);
 
-		Boolean bContainsKey = m_oMetadataProvider.ContainsKey(Key);
+        Boolean bContainsKey = m_oMetadataProvider.ContainsKey(Key);
 
-		Assert.IsTrue(bContainsKey);
+        Assert.IsTrue(bContainsKey);
 
-		Object oValue;
-		
-		Assert.IsTrue( m_oMetadataProvider.TryGetValue(Key, out oValue) );
+        Object oValue;
+        
+        Assert.IsTrue( m_oMetadataProvider.TryGetValue(Key, out oValue) );
 
-		Assert.IsTrue(oValue is Int32);
+        Assert.IsTrue(oValue is Int32);
 
-		Assert.AreEqual(Value, (Int32)oValue);
+        Assert.AreEqual(Value, (Int32)oValue);
     }
 
     //*************************************************************************
@@ -225,47 +225,47 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue4()
     {
-		// Add N keys, ask for same keys in reverse order.
+        // Add N keys, ask for same keys in reverse order.
 
-		// Create an array of keys.
+        // Create an array of keys.
 
-		const Int32 Keys = 1000;
+        const Int32 Keys = 1000;
 
-		String [] asKeys = new String[Keys];
+        String [] asKeys = new String[Keys];
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
+        for (Int32 i = 0; i < Keys; i++)
+        {
             asKeys[i] = Guid.NewGuid().ToString();
-		}
+        }
 
-		// Add a value for each key.  The value is just the key with an
-		// appended index.
+        // Add a value for each key.  The value is just the key with an
+        // appended index.
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
-		}
+            m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
+        }
 
-		// Retrieve the values.
+        // Retrieve the values.
 
-		for (Int32 i = Keys - 1; i >= 0; i--)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = Keys - 1; i >= 0; i--)
+        {
+            String sKey = asKeys[i];
 
-			Boolean bContainsKey = m_oMetadataProvider.ContainsKey(sKey);
+            Boolean bContainsKey = m_oMetadataProvider.ContainsKey(sKey);
 
-			Assert.IsTrue(bContainsKey);
+            Assert.IsTrue(bContainsKey);
 
-			Object oValue;
+            Object oValue;
 
-			Assert.IsTrue( m_oMetadataProvider.TryGetValue(sKey, out oValue) );
+            Assert.IsTrue( m_oMetadataProvider.TryGetValue(sKey, out oValue) );
 
-			Assert.IsTrue(oValue is String);
+            Assert.IsTrue(oValue is String);
 
-			Assert.AreEqual(sKey + i.ToString(), (String)oValue);
-		}
+            Assert.AreEqual(sKey + i.ToString(), (String)oValue);
+        }
     }
 
     //*************************************************************************
@@ -281,100 +281,100 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue5()
     {
-		// Add N keys for each of N MetadataProvider objects, ask for same keys
-		// in reverse order.
+        // Add N keys for each of N MetadataProvider objects, ask for same keys
+        // in reverse order.
 
-		// Create an array of keys.
+        // Create an array of keys.
 
-		const Int32 Keys = 10;
+        const Int32 Keys = 10;
 
-		String [] asKeys = new String[Keys];
+        String [] asKeys = new String[Keys];
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
+        for (Int32 i = 0; i < Keys; i++)
+        {
             asKeys[i] = Guid.NewGuid().ToString();
-		}
+        }
 
-		// Create an array of MetadataProvider objects.
+        // Create an array of MetadataProvider objects.
 
-		const Int32 MetadataProviderObjects = 10000;
+        const Int32 MetadataProviderObjects = 10000;
 
-		MetadataProvider [] aoMetadataProvider =
-			new MetadataProvider[MetadataProviderObjects];
+        MetadataProvider [] aoMetadataProvider =
+            new MetadataProvider[MetadataProviderObjects];
 
-		for (Int32 j = 0; j < MetadataProviderObjects; j++)
-		{
-			aoMetadataProvider[j] = new MetadataProvider();
-		}
+        for (Int32 j = 0; j < MetadataProviderObjects; j++)
+        {
+            aoMetadataProvider[j] = new MetadataProvider();
+        }
 
-		// Add a value for each key.  The value is just the key with appended
-		// indexes.
+        // Add a value for each key.  The value is just the key with appended
+        // indexes.
 
-		for (Int32 j = 0; j < MetadataProviderObjects; j++)
-		{
-			MetadataProvider oMetadataProvider = aoMetadataProvider[j];
+        for (Int32 j = 0; j < MetadataProviderObjects; j++)
+        {
+            MetadataProvider oMetadataProvider = aoMetadataProvider[j];
 
-			for (Int32 i = 0; i < Keys; i++)
-			{
-				String sKey = asKeys[i];
+            for (Int32 i = 0; i < Keys; i++)
+            {
+                String sKey = asKeys[i];
 
-				oMetadataProvider.SetValue(
-					sKey, sKey + i.ToString() + j.ToString() );
-			}
-		}
+                oMetadataProvider.SetValue(
+                    sKey, sKey + i.ToString() + j.ToString() );
+            }
+        }
 
-		// Retrieve the values.
+        // Retrieve the values.
 
         Boolean bContainsKey;
 
-		for (Int32 j = MetadataProviderObjects - 1; j >= 0; j--)
-		{
-			MetadataProvider oMetadataProvider = aoMetadataProvider[j];
+        for (Int32 j = MetadataProviderObjects - 1; j >= 0; j--)
+        {
+            MetadataProvider oMetadataProvider = aoMetadataProvider[j];
 
-			for (Int32 i = Keys - 1; i >= 0; i--)
-			{
-				String sKey = asKeys[i];
+            for (Int32 i = Keys - 1; i >= 0; i--)
+            {
+                String sKey = asKeys[i];
 
-				bContainsKey = oMetadataProvider.ContainsKey(sKey);
+                bContainsKey = oMetadataProvider.ContainsKey(sKey);
 
-				Assert.IsTrue(bContainsKey);
+                Assert.IsTrue(bContainsKey);
 
-				Object oValue;
+                Object oValue;
 
-				Assert.IsTrue( oMetadataProvider.TryGetValue(
-					sKey, out oValue) );
+                Assert.IsTrue( oMetadataProvider.TryGetValue(
+                    sKey, out oValue) );
 
-				Assert.IsTrue(oValue is String);
+                Assert.IsTrue(oValue is String);
 
-				Assert.AreEqual(sKey + i.ToString() + j.ToString(),
-					(String)oValue);
-			}
+                Assert.AreEqual(sKey + i.ToString() + j.ToString(),
+                    (String)oValue);
+            }
 
-			// Ask for a non-existent value.
+            // Ask for a non-existent value.
 
-			bContainsKey = oMetadataProvider.ContainsKey("nHnHn");
+            bContainsKey = oMetadataProvider.ContainsKey("nHnHn");
 
-			Assert.IsFalse(bContainsKey);
-		}
+            Assert.IsFalse(bContainsKey);
+        }
 
-		// Create another MetadataProvider object and verify that it contains
-		// no keys.
+        // Create another MetadataProvider object and verify that it contains
+        // no keys.
 
-		MetadataProvider oMetadataProviderNoKeys = new MetadataProvider();
+        MetadataProvider oMetadataProviderNoKeys = new MetadataProvider();
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			bContainsKey = oMetadataProviderNoKeys.ContainsKey(sKey);
+            bContainsKey = oMetadataProviderNoKeys.ContainsKey(sKey);
 
-			Assert.IsFalse(bContainsKey);
+            Assert.IsFalse(bContainsKey);
 
-			Object oValue;
+            Object oValue;
 
-			Assert.IsFalse( m_oMetadataProvider.TryGetValue(
-				sKey, out oValue) );
-		}
+            Assert.IsFalse( m_oMetadataProvider.TryGetValue(
+                sKey, out oValue) );
+        }
     }
 
     //*************************************************************************
@@ -390,32 +390,32 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue6()
     {
-		// Add random keys and tags for each of N MockMetadataProvider objects.
+        // Add random keys and tags for each of N MockMetadataProvider objects.
 
-		// Create an array of MockMetadataProvider objects and set random keys
-		// and tags on them.
+        // Create an array of MockMetadataProvider objects and set random keys
+        // and tags on them.
 
-		const Int32 MockMetadataProviderObjects = 10000;
+        const Int32 MockMetadataProviderObjects = 10000;
 
-		MockMetadataProvider [] aoMockMetadataProvider =
-			new MockMetadataProvider[MockMetadataProviderObjects];
+        MockMetadataProvider [] aoMockMetadataProvider =
+            new MockMetadataProvider[MockMetadataProviderObjects];
 
-		for (Int32 i = 0; i < MockMetadataProviderObjects; i++)
-		{
-			MockMetadataProvider oMockMetadataProvider =
-				aoMockMetadataProvider[i] = new MockMetadataProvider();
+        for (Int32 i = 0; i < MockMetadataProviderObjects; i++)
+        {
+            MockMetadataProvider oMockMetadataProvider =
+                aoMockMetadataProvider[i] = new MockMetadataProvider();
 
-			MetadataUtil.SetRandomMetadata(
+            MetadataUtil.SetRandomMetadata(
                 oMockMetadataProvider, true, true, i);
-		}
+        }
 
-		// Check the values, backwards.
+        // Check the values, backwards.
 
-		for (Int32 i = MockMetadataProviderObjects - 1; i >= 0; i--)
-		{
-			MetadataUtil.CheckRandomMetadata(
+        for (Int32 i = MockMetadataProviderObjects - 1; i >= 0; i--)
+        {
+            MetadataUtil.CheckRandomMetadata(
                 aoMockMetadataProvider[i], true, true, i);
-		}
+        }
     }
 
     //*************************************************************************
@@ -431,50 +431,50 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue7()
     {
-		// Add N keys and tag, all with null values.
+        // Add N keys and tag, all with null values.
 
-		// Create an array of keys.
+        // Create an array of keys.
 
-		const Int32 Keys = 1000;
+        const Int32 Keys = 1000;
 
-		String [] asKeys = new String[Keys];
+        String [] asKeys = new String[Keys];
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
+        for (Int32 i = 0; i < Keys; i++)
+        {
             asKeys[i] = Guid.NewGuid().ToString();
-		}
+        }
 
-		// Add a null value for each key.
+        // Add a null value for each key.
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			m_oMetadataProvider.SetValue(sKey, null);
-		}
+            m_oMetadataProvider.SetValue(sKey, null);
+        }
 
-		// Add a null Tag.
+        // Add a null Tag.
 
-		m_oMetadataProvider.Tag = null;
+        m_oMetadataProvider.Tag = null;
 
-		// Retrieve the values.
+        // Retrieve the values.
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			Boolean bContainsKey = m_oMetadataProvider.ContainsKey(sKey);
+            Boolean bContainsKey = m_oMetadataProvider.ContainsKey(sKey);
 
-			Assert.IsTrue(bContainsKey);
+            Assert.IsTrue(bContainsKey);
 
-			Object oValue;
+            Object oValue;
 
-			Assert.IsTrue(m_oMetadataProvider.TryGetValue(sKey, out oValue) );
+            Assert.IsTrue(m_oMetadataProvider.TryGetValue(sKey, out oValue) );
 
-			Assert.IsNull(oValue);
-		}
+            Assert.IsNull(oValue);
+        }
 
-		Assert.IsNull(m_oMetadataProvider.Tag);
+        Assert.IsNull(m_oMetadataProvider.Tag);
     }
 
     //*************************************************************************
@@ -490,66 +490,66 @@ public class MetadataProviderTest : Object
     public void
     TestSetGetValue8()
     {
-		// Add N keys, set the same keys again, ask for same keys.
+        // Add N keys, set the same keys again, ask for same keys.
 
-		// Create an array of keys.
+        // Create an array of keys.
 
-		const Int32 Keys = 1000;
+        const Int32 Keys = 1000;
 
-		String [] asKeys = new String[Keys];
+        String [] asKeys = new String[Keys];
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
+        for (Int32 i = 0; i < Keys; i++)
+        {
             asKeys[i] = Guid.NewGuid().ToString();
-		}
+        }
 
-		// Add a value for each key.  The value is just the key with an
-		// appended index.
+        // Add a value for each key.  The value is just the key with an
+        // appended index.
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
-		}
+            m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
+        }
 
-		// Set the same value again.
+        // Set the same value again.
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
-		}
+            m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
+        }
 
-		// Set the same value again, in reverse order.  (This is to catch a
-		// LinkedList-related bug in an earlier implementation.)
+        // Set the same value again, in reverse order.  (This is to catch a
+        // LinkedList-related bug in an earlier implementation.)
 
-		for (Int32 i = Keys - 1;  i >= 0; i--)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = Keys - 1;  i >= 0; i--)
+        {
+            String sKey = asKeys[i];
 
-			m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
-		}
+            m_oMetadataProvider.SetValue( sKey, sKey + i.ToString() );
+        }
 
-		// Retrieve the values.
+        // Retrieve the values.
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
-			String sKey = asKeys[i];
+        for (Int32 i = 0; i < Keys; i++)
+        {
+            String sKey = asKeys[i];
 
-			Boolean bContainsKey = m_oMetadataProvider.ContainsKey(sKey);
+            Boolean bContainsKey = m_oMetadataProvider.ContainsKey(sKey);
 
-			Assert.IsTrue(bContainsKey);
+            Assert.IsTrue(bContainsKey);
 
-			Object oValue;
+            Object oValue;
 
-			Assert.IsTrue( m_oMetadataProvider.TryGetValue(sKey, out oValue) );
+            Assert.IsTrue( m_oMetadataProvider.TryGetValue(sKey, out oValue) );
 
-			Assert.IsTrue(oValue is String);
+            Assert.IsTrue(oValue is String);
 
-			Assert.AreEqual(sKey + i.ToString(), (String)oValue);
-		}
+            Assert.AreEqual(sKey + i.ToString(), (String)oValue);
+        }
     }
 
     //*************************************************************************
@@ -565,11 +565,11 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo()
     {
-		// Don't set any properties on m_oMetadataProvider.
+        // Don't set any properties on m_oMetadataProvider.
 
-		m_oMetadataProvider.CopyTo(m_oCopy, false, false);
+        m_oMetadataProvider.CopyTo(m_oCopy, false, false);
 
-		Assert.IsNull(m_oCopy.Tag);
+        Assert.IsNull(m_oCopy.Tag);
     }
 
     //*************************************************************************
@@ -585,15 +585,15 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo2()
     {
-		// Set the Tag on m_oMetadataProvider, but don't copy it.
+        // Set the Tag on m_oMetadataProvider, but don't copy it.
 
-		const String Tag = "This is the tag.";
+        const String Tag = "This is the tag.";
 
-		m_oMetadataProvider.Tag = Tag;
+        m_oMetadataProvider.Tag = Tag;
 
-		m_oMetadataProvider.CopyTo(m_oCopy, false, false);
+        m_oMetadataProvider.CopyTo(m_oCopy, false, false);
 
-		Assert.IsNull(m_oCopy.Tag);
+        Assert.IsNull(m_oCopy.Tag);
     }
 
     //*************************************************************************
@@ -609,15 +609,15 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo3()
     {
-		// Set the Tag on m_oMetadataProvider and copy it.
+        // Set the Tag on m_oMetadataProvider and copy it.
 
-		const String Tag = "This is the tag.";
+        const String Tag = "This is the tag.";
 
-		m_oMetadataProvider.Tag = Tag;
+        m_oMetadataProvider.Tag = Tag;
 
-		m_oMetadataProvider.CopyTo(m_oCopy, false, true);
+        m_oMetadataProvider.CopyTo(m_oCopy, false, true);
 
-		Assert.AreEqual(Tag, m_oCopy.Tag);
+        Assert.AreEqual(Tag, m_oCopy.Tag);
     }
 
     //*************************************************************************
@@ -633,9 +633,9 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo4()
     {
-		// Don't copy metadata values, don't copy the Tag.
+        // Don't copy metadata values, don't copy the Tag.
 
-		TestCopyTo(false, false);
+        TestCopyTo(false, false);
     }
 
     //*************************************************************************
@@ -651,9 +651,9 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo5()
     {
-		// Don't copy metadata values, copy the Tag.
+        // Don't copy metadata values, copy the Tag.
 
-		TestCopyTo(false, true);
+        TestCopyTo(false, true);
     }
 
     //*************************************************************************
@@ -669,9 +669,9 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo6()
     {
-		// Copy metadata values, don't copy the Tag.
+        // Copy metadata values, don't copy the Tag.
 
-		TestCopyTo(true, false);
+        TestCopyTo(true, false);
     }
 
     //*************************************************************************
@@ -687,9 +687,9 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo7()
     {
-		// Copy metadata values, copy the Tag.
+        // Copy metadata values, copy the Tag.
 
-		TestCopyTo(true, true);
+        TestCopyTo(true, true);
     }
 
     //*************************************************************************
@@ -705,40 +705,40 @@ public class MetadataProviderTest : Object
     public void
     TestCopyTo8()
     {
-		// Create N objects, set random metadata on each object, copy each
-		// object's metadata to a new object, check metadata on new object.
+        // Create N objects, set random metadata on each object, copy each
+        // object's metadata to a new object, check metadata on new object.
 
         const Int32 Objects = 1976;
 
-		MockMetadataProvider [] aoMockMetadataProvider =
-			new MockMetadataProvider[Objects];
+        MockMetadataProvider [] aoMockMetadataProvider =
+            new MockMetadataProvider[Objects];
 
-		// Set random values on each object.
+        // Set random values on each object.
 
-		for (Int32 i = 0; i < Objects; i++)
-		{
-			MockMetadataProvider oMockMetadataProvider =
-				aoMockMetadataProvider[i] = new MockMetadataProvider();
+        for (Int32 i = 0; i < Objects; i++)
+        {
+            MockMetadataProvider oMockMetadataProvider =
+                aoMockMetadataProvider[i] = new MockMetadataProvider();
 
-			MetadataUtil.SetRandomMetadata(
+            MetadataUtil.SetRandomMetadata(
                 oMockMetadataProvider, true, true, i);
-		}
+        }
 
-		for (Int32 i = 0; i < Objects; i++)
-		{
-			// Copy the object's metadata to a new object.
+        for (Int32 i = 0; i < Objects; i++)
+        {
+            // Copy the object's metadata to a new object.
 
-			MockMetadataProvider oMockMetadataProvider =
-				aoMockMetadataProvider[i];
+            MockMetadataProvider oMockMetadataProvider =
+                aoMockMetadataProvider[i];
 
-			MockMetadataProvider oCopy = new MockMetadataProvider();
+            MockMetadataProvider oCopy = new MockMetadataProvider();
 
-			oMockMetadataProvider.CopyTo(oCopy, true, true);
+            oMockMetadataProvider.CopyTo(oCopy, true, true);
 
-			// Check the metadata on the new object.
+            // Check the metadata on the new object.
 
-			MetadataUtil.CheckRandomMetadata(oCopy, true, true, i);
-		}
+            MetadataUtil.CheckRandomMetadata(oCopy, true, true, i);
+        }
     }
 
     //*************************************************************************
@@ -754,26 +754,26 @@ public class MetadataProviderTest : Object
     public void
     TestAppendToString()
     {
-		// Set some key/value pairs and the Tag on m_oMetadataProvider.
+        // Set some key/value pairs and the Tag on m_oMetadataProvider.
 
-		const Int32 Tag = -29;
+        const Int32 Tag = -29;
 
-		const String Key1 = "xyz";
-		const Int32 Value1 = 123456;
+        const String Key1 = "xyz";
+        const Int32 Value1 = 123456;
 
-		const String Key2 = "xx8372";
-		String Value2 = "jkfdekeikd";
+        const String Key2 = "xx8372";
+        String Value2 = "jkfdekeikd";
 
-		const String Key3 = "kjfdke";
-		Object Value3 = null;
+        const String Key3 = "kjfdke";
+        Object Value3 = null;
 
-		m_oMetadataProvider.SetValue(Key1, Value1);
-		m_oMetadataProvider.SetValue(Key2, Value2);
-		m_oMetadataProvider.SetValue(Key3, Value3);
+        m_oMetadataProvider.SetValue(Key1, Value1);
+        m_oMetadataProvider.SetValue(Key2, Value2);
+        m_oMetadataProvider.SetValue(Key3, Value3);
 
-		m_oMetadataProvider.Tag = Tag;
+        m_oMetadataProvider.Tag = Tag;
 
-		StringBuilder oStringBuilder = new StringBuilder();
+        StringBuilder oStringBuilder = new StringBuilder();
 
         m_oMetadataProvider.AppendToString(oStringBuilder, 0, "G");
 
@@ -782,7 +782,7 @@ public class MetadataProviderTest : Object
 
         Assert.AreEqual( sExpectedValue, oStringBuilder.ToString() );
 
-		oStringBuilder = new StringBuilder();
+        oStringBuilder = new StringBuilder();
 
         m_oMetadataProvider.AppendToString(oStringBuilder, 0, "P");
 
@@ -791,16 +791,16 @@ public class MetadataProviderTest : Object
 
         Assert.AreEqual( sExpectedValue, oStringBuilder.ToString() );
 
-		oStringBuilder = new StringBuilder();
+        oStringBuilder = new StringBuilder();
 
         m_oMetadataProvider.AppendToString(oStringBuilder, 0, "D");
 
         sExpectedValue =
             "3 key/value pairs\r\n"
-			+ "\tKey = xyz, Value = 123456\r\n"
-			+ "\tKey = xx8372, Value = jkfdekeikd\r\n"
-			+ "\tKey = kjfdke, Value = [null]\r\n"
-			;
+            + "\tKey = xyz, Value = 123456\r\n"
+            + "\tKey = xx8372, Value = jkfdekeikd\r\n"
+            + "\tKey = kjfdke, Value = [null]\r\n"
+            ;
 
         Assert.AreEqual( sExpectedValue, oStringBuilder.ToString() );
     }
@@ -818,11 +818,11 @@ public class MetadataProviderTest : Object
     public void
     TestRemoveKey()
     {
-		// No keys.
+        // No keys.
 
-		Boolean bRemovedKey = m_oMetadataProvider.RemoveKey("abc");
+        Boolean bRemovedKey = m_oMetadataProvider.RemoveKey("abc");
 
-		Assert.IsFalse(bRemovedKey);
+        Assert.IsFalse(bRemovedKey);
     }
 
     //*************************************************************************
@@ -838,16 +838,16 @@ public class MetadataProviderTest : Object
     public void
     TestRemoveKey2()
     {
-		// Has key, but not the specified one.
+        // Has key, but not the specified one.
 
-		const String Key1 = "xyz";
-		const Int32 Value1 = 123456;
+        const String Key1 = "xyz";
+        const Int32 Value1 = 123456;
 
-		m_oMetadataProvider.SetValue(Key1, Value1);
+        m_oMetadataProvider.SetValue(Key1, Value1);
 
-		Boolean bRemovedKey = m_oMetadataProvider.RemoveKey("kjre");
+        Boolean bRemovedKey = m_oMetadataProvider.RemoveKey("kjre");
 
-		Assert.IsFalse(bRemovedKey);
+        Assert.IsFalse(bRemovedKey);
     }
 
     //*************************************************************************
@@ -863,16 +863,16 @@ public class MetadataProviderTest : Object
     public void
     TestRemoveKey3()
     {
-		// Has key, the specified one.
+        // Has key, the specified one.
 
-		const String Key1 = "xyz";
-		const Int32 Value1 = 123456;
+        const String Key1 = "xyz";
+        const Int32 Value1 = 123456;
 
-		m_oMetadataProvider.SetValue(Key1, Value1);
+        m_oMetadataProvider.SetValue(Key1, Value1);
 
-		Boolean bRemovedKey = m_oMetadataProvider.RemoveKey(Key1);
+        Boolean bRemovedKey = m_oMetadataProvider.RemoveKey(Key1);
 
-		Assert.IsTrue(bRemovedKey);
+        Assert.IsTrue(bRemovedKey);
     }
 
     //*************************************************************************
@@ -888,75 +888,75 @@ public class MetadataProviderTest : Object
     public void
     TestRemoveKey4()
     {
-		// Create N objects, set metadata on each object, remove keys one by
-		// one.
+        // Create N objects, set metadata on each object, remove keys one by
+        // one.
 
         const Int32 Objects = 10;
 
-		const Int32 Keys = 5;
+        const Int32 Keys = 5;
 
-		MetadataProvider [] aoMetadataProvider = new MetadataProvider[Objects];
+        MetadataProvider [] aoMetadataProvider = new MetadataProvider[Objects];
 
-		// Set values on each object.
+        // Set values on each object.
 
-		for (Int32 i = 0; i < Objects; i++)
-		{
-			MetadataProvider oMetadataProvider =
-				aoMetadataProvider[i] = new MetadataProvider();
+        for (Int32 i = 0; i < Objects; i++)
+        {
+            MetadataProvider oMetadataProvider =
+                aoMetadataProvider[i] = new MetadataProvider();
 
-			for (Int32 j = 0; j < Keys; j++)
-			{
-				oMetadataProvider.SetValue(j.ToString(), "string");
-			}
-		}
+            for (Int32 j = 0; j < Keys; j++)
+            {
+                oMetadataProvider.SetValue(j.ToString(), "string");
+            }
+        }
 
-		// Remove the keys from each object.
+        // Remove the keys from each object.
 
-		for (Int32 i = 0; i < Objects; i++)
-		{
-			MetadataProvider oMetadataProvider = aoMetadataProvider[i];
+        for (Int32 i = 0; i < Objects; i++)
+        {
+            MetadataProvider oMetadataProvider = aoMetadataProvider[i];
 
-			for (Int32 j = 0; j < Keys; j++)
-			{
-				Boolean bRemovedKey =
-					oMetadataProvider.RemoveKey( j.ToString() );
+            for (Int32 j = 0; j < Keys; j++)
+            {
+                Boolean bRemovedKey =
+                    oMetadataProvider.RemoveKey( j.ToString() );
 
-				Assert.IsTrue(bRemovedKey);
+                Assert.IsTrue(bRemovedKey);
 
-				// Check the status of all the keys.
+                // Check the status of all the keys.
 
-				for (Int32 I = 0; I < Objects; I++)
-				{
-					MetadataProvider oMetadataProvider2 = aoMetadataProvider[I];
+                for (Int32 I = 0; I < Objects; I++)
+                {
+                    MetadataProvider oMetadataProvider2 = aoMetadataProvider[I];
 
-					for (Int32 J = 0; J < Keys; J++)
-					{
-						Boolean bContainsKey =
-							oMetadataProvider2.ContainsKey( J.ToString() );
+                    for (Int32 J = 0; J < Keys; J++)
+                    {
+                        Boolean bContainsKey =
+                            oMetadataProvider2.ContainsKey( J.ToString() );
 
-						if (I < i)
-						{
-							Assert.IsFalse(bContainsKey);
-						}
-						else if (I == i)
-						{
-							if (J <= j)
-							{
-								Assert.IsFalse(bContainsKey);
-							}
-							else
-							{
-								Assert.IsTrue(bContainsKey);
-							}
-						}
-						else
-						{
-							Assert.IsTrue(bContainsKey);
-						}
-					}
-				}
-			}
-		}
+                        if (I < i)
+                        {
+                            Assert.IsFalse(bContainsKey);
+                        }
+                        else if (I == i)
+                        {
+                            if (J <= j)
+                            {
+                                Assert.IsFalse(bContainsKey);
+                            }
+                            else
+                            {
+                                Assert.IsTrue(bContainsKey);
+                            }
+                        }
+                        else
+                        {
+                            Assert.IsTrue(bContainsKey);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //*************************************************************************
@@ -972,75 +972,75 @@ public class MetadataProviderTest : Object
     public void
     TestRemoveKey5()
     {
-		// Create N objects, set metadata on each object, remove keys one by
-		// one in backwards order.
+        // Create N objects, set metadata on each object, remove keys one by
+        // one in backwards order.
 
         const Int32 Objects = 10;
 
-		const Int32 Keys = 5;
+        const Int32 Keys = 5;
 
-		MetadataProvider [] aoMetadataProvider = new MetadataProvider[Objects];
+        MetadataProvider [] aoMetadataProvider = new MetadataProvider[Objects];
 
-		// Set values on each object.
+        // Set values on each object.
 
-		for (Int32 i = 0; i < Objects; i++)
-		{
-			MetadataProvider oMetadataProvider =
-				aoMetadataProvider[i] = new MetadataProvider();
+        for (Int32 i = 0; i < Objects; i++)
+        {
+            MetadataProvider oMetadataProvider =
+                aoMetadataProvider[i] = new MetadataProvider();
 
-			for (Int32 j = 0; j < Keys; j++)
-			{
-				oMetadataProvider.SetValue(j.ToString(), "string");
-			}
-		}
+            for (Int32 j = 0; j < Keys; j++)
+            {
+                oMetadataProvider.SetValue(j.ToString(), "string");
+            }
+        }
 
-		// Remove the keys from each object.
+        // Remove the keys from each object.
 
-		for (Int32 i = Objects - 1; i >= 0; i--)
-		{
-			MetadataProvider oMetadataProvider = aoMetadataProvider[i];
+        for (Int32 i = Objects - 1; i >= 0; i--)
+        {
+            MetadataProvider oMetadataProvider = aoMetadataProvider[i];
 
-			for (Int32 j = Keys - 1; j >= 0; j--)
-			{
-				Boolean bRemovedKey =
-					oMetadataProvider.RemoveKey( j.ToString() );
+            for (Int32 j = Keys - 1; j >= 0; j--)
+            {
+                Boolean bRemovedKey =
+                    oMetadataProvider.RemoveKey( j.ToString() );
 
-				Assert.IsTrue(bRemovedKey);
+                Assert.IsTrue(bRemovedKey);
 
-				// Check the status of all the keys.
+                // Check the status of all the keys.
 
-				for (Int32 I = 0; I < Objects; I++)
-				{
-					MetadataProvider oMetadataProvider2 = aoMetadataProvider[I];
+                for (Int32 I = 0; I < Objects; I++)
+                {
+                    MetadataProvider oMetadataProvider2 = aoMetadataProvider[I];
 
-					for (Int32 J = 0; J < Keys; J++)
-					{
-						Boolean bContainsKey =
-							oMetadataProvider2.ContainsKey( J.ToString() );
+                    for (Int32 J = 0; J < Keys; J++)
+                    {
+                        Boolean bContainsKey =
+                            oMetadataProvider2.ContainsKey( J.ToString() );
 
-						if (I < i)
-						{
-							Assert.IsTrue(bContainsKey);
-						}
-						else if (I == i)
-						{
-							if (J < j)
-							{
-								Assert.IsTrue(bContainsKey);
-							}
-							else
-							{
-								Assert.IsFalse(bContainsKey);
-							}
-						}
-						else
-						{
-							Assert.IsFalse(bContainsKey);
-						}
-					}
-				}
-			}
-		}
+                        if (I < i)
+                        {
+                            Assert.IsTrue(bContainsKey);
+                        }
+                        else if (I == i)
+                        {
+                            if (J < j)
+                            {
+                                Assert.IsTrue(bContainsKey);
+                            }
+                            else
+                            {
+                                Assert.IsFalse(bContainsKey);
+                            }
+                        }
+                        else
+                        {
+                            Assert.IsFalse(bContainsKey);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //*************************************************************************
@@ -1056,140 +1056,140 @@ public class MetadataProviderTest : Object
     public void
     TestClearMetadata()
     {
-		// Add tags and N keys for each of N MetadataProvider objects, ask
-		// for same tags and keys, clear metadata for each object.
+        // Add tags and N keys for each of N MetadataProvider objects, ask
+        // for same tags and keys, clear metadata for each object.
 
-		// Create an array of keys.
+        // Create an array of keys.
 
-		const Int32 Keys = 10;
+        const Int32 Keys = 10;
 
-		String [] asKeys = new String[Keys];
+        String [] asKeys = new String[Keys];
 
-		for (Int32 i = 0; i < Keys; i++)
-		{
+        for (Int32 i = 0; i < Keys; i++)
+        {
             asKeys[i] = Guid.NewGuid().ToString();
-		}
+        }
 
-		// Create an array of MetadataProvider objects.
+        // Create an array of MetadataProvider objects.
 
-		const Int32 MetadataProviderObjects = 100;
+        const Int32 MetadataProviderObjects = 100;
 
-		MetadataProvider [] aoMetadataProvider =
-			new MetadataProvider[MetadataProviderObjects];
+        MetadataProvider [] aoMetadataProvider =
+            new MetadataProvider[MetadataProviderObjects];
 
-		for (Int32 j = 0; j < MetadataProviderObjects; j++)
-		{
-			aoMetadataProvider[j] = new MetadataProvider();
-		}
+        for (Int32 j = 0; j < MetadataProviderObjects; j++)
+        {
+            aoMetadataProvider[j] = new MetadataProvider();
+        }
 
-		// Add a Tag and a value for each key.  The value is just the key with
-		// appended indexes.
+        // Add a Tag and a value for each key.  The value is just the key with
+        // appended indexes.
 
-		for (Int32 j = 0; j < MetadataProviderObjects; j++)
-		{
-			MetadataProvider oMetadataProvider = aoMetadataProvider[j];
+        for (Int32 j = 0; j < MetadataProviderObjects; j++)
+        {
+            MetadataProvider oMetadataProvider = aoMetadataProvider[j];
 
-			oMetadataProvider.Tag = j.ToString() + "Tag";
+            oMetadataProvider.Tag = j.ToString() + "Tag";
 
-			for (Int32 i = 0; i < Keys; i++)
-			{
-				String sKey = asKeys[i];
+            for (Int32 i = 0; i < Keys; i++)
+            {
+                String sKey = asKeys[i];
 
-				oMetadataProvider.SetValue(
-					sKey, sKey + i.ToString() + j.ToString() );
-			}
-		}
+                oMetadataProvider.SetValue(
+                    sKey, sKey + i.ToString() + j.ToString() );
+            }
+        }
 
-		// Retrieve the values.
+        // Retrieve the values.
 
         Boolean bContainsKey;
 
-		for (Int32 j = 0; j < MetadataProviderObjects; j++)
-		{
-			MetadataProvider oMetadataProvider = aoMetadataProvider[j];
+        for (Int32 j = 0; j < MetadataProviderObjects; j++)
+        {
+            MetadataProvider oMetadataProvider = aoMetadataProvider[j];
 
-			Assert.AreEqual(
-				j.ToString() + "Tag",
-				oMetadataProvider.Tag
-				);
+            Assert.AreEqual(
+                j.ToString() + "Tag",
+                oMetadataProvider.Tag
+                );
 
-			for (Int32 i = Keys - 1; i >= 0; i--)
-			{
-				String sKey = asKeys[i];
+            for (Int32 i = Keys - 1; i >= 0; i--)
+            {
+                String sKey = asKeys[i];
 
-				bContainsKey = oMetadataProvider.ContainsKey(sKey);
+                bContainsKey = oMetadataProvider.ContainsKey(sKey);
 
-				Assert.IsTrue(bContainsKey);
+                Assert.IsTrue(bContainsKey);
 
-				Object oValue;
+                Object oValue;
 
-				Assert.IsTrue( oMetadataProvider.TryGetValue(
-					sKey, out oValue) );
+                Assert.IsTrue( oMetadataProvider.TryGetValue(
+                    sKey, out oValue) );
 
-				Assert.IsTrue(oValue is String);
+                Assert.IsTrue(oValue is String);
 
-				Assert.AreEqual(sKey + i.ToString() + j.ToString(),
-					(String)oValue);
-			}
+                Assert.AreEqual(sKey + i.ToString() + j.ToString(),
+                    (String)oValue);
+            }
 
-			// Ask for a non-existent value.
+            // Ask for a non-existent value.
 
-			bContainsKey = oMetadataProvider.ContainsKey("nHnHn");
+            bContainsKey = oMetadataProvider.ContainsKey("nHnHn");
 
-			Assert.IsFalse(bContainsKey);
-		}
+            Assert.IsFalse(bContainsKey);
+        }
 
-		// Remove metadata for each object.
+        // Remove metadata for each object.
 
-		for (Int32 k = 0; k < MetadataProviderObjects; k++)
-		{
-			aoMetadataProvider[k].ClearMetadata();
+        for (Int32 k = 0; k < MetadataProviderObjects; k++)
+        {
+            aoMetadataProvider[k].ClearMetadata();
 
-			// Check all the objects, some of which will have no metadata.
+            // Check all the objects, some of which will have no metadata.
 
-			for (Int32 j = 0; j < MetadataProviderObjects; j++)
-			{
-				MetadataProvider oMetadataProvider = aoMetadataProvider[j];
+            for (Int32 j = 0; j < MetadataProviderObjects; j++)
+            {
+                MetadataProvider oMetadataProvider = aoMetadataProvider[j];
 
-				if (j > k)
-				{
-					Assert.AreEqual(
-						j.ToString() + "Tag",
-						oMetadataProvider.Tag
-						);
-				}
-				else
-				{
-					Assert.IsNull(oMetadataProvider.Tag);
-				}
+                if (j > k)
+                {
+                    Assert.AreEqual(
+                        j.ToString() + "Tag",
+                        oMetadataProvider.Tag
+                        );
+                }
+                else
+                {
+                    Assert.IsNull(oMetadataProvider.Tag);
+                }
 
-				for (Int32 i = Keys - 1; i >= 0; i--)
-				{
-					String sKey = asKeys[i];
+                for (Int32 i = Keys - 1; i >= 0; i--)
+                {
+                    String sKey = asKeys[i];
 
-					bContainsKey = oMetadataProvider.ContainsKey(sKey);
+                    bContainsKey = oMetadataProvider.ContainsKey(sKey);
 
-					if (j > k)
-					{
-						Assert.IsTrue(bContainsKey);
+                    if (j > k)
+                    {
+                        Assert.IsTrue(bContainsKey);
 
-						Object oValue;
-						
-						Assert.IsTrue( oMetadataProvider.TryGetValue(
-							sKey, out oValue) );
+                        Object oValue;
+                        
+                        Assert.IsTrue( oMetadataProvider.TryGetValue(
+                            sKey, out oValue) );
 
-						Assert.IsTrue(oValue is String);
+                        Assert.IsTrue(oValue is String);
 
-						Assert.AreEqual(sKey + i.ToString() + j.ToString(),
-							(String)oValue);
-					}
-					else
-					{
-						Assert.IsFalse(bContainsKey);
-					}
-				}
-			}
-		}
+                        Assert.AreEqual(sKey + i.ToString() + j.ToString(),
+                            (String)oValue);
+                    }
+                    else
+                    {
+                        Assert.IsFalse(bContainsKey);
+                    }
+                }
+            }
+        }
     }
 
     //*************************************************************************
@@ -1198,72 +1198,72 @@ public class MetadataProviderTest : Object
     /// <summary>
     /// Tests the CopyTo() method.
     /// </summary>
-	///
-	/// <param name="bCopyMetadataValues">
-	/// true to copy the metadata values.
-	/// </param>
-	///
-	/// <param name="bCopyTag">
-	/// true to copy the Tag.
-	/// </param>
+    ///
+    /// <param name="bCopyMetadataValues">
+    /// true to copy the metadata values.
+    /// </param>
+    ///
+    /// <param name="bCopyTag">
+    /// true to copy the Tag.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestCopyTo
-	(
-		Boolean bCopyMetadataValues,
-		Boolean bCopyTag
-	)
+    (
+        Boolean bCopyMetadataValues,
+        Boolean bCopyTag
+    )
     {
-		// Set some key/value pairs and the Tag on m_oMetadataProvider.
+        // Set some key/value pairs and the Tag on m_oMetadataProvider.
 
-		const Int32 Tag = -29;
+        const Int32 Tag = -29;
 
-		const String Key1 = "xyz";
-		const Int32 Value1 = 123456;
+        const String Key1 = "xyz";
+        const Int32 Value1 = 123456;
 
-		const String Key2 = "xx8372";
-		DateTime Value2 = DateTime.Now;
+        const String Key2 = "xx8372";
+        DateTime Value2 = DateTime.Now;
 
-		m_oMetadataProvider.SetValue(Key1, Value1);
-		m_oMetadataProvider.SetValue(Key2, Value2);
+        m_oMetadataProvider.SetValue(Key1, Value1);
+        m_oMetadataProvider.SetValue(Key2, Value2);
 
-		m_oMetadataProvider.Tag = Tag;
+        m_oMetadataProvider.Tag = Tag;
 
-		m_oMetadataProvider.CopyTo(m_oCopy, bCopyMetadataValues, bCopyTag);
+        m_oMetadataProvider.CopyTo(m_oCopy, bCopyMetadataValues, bCopyTag);
 
-		Object oValue;
+        Object oValue;
 
-		if (bCopyMetadataValues)
-		{
-			Assert.IsTrue( m_oCopy.ContainsKey(Key1) );
+        if (bCopyMetadataValues)
+        {
+            Assert.IsTrue( m_oCopy.ContainsKey(Key1) );
 
-			Assert.IsTrue( m_oCopy.TryGetValue(
-				Key1, typeof(Int32), out oValue) );
+            Assert.IsTrue( m_oCopy.TryGetValue(
+                Key1, typeof(Int32), out oValue) );
 
-			Assert.AreEqual(Value1, oValue);
+            Assert.AreEqual(Value1, oValue);
 
-			Assert.IsTrue( m_oCopy.ContainsKey(Key2) );
+            Assert.IsTrue( m_oCopy.ContainsKey(Key2) );
 
-			Assert.IsTrue( m_oCopy.TryGetValue(
-				Key2, typeof(DateTime), out oValue) );
+            Assert.IsTrue( m_oCopy.TryGetValue(
+                Key2, typeof(DateTime), out oValue) );
 
-			Assert.AreEqual(Value2, oValue);
-		}
-		else
-		{
-			Assert.IsFalse( m_oCopy.ContainsKey(Key1) );
-			Assert.IsFalse( m_oCopy.ContainsKey(Key2) );
-		}
+            Assert.AreEqual(Value2, oValue);
+        }
+        else
+        {
+            Assert.IsFalse( m_oCopy.ContainsKey(Key1) );
+            Assert.IsFalse( m_oCopy.ContainsKey(Key2) );
+        }
 
-		if (bCopyTag)
-		{
-			Assert.AreEqual(Tag, m_oCopy.Tag);
-		}
-		else
-		{
-			Assert.IsNull(m_oCopy.Tag);
-		}
+        if (bCopyTag)
+        {
+            Assert.AreEqual(Tag, m_oCopy.Tag);
+        }
+        else
+        {
+            Assert.IsNull(m_oCopy.Tag);
+        }
     }
 
 
@@ -1271,14 +1271,14 @@ public class MetadataProviderTest : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Object under test.
+    /// Object under test.
 
-	protected MetadataProvider m_oMetadataProvider;
+    protected MetadataProvider m_oMetadataProvider;
 
-	/// Mock class that implements IMetadataProvider, used by tests that copy
-	/// metadata.
+    /// Mock class that implements IMetadataProvider, used by tests that copy
+    /// metadata.
 
-	private MockMetadataProvider m_oCopy;
+    private MockMetadataProvider m_oCopy;
 }
 
 }

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -31,9 +31,9 @@ public class EdgeTest : Object
 
     public EdgeTest()
     {
-		m_aoVertices = null;
-		m_oGraph = null;
-		m_oEdgeFactory = null;
+        m_aoVertices = null;
+        m_oGraph = null;
+        m_oEdgeFactory = null;
     }
 
     //*************************************************************************
@@ -49,11 +49,11 @@ public class EdgeTest : Object
     public void
     SetUp()
     {
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		CreateGraph(GraphDirectedness.Mixed, Vertices);
+        CreateGraph(GraphDirectedness.Mixed, Vertices);
 
-		m_oEdgeFactory = new EdgeFactory();
+        m_oEdgeFactory = new EdgeFactory();
     }
 
     //*************************************************************************
@@ -69,9 +69,9 @@ public class EdgeTest : Object
     public void
     TearDown()
     {
-		m_aoVertices = null;
-		m_oGraph = null;
-		m_oEdgeFactory = null;
+        m_aoVertices = null;
+        m_oGraph = null;
+        m_oEdgeFactory = null;
     }
 
     //*************************************************************************
@@ -87,27 +87,27 @@ public class EdgeTest : Object
     public void
     TestConstructor()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual(oVertex1, oEdge.BackVertex);
-		Assert.AreEqual(oVertex2, oEdge.FrontVertex);
+        Assert.AreEqual(oVertex1, oEdge.BackVertex);
+        Assert.AreEqual(oVertex2, oEdge.FrontVertex);
 
-		Assert.IsTrue(oEdge.IsDirected);
-		Assert.IsFalse(oEdge.IsSelfLoop);
-		Assert.IsNull(oEdge.Name);
-		Assert.AreEqual(m_oGraph, oEdge.ParentGraph);
+        Assert.IsTrue(oEdge.IsDirected);
+        Assert.IsFalse(oEdge.IsSelfLoop);
+        Assert.IsNull(oEdge.Name);
+        Assert.AreEqual(m_oGraph, oEdge.ParentGraph);
 
-		Assert.IsNotNull(oEdge.Vertices);
-		Assert.AreEqual(2, oEdge.Vertices.Length);
+        Assert.IsNotNull(oEdge.Vertices);
+        Assert.AreEqual(2, oEdge.Vertices.Length);
 
-		Assert.IsNotNull( oEdge.Vertices[0] );
-		Assert.AreEqual( oVertex1, oEdge.Vertices[0] );
+        Assert.IsNotNull( oEdge.Vertices[0] );
+        Assert.AreEqual( oVertex1, oEdge.Vertices[0] );
 
-		Assert.IsNotNull( oEdge.Vertices[1] );
-		Assert.AreEqual( oVertex2, oEdge.Vertices[1] );
+        Assert.IsNotNull( oEdge.Vertices[1] );
+        Assert.AreEqual( oVertex2, oEdge.Vertices[1] );
     }
  
     //*************************************************************************
@@ -123,18 +123,18 @@ public class EdgeTest : Object
     public void
     TestBackAndFrontVertex()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual(oVertex1, oEdge.BackVertex);
-		Assert.AreEqual(oVertex2, oEdge.FrontVertex);
+        Assert.AreEqual(oVertex1, oEdge.BackVertex);
+        Assert.AreEqual(oVertex2, oEdge.FrontVertex);
 
-		oEdge = CreateEdge(oVertex2, oVertex1, true);
+        oEdge = CreateEdge(oVertex2, oVertex1, true);
 
-		Assert.AreEqual(oVertex2, oEdge.BackVertex);
-		Assert.AreEqual(oVertex1, oEdge.FrontVertex);
+        Assert.AreEqual(oVertex2, oEdge.BackVertex);
+        Assert.AreEqual(oVertex1, oEdge.FrontVertex);
     }
  
     //*************************************************************************
@@ -146,35 +146,35 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestBackVertexBad()
     {
-		// Ask for BackVertex on an undirected edge.
+        // Ask for BackVertex on an undirected edge.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
 
-		try
-		{
-			IVertex oVertex = oEdge.BackVertex;
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IVertex oVertex = oEdge.BackVertex;
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.BackVertex: The edge is not directed, so it does not"
-				+ " have a back vertex."
-				,
-				oApplicationException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.BackVertex: The edge is not directed, so it does not"
+                + " have a back vertex."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
  
     //*************************************************************************
@@ -186,35 +186,35 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ApplicationException) ) ]
+    [ ExpectedException( typeof(ApplicationException) ) ]
 
     public void
     TestFrontVertexBad()
     {
-		// Ask for FrontVertex on an undirected edge.
+        // Ask for FrontVertex on an undirected edge.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
 
-		try
-		{
-			IVertex oVertex = oEdge.FrontVertex;
-		}
-		catch (ApplicationException oApplicationException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IVertex oVertex = oEdge.FrontVertex;
+        }
+        catch (ApplicationException oApplicationException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.FrontVertex: The edge is not directed, so it does not"
-				+ " have a front vertex."
-				,
-				oApplicationException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.FrontVertex: The edge is not directed, so it does not"
+                + " have a front vertex."
+                ,
+                oApplicationException.Message
+                );
 
-			throw oApplicationException;
-		}
+            throw oApplicationException;
+        }
     }
  
     //*************************************************************************
@@ -230,12 +230,12 @@ public class EdgeTest : Object
     public void
     TestIsDirected()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.IsTrue(oEdge.IsDirected);
+        Assert.IsTrue(oEdge.IsDirected);
     }
  
     //*************************************************************************
@@ -251,12 +251,12 @@ public class EdgeTest : Object
     public void
     TestIsDirected2()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
 
-		Assert.IsFalse(oEdge.IsDirected);
+        Assert.IsFalse(oEdge.IsDirected);
     }
  
     //*************************************************************************
@@ -272,12 +272,12 @@ public class EdgeTest : Object
     public void
     TestIsSelfLoop()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.IsFalse(oEdge.IsSelfLoop);
+        Assert.IsFalse(oEdge.IsSelfLoop);
     }
  
     //*************************************************************************
@@ -293,11 +293,11 @@ public class EdgeTest : Object
     public void
     TestIsSelfLoop2()
     {
-		IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex1 = m_aoVertices[0];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex1, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex1, true);
 
-		Assert.IsTrue(oEdge.IsSelfLoop);
+        Assert.IsTrue(oEdge.IsSelfLoop);
     }
  
     //*************************************************************************
@@ -313,16 +313,16 @@ public class EdgeTest : Object
     public void
     TestName()
     {
-		const String Name = null;
+        const String Name = null;
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		oEdge.Name = Name;
+        oEdge.Name = Name;
 
-		Assert.AreEqual(Name, oEdge.Name);
+        Assert.AreEqual(Name, oEdge.Name);
     }
 
     //*************************************************************************
@@ -338,16 +338,16 @@ public class EdgeTest : Object
     public void
     TestName2()
     {
-		String Name = String.Empty;
+        String Name = String.Empty;
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		oEdge.Name = Name;
+        oEdge.Name = Name;
 
-		Assert.AreEqual(Name, oEdge.Name);
+        Assert.AreEqual(Name, oEdge.Name);
     }
 
     //*************************************************************************
@@ -363,16 +363,16 @@ public class EdgeTest : Object
     public void
     TestName3()
     {
-		const String Name = " jfkd jkreui2 rfdjk*";
+        const String Name = " jfkd jkreui2 rfdjk*";
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		oEdge.Name = Name;
+        oEdge.Name = Name;
 
-		Assert.AreEqual(Name, oEdge.Name);
+        Assert.AreEqual(Name, oEdge.Name);
     }
 
     //*************************************************************************
@@ -388,12 +388,12 @@ public class EdgeTest : Object
     public void
     TestParentGraph()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual(m_oGraph, oEdge.ParentGraph);
+        Assert.AreEqual(m_oGraph, oEdge.ParentGraph);
     }
 
     //*************************************************************************
@@ -409,21 +409,21 @@ public class EdgeTest : Object
     public void
     TestVertices()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.IsNotNull(oEdge.Vertices);
-		Assert.AreEqual(2, oEdge.Vertices.Length);
+        Assert.IsNotNull(oEdge.Vertices);
+        Assert.AreEqual(2, oEdge.Vertices.Length);
 
-		Assert.IsNotNull( oEdge.Vertices[0] );
-		Assert.AreEqual( oVertex1, oEdge.Vertices[0] ); 
-		Assert.AreEqual( oEdge.BackVertex, oEdge.Vertices[0] ); 
+        Assert.IsNotNull( oEdge.Vertices[0] );
+        Assert.AreEqual( oVertex1, oEdge.Vertices[0] ); 
+        Assert.AreEqual( oEdge.BackVertex, oEdge.Vertices[0] ); 
 
-		Assert.IsNotNull( oEdge.Vertices[1] );
-		Assert.AreEqual( oVertex2, oEdge.Vertices[1] ); 
-		Assert.AreEqual( oEdge.FrontVertex, oEdge.Vertices[1] ); 
+        Assert.IsNotNull( oEdge.Vertices[1] );
+        Assert.AreEqual( oVertex2, oEdge.Vertices[1] ); 
+        Assert.AreEqual( oEdge.FrontVertex, oEdge.Vertices[1] ); 
     }
 
     //*************************************************************************
@@ -439,232 +439,232 @@ public class EdgeTest : Object
     public void
     TestIsParallelTo()
     {
-		IsParallelToInfo [] aoIsParallelToInfo = new IsParallelToInfo[] {
+        IsParallelToInfo [] aoIsParallelToInfo = new IsParallelToInfo[] {
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Directed,
-				0, 1, true,
-				0, 1, true,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Directed,
+                0, 1, true,
+                0, 1, true,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Directed,
-				0, 1, true,
-				1, 0, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Directed,
+                0, 1, true,
+                1, 0, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Directed,
-				0, 1, true,
-				0, 2, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Directed,
+                0, 1, true,
+                0, 2, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Directed,
-				0, 1, true,
-				2, 1, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Directed,
+                0, 1, true,
+                2, 1, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Undirected,
-				0, 1, false,
-				0, 1, false,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Undirected,
+                0, 1, false,
+                0, 1, false,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Undirected,
-				1, 0, false,
-				0, 1, false,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Undirected,
+                1, 0, false,
+                0, 1, false,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Undirected,
-				0, 1, false,
-				1, 0, false,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Undirected,
+                0, 1, false,
+                1, 0, false,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Undirected,
-				0, 2, false,
-				0, 1, false,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Undirected,
+                0, 2, false,
+                0, 1, false,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Undirected,
-				0, 1, false,
-				2, 1, false,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Undirected,
+                0, 1, false,
+                2, 1, false,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				0, 1, false,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                0, 1, false,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				0, 1, true,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                0, 1, true,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				1, 0, true,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                1, 0, true,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				0, 1, false,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                0, 1, false,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				0, 1, true,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                0, 1, true,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				1, 0, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                1, 0, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				1, 0, true,
-				0, 1, false,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                1, 0, true,
+                0, 1, false,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				1, 0, true,
-				0, 1, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                1, 0, true,
+                0, 1, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				1, 0, true,
-				1, 0, true,
-				true
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                1, 0, true,
+                1, 0, true,
+                true
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				0, 2, false,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                0, 2, false,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				2, 1, false,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                2, 1, false,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				0, 2, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                0, 2, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, false,
-				2, 1, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, false,
+                2, 1, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				0, 2, false,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                0, 2, false,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				2, 1, false,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                2, 1, false,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				0, 2, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                0, 2, true,
+                false
+            ),
 
-			new IsParallelToInfo
-			(
-				GraphDirectedness.Mixed,
-				0, 1, true,
-				2, 1, true,
-				false
-			),
+            new IsParallelToInfo
+            (
+                GraphDirectedness.Mixed,
+                0, 1, true,
+                2, 1, true,
+                false
+            ),
 
-			};
+            };
 
-		foreach (IsParallelToInfo oIsParallelToInfo in aoIsParallelToInfo)
-		{
-			TestIsParallelTo(
+        foreach (IsParallelToInfo oIsParallelToInfo in aoIsParallelToInfo)
+        {
+            TestIsParallelTo(
 
-				oIsParallelToInfo.Directedness,
-				oIsParallelToInfo.Edge1Vertex1,
-				oIsParallelToInfo.Edge1Vertex2,
-				oIsParallelToInfo.Edge1IsDirected,
-				oIsParallelToInfo.Edge2Vertex1,
-				oIsParallelToInfo.Edge2Vertex2,
-				oIsParallelToInfo.Edge2IsDirected,
-				oIsParallelToInfo.ExpectedEdge1IsParallelToEdge2
-			);
-		}
+                oIsParallelToInfo.Directedness,
+                oIsParallelToInfo.Edge1Vertex1,
+                oIsParallelToInfo.Edge1Vertex2,
+                oIsParallelToInfo.Edge1IsDirected,
+                oIsParallelToInfo.Edge2Vertex1,
+                oIsParallelToInfo.Edge2Vertex2,
+                oIsParallelToInfo.Edge2IsDirected,
+                oIsParallelToInfo.ExpectedEdge1IsParallelToEdge2
+            );
+        }
     }
 
     //*************************************************************************
@@ -680,9 +680,9 @@ public class EdgeTest : Object
     public void
     TestClone()
     {
-		TestClone(false, false, CloneOverload.SameType);
-		TestClone(false, false, CloneOverload.SpecifiedType);
-		TestClone(false, false, CloneOverload.SpecifiedVertices);
+        TestClone(false, false, CloneOverload.SameType);
+        TestClone(false, false, CloneOverload.SpecifiedType);
+        TestClone(false, false, CloneOverload.SpecifiedVertices);
     }
 
     //*************************************************************************
@@ -698,9 +698,9 @@ public class EdgeTest : Object
     public void
     TestClone2()
     {
-		TestClone(false, true, CloneOverload.SameType);
-		TestClone(false, true, CloneOverload.SpecifiedType);
-		TestClone(false, true, CloneOverload.SpecifiedVertices);
+        TestClone(false, true, CloneOverload.SameType);
+        TestClone(false, true, CloneOverload.SpecifiedType);
+        TestClone(false, true, CloneOverload.SpecifiedVertices);
     }
 
     //*************************************************************************
@@ -716,9 +716,9 @@ public class EdgeTest : Object
     public void
     TestClone3()
     {
-		TestClone(true, false, CloneOverload.SameType);
-		TestClone(true, false, CloneOverload.SpecifiedType);
-		TestClone(true, false, CloneOverload.SpecifiedVertices);
+        TestClone(true, false, CloneOverload.SameType);
+        TestClone(true, false, CloneOverload.SpecifiedType);
+        TestClone(true, false, CloneOverload.SpecifiedVertices);
     }
 
     //*************************************************************************
@@ -734,9 +734,9 @@ public class EdgeTest : Object
     public void
     TestClone4()
     {
-		TestClone(true, true, CloneOverload.SameType);
-		TestClone(true, true, CloneOverload.SpecifiedType);
-		TestClone(true, true, CloneOverload.SpecifiedVertices);
+        TestClone(true, true, CloneOverload.SameType);
+        TestClone(true, true, CloneOverload.SpecifiedType);
+        TestClone(true, true, CloneOverload.SpecifiedVertices);
     }
 
     //*************************************************************************
@@ -748,35 +748,35 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCloneBad()
     {
-		// null newEdgeFactory.
+        // null newEdgeFactory.
 
-		try
-		{
-			IVertex oVertex1 = m_aoVertices[0];
-			IVertex oVertex2 = m_aoVertices[1];
+        try
+        {
+            IVertex oVertex1 = m_aoVertices[0];
+            IVertex oVertex2 = m_aoVertices[1];
 
-			IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+            IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-			oEdge.Clone(true, true, null);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            oEdge.Clone(true, true, null);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Clone: newEdgeFactory argument can't be null.\r\n"
-				+ "Parameter name: newEdgeFactory"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Clone: newEdgeFactory argument can't be null.\r\n"
+                + "Parameter name: newEdgeFactory"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -788,35 +788,35 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCloneBad2()
     {
-		// null vertex 1.
+        // null vertex 1.
 
-		try
-		{
-			IVertex oVertex1 = m_aoVertices[0];
-			IVertex oVertex2 = m_aoVertices[1];
+        try
+        {
+            IVertex oVertex1 = m_aoVertices[0];
+            IVertex oVertex2 = m_aoVertices[1];
 
-			IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+            IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-			oEdge.Clone(true, true, new EdgeFactory(), null, oVertex2, true);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            oEdge.Clone(true, true, new EdgeFactory(), null, oVertex2, true);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Clone: vertex1 argument can't be null.\r\n"
-				+ "Parameter name: vertex1"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Clone: vertex1 argument can't be null.\r\n"
+                + "Parameter name: vertex1"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -828,35 +828,35 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentNullException) ) ]
+    [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
     TestCloneBad3()
     {
-		// null vertex 2.
+        // null vertex 2.
 
-		try
-		{
-			IVertex oVertex1 = m_aoVertices[0];
-			IVertex oVertex2 = m_aoVertices[1];
+        try
+        {
+            IVertex oVertex1 = m_aoVertices[0];
+            IVertex oVertex2 = m_aoVertices[1];
 
-			IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+            IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-			oEdge.Clone(true, true, new EdgeFactory(), oVertex1, null, true);
-		}
-		catch (ArgumentNullException oArgumentNullException)
-		{
-			Assert.AreEqual(
+            oEdge.Clone(true, true, new EdgeFactory(), oVertex1, null, true);
+        }
+        catch (ArgumentNullException oArgumentNullException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Clone: vertex2 argument can't be null.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentNullException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Clone: vertex2 argument can't be null.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentNullException.Message
+                );
 
-			throw oArgumentNullException;
-		}
+            throw oArgumentNullException;
+        }
     }
 
     //*************************************************************************
@@ -868,44 +868,44 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCloneBad4()
     {
-		// Vertices not in same graph.
+        // Vertices not in same graph.
 
-		try
-		{
-			IVertex oVertex1 = m_aoVertices[0];
-			IVertex oVertex2 = m_aoVertices[1];
+        try
+        {
+            IVertex oVertex1 = m_aoVertices[0];
+            IVertex oVertex2 = m_aoVertices[1];
 
-			IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+            IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-			IGraph oGraph2 = new Graph();
+            IGraph oGraph2 = new Graph();
 
-			oGraph2.PerformExtraValidations = true;
+            oGraph2.PerformExtraValidations = true;
 
-			IVertex [] aoVertices2 = GraphUtil.AddVertices(oGraph2, 2);
+            IVertex [] aoVertices2 = TestGraphUtil.AddVertices(oGraph2, 2);
 
-			oEdge.Clone(true, true, new EdgeFactory(), oVertex1,
-				aoVertices2[0], true);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            oEdge.Clone(true, true, new EdgeFactory(), oVertex1,
+                aoVertices2[0], true);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.Constructor: vertex1 and vertex2 have been added to"
-				+ " different graphs.  An edge can't connect vertices from"
-				+ " different graphs.\r\n"
-				+ "Parameter name: vertex2"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.Constructor: vertex1 and vertex2 have been added to"
+                + " different graphs.  An edge can't connect vertices from"
+                + " different graphs.\r\n"
+                + "Parameter name: vertex2"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -921,13 +921,13 @@ public class EdgeTest : Object
     public void
     TestGetAdjacentVertex()
     {
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual( oVertex2, oEdge.GetAdjacentVertex(oVertex1) );
-		Assert.AreEqual( oVertex1, oEdge.GetAdjacentVertex(oVertex2) );
+        Assert.AreEqual( oVertex2, oEdge.GetAdjacentVertex(oVertex1) );
+        Assert.AreEqual( oVertex1, oEdge.GetAdjacentVertex(oVertex2) );
     }
 
     //*************************************************************************
@@ -939,43 +939,43 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestGetAdjacentVertexBad()
     {
-		// Vertex not in edge.
+        // Vertex not in edge.
 
-		try
-		{
-			IVertex oVertex1 = m_aoVertices[0];
-			IVertex oVertex2 = m_aoVertices[1];
+        try
+        {
+            IVertex oVertex1 = m_aoVertices[0];
+            IVertex oVertex2 = m_aoVertices[1];
 
-			IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+            IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-			oEdge.GetAdjacentVertex( m_aoVertices[2] );
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+            oEdge.GetAdjacentVertex( m_aoVertices[2] );
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.GetAdjacentVertex: The specified vertex is not one of"
-				+ " the edge's vertices.\r\n"
-				+ "Parameter name: vertex"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.GetAdjacentVertex: The specified vertex is not one of"
+                + " the edge's vertices.\r\n"
+                + "Parameter name: vertex"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
     //  Enum: CloneOverload
     //
     /// <summary>
-	/// Specifies which overload of Edge.Clone() to call.
+    /// Specifies which overload of Edge.Clone() to call.
     /// </summary>
     //*************************************************************************
 
@@ -996,7 +996,7 @@ public class EdgeTest : Object
 
         /// <summary>
         /// Call Clone(Boolean, Boolean, IEdgeFactory, IVertex, IVertex,
-		/// Boolean).
+        /// Boolean).
         /// </summary>
 
         SpecifiedVertices = 2,
@@ -1008,126 +1008,126 @@ public class EdgeTest : Object
     /// <summary>
     /// Tests the Clone() methods.
     /// </summary>
-	///
-	/// <param name="bCopyMetadataValues">
-	/// true to copy metadata values while cloning.
-	/// </param>
-	///
-	/// <param name="bCopyTag">
-	/// true to copy tag values while cloning.
-	/// </param>
-	///
-	/// <param name="eCloneOverload">
-	/// Specifies which overload of Clone() to call.
-	/// </param>
+    ///
+    /// <param name="bCopyMetadataValues">
+    /// true to copy metadata values while cloning.
+    /// </param>
+    ///
+    /// <param name="bCopyTag">
+    /// true to copy tag values while cloning.
+    /// </param>
+    ///
+    /// <param name="eCloneOverload">
+    /// Specifies which overload of Clone() to call.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestClone
-	(
-		Boolean bCopyMetadataValues,
-		Boolean bCopyTag,
-		CloneOverload eCloneOverload
-	)
+    (
+        Boolean bCopyMetadataValues,
+        Boolean bCopyTag,
+        CloneOverload eCloneOverload
+    )
     {
-		// Create N objects, set random metadata and Tag on each object, clone
-		// each object, check new object.
+        // Create N objects, set random metadata and Tag on each object, clone
+        // each object, check new object.
 
         const Int32 Vertices = 1000;
 
-		CreateGraph(GraphDirectedness.Directed, Vertices);
+        CreateGraph(GraphDirectedness.Directed, Vertices);
 
-		// Connect the first vertex to each of the other vertices.
+        // Connect the first vertex to each of the other vertices.
 
-		IEdge [] aoEdges = new Edge[Vertices - 1];
+        IEdge [] aoEdges = new Edge[Vertices - 1];
 
-		for (Int32 i = 0; i < Vertices - 1; i++)
-		{
-			IEdge oEdge = aoEdges[i] =
-				CreateEdge(m_aoVertices[0], m_aoVertices[i + 1], true);
+        for (Int32 i = 0; i < Vertices - 1; i++)
+        {
+            IEdge oEdge = aoEdges[i] =
+                CreateEdge(m_aoVertices[0], m_aoVertices[i + 1], true);
 
-			MetadataUtil.SetRandomMetadata(oEdge, true, true, i);
+            MetadataUtil.SetRandomMetadata(oEdge, true, true, i);
 
-			oEdge.Name = oEdge.ID.ToString();
-		}
+            oEdge.Name = oEdge.ID.ToString();
+        }
 
-		// Create a second graph with 2 vertices for the
-		// CloneOverload.SpecifiedVertices case.
+        // Create a second graph with 2 vertices for the
+        // CloneOverload.SpecifiedVertices case.
 
-		IGraph oGraph2 = new Graph();
+        IGraph oGraph2 = new Graph();
 
-		oGraph2.PerformExtraValidations = true;
+        oGraph2.PerformExtraValidations = true;
 
-		IVertex [] aoVertices2 = GraphUtil.AddVertices(oGraph2, 2);
+        IVertex [] aoVertices2 = TestGraphUtil.AddVertices(oGraph2, 2);
 
-		for (Int32 i = 0; i < Vertices - 1; i++)
-		{
-			// Clone the object.
+        for (Int32 i = 0; i < Vertices - 1; i++)
+        {
+            // Clone the object.
 
-			IEdge oEdge = aoEdges[i];
+            IEdge oEdge = aoEdges[i];
 
-			IEdge oNewEdge = null;
+            IEdge oNewEdge = null;
 
-			switch (eCloneOverload)
-			{
-				case CloneOverload.SameType:
+            switch (eCloneOverload)
+            {
+                case CloneOverload.SameType:
 
-					oNewEdge = oEdge.Clone(bCopyMetadataValues, bCopyTag);
+                    oNewEdge = oEdge.Clone(bCopyMetadataValues, bCopyTag);
 
-					break;
+                    break;
 
-				case CloneOverload.SpecifiedType:
+                case CloneOverload.SpecifiedType:
 
-					oNewEdge = oEdge.Clone(
-						bCopyMetadataValues, bCopyTag, m_oEdgeFactory);
+                    oNewEdge = oEdge.Clone(
+                        bCopyMetadataValues, bCopyTag, m_oEdgeFactory);
 
-					break;
+                    break;
 
-				case CloneOverload.SpecifiedVertices:
+                case CloneOverload.SpecifiedVertices:
 
-					oNewEdge = oEdge.Clone(
-						bCopyMetadataValues, bCopyTag, m_oEdgeFactory,
-							aoVertices2[0], aoVertices2[1], true);
+                    oNewEdge = oEdge.Clone(
+                        bCopyMetadataValues, bCopyTag, m_oEdgeFactory,
+                            aoVertices2[0], aoVertices2[1], true);
 
-					break;
+                    break;
 
-				default:
+                default:
 
-					Debug.Assert(false);
-					break;
-			}
+                    Debug.Assert(false);
+                    break;
+            }
 
-			// Check the metadata on the new object.
+            // Check the metadata on the new object.
 
-			MetadataUtil.CheckRandomMetadata(
-				oNewEdge, bCopyMetadataValues, bCopyTag, i);
+            MetadataUtil.CheckRandomMetadata(
+                oNewEdge, bCopyMetadataValues, bCopyTag, i);
 
-			// Check the name and ID on the new object.
+            // Check the name and ID on the new object.
 
-			Assert.AreEqual(oEdge.Name, oNewEdge.Name);
+            Assert.AreEqual(oEdge.Name, oNewEdge.Name);
 
-			Assert.AreNotEqual(oEdge.ID, oNewEdge.ID);
+            Assert.AreNotEqual(oEdge.ID, oNewEdge.ID);
 
-			// Check the vertices on the new object.
+            // Check the vertices on the new object.
 
-			Assert.IsNotNull(oNewEdge.Vertices);
-			Assert.AreEqual(2, oNewEdge.Vertices.Length);
+            Assert.IsNotNull(oNewEdge.Vertices);
+            Assert.AreEqual(2, oNewEdge.Vertices.Length);
 
-			if (eCloneOverload == CloneOverload.SpecifiedVertices)
-			{
-				Assert.AreEqual( aoVertices2[0], oNewEdge.Vertices[0] );
-				Assert.AreEqual( aoVertices2[1], oNewEdge.Vertices[1] );
+            if (eCloneOverload == CloneOverload.SpecifiedVertices)
+            {
+                Assert.AreEqual( aoVertices2[0], oNewEdge.Vertices[0] );
+                Assert.AreEqual( aoVertices2[1], oNewEdge.Vertices[1] );
 
-				// Make sure the cloned edge can be added to the second graph.
+                // Make sure the cloned edge can be added to the second graph.
 
-				oGraph2.Edges.Add(oNewEdge);
-			}
-			else
-			{
-				Assert.AreEqual( oEdge.Vertices[0], oNewEdge.Vertices[0] );
-				Assert.AreEqual( oEdge.Vertices[1], oNewEdge.Vertices[1] );
-			}
-		}
+                oGraph2.Edges.Add(oNewEdge);
+            }
+            else
+            {
+                Assert.AreEqual( oEdge.Vertices[0], oNewEdge.Vertices[0] );
+                Assert.AreEqual( oEdge.Vertices[1], oNewEdge.Vertices[1] );
+            }
+        }
     }
 
     //*************************************************************************
@@ -1136,100 +1136,100 @@ public class EdgeTest : Object
     /// <summary>
     /// Tests the IsParallelTo and IsAntiparallelTo properties.
     /// </summary>
-	///
+    ///
     /// <param name="eDirectedness">
-	/// Specifies the type of edges that can be added to the graph. 
+    /// Specifies the type of edges that can be added to the graph. 
     /// </param>
-	///
+    ///
     /// <param name="iEdge1Vertex1">
-	/// Index of the first vertex of the first edge.
+    /// Index of the first vertex of the first edge.
     /// </param>
-	///
+    ///
     /// <param name="iEdge1Vertex2">
-	/// Index of the second vertex of the first edge.
+    /// Index of the second vertex of the first edge.
     /// </param>
-	///
+    ///
     /// <param name="bEdge1IsDirected">
-	/// true if the first edge is directed.
+    /// true if the first edge is directed.
     /// </param>
-	///
+    ///
     /// <param name="iEdge2Vertex1">
-	/// Index of the first vertex of the second edge.
+    /// Index of the first vertex of the second edge.
     /// </param>
-	///
+    ///
     /// <param name="iEdge2Vertex2">
-	/// Index of the second vertex of the second edge.
+    /// Index of the second vertex of the second edge.
     /// </param>
-	///
+    ///
     /// <param name="bEdge2IsDirected">
-	/// true if the second edge is directed.
+    /// true if the second edge is directed.
     /// </param>
-	///
+    ///
     /// <param name="bExpectedEdge1IsParallelToEdge2">
-	/// true if the the first edge should be considered parallel to the second
-	/// edge.
+    /// true if the the first edge should be considered parallel to the second
+    /// edge.
     /// </param>
     //*************************************************************************
 
     protected void
     TestIsParallelTo
-	(
-		GraphDirectedness eDirectedness,
-		Int32 iEdge1Vertex1,
-		Int32 iEdge1Vertex2,
-		Boolean bEdge1IsDirected,
-		Int32 iEdge2Vertex1,
-		Int32 iEdge2Vertex2,
-		Boolean bEdge2IsDirected,
-		Boolean bExpectedEdge1IsParallelToEdge2
-	)
+    (
+        GraphDirectedness eDirectedness,
+        Int32 iEdge1Vertex1,
+        Int32 iEdge1Vertex2,
+        Boolean bEdge1IsDirected,
+        Int32 iEdge2Vertex1,
+        Int32 iEdge2Vertex2,
+        Boolean bEdge2IsDirected,
+        Boolean bExpectedEdge1IsParallelToEdge2
+    )
     {
-		const Int32 Vertices = 100;
+        const Int32 Vertices = 100;
 
-		CreateGraph(eDirectedness, Vertices);
+        CreateGraph(eDirectedness, Vertices);
 
-		IVertex oEdge1Vertex1 = m_aoVertices[iEdge1Vertex1];
-		IVertex oEdge1Vertex2 = m_aoVertices[iEdge1Vertex2];
+        IVertex oEdge1Vertex1 = m_aoVertices[iEdge1Vertex1];
+        IVertex oEdge1Vertex2 = m_aoVertices[iEdge1Vertex2];
 
-		IVertex oEdge2Vertex1 = m_aoVertices[iEdge2Vertex1];
-		IVertex oEdge2Vertex2 = m_aoVertices[iEdge2Vertex2];
+        IVertex oEdge2Vertex1 = m_aoVertices[iEdge2Vertex1];
+        IVertex oEdge2Vertex2 = m_aoVertices[iEdge2Vertex2];
 
-		IEdge oEdge1 =
-			CreateEdge(oEdge1Vertex1, oEdge1Vertex2, bEdge1IsDirected);
+        IEdge oEdge1 =
+            CreateEdge(oEdge1Vertex1, oEdge1Vertex2, bEdge1IsDirected);
 
-		IEdge oEdge2 =
-			CreateEdge(oEdge2Vertex1, oEdge2Vertex2, bEdge2IsDirected);
+        IEdge oEdge2 =
+            CreateEdge(oEdge2Vertex1, oEdge2Vertex2, bEdge2IsDirected);
 
         IEdgeCollection oEdgeCollection = m_oGraph.Edges;
 
         oEdgeCollection.Add(oEdge1);
         oEdgeCollection.Add(oEdge2);
 
-		Boolean bActualEdge1IsParallelToEdge2 = oEdge1.IsParallelTo(oEdge2);
+        Boolean bActualEdge1IsParallelToEdge2 = oEdge1.IsParallelTo(oEdge2);
 
-		Assert.AreEqual(
-			bExpectedEdge1IsParallelToEdge2, bActualEdge1IsParallelToEdge2);
+        Assert.AreEqual(
+            bExpectedEdge1IsParallelToEdge2, bActualEdge1IsParallelToEdge2);
 
-		Boolean bActualEdge2IsParallelToEdge1 = oEdge2.IsParallelTo(oEdge1);
+        Boolean bActualEdge2IsParallelToEdge1 = oEdge2.IsParallelTo(oEdge1);
 
-		Assert.AreEqual(
-			bExpectedEdge1IsParallelToEdge2, bActualEdge2IsParallelToEdge1);
+        Assert.AreEqual(
+            bExpectedEdge1IsParallelToEdge2, bActualEdge2IsParallelToEdge1);
 
-		Boolean bActualEdge1IsAntiparallelToEdge2 =
-			oEdge1.IsAntiparallelTo(oEdge2);
+        Boolean bActualEdge1IsAntiparallelToEdge2 =
+            oEdge1.IsAntiparallelTo(oEdge2);
 
-		Assert.AreEqual(
-			!bExpectedEdge1IsParallelToEdge2,
-			bActualEdge1IsAntiparallelToEdge2
-			);
+        Assert.AreEqual(
+            !bExpectedEdge1IsParallelToEdge2,
+            bActualEdge1IsAntiparallelToEdge2
+            );
 
-		Boolean bActualEdge2IsAntiparallelToEdge1 =
-			oEdge2.IsAntiparallelTo(oEdge1);
+        Boolean bActualEdge2IsAntiparallelToEdge1 =
+            oEdge2.IsAntiparallelTo(oEdge1);
 
-		Assert.AreEqual(
-			!bExpectedEdge1IsParallelToEdge2,
-			bActualEdge2IsAntiparallelToEdge1
-			);
+        Assert.AreEqual(
+            !bExpectedEdge1IsParallelToEdge2,
+            bActualEdge2IsAntiparallelToEdge1
+            );
     }
 
     //*************************************************************************
@@ -1245,15 +1245,15 @@ public class EdgeTest : Object
     public void
     TestToString()
     {
-		// Default format.
+        // Default format.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
-			oEdge.ToString() );
+        Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
+            oEdge.ToString() );
     }
 
     //*************************************************************************
@@ -1269,15 +1269,15 @@ public class EdgeTest : Object
     public void
     TestToString2()
     {
-		// null format.
+        // null format.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
-			oEdge.ToString(null) );
+        Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
+            oEdge.ToString(null) );
     }
 
     //*************************************************************************
@@ -1293,15 +1293,15 @@ public class EdgeTest : Object
     public void
     TestToString3()
     {
-		// Empty string format.
+        // Empty string format.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
-			oEdge.ToString(String.Empty) );
+        Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
+            oEdge.ToString(String.Empty) );
     }
 
     //*************************************************************************
@@ -1317,15 +1317,15 @@ public class EdgeTest : Object
     public void
     TestToString4()
     {
-		// G format.
+        // G format.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
-			oEdge.ToString("G") );
+        Assert.AreEqual( "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format),
+            oEdge.ToString("G") );
     }
 
     //*************************************************************************
@@ -1341,54 +1341,54 @@ public class EdgeTest : Object
     public void
     TestToString5()
     {
-		// P format, directed edge.
+        // P format, directed edge.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		const String Name = "jdjdjdj";
-		const String Tag = "the tag";
+        const String Name = "jdjdjdj";
+        const String Tag = "the tag";
 
-		const String Key1 = "FirstKey";
-		const String Value1 = "value 1";
+        const String Key1 = "FirstKey";
+        const String Value1 = "value 1";
 
-		const String Key2 = "SecondKey";
-		const Int32 Value2 = 123;
+        const String Key2 = "SecondKey";
+        const Int32 Value2 = 123;
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		// Set the edge's properties.
+        // Set the edge's properties.
 
-		oEdge.Name = Name;
-		oEdge.Tag = Tag;
-		oEdge.SetValue(Key1, Value1);
-		oEdge.SetValue(Key2, Value2);
+        oEdge.Name = Name;
+        oEdge.Tag = Tag;
+        oEdge.SetValue(Key1, Value1);
+        oEdge.SetValue(Key2, Value2);
 
-		String sExpectedValue =
+        String sExpectedValue =
 
-	    "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
-		+ "Name = " + Name + "\r\n"
-		+ "Tag = " + Tag + "\r\n"
-		+ "Values = 2 key/value pairs\r\n"
+        "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "Name = " + Name + "\r\n"
+        + "Tag = " + Tag + "\r\n"
+        + "Values = 2 key/value pairs\r\n"
 
-		+ "BackVertex = ID = " +
-			oEdge.BackVertex.ID.ToString(NodeXLBase.Int32Format)
-			+ "\r\n"
+        + "BackVertex = ID = " +
+            oEdge.BackVertex.ID.ToString(NodeXLBase.Int32Format)
+            + "\r\n"
 
-		+ "FrontVertex = ID = " +
-			oEdge.FrontVertex.ID.ToString(NodeXLBase.Int32Format)
-			+ "\r\n"
+        + "FrontVertex = ID = " +
+            oEdge.FrontVertex.ID.ToString(NodeXLBase.Int32Format)
+            + "\r\n"
 
-		+ "IsDirected = True\r\n"
-		+ "IsSelfLoop = False\r\n"
+        + "IsDirected = True\r\n"
+        + "IsSelfLoop = False\r\n"
 
-		+ "ParentGraph = ID = "
-			+ m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "ParentGraph = ID = "
+            + m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
 
-		+ "Vertices = 2 vertices\r\n"
-		;
+        + "Vertices = 2 vertices\r\n"
+        ;
 
-		Assert.AreEqual( sExpectedValue, oEdge.ToString("P") );
+        Assert.AreEqual( sExpectedValue, oEdge.ToString("P") );
     }
 
     //*************************************************************************
@@ -1404,29 +1404,29 @@ public class EdgeTest : Object
     public void
     TestToString6()
     {
-		// P format, undirected edge.
+        // P format, undirected edge.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, false);
 
-		String sExpectedValue =
+        String sExpectedValue =
 
-		"ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
-		+ "Name = [null]\r\n"
-		+ "Tag = [null]\r\n"
-		+ "Values = 0 key/value pairs\r\n"
-		+ "IsDirected = False\r\n"
-		+ "IsSelfLoop = False\r\n"
+        "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "Name = [null]\r\n"
+        + "Tag = [null]\r\n"
+        + "Values = 0 key/value pairs\r\n"
+        + "IsDirected = False\r\n"
+        + "IsSelfLoop = False\r\n"
 
-		+ "ParentGraph = ID = "
-			+ m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "ParentGraph = ID = "
+            + m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
 
-		+ "Vertices = 2 vertices\r\n"
-		;
+        + "Vertices = 2 vertices\r\n"
+        ;
 
-		Assert.AreEqual( sExpectedValue, oEdge.ToString("P") );
+        Assert.AreEqual( sExpectedValue, oEdge.ToString("P") );
     }
 
     //*************************************************************************
@@ -1442,28 +1442,28 @@ public class EdgeTest : Object
     public void
     TestToString7()
     {
-		// P format, undirected self-loop edge.
+        // P format, undirected self-loop edge.
 
-		IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex1 = m_aoVertices[0];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex1, false);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex1, false);
 
-		String sExpectedValue =
+        String sExpectedValue =
 
-		"ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
-		+ "Name = [null]\r\n"
-		+ "Tag = [null]\r\n"
-		+ "Values = 0 key/value pairs\r\n"
-		+ "IsDirected = False\r\n"
-		+ "IsSelfLoop = True\r\n"
+        "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "Name = [null]\r\n"
+        + "Tag = [null]\r\n"
+        + "Values = 0 key/value pairs\r\n"
+        + "IsDirected = False\r\n"
+        + "IsSelfLoop = True\r\n"
 
-		+ "ParentGraph = ID = "
-			+ m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "ParentGraph = ID = "
+            + m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
 
-		+ "Vertices = 2 vertices\r\n"
-		;
+        + "Vertices = 2 vertices\r\n"
+        ;
 
-		Assert.AreEqual( sExpectedValue, oEdge.ToString("P") );
+        Assert.AreEqual( sExpectedValue, oEdge.ToString("P") );
     }
 
     //*************************************************************************
@@ -1479,60 +1479,60 @@ public class EdgeTest : Object
     public void
     TestToString8()
     {
-		// D format, directed edge.
+        // D format, directed edge.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		const String Name = "jdjdjdj";
-		const String Tag = "the tag";
+        const String Name = "jdjdjdj";
+        const String Tag = "the tag";
 
-		const String Key1 = "FirstKey";
-		const String Value1 = "value 1";
+        const String Key1 = "FirstKey";
+        const String Value1 = "value 1";
 
-		const String Key2 = "SecondKey";
-		const Int32 Value2 = 123;
+        const String Key2 = "SecondKey";
+        const Int32 Value2 = 123;
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		// Set the edge's properties.
+        // Set the edge's properties.
 
-		oEdge.Name = Name;
-		oEdge.Tag = Tag;
-		oEdge.SetValue(Key1, Value1);
-		oEdge.SetValue(Key2, Value2);
+        oEdge.Name = Name;
+        oEdge.Tag = Tag;
+        oEdge.SetValue(Key1, Value1);
+        oEdge.SetValue(Key2, Value2);
 
-		String sExpectedValue =
+        String sExpectedValue =
 
-		"ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
-		+ "Name = " + Name + "\r\n"
-		+ "Tag = " + Tag + "\r\n"
-		+ "Values = 2 key/value pairs\r\n"
-		+ "\tKey = " + Key1 + ", Value = " + Value1 + "\r\n"
-		+ "\tKey = " + Key2 + ", Value = " + Value2 + "\r\n"
+        "ID = " + oEdge.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "Name = " + Name + "\r\n"
+        + "Tag = " + Tag + "\r\n"
+        + "Values = 2 key/value pairs\r\n"
+        + "\tKey = " + Key1 + ", Value = " + Value1 + "\r\n"
+        + "\tKey = " + Key2 + ", Value = " + Value2 + "\r\n"
 
-		+ "BackVertex = ID = " +
-			oEdge.BackVertex.ID.ToString(NodeXLBase.Int32Format)
-			+ "\r\n"
+        + "BackVertex = ID = " +
+            oEdge.BackVertex.ID.ToString(NodeXLBase.Int32Format)
+            + "\r\n"
 
-		+ "FrontVertex = ID = " +
-			oEdge.FrontVertex.ID.ToString(NodeXLBase.Int32Format)
-			+ "\r\n"
+        + "FrontVertex = ID = " +
+            oEdge.FrontVertex.ID.ToString(NodeXLBase.Int32Format)
+            + "\r\n"
 
-		+ "IsDirected = True\r\n"
-		+ "IsSelfLoop = False\r\n"
+        + "IsDirected = True\r\n"
+        + "IsSelfLoop = False\r\n"
 
-		+ "ParentGraph = ID = "
-			+ m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
+        + "ParentGraph = ID = "
+            + m_oGraph.ID.ToString(NodeXLBase.Int32Format) + "\r\n"
 
-		+ "Vertices = 2 vertices\r\n"
-		+ "\tID = " + oEdge.Vertices[0].ID.ToString(
-			NodeXLBase.Int32Format) + "\r\n"
-		+ "\tID = " + oEdge.Vertices[1].ID.ToString(
-			NodeXLBase.Int32Format) + "\r\n"
-		;
+        + "Vertices = 2 vertices\r\n"
+        + "\tID = " + oEdge.Vertices[0].ID.ToString(
+            NodeXLBase.Int32Format) + "\r\n"
+        + "\tID = " + oEdge.Vertices[1].ID.ToString(
+            NodeXLBase.Int32Format) + "\r\n"
+        ;
 
-		Assert.AreEqual( sExpectedValue, oEdge.ToString("D") );
+        Assert.AreEqual( sExpectedValue, oEdge.ToString("D") );
     }
 
     //*************************************************************************
@@ -1544,35 +1544,35 @@ public class EdgeTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(FormatException) ) ]
+    [ ExpectedException( typeof(FormatException) ) ]
 
     public void
     TestToStringBad()
     {
-		// Bad format.
+        // Bad format.
 
-		IVertex oVertex1 = m_aoVertices[0];
-		IVertex oVertex2 = m_aoVertices[1];
+        IVertex oVertex1 = m_aoVertices[0];
+        IVertex oVertex2 = m_aoVertices[1];
 
-		IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
+        IEdge oEdge = CreateEdge(oVertex1, oVertex2, true);
 
-		try
-		{
-			oEdge.ToString("Bad");
-		}
-		catch (FormatException oFormatException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            oEdge.ToString("Bad");
+        }
+        catch (FormatException oFormatException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "Edge.ToString: Invalid format.  Available formats are"
-				+ " G, P, and D."
-				,
-				oFormatException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "Edge.ToString: Invalid format.  Available formats are"
+                + " G, P, and D."
+                ,
+                oFormatException.Message
+                );
 
-			throw oFormatException;
-		}
+            throw oFormatException;
+        }
     }
 
     //*************************************************************************
@@ -1581,30 +1581,30 @@ public class EdgeTest : Object
     /// <summary>
     /// Creates a graph and adds vertices to it.
     /// </summary>
-	///
+    ///
     /// <param name="eDirectedness">
-	/// Specifies the type of edges that can be added to the graph. 
+    /// Specifies the type of edges that can be added to the graph. 
     /// </param>
-	///
+    ///
     /// <param name="iVertices">
-	/// Number of vertices to add to the graph.
+    /// Number of vertices to add to the graph.
     /// </param>
     //*************************************************************************
 
     protected void
     CreateGraph
-	(
-		GraphDirectedness eDirectedness,
-		Int32 iVertices
-	)
+    (
+        GraphDirectedness eDirectedness,
+        Int32 iVertices
+    )
     {
-		Debug.Assert(iVertices >= 0);
+        Debug.Assert(iVertices >= 0);
 
-		m_oGraph = new Graph(eDirectedness);
+        m_oGraph = new Graph(eDirectedness);
 
-		m_oGraph.PerformExtraValidations = true;
+        m_oGraph.PerformExtraValidations = true;
 
-		m_aoVertices = GraphUtil.AddVertices(m_oGraph, iVertices);
+        m_aoVertices = TestGraphUtil.AddVertices(m_oGraph, iVertices);
     }
 
     //*************************************************************************
@@ -1613,38 +1613,38 @@ public class EdgeTest : Object
     /// <summary>
     /// Creates an Edge object.
     /// </summary>
-	///
+    ///
     /// <param name="oVertex1">
-	///	The edge's first vertex.  The vertex must have already been added to
-	/// the graph to which the new edge will be added.
+    /// The edge's first vertex.  The vertex must have already been added to
+    /// the graph to which the new edge will be added.
     /// </param>
     ///
     /// <param name="oVertex2">
-	///	The edge's second vertex.  The vertex must have already been added to
-	/// the graph to which the new edge will be added.
+    /// The edge's second vertex.  The vertex must have already been added to
+    /// the graph to which the new edge will be added.
     /// </param>
     ///
     /// <param name="bIsDirected">
-	///	If true, <paramref name="oVertex1" /> is the edge's back vertex and
-	///	<paramref name="oVertex2" /> is the edge's front vertex.  If false, the
-	/// edge is undirected.
+    /// If true, <paramref name="oVertex1" /> is the edge's back vertex and
+    /// <paramref name="oVertex2" /> is the edge's front vertex.  If false, the
+    /// edge is undirected.
     /// </param>
     ///
     /// <returns>
-	///	The new Edge object.
+    /// The new Edge object.
     /// </returns>
     //*************************************************************************
 
-	protected IEdge
-	CreateEdge
-	(
-		IVertex oVertex1,
-		IVertex oVertex2,
-		Boolean bIsDirected
-	)
-	{
-		return ( m_oEdgeFactory.CreateEdge(oVertex1, oVertex2, bIsDirected) );
-	}
+    protected IEdge
+    CreateEdge
+    (
+        IVertex oVertex1,
+        IVertex oVertex2,
+        Boolean bIsDirected
+    )
+    {
+        return ( m_oEdgeFactory.CreateEdge(oVertex1, oVertex2, bIsDirected) );
+    }
 
 
     //*************************************************************************
@@ -1655,56 +1655,56 @@ public class EdgeTest : Object
 
     protected IVertex [] m_aoVertices;
 
-	/// Graph that owns the vertices.
+    /// Graph that owns the vertices.
 
-	protected IGraph m_oGraph;
+    protected IGraph m_oGraph;
 
-	/// Object that creates Edge objects.
+    /// Object that creates Edge objects.
 
-	protected EdgeFactory m_oEdgeFactory;
+    protected EdgeFactory m_oEdgeFactory;
 
 
-	//*************************************************************************
-	//  Struct: TestIsParallelToInfo
-	//
-	/// <summary>
-	/// Stores test data for the TestIsParallelTo() method.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Struct: TestIsParallelToInfo
+    //
+    /// <summary>
+    /// Stores test data for the TestIsParallelTo() method.
+    /// </summary>
+    //*************************************************************************
 
-	protected struct IsParallelToInfo
-	{
-		public IsParallelToInfo
-		(
-			GraphDirectedness eDirectedness,
-			Int32 iEdge1Vertex1,
-			Int32 iEdge1Vertex2,
-			Boolean bEdge1IsDirected,
-			Int32 iEdge2Vertex1,
-			Int32 iEdge2Vertex2,
-			Boolean bEdge2IsDirected,
-			Boolean bExpectedEdge1IsParallelToEdge2
-		)
-		{
-			Directedness = eDirectedness;
-			Edge1Vertex1 = iEdge1Vertex1;
-			Edge1Vertex2 = iEdge1Vertex2;
-			Edge1IsDirected = bEdge1IsDirected;
-			Edge2Vertex1 = iEdge2Vertex1;
-			Edge2Vertex2 = iEdge2Vertex2;
-			Edge2IsDirected = bEdge2IsDirected;
-			ExpectedEdge1IsParallelToEdge2 = bExpectedEdge1IsParallelToEdge2;
-		}
+    protected struct IsParallelToInfo
+    {
+        public IsParallelToInfo
+        (
+            GraphDirectedness eDirectedness,
+            Int32 iEdge1Vertex1,
+            Int32 iEdge1Vertex2,
+            Boolean bEdge1IsDirected,
+            Int32 iEdge2Vertex1,
+            Int32 iEdge2Vertex2,
+            Boolean bEdge2IsDirected,
+            Boolean bExpectedEdge1IsParallelToEdge2
+        )
+        {
+            Directedness = eDirectedness;
+            Edge1Vertex1 = iEdge1Vertex1;
+            Edge1Vertex2 = iEdge1Vertex2;
+            Edge1IsDirected = bEdge1IsDirected;
+            Edge2Vertex1 = iEdge2Vertex1;
+            Edge2Vertex2 = iEdge2Vertex2;
+            Edge2IsDirected = bEdge2IsDirected;
+            ExpectedEdge1IsParallelToEdge2 = bExpectedEdge1IsParallelToEdge2;
+        }
 
-		public GraphDirectedness Directedness;
-		public Int32 Edge1Vertex1;
-		public Int32 Edge1Vertex2;
-		public Boolean Edge1IsDirected;
-		public Int32 Edge2Vertex1;
-		public Int32 Edge2Vertex2;
-		public Boolean Edge2IsDirected;
-		public Boolean ExpectedEdge1IsParallelToEdge2;
-	}
+        public GraphDirectedness Directedness;
+        public Int32 Edge1Vertex1;
+        public Int32 Edge1Vertex2;
+        public Boolean Edge1IsDirected;
+        public Int32 Edge2Vertex1;
+        public Int32 Edge2Vertex2;
+        public Boolean Edge2IsDirected;
+        public Boolean ExpectedEdge1IsParallelToEdge2;
+    }
 }
 
 }

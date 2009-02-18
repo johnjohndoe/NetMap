@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ namespace Microsoft.NodeXL.Core
 //  Class: GraphFactoryBase
 //
 /// <summary>
-///	Base class for graph factories.
+/// Base class for graph factories.
 /// </summary>
 ///
 /// <remarks>
@@ -25,22 +25,22 @@ namespace Microsoft.NodeXL.Core
 //*****************************************************************************
 
 public abstract class GraphFactoryBase :
-	GraphVertexEdgeFactoryBase, IGraphFactory
+    GraphVertexEdgeFactoryBase, IGraphFactory
 {
     //*************************************************************************
     //  Constructor: GraphFactoryBase()
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphFactoryBase" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public GraphFactoryBase()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -51,47 +51,47 @@ public abstract class GraphFactoryBase :
     /// </summary>
     ///
     /// <param name="directedness">
-	///	Specifies the type of edges that can be added to the graph.
+    /// Specifies the type of edges that can be added to the graph.
     /// </param>
-	///
+    ///
     /// <param name="restrictions">
-	///	Specifies restrictions imposed by the graph.
+    /// Specifies restrictions imposed by the graph.
     /// </param>
-	///
+    ///
     /// <returns>
-	///	The <see cref="IGraph" /> interface on a newly created graph object.
+    /// The <see cref="IGraph" /> interface on a newly created graph object.
     /// </returns>
     //*************************************************************************
 
-	public IGraph
-	CreateGraph
-	(
-		GraphDirectedness directedness,
-		GraphRestrictions restrictions
-	)
-	{
-		AssertValid();
+    public IGraph
+    CreateGraph
+    (
+        GraphDirectedness directedness,
+        GraphRestrictions restrictions
+    )
+    {
+        AssertValid();
 
         const String MethodName = "CreateGraph";
 
-		ArgumentChecker oArgumentChecker = this.ArgumentChecker;
+        ArgumentChecker oArgumentChecker = this.ArgumentChecker;
 
-		oArgumentChecker.CheckArgumentIsDefined(
-			MethodName, "directedness", directedness,
+        oArgumentChecker.CheckArgumentIsDefined(
+            MethodName, "directedness", directedness,
             typeof(GraphDirectedness) );
 
-		if ( (restrictions & ~GraphRestrictions.All) != 0 )
-		{
+        if ( (restrictions & ~GraphRestrictions.All) != 0 )
+        {
             oArgumentChecker.ThrowArgumentException(
-				MethodName, "restrictions",
-				
-				"Must be an ORed combination of the flags in the"
-				+ " GraphRestrictions enumeration."
-				);
-		}
+                MethodName, "restrictions",
+                
+                "Must be an ORed combination of the flags in the"
+                + " GraphRestrictions enumeration."
+                );
+        }
 
-		return ( CreateGraphCore(directedness, restrictions) );
-	}
+        return ( CreateGraphCore(directedness, restrictions) );
+    }
 
     //*************************************************************************
     //  Method: CreateGraphCore()
@@ -101,28 +101,28 @@ public abstract class GraphFactoryBase :
     /// </summary>
     ///
     /// <param name="directedness">
-	///	Specifies the type of edges that can be added to the graph.
+    /// Specifies the type of edges that can be added to the graph.
     /// </param>
-	///
+    ///
     /// <param name="restrictions">
-	///	Specifies restrictions imposed by the graph.
+    /// Specifies restrictions imposed by the graph.
     /// </param>
-	///
+    ///
     /// <returns>
-	///	The <see cref="IGraph" /> interface on a newly created graph object.
+    /// The <see cref="IGraph" /> interface on a newly created graph object.
     /// </returns>
-	///
-	/// <remarks>
-	/// The arguments have already been checked for validity.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The arguments have already been checked for validity.
+    /// </remarks>
     //*************************************************************************
 
-	protected abstract IGraph
-	CreateGraphCore
-	(
-		GraphDirectedness directedness,
-		GraphRestrictions restrictions
-	);
+    protected abstract IGraph
+    CreateGraphCore
+    (
+        GraphDirectedness directedness,
+        GraphRestrictions restrictions
+    );
 
 
     //*************************************************************************
@@ -138,9 +138,9 @@ public abstract class GraphFactoryBase :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -148,7 +148,7 @@ public abstract class GraphFactoryBase :
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

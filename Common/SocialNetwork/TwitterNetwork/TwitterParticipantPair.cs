@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -25,35 +25,35 @@ public class TwitterParticipantPair : ParticipantPair
     //
     /// <overloads>
     /// Initializes a new instance of the <see cref="TwitterParticipantPair" />
-	/// class.
+    /// class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="TwitterParticipantPair" />
-	/// class with specified values.
+    /// class with specified values.
     /// </summary>
-	///
+    ///
     /// <param name="participant1">
-	/// The first participant, as a Twitter screen name.  Can't be null or
-	/// empty.
+    /// The first participant, as a Twitter screen name.  Can't be null or
+    /// empty.
     /// </param>
-	///
+    ///
     /// <param name="participant2">
-	/// The second participant, as a Twitter screen name.  Can't be null or
-	/// empty.
+    /// The second participant, as a Twitter screen name.  Can't be null or
+    /// empty.
     /// </param>
     //*************************************************************************
 
     public TwitterParticipantPair
-	(
-		String participant1,
-		String participant2
-	)
-	: base(participant1, participant2)
+    (
+        String participant1,
+        String participant2
+    )
+    : base(participant1, participant2)
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -61,21 +61,21 @@ public class TwitterParticipantPair : ParticipantPair
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="TwitterParticipantPair" />
-	/// class with default values.
+    /// class with default values.
     /// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for XML serialization only.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for XML serialization only.
+    /// </remarks>
     //*************************************************************************
 
     public TwitterParticipantPair()
-	:
-	this("Participant1", "Participant2")
+    :
+    this("Participant1", "Participant2")
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -92,9 +92,9 @@ public class TwitterParticipantPair : ParticipantPair
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -102,7 +102,7 @@ public class TwitterParticipantPair : ParticipantPair
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

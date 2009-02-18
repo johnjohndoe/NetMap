@@ -1,9 +1,11 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Algorithms;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -16,7 +18,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <remarks>
 /// An instance of this class gets passed to <see
-/// cref="IGraphMetricCalculator.CalculateGraphMetrics" />.
+/// cref="IGraphMetricCalculator2.TryCalculateGraphMetrics" />.
 /// </remarks>
 //*****************************************************************************
 
@@ -27,9 +29,9 @@ public class CalculateGraphMetricsContext : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="CalculateGraphMetricsContext" /> class.
+    /// cref="CalculateGraphMetricsContext" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="graphMetricUserSettings">
     /// The user's settings for calculating graph metrics.
     /// </param>
@@ -40,29 +42,24 @@ public class CalculateGraphMetricsContext : Object
     ///
     /// <param name="backgroundWorker">
     /// The BackgroundWorker object that is performing all graph metric
-	/// calculations.
-    /// </param>
-    ///
-    /// <param name="doWorkEventArgs">
-    /// The DoWorkEventArgs object that was passed to
-	/// BackgroundWorker.DoWork().
+    /// calculations.
     /// </param>
     //*************************************************************************
 
     public CalculateGraphMetricsContext
-	(
-		GraphMetricUserSettings graphMetricUserSettings,
-		DuplicateEdgeDetector duplicateEdgeDetector,
-		BackgroundWorker backgroundWorker,
-		DoWorkEventArgs doWorkEventArgs
-	)
+    (
+        GraphMetricUserSettings graphMetricUserSettings,
+        DuplicateEdgeDetector duplicateEdgeDetector,
+        BackgroundWorker backgroundWorker
+    )
     {
-		m_oGraphMetricUserSettings = graphMetricUserSettings;
-		m_oDuplicateEdgeDetector = duplicateEdgeDetector;
-		m_oBackgroundWorker = backgroundWorker;
-		m_oDoWorkEventArgs = doWorkEventArgs;
+        m_oGraphMetricUserSettings = graphMetricUserSettings;
+        m_oDuplicateEdgeDetector = duplicateEdgeDetector;
+        m_oBackgroundWorker = backgroundWorker;
+        m_oSimpleGraphMatrix = null;
+        m_iSimpleGraphMatrixGraphID = Int32.MinValue;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -116,12 +113,12 @@ public class CalculateGraphMetricsContext : Object
     //
     /// <summary>
     /// Gets the BackgroundWorker object that is performing all graph metric
-	/// calculations.
+    /// calculations.
     /// </summary>
     ///
     /// <value>
     /// The BackgroundWorker object that is performing all graph metric
-	/// calculations.
+    /// calculations.
     /// </value>
     //*************************************************************************
 
@@ -137,27 +134,46 @@ public class CalculateGraphMetricsContext : Object
     }
 
     //*************************************************************************
-    //  Property: DoWorkEventArgs
+    //  Method: GetSimpleGraphMatrix()
     //
     /// <summary>
-    /// Gets the DoWorkEventArgs object that was passed to
-	/// BackgroundWorker.DoWork().
+    /// Gets an object that simulates a matrix that can be used to determine
+    /// whether two vertices are connected by an edge.
     /// </summary>
     ///
-    /// <value>
-    /// The DoWorkEventArgs object that was passed to BackgroundWorker.DoWork().
-    /// </value>
+    /// <param name="graph">
+    /// The graph for which metrics are being calculated.
+    /// </param>
+    ///
+    /// <returns>
+    /// A <see cref="SimpleGraphMatrix" /> object for <paramref
+    /// name="graph" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// Creating a <see cref="SimpleGraphMatrix" /> object can be expensive, so
+    /// this method creates it only on demand and then caches it for use by
+    /// multiple graph metric calculators.
+    /// </remarks>
     //*************************************************************************
 
-    public DoWorkEventArgs
-    DoWorkEventArgs
+    public SimpleGraphMatrix
+    GetSimpleGraphMatrix
+    (
+        IGraph graph
+    )
     {
-        get
-        {
-            AssertValid();
+        Debug.Assert(graph != null);
+        AssertValid();
 
-            return (m_oDoWorkEventArgs);
+        if (m_oSimpleGraphMatrix == null ||
+            m_iSimpleGraphMatrixGraphID != graph.ID)
+        {
+            m_oSimpleGraphMatrix = new SimpleGraphMatrix(graph);
+            m_iSimpleGraphMatrixGraphID = graph.ID;
         }
+
+        return (m_oSimpleGraphMatrix);
     }
 
 
@@ -174,10 +190,12 @@ public class CalculateGraphMetricsContext : Object
     public void
     AssertValid()
     {
-		Debug.Assert(m_oGraphMetricUserSettings != null);
-		Debug.Assert(m_oDuplicateEdgeDetector != null);
-		Debug.Assert(m_oBackgroundWorker != null);
-		Debug.Assert(m_oDoWorkEventArgs != null);
+        Debug.Assert(m_oGraphMetricUserSettings != null);
+        Debug.Assert(m_oDuplicateEdgeDetector != null);
+        Debug.Assert(m_oBackgroundWorker != null);
+
+        Debug.Assert(m_iSimpleGraphMatrixGraphID == Int32.MinValue ||
+            m_oSimpleGraphMatrix != null);
     }
 
 
@@ -187,19 +205,23 @@ public class CalculateGraphMetricsContext : Object
 
     /// The user's settings for calculating graph metrics.
 
-	protected GraphMetricUserSettings m_oGraphMetricUserSettings;
+    protected GraphMetricUserSettings m_oGraphMetricUserSettings;
 
     /// Object that counts duplicate and unique edges in the graph.
 
-	protected DuplicateEdgeDetector m_oDuplicateEdgeDetector;
+    protected DuplicateEdgeDetector m_oDuplicateEdgeDetector;
 
     /// Object that is performing all graph metric calculations.
 
-	protected BackgroundWorker m_oBackgroundWorker;
+    protected BackgroundWorker m_oBackgroundWorker;
 
-    /// The object that was passed to BackgroundWorker.DoWork.
+    /// This gets created on demand by GetSimpleGraphMatrix().
 
-	protected DoWorkEventArgs m_oDoWorkEventArgs;
+    protected SimpleGraphMatrix m_oSimpleGraphMatrix;
+
+    /// ID of the graph that m_oSimpleGraphMatrix was created for.
+
+    protected Int32 m_iSimpleGraphMatrixGraphID;
 }
 
 }

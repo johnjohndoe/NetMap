@@ -1,9 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Layouts;
 
 namespace Microsoft.NodeXL.ApplicationUtil
 {
@@ -18,63 +18,63 @@ namespace Microsoft.NodeXL.ApplicationUtil
 public enum
 LayoutType
 {
-	/// <summary>
-	/// Use a <see cref="CircleLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="CircleLayout" />.
+    /// </summary>
 
-	Circle,
+    Circle,
 
-	/// <summary>
-	/// Use a <see cref="SpiralLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="SpiralLayout" />.
+    /// </summary>
 
-	Spiral,
+    Spiral,
 
-	/// <summary>
-	/// Use a <see cref="SinusoidHorizontalLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="SinusoidHorizontalLayout" />.
+    /// </summary>
 
-	SinusoidHorizontal,
+    SinusoidHorizontal,
 
-	/// <summary>
-	/// Use a <see cref="SinusoidVerticalLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="SinusoidVerticalLayout" />.
+    /// </summary>
 
-	SinusoidVertical,
+    SinusoidVertical,
 
-	/// <summary>
-	/// Use a <see cref="FruchtermanReingoldLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="FruchtermanReingoldLayout" />.
+    /// </summary>
 
-	FruchtermanReingold,
+    FruchtermanReingold,
 
-	/// <summary>
-	/// Use a <see cref="GridLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="GridLayout" />.
+    /// </summary>
 
-	Grid,
+    Grid,
 
-	/// <summary>
-	/// Use a <see cref="RandomLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="RandomLayout" />.
+    /// </summary>
 
-	Random,
+    Random,
 
-	/// <summary>
-	/// Use a <see cref="SugiyamaLayout" />.
-	/// </summary>
+    /// <summary>
+    /// Use a <see cref="SugiyamaLayout" />.
+    /// </summary>
 
-	Sugiyama,
+    Sugiyama,
 
 
-	// To add support for an additional layout, do the following:
-	//
-	//   1. Add a value to this enumeration.
-	//
-	//   2. Modify the switch statement in
-	//      LayoutManager.ApplyLayoutToNodeXLControl().
-	//
-	//   3. Add another menu item in LayoutManagerForMenu.AddMenuItems().
+    // To add support for an additional layout, do the following:
+    //
+    //   1. Add a value to this enumeration.
+    //
+    //   2. Modify the switch statement in
+    //      LayoutManager.ApplyLayoutToNodeXLControl().
+    //
+    //   3. Add another menu item in LayoutManagerForMenu.AddMenuItems().
 }
 
 }

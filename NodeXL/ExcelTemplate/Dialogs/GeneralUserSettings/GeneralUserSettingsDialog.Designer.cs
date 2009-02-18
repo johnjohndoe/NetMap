@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -44,12 +44,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label8 = new System.Windows.Forms.Label();
             this.cbxVertexShape = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.nudMargin = new System.Windows.Forms.NumericUpDown();
             this.nudRelativeArrowSize = new System.Windows.Forms.NumericUpDown();
             this.label17 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lblMaximumAlphaMessage2 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lblEdgeAlphaMessage = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.nudEdgeAlpha = new System.Windows.Forms.NumericUpDown();
             this.cbxEdgeColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
@@ -60,7 +59,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbxPrimaryLabelFillColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.label4 = new System.Windows.Forms.Label();
-            this.lblMaximumAlphaMessage = new System.Windows.Forms.Label();
+            this.lblVertexAlphaMessage = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.nudVertexAlpha = new System.Windows.Forms.NumericUpDown();
             this.cbxVertexColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
@@ -71,11 +70,13 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnResetAll = new System.Windows.Forms.Button();
             this.cbxBackColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.btnFont = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.nudFilteredAlpha = new System.Windows.Forms.NumericUpDown();
+            this.lblFilteredAlphaMessage = new System.Windows.Forms.Label();
+            this.btnLayout = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudEdgeWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSelectedEdgeWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexRadius)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMargin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRelativeArrowSize)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudEdgeAlpha)).BeginInit();
@@ -83,6 +84,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexAlpha)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudFilteredAlpha)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -107,7 +109,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(354, 408);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 10;
+            this.btnOK.TabIndex = 12;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -118,7 +120,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCancel.Location = new System.Drawing.Point(440, 408);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 11;
+            this.btnCancel.TabIndex = 13;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -186,27 +188,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 339);
+            this.label9.Location = new System.Drawing.Point(15, 334);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(94, 13);
             this.label9.TabIndex = 4;
             this.label9.Text = "Bac&kground color:";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(15, 375);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(42, 13);
-            this.label10.TabIndex = 7;
-            this.label10.Text = "&Margin:";
-            // 
-            // nudMargin
-            // 
-            this.nudMargin.Location = new System.Drawing.Point(113, 373);
-            this.nudMargin.Name = "nudMargin";
-            this.nudMargin.Size = new System.Drawing.Size(56, 20);
-            this.nudMargin.TabIndex = 8;
             // 
             // nudRelativeArrowSize
             // 
@@ -223,12 +209,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(58, 13);
             this.label17.TabIndex = 4;
-            this.label17.Text = "&Arrow size:";
+            this.label17.Text = "Arrow si&ze:";
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.lblMaximumAlphaMessage2);
+            this.groupBox1.Controls.Add(this.lblEdgeAlphaMessage);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.nudEdgeAlpha);
             this.groupBox1.Controls.Add(this.cbxEdgeColor);
@@ -244,14 +230,22 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Edges";
             // 
-            // lblMaximumAlphaMessage2
+            // label11
             // 
-            this.lblMaximumAlphaMessage2.AutoSize = true;
-            this.lblMaximumAlphaMessage2.Location = new System.Drawing.Point(136, 129);
-            this.lblMaximumAlphaMessage2.Name = "lblMaximumAlphaMessage2";
-            this.lblMaximumAlphaMessage2.Size = new System.Drawing.Size(90, 13);
-            this.lblMaximumAlphaMessage2.TabIndex = 8;
-            this.lblMaximumAlphaMessage2.Text = "[Gets set in code]";
+            this.label11.Location = new System.Drawing.Point(136, 89);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(90, 31);
+            this.label11.TabIndex = 9;
+            this.label11.Text = "(Directed graphs only)";
+            // 
+            // lblEdgeAlphaMessage
+            // 
+            this.lblEdgeAlphaMessage.AutoSize = true;
+            this.lblEdgeAlphaMessage.Location = new System.Drawing.Point(136, 129);
+            this.lblEdgeAlphaMessage.Name = "lblEdgeAlphaMessage";
+            this.lblEdgeAlphaMessage.Size = new System.Drawing.Size(90, 13);
+            this.lblEdgeAlphaMessage.TabIndex = 8;
+            this.lblEdgeAlphaMessage.Text = "[Gets set in code]";
             // 
             // label12
             // 
@@ -323,7 +317,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.groupBox3.Controls.Add(this.cbxPrimaryLabelFillColor);
             this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.lblMaximumAlphaMessage);
+            this.groupBox3.Controls.Add(this.lblVertexAlphaMessage);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.nudVertexAlpha);
             this.groupBox3.Controls.Add(this.cbxVertexColor);
@@ -356,14 +350,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label4.TabIndex = 9;
             this.label4.Text = "Primary label &fill color:";
             // 
-            // lblMaximumAlphaMessage
+            // lblVertexAlphaMessage
             // 
-            this.lblMaximumAlphaMessage.AutoSize = true;
-            this.lblMaximumAlphaMessage.Location = new System.Drawing.Point(151, 129);
-            this.lblMaximumAlphaMessage.Name = "lblMaximumAlphaMessage";
-            this.lblMaximumAlphaMessage.Size = new System.Drawing.Size(90, 13);
-            this.lblMaximumAlphaMessage.TabIndex = 8;
-            this.lblMaximumAlphaMessage.Text = "[Gets set in code]";
+            this.lblVertexAlphaMessage.AutoSize = true;
+            this.lblVertexAlphaMessage.Location = new System.Drawing.Point(151, 129);
+            this.lblVertexAlphaMessage.Name = "lblVertexAlphaMessage";
+            this.lblVertexAlphaMessage.Size = new System.Drawing.Size(90, 13);
+            this.lblVertexAlphaMessage.TabIndex = 8;
+            this.lblVertexAlphaMessage.Text = "[Gets set in code]";
             // 
             // label5
             // 
@@ -432,10 +426,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnResetAll
             // 
-            this.btnResetAll.Location = new System.Drawing.Point(18, 408);
+            this.btnResetAll.Location = new System.Drawing.Point(17, 408);
             this.btnResetAll.Name = "btnResetAll";
             this.btnResetAll.Size = new System.Drawing.Size(80, 23);
-            this.btnResetAll.TabIndex = 9;
+            this.btnResetAll.TabIndex = 11;
             this.btnResetAll.Text = "Reset All";
             this.btnResetAll.UseVisualStyleBackColor = true;
             this.btnResetAll.Click += new System.EventHandler(this.btnResetAll_Click);
@@ -444,28 +438,56 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.cbxBackColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBackColor.FormattingEnabled = true;
-            this.cbxBackColor.Location = new System.Drawing.Point(115, 336);
+            this.cbxBackColor.Location = new System.Drawing.Point(134, 331);
             this.cbxBackColor.Name = "cbxBackColor";
             this.cbxBackColor.Size = new System.Drawing.Size(145, 21);
             this.cbxBackColor.TabIndex = 5;
             // 
             // btnFont
             // 
-            this.btnFont.Location = new System.Drawing.Point(283, 334);
+            this.btnFont.Location = new System.Drawing.Point(307, 329);
             this.btnFont.Name = "btnFont";
             this.btnFont.Size = new System.Drawing.Size(80, 23);
-            this.btnFont.TabIndex = 6;
+            this.btnFont.TabIndex = 9;
             this.btnFont.Text = "Fo&nt...";
             this.btnFont.UseVisualStyleBackColor = true;
             this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
             // 
-            // label11
+            // label13
             // 
-            this.label11.Location = new System.Drawing.Point(136, 89);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(90, 31);
-            this.label11.TabIndex = 9;
-            this.label11.Text = "(Directed graphs only)";
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(14, 368);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(110, 13);
+            this.label13.TabIndex = 6;
+            this.label13.Text = "&Dynamic filter opacity:";
+            // 
+            // nudFilteredAlpha
+            // 
+            this.nudFilteredAlpha.DecimalPlaces = 1;
+            this.nudFilteredAlpha.Location = new System.Drawing.Point(133, 366);
+            this.nudFilteredAlpha.Name = "nudFilteredAlpha";
+            this.nudFilteredAlpha.Size = new System.Drawing.Size(56, 20);
+            this.nudFilteredAlpha.TabIndex = 7;
+            // 
+            // lblFilteredAlphaMessage
+            // 
+            this.lblFilteredAlphaMessage.AutoSize = true;
+            this.lblFilteredAlphaMessage.Location = new System.Drawing.Point(195, 368);
+            this.lblFilteredAlphaMessage.Name = "lblFilteredAlphaMessage";
+            this.lblFilteredAlphaMessage.Size = new System.Drawing.Size(90, 13);
+            this.lblFilteredAlphaMessage.TabIndex = 8;
+            this.lblFilteredAlphaMessage.Text = "[Gets set in code]";
+            // 
+            // btnLayout
+            // 
+            this.btnLayout.Location = new System.Drawing.Point(307, 358);
+            this.btnLayout.Name = "btnLayout";
+            this.btnLayout.Size = new System.Drawing.Size(80, 23);
+            this.btnLayout.TabIndex = 10;
+            this.btnLayout.Text = "L&ayout...";
+            this.btnLayout.UseVisualStyleBackColor = true;
+            this.btnLayout.Click += new System.EventHandler(this.btnLayout_Click);
             // 
             // GeneralUserSettingsDialog
             // 
@@ -474,6 +496,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(537, 448);
+            this.Controls.Add(this.btnLayout);
+            this.Controls.Add(this.lblFilteredAlphaMessage);
+            this.Controls.Add(this.nudFilteredAlpha);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.btnFont);
             this.Controls.Add(this.cbxBackColor);
             this.Controls.Add(this.btnResetAll);
@@ -481,8 +507,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.nudMargin);
-            this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -495,7 +519,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             ((System.ComponentModel.ISupportInitialize)(this.nudEdgeWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSelectedEdgeWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexRadius)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMargin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRelativeArrowSize)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -507,6 +530,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexAlpha)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudFilteredAlpha)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -526,8 +550,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label8;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexShape;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.NumericUpDown nudMargin;
         private System.Windows.Forms.NumericUpDown nudRelativeArrowSize;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -539,11 +561,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnResetAll;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexColor;
-        private System.Windows.Forms.Label lblMaximumAlphaMessage;
+        private System.Windows.Forms.Label lblVertexAlphaMessage;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown nudVertexAlpha;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxSelectedVertexColor;
-        private System.Windows.Forms.Label lblMaximumAlphaMessage2;
+        private System.Windows.Forms.Label lblEdgeAlphaMessage;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.NumericUpDown nudEdgeAlpha;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxEdgeColor;
@@ -554,5 +576,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnFont;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown nudFilteredAlpha;
+        private System.Windows.Forms.Label lblFilteredAlphaMessage;
+        private System.Windows.Forms.Button btnLayout;
     }
 }

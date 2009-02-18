@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -29,34 +29,34 @@ protected struct PajekEdgeData
     /// <summary>
     /// Initializes a new instance of the <see cref="PajekEdgeData" /> class.
     /// </summary>
-	///
-	/// <param name="firstVertexNumber">
-	/// Vertex number of the edge's first vertex.  The vertex number is the
-	/// first field of the lines within the *vertices section and ranges from
-	/// 1 to the number of vertices.
-	/// </param>
-	///
-	/// <param name="secondVertexNumber">
-	/// Vertex number of the edge's second vertex.
-	/// </param>
-	///
-	/// <param name="weight">
-	/// Edge weight.
-	/// </param>
+    ///
+    /// <param name="firstVertexNumber">
+    /// Vertex number of the edge's first vertex.  The vertex number is the
+    /// first field of the lines within the *vertices section and ranges from
+    /// 1 to the number of vertices.
+    /// </param>
+    ///
+    /// <param name="secondVertexNumber">
+    /// Vertex number of the edge's second vertex.
+    /// </param>
+    ///
+    /// <param name="weight">
+    /// Edge weight.
+    /// </param>
     //*************************************************************************
 
     public PajekEdgeData
-	(
-		Int32 firstVertexNumber,
-		Int32 secondVertexNumber,
-		Single weight
-	)
+    (
+        Int32 firstVertexNumber,
+        Int32 secondVertexNumber,
+        Single weight
+    )
     {
-		m_iFirstVertexNumber = firstVertexNumber;
-		m_iSecondVertexNumber = secondVertexNumber;
-		m_fWeight = weight;
+        m_iFirstVertexNumber = firstVertexNumber;
+        m_iSecondVertexNumber = secondVertexNumber;
+        m_fWeight = weight;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -142,9 +142,9 @@ protected struct PajekEdgeData
     public void
     AssertValid()
     {
-		Debug.Assert(m_iFirstVertexNumber > 0);
-		Debug.Assert(m_iSecondVertexNumber > 0);
-		// m_fWeight
+        Debug.Assert(m_iFirstVertexNumber > 0);
+        Debug.Assert(m_iSecondVertexNumber > 0);
+        // m_fWeight
     }
 
 
@@ -152,17 +152,17 @@ protected struct PajekEdgeData
     //  Protected fields
     //*************************************************************************
 
-	/// Number of the first vertex.
+    /// Number of the first vertex.
 
-	private Int32 m_iFirstVertexNumber;
+    private Int32 m_iFirstVertexNumber;
 
-	/// Number of the second vertex.
+    /// Number of the second vertex.
 
-	private Int32 m_iSecondVertexNumber;
+    private Int32 m_iSecondVertexNumber;
 
-	/// Edge weight.
+    /// Edge weight.
 
-	private Single m_fWeight;
+    private Single m_fWeight;
 }
 
 }

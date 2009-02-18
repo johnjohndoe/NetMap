@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -94,10 +94,10 @@ public class NodeXLBaseTest : Object
     public void
     TestClassName()
     {
-		Assert.AreEqual(
-			"Microsoft.NodeXL.Core.NodeXLBase",
-			m_oNodeXLBase.ClassName
-			);
+        Assert.AreEqual(
+            "Microsoft.NodeXL.Core.NodeXLBase",
+            m_oNodeXLBase.ClassName
+            );
     }
 
 

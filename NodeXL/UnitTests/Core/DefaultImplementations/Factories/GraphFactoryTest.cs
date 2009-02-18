@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,7 +26,7 @@ public class GraphFactoryTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphFactoryTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
@@ -80,7 +80,7 @@ public class GraphFactoryTest : Object
     public void
     TestConstructor()
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -96,18 +96,18 @@ public class GraphFactoryTest : Object
     public void
     TestCreateGraph()
     {
-		foreach (GraphDirectedness eDirectedness in
-			GraphUtil.AllGraphDirectedness)
+        foreach (GraphDirectedness eDirectedness in
+            TestGraphUtil.AllGraphDirectedness)
 
-		foreach (GraphRestrictions eRestrictions in
-			GraphUtil.AllGraphRestrictions)
+        foreach (GraphRestrictions eRestrictions in
+            TestGraphUtil.AllGraphRestrictions)
 
-		{
-		IGraph oGraph = m_oGraphFactory.CreateGraph(
-			eDirectedness, eRestrictions);
+        {
+        IGraph oGraph = m_oGraphFactory.CreateGraph(
+            eDirectedness, eRestrictions);
 
-		CheckGraph(oGraph, eDirectedness, eRestrictions);
-		}
+        CheckGraph(oGraph, eDirectedness, eRestrictions);
+        }
     }
 
     //*************************************************************************
@@ -119,32 +119,32 @@ public class GraphFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateGraphBad()
     {
-		// Bad GraphDirectedness.
+        // Bad GraphDirectedness.
 
-		try
-		{
-			IGraph oGraph = m_oGraphFactory.CreateGraph(
-				(GraphDirectedness)9999, GraphRestrictions.None);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IGraph oGraph = m_oGraphFactory.CreateGraph(
+                (GraphDirectedness)9999, GraphRestrictions.None);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "GraphFactory.CreateGraph: Must be a member of the"
-				+ " GraphDirectedness enumeration.\r\n"
-				+ "Parameter name: directedness"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "GraphFactory.CreateGraph: Must be a member of the"
+                + " GraphDirectedness enumeration.\r\n"
+                + "Parameter name: directedness"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -156,32 +156,32 @@ public class GraphFactoryTest : Object
     //*************************************************************************
 
     [TestMethodAttribute]
-	[ ExpectedException( typeof(ArgumentException) ) ]
+    [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
     TestCreateGraphBad2()
     {
-		// Bad GraphRestrictions.
+        // Bad GraphRestrictions.
 
-		try
-		{
-			IGraph oGraph = m_oGraphFactory.CreateGraph(
-				GraphDirectedness.Mixed, (GraphRestrictions)9999);
-		}
-		catch (ArgumentException oArgumentException)
-		{
-			Assert.AreEqual(
+        try
+        {
+            IGraph oGraph = m_oGraphFactory.CreateGraph(
+                GraphDirectedness.Mixed, (GraphRestrictions)9999);
+        }
+        catch (ArgumentException oArgumentException)
+        {
+            Assert.AreEqual(
 
-				"Microsoft.NodeXL.Core."
-				+ "GraphFactory.CreateGraph: Must be an ORed combination of"
-				+ " the flags in the GraphRestrictions enumeration.\r\n"
-				+ "Parameter name: restrictions"
-				,
-				oArgumentException.Message
-				);
+                "Microsoft.NodeXL.Core."
+                + "GraphFactory.CreateGraph: Must be an ORed combination of"
+                + " the flags in the GraphRestrictions enumeration.\r\n"
+                + "Parameter name: restrictions"
+                ,
+                oArgumentException.Message
+                );
 
-			throw oArgumentException;
-		}
+            throw oArgumentException;
+        }
     }
 
     //*************************************************************************
@@ -190,50 +190,50 @@ public class GraphFactoryTest : Object
     /// <summary>
     /// Checks a graph created with CreateGraph().
     /// </summary>
-	///
-	/// <paramref name="oGraph">
-	/// The graph to check.
-	/// </paramref>
-	///
-	/// <paramref name="eDirectedness">
-	/// Expected directedness of the graph.
-	/// </paramref>
-	///
-	/// <paramref name="eRestrictions">
-	/// Expected restrictions imposed by the graph.
-	/// </paramref>
+    ///
+    /// <paramref name="oGraph">
+    /// The graph to check.
+    /// </paramref>
+    ///
+    /// <paramref name="eDirectedness">
+    /// Expected directedness of the graph.
+    /// </paramref>
+    ///
+    /// <paramref name="eRestrictions">
+    /// Expected restrictions imposed by the graph.
+    /// </paramref>
     //*************************************************************************
 
     protected void
     CheckGraph
-	(
-		IGraph oGraph,
-		GraphDirectedness eDirectedness,
-		GraphRestrictions eRestrictions
-	)
+    (
+        IGraph oGraph,
+        GraphDirectedness eDirectedness,
+        GraphRestrictions eRestrictions
+    )
     {
-		Assert.IsNotNull(oGraph);
-		Assert.IsTrue(oGraph is Graph);
+        Assert.IsNotNull(oGraph);
+        Assert.IsTrue(oGraph is Graph);
 
-		Assert.AreEqual(eDirectedness, oGraph.Directedness);
+        Assert.AreEqual(eDirectedness, oGraph.Directedness);
 
-		Assert.AreEqual(eRestrictions, oGraph.Restrictions);
+        Assert.AreEqual(eRestrictions, oGraph.Restrictions);
 
-		Assert.IsFalse(oGraph.PerformExtraValidations);
+        Assert.IsFalse(oGraph.PerformExtraValidations);
 
-		Assert.IsNotNull(oGraph.Edges);
-		Assert.IsTrue(oGraph.Edges is EdgeCollection);
+        Assert.IsNotNull(oGraph.Edges);
+        Assert.IsTrue(oGraph.Edges is EdgeCollection);
 
-		// Can't check the ID, because it is unknown.
+        // Can't check the ID, because it is unknown.
 
-		// Assert.AreEqual(xx, oGraph.ID);
+        // Assert.AreEqual(xx, oGraph.ID);
 
-		Assert.IsNull(oGraph.Name);
+        Assert.IsNull(oGraph.Name);
 
-		Assert.IsNull(oGraph.Tag);
+        Assert.IsNull(oGraph.Tag);
 
-		Assert.IsNotNull(oGraph.Vertices);
-		Assert.IsTrue(oGraph.Vertices is VertexCollection);
+        Assert.IsNotNull(oGraph.Vertices);
+        Assert.IsTrue(oGraph.Vertices is VertexCollection);
     }
 
 

@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -12,7 +12,7 @@ using System.Diagnostics;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: NotificationDialog
+//  Class: NotificationDialog
 //
 /// <summary>
 /// Displays a notification message, yes and no buttons, and a checkbox for
@@ -35,149 +35,149 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class NotificationDialog : ExcelTemplateForm
 {
-	//*************************************************************************
-	//	Constructor: NotificationDialog()
-	//
-	/// <overloads>
-	///	Initializes a new instance of the <see
-	/// cref="NotificationDialog" /> class.
-	/// </overloads>
-	///
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="NotificationDialog" /> class with a window title, icon, and
-	/// notification message.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Constructor: NotificationDialog()
+    //
+    /// <overloads>
+    /// Initializes a new instance of the <see
+    /// cref="NotificationDialog" /> class.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="NotificationDialog" /> class with a window title, icon, and
+    /// notification message.
+    /// </summary>
+    ///
     /// <param name="title">
-	/// Window title.
+    /// Window title.
     /// </param>
-	///
+    ///
     /// <param name="systemIcon">
-	/// Icon to use within the dialog.  Should be a member of the SystemIcons
-	/// class.
+    /// Icon to use within the dialog.  Should be a member of the SystemIcons
+    /// class.
     /// </param>
-	///
+    ///
     /// <param name="message">
-	/// Notification message.
+    /// Notification message.
     /// </param>
-	//*************************************************************************
+    //*************************************************************************
 
-	public NotificationDialog
-	(
-		String title,
-		Icon systemIcon,
-		String message
-	)
-	: this()
-	{
-		Debug.Assert( !String.IsNullOrEmpty(title) );
-		Debug.Assert(systemIcon != null);
-		Debug.Assert( !String.IsNullOrEmpty(message) );
+    public NotificationDialog
+    (
+        String title,
+        Icon systemIcon,
+        String message
+    )
+    : this()
+    {
+        Debug.Assert( !String.IsNullOrEmpty(title) );
+        Debug.Assert(systemIcon != null);
+        Debug.Assert( !String.IsNullOrEmpty(message) );
 
-		// Instantiate an object that saves and retrieves the size and position
-		// settings of this dialog.  Note that the object automatically saves
-		// the settings when the form closes.
+        // Instantiate an object that saves and retrieves the size and position
+        // settings of this dialog.  Note that the object automatically saves
+        // the settings when the form closes.
 
-		m_oNotificationDialogUserSettings =
-			new NotificationDialogUserSettings(this);
+        m_oNotificationDialogUserSettings =
+            new NotificationDialogUserSettings(this);
 
-		this.Text = title;
+        this.Text = title;
         picNotification.Image = Bitmap.FromHicon(systemIcon.Handle);
-		lblMessage.Text = message;
+        lblMessage.Text = message;
 
-		DoDataExchange(false);
+        DoDataExchange(false);
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
-	//*************************************************************************
-	//	Constructor: NotificationDialog()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see
-	/// cref="NotificationDialog" /> class for the Visual Studio
-	/// designer.
-	/// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for use by the Visual Studio
-	/// designer only.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: NotificationDialog()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="NotificationDialog" /> class for the Visual Studio
+    /// designer.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for use by the Visual Studio
+    /// designer only.
+    /// </remarks>
+    //*************************************************************************
 
-	public NotificationDialog()
-	{
-		InitializeComponent();
+    public NotificationDialog()
+    {
+        InitializeComponent();
 
-		// AssertValid();
-	}
+        // AssertValid();
+    }
 
-	//*************************************************************************
-	//	Property: DisableFutureNotifications
-	//
-	/// <summary>
-	/// Gets or sets the state of the checkbox that indicates whether the user
-	/// wants to disable future notifications.
-	/// </summary>
-	///
-	/// <value>
-	/// true to disable future notifications.  The default is false.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: DisableFutureNotifications
+    //
+    /// <summary>
+    /// Gets or sets the state of the checkbox that indicates whether the user
+    /// wants to disable future notifications.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to disable future notifications.  The default is false.
+    /// </value>
+    //*************************************************************************
 
-	public Boolean
-	DisableFutureNotifications
-	{
-		get
-		{
-			AssertValid();
+    public Boolean
+    DisableFutureNotifications
+    {
+        get
+        {
+            AssertValid();
 
-			return (chkDisableFutureNotifications.Checked);
-		}
+            return (chkDisableFutureNotifications.Checked);
+        }
 
-		set
-		{
-			chkDisableFutureNotifications.Checked = value;
+        set
+        {
+            chkDisableFutureNotifications.Checked = value;
 
-			AssertValid();
-		}
-	}
+            AssertValid();
+        }
+    }
 
-	//*************************************************************************
-	//	Method: DoDataExchange()
-	//
-	/// <summary>
-	///	Transfers data between the dialog's fields and its controls.
-	/// </summary>
-	///
-	/// <param name="bFromControls">
-	///	true to transfer data from the dialog's controls to its fields, false
-	///	for the other direction.
-	/// </param>
-	///
-	/// <returns>
-	///	true if the transfer was successful.
-	/// </returns>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: DoDataExchange()
+    //
+    /// <summary>
+    /// Transfers data between the dialog's fields and its controls.
+    /// </summary>
+    ///
+    /// <param name="bFromControls">
+    /// true to transfer data from the dialog's controls to its fields, false
+    /// for the other direction.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the transfer was successful.
+    /// </returns>
+    //*************************************************************************
 
-	protected Boolean
-	DoDataExchange
-	(
-		Boolean bFromControls
-	)
-	{
-		if (bFromControls)
-		{
-			// (Do nothing.)
-		}
-		else
-		{
-			// (Do nothing.)
-		}
+    protected Boolean
+    DoDataExchange
+    (
+        Boolean bFromControls
+    )
+    {
+        if (bFromControls)
+        {
+            // (Do nothing.)
+        }
+        else
+        {
+            // (Do nothing.)
+        }
 
-		return (true);
-	}
+        return (true);
+    }
 
 
     //*************************************************************************
@@ -193,9 +193,9 @@ public partial class NotificationDialog : ExcelTemplateForm
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oNotificationDialogUserSettings != null);
+        Debug.Assert(m_oNotificationDialogUserSettings != null);
     }
 
 
@@ -203,9 +203,9 @@ public partial class NotificationDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-	/// User settings for this dialog.
+    /// User settings for this dialog.
 
-	protected NotificationDialogUserSettings m_oNotificationDialogUserSettings;
+    protected NotificationDialogUserSettings m_oNotificationDialogUserSettings;
 }
 
 
@@ -230,25 +230,25 @@ public class NotificationDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="NotificationDialogUserSettings" /> class.
+    /// cref="NotificationDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public NotificationDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -265,7 +265,7 @@ public class NotificationDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

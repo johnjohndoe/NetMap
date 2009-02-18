@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -26,7 +26,7 @@ public class VertexFactoryTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexFactoryTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
@@ -80,7 +80,7 @@ public class VertexFactoryTest : Object
     public void
     TestConstructor()
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -96,56 +96,56 @@ public class VertexFactoryTest : Object
     public void
     TestCreateVertex()
     {
-		const Int32 Vertices = 1000;
+        const Int32 Vertices = 1000;
 
-		Int32 iFirstVertexID = Int32.MinValue;
+        Int32 iFirstVertexID = Int32.MinValue;
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			IVertex oVertex = m_oVertexFactory.CreateVertex();
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            IVertex oVertex = m_oVertexFactory.CreateVertex();
 
-			Assert.IsNotNull(oVertex);
-			Assert.IsTrue(oVertex is Vertex);
+            Assert.IsNotNull(oVertex);
+            Assert.IsTrue(oVertex is Vertex);
 
-			Assert.IsNotNull(oVertex.AdjacentVertices);
-			Assert.AreEqual(0, oVertex.AdjacentVertices.Length);
+            Assert.IsNotNull(oVertex.AdjacentVertices);
+            Assert.AreEqual(0, oVertex.AdjacentVertices.Length);
 
-			Assert.AreEqual(0, oVertex.Degree);
+            Assert.AreEqual(0, oVertex.Degree);
 
-			if (i == 0)
-			{
-				iFirstVertexID = oVertex.ID;
-			}
-			else
-			{
-				// Make sure the assigned IDs are consecutive.
+            if (i == 0)
+            {
+                iFirstVertexID = oVertex.ID;
+            }
+            else
+            {
+                // Make sure the assigned IDs are consecutive.
 
-				Assert.AreEqual(iFirstVertexID + i, oVertex.ID);
-			}
+                Assert.AreEqual(iFirstVertexID + i, oVertex.ID);
+            }
 
-			Assert.IsNotNull(oVertex.IncidentEdges);
-			Assert.AreEqual(0, oVertex.IncidentEdges.Length);
+            Assert.IsNotNull(oVertex.IncidentEdges);
+            Assert.AreEqual(0, oVertex.IncidentEdges.Length);
 
-			Assert.IsNotNull(oVertex.IncomingEdges);
-			Assert.AreEqual(0, oVertex.IncomingEdges.Length);
+            Assert.IsNotNull(oVertex.IncomingEdges);
+            Assert.AreEqual(0, oVertex.IncomingEdges.Length);
 
-			Assert.AreEqual(PointF.Empty, oVertex.Location);
+            Assert.AreEqual(PointF.Empty, oVertex.Location);
 
-			Assert.IsNull(oVertex.Name);
+            Assert.IsNull(oVertex.Name);
 
-			Assert.IsNotNull(oVertex.OutgoingEdges);
-			Assert.AreEqual(0, oVertex.OutgoingEdges.Length);
+            Assert.IsNotNull(oVertex.OutgoingEdges);
+            Assert.AreEqual(0, oVertex.OutgoingEdges.Length);
 
-			Assert.IsNull(oVertex.ParentGraph);
+            Assert.IsNull(oVertex.ParentGraph);
 
-			Assert.IsNotNull(oVertex.PredecessorVertices);
-			Assert.AreEqual(0, oVertex.PredecessorVertices.Length);
+            Assert.IsNotNull(oVertex.PredecessorVertices);
+            Assert.AreEqual(0, oVertex.PredecessorVertices.Length);
 
-			Assert.IsNotNull(oVertex.SuccessorVertices);
-			Assert.AreEqual(0, oVertex.SuccessorVertices.Length);
+            Assert.IsNotNull(oVertex.SuccessorVertices);
+            Assert.AreEqual(0, oVertex.SuccessorVertices.Length);
 
-			Assert.IsNull(oVertex.Tag);
-		}
+            Assert.IsNull(oVertex.Tag);
+        }
     }
 
 

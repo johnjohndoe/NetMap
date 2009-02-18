@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -30,146 +30,146 @@ public static class MetadataUtil
     //
     /// <summary>
     /// Sets random metadata and Tag values on an object that implements <see
-	/// cref="IMetadataProvider" /.
+    /// cref="IMetadataProvider" /.
     /// </summary>
-	///
-	/// <param name="oMetadataProvider">
-	/// Object to set random metadata and Tag values on.
-	/// </param>
-	///
-	/// <param name="bSetMetadataValues">
-	/// true to set random metadata, false to leave the meatadata empty.
-	/// </param>
-	///
-	/// <param name="bSetTag">
-	/// true to set a random Tag value, false to leave the Tag as null.
-	/// </param>
-	///
-	/// <param name="iSeed">
-	/// Seed to use for the random number generator.
-	/// </param>
-	///
-	/// <remarks>
-	/// The random metadata and Tag values can be checked with <see
-	/// cref="CheckRandomMetadata" />.
-	/// </remarks>
+    ///
+    /// <param name="oMetadataProvider">
+    /// Object to set random metadata and Tag values on.
+    /// </param>
+    ///
+    /// <param name="bSetMetadataValues">
+    /// true to set random metadata, false to leave the meatadata empty.
+    /// </param>
+    ///
+    /// <param name="bSetTag">
+    /// true to set a random Tag value, false to leave the Tag as null.
+    /// </param>
+    ///
+    /// <param name="iSeed">
+    /// Seed to use for the random number generator.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The random metadata and Tag values can be checked with <see
+    /// cref="CheckRandomMetadata" />.
+    /// </remarks>
     //*************************************************************************
 
-	public static void
-	SetRandomMetadata
-	(
-		IMetadataProvider oMetadataProvider,
-		Boolean bSetMetadataValues,
-		Boolean bSetTag,
-		Int32 iSeed
-	)
-	{
-		KeyValuePair<String, Object> [] aoRandomMetadata;
-		Object oRandomTag;
+    public static void
+    SetRandomMetadata
+    (
+        IMetadataProvider oMetadataProvider,
+        Boolean bSetMetadataValues,
+        Boolean bSetTag,
+        Int32 iSeed
+    )
+    {
+        KeyValuePair<String, Object> [] aoRandomMetadata;
+        Object oRandomTag;
 
-		GetRandomMetadata(iSeed, out aoRandomMetadata, out oRandomTag);
+        GetRandomMetadata(iSeed, out aoRandomMetadata, out oRandomTag);
 
-		if (bSetMetadataValues)
-		{
-			foreach (KeyValuePair<String, Object> oRandomMetadata
-				in aoRandomMetadata)
-			{
-				oMetadataProvider.SetValue(
-					oRandomMetadata.Key, oRandomMetadata.Value);
-			}
-		}
+        if (bSetMetadataValues)
+        {
+            foreach (KeyValuePair<String, Object> oRandomMetadata
+                in aoRandomMetadata)
+            {
+                oMetadataProvider.SetValue(
+                    oRandomMetadata.Key, oRandomMetadata.Value);
+            }
+        }
 
-		if (bSetTag)
-		{
-			oMetadataProvider.Tag = oRandomTag;
-		}
-	}
+        if (bSetTag)
+        {
+            oMetadataProvider.Tag = oRandomTag;
+        }
+    }
 
     //*************************************************************************
     //  Method: CheckRandomMetadata()
     //
     /// <summary>
     /// Checks the random metadata and Tag values on an object that implements
-	/// <see cref="IMetadataProvider" />.
+    /// <see cref="IMetadataProvider" />.
     /// </summary>
-	///
-	/// <param name="oMetadataProvider">
-	/// Object to check random metadata and Tag values on.
-	/// </param>
-	///
-	/// <param name="bRandomMetadataExpected">
-	/// true if the metadata was set with <see cref="SetRandomMetadata" />,
-	/// false if the metadata was left empty.
-	/// </param>
-	///
-	/// <param name="bRandomTagExpected">
-	/// true if the Tag was set with <see cref="SetRandomMetadata" />,
-	/// false if the Tag was left as null.
-	/// </param>
-	///
-	/// <param name="iSeed">
-	/// Seed to use for the random number generator.
-	/// </param>
-	///
-	/// <remarks>
-	/// This method checks the random metadata and Tag values that were set
-	/// with <see cref="SetRandomMetadata" />.
-	/// </remarks>
+    ///
+    /// <param name="oMetadataProvider">
+    /// Object to check random metadata and Tag values on.
+    /// </param>
+    ///
+    /// <param name="bRandomMetadataExpected">
+    /// true if the metadata was set with <see cref="SetRandomMetadata" />,
+    /// false if the metadata was left empty.
+    /// </param>
+    ///
+    /// <param name="bRandomTagExpected">
+    /// true if the Tag was set with <see cref="SetRandomMetadata" />,
+    /// false if the Tag was left as null.
+    /// </param>
+    ///
+    /// <param name="iSeed">
+    /// Seed to use for the random number generator.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method checks the random metadata and Tag values that were set
+    /// with <see cref="SetRandomMetadata" />.
+    /// </remarks>
     //*************************************************************************
 
-	public static void
-	CheckRandomMetadata
-	(
-		IMetadataProvider oMetadataProvider,
-		Boolean bRandomMetadataExpected,
-		Boolean bRandomTagExpected,
-		Int32 iSeed
-	)
-	{
-		KeyValuePair<String, Object> [] aoRandomMetadata;
-		Object oRandomTag;
+    public static void
+    CheckRandomMetadata
+    (
+        IMetadataProvider oMetadataProvider,
+        Boolean bRandomMetadataExpected,
+        Boolean bRandomTagExpected,
+        Int32 iSeed
+    )
+    {
+        KeyValuePair<String, Object> [] aoRandomMetadata;
+        Object oRandomTag;
 
-		GetRandomMetadata(iSeed, out aoRandomMetadata, out oRandomTag);
+        GetRandomMetadata(iSeed, out aoRandomMetadata, out oRandomTag);
 
-		foreach (KeyValuePair<String, Object> oRandomMetadata
-			in aoRandomMetadata)
-		{
-			String sRandomKey = oRandomMetadata.Key;
-			Object oRandomValue = oRandomMetadata.Value;
+        foreach (KeyValuePair<String, Object> oRandomMetadata
+            in aoRandomMetadata)
+        {
+            String sRandomKey = oRandomMetadata.Key;
+            Object oRandomValue = oRandomMetadata.Value;
 
-			if (bRandomMetadataExpected)
-			{
-				Assert.IsTrue( oMetadataProvider.ContainsKey(sRandomKey) );
+            if (bRandomMetadataExpected)
+            {
+                Assert.IsTrue( oMetadataProvider.ContainsKey(sRandomKey) );
 
-				Object oValue;
-				
-				Assert.IsTrue( oMetadataProvider.TryGetValue(
+                Object oValue;
+                
+                Assert.IsTrue( oMetadataProvider.TryGetValue(
 
-					sRandomKey,
+                    sRandomKey,
 
-					(oRandomValue == null) ?
-						typeof(Object) : oRandomValue.GetType(),
+                    (oRandomValue == null) ?
+                        typeof(Object) : oRandomValue.GetType(),
 
-					out oValue
-					) );
+                    out oValue
+                    ) );
 
-				CheckMetadataValue(oRandomValue, oValue);
-			}
-			else
-			{
-				Assert.IsFalse( oMetadataProvider.ContainsKey(sRandomKey) );
-			}
-		}
+                CheckMetadataValue(oRandomValue, oValue);
+            }
+            else
+            {
+                Assert.IsFalse( oMetadataProvider.ContainsKey(sRandomKey) );
+            }
+        }
 
-		if (bRandomTagExpected)
-		{
-			CheckMetadataValue(oRandomTag, oMetadataProvider.Tag);
-		}
-		else
-		{
-			Assert.IsNull(oMetadataProvider.Tag);
-		}
-	}
+        if (bRandomTagExpected)
+        {
+            CheckMetadataValue(oRandomTag, oMetadataProvider.Tag);
+        }
+        else
+        {
+            Assert.IsNull(oMetadataProvider.Tag);
+        }
+    }
 
     //*************************************************************************
     //  Method: TestGetValue()
@@ -177,88 +177,88 @@ public static class MetadataUtil
     /// <summary>
     /// Tests the <see cref="IMetadataProvider.GetValue(String)" /> variants.
     /// </summary>
-	///
-	/// <param name="oMetadataProvider">
-	/// Object to call <see cref="IMetadataProvider.GetValue(String)" /> on.
-	/// </param>
-	///
-	/// <param name="sKey">
-	/// Metadata key.
-	/// </param>
-	///
-	/// <param name="oExpectedValue">
-	/// Expected value.  Can be null.
-	/// </param>
-	///
-	/// <remarks>
-	/// This method calls all variants of <see
-	/// cref="IMetadataProvider.GetValue(String)" /> and tests the results.
-	/// </remarks>
+    ///
+    /// <param name="oMetadataProvider">
+    /// Object to call <see cref="IMetadataProvider.GetValue(String)" /> on.
+    /// </param>
+    ///
+    /// <param name="sKey">
+    /// Metadata key.
+    /// </param>
+    ///
+    /// <param name="oExpectedValue">
+    /// Expected value.  Can be null.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method calls all variants of <see
+    /// cref="IMetadataProvider.GetValue(String)" /> and tests the results.
+    /// </remarks>
     //*************************************************************************
 
-	public static void
-	TestGetValue
-	(
-		IMetadataProvider oMetadataProvider,
-		String sKey,
-		Object oExpectedValue
-	)
-	{
-		Debug.Assert(oMetadataProvider != null);
-		Assert.IsFalse( String.IsNullOrEmpty(sKey) );
+    public static void
+    TestGetValue
+    (
+        IMetadataProvider oMetadataProvider,
+        String sKey,
+        Object oExpectedValue
+    )
+    {
+        Debug.Assert(oMetadataProvider != null);
+        Assert.IsFalse( String.IsNullOrEmpty(sKey) );
 
-		Type oExpectedType = (oExpectedValue == null) ?
-			typeof(Object) : oExpectedValue.GetType();
+        Type oExpectedType = (oExpectedValue == null) ?
+            typeof(Object) : oExpectedValue.GetType();
 
-		// Call each of the GetValue() variants.
+        // Call each of the GetValue() variants.
 
-		foreach ( Int32 i in new Int32 [] {0, 1, 2, 3, 4} )
-		{
-		    Object oValue = null;
+        foreach ( Int32 i in new Int32 [] {0, 1, 2, 3, 4} )
+        {
+            Object oValue = null;
 
-			switch (i)
-			{
-				case 0:
+            switch (i)
+            {
+                case 0:
 
-					oValue = oMetadataProvider.GetValue(sKey);
+                    oValue = oMetadataProvider.GetValue(sKey);
 
-					break;
+                    break;
 
-				case 1:
+                case 1:
 
-					Assert.IsTrue( oMetadataProvider.TryGetValue(
-						sKey, out oValue) );
+                    Assert.IsTrue( oMetadataProvider.TryGetValue(
+                        sKey, out oValue) );
 
-					break;
+                    break;
 
-				case 2:
+                case 2:
 
-					oValue = oMetadataProvider.GetValue(sKey, oExpectedType);
+                    oValue = oMetadataProvider.GetValue(sKey, oExpectedType);
 
-					break;
+                    break;
 
-				case 3:
+                case 3:
 
-					Assert.IsTrue( oMetadataProvider.TryGetValue(
-						sKey, oExpectedType, out oValue) );
+                    Assert.IsTrue( oMetadataProvider.TryGetValue(
+                        sKey, oExpectedType, out oValue) );
 
-					break;
+                    break;
 
-				case 4:
+                case 4:
 
-					oValue = oMetadataProvider.GetRequiredValue(sKey, oExpectedType);
+                    oValue = oMetadataProvider.GetRequiredValue(sKey, oExpectedType);
 
-					break;
+                    break;
 
-				default:
+                default:
 
-					Debug.Assert(false);
-					break;
-			}
+                    Debug.Assert(false);
+                    break;
+            }
 
-			CheckMetadataValue(oExpectedValue, oValue);
-		}
-	}
+            CheckMetadataValue(oExpectedValue, oValue);
+        }
+    }
 
     //*************************************************************************
     //  Method: GetRandomMetadata()
@@ -266,47 +266,47 @@ public static class MetadataUtil
     /// <summary>
     /// Generates random metadata and Tag values.
     /// </summary>
-	///
-	/// <param name="iSeed">
-	/// Seed to use for the random number generator.
-	/// </param>
-	///
-	/// <param name="aoRandomMetadata">
-	/// Where an array of random metadata gets stored.
-	/// </param>
-	///
-	/// <param name="oRandomTag">
-	/// Where a random tag value gets stored.
-	/// </param>
+    ///
+    /// <param name="iSeed">
+    /// Seed to use for the random number generator.
+    /// </param>
+    ///
+    /// <param name="aoRandomMetadata">
+    /// Where an array of random metadata gets stored.
+    /// </param>
+    ///
+    /// <param name="oRandomTag">
+    /// Where a random tag value gets stored.
+    /// </param>
     //*************************************************************************
 
-	private static void
-	GetRandomMetadata
-	(
-		Int32 iSeed,
-		out KeyValuePair<String, Object> [] aoRandomMetadata,
-		out Object oRandomTag
-	)
-	{
-		aoRandomMetadata = null;
-		oRandomTag = null;
+    private static void
+    GetRandomMetadata
+    (
+        Int32 iSeed,
+        out KeyValuePair<String, Object> [] aoRandomMetadata,
+        out Object oRandomTag
+    )
+    {
+        aoRandomMetadata = null;
+        oRandomTag = null;
 
-		Random oRandom = new Random(iSeed);
+        Random oRandom = new Random(iSeed);
 
-		Int32 iKeyValuePairs = oRandom.Next(50);
+        Int32 iKeyValuePairs = oRandom.Next(50);
 
-		aoRandomMetadata = new KeyValuePair<String, Object>[iKeyValuePairs];
+        aoRandomMetadata = new KeyValuePair<String, Object>[iKeyValuePairs];
 
-		for (Int32 i = 0; i < iKeyValuePairs; i++)
-		{
-			aoRandomMetadata[i] = new KeyValuePair<String, Object>(
-				GetRandomKey(oRandom),
-				GetRandomValue(oRandom)
-				);
-		}
+        for (Int32 i = 0; i < iKeyValuePairs; i++)
+        {
+            aoRandomMetadata[i] = new KeyValuePair<String, Object>(
+                GetRandomKey(oRandom),
+                GetRandomValue(oRandom)
+                );
+        }
 
-		oRandomTag = GetRandomValue(oRandom);
-	}
+        oRandomTag = GetRandomValue(oRandom);
+    }
 
     //*************************************************************************
     //  Method: GetRandomKey()
@@ -314,26 +314,26 @@ public static class MetadataUtil
     /// <summary>
     /// Generates a random key to use for random metadata.
     /// </summary>
-	///
-	/// <param name="oRandom">
-	/// Random number generator.
-	/// </param>
-	///
-	/// <returns>
-	/// Random key.
-	/// </returns>
+    ///
+    /// <param name="oRandom">
+    /// Random number generator.
+    /// </param>
+    ///
+    /// <returns>
+    /// Random key.
+    /// </returns>
     //*************************************************************************
 
-	private static String
-	GetRandomKey
-	(
-		Random oRandom
-	)
-	{
-		Debug.Assert(oRandom != null);
+    private static String
+    GetRandomKey
+    (
+        Random oRandom
+    )
+    {
+        Debug.Assert(oRandom != null);
 
-		return ( oRandom.Next().ToString() );
-	}
+        return ( oRandom.Next().ToString() );
+    }
 
     //*************************************************************************
     //  Method: GetRandomValue()
@@ -341,88 +341,88 @@ public static class MetadataUtil
     /// <summary>
     /// Generates a random value to use for random metadata and tags.
     /// </summary>
-	///
-	/// <param name="oRandom">
-	/// Random number generator.
-	/// </param>
-	///
-	/// <returns>
-	/// Random key.
-	/// </returns>
+    ///
+    /// <param name="oRandom">
+    /// Random number generator.
+    /// </param>
+    ///
+    /// <returns>
+    /// Random key.
+    /// </returns>
     //*************************************************************************
 
-	private static Object
-	GetRandomValue
-	(
-		Random oRandom
-	)
-	{
-		Debug.Assert(oRandom != null);
+    private static Object
+    GetRandomValue
+    (
+        Random oRandom
+    )
+    {
+        Debug.Assert(oRandom != null);
 
-		switch ( oRandom.Next(7) )
-		{
-			case 0:
+        switch ( oRandom.Next(7) )
+        {
+            case 0:
 
-				// Random String.
+                // Random String.
 
-				return ( oRandom.Next().ToString() );
+                return ( oRandom.Next().ToString() );
 
-			case 1:
+            case 1:
 
-				// Random DateTime.
+                // Random DateTime.
 
-				return (
-					new DateTime(
-						oRandom.Next(1900, 2100 + 1),  // Year
-						oRandom.Next(1, 12 + 1),  // Month
-						oRandom.Next(1, 28 + 1),  // Day
-						oRandom.Next(0, 23 + 1),  // Hours 
-						oRandom.Next(0, 59 + 1),  // Minutes
-						oRandom.Next(0, 59 + 1)  // Seconds
-					) );
+                return (
+                    new DateTime(
+                        oRandom.Next(1900, 2100 + 1),  // Year
+                        oRandom.Next(1, 12 + 1),  // Month
+                        oRandom.Next(1, 28 + 1),  // Day
+                        oRandom.Next(0, 23 + 1),  // Hours 
+                        oRandom.Next(0, 59 + 1),  // Minutes
+                        oRandom.Next(0, 59 + 1)  // Seconds
+                    ) );
 
-			case 2:
+            case 2:
 
-				// Random Int32.
+                // Random Int32.
 
-				return ( oRandom.Next() );
+                return ( oRandom.Next() );
 
-			case 3:
+            case 3:
 
-				// Random Single.
+                // Random Single.
 
-				return ( (Single)oRandom.NextDouble() );
+                return ( (Single)oRandom.NextDouble() );
 
-			case 4:
+            case 4:
 
-				// Random Double.
+                // Random Double.
 
-				return ( oRandom.NextDouble() );
+                return ( oRandom.NextDouble() );
 
-			case 5:
+            case 5:
 
-				// Random Point.
+                // Random Point.
 
-				return ( new Point(
-					oRandom.Next(),
-					oRandom.Next()
-					) );
+                return ( new Point(
+                    oRandom.Next(),
+                    oRandom.Next()
+                    ) );
 
-			case 6:
+            case 6:
 
-				// null value.
+                // null value.
 
-				return (null);
+                return (null);
 
-			default:
+            default:
 
-				Debug.Assert(false);
+                Debug.Assert(false);
 
-				throw new ApplicationException(
-					"MetadataUtil.GetRandomValue: Unexpected case."
-					);
-		}
-	}
+                throw new ApplicationException(
+                    "MetadataUtil.GetRandomValue: Unexpected case."
+                    );
+        }
+    }
 
     //*************************************************************************
     //  Method: CheckMetadataValue()
@@ -430,75 +430,75 @@ public static class MetadataUtil
     /// <summary>
     /// Checks a metadata or Tag value.
     /// </summary>
-	///
-	/// <param name="oExpectedValue">
-	/// Expected value.  Can be null.
-	/// </param>
-	///
-	/// <param name="oValue">
-	/// Actual value.  Can be null.
-	/// </param>
+    ///
+    /// <param name="oExpectedValue">
+    /// Expected value.  Can be null.
+    /// </param>
+    ///
+    /// <param name="oValue">
+    /// Actual value.  Can be null.
+    /// </param>
     //*************************************************************************
 
-	private static void
-	CheckMetadataValue
-	(
-		Object oExpectedValue,
-		Object oValue
-	)
-	{
-		if (oExpectedValue == null)
-		{
-			Assert.IsNull(oValue);
+    private static void
+    CheckMetadataValue
+    (
+        Object oExpectedValue,
+        Object oValue
+    )
+    {
+        if (oExpectedValue == null)
+        {
+            Assert.IsNull(oValue);
 
-			return;
-		}
+            return;
+        }
 
         Assert.IsNotNull(oValue);
 
-		Assert.AreEqual( oValue.GetType(), oExpectedValue.GetType() );
+        Assert.AreEqual( oValue.GetType(), oExpectedValue.GetType() );
 
-		switch ( oValue.GetType().Name )
-		{
-			case "String":
+        switch ( oValue.GetType().Name )
+        {
+            case "String":
 
-				Assert.IsTrue( (String)oExpectedValue == (String)oValue );
-				break;
+                Assert.IsTrue( (String)oExpectedValue == (String)oValue );
+                break;
 
-			case "DateTime":
+            case "DateTime":
 
-				Assert.IsTrue( (DateTime)oExpectedValue == (DateTime)oValue );
-				break;
+                Assert.IsTrue( (DateTime)oExpectedValue == (DateTime)oValue );
+                break;
 
-			case "Int32":
+            case "Int32":
 
-				Assert.IsTrue( (Int32)oExpectedValue == (Int32)oValue );
-				break;
+                Assert.IsTrue( (Int32)oExpectedValue == (Int32)oValue );
+                break;
 
-			case "Single":
+            case "Single":
 
-				Assert.IsTrue( (Single)oExpectedValue == (Single)oValue );
-				break;
+                Assert.IsTrue( (Single)oExpectedValue == (Single)oValue );
+                break;
 
-			case "Double":
+            case "Double":
 
-				Assert.IsTrue( (Double)oExpectedValue == (Double)oValue );
-				break;
+                Assert.IsTrue( (Double)oExpectedValue == (Double)oValue );
+                break;
 
-			case "Point":
+            case "Point":
 
-				Assert.IsTrue( (Point)oExpectedValue == (Point)oValue );
-				break;
+                Assert.IsTrue( (Point)oExpectedValue == (Point)oValue );
+                break;
 
-			default:
+            default:
 
-				Debug.Assert(false);
+                Debug.Assert(false);
 
-				throw new ApplicationException(
-					"MetadataUtil.CheckMetadataValue: Type is unexpected."
-					);
-		}
-	}
+                throw new ApplicationException(
+                    "MetadataUtil.CheckMetadataValue: Type is unexpected."
+                    );
+        }
+    }
 }
 
 }

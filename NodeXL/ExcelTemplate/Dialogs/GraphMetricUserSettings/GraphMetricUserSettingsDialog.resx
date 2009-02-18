@@ -117,4 +117,78 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lnkBetweennessCentrality.Tag" xml:space="preserve">
+    <value>A vertex that occurs on many shortest paths between other vertices has a larger betweenness centrality than vertices that do not.  Betweenness centrality is defined in this article:
+	
+http://en.wikipedia.org/wiki/Centrality#Betweenness_centrality
+
+NodeXL uses the algorithm described in the paper "A Faster Algorithm for Betweenness Centrality," by Ulrik Brandes.  The paper can be found here:
+
+http://www.inf.uni-konstanz.de/algo/publications/b-fabc-01.pdf
+
+The algorithm successfully handles self-loops and duplicate edges.
+
+(You can press Ctrl-C to copy these details to the clipboard.)</value>
+  </data>
+  <data name="lnkClosenessCentrality.Tag" xml:space="preserve">
+    <value>The closeness centrality of a vertex is the average distance (along the shortest path) between the vertex and all other vertices reachable from it.  It is defined in this article:
+
+http://en.wikipedia.org/wiki/Centrality#Closeness_centrality
+
+NodeXL uses the Floyd-Warshall algorithm to compute the shortest paths.  The algorithm is outlined here:
+
+http://en.wikipedia.org/wiki/Floyd-Warshall_algorithm
+
+The algorithm skips self-loops and duplicate edges.  An isolated vertex is assigned an arbitrary closeness centrality of zero.
+
+(You can press Ctrl-C to copy these details to the clipboard.)</value>
+  </data>
+  <data name="lnkEigenvectorCentrality.Tag" xml:space="preserve">
+    <value>Eigenvector centrality is defined in this article:
+
+http://en.wikipedia.org/wiki/Eigenvector_centrality#Eigenvector_centrality
+
+From the article:
+
+"Eigenvector centrality is a measure of the importance of a node in a network. It assigns relative scores to all nodes in the network based on the principle that connections to high-scoring nodes contribute more to the score of the node in question than equal connections to low-scoring nodes."
+
+The dominant eigenvector required to compute eigenvector centrality is found using the "accelerated power method" outlined here:
+
+http://www.analytictech.com/networks/centaids.htm
+
+Self-loops and duplicate edges are skipped when calculating eigenvector centrality.
+
+(You can press Ctrl-C to copy these details to the clipboard.)</value>
+  </data>
+  <data name="lnkClusteringCoefficient.Tag" xml:space="preserve">
+    <value>Clustering coefficient is defined in this article:
+
+http://en.wikipedia.org/wiki/Clustering_coefficient
+
+From the article:
+
+"The clustering coefficient of a vertex in a graph quantifies how close the vertex and its neighbors are to being a clique (complete graph)."
+
+Self-loops, which would render the clustering coefficients invalid, are skipped.  Duplicate edges cause the clustering coefficients to be inaccurate.  Inaccurate clustering coefficients are highlighted.
+
+(You can press Ctrl-C to copy these details to the clipboard.)</value>
+  </data>
+  <data name="lnkOverallMetrics.Tag" xml:space="preserve">
+    <value>Overall metrics include vertex and edge counts and graph density.  They get inserted in the Overall Metrics worksheet.</value>
+  </data>
+  <data name="lnkInDegree.Tag" xml:space="preserve">
+    <value>In a directed graph, a vertex's in-degree is the number of incoming edges incident to the vertex.  In an undirected graph, in-degree is undefined and is not calculated.
+
+Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
+  </data>
+  <data name="lnkOutDegree.Tag" xml:space="preserve">
+    <value>In a directed graph, a vertex's out-degree is the number of outgoing edges incident to the vertex.  In an undirected graph, out-degree is undefined and is not calculated.
+
+Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
+  </data>
+  <data name="lnkDegree.Tag" xml:space="preserve">
+    <value>In an undirected graph, a vertex's degree is the number of edges incident to the vertex.  In a directed graph, degree is undefined and is not calculated.
+
+Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
+  </data>
 </root>

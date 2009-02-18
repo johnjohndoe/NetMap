@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -21,56 +21,56 @@ public class TwitterParticipant : Object
     //
     /// <overloads>
     /// Initializes a new instance of the <see cref="TwitterParticipant" />
-	/// class.
+    /// class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="TwitterParticipant" />
-	/// class with specified values.
+    /// class with specified values.
     /// </summary>
-	///
+    ///
     /// <param name="screenName">
-	/// The participant's Twitter screen name, as a String.  Can't be null or
-	/// empty.
+    /// The participant's Twitter screen name, as a String.  Can't be null or
+    /// empty.
     /// </param>
-	///
+    ///
     /// <param name="twitterID">
-	/// The participant's Twitter ID, or Int32.MinValue if the ID isn't
-	/// available.
+    /// The participant's Twitter ID, or Int32.MinValue if the ID isn't
+    /// available.
     /// </param>
-	///
+    ///
     /// <param name="followerCount">
-	/// The number of followers of the participant, or Int32.MinValue if the
-	/// number isn't available.
+    /// The number of followers of the participant, or Int32.MinValue if the
+    /// number isn't available.
     /// </param>
-	///
+    ///
     /// <param name="latestStatus">
-	/// The participant's latest status, or null or empty if the latest status
-	/// isn't available.
+    /// The participant's latest status, or null or empty if the latest status
+    /// isn't available.
     /// </param>
-	///
+    ///
     /// <param name="latestStatusTime">
-	/// The time of the participant's latest status, or DateTime.MinValue if
-	/// the time isn't available.
+    /// The time of the participant's latest status, or DateTime.MinValue if
+    /// the time isn't available.
     /// </param>
     //*************************************************************************
 
     public TwitterParticipant
-	(
-		String screenName,
-		Int32 twitterID,
-		Int32 followerCount,
-		String latestStatus,
-		DateTime latestStatusTime
-	)
+    (
+        String screenName,
+        Int32 twitterID,
+        Int32 followerCount,
+        String latestStatus,
+        DateTime latestStatusTime
+    )
     {
-		m_sScreenName = screenName;
-		m_iTwitterID = twitterID;
-		m_iFollowerCount = followerCount;
-		m_sLatestStatus = latestStatus;
-		m_oLatestStatusTime = latestStatusTime;
+        m_sScreenName = screenName;
+        m_iTwitterID = twitterID;
+        m_iFollowerCount = followerCount;
+        m_sLatestStatus = latestStatus;
+        m_oLatestStatusTime = latestStatusTime;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -78,33 +78,33 @@ public class TwitterParticipant : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="TwitterParticipant" />
-	/// class with default values.
+    /// class with default values.
     /// </summary>
-	///
-	/// <remarks>
-	/// Do not use this constructor.  It is for XML serialization only.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// Do not use this constructor.  It is for XML serialization only.
+    /// </remarks>
     //*************************************************************************
 
     public TwitterParticipant()
-	:
-	this("Participant", Int32.MinValue, 0, null, DateTime.MinValue)
+    :
+    this("Participant", Int32.MinValue, 0, null, DateTime.MinValue)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: ScreenName
     //
     /// <summary>
-	/// Gets or sets the participant's Twitter screen name.
+    /// Gets or sets the participant's Twitter screen name.
     /// </summary>
     ///
     /// <value>
-	/// The participant's Twitter screen name, as a String.  Can't be null or
-	/// empty.
+    /// The participant's Twitter screen name, as a String.  Can't be null or
+    /// empty.
     /// </value>
     //*************************************************************************
 
@@ -120,7 +120,7 @@ public class TwitterParticipant : Object
 
         set
         {
-			m_sScreenName = value;
+            m_sScreenName = value;
 
             AssertValid();
         }
@@ -130,12 +130,12 @@ public class TwitterParticipant : Object
     //  Property: TwitterID
     //
     /// <summary>
-	/// Gets or sets the participant's Twitter ID.
+    /// Gets or sets the participant's Twitter ID.
     /// </summary>
     ///
     /// <value>
-	/// The participant's Twitter ID, as an Int32, or Int32.MinValue if the ID
-	/// isn't available.
+    /// The participant's Twitter ID, as an Int32, or Int32.MinValue if the ID
+    /// isn't available.
     /// </value>
     //*************************************************************************
 
@@ -151,7 +151,7 @@ public class TwitterParticipant : Object
 
         set
         {
-			m_iTwitterID = value;
+            m_iTwitterID = value;
 
             AssertValid();
         }
@@ -161,18 +161,18 @@ public class TwitterParticipant : Object
     //  Property: FollowerCount
     //
     /// <summary>
-	/// Gets or sets the number of followers of the participant.
+    /// Gets or sets the number of followers of the participant.
     /// </summary>
     ///
     /// <value>
-	/// The number of followers of the participant, as an Int32, or
-	/// Int32.MinValue if the number isn't available.
+    /// The number of followers of the participant, as an Int32, or
+    /// Int32.MinValue if the number isn't available.
     /// </value>
-	///
-	/// <remarks>
-	/// In Twitter, a follower of person A is a person who receives Twitter
-	/// updates from person A.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// In Twitter, a follower of person A is a person who receives Twitter
+    /// updates from person A.
+    /// </remarks>
     //*************************************************************************
 
     public Int32
@@ -187,7 +187,7 @@ public class TwitterParticipant : Object
 
         set
         {
-			m_iFollowerCount = value;
+            m_iFollowerCount = value;
 
             AssertValid();
         }
@@ -197,17 +197,17 @@ public class TwitterParticipant : Object
     //  Property: LatestStatus
     //
     /// <summary>
-	/// Gets or sets the participant's latest status.
+    /// Gets or sets the participant's latest status.
     /// </summary>
     ///
     /// <value>
-	/// The participant's latest status, as a String, or null or empty if the
-	/// latest status isn't available.
+    /// The participant's latest status, as a String, or null or empty if the
+    /// latest status isn't available.
     /// </value>
-	///
-	/// <remarks>
-	/// In Twitter, a participant's status is his latest posting, or "tweet."
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// In Twitter, a participant's status is his latest posting, or "tweet."
+    /// </remarks>
     //*************************************************************************
 
     public String
@@ -222,7 +222,7 @@ public class TwitterParticipant : Object
 
         set
         {
-			m_sLatestStatus = value;
+            m_sLatestStatus = value;
 
             AssertValid();
         }
@@ -232,17 +232,17 @@ public class TwitterParticipant : Object
     //  Property: LatestStatusTime
     //
     /// <summary>
-	/// Gets or sets the time of the participant's latest status.
+    /// Gets or sets the time of the participant's latest status.
     /// </summary>
     ///
     /// <value>
-	/// The time of the participant's latest status, as a DateTime, or
-	/// DateTime.MinValue if the time isn't available.
+    /// The time of the participant's latest status, as a DateTime, or
+    /// DateTime.MinValue if the time isn't available.
     /// </value>
-	///
-	/// <remarks>
-	/// In Twitter, a participant's status is his latest posting, or "tweet."
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// In Twitter, a participant's status is his latest posting, or "tweet."
+    /// </remarks>
     //*************************************************************************
 
     public DateTime
@@ -257,7 +257,7 @@ public class TwitterParticipant : Object
 
         set
         {
-			m_oLatestStatusTime = value;
+            m_oLatestStatusTime = value;
 
             AssertValid();
         }
@@ -277,14 +277,14 @@ public class TwitterParticipant : Object
     public void
     AssertValid()
     {
-		Debug.Assert( !String.IsNullOrEmpty(m_sScreenName) );
-		// m_iTwitterID
+        Debug.Assert( !String.IsNullOrEmpty(m_sScreenName) );
+        // m_iTwitterID
 
-		Debug.Assert(m_iFollowerCount == Int32.MinValue ||
-			m_iFollowerCount >= 0);
+        Debug.Assert(m_iFollowerCount == Int32.MinValue ||
+            m_iFollowerCount >= 0);
 
-		// m_sLatestStatus
-    	// m_oLatestStatusTime
+        // m_sLatestStatus
+        // m_oLatestStatusTime
     }
 
 
@@ -292,27 +292,27 @@ public class TwitterParticipant : Object
     //  Protected fields
     //*************************************************************************
 
-	/// The participant's Twitter screen name.
+    /// The participant's Twitter screen name.
 
-	protected String m_sScreenName;
+    protected String m_sScreenName;
 
-	/// The participant's Twitter ID, or Int32.MinValue if the ID isn't
-	/// available.
+    /// The participant's Twitter ID, or Int32.MinValue if the ID isn't
+    /// available.
 
-	protected Int32 m_iTwitterID;
+    protected Int32 m_iTwitterID;
 
-	/// The number of followers of the participant, or Int32.MinValue if the
-	/// number isn't available.
+    /// The number of followers of the participant, or Int32.MinValue if the
+    /// number isn't available.
 
     protected Int32 m_iFollowerCount;
 
-	/// The participant's latest status, or null or empty if the latest status
-	/// isn't available.
+    /// The participant's latest status, or null or empty if the latest status
+    /// isn't available.
 
-	protected String m_sLatestStatus;
+    protected String m_sLatestStatus;
 
-	/// The time of the participant's latest status, or DateTime.MinValue if
-	/// the time isn't available.
+    /// The time of the participant's latest status, or DateTime.MinValue if
+    /// the time isn't available.
 
     protected DateTime m_oLatestStatusTime;
 }

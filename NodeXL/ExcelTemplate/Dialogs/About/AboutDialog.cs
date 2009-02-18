@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -14,7 +14,7 @@ using System.Diagnostics;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: AboutDialog
+//  Class: AboutDialog
 //
 /// <summary>
 /// This is the application's About dialog.
@@ -27,167 +27,167 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class AboutDialog : ExcelTemplateForm
 {
-	//*************************************************************************
-	//	Constructor: AboutDialog()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see cref="AboutDialog" /> class.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: AboutDialog()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AboutDialog" /> class.
+    /// </summary>
+    //*************************************************************************
 
-	public AboutDialog()
-	{
-		InitializeComponent();
-
-		// Instantiate an object that retrieves and saves the location of this
-		// dialog.  Note that the object automatically saves the settings when
-		// the form closes.
-
-		m_oAboutDialogUserSettings = new AboutDialogUserSettings(this);
-
-		lblVersion.Text = String.Format(
-
-			"Version {0}"
-			,
-			AssemblyUtil2.GetFileVersion()
-			);
-
-		lblCopyright.Text = String.Format(
-
-			"Copyright © {0} Microsoft Corporation"
-			,
-			DateTime.Now.Year
-			);
-
-		lnkDiscussionUrl.Text = ProjectInformation.DiscussionUrl;
-
-		ttToolTip.SetToolTip(lnkDiscussionUrl, String.Format(
-		
-			"Go to {0}"
-			,
-			ProjectInformation.DiscussionUrl
-			) );
-
-		// AssertValid();
-	}
-
-	//*************************************************************************
-	//	Method: lnkTeam_LinkClicked()
-	//
-	/// <summary>
-	///	Handles the LinkClicked event on the lnkTeam LinkLabel.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
-
-    private void
-	lnkTeam_LinkClicked
-	(
-		object sender,
-		LinkLabelLinkClickedEventArgs e
-	)
+    public AboutDialog()
     {
-		AssertValid();
+        InitializeComponent();
 
-		this.ShowInformation( String.Format(
+        // Instantiate an object that retrieves and saves the location of this
+        // dialog.  Note that the object automatically saves the settings when
+        // the form closes.
 
-			"Microsoft NodeXL team members:\r\n\r\n{0}"
-			,
-			ProjectInformation.TeamMembers
-			) );
+        m_oAboutDialogUserSettings = new AboutDialogUserSettings(this);
+
+        lblVersion.Text = String.Format(
+
+            "Version {0}"
+            ,
+            AssemblyUtil2.GetFileVersion()
+            );
+
+        lblCopyright.Text = String.Format(
+
+            "Copyright © {0} Microsoft Corporation"
+            ,
+            DateTime.Now.Year
+            );
+
+        lnkDiscussionUrl.Text = ProjectInformation.DiscussionUrl;
+
+        ttToolTip.SetToolTip(lnkDiscussionUrl, String.Format(
+        
+            "Go to {0}"
+            ,
+            ProjectInformation.DiscussionUrl
+            ) );
+
+        // AssertValid();
     }
 
-	//*************************************************************************
-	//	Method: lnkDiscussionUrl_LinkClicked()
-	//
-	/// <summary>
-	///	Handles the LinkClicked event on the lnkDiscussionUrl LinkLabel.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: lnkTeam_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkTeam LinkLabel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	lnkDiscussionUrl_LinkClicked
-	(
-		object sender,
-		LinkLabelLinkClickedEventArgs e
-	)
+    lnkTeam_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		System.Diagnostics.Process.Start(ProjectInformation.DiscussionUrl);
+        this.ShowInformation( String.Format(
+
+            "Microsoft NodeXL team members:\r\n\r\n{0}"
+            ,
+            ProjectInformation.TeamMembers
+            ) );
     }
 
-	//*************************************************************************
-	//	Method: btnEnableAllNotifications_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnEnableAllNotifications button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: lnkDiscussionUrl_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkDiscussionUrl LinkLabel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnEnableAllNotifications_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    lnkDiscussionUrl_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		NotificationUserSettings oNotificationUserSettings =
-			new NotificationUserSettings();
-
-		oNotificationUserSettings.EnableAllNotifications();
-		oNotificationUserSettings.Save();
+        System.Diagnostics.Process.Start(ProjectInformation.DiscussionUrl);
     }
 
-	//*************************************************************************
-	//	Method: btnOK_Click()
-	//
-	/// <summary>
-	///	Handles the Click event on the btnOK button.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: btnEnableAllNotifications_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEnableAllNotifications button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	btnOK_Click
-	(
-		object sender,
-		EventArgs e
-	)
+    btnEnableAllNotifications_Click
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
+
+        NotificationUserSettings oNotificationUserSettings =
+            new NotificationUserSettings();
+
+        oNotificationUserSettings.EnableAllNotifications();
+        oNotificationUserSettings.Save();
+    }
+
+    //*************************************************************************
+    //  Method: btnOK_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnOK button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnOK_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
 
         this.Close();
     }
@@ -206,9 +206,9 @@ public partial class AboutDialog : ExcelTemplateForm
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oAboutDialogUserSettings != null);
+        Debug.Assert(m_oAboutDialogUserSettings != null);
     }
 
 
@@ -216,9 +216,9 @@ public partial class AboutDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-	/// User settings for this dialog.
+    /// User settings for this dialog.
 
-	protected AboutDialogUserSettings m_oAboutDialogUserSettings;
+    protected AboutDialogUserSettings m_oAboutDialogUserSettings;
 }
 
 
@@ -243,25 +243,25 @@ public class AboutDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="AboutDialogUserSettings" /> class.
+    /// cref="AboutDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public AboutDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -278,7 +278,7 @@ public class AboutDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

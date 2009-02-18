@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections;
@@ -11,7 +11,7 @@ namespace Microsoft.NodeXL.Core
 //  Interface: IVertexSorter
 //
 /// <summary>
-///	Represents an object that can sort a collection of vertices.
+/// Represents an object that can sort a collection of vertices.
 /// </summary>
 ///
 /// <remarks>
@@ -28,7 +28,7 @@ public interface IVertexSorter
     /// <overloads>
     /// Sorts a collection of vertices.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Sorts an <see cref="IVertexCollection" />.
     /// </summary>
@@ -36,24 +36,24 @@ public interface IVertexSorter
     /// <param name="vertexCollection">
     /// Collection to sort.  The collection is not modified.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// A sorted <see cref="IVertex" /> array.
+    /// A sorted <see cref="IVertex" /> array.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method creates an array of references to the vertices in <paramref
-	/// name="vertexCollection" />, sorts the array, and returns the array.
-	/// <paramref name="vertexCollection" /> is not modified and no vertices
-	/// are cloned or created.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method creates an array of references to the vertices in <paramref
+    /// name="vertexCollection" />, sorts the array, and returns the array.
+    /// <paramref name="vertexCollection" /> is not modified and no vertices
+    /// are cloned or created.
+    /// </remarks>
     //*************************************************************************
 
-	IVertex []
-	Sort
-	(
-		IVertexCollection vertexCollection
-	);
+    IVertex []
+    Sort
+    (
+        IVertexCollection vertexCollection
+    );
 
     //*************************************************************************
     //  Method: Sort()
@@ -65,23 +65,23 @@ public interface IVertexSorter
     /// <param name="vertices">
     /// Array to sort.  The array is not modified.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// A sorted copy of <paramref name="vertices" />.
+    /// A sorted copy of <paramref name="vertices" />.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method creates a copy of <paramref name="vertices" />, sorts the
-	/// copy, and returns the copy.  <paramref name="vertices" /> is not
-	/// modified and no vertices are cloned or created.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method creates a copy of <paramref name="vertices" />, sorts the
+    /// copy, and returns the copy.  <paramref name="vertices" /> is not
+    /// modified and no vertices are cloned or created.
+    /// </remarks>
     //*************************************************************************
 
-	IVertex []
-	Sort
-	(
-		IVertex [] vertices
-	);
+    IVertex []
+    Sort
+    (
+        IVertex [] vertices
+    );
 
     //*************************************************************************
     //  Method: Sort()
@@ -93,23 +93,23 @@ public interface IVertexSorter
     /// <param name="vertices">
     /// ICollection of vertices to sort.  The array is not modified.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// A sorted copy of <paramref name="vertices" />, as an ICollection.
+    /// A sorted copy of <paramref name="vertices" />, as an ICollection.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method creates a copy of <paramref name="vertices" />, sorts the
-	/// copy, and returns the copy.  <paramref name="vertices" /> is not
-	/// modified and no vertices are cloned or created.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method creates a copy of <paramref name="vertices" />, sorts the
+    /// copy, and returns the copy.  <paramref name="vertices" /> is not
+    /// modified and no vertices are cloned or created.
+    /// </remarks>
     //*************************************************************************
 
-	ICollection
-	Sort
-	(
-		ICollection vertices
-	);
+    ICollection
+    Sort
+    (
+        ICollection vertices
+    );
 }
 
 }

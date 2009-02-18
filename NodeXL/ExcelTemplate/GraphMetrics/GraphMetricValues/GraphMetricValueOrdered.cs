@@ -26,20 +26,20 @@ public class GraphMetricValueOrdered : GraphMetricValue
     //
     /// <overloads>
     /// Initializes a new instance of the <see
-	/// cref="GraphMetricValueOrdered" /> class.
+    /// cref="GraphMetricValueOrdered" /> class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="GraphMetricValueOrdered" /> class with default values.
+    /// cref="GraphMetricValueOrdered" /> class with default values.
     /// </summary>
     //*************************************************************************
 
     public GraphMetricValueOrdered()
-	:
-	this (null)
+    :
+    this (null)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -47,21 +47,21 @@ public class GraphMetricValueOrdered : GraphMetricValue
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="GraphMetricValueOrdered" /> class with a specified value.
+    /// cref="GraphMetricValueOrdered" /> class with a specified value.
     /// </summary>
-	///
-	/// <param name="value">
-	/// Graph metric value for the row.
-	/// </param>
+    ///
+    /// <param name="value">
+    /// Graph metric value for the row.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricValueOrdered
-	(
-		Object value
-	)
-	: this(value, null)
+    (
+        Object value
+    )
+    : this(value, null)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -69,38 +69,38 @@ public class GraphMetricValueOrdered : GraphMetricValue
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="GraphMetricValueOrdered" /> class with a specified value and
-	/// style.
+    /// cref="GraphMetricValueOrdered" /> class with a specified value and
+    /// style.
     /// </summary>
-	///
-	/// <param name="value">
-	/// Graph metric value for the row.
-	/// </param>
-	///
-	/// <param name="style">
-	/// Style of the row, or null to not apply a style.  Sample: "Bad".  The
-	/// style overrides any style applied to the column.
-	/// </param>
-	///
-	/// <remarks>
-	/// If a style is ever applied to a row, a style should always be applied
-	/// to the row.  If the "Bad" style is applied when the row is bad, for
-	/// example, using a default null style when the row is good would always
-	/// leave the bad style in place.  Instead, the "Normal" style should be
-	/// applied when the row is good.
-	/// </remarks>
+    ///
+    /// <param name="value">
+    /// Graph metric value for the row.
+    /// </param>
+    ///
+    /// <param name="style">
+    /// Style of the row, or null to not apply a style.  Sample: "Bad".  The
+    /// style overrides any style applied to the column.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If a style is ever applied to a row, a style should always be applied
+    /// to the row.  If the "Bad" style is applied when the row is bad, for
+    /// example, using a default null style when the row is good would always
+    /// leave the bad style in place.  Instead, the "Normal" style should be
+    /// applied when the row is good.
+    /// </remarks>
     //*************************************************************************
 
     public GraphMetricValueOrdered
-	(
-		Object value,
-		String style
-	)
-	: base(value)
+    (
+        Object value,
+        String style
+    )
+    : base(value)
     {
-		m_sStyle = style;
+        m_sStyle = style;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -111,16 +111,16 @@ public class GraphMetricValueOrdered : GraphMetricValue
     /// </summary>
     ///
     /// <value>
-	/// The style of the row, or null to not apply a style.  Sample: "Bad".
+    /// The style of the row, or null to not apply a style.  Sample: "Bad".
     /// </value>
-	///
-	/// <remarks>
-	/// If a style is ever applied to a row, a style should always be applied
-	/// to the row.  If the "Bad" style is applied when the row is bad, for
-	/// example, using a default null style when the row is good would always
-	/// leave the bad style in place.  Instead, the "Normal" style should be
-	/// applied when the row is good.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If a style is ever applied to a row, a style should always be applied
+    /// to the row.  If the "Bad" style is applied when the row is bad, for
+    /// example, using a default null style when the row is good would always
+    /// leave the bad style in place.  Instead, the "Normal" style should be
+    /// applied when the row is good.
+    /// </remarks>
     //*************************************************************************
 
     public String
@@ -135,7 +135,7 @@ public class GraphMetricValueOrdered : GraphMetricValue
 
         set
         {
-			m_sStyle = value;
+            m_sStyle = value;
 
             AssertValid();
         }
@@ -155,9 +155,9 @@ public class GraphMetricValueOrdered : GraphMetricValue
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// m_sStyle
+        // m_sStyle
     }
 
 
@@ -165,9 +165,9 @@ public class GraphMetricValueOrdered : GraphMetricValue
     //  Protected fields
     //*************************************************************************
 
-	/// Style of the cell, or null to not apply a style.  Sample: "Bad".
+    /// Style of the cell, or null to not apply a style.  Sample: "Bad".
 
-	protected String m_sStyle;
+    protected String m_sStyle;
 }
 
 }

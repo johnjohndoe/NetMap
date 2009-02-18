@@ -1,10 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.ExcelTemplate;
-using Microsoft.NodeXL.Visualization;
 
 namespace Microsoft.NodeXL.UnitTests
 {
@@ -26,7 +25,7 @@ public class BooleanConverterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="BooleanConverterTest" /> class.
+    /// cref="BooleanConverterTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,8 +47,8 @@ public class BooleanConverterTest : Object
     public void
     SetUp()
     {
-		m_oBooleanConverter = new BooleanConverter();
-	}
+        m_oBooleanConverter = new BooleanConverter();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -80,19 +79,19 @@ public class BooleanConverterTest : Object
     public void
     TestTryWorkbookToGraph()
     {
-		Boolean bValueGraph;
+        Boolean bValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"yes (1)",
-			"YeS (1)",
-			"1",
-			} )
-		{
-			Assert.IsTrue( m_oBooleanConverter.TryWorkbookToGraph(
-				sValueWorkbook, out bValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "yes (1)",
+            "YeS (1)",
+            "1",
+            } )
+        {
+            Assert.IsTrue( m_oBooleanConverter.TryWorkbookToGraph(
+                sValueWorkbook, out bValueGraph) );
 
-			Assert.IsTrue(bValueGraph);
-		}
+            Assert.IsTrue(bValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -108,19 +107,19 @@ public class BooleanConverterTest : Object
     public void
     TestTryWorkbookToGraph2()
     {
-		Boolean bValueGraph;
+        Boolean bValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"no (0)",
-			"nO (0)",
-			"0",
-			} )
-		{
-			Assert.IsTrue( m_oBooleanConverter.TryWorkbookToGraph(
-				sValueWorkbook, out bValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "no (0)",
+            "nO (0)",
+            "0",
+            } )
+        {
+            Assert.IsTrue( m_oBooleanConverter.TryWorkbookToGraph(
+                sValueWorkbook, out bValueGraph) );
 
-			Assert.IsFalse(bValueGraph);
-		}
+            Assert.IsFalse(bValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -136,21 +135,21 @@ public class BooleanConverterTest : Object
     public void
     TestTryWorkbookToGraph3()
     {
-		Boolean bValueGraph;
+        Boolean bValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"",
-			" ",
-			" 0",
-			"1 ",
-			"x",
-			" no",
-			"yes ",
-			} )
-		{
-			Assert.IsFalse( m_oBooleanConverter.TryWorkbookToGraph(
-				sValueWorkbook, out bValueGraph) );
-		}
+        foreach (String sValueWorkbook in new String [] {
+            "",
+            " ",
+            " 0",
+            "1 ",
+            "x",
+            " no",
+            "yes ",
+            } )
+        {
+            Assert.IsFalse( m_oBooleanConverter.TryWorkbookToGraph(
+                sValueWorkbook, out bValueGraph) );
+        }
     }
 
     //*************************************************************************
@@ -166,11 +165,11 @@ public class BooleanConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-		Assert.AreEqual( "Yes (1)",
-			m_oBooleanConverter.GraphToWorkbook(true) );
+        Assert.AreEqual( "Yes (1)",
+            m_oBooleanConverter.GraphToWorkbook(true) );
 
-		Assert.AreEqual( "No (0)",
-			m_oBooleanConverter.GraphToWorkbook(false) );
+        Assert.AreEqual( "No (0)",
+            m_oBooleanConverter.GraphToWorkbook(false) );
     }
 
 

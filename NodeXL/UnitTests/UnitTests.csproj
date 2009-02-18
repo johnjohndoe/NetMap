@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.NodeXL.ExcelTemplate, Version=1.0.1.24, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.NodeXL.ExcelTemplate, Version=1.0.1.76, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ExcelTemplate\bin\Debug\Microsoft.NodeXL.ExcelTemplate.dll</HintPath>
     </Reference>
@@ -48,14 +48,9 @@
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
     </Compile>
-    <Compile Include="..\Common\GraphUtil.cs">
-      <Link>Util\GraphUtil.cs</Link>
-    </Compile>
     <Compile Include="Adapters\GraphAdapters\PajekGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\SimpleGraphAdapterTest.cs" />
-    <Compile Include="ApplicationUtil\Controls\GraphInfoViewer\RequestSelectionEventArgsTest.cs" />
-    <Compile Include="Control\DraggedVertexTest.cs" />
-    <Compile Include="Control\GraphMouseEventArgsTest.cs" />
+    <Compile Include="Algorithms\Miscellaneous\DuplicateEdgeDetectorTest.cs" />
     <Compile Include="Core\DefaultImplementations\NodeXLBaseTest.cs" />
     <Compile Include="Core\DefaultImplementations\Collections\EdgeCollectionEnumeratorTest.cs" />
     <Compile Include="Core\DefaultImplementations\Collections\EdgeCollectionTest.cs" />
@@ -75,11 +70,7 @@
     <Compile Include="Core\DefaultImplementations\VertexSorters\ByMetadataVertexSorterTest.cs" />
     <Compile Include="Core\DefaultImplementations\VertexTest.cs" />
     <Compile Include="Core\Util\EdgeUtilTest.cs" />
-    <Compile Include="DesktopApplication\DocumentViewFramework\NewDocumentTitleCreatorTest.cs" />
-    <Compile Include="DesktopApplication\UIComponents\ExceptionNotifierTest.cs" />
-    <Compile Include="DesktopApplication\Util\CommandLineParserTest.cs" />
-    <Compile Include="DesktopApplication\Util\GraphAdapterManagerTest.cs" />
-    <Compile Include="ExcelTemplate\Util\DuplicateEdgeDetectorTest.cs" />
+    <Compile Include="Core\Util\SimpleGraphMatrixTest.cs" />
     <Compile Include="ExcelTemplate\Util\DynamicFilters\DateTimeFilterParametersTest.cs" />
     <Compile Include="ExcelTemplate\Util\DynamicFilters\DynamicFilterParametersTest.cs" />
     <Compile Include="ExcelTemplate\Util\DynamicFilters\NumericFilterParametersTest.cs" />
@@ -89,7 +80,7 @@
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\ColorConverter2Test.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\EdgeVisibilityConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\EdgeWidthConverterTest.cs" />
-    <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexDrawerPrecedenceConverterTest.cs" />
+    <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexDrawingPrecedenceConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexLocationConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexRadiusConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexShapeConverterTest.cs" />
@@ -99,23 +90,12 @@
     <Compile Include="Util\MetadataUtil.cs" />
     <Compile Include="Util\MockObjects.cs" />
     <Compile Include="Util\StringStream.cs" />
+    <Compile Include="Util\TestGraphUtil.cs" />
     <Compile Include="Util\TestImageUtil.cs" />
-    <Compile Include="Visualization\EdgeDrawers\EdgeDrawerTest.cs" />
-    <Compile Include="Visualization\EdgeDrawers\PerEdgeDrawerTest.cs" />
-    <Compile Include="Visualization\EdgeDrawers\SugiyamaEdgeDrawerTest.cs" />
-    <Compile Include="Visualization\GraphDrawers\AsyncGraphDrawerTest.cs" />
-    <Compile Include="Visualization\GraphDrawers\GraphDrawerTest.cs" />
-    <Compile Include="Visualization\GraphDrawers\MultiSelectionGraphDrawerTest.cs" />
-    <Compile Include="Visualization\Layouts\FruchtermanReingoldLayoutTest.cs" />
-    <Compile Include="Visualization\Layouts\FruchtermanReingoldVertexInfoTest.cs" />
-    <Compile Include="Visualization\Layouts\LayOutGraphAsyncArgumentsTest.cs" />
-    <Compile Include="Visualization\Util\DrawContextTest.cs" />
-    <Compile Include="Visualization\Util\LayoutContextTest.cs" />
-    <Compile Include="Visualization\VertexDrawers\PerVertexDrawerTest.cs" />
-    <Compile Include="Visualization\VertexDrawers\PerVertexWithLabelDrawerTest.cs" />
-    <Compile Include="Visualization\VertexDrawers\PrimaryLabelDrawInfoTest.cs" />
-    <Compile Include="Visualization\VertexDrawers\SugiyamaVertexDrawerTest.cs" />
-    <Compile Include="Visualization\VertexDrawers\VertexDrawerTest.cs" />
+    <Compile Include="Layouts\Layouts\FruchtermanReingoldLayoutTest.cs" />
+    <Compile Include="Layouts\Layouts\FruchtermanReingoldVertexInfoTest.cs" />
+    <Compile Include="Layouts\Layouts\LayOutGraphAsyncArgumentsTest.cs" />
+    <Compile Include="Layouts\Util\LayoutContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AuthoringTests.txt" />
@@ -125,25 +105,25 @@
       <Project>{49BF210B-2FB1-4955-9553-B4C9DB275352}</Project>
       <Name>Adapters</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Algorithms\Algorithms.csproj">
+      <Project>{1E286552-2364-419B-B8A0-D21B860BC60F}</Project>
+      <Name>Algorithms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ApplicationUtil\ApplicationUtil.csproj">
       <Project>{F7845042-B212-4D74-9343-DA2052F83234}</Project>
       <Name>ApplicationUtil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Control\Control.csproj">
-      <Project>{56727BA5-D9A8-480C-8D71-380C449784BC}</Project>
-      <Name>Control</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DesktopApplication\DesktopApplication.csproj">
-      <Project>{54F31DDE-AC01-4E96-A90E-FD270FC4D6BA}</Project>
-      <Name>DesktopApplication</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Visualization\Visualization.csproj">
+    <ProjectReference Include="..\Layouts\Layouts.csproj">
       <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>
-      <Name>Visualization</Name>
+      <Name>Layouts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfVisualization\WpfVisualization.csproj">
+      <Project>{3228C440-7166-44E1-A1A2-036ECDD9371F}</Project>
+      <Name>WpfVisualization</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

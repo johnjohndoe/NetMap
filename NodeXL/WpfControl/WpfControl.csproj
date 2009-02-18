@@ -12,6 +12,8 @@
     <AssemblyName>Microsoft.NodeXL.Control.Wpf</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Common\KeyFile.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,37 +35,39 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="PresentationFramework">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsBase">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\ArgumentChecker.cs">
       <Link>Util\ArgumentChecker.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Mouse\DraggedVertex.cs">
-      <Link>Util\Mouse\DraggedVertex.cs</Link>
+    <Compile Include="..\..\Common\ToolTipTrackerBase.cs">
+      <Link>Util\ToolTipTrackerBase.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Mouse\GraphMouseEventArgs.cs">
-      <Link>Util\Mouse\GraphMouseEventArgs.cs</Link>
+    <Compile Include="..\..\Common\Wpf\WpfToolTipTracker.cs">
+      <Link>Util\WpfToolTipTracker.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Mouse\MouseDrag.cs">
-      <Link>Util\Mouse\MouseDrag.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\Mouse\MouseSelectionMode.cs">
-      <Link>Util\Mouse\MouseSelectionMode.cs</Link>
-    </Compile>
+    <Compile Include="Mouse\DraggedMarquee.cs" />
+    <Compile Include="Mouse\DraggedTranslation.cs" />
+    <Compile Include="Mouse\DraggedVertices.cs" />
+    <Compile Include="Mouse\GraphMouseButtonEventArgs.cs" />
+    <Compile Include="Mouse\MouseDrag.cs" />
+    <Compile Include="Mouse\MouseDragWithVisual.cs" />
+    <Compile Include="Mouse\MouseSelectionMode.cs" />
+    <Compile Include="Mouse\VertexToolTipShownEventArgs.cs" />
+    <Compile Include="Mouse\VerticesMovedEventArgs.cs" />
     <Compile Include="NodeXLControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -72,14 +76,27 @@
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Visualization\Visualization.csproj">
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
+      <Name>Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Layouts\Layouts.csproj">
       <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>
-      <Name>Visualization</Name>
+      <Name>Layouts</Name>
     </ProjectReference>
     <ProjectReference Include="..\WpfVisualization\WpfVisualization.csproj">
       <Project>{3228C440-7166-44E1-A1A2-036ECDD9371F}</Project>
       <Name>WpfVisualization</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Marquee.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\MarqueeAdd.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\MarqueeSubtract.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

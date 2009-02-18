@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ namespace Microsoft.NodeXL.Adapters
 //  Class: AdapterBase
 //
 /// <summary>
-///	Base class for most classes in the <see cref="Microsoft.NodeXL.Adapters" />
+/// Base class for most classes in the <see cref="Microsoft.NodeXL.Adapters" />
 /// namespace.
 /// </summary>
 //*****************************************************************************
@@ -24,49 +24,49 @@ public class AdapterBase : NodeXLBase
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="AdapterBase" />
-	///	class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public AdapterBase()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		// AssertValid();
+        // AssertValid();
     }
 
-	//*************************************************************************
-	//	Property: ArgumentChecker
-	//
-	/// <summary>
-	/// Gets a new initialized <see cref="ArgumentChecker" /> object.
-	/// </summary>
-	///
-	/// <value>
-	/// A new initialized <see cref="ArgumentChecker" /> object.
-	/// </value>
-	///
-	/// <remarks>
-	/// The returned object can be used to check the validity of property
-	/// values and method parameters.
-	///
-	/// <para>
-	/// The <see cref="NodeXLBase" /> implementation of this property cannot be
-	/// used because it's marked as internal.  The reason it's internal is
-	/// explained in the comments for the <see cref="ArgumentChecker" /> class.
-	/// </para>
-	///
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ArgumentChecker
+    //
+    /// <summary>
+    /// Gets a new initialized <see cref="ArgumentChecker" /> object.
+    /// </summary>
+    ///
+    /// <value>
+    /// A new initialized <see cref="ArgumentChecker" /> object.
+    /// </value>
+    ///
+    /// <remarks>
+    /// The returned object can be used to check the validity of property
+    /// values and method parameters.
+    ///
+    /// <para>
+    /// The <see cref="NodeXLBase" /> implementation of this property cannot be
+    /// used because it's marked as internal.  The reason it's internal is
+    /// explained in the comments for the <see cref="ArgumentChecker" /> class.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
 
-	internal ArgumentChecker
-	ArgumentChecker
-	{
-		get
-		{
-			return ( new ArgumentChecker(this.ClassName) );
-		}
-	}
+    internal ArgumentChecker
+    ArgumentChecker
+    {
+        get
+        {
+            return ( new ArgumentChecker(this.ClassName) );
+        }
+    }
 
 
     //*************************************************************************
@@ -82,9 +82,9 @@ public class AdapterBase : NodeXLBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -92,7 +92,7 @@ public class AdapterBase : NodeXLBase
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

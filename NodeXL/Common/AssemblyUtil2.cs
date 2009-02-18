@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Reflection;
@@ -21,43 +21,43 @@ public static class AssemblyUtil2 : Object
     //  Method: GetFileVersion()
     //
     /// <summary>
-	/// Gets the file version of the executing assembly, as a string.
+    /// Gets the file version of the executing assembly, as a string.
     /// </summary>
     ///
     /// <value>
-	/// The file version of the executing assembly, as a string.  Sample:
-	/// "1.0.1.12".
+    /// The file version of the executing assembly, as a string.  Sample:
+    /// "1.0.1.12".
     /// </value>
     ///
     /// <remarks>
-	/// This can be used instead of Application.ProductVersion in cases where
-	/// the Application object is not available.
+    /// This can be used instead of Application.ProductVersion in cases where
+    /// the Application object is not available.
     /// </remarks>
     //*************************************************************************
 
     public static String
     GetFileVersion()
     {
-		return (GetFileVersionInfo().FileVersion);
+        return (GetFileVersionInfo().FileVersion);
     }
 
     //*************************************************************************
     //  Method: GetFileVersionInfo()
     //
     /// <summary>
-	/// Gets the file version of the executing assembly, as a FileVersionInfo.
+    /// Gets the file version of the executing assembly, as a FileVersionInfo.
     /// </summary>
     ///
     /// <value>
-	/// The file version of the executing assembly, as a FileVersionInfo.
+    /// The file version of the executing assembly, as a FileVersionInfo.
     /// </value>
     //*************************************************************************
 
     public static FileVersionInfo
     GetFileVersionInfo()
     {
-		return ( FileVersionInfo.GetVersionInfo(
-			Assembly.GetExecutingAssembly().Location) );
+        return ( FileVersionInfo.GetVersionInfo(
+            Assembly.GetExecutingAssembly().Location) );
     }
 }
 

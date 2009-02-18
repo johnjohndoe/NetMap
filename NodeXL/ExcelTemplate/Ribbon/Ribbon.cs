@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Windows.Forms;
@@ -30,214 +30,214 @@ public partial class Ribbon : OfficeRibbon
     /// </summary>
     //*************************************************************************
 
-	public Ribbon()
-	{
-		InitializeComponent();
+    public Ribbon()
+    {
+        InitializeComponent();
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
-	//*************************************************************************
-	//	Property: ReadClusters
-	//
-	/// <summary>
-	/// Gets or sets a flag indicating whether the cluster worksheets should be
-	/// read when the workbook is read into the graph.
-	/// </summary>
-	///
-	/// <value>
-	/// true to read the cluster worksheets.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ReadClusters
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the cluster worksheets should be
+    /// read when the workbook is read into the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the cluster worksheets.
+    /// </value>
+    //*************************************************************************
 
-	public Boolean
-	ReadClusters
-	{
-		get
-		{
-			AssertValid();
+    public Boolean
+    ReadClusters
+    {
+        get
+        {
+            AssertValid();
 
-			return (chkReadClusters.Checked);
-		}
+            return (chkReadClusters.Checked);
+        }
 
-		set
-		{
-			chkReadClusters.Checked = value;
+        set
+        {
+            chkReadClusters.Checked = value;
 
-			AssertValid();
-		}
-	}
+            AssertValid();
+        }
+    }
 
-	//*************************************************************************
-	//	Property: GraphDirectedness
-	//
-	/// <summary>
-	/// Gets or sets the graph directedness of the active workbook.
-	/// </summary>
-	///
-	/// <value>
-	/// A GraphDirectedness value.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: GraphDirectedness
+    //
+    /// <summary>
+    /// Gets or sets the graph directedness of the active workbook.
+    /// </summary>
+    ///
+    /// <value>
+    /// A GraphDirectedness value.
+    /// </value>
+    //*************************************************************************
 
-	public GraphDirectedness
-	GraphDirectedness
-	{
-		get
-		{
-			AssertValid();
+    public GraphDirectedness
+    GraphDirectedness
+    {
+        get
+        {
+            AssertValid();
 
-			// The user selects the directedness with the rddGraphDirectedness
-			// RibbonDropDown.  The GraphDirectedness for each item is stored
-			// in the item's Tag.
+            // The user selects the directedness with the rddGraphDirectedness
+            // RibbonDropDown.  The GraphDirectedness for each item is stored
+            // in the item's Tag.
 
-			return ( (GraphDirectedness)rddGraphDirectedness.SelectedItem.Tag );
-		}
+            return ( (GraphDirectedness)rddGraphDirectedness.SelectedItem.Tag );
+        }
 
-		set
-		{
-			foreach (RibbonDropDownItem oItem in rddGraphDirectedness.Items)
-			{
-				if ( (GraphDirectedness)oItem.Tag == value )
-				{
-					rddGraphDirectedness.SelectedItem = oItem;
+        set
+        {
+            foreach (RibbonDropDownItem oItem in rddGraphDirectedness.Items)
+            {
+                if ( (GraphDirectedness)oItem.Tag == value )
+                {
+                    rddGraphDirectedness.SelectedItem = oItem;
 
-					break;
-				}
-			}
+                    break;
+                }
+            }
 
-			AssertValid();
-		}
-	}
+            AssertValid();
+        }
+    }
 
-	//*************************************************************************
-	//	Property: ThisWorkbook
-	//
-	/// <summary>
-	/// Gets the workbook this ribbon is attached to.
-	/// </summary>
-	///
-	/// <value>
-	/// The workbook this ribbon is attached to.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ThisWorkbook
+    //
+    /// <summary>
+    /// Gets the workbook this ribbon is attached to.
+    /// </summary>
+    ///
+    /// <value>
+    /// The workbook this ribbon is attached to.
+    /// </value>
+    //*************************************************************************
 
-	protected ThisWorkbook
-	ThisWorkbook
-	{
-		get
-		{
-			AssertValid();
+    protected ThisWorkbook
+    ThisWorkbook
+    {
+        get
+        {
+            AssertValid();
 
             return (Globals.ThisWorkbook);
-		}
-	}
+        }
+    }
 
     //*************************************************************************
     //  Method: Ribbon_Load()
     //
     /// <summary>
-	/// Handles the Load event on the ribbon.
+    /// Handles the Load event on the ribbon.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	private void
-	Ribbon_Load
-	(
-		object sender,
-		RibbonUIEventArgs e
-	)
-	{
-		AssertValid();
+    private void
+    Ribbon_Load
+    (
+        object sender,
+        RibbonUIEventArgs e
+    )
+    {
+        AssertValid();
 
-		PerWorkbookSettings oPerWorkbookSettings = new PerWorkbookSettings(
-			this.ThisWorkbook.InnerObject);
+        PerWorkbookSettings oPerWorkbookSettings = new PerWorkbookSettings(
+            this.ThisWorkbook.InnerObject);
 
-		// The graph directedness RibbonDropDown should be enabled only if the
-		// template the workbook is based on supports changing the
-		// directedness.
+        // The graph directedness RibbonDropDown should be enabled only if the
+        // template the workbook is based on supports changing the
+        // directedness.
 
-		Int32 iTemplateVersion = oPerWorkbookSettings.TemplateVersion;
+        Int32 iTemplateVersion = oPerWorkbookSettings.TemplateVersion;
 
-		rddGraphDirectedness.Enabled = (iTemplateVersion >= 51);
+        rddGraphDirectedness.Enabled = (iTemplateVersion >= 51);
 
-		// The ability to create clusters depends on the template version.
+        // The ability to create clusters depends on the template version.
 
-		btnCreateClusters.Enabled = (iTemplateVersion >= 54);
+        btnCreateClusters.Enabled = (iTemplateVersion >= 54);
 
-		// Read the general user settings directly controlled by the ribbon.
+        // Read the general user settings directly controlled by the ribbon.
 
-		GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
-		this.ReadClusters = oGeneralUserSettings.ReadClusters;
-	}
+        this.ReadClusters = oGeneralUserSettings.ReadClusters;
+    }
 
     //*************************************************************************
     //  Method: Ribbon_Close()
     //
     /// <summary>
-	/// Handles the Close event on the ribbon.
+    /// Handles the Close event on the ribbon.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	Ribbon_Close
-	(
-		object sender,
-		EventArgs e
-	)
+    Ribbon_Close
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		// Set the general user settings directly controlled by the ribbon.
+        // Set the general user settings directly controlled by the ribbon.
 
-		GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
-		oGeneralUserSettings.ReadClusters = this.ReadClusters;
+        oGeneralUserSettings.ReadClusters = this.ReadClusters;
 
-		oGeneralUserSettings.Save();
+        oGeneralUserSettings.Save();
     }
 
     //*************************************************************************
     //  Method: btnImportEdgesFromWorkbook_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnImportEdgesFromWorkbook button.
+    /// Handles the Click event on the btnImportEdgesFromWorkbook button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnImportEdgesFromWorkbook_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnImportEdgesFromWorkbook_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.ImportEdgesFromWorkbook();
     }
@@ -246,26 +246,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnExportSelectionToNewWorkbook_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnExportSelectionToNewWorkbook button.
+    /// Handles the Click event on the btnExportSelectionToNewWorkbook button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnExportSelectionToNewWorkbook_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnExportSelectionToNewWorkbook_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.ExportSelectionToNewWorkbook();
     }
@@ -274,103 +274,103 @@ public partial class Ribbon : OfficeRibbon
     //  Method: rddGraphDirectedness_SelectionChanged()
     //
     /// <summary>
-	/// Handles the SelectionChanged event on the rddGraphDirectedness
-	/// RibbonDropDown.
+    /// Handles the SelectionChanged event on the rddGraphDirectedness
+    /// RibbonDropDown.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	rddGraphDirectedness_SelectionChanged
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    rddGraphDirectedness_SelectionChanged
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		GraphDirectedness eGraphDirectedness = this.GraphDirectedness;
+        GraphDirectedness eGraphDirectedness = this.GraphDirectedness;
 
-		if ( !this.ThisWorkbook.ExcelApplicationIsReady(true) )
-		{
-			// Cancel the change.
+        if ( !this.ThisWorkbook.ExcelApplicationIsReady(true) )
+        {
+            // Cancel the change.
 
-			this.GraphDirectedness =
-				(eGraphDirectedness == GraphDirectedness.Directed) ?
-				GraphDirectedness.Undirected : GraphDirectedness.Directed;
-		}
-		else
-		{
-			// Notify the workbook.
+            this.GraphDirectedness =
+                (eGraphDirectedness == GraphDirectedness.Directed) ?
+                GraphDirectedness.Undirected : GraphDirectedness.Directed;
+        }
+        else
+        {
+            // Notify the workbook.
 
-			this.ThisWorkbook.GraphDirectedness = eGraphDirectedness;
-		}
+            this.ThisWorkbook.GraphDirectedness = eGraphDirectedness;
+        }
     }
 
     //*************************************************************************
     //  Method: btnToggleGraphVisibility_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnToggleGraphVisibility button.
+    /// Handles the Click event on the btnToggleGraphVisibility button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnToggleGraphVisibility_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
-	{
-		AssertValid();
+    btnToggleGraphVisibility_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
 
-		// Note: The button should actually be a checkbox.  However, no event
-		// is fired when the user manually closes the ActionsPane, so it's not
-		// possible to update a checkbox when he does so.  Using a button that
-		// toggles the visibility of the action pane is a workaround.
+        // Note: The button should actually be a checkbox.  However, no event
+        // is fired when the user manually closes the ActionsPane, so it's not
+        // possible to update a checkbox when he does so.  Using a button that
+        // toggles the visibility of the action pane is a workaround.
 
         this.ThisWorkbook.ToggleGraphVisibility();
-	}
+    }
 
     //*************************************************************************
     //  Method: btnMergeDuplicateEdges_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnMergeDuplicateEdges button.
+    /// Handles the Click event on the btnMergeDuplicateEdges button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnMergeDuplicateEdges_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnMergeDuplicateEdges_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.MergeDuplicateEdges();
     }
@@ -379,26 +379,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnPopulateVertexWorksheet_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnPopulateVertexWorksheet button.
+    /// Handles the Click event on the btnPopulateVertexWorksheet button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnPopulateVertexWorksheet_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnPopulateVertexWorksheet_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.PopulateVertexWorksheet(true, true);
     }
@@ -407,26 +407,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnCustomizeVertexMenu_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnCustomizeVertexMenu button.
+    /// Handles the Click event on the btnCustomizeVertexMenu button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnCustomizeVertexMenu_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnCustomizeVertexMenu_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.CustomizeVertexMenu(true);
     }
@@ -435,26 +435,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnEditGraphMetricUserSettings_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnEditGraphMetricUserSettings button.
+    /// Handles the Click event on the btnEditGraphMetricUserSettings button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnEditGraphMetricUserSettings_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnEditGraphMetricUserSettings_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.EditGraphMetricUserSettings();
     }
@@ -463,26 +463,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnCalculateGraphMetrics_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnCalculateGraphMetrics button.
+    /// Handles the Click event on the btnCalculateGraphMetrics button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	spltCalculateGraphMetrics_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    spltCalculateGraphMetrics_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.CalculateGraphMetrics();
     }
@@ -491,26 +491,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnCreateClusters_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnCreateClusters button.
+    /// Handles the Click event on the btnCreateClusters button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnCreateClusters_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnCreateClusters_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.CreateClusters();
     }
@@ -519,26 +519,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnCreateSubgraphImages_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnCreateSubgraphImages button.
+    /// Handles the Click event on the btnCreateSubgraphImages button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnCreateSubgraphImages_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnCreateSubgraphImages_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.CreateSubgraphImages();
     }
@@ -547,26 +547,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnAnalyzeEmailNetwork_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnAnalyzeEmailNetwork button.
+    /// Handles the Click event on the btnAnalyzeEmailNetwork button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnAnalyzeEmailNetwork_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnAnalyzeEmailNetwork_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.AnalyzeEmailNetwork();
     }
@@ -575,26 +575,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnAnalyzeTwitterNetwork_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnAnalyzeTwitterNetwork button.
+    /// Handles the Click event on the btnAnalyzeTwitterNetwork button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnAnalyzeTwitterNetwork_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnAnalyzeTwitterNetwork_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.AnalyzeTwitterNetwork();
     }
@@ -603,26 +603,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnEditAutoFillUserSettings_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnEditAutoFillUserSettings button.
+    /// Handles the Click event on the btnEditAutoFillUserSettings button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnEditAutoFillUserSettings_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnEditAutoFillUserSettings_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.EditAutoFillUserSettings();
     }
@@ -631,26 +631,26 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnImportPajekFile_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnImportPajekFile button.
+    /// Handles the Click event on the btnImportPajekFile button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnImportPajekFile_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnImportPajekFile_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.ImportPajekFile();
     }
@@ -659,112 +659,112 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnRegisterUser_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnRegisterUser button.
+    /// Handles the Click event on the btnRegisterUser button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnRegisterUser_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnRegisterUser_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		RegisterUserDialog oRegisterUserDialog = new RegisterUserDialog();
+        RegisterUserDialog oRegisterUserDialog = new RegisterUserDialog();
 
-		oRegisterUserDialog.ShowDialog();
+        oRegisterUserDialog.ShowDialog();
     }
 
     //*************************************************************************
     //  Method: btnCheckForUpdate_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnCheckForUpdate button.
+    /// Handles the Click event on the btnCheckForUpdate button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnCheckForUpdate_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnCheckForUpdate_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		ApplicationUtil.CheckForUpdate();
+        ApplicationUtil.CheckForUpdate();
     }
 
     //*************************************************************************
     //  Method: btnOpenHomePage_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnOpenHomePage button.
+    /// Handles the Click event on the btnOpenHomePage button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnOpenHomePage_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnOpenHomePage_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		ApplicationUtil.OpenHomePage();
+        ApplicationUtil.OpenHomePage();
     }
 
     //*************************************************************************
     //  Method: btnConvertOldWorkbook_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnConvertOldWorkbook button.
+    /// Handles the Click event on the btnConvertOldWorkbook button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnConvertOldWorkbook_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnConvertOldWorkbook_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.ThisWorkbook.ConvertOldWorkbook();
     }
@@ -773,30 +773,30 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnAbout_Click()
     //
     /// <summary>
-	/// Handles the Click event on the btnAbout button.
+    /// Handles the Click event on the btnAbout button.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     private void
-	btnAbout_Click
-	(
-		object sender,
-		RibbonControlEventArgs e
-	)
+    btnAbout_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
-		AboutDialog oAboutDialog = new AboutDialog();
+        AboutDialog oAboutDialog = new AboutDialog();
 
-		oAboutDialog.ShowDialog();
+        oAboutDialog.ShowDialog();
     }
 
 
@@ -813,7 +813,7 @@ public partial class Ribbon : OfficeRibbon
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -821,7 +821,7 @@ public partial class Ribbon : OfficeRibbon
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

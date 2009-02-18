@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +30,7 @@ public class ExcelUtilTest : Object
 
     public ExcelUtilTest()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -46,7 +46,7 @@ public class ExcelUtilTest : Object
     public void
     SetUp()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -62,7 +62,7 @@ public class ExcelUtilTest : Object
     public void
     TearDown()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -78,7 +78,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumber()
     {
-		TestGetOneBasedRowNumber("A1", 1);
+        TestGetOneBasedRowNumber("A1", 1);
     }
 
     //*************************************************************************
@@ -94,7 +94,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumber2()
     {
-		TestGetOneBasedRowNumber("B429", 429);
+        TestGetOneBasedRowNumber("B429", 429);
     }
 
     //*************************************************************************
@@ -110,7 +110,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumber3()
     {
-		TestGetOneBasedRowNumber("XDF1048576", 1048576);
+        TestGetOneBasedRowNumber("XDF1048576", 1048576);
     }
 
     //*************************************************************************
@@ -126,7 +126,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetColumnLetter()
     {
-		TestGetColumnLetter("A1", "A");
+        TestGetColumnLetter("A1", "A");
     }
 
     //*************************************************************************
@@ -142,7 +142,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetColumnLetter2()
     {
-		TestGetColumnLetter("B429", "B");
+        TestGetColumnLetter("B429", "B");
     }
 
     //*************************************************************************
@@ -158,7 +158,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetColumnLetter3()
     {
-		TestGetColumnLetter("XDF1048576", "XDF");
+        TestGetColumnLetter("XDF1048576", "XDF");
     }
 
     //*************************************************************************
@@ -174,7 +174,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumbers()
     {
-		TestGetOneBasedRowNumbers( "A1", new Int32[] {1} );
+        TestGetOneBasedRowNumbers( "A1", new Int32[] {1} );
     }
 
     //*************************************************************************
@@ -190,7 +190,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumbers2()
     {
-		TestGetOneBasedRowNumbers( "B429", new Int32[] {429} );
+        TestGetOneBasedRowNumbers( "B429", new Int32[] {429} );
     }
 
     //*************************************************************************
@@ -206,7 +206,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumbers3()
     {
-		TestGetOneBasedRowNumbers( "XDF1048576", new Int32[] {1048576} );
+        TestGetOneBasedRowNumbers( "XDF1048576", new Int32[] {1048576} );
     }
 
     //*************************************************************************
@@ -222,7 +222,7 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumbers4()
     {
-		TestGetOneBasedRowNumbers( "A1:B5", new Int32[] {1, 2, 3, 4, 5} );
+        TestGetOneBasedRowNumbers( "A1:B5", new Int32[] {1, 2, 3, 4, 5} );
     }
 
     //*************************************************************************
@@ -238,8 +238,8 @@ public class ExcelUtilTest : Object
     public void
     TestGetOneBasedRowNumbers5()
     {
-		TestGetOneBasedRowNumbers( "A3,B16,A30,A24:F25,C2:C5,A5:F5",
-			new Int32[] {3, 16, 30, 24, 25, 2, 4, 5} );
+        TestGetOneBasedRowNumbers( "A3,B16,A30,A24:F25,C2:C5,A5:F5",
+            new Int32[] {3, 16, 30, 24, 25, 2, 4, 5} );
     }
 
     //*************************************************************************
@@ -248,25 +248,25 @@ public class ExcelUtilTest : Object
     /// <summary>
     /// Tests the GetOneBasedRowNumber() method.
     /// </summary>
-	///
-	/// <param name="sCellAddress">
-	/// Cell address.
-	/// </param>
-	///
-	/// <param name="iExpectedRowNumber`">
-	/// Expected row number.
-	/// </param>
+    ///
+    /// <param name="sCellAddress">
+    /// Cell address.
+    /// </param>
+    ///
+    /// <param name="iExpectedRowNumber`">
+    /// Expected row number.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestGetOneBasedRowNumber
-	(
-		String sCellAddress,
-		Int32 iExpectedRowNumber
-	)
+    (
+        String sCellAddress,
+        Int32 iExpectedRowNumber
+    )
     {
-		Assert.AreEqual( iExpectedRowNumber,
-			ExcelUtil.GetOneBasedRowNumber(sCellAddress) );
+        Assert.AreEqual( iExpectedRowNumber,
+            ExcelUtil.GetOneBasedRowNumber(sCellAddress) );
     }
 
     //*************************************************************************
@@ -275,25 +275,25 @@ public class ExcelUtilTest : Object
     /// <summary>
     /// Tests the GetColumnLetter() method.
     /// </summary>
-	///
-	/// <param name="sCellAddress">
-	/// Cell address.
-	/// </param>
-	///
-	/// <param name="sExpectedColumnLetter`">
-	/// Expected column letter.
-	/// </param>
+    ///
+    /// <param name="sCellAddress">
+    /// Cell address.
+    /// </param>
+    ///
+    /// <param name="sExpectedColumnLetter`">
+    /// Expected column letter.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestGetColumnLetter
-	(
-		String sCellAddress,
-		String sExpectedColumnLetter
-	)
+    (
+        String sCellAddress,
+        String sExpectedColumnLetter
+    )
     {
-		Assert.AreEqual( sExpectedColumnLetter,
-			ExcelUtil.GetColumnLetter(sCellAddress) );
+        Assert.AreEqual( sExpectedColumnLetter,
+            ExcelUtil.GetColumnLetter(sCellAddress) );
     }
 
     //*************************************************************************
@@ -302,34 +302,34 @@ public class ExcelUtilTest : Object
     /// <summary>
     /// Tests the GetOneBasedRowNumbers() method.
     /// </summary>
-	///
-	/// <param name="sRangeAddress">
-	/// Cell address.
-	/// </param>
-	///
-	/// <param name="aiExpectedRowNumbers">
-	/// Expected row numbers.
-	/// </param>
+    ///
+    /// <param name="sRangeAddress">
+    /// Cell address.
+    /// </param>
+    ///
+    /// <param name="aiExpectedRowNumbers">
+    /// Expected row numbers.
+    /// </param>
     //*************************************************************************
 
     protected void
     TestGetOneBasedRowNumbers
-	(
-		String sRangeAddress,
-		Int32 [] aiExpectedRowNumbers
-	)
+    (
+        String sRangeAddress,
+        Int32 [] aiExpectedRowNumbers
+    )
     {
-		Int32 [] aiRowNumbers = ExcelUtil.GetOneBasedRowNumbers(sRangeAddress);
+        Int32 [] aiRowNumbers = ExcelUtil.GetOneBasedRowNumbers(sRangeAddress);
 
-		Int32 iLength = aiRowNumbers.Length;
+        Int32 iLength = aiRowNumbers.Length;
 
-		Assert.AreEqual(aiExpectedRowNumbers.Length, iLength);
+        Assert.AreEqual(aiExpectedRowNumbers.Length, iLength);
 
-		for (Int32 i = 0; i < iLength; i++)
-		{
-			Assert.IsTrue(Array.IndexOf<Int32>(
-				aiRowNumbers, aiExpectedRowNumbers[i] ) != -1);
-		}
+        for (Int32 i = 0; i < iLength; i++)
+        {
+            Assert.IsTrue(Array.IndexOf<Int32>(
+                aiRowNumbers, aiExpectedRowNumbers[i] ) != -1);
+        }
     }
 
 
@@ -337,7 +337,7 @@ public class ExcelUtilTest : Object
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

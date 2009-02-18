@@ -25,20 +25,20 @@ public class GraphMetricValueWithID : GraphMetricValue
     //
     /// <overloads>
     /// Initializes a new instance of the <see cref="GraphMetricValueWithID" />
-	/// class.
+    /// class.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricValueWithID" />
-	/// class with default values.
+    /// class with default values.
     /// </summary>
     //*************************************************************************
 
     public GraphMetricValueWithID()
-	:
-	this (1, null)
+    :
+    this (1, null)
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
     //*************************************************************************
@@ -46,28 +46,28 @@ public class GraphMetricValueWithID : GraphMetricValue
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricValueWithID" />
-	/// class with specified values.
+    /// class with specified values.
     /// </summary>
-	///
-	/// <param name="rowID">
-	/// ID stored in the worksheet row.
-	/// </param>
-	///
-	/// <param name="value">
-	/// Graph metric value for the row.
-	/// </param>
+    ///
+    /// <param name="rowID">
+    /// ID stored in the worksheet row.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// Graph metric value for the row.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricValueWithID
-	(
-		Int32 rowID,
-		Object value
-	)
-	: base (value)
+    (
+        Int32 rowID,
+        Object value
+    )
+    : base (value)
     {
-		m_iRowID = rowID;
+        m_iRowID = rowID;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -80,12 +80,12 @@ public class GraphMetricValueWithID : GraphMetricValue
     /// <value>
     /// The ID stored in the worksheet row.  The default is 1.
     /// </value>
-	///
-	/// <remarks>
-	/// The ID stored in the edge worksheet row is also stored in the
-	/// IEdge.Tag property, as an Int32.  The ID stored in the vertex worksheet
-	/// is also stored in the IVertex.Tag property, as an Int32.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The ID stored in the edge worksheet row is also stored in the
+    /// IEdge.Tag property, as an Int32.  The ID stored in the vertex worksheet
+    /// is also stored in the IVertex.Tag property, as an Int32.
+    /// </remarks>
     //*************************************************************************
 
     public Int32
@@ -100,7 +100,7 @@ public class GraphMetricValueWithID : GraphMetricValue
 
         set
         {
-			m_iRowID = value;
+            m_iRowID = value;
 
             AssertValid();
         }
@@ -120,9 +120,9 @@ public class GraphMetricValueWithID : GraphMetricValue
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_iRowID >= 1);
+        Debug.Assert(m_iRowID >= 1);
     }
 
 
@@ -130,9 +130,9 @@ public class GraphMetricValueWithID : GraphMetricValue
     //  Protected fields
     //*************************************************************************
 
-	/// ID stored in the worksheet row.
+    /// ID stored in the worksheet row.
 
-	protected Int32 m_iRowID;
+    protected Int32 m_iRowID;
 }
 
 }

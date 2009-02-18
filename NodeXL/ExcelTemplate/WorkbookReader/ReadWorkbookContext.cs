@@ -1,8 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
+using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -54,32 +55,32 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="ReadWorkbookContext" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public ReadWorkbookContext()
     {
-		m_bIgnoreVertexLocations = true;
-		m_bFillIDColumns = false;
-		m_bPopulateVertexWorksheet = false;
-		m_bReadClusters = false;
-		m_bAutoFillWorkbook = false;
+        m_bIgnoreVertexLocations = true;
+        m_bFillIDColumns = false;
+        m_bPopulateVertexWorksheet = false;
+        m_bReadClusters = false;
+        m_bAutoFillWorkbook = false;
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
-		m_oColorConverter2 = new ColorConverter2();
-		m_oEdgeWidthConverter = new EdgeWidthConverter();
-		m_oVertexRadiusConverter = new VertexRadiusConverter();
+        m_oColorConverter2 = new ColorConverter2();
+        m_oEdgeWidthConverter = new EdgeWidthConverter();
+        m_oVertexRadiusConverter = new VertexRadiusConverter();
 
-		m_oVertexLocationConverter =
-			new VertexLocationConverter(m_oGraphRectangle);
+        m_oVertexLocationConverter =
+            new VertexLocationConverter(m_oGraphRectangle);
 
-		m_oVertexNameDictionary = new Dictionary<String, IVertex>();
-		m_oEdgeIDDictionary = new Dictionary<Int32, IIdentityProvider>();
-		m_oVertexIDDictionary = new Dictionary<Int32, IIdentityProvider>();
-		m_oImageIDDictionary = new Dictionary<String, Image>();
-		m_bToolTipsUsed = false;
+        m_oVertexNameDictionary = new Dictionary<String, IVertex>();
+        m_oEdgeIDDictionary = new Dictionary<Int32, IIdentityProvider>();
+        m_oVertexIDDictionary = new Dictionary<Int32, IIdentityProvider>();
+        m_oImageIDDictionary = new Dictionary<String, BitmapImage>();
+        m_bToolTipsUsed = false;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -87,19 +88,19 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the X, Y, and Locked columns on
-	/// the vertex worksheet should be ignored.
+    /// the vertex worksheet should be ignored.
     /// </summary>
     ///
     /// <value>
-	/// true to ignore the X, Y, and Locked columns on the vertex worksheet.
-	/// The default is true.
+    /// true to ignore the X, Y, and Locked columns on the vertex worksheet.
+    /// The default is true.
     /// </value>
-	///
-	/// <remarks>
-	/// If you set this to false, you must also set <see
-	/// cref="GraphRectangle" /> to the rectangle the graph is being drawn
-	/// within.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// If you set this to false, you must also set <see
+    /// cref="GraphRectangle" /> to the rectangle the graph is being drawn
+    /// within.
+    /// </remarks>
     //*************************************************************************
 
     public Boolean
@@ -112,12 +113,12 @@ public class ReadWorkbookContext : Object
             return (m_bIgnoreVertexLocations);
         }
 
-		set
-		{
+        set
+        {
             m_bIgnoreVertexLocations = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -125,18 +126,18 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets or sets a flag indicating whether an ID should be stored in each
-	/// row of the edge and vertex tables.
+    /// row of the edge and vertex tables.
     /// </summary>
     ///
     /// <value>
-	/// true to store an ID in each row of the edge and vertex tables.  The
-	/// default is false.
+    /// true to store an ID in each row of the edge and vertex tables.  The
+    /// default is false.
     /// </value>
-	///
-	/// <remarks>
-	/// The ID is used to link rows in the edge and vertex tables to edges and
-	/// vertices in the NodeXL graph.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// The ID is used to link rows in the edge and vertex tables to edges and
+    /// vertices in the NodeXL graph.
+    /// </remarks>
     //*************************************************************************
 
     public Boolean
@@ -149,12 +150,12 @@ public class ReadWorkbookContext : Object
             return (m_bFillIDColumns);
         }
 
-		set
-		{
+        set
+        {
             m_bFillIDColumns = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -162,13 +163,13 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the vertex table should be
-	/// populated with unique vertex names from the edge worksheet before the
-	/// workbook is read.
+    /// populated with unique vertex names from the edge worksheet before the
+    /// workbook is read.
     /// </summary>
     ///
     /// <value>
-	/// true to populate the vertex table with unique vertex names.  The
-	/// default is false.
+    /// true to populate the vertex table with unique vertex names.  The
+    /// default is false.
     /// </value>
     //*************************************************************************
 
@@ -182,55 +183,55 @@ public class ReadWorkbookContext : Object
             return (m_bPopulateVertexWorksheet);
         }
 
-		set
-		{
+        set
+        {
             m_bPopulateVertexWorksheet = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
-	//*************************************************************************
-	//	Property: ReadClusters
-	//
-	/// <summary>
-	/// Gets or sets a flag indicating whether the cluster worksheets should be
-	/// read.
-	/// </summary>
-	///
-	/// <value>
-	/// true to read the cluster worksheets.  The default is false.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ReadClusters
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the cluster worksheets should be
+    /// read.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the cluster worksheets.  The default is false.
+    /// </value>
+    //*************************************************************************
 
-	public Boolean
-	ReadClusters
-	{
-		get
-		{
-			AssertValid();
+    public Boolean
+    ReadClusters
+    {
+        get
+        {
+            AssertValid();
 
-			return (m_bReadClusters);
-		}
+            return (m_bReadClusters);
+        }
 
-		set
-		{
-			m_bReadClusters = value;
+        set
+        {
+            m_bReadClusters = value;
 
-			AssertValid();
-		}
-	}
+            AssertValid();
+        }
+    }
 
     //*************************************************************************
     //  Property: AutoFillWorkbook
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the AutoFill feature should be
-	/// run on the workbook before the workbook is read.
+    /// run on the workbook before the workbook is read.
     /// </summary>
     ///
     /// <value>
-	/// true to run the AutoFill feature.  The default is false.
+    /// true to run the AutoFill feature.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -244,12 +245,12 @@ public class ReadWorkbookContext : Object
             return (m_bAutoFillWorkbook);
         }
 
-		set
-		{
+        set
+        {
             m_bAutoFillWorkbook = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -257,12 +258,12 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets or sets the <see cref="System.Drawing.Rectangle" /> the graph is
-	/// being drawn within.
+    /// being drawn within.
     /// </summary>
     ///
     /// <value>
     /// The <see cref="System.Drawing.Rectangle" /> the graph is being drawn
-	/// within.  The default is a 100x100 square.
+    /// within.  The default is a 100x100 square.
     /// </value>
     //*************************************************************************
 
@@ -276,22 +277,22 @@ public class ReadWorkbookContext : Object
             return (m_oGraphRectangle);
         }
 
-		set
-		{
+        set
+        {
             m_oGraphRectangle = value;
 
-			m_oVertexLocationConverter =
-				new VertexLocationConverter(m_oGraphRectangle);
+            m_oVertexLocationConverter =
+                new VertexLocationConverter(m_oGraphRectangle);
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
     //  Property: ColorConverter2
     //
     /// <summary>
-	/// Gets an object for converting strings to colors.
+    /// Gets an object for converting strings to colors.
     /// </summary>
     ///
     /// <value>
@@ -314,8 +315,8 @@ public class ReadWorkbookContext : Object
     //  Property: EdgeWidthConverter
     //
     /// <summary>
-	/// Gets an object that converts an edge width between values used in the
-	/// Excel workbook and values used in the NodeXL graph.
+    /// Gets an object that converts an edge width between values used in the
+    /// Excel workbook and values used in the NodeXL graph.
     /// </summary>
     ///
     /// <value>
@@ -338,8 +339,8 @@ public class ReadWorkbookContext : Object
     //  Property: VertexRadiusConverter
     //
     /// <summary>
-	/// Gets an object that converts a vertex radius between values used in the
-	/// Excel workbook and values used in the NodeXL graph.
+    /// Gets an object that converts a vertex radius between values used in the
+    /// Excel workbook and values used in the NodeXL graph.
     /// </summary>
     ///
     /// <value>
@@ -362,20 +363,20 @@ public class ReadWorkbookContext : Object
     //  Property: VertexLocationConverter
     //
     /// <summary>
-	/// Gets an object that converts a vertex location between coordinates used
-	/// in the Excel workbook and coordinates used in the NodeXL graph.
+    /// Gets an object that converts a vertex location between coordinates used
+    /// in the Excel workbook and coordinates used in the NodeXL graph.
     /// </summary>
     ///
     /// <value>
     /// A <see cref="VertexLocationConverter" /> object.
     /// </value>
-	///
-	/// <remarks>
-	/// You must set the <see cref="GraphRectangle" /> property before using
-	/// this property.  Otherwise, the vertex locations will be scaled to the
-	/// default graph rectangle, which will result in incorrect vertex
-	/// locations in the graph.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// You must set the <see cref="GraphRectangle" /> property before using
+    /// this property.  Otherwise, the vertex locations will be scaled to the
+    /// default graph rectangle, which will result in incorrect vertex
+    /// locations in the graph.
+    /// </remarks>
     //*************************************************************************
 
     public VertexLocationConverter
@@ -394,12 +395,12 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets a dictionary that maps vertex names from the edge and vertex
-	/// worksheets to vertex objects in the graph.
+    /// worksheets to vertex objects in the graph.
     /// </summary>
     ///
     /// <value>
-	/// Vertex dictionary.  The key is the vertex name from the edge or vertex
-	/// worksheet and the value is the IVertex object.
+    /// Vertex dictionary.  The key is the vertex name from the edge or vertex
+    /// worksheet and the value is the IVertex object.
     /// </value>
     //*************************************************************************
 
@@ -419,12 +420,12 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets a dictionary that maps edge IDs from the edge worksheet to edge
-	/// objects in the graph.
+    /// objects in the graph.
     /// </summary>
     ///
     /// <value>
-	/// Edge dictionary.  The key is the edge ID from the edge worksheet and
-	/// the value is the IEdge object.
+    /// Edge dictionary.  The key is the edge ID from the edge worksheet and
+    /// the value is the IEdge object.
     /// </value>
     //*************************************************************************
 
@@ -444,12 +445,12 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets a dictionary that maps vertex IDs from the vertex worksheet to
-	/// vertex objects in the graph.
+    /// vertex objects in the graph.
     /// </summary>
     ///
     /// <value>
-	/// Vertex dictionary.  The key is the vertex ID from the vertex worksheet
-	/// and the value is the IVertex object.
+    /// Vertex dictionary.  The key is the vertex ID from the vertex worksheet
+    /// and the value is the IVertex object.
     /// </value>
     //*************************************************************************
 
@@ -469,17 +470,17 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets a dictionary that maps vertex IDs from the vertex worksheet to
-	/// vertex objects in the graph.
+    /// image objects in the graph.
     /// </summary>
     ///
     /// <value>
-	/// Image dictionary.  The key is a unique image identifier specified in
-	/// the image worksheet and the value is the corresponding
-	/// System.Drawing.Image.
+    /// Image dictionary.  The key is a unique image identifier specified in
+    /// the image worksheet and the value is the corresponding
+    /// System.Windows.Media.Imaging.BitmapImage.
     /// </value>
     //*************************************************************************
 
-    public Dictionary<String, Image>
+    public Dictionary<String, BitmapImage>
     ImageIDDictionary
     {
         get
@@ -495,7 +496,7 @@ public class ReadWorkbookContext : Object
     //
     /// <summary>
     /// Gets or sets a flag indicating whether a tooltip was set on at least
-	/// one vertex.
+    /// one vertex.
     /// </summary>
     ///
     /// <value>
@@ -513,12 +514,12 @@ public class ReadWorkbookContext : Object
             return (m_bToolTipsUsed);
         }
 
-		set
-		{
-			m_bToolTipsUsed = value;
+        set
+        {
+            m_bToolTipsUsed = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
 
@@ -535,21 +536,21 @@ public class ReadWorkbookContext : Object
     public  void
     AssertValid()
     {
-		// m_bIgnoreVertexLocations
-		// m_bFillIDColumns
-		// m_bPopulateVertexWorksheet
-		// m_bReadClusters
-		// m_bAutoFillWorkbook
-		// m_oGraphRectangle
-		Debug.Assert(m_oColorConverter2 != null);
-		Debug.Assert(m_oEdgeWidthConverter != null);
-		Debug.Assert(m_oVertexRadiusConverter != null);
-		Debug.Assert(m_oVertexLocationConverter != null);
-		Debug.Assert(m_oVertexNameDictionary != null);
-		Debug.Assert(m_oEdgeIDDictionary != null);
-		Debug.Assert(m_oVertexIDDictionary != null);
-		Debug.Assert(m_oImageIDDictionary != null);
-		// m_bToolTipsUsed
+        // m_bIgnoreVertexLocations
+        // m_bFillIDColumns
+        // m_bPopulateVertexWorksheet
+        // m_bReadClusters
+        // m_bAutoFillWorkbook
+        // m_oGraphRectangle
+        Debug.Assert(m_oColorConverter2 != null);
+        Debug.Assert(m_oEdgeWidthConverter != null);
+        Debug.Assert(m_oVertexRadiusConverter != null);
+        Debug.Assert(m_oVertexLocationConverter != null);
+        Debug.Assert(m_oVertexNameDictionary != null);
+        Debug.Assert(m_oEdgeIDDictionary != null);
+        Debug.Assert(m_oVertexIDDictionary != null);
+        Debug.Assert(m_oImageIDDictionary != null);
+        // m_bToolTipsUsed
     }
 
 
@@ -557,73 +558,73 @@ public class ReadWorkbookContext : Object
     //  Protected fields
     //*************************************************************************
 
-	/// true to ignore the X, Y, and Locked columns on the vertex worksheet.
+    /// true to ignore the X, Y, and Locked columns on the vertex worksheet.
 
-	protected Boolean m_bIgnoreVertexLocations;
+    protected Boolean m_bIgnoreVertexLocations;
 
-	/// true to store an ID in each row of the edge and vertex tables.
+    /// true to store an ID in each row of the edge and vertex tables.
 
-	protected Boolean m_bFillIDColumns;
+    protected Boolean m_bFillIDColumns;
 
-	/// true to populate the vertex table with unique vertex names.
+    /// true to populate the vertex table with unique vertex names.
 
-	protected Boolean m_bPopulateVertexWorksheet;
+    protected Boolean m_bPopulateVertexWorksheet;
 
-	/// true to read the cluster worksheets.
+    /// true to read the cluster worksheets.
 
-	protected Boolean m_bReadClusters;
+    protected Boolean m_bReadClusters;
 
-	/// true to run the AutoFill feature on the workbook.
+    /// true to run the AutoFill feature on the workbook.
 
-	protected Boolean m_bAutoFillWorkbook;
+    protected Boolean m_bAutoFillWorkbook;
 
     /// The rectangle the graph is being drawn within.
 
-	protected Rectangle m_oGraphRectangle;
+    protected Rectangle m_oGraphRectangle;
 
-	/// Object for converting strings to colors.
+    /// Object for converting strings to colors.
 
-	protected ColorConverter2 m_oColorConverter2;
+    protected ColorConverter2 m_oColorConverter2;
 
-	/// Object that converts an edge width between values used in the Excel
-	/// workbook and values used in the NodeXL graph.
+    /// Object that converts an edge width between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
 
-	protected EdgeWidthConverter m_oEdgeWidthConverter;
+    protected EdgeWidthConverter m_oEdgeWidthConverter;
 
-	/// Object that converts a vertex radius between values used in the Excel
-	/// workbook and values used in the NodeXL graph.
+    /// Object that converts a vertex radius between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
 
-	protected VertexRadiusConverter m_oVertexRadiusConverter;
+    protected VertexRadiusConverter m_oVertexRadiusConverter;
 
-	/// Object that converts a vertex location between coordinates used in the
-	/// Excel workbook and coordinates used in the NodeXL graph.
+    /// Object that converts a vertex location between coordinates used in the
+    /// Excel workbook and coordinates used in the NodeXL graph.
 
-	protected VertexLocationConverter m_oVertexLocationConverter;
+    protected VertexLocationConverter m_oVertexLocationConverter;
 
-	/// Vertex dictionary.  The key is the vertex name and the value is the
-	/// vertex.
+    /// Vertex dictionary.  The key is the vertex name and the value is the
+    /// vertex.
 
-	protected Dictionary<String, IVertex> m_oVertexNameDictionary;
+    protected Dictionary<String, IVertex> m_oVertexNameDictionary;
 
-	/// Edge dictionary.  The key is the edge ID from the edge worksheet and
-	/// the value is the IEdge object.
+    /// Edge dictionary.  The key is the edge ID from the edge worksheet and
+    /// the value is the IEdge object.
 
-	protected Dictionary<Int32, IIdentityProvider> m_oEdgeIDDictionary;
+    protected Dictionary<Int32, IIdentityProvider> m_oEdgeIDDictionary;
 
-	/// Vertex dictionary.  The key is the vertex ID from the vertex worksheet
-	/// and the value is the IVertex object.
+    /// Vertex dictionary.  The key is the vertex ID from the vertex worksheet
+    /// and the value is the IVertex object.
 
-	protected Dictionary<Int32, IIdentityProvider> m_oVertexIDDictionary;
+    protected Dictionary<Int32, IIdentityProvider> m_oVertexIDDictionary;
 
-	/// Image dictionary.  The key is a unique image identifier specified in
-	/// the image worksheet and the value is the corresponding
-	/// System.Drawing.Image.
+    /// Image dictionary.  The key is a unique image identifier specified in
+    /// the image worksheet and the value is the corresponding
+    /// System.Windows.Media.Imaging.BitmapImage.
 
-	protected Dictionary<String, Image> m_oImageIDDictionary; 
+    protected Dictionary<String, BitmapImage> m_oImageIDDictionary; 
 
-	/// true if a tooltip was set on at least one vertex.
+    /// true if a tooltip was set on at least one vertex.
 
-	protected Boolean m_bToolTipsUsed;
+    protected Boolean m_bToolTipsUsed;
 }
 
 }

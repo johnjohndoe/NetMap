@@ -145,6 +145,7 @@
     <Compile Include="Util\EdgeUtil.cs" />
     <Compile Include="Util\EventUtil.cs" />
     <Compile Include="Util\LayoutUtil.cs" />
+    <Compile Include="Util\SimpleGraphMatrix.cs" />
     <Compile Include="Util\ToStringUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

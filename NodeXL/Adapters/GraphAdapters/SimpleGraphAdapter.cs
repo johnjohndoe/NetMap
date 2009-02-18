@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.IO;
@@ -18,8 +18,8 @@ namespace Microsoft.NodeXL.Adapters
 /// </summary>
 ///
 /// <remarks>
-///	The two-name format consists of one line of text per edge, where each line
-///	specifies the names of the vertices connected by the edge.  This is the
+/// The two-name format consists of one line of text per edge, where each line
+/// specifies the names of the vertices connected by the edge.  This is the
 /// format of each line:
 ///
 /// <code>
@@ -45,175 +45,175 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="SimpleGraphAdapter" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public SimpleGraphAdapter()
     {
-		// (Do nothing else.)
+        // (Do nothing else.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Method: GetSupportedDirectedness()
     //
     /// <summary>
-	///	Gets a set of flags indicating the directedness of the graphs that the
-	/// implementation can load and save.
+    /// Gets a set of flags indicating the directedness of the graphs that the
+    /// implementation can load and save.
     /// </summary>
     ///
     /// <param name="supportsDirected">
-	/// Gets set to true if the implementation can load and save directed
-	/// graphs.
+    /// Gets set to true if the implementation can load and save directed
+    /// graphs.
     /// </param>
-	///
+    ///
     /// <param name="supportsUndirected">
-	/// Gets set to true if the implementation can load and save undirected
-	/// graphs.
+    /// Gets set to true if the implementation can load and save undirected
+    /// graphs.
     /// </param>
-	///
+    ///
     /// <param name="supportsMixed">
-	/// Gets set to true if the implementation can load and save mixed graphs.
+    /// Gets set to true if the implementation can load and save mixed graphs.
     /// </param>
     //*************************************************************************
 
     protected override void
     GetSupportedDirectedness
-	(
-		out Boolean supportsDirected,
-		out Boolean supportsUndirected,
-		out Boolean supportsMixed
-	)
-	{
-		AssertValid();
+    (
+        out Boolean supportsDirected,
+        out Boolean supportsUndirected,
+        out Boolean supportsMixed
+    )
+    {
+        AssertValid();
 
-		// For now, support only directed graphs.  This may get modified in the
-		// future to support undirected graphs as well, at which time some
-		// mechanism must be added to tell this class the directedness of
-		// the graph that is about to be created.  Possible solution: Add a
-		// SimpleGraphAdapter.Directedness property.
+        // For now, support only directed graphs.  This may get modified in the
+        // future to support undirected graphs as well, at which time some
+        // mechanism must be added to tell this class the directedness of
+        // the graph that is about to be created.  Possible solution: Add a
+        // SimpleGraphAdapter.Directedness property.
 
-		supportsDirected = true;
-		supportsUndirected = false;
-		supportsMixed = false;
-	}
+        supportsDirected = true;
+        supportsUndirected = false;
+        supportsMixed = false;
+    }
 
     //*************************************************************************
     //  Method: LoadGraphCore()
     //
     /// <summary>
     /// Creates a graph of a specified type and loads it with graph data read
-	/// from a <see cref="Stream" />.
+    /// from a <see cref="Stream" />.
     /// </summary>
     ///
     /// <param name="graphFactory">
     /// Object that can create a graph.
     /// </param>
-	///
+    ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
-	/// <returns>
-	/// A new graph created by <paramref name="graphFactory" /> and loaded with
-	/// graph data read from <paramref name="stream" />.
-	/// </returns>
-	///
-	/// <remarks>
-	///	This method creates a graph using <paramref name="graphFactory" /> and
-	/// loads it with the graph data read from <paramref name="stream" />.  It
-	/// does not close <paramref name="stream" />.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
-	/// </remarks>
+    /// <returns>
+    /// A new graph created by <paramref name="graphFactory" /> and loaded with
+    /// graph data read from <paramref name="stream" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method creates a graph using <paramref name="graphFactory" /> and
+    /// loads it with the graph data read from <paramref name="stream" />.  It
+    /// does not close <paramref name="stream" />.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     protected override IGraph
     LoadGraphCore
     (
         IGraphFactory graphFactory,
-		Stream stream
+        Stream stream
     )
-	{
-		Debug.Assert(graphFactory != null);
-		Debug.Assert(stream != null);
-		AssertValid();
+    {
+        Debug.Assert(graphFactory != null);
+        Debug.Assert(stream != null);
+        AssertValid();
 
-		// For now, support only directed graphs.
+        // For now, support only directed graphs.
 
-		IGraph oGraph = new Graph(GraphDirectedness.Directed);
+        IGraph oGraph = new Graph(GraphDirectedness.Directed);
 
-		IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = oGraph.Vertices;
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		StreamReader oStreamReader = new StreamReader(stream, StreamEncoding);
+        StreamReader oStreamReader = new StreamReader(stream, StreamEncoding);
 
-		// Create a dictionary to keep track of the vertices that have been
-		// added to the graph.  The key is the vertex name and the value is the
-		// vertex.
+        // Create a dictionary to keep track of the vertices that have been
+        // added to the graph.  The key is the vertex name and the value is the
+        // vertex.
 
-		Dictionary<String, IVertex> oDictionary =
-			new Dictionary<String, IVertex>();
+        Dictionary<String, IVertex> oDictionary =
+            new Dictionary<String, IVertex>();
 
-		Int32 iLineNumber = 1;
+        Int32 iLineNumber = 1;
 
-		while (true)
-		{
-			String sLine = oStreamReader.ReadLine();
+        while (true)
+        {
+            String sLine = oStreamReader.ReadLine();
 
-			if (sLine == null)
-			{
-				break;
-			}
+            if (sLine == null)
+            {
+                break;
+            }
 
-			// Skip empty lines.
+            // Skip empty lines.
 
-			if (sLine.Trim().Length > 0)
-			{
-				// Parse the line.
+            if (sLine.Trim().Length > 0)
+            {
+                // Parse the line.
 
-				String [] asTokens = sLine.Split('\t');
+                String [] asTokens = sLine.Split('\t');
 
-				if (asTokens.Length != 2)
-				{
-					OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
-				}
+                if (asTokens.Length != 2)
+                {
+                    OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
+                }
 
-				String sVertex1Name = asTokens[0];
-				String sVertex2Name = asTokens[1];
+                String sVertex1Name = asTokens[0];
+                String sVertex2Name = asTokens[1];
 
-				if (!VertexNameIsValid(sVertex1Name) ||
-					!VertexNameIsValid(sVertex2Name) )
-				{
-					OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
-				}
+                if (!VertexNameIsValid(sVertex1Name) ||
+                    !VertexNameIsValid(sVertex2Name) )
+                {
+                    OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
+                }
 
-				// Retrieve or create the specified vertices.
+                // Retrieve or create the specified vertices.
 
-				IVertex oVertex1 =
-					VertexNameToVertex(sVertex1Name, oVertices, oDictionary);
+                IVertex oVertex1 =
+                    VertexNameToVertex(sVertex1Name, oVertices, oDictionary);
 
-				IVertex oVertex2 =
-					VertexNameToVertex(sVertex2Name, oVertices, oDictionary);
+                IVertex oVertex2 =
+                    VertexNameToVertex(sVertex2Name, oVertices, oDictionary);
 
-				// Add an edge connecting the vertices.
+                // Add an edge connecting the vertices.
 
-				oEdges.Add(oVertex1, oVertex2, true);
-			}
+                oEdges.Add(oVertex1, oVertex2, true);
+            }
 
-			iLineNumber++;
-		}
+            iLineNumber++;
+        }
 
-		oDictionary.Clear();
+        oDictionary.Clear();
 
-		return (oGraph);
-	}
+        return (oGraph);
+    }
 
     //*************************************************************************
     //  Method: SaveGraphCore()
@@ -231,13 +231,13 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <remarks>
-	/// This method saves <paramref name="graph" /> to <paramref
-	///	name="stream" />.  It does not close <paramref name="stream" />.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
+    /// This method saves <paramref name="graph" /> to <paramref
+    /// name="stream" />.  It does not close <paramref name="stream" />.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -245,45 +245,45 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     SaveGraphCore
     (
         IGraph graph,
-		Stream stream
+        Stream stream
     )
-	{
-		Debug.Assert(graph != null);
-		Debug.Assert(graph.Directedness == GraphDirectedness.Directed);
-		Debug.Assert(stream != null);
-		AssertValid();
+    {
+        Debug.Assert(graph != null);
+        Debug.Assert(graph.Directedness == GraphDirectedness.Directed);
+        Debug.Assert(stream != null);
+        AssertValid();
 
-		const String MethodName = "SaveGraph";
+        const String MethodName = "SaveGraph";
 
-		StreamWriter oStreamWriter = new StreamWriter(stream, StreamEncoding);
+        StreamWriter oStreamWriter = new StreamWriter(stream, StreamEncoding);
 
-		// Loop through the graph's edges.
+        // Loop through the graph's edges.
 
-		foreach (IEdge oEdge in graph.Edges)
-		{
-			// Retrieve the edge's vertices.
+        foreach (IEdge oEdge in graph.Edges)
+        {
+            // Retrieve the edge's vertices.
 
-			IVertex oVertex1, oVertex2;
+            IVertex oVertex1, oVertex2;
 
-			EdgeUtil.EdgeToVertices(oEdge, this.ClassName, MethodName,
-				out oVertex1, out oVertex2);
+            EdgeUtil.EdgeToVertices(oEdge, this.ClassName, MethodName,
+                out oVertex1, out oVertex2);
 
-			// Retrieve and format the edge names.
+            // Retrieve and format the edge names.
 
-			String sVertex1Name = VertexToVertexName(oVertex1);
-			String sVertex2Name = VertexToVertexName(oVertex2);
+            String sVertex1Name = VertexToVertexName(oVertex1);
+            String sVertex2Name = VertexToVertexName(oVertex2);
 
-			oStreamWriter.WriteLine(
+            oStreamWriter.WriteLine(
 
-				"{0}\t{1}"
-				,
-				sVertex1Name,
-				sVertex2Name
-				);
-		}
+                "{0}\t{1}"
+                ,
+                sVertex1Name,
+                sVertex2Name
+                );
+        }
 
-		oStreamWriter.Flush();
-	}
+        oStreamWriter.Flush();
+    }
 
     //*************************************************************************
     //  Method: VertexNameToVertex()
@@ -299,49 +299,49 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// <param name="oVertices">
     /// Vertex collection to add a new vertex to if a new vertex is created.
     /// </param>
-	///
+    ///
     /// <param name="oDictionary">
-	/// Dictionary of existing vertices.  The key is the vertex name and the
-	/// value is the vertex.
+    /// Dictionary of existing vertices.  The key is the vertex name and the
+    /// value is the vertex.
     /// </param>
-	///
-	/// <returns>
-	/// The found or created vertex.
-	/// </returns>
-	///
-	/// <remarks>
-	/// If <paramref name="oDictionary" /> contains a vertex named <paramref
-	/// name="sVertexName" />, the vertex is returned.  Otherwise, a vertex is
-	/// created, added to <paramref name="oVertices" />, added to <paramref
-	/// name="oDictionary" />, and returned.
-	/// </remarks>
+    ///
+    /// <returns>
+    /// The found or created vertex.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="oDictionary" /> contains a vertex named <paramref
+    /// name="sVertexName" />, the vertex is returned.  Otherwise, a vertex is
+    /// created, added to <paramref name="oVertices" />, added to <paramref
+    /// name="oDictionary" />, and returned.
+    /// </remarks>
     //*************************************************************************
 
     protected IVertex
     VertexNameToVertex
     (
-		String sVertexName,
-		IVertexCollection oVertices,
-		Dictionary<String, IVertex> oDictionary
+        String sVertexName,
+        IVertexCollection oVertices,
+        Dictionary<String, IVertex> oDictionary
     )
-	{
-		Debug.Assert( !String.IsNullOrEmpty(sVertexName) );
-		Debug.Assert(oVertices != null);
-		Debug.Assert(oDictionary != null);
-		AssertValid();
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sVertexName) );
+        Debug.Assert(oVertices != null);
+        Debug.Assert(oDictionary != null);
+        AssertValid();
 
-		IVertex oVertex;
+        IVertex oVertex;
 
-		if ( !oDictionary.TryGetValue(sVertexName, out oVertex) )
-		{
-			oVertex = oVertices.Add();
-			oVertex.Name = sVertexName;
+        if ( !oDictionary.TryGetValue(sVertexName, out oVertex) )
+        {
+            oVertex = oVertices.Add();
+            oVertex.Name = sVertexName;
 
-			oDictionary.Add(sVertexName, oVertex);
-		}
+            oDictionary.Add(sVertexName, oVertex);
+        }
 
-		return (oVertex);
-	}
+        return (oVertex);
+    }
 
     //*************************************************************************
     //  Method: VertexToVertexName()
@@ -355,43 +355,43 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <returns>
-	/// The vertex's non-null, non-empty name.
+    /// The vertex's non-null, non-empty name.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	/// An exception is thrown if <paramref name="oVertex" /> has a null or
-	/// empty name.
+    /// An exception is thrown if <paramref name="oVertex" /> has a null or
+    /// empty name.
     /// </remarks>
     //*************************************************************************
 
     protected String
     VertexToVertexName
     (
-		IVertex oVertex
+        IVertex oVertex
     )
-	{
-		Debug.Assert(oVertex != null);
-		AssertValid();
+    {
+        Debug.Assert(oVertex != null);
+        AssertValid();
 
-		String sVertexName = oVertex.Name;
+        String sVertexName = oVertex.Name;
 
-		if ( String.IsNullOrEmpty(sVertexName) )
-		{
-			// Do not include the class or method name in the exception
-			// message.  The message appears when the user attempts to save an
-			// invalid graph, and the user doesn't care about class names.
+        if ( String.IsNullOrEmpty(sVertexName) )
+        {
+            // Do not include the class or method name in the exception
+            // message.  The message appears when the user attempts to save an
+            // invalid graph, and the user doesn't care about class names.
 
-			throw new FormatException( String.Format(
-				"The vertex with the ID {0} has a null or empty name.  All"
-				+ " vertices must have a name when saving a graph with this"
-				+ " graph adapter."
-				,
-				oVertex.ID.ToString(NodeXLBase.Int32Format)
-				) );
-		}
+            throw new FormatException( String.Format(
+                "The vertex with the ID {0} has a null or empty name.  All"
+                + " vertices must have a name when saving a graph with this"
+                + " graph adapter."
+                ,
+                oVertex.ID.ToString(NodeXLBase.Int32Format)
+                ) );
+        }
 
-		return (sVertexName);
-	}
+        return (sVertexName);
+    }
 
     //*************************************************************************
     //  Method: VertexNameIsValid()
@@ -404,21 +404,21 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// Vertex name to check.
     /// </param>
     ///
-	/// <returns>
-	/// true if <paramref name="sVertexName" /> is valid.
-	/// </returns>
+    /// <returns>
+    /// true if <paramref name="sVertexName" /> is valid.
+    /// </returns>
     //*************************************************************************
 
     protected Boolean
     VertexNameIsValid
     (
-		String sVertexName
+        String sVertexName
     )
-	{
-		AssertValid();
+    {
+        AssertValid();
 
-		return ( !String.IsNullOrEmpty(sVertexName) );
-	}
+        return ( !String.IsNullOrEmpty(sVertexName) );
+    }
 
 
     //*************************************************************************
@@ -434,7 +434,7 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }
@@ -444,14 +444,14 @@ public class SimpleGraphAdapter : GraphAdapterBase, IGraphAdapter
     //  Protected constants
     //*************************************************************************
 
-	/// Expected format of each line.
+    /// Expected format of each line.
 
-	protected const String ExpectedFormat =
-		"Vertex1Name{tab}Vertex2Name";
+    protected const String ExpectedFormat =
+        "Vertex1Name{tab}Vertex2Name";
 
-	/// Encoding to use when loading and saving graphs.
+    /// Encoding to use when loading and saving graphs.
 
-	protected static readonly Encoding StreamEncoding = Encoding.UTF8;
+    protected static readonly Encoding StreamEncoding = Encoding.UTF8;
 
 
     //*************************************************************************

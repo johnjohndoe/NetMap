@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -30,96 +30,96 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //*****************************************************************************
 
 public class DynamicFilterRangeTrackBar :
-	RangeTrackBar, IDynamicFilterRangeTrackBar
+    RangeTrackBar, IDynamicFilterRangeTrackBar
 {
-	//*************************************************************************
-	//	Method: SetCustomProperties()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetCustomProperties()
+    //
+    /// <summary>
     /// Sets the properties specific to the wrapped control.
-	/// </summary>
-	///
-	/// <param name="dynamicFilterParameters">
-	/// Parameters for the range track bar.
-	/// </param>
-	///
-	/// <remarks>
-	/// The <see cref="DynamicFilterDialog" /> calls this after it has called
-	/// <see cref="IDynamicFilterRangeTrackBar.SetAvailableRange" /> and <see
-	/// cref="IDynamicFilterRangeTrackBar.SetSelectedRange" />.  The
-	/// implementation should set any custom properties that are specific to
-	/// the wrapped control and not otherwise exposed via this interface.
-	/// </remarks>
-	//*************************************************************************
+    /// </summary>
+    ///
+    /// <param name="dynamicFilterParameters">
+    /// Parameters for the range track bar.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The <see cref="DynamicFilterDialog" /> calls this after it has called
+    /// <see cref="IDynamicFilterRangeTrackBar.SetAvailableRange" /> and <see
+    /// cref="IDynamicFilterRangeTrackBar.SetSelectedRange" />.  The
+    /// implementation should set any custom properties that are specific to
+    /// the wrapped control and not otherwise exposed via this interface.
+    /// </remarks>
+    //*************************************************************************
 
-	public void
-	SetCustomProperties
-	(
-		DynamicFilterParameters dynamicFilterParameters
-	)
-	{
-		AssertValid();
-		Debug.Assert(dynamicFilterParameters != null);
-		Debug.Assert(dynamicFilterParameters is NumericFilterParameters);
+    public void
+    SetCustomProperties
+    (
+        DynamicFilterParameters dynamicFilterParameters
+    )
+    {
+        AssertValid();
+        Debug.Assert(dynamicFilterParameters != null);
+        Debug.Assert(dynamicFilterParameters is NumericFilterParameters);
 
-		SetDecimalPlaces( (NumericFilterParameters)dynamicFilterParameters );
+        SetDecimalPlaces( (NumericFilterParameters)dynamicFilterParameters );
 
-		Decimal decSmallChange;
+        Decimal decSmallChange;
 
-		if (this.DecimalPlaces == 0)
-		{
-			decSmallChange = 1;
-		}
-		else
-		{
-			decSmallChange =
-				(this.AvailableMaximum - this.AvailableMinimum) / 100;
-		}
+        if (this.DecimalPlaces == 0)
+        {
+            decSmallChange = 1;
+        }
+        else
+        {
+            decSmallChange =
+                (this.AvailableMaximum - this.AvailableMinimum) / 100;
+        }
 
-		this.SmallChange = decSmallChange;
-	}
+        this.SmallChange = decSmallChange;
+    }
 
-	//*************************************************************************
-	//	Method: SetDecimalPlaces()
-	//
-	/// <summary>
-	///	Sets the number of decimal places to show.
-	/// </summary>
-	///
-	/// <param name="oNumericFilterParameters">
-	/// Parameters for the range track bar.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: SetDecimalPlaces()
+    //
+    /// <summary>
+    /// Sets the number of decimal places to show.
+    /// </summary>
+    ///
+    /// <param name="oNumericFilterParameters">
+    /// Parameters for the range track bar.
+    /// </param>
+    //*************************************************************************
 
-	protected void
-	SetDecimalPlaces
-	(
-		NumericFilterParameters oNumericFilterParameters
-	)
-	{
-		AssertValid();
-		Debug.Assert(oNumericFilterParameters != null);
+    protected void
+    SetDecimalPlaces
+    (
+        NumericFilterParameters oNumericFilterParameters
+    )
+    {
+        AssertValid();
+        Debug.Assert(oNumericFilterParameters != null);
 
-		Int32 iDecimalPlaces = oNumericFilterParameters.DecimalPlaces;
+        Int32 iDecimalPlaces = oNumericFilterParameters.DecimalPlaces;
 
-		if (iDecimalPlaces > 0)
-		{
-			// Start with the number of decimal places displayed in the column
-			// plus 1.
+        if (iDecimalPlaces > 0)
+        {
+            // Start with the number of decimal places displayed in the column
+            // plus 1.
 
-			iDecimalPlaces++;
+            iDecimalPlaces++;
 
-			// Show at least 2.
+            // Show at least 2.
 
-			iDecimalPlaces = Math.Max(iDecimalPlaces, 2);
+            iDecimalPlaces = Math.Max(iDecimalPlaces, 2);
 
-			// Don't show more than 6.
+            // Don't show more than 6.
 
-			iDecimalPlaces = Math.Min(iDecimalPlaces, 6);
-		}
+            iDecimalPlaces = Math.Min(iDecimalPlaces, 6);
+        }
 
-		this.DecimalPlaces = iDecimalPlaces;
-	}
+        this.DecimalPlaces = iDecimalPlaces;
+    }
 
 
     //*************************************************************************
@@ -135,9 +135,9 @@ public class DynamicFilterRangeTrackBar :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -145,7 +145,7 @@ public class DynamicFilterRangeTrackBar :
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

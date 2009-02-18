@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -22,31 +22,31 @@ public class RunVertexCommandEventArgs : EventArgs
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="RunVertexCommandEventArgs" /> class.
+    /// cref="RunVertexCommandEventArgs" /> class.
     /// </summary>
-	///
-	/// <param name="vertexID">
+    ///
+    /// <param name="vertexID">
     /// ID of the vertex that was right-clicked in the vertex table in the
-	/// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
-	/// a vertex wasn't right-clicked.  This is an ID that is stored in the
-	/// worksheet, NOT an IEdge.ID value.
-	/// </param>
-	///
-	/// <param name="vertexCommand">
-	/// Command to run.
-	/// </param>
+    /// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
+    /// a vertex wasn't right-clicked.  This is an ID that is stored in the
+    /// worksheet, NOT an IEdge.ID value.
+    /// </param>
+    ///
+    /// <param name="vertexCommand">
+    /// Command to run.
+    /// </param>
     //*************************************************************************
 
     public RunVertexCommandEventArgs
-	(
-		Int32 vertexID,
-		WorksheetContextMenuManager.VertexCommand vertexCommand
-	)
+    (
+        Int32 vertexID,
+        WorksheetContextMenuManager.VertexCommand vertexCommand
+    )
     {
         m_iVertexID = vertexID;
-		m_eVertexCommand = vertexCommand;
+        m_eVertexCommand = vertexCommand;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -54,14 +54,14 @@ public class RunVertexCommandEventArgs : EventArgs
     //
     /// <summary>
     /// Gets the ID of the vertex that was right-clicked in the vertex table in
-	/// the vertex worksheet.
+    /// the vertex worksheet.
     /// </summary>
     ///
     /// <value>
     /// The ID of the right-clicked vertex, or <see
-	/// cref="WorksheetContextMenuManager.NoID" /> if a vertex wasn't right-
-	/// clicked.  This is an ID that is stored in the worksheet, NOT an
-	/// IEdge.ID value.
+    /// cref="WorksheetContextMenuManager.NoID" /> if a vertex wasn't right-
+    /// clicked.  This is an ID that is stored in the worksheet, NOT an
+    /// IEdge.ID value.
     /// </value>
     //*************************************************************************
 
@@ -113,10 +113,10 @@ public class RunVertexCommandEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_iVertexID == WorksheetContextMenuManager.NoID ||
-			m_iVertexID > 0);
+        Debug.Assert(m_iVertexID == WorksheetContextMenuManager.NoID ||
+            m_iVertexID > 0);
 
-		// m_eVertexCommand
+        // m_eVertexCommand
     }
 
 
@@ -125,12 +125,12 @@ public class RunVertexCommandEventArgs : EventArgs
     //*************************************************************************
 
     /// ID of the vertex that was right-clicked in the vertex table in the
-	/// vertex worksheet, or WorksheetContextMenuManager.NoID if a vertex
-	/// wasn't right-clicked.
+    /// vertex worksheet, or WorksheetContextMenuManager.NoID if a vertex
+    /// wasn't right-clicked.
 
-	protected Int32 m_iVertexID;
+    protected Int32 m_iVertexID;
 
-	/// The command to run.
+    /// The command to run.
 
     protected WorksheetContextMenuManager.VertexCommand m_eVertexCommand;
 }
@@ -149,7 +149,7 @@ public class RunVertexCommandEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="e">
-///	A <see cref="RunVertexCommandEventArgs" /> object that contains the event
+/// A <see cref="RunVertexCommandEventArgs" /> object that contains the event
 /// data.
 /// </param>
 //*****************************************************************************
@@ -157,8 +157,8 @@ public class RunVertexCommandEventArgs : EventArgs
 public delegate void
 RunVertexCommandEventHandler
 (
-	Object sender,
-	RunVertexCommandEventArgs e
+    Object sender,
+    RunVertexCommandEventArgs e
 );
 
 }

@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Runtime.Serialization;
@@ -25,55 +25,55 @@ public class WorkbookFormatException : FormatException
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="WorkbookFormatException" />  class with a specified error
-	/// message.
+    /// cref="WorkbookFormatException" />  class with a specified error
+    /// message.
     /// </summary>
-	///
+    ///
     /// <param name="message">
-	/// Error message.
+    /// Error message.
     /// </param>
     //*************************************************************************
 
     public WorkbookFormatException
-	(
-		String message
-	)
-	: this(message, null)
+    (
+        String message
+    )
+    : this(message, null)
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
     //  Constructor: WorkbookFormatException()
     //
     /// <summary>
-	/// Initializes a new instance of the <see
-	/// cref="WorkbookFormatException" />  class with a specified
-	/// error message and a range that the catch block should select.
+    /// Initializes a new instance of the <see
+    /// cref="WorkbookFormatException" />  class with a specified
+    /// error message and a range that the catch block should select.
     /// </summary>
-	///
+    ///
     /// <param name="message">
-	/// Error message.
+    /// Error message.
     /// </param>
-	///
+    ///
     /// <param name="rangeToSelect">
-	/// The range that the catch block should select to highlight the workbook
-	/// error, or null if a range shouldn't be selected.
+    /// The range that the catch block should select to highlight the workbook
+    /// error, or null if a range shouldn't be selected.
     /// </param>
     //*************************************************************************
 
     public WorkbookFormatException
-	(
-		String message,
-		Range rangeToSelect
-	)
-	: base(message)
+    (
+        String message,
+        Range rangeToSelect
+    )
+    : base(message)
     {
-		Initialize();
+        Initialize();
 
-		m_oRangeToSelect = rangeToSelect;
+        m_oRangeToSelect = rangeToSelect;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -85,74 +85,74 @@ public class WorkbookFormatException : FormatException
     //*************************************************************************
 
     protected WorkbookFormatException
-	(
-		SerializationInfo oSerializationInfo,
-		StreamingContext oStreamingContext
-	)
-	:
-	base
-	(
-		oSerializationInfo,
-		oStreamingContext
-	)
+    (
+        SerializationInfo oSerializationInfo,
+        StreamingContext oStreamingContext
+    )
+    :
+    base
+    (
+        oSerializationInfo,
+        oStreamingContext
+    )
     {
-		// Do not use this constructor.  It is for binary serialization only.
-		//
-		// This is required because the System.Exception base class implements
-		// ISerializable.  All serializable classes derived from an
-		// ISerializable implementor must have a constructor with this
-		// signature.
+        // Do not use this constructor.  It is for binary serialization only.
+        //
+        // This is required because the System.Exception base class implements
+        // ISerializable.  All serializable classes derived from an
+        // ISerializable implementor must have a constructor with this
+        // signature.
 
-		Initialize();
+        Initialize();
 
-		AssertValid();
+        AssertValid();
     }
 
-	//*************************************************************************
-	//	Property: RangeToSelect
-	//
-	/// <summary>
-	/// Gets or sets the range that the catch block should select to highlight
-	/// the workbook error.
-	/// </summary>
-	///
-	/// <value>
-	/// The range that the catch block should select to highlight the workbook
-	/// error, or null if a range shouldn't be selected.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: RangeToSelect
+    //
+    /// <summary>
+    /// Gets or sets the range that the catch block should select to highlight
+    /// the workbook error.
+    /// </summary>
+    ///
+    /// <value>
+    /// The range that the catch block should select to highlight the workbook
+    /// error, or null if a range shouldn't be selected.
+    /// </value>
+    //*************************************************************************
 
-	public Range
-	RangeToSelect
-	{
-		get
-		{
-			AssertValid();
+    public Range
+    RangeToSelect
+    {
+        get
+        {
+            AssertValid();
 
-			return (m_oRangeToSelect);
-		}
-		 
-		set
-		{
-			m_oRangeToSelect = value;
+            return (m_oRangeToSelect);
+        }
+         
+        set
+        {
+            m_oRangeToSelect = value;
 
-			AssertValid();
-		}
-	}
+            AssertValid();
+        }
+    }
 
     //*************************************************************************
     //  Method: Initialize()
     //
     /// <summary>
-	/// Initializes the object.
+    /// Initializes the object.
     /// </summary>
     //*************************************************************************
 
-	protected void
-	Initialize()
-	{
-		m_oRangeToSelect = null;
-	}
+    protected void
+    Initialize()
+    {
+        m_oRangeToSelect = null;
+    }
 
 
     //*************************************************************************
@@ -168,7 +168,7 @@ public class WorkbookFormatException : FormatException
     public void
     AssertValid()
     {
-		// m_oRangeToSelect
+        // m_oRangeToSelect
     }
 
 
@@ -176,10 +176,10 @@ public class WorkbookFormatException : FormatException
     //  Protected fields
     //*************************************************************************
 
-	/// The range that the catch block should select to highlight the workbook
-	/// error, or null if a range shouldn't be selected.
+    /// The range that the catch block should select to highlight the workbook
+    /// error, or null if a range shouldn't be selected.
 
-	protected Range m_oRangeToSelect;
+    protected Range m_oRangeToSelect;
 }
 
 }

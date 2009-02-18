@@ -1,10 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.ExcelTemplate;
-using Microsoft.NodeXL.Visualization;
 
 namespace Microsoft.NodeXL.UnitTests
 {
@@ -26,7 +25,7 @@ public class EdgeVisibilityConverterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="EdgeVisibilityConverterTest" /> class.
+    /// cref="EdgeVisibilityConverterTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,8 +47,8 @@ public class EdgeVisibilityConverterTest : Object
     public void
     SetUp()
     {
-		m_oEdgeVisibilityConverter = new EdgeVisibilityConverter();
-	}
+        m_oEdgeVisibilityConverter = new EdgeVisibilityConverter();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -80,19 +79,19 @@ public class EdgeVisibilityConverterTest : Object
     public void
     TestTryWorkbookToGraph()
     {
-		EdgeWorksheetReader.Visibility eValueGraph;
+        EdgeWorksheetReader.Visibility eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"show (1)",
-			"ShoW (1)",
-			"1",
-			} )
-		{
-			Assert.IsTrue( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "show (1)",
+            "ShoW (1)",
+            "1",
+            } )
+        {
+            Assert.IsTrue( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
 
-			Assert.AreEqual(EdgeWorksheetReader.Visibility.Show, eValueGraph);
-		}
+            Assert.AreEqual(EdgeWorksheetReader.Visibility.Show, eValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -108,19 +107,19 @@ public class EdgeVisibilityConverterTest : Object
     public void
     TestTryWorkbookToGraph2()
     {
-		EdgeWorksheetReader.Visibility eValueGraph;
+        EdgeWorksheetReader.Visibility eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"skip (0)",
-			"sKip (0)",
-			"0",
-			} )
-		{
-			Assert.IsTrue( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "skip (0)",
+            "sKip (0)",
+            "0",
+            } )
+        {
+            Assert.IsTrue( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
 
-			Assert.AreEqual(EdgeWorksheetReader.Visibility.Skip, eValueGraph);
-		}
+            Assert.AreEqual(EdgeWorksheetReader.Visibility.Skip, eValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -136,19 +135,19 @@ public class EdgeVisibilityConverterTest : Object
     public void
     TestTryWorkbookToGraph3()
     {
-		EdgeWorksheetReader.Visibility eValueGraph;
+        EdgeWorksheetReader.Visibility eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"hide (2)",
-			"hidE (2)",
-			"2",
-			} )
-		{
-			Assert.IsTrue( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "hide (2)",
+            "hidE (2)",
+            "2",
+            } )
+        {
+            Assert.IsTrue( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
 
-			Assert.AreEqual(EdgeWorksheetReader.Visibility.Hide, eValueGraph);
-		}
+            Assert.AreEqual(EdgeWorksheetReader.Visibility.Hide, eValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -164,18 +163,18 @@ public class EdgeVisibilityConverterTest : Object
     public void
     TestTryWorkbookToGraph4()
     {
-		EdgeWorksheetReader.Visibility eValueGraph;
+        EdgeWorksheetReader.Visibility eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"",
-			" hide (2)",
-			"x",
-			" 2",
-			} )
-		{
-			Assert.IsFalse( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
-		}
+        foreach (String sValueWorkbook in new String [] {
+            "",
+            " hide (2)",
+            "x",
+            " 2",
+            } )
+        {
+            Assert.IsFalse( m_oEdgeVisibilityConverter.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
+        }
     }
 
     //*************************************************************************
@@ -191,17 +190,17 @@ public class EdgeVisibilityConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-		Assert.AreEqual( "Show (1)",
-			m_oEdgeVisibilityConverter.GraphToWorkbook(
-				EdgeWorksheetReader.Visibility.Show) );
+        Assert.AreEqual( "Show (1)",
+            m_oEdgeVisibilityConverter.GraphToWorkbook(
+                EdgeWorksheetReader.Visibility.Show) );
 
-		Assert.AreEqual( "Skip (0)",
-			m_oEdgeVisibilityConverter.GraphToWorkbook(
-				EdgeWorksheetReader.Visibility.Skip) );
+        Assert.AreEqual( "Skip (0)",
+            m_oEdgeVisibilityConverter.GraphToWorkbook(
+                EdgeWorksheetReader.Visibility.Skip) );
 
-		Assert.AreEqual( "Hide (2)",
-			m_oEdgeVisibilityConverter.GraphToWorkbook(
-				EdgeWorksheetReader.Visibility.Hide) );
+        Assert.AreEqual( "Hide (2)",
+            m_oEdgeVisibilityConverter.GraphToWorkbook(
+                EdgeWorksheetReader.Visibility.Hide) );
     }
 
 

@@ -34,41 +34,41 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //*****************************************************************************
 
 public class RangeFilterParameters<T> : DynamicFilterParameters
-	where T : IComparable
+    where T : IComparable
 {
     //*************************************************************************
     //  Constructor: RangeFilterParameters()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="T:RangeFilterParameters" /> class.
+    /// cref="T:RangeFilterParameters" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="columnName">
     /// Name of the column that can be filtered on.
     /// </param>
-	///
+    ///
     /// <param name="minimumCellValue">
     /// Minimum cell value in the column.
     /// </param>
-	///
+    ///
     /// <param name="maximumCellValue">
     /// Maximum cell value in the column.
     /// </param>
     //*************************************************************************
 
     public RangeFilterParameters
-	(
-		String columnName,
-		T minimumCellValue,
-		T maximumCellValue
-	)
-	: base(columnName)
+    (
+        String columnName,
+        T minimumCellValue,
+        T maximumCellValue
+    )
+    : base(columnName)
     {
-		m_oMinimumCellValue = minimumCellValue;
-		m_oMaximumCellValue = maximumCellValue;
+        m_oMinimumCellValue = minimumCellValue;
+        m_oMaximumCellValue = maximumCellValue;
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -131,9 +131,9 @@ public class RangeFilterParameters<T> : DynamicFilterParameters
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oMaximumCellValue.CompareTo(m_oMinimumCellValue) >= 0);
+        Debug.Assert(m_oMaximumCellValue.CompareTo(m_oMinimumCellValue) >= 0);
     }
 
 
@@ -143,11 +143,11 @@ public class RangeFilterParameters<T> : DynamicFilterParameters
 
     /// Minimum cell value in the column.
 
-	protected T m_oMinimumCellValue;
+    protected T m_oMinimumCellValue;
 
     /// Maximum cell value in the column.
 
-	protected T m_oMaximumCellValue;
+    protected T m_oMaximumCellValue;
 }
 
 }

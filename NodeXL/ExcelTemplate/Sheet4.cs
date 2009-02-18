@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -24,72 +24,72 @@ public partial class Sheet4
     //  Method: Sheet4_Startup()
     //
     /// <summary>
-	/// Handles the Startup event on the worksheet.
+    /// Handles the Startup event on the worksheet.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	private void
-	Sheet4_Startup
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		AssertValid();
+    private void
+    Sheet4_Startup
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
+        AssertValid();
 
-		// (Do nothing.)
-	}
+        // (Do nothing.)
+    }
 
     //*************************************************************************
     //  Method: Sheet4_Shutdown()
     //
     /// <summary>
-	/// Handles the Shutdown event on the worksheet.
+    /// Handles the Shutdown event on the worksheet.
     /// </summary>
     ///
-	/// <param name="sender">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
     ///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
-	private void
-	Sheet4_Shutdown
-	(
-		object sender,
-		System.EventArgs e
-	)
-	{
-		AssertValid();
+    private void
+    Sheet4_Shutdown
+    (
+        object sender,
+        System.EventArgs e
+    )
+    {
+        AssertValid();
 
-		// (Do nothing.)
-	}
+        // (Do nothing.)
+    }
 
 
-	#region VSTO Designer generated code
+    #region VSTO Designer generated code
 
-	/// <summary>
-	/// Required method for Designer support - do not modify
-	/// the contents of this method with the code editor.
-	/// </summary>
-	private void InternalStartup()
-	{
-		this.Startup += new System.EventHandler(Sheet4_Startup);
-		this.Shutdown += new System.EventHandler(Sheet4_Shutdown);
-	}
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InternalStartup()
+    {
+        this.Startup += new System.EventHandler(Sheet4_Startup);
+        this.Shutdown += new System.EventHandler(Sheet4_Shutdown);
+    }
         
-	#endregion
+    #endregion
 
 
     //*************************************************************************
@@ -105,7 +105,7 @@ public partial class Sheet4
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -113,7 +113,7 @@ public partial class Sheet4
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

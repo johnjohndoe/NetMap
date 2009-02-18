@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -27,12 +27,12 @@ public class AlphaConverter : NumericValueConverterBase
 
     public AlphaConverter()
 
-	: base(MinimumAlphaWorkbook, MaximumAlphaWorkbook, MinimumAlphaGraph,
-		MaximumAlphaGraph)
+    : base(MinimumAlphaWorkbook, MaximumAlphaWorkbook, MinimumAlphaGraph,
+        MaximumAlphaGraph)
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -40,7 +40,7 @@ public class AlphaConverter : NumericValueConverterBase
     //
     /// <summary>
     /// Gets a message suitable for display in a dialog telling the user what
-	/// the maximum alpha value represents.
+    /// the maximum alpha value represents.
     /// </summary>
     ///
     /// <value>
@@ -49,15 +49,15 @@ public class AlphaConverter : NumericValueConverterBase
     //*************************************************************************
 
     public static String
-	MaximumAlphaMessage
+    MaximumAlphaMessage
     {
         get
         {
-			return ( String.Format(
-				"({0} is opaque)"
-				,
-				(Int32)MaximumAlphaWorkbook
-				) );
+            return ( String.Format(
+                "({0} is opaque)"
+                ,
+                (Int32)MaximumAlphaWorkbook
+                ) );
         }
     }
 
@@ -65,31 +65,31 @@ public class AlphaConverter : NumericValueConverterBase
     //  Method: WorkbookToGraph()
     //
     /// <summary>
-	/// Converts an alpha value from an Excel workbook value to a value
-	/// suitable for use in a NodeXL graph.
+    /// Converts an alpha value from an Excel workbook value to a value
+    /// suitable for use in a NodeXL graph.
     /// </summary>
     ///
     /// <param name="workbookValue">
     /// Alpha value read from the Excel workbook.  If less than <see
-	/// cref="MinimumAlphaWorkbook" />, <see cref="MinimumAlphaGraph" />
-	/// is returned.  If greater than <see cref="MaximumAlphaWorkbook" />,
-	/// <see cref="MaximumAlphaGraph" /> is returned.
+    /// cref="MinimumAlphaWorkbook" />, <see cref="MinimumAlphaGraph" />
+    /// is returned.  If greater than <see cref="MaximumAlphaWorkbook" />,
+    /// <see cref="MaximumAlphaGraph" /> is returned.
     /// </param>
     ///
     /// <returns>
-	/// A alpha value suitable for use in a NodeXL graph.
+    /// A alpha value suitable for use in a NodeXL graph.
     /// </returns>
     //*************************************************************************
 
-    public new Int32
+    public new Byte
     WorkbookToGraph
     (
-		Single workbookValue
+        Single workbookValue
     )
     {
         AssertValid();
 
-		return ( (Int32)base.WorkbookToGraph(workbookValue) );
+        return ( (Byte)base.WorkbookToGraph(workbookValue) );
     }
 
 
@@ -106,9 +106,9 @@ public class AlphaConverter : NumericValueConverterBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -116,38 +116,38 @@ public class AlphaConverter : NumericValueConverterBase
     //  Public constants
     //*************************************************************************
 
-	/// <summary>
-	/// Minimum value that can be specified in the workbook for an alpha value.
-	/// Represents "transparent."
-	/// </summary>
+    /// <summary>
+    /// Minimum value that can be specified in the workbook for an alpha value.
+    /// Represents "transparent."
+    /// </summary>
 
-	public static readonly Single MinimumAlphaWorkbook = 0F;
+    public static readonly Single MinimumAlphaWorkbook = 0F;
 
-	/// <summary>
-	/// Maximum value that can be specified in the workbook for an alpha value.
-	/// Represents "opaque."
-	/// </summary>
+    /// <summary>
+    /// Maximum value that can be specified in the workbook for an alpha value.
+    /// Represents "opaque."
+    /// </summary>
 
-	public static readonly Single MaximumAlphaWorkbook = 10F;
+    public static readonly Single MaximumAlphaWorkbook = 10F;
 
-	/// <summary>
-	/// Minimum alpha value in the NodeXL graph.  Represents "transparent."
-	/// </summary>
+    /// <summary>
+    /// Minimum alpha value in the NodeXL graph.  Represents "transparent."
+    /// </summary>
 
-	public static readonly Int32 MinimumAlphaGraph = 0;
+    public static readonly Byte MinimumAlphaGraph = 0;
 
-	/// <summary>
-	/// Maximum alpha value in the NodeXL graph.  Represents "opaque."
-	/// </summary>
+    /// <summary>
+    /// Maximum alpha value in the NodeXL graph.  Represents "opaque."
+    /// </summary>
 
-	public static readonly Int32 MaximumAlphaGraph = 255;
+    public static readonly Byte MaximumAlphaGraph = 255;
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

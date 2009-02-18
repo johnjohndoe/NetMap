@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -23,36 +23,36 @@ public class EdgeEventArgs : EventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="EdgeEventArgs" /> class.
     /// </summary>
-	///
+    ///
     /// <param name="edge">
-	/// Edge associated with the event.  Can't be null.
+    /// Edge associated with the event.  Can't be null.
     /// </param>
     //*************************************************************************
 
     public EdgeEventArgs
-	(
-		IEdge edge
-	)
+    (
+        IEdge edge
+    )
     {
-		const String MethodName = "Constructor";
+        const String MethodName = "Constructor";
 
         this.ArgumentChecker.CheckArgumentNotNull(MethodName, "edge", edge);
 
-		m_oEdge = edge;
+        m_oEdge = edge;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Property: Edge
     //
     /// <summary>
-	/// Gets the edge associated with the event.
+    /// Gets the edge associated with the event.
     /// </summary>
     ///
     /// <value>
-	/// The edge associated with the event, as an <see cref="IEdge" />.  This
-	/// is never null.
+    /// The edge associated with the event, as an <see cref="IEdge" />.  This
+    /// is never null.
     /// </value>
     //*************************************************************************
 
@@ -67,26 +67,26 @@ public class EdgeEventArgs : EventArgs
         }
     }
 
-	//*************************************************************************
-	//	Property: ArgumentChecker
-	//
-	/// <summary>
-	/// Gets a new initialized ArgumentChecker object.
-	/// </summary>
-	///
-	/// <value>
-	/// A new initialized ArgumentChecker object.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ArgumentChecker
+    //
+    /// <summary>
+    /// Gets a new initialized ArgumentChecker object.
+    /// </summary>
+    ///
+    /// <value>
+    /// A new initialized ArgumentChecker object.
+    /// </value>
+    //*************************************************************************
 
-	private ArgumentChecker
-	ArgumentChecker
-	{
-		get
-		{
-			return ( new ArgumentChecker(this.GetType().FullName) );
-		}
-	}
+    private ArgumentChecker
+    ArgumentChecker
+    {
+        get
+        {
+            return ( new ArgumentChecker(this.GetType().FullName) );
+        }
+    }
 
 
     //*************************************************************************
@@ -102,7 +102,7 @@ public class EdgeEventArgs : EventArgs
     public void
     AssertValid()
     {
-		Debug.Assert(m_oEdge != null);
+        Debug.Assert(m_oEdge != null);
     }
 
 
@@ -110,9 +110,9 @@ public class EdgeEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-	/// Edge associated with the event.
+    /// Edge associated with the event.
 
-	protected IEdge m_oEdge;
+    protected IEdge m_oEdge;
 }
 
 
@@ -128,15 +128,15 @@ public class EdgeEventArgs : EventArgs
 /// </param>
 ///
 /// <param name="edgeEventArgs">
-///	An <see cref="EdgeEventArgs" /> object that contains the event data.
+/// An <see cref="EdgeEventArgs" /> object that contains the event data.
 /// </param>
 //*****************************************************************************
 
 public delegate void
 EdgeEventHandler
 (
-	Object sender,
-	EdgeEventArgs edgeEventArgs
+    Object sender,
+    EdgeEventArgs edgeEventArgs
 );
 
 }

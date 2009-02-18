@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
@@ -26,7 +26,7 @@ public class VertexLocationConverterTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="VertexLocationConverterTest" /> class.
+    /// cref="VertexLocationConverterTest" /> class.
     /// </summary>
     //*************************************************************************
 
@@ -48,9 +48,9 @@ public class VertexLocationConverterTest : Object
     public void
     SetUp()
     {
-		m_oVertexLocationConverter =
-			new VertexLocationConverter(GraphRectangle);
-	}
+        m_oVertexLocationConverter =
+            new VertexLocationConverter(GraphRectangle);
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -81,18 +81,18 @@ public class VertexLocationConverterTest : Object
     public void
     TestWorkbookToGraph()
     {
-		// Minimum workbook values.
+        // Minimum workbook values.
 
         Single WorkbookX = VertexLocationConverter.MinimumXYWorkbook;
         Single WorkbookY = VertexLocationConverter.MinimumXYWorkbook;
-		Single ExpectedGraphX = 100;
-		Single ExpectedGraphY = 200;
+        Single ExpectedGraphX = 100;
+        Single ExpectedGraphY = 200;
 
-		PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
-			WorkbookX, WorkbookY);
+        PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
+            WorkbookX, WorkbookY);
 
-		Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
-		Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
+        Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
+        Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
     }
 
     //*************************************************************************
@@ -108,18 +108,18 @@ public class VertexLocationConverterTest : Object
     public void
     TestWorkbookToGraph2()
     {
-		// Maximum workbook values.
+        // Maximum workbook values.
 
-		Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook;
+        Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook;
         Single WorkbookY = VertexLocationConverter.MaximumXYWorkbook;
-		Single ExpectedGraphX = 1100;
-		Single ExpectedGraphY = 2200;
+        Single ExpectedGraphX = 1100;
+        Single ExpectedGraphY = 2200;
 
-		PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
-			WorkbookX, WorkbookY);
+        PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
+            WorkbookX, WorkbookY);
 
-		Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
-		Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
+        Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
+        Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
     }
 
     //*************************************************************************
@@ -135,18 +135,18 @@ public class VertexLocationConverterTest : Object
     public void
     TestWorkbookToGraph3()
     {
-		// Midpoint workbook values.
+        // Midpoint workbook values.
 
-		Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook / 2;
+        Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook / 2;
         Single WorkbookY = VertexLocationConverter.MaximumXYWorkbook / 2;
-		Single ExpectedGraphX = 600;
-		Single ExpectedGraphY = 1200;
+        Single ExpectedGraphX = 600;
+        Single ExpectedGraphY = 1200;
 
-		PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
-			WorkbookX, WorkbookY);
+        PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
+            WorkbookX, WorkbookY);
 
-		Assert.AreEqual( ExpectedGraphX, Math.Round(oGraphPointF.X) );
-		Assert.AreEqual( ExpectedGraphY, Math.Round(oGraphPointF.Y) );
+        Assert.AreEqual( ExpectedGraphX, Math.Round(oGraphPointF.X) );
+        Assert.AreEqual( ExpectedGraphY, Math.Round(oGraphPointF.Y) );
     }
 
     //*************************************************************************
@@ -162,21 +162,21 @@ public class VertexLocationConverterTest : Object
     public void
     TestWorkbookToGraph4()
     {
-		// Empty rectangle.
+        // Empty rectangle.
 
-		m_oVertexLocationConverter = new VertexLocationConverter(
-			Rectangle.FromLTRB(100, 200, 100, 200) );
+        m_oVertexLocationConverter = new VertexLocationConverter(
+            Rectangle.FromLTRB(100, 200, 100, 200) );
 
-		Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook;
+        Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook;
         Single WorkbookY = VertexLocationConverter.MaximumXYWorkbook;
-		Single ExpectedGraphX = 100;
-		Single ExpectedGraphY = 200;
+        Single ExpectedGraphX = 100;
+        Single ExpectedGraphY = 200;
 
-		PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
-			WorkbookX, WorkbookY);
+        PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
+            WorkbookX, WorkbookY);
 
-		Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
-		Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
+        Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
+        Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
     }
 
     //*************************************************************************
@@ -192,18 +192,18 @@ public class VertexLocationConverterTest : Object
     public void
     TestWorkbookToGraph5()
     {
-		// Below minimum workbook values.
+        // Below minimum workbook values.
 
         Single WorkbookX = VertexLocationConverter.MinimumXYWorkbook - 1F;
         Single WorkbookY = VertexLocationConverter.MinimumXYWorkbook - 123F;
-		Single ExpectedGraphX = 100;
-		Single ExpectedGraphY = 200;
+        Single ExpectedGraphX = 100;
+        Single ExpectedGraphY = 200;
 
-		PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
-			WorkbookX, WorkbookY);
+        PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
+            WorkbookX, WorkbookY);
 
-		Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
-		Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
+        Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
+        Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
     }
 
     //*************************************************************************
@@ -219,18 +219,18 @@ public class VertexLocationConverterTest : Object
     public void
     TestWorkbookToGraph6()
     {
-		// Above maximum workbook values.
+        // Above maximum workbook values.
 
-		Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook + 1F;
+        Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook + 1F;
         Single WorkbookY = VertexLocationConverter.MaximumXYWorkbook + 123F;
-		Single ExpectedGraphX = 1100;
-		Single ExpectedGraphY = 2200;
+        Single ExpectedGraphX = 1100;
+        Single ExpectedGraphY = 2200;
 
-		PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
-			WorkbookX, WorkbookY);
+        PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
+            WorkbookX, WorkbookY);
 
-		Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
-		Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
+        Assert.AreEqual(ExpectedGraphX, oGraphPointF.X);
+        Assert.AreEqual(ExpectedGraphY, oGraphPointF.Y);
     }
 
     //*************************************************************************
@@ -246,20 +246,20 @@ public class VertexLocationConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-		// Minimum graph values.
+        // Minimum graph values.
 
-		Single fGraphX = 100;
-		Single fGraphY = 200;
-		Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
-		Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
+        Single fGraphX = 100;
+        Single fGraphY = 200;
+        Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
 
-		Single fWorkbookX, fWorkbookY;
+        Single fWorkbookX, fWorkbookY;
 
-		m_oVertexLocationConverter.GraphToWorkbook(
-			new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
+        m_oVertexLocationConverter.GraphToWorkbook(
+            new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
 
-		Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
-		Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
+        Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
+        Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
     }
 
     //*************************************************************************
@@ -275,20 +275,20 @@ public class VertexLocationConverterTest : Object
     public void
     TestGraphToWorkbook2()
     {
-		// Maximum graph values.
+        // Maximum graph values.
 
-		Single fGraphX = 1100;
-		Single fGraphY = 2200;
-		Single ExpectedWorkbookX = VertexLocationConverter.MaximumXYWorkbook;
-		Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
+        Single fGraphX = 1100;
+        Single fGraphY = 2200;
+        Single ExpectedWorkbookX = VertexLocationConverter.MaximumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
 
-		Single fWorkbookX, fWorkbookY;
+        Single fWorkbookX, fWorkbookY;
 
-		m_oVertexLocationConverter.GraphToWorkbook(
-			new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
+        m_oVertexLocationConverter.GraphToWorkbook(
+            new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
 
-		Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
-		Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
+        Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
+        Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
     }
 
     //*************************************************************************
@@ -304,24 +304,24 @@ public class VertexLocationConverterTest : Object
     public void
     TestGraphToWorkbook3()
     {
-		// Midpoint graph values.
+        // Midpoint graph values.
 
-		Single fGraphX = 600;
-		Single fGraphY = 1200;
+        Single fGraphX = 600;
+        Single fGraphY = 1200;
 
-		Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook + 
-			(VertexLocationConverter.MaximumXYWorkbook -
-				VertexLocationConverter.MinimumXYWorkbook) / 2;
+        Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook + 
+            (VertexLocationConverter.MaximumXYWorkbook -
+                VertexLocationConverter.MinimumXYWorkbook) / 2;
 
-		Single ExpectedWorkbookY = ExpectedWorkbookX;
+        Single ExpectedWorkbookY = ExpectedWorkbookX;
 
-		Single fWorkbookX, fWorkbookY;
+        Single fWorkbookX, fWorkbookY;
 
-		m_oVertexLocationConverter.GraphToWorkbook(
-			new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
+        m_oVertexLocationConverter.GraphToWorkbook(
+            new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
 
-		Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
-		Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
+        Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
+        Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
     }
 
     //*************************************************************************
@@ -337,24 +337,24 @@ public class VertexLocationConverterTest : Object
     public void
     TestGraphToWorkbook4()
     {
-		// Empty rectangle.
+        // Empty rectangle.
 
-		m_oVertexLocationConverter = new VertexLocationConverter(
-			Rectangle.FromLTRB(100, 200, 100, 200) );
+        m_oVertexLocationConverter = new VertexLocationConverter(
+            Rectangle.FromLTRB(100, 200, 100, 200) );
 
-		Single fGraphX = 600;
-		Single fGraphY = 1200;
+        Single fGraphX = 600;
+        Single fGraphY = 1200;
 
-		Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
-		Single ExpectedWorkbookY = ExpectedWorkbookX;
+        Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
+        Single ExpectedWorkbookY = ExpectedWorkbookX;
 
-		Single fWorkbookX, fWorkbookY;
+        Single fWorkbookX, fWorkbookY;
 
-		m_oVertexLocationConverter.GraphToWorkbook(
-			new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
+        m_oVertexLocationConverter.GraphToWorkbook(
+            new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
 
-		Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
-		Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
+        Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
+        Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
     }
 
     //*************************************************************************
@@ -370,20 +370,20 @@ public class VertexLocationConverterTest : Object
     public void
     TestGraphToWorkbook5()
     {
-		// Below minimum graph values.
+        // Below minimum graph values.
 
-		Single fGraphX = 100 - 1;
-		Single fGraphY = 200 - 123;
-		Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
-		Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
+        Single fGraphX = 100 - 1;
+        Single fGraphY = 200 - 123;
+        Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
 
-		Single fWorkbookX, fWorkbookY;
+        Single fWorkbookX, fWorkbookY;
 
-		m_oVertexLocationConverter.GraphToWorkbook(
-			new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
+        m_oVertexLocationConverter.GraphToWorkbook(
+            new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
 
-		Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
-		Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
+        Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
+        Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
     }
 
     //*************************************************************************
@@ -399,20 +399,20 @@ public class VertexLocationConverterTest : Object
     public void
     TestGraphToWorkbook6()
     {
-		// Above maximum graph values.
+        // Above maximum graph values.
 
-		Single fGraphX = 1100 + 1;
-		Single fGraphY = 2200 + 123;
-		Single ExpectedWorkbookX = VertexLocationConverter.MaximumXYWorkbook;
-		Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
+        Single fGraphX = 1100 + 1;
+        Single fGraphY = 2200 + 123;
+        Single ExpectedWorkbookX = VertexLocationConverter.MaximumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
 
-		Single fWorkbookX, fWorkbookY;
+        Single fWorkbookX, fWorkbookY;
 
-		m_oVertexLocationConverter.GraphToWorkbook(
-			new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
+        m_oVertexLocationConverter.GraphToWorkbook(
+            new PointF(fGraphX, fGraphY), out fWorkbookX, out fWorkbookY);
 
-		Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
-		Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
+        Assert.AreEqual(ExpectedWorkbookX, fWorkbookX);
+        Assert.AreEqual(ExpectedWorkbookY, fWorkbookY);
     }
 
 
@@ -420,10 +420,10 @@ public class VertexLocationConverterTest : Object
     //  Protected constants
     //*************************************************************************
 
-	/// Graph rectangle.
+    /// Graph rectangle.
 
-	protected static readonly Rectangle GraphRectangle =
-		Rectangle.FromLTRB(100, 200, 1100, 2200);
+    protected static readonly Rectangle GraphRectangle =
+        Rectangle.FromLTRB(100, 200, 1100, 2200);
 
 
     //*************************************************************************

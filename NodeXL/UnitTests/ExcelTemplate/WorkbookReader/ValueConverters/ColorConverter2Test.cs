@@ -1,11 +1,10 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.ExcelTemplate;
-using Microsoft.NodeXL.Visualization;
 
 namespace Microsoft.NodeXL.UnitTests
 {
@@ -27,7 +26,7 @@ public class ColorConverter2Test : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="ColorConverter2Test" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
@@ -49,8 +48,8 @@ public class ColorConverter2Test : Object
     public void
     SetUp()
     {
-		m_oColorConverter2 = new ColorConverter2();
-	}
+        m_oColorConverter2 = new ColorConverter2();
+    }
 
     //*************************************************************************
     //  Method: TearDown()
@@ -81,20 +80,20 @@ public class ColorConverter2Test : Object
     public void
     TestTryWorkbookToGraph()
     {
-		Color eValueGraph;
+        Color eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"alice blue",
-			"aliceblue",
-			"aLice blUe",
-			"ALICEBLUE",
-			} )
-		{
-			Assert.IsTrue( m_oColorConverter2.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "alice blue",
+            "aliceblue",
+            "aLice blUe",
+            "ALICEBLUE",
+            } )
+        {
+            Assert.IsTrue( m_oColorConverter2.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
 
-			Assert.AreEqual(Color.AliceBlue, eValueGraph);
-		}
+            Assert.AreEqual(Color.AliceBlue, eValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -110,20 +109,20 @@ public class ColorConverter2Test : Object
     public void
     TestTryWorkbookToGraph2()
     {
-		Color eValueGraph;
+        Color eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"blue",
-			"blue",
-			"blUe",
-			"BLUE",
-			} )
-		{
-			Assert.IsTrue( m_oColorConverter2.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
+        foreach (String sValueWorkbook in new String [] {
+            "blue",
+            "blue",
+            "blUe",
+            "BLUE",
+            } )
+        {
+            Assert.IsTrue( m_oColorConverter2.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
 
-			Assert.AreEqual(Color.Blue, eValueGraph);
-		}
+            Assert.AreEqual(Color.Blue, eValueGraph);
+        }
     }
 
     //*************************************************************************
@@ -139,18 +138,18 @@ public class ColorConverter2Test : Object
     public void
     TestTryWorkbookToGraph3()
     {
-		Color eValueGraph;
+        Color eValueGraph;
 
-		foreach (String sValueWorkbook in new String [] {
-			"",
-			"Xred",
-			"x",
-			"greenX",
-			} )
-		{
-			Assert.IsFalse( m_oColorConverter2.TryWorkbookToGraph(
-				sValueWorkbook, out eValueGraph) );
-		}
+        foreach (String sValueWorkbook in new String [] {
+            "",
+            "Xred",
+            "x",
+            "greenX",
+            } )
+        {
+            Assert.IsFalse( m_oColorConverter2.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
+        }
     }
 
     //*************************************************************************
@@ -166,14 +165,14 @@ public class ColorConverter2Test : Object
     public void
     TestGraphToWorkbook()
     {
-		Assert.AreEqual( "Alice Blue",
-			m_oColorConverter2.GraphToWorkbook(Color.AliceBlue) );
+        Assert.AreEqual( "Alice Blue",
+            m_oColorConverter2.GraphToWorkbook(Color.AliceBlue) );
 
-		Assert.AreEqual( "Blue",
-			m_oColorConverter2.GraphToWorkbook(Color.Blue) );
+        Assert.AreEqual( "Blue",
+            m_oColorConverter2.GraphToWorkbook(Color.Blue) );
 
-		Assert.AreEqual( "Orange",
-			m_oColorConverter2.GraphToWorkbook(Color.Orange) );
+        Assert.AreEqual( "Orange",
+            m_oColorConverter2.GraphToWorkbook(Color.Orange) );
     }
 
 

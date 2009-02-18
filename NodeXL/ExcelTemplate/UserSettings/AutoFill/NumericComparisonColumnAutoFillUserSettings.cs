@@ -1,10 +1,11 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -26,7 +27,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //*****************************************************************************
 
 [ TypeConverterAttribute(
-	typeof(NumericComparisonColumnAutoFillUserSettingsTypeConverter) ) ]
+    typeof(NumericComparisonColumnAutoFillUserSettingsTypeConverter) ) ]
 
 public class NumericComparisonColumnAutoFillUserSettings : Object
 {
@@ -35,18 +36,18 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     //
     /// <summary>
     /// Initializes a new instance of the
-	/// NumericComparisonColumnAutoFillUserSettings class.
+    /// NumericComparisonColumnAutoFillUserSettings class.
     /// </summary>
     //*************************************************************************
 
     public NumericComparisonColumnAutoFillUserSettings()
     {
-		m_eComparisonOperator = ComparisonOperator.GreaterThan;
-		m_dSourceNumberToCompareTo = 0;
-		m_sDestinationString1 = null;
-		m_sDestinationString2 = null;
+        m_eComparisonOperator = ComparisonOperator.GreaterThan;
+        m_dSourceNumberToCompareTo = 0;
+        m_sDestinationString1 = null;
+        m_sDestinationString2 = null;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -54,12 +55,12 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     //
     /// <summary>
     /// Gets or sets the operator to use when comparing a cell in the source
-	/// column.
+    /// column.
     /// </summary>
     ///
     /// <value>
-	/// Operator to use when comparing a cell in the source column.  The
-	/// default is ComparisonOperator.GreaterThan.
+    /// Operator to use when comparing a cell in the source column.  The
+    /// default is ComparisonOperator.GreaterThan.
     /// </value>
     //*************************************************************************
 
@@ -70,7 +71,7 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
         {
             AssertValid();
 
-			return (m_eComparisonOperator);
+            return (m_eComparisonOperator);
         }
 
         set
@@ -86,12 +87,12 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     //
     /// <summary>
     /// Gets or sets the number to use when comparing a cell in the source
-	/// column.
+    /// column.
     /// </summary>
     ///
     /// <value>
     /// The number to use when comparing a cell in the source column.  The
-	/// default is zero.
+    /// default is zero.
     /// </value>
     //*************************************************************************
 
@@ -102,7 +103,7 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
         {
             AssertValid();
 
-			return (m_dSourceNumberToCompareTo);
+            return (m_dSourceNumberToCompareTo);
         }
 
         set
@@ -118,28 +119,28 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     //
     /// <summary>
     /// Gets or sets the string to write to a destination cell if the source
-	/// cell satisfies the comparison criteria.
+    /// cell satisfies the comparison criteria.
     /// </summary>
     ///
     /// <value>
-	/// The string to write to a destination cell if the source cell satisfies
-	/// the comparison criteria, or null to not write a string.
+    /// The string to write to a destination cell if the source cell satisfies
+    /// the comparison criteria, or null to not write a string.
     /// </value>
     //*************************************************************************
 
     public String
-	DestinationString1
+    DestinationString1
     {
         get
         {
             AssertValid();
 
-			return (m_sDestinationString1);
+            return (m_sDestinationString1);
         }
 
         set
         {
-			m_sDestinationString1 = value;
+            m_sDestinationString1 = value;
 
             AssertValid();
         }
@@ -150,28 +151,28 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     //
     /// <summary>
     /// Gets or sets the string to write to a destination cell if the source
-	/// cell does not satisfy the comparison criteria.
+    /// cell does not satisfy the comparison criteria.
     /// </summary>
     ///
     /// <value>
-	/// The string to write to a destination cell if the source cell does not
-	/// satisfy the comparison criteria, or null to not write a string.
+    /// The string to write to a destination cell if the source cell does not
+    /// satisfy the comparison criteria, or null to not write a string.
     /// </value>
     //*************************************************************************
 
     public String
-	DestinationString2
+    DestinationString2
     {
         get
         {
             AssertValid();
 
-			return (m_sDestinationString2);
+            return (m_sDestinationString2);
         }
 
         set
         {
-			m_sDestinationString2 = value;
+            m_sDestinationString2 = value;
 
             AssertValid();
         }
@@ -183,26 +184,26 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     /// <summary>
     /// Creates a deep copy of the object.
     /// </summary>
-	///
-	/// <returns>
-	/// A deep copy of the object.
-	/// </returns>
+    ///
+    /// <returns>
+    /// A deep copy of the object.
+    /// </returns>
     //*************************************************************************
 
     public NumericComparisonColumnAutoFillUserSettings
     Copy()
     {
-		AssertValid();
+        AssertValid();
 
-		NumericComparisonColumnAutoFillUserSettings oCopy =
-			new NumericComparisonColumnAutoFillUserSettings();
+        NumericComparisonColumnAutoFillUserSettings oCopy =
+            new NumericComparisonColumnAutoFillUserSettings();
 
-		oCopy.ComparisonOperator = this.ComparisonOperator;
-		oCopy.SourceNumberToCompareTo = this.SourceNumberToCompareTo;
-		oCopy.DestinationString1 = String.Copy(this.DestinationString1);
-		oCopy.DestinationString2 = String.Copy(this.DestinationString2);
+        oCopy.ComparisonOperator = this.ComparisonOperator;
+        oCopy.SourceNumberToCompareTo = this.SourceNumberToCompareTo;
+        oCopy.DestinationString1 = String.Copy(this.DestinationString1);
+        oCopy.DestinationString2 = String.Copy(this.DestinationString2);
 
-		return (oCopy);
+        return (oCopy);
     }
 
 
@@ -219,10 +220,10 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     public void
     AssertValid()
     {
-		// m_eComparisonOperator
-		// m_dSourceNumberToCompareTo
-		// m_sDestinationString1
-		// m_sDestinationString2
+        // m_eComparisonOperator
+        // m_dSourceNumberToCompareTo
+        // m_sDestinationString1
+        // m_sDestinationString2
     }
 
 
@@ -230,23 +231,23 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Operator to use when comparing a cell in the source column.
+    /// Operator to use when comparing a cell in the source column.
 
-	protected ComparisonOperator m_eComparisonOperator;
+    protected ComparisonOperator m_eComparisonOperator;
 
     /// The number to use when comparing a cell in the source column.
 
-	protected Double m_dSourceNumberToCompareTo;
+    protected Double m_dSourceNumberToCompareTo;
 
-	/// The string to write to a destination cell if the source cell satisfies
-	/// the comparison criteria, or null to not write a string.
+    /// The string to write to a destination cell if the source cell satisfies
+    /// the comparison criteria, or null to not write a string.
 
-	protected String m_sDestinationString1;
+    protected String m_sDestinationString1;
 
-	/// The string to write to a destination cell if the source cell does not
-	/// satisfy the comparison criteria, or null to not write a string.
+    /// The string to write to a destination cell if the source cell does not
+    /// satisfy the comparison criteria, or null to not write a string.
 
-	protected String m_sDestinationString2;
+    protected String m_sDestinationString2;
 }
 
 
@@ -273,144 +274,143 @@ public class NumericComparisonColumnAutoFillUserSettingsTypeConverter :
     //
     /// <summary>
     /// Initializes a new instance of the
-	/// NumericComparisonColumnAutoFillUserSettingsTypeConverter class.
+    /// NumericComparisonColumnAutoFillUserSettingsTypeConverter class.
     /// </summary>
     //*************************************************************************
 
     public NumericComparisonColumnAutoFillUserSettingsTypeConverter()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
     //  Method: ConvertTo()
     //
     /// <summary>
-	/// Converts the given value object to the specified type, using the
-	/// specified context and culture information.
+    /// Converts the given value object to the specified type, using the
+    /// specified context and culture information.
     /// </summary>
-	///
-	/// <param name="context">
-	/// An ITypeDescriptorContext that provides a format context. 
-	/// </param>
-	///
-	/// <param name="culture">
-	/// A CultureInfo. If nullNothingnullptra null reference is passed, the
-	/// current culture is assumed. 
-	/// </param>
-	///
-	/// <param name="value">
-	/// The Object to convert.
-	/// </param>
-	///
-	/// <param name="destinationType">
-	/// The Type to convert the value parameter to. 
-	/// </param>
-	///
-	/// <returns>
-	/// An Object that represents the converted value.
-	/// </returns>
+    ///
+    /// <param name="context">
+    /// An ITypeDescriptorContext that provides a format context. 
+    /// </param>
+    ///
+    /// <param name="culture">
+    /// A CultureInfo. If null is passed, the current culture is assumed. 
+    /// </param>
+    ///
+    /// <param name="value">
+    /// The Object to convert.
+    /// </param>
+    ///
+    /// <param name="destinationType">
+    /// The Type to convert the value parameter to. 
+    /// </param>
+    ///
+    /// <returns>
+    /// An Object that represents the converted value.
+    /// </returns>
     //*************************************************************************
 
-	public override Object
-	ConvertTo
-	(
-		ITypeDescriptorContext context,
-		CultureInfo culture,
-		Object value,
-		Type destinationType
-	)
-	{
-		Debug.Assert(value != null);
-		Debug.Assert(value is NumericComparisonColumnAutoFillUserSettings);
-		Debug.Assert( destinationType == typeof(String) );
-		AssertValid();
+    public override Object
+    ConvertTo
+    (
+        ITypeDescriptorContext context,
+        CultureInfo culture,
+        Object value,
+        Type destinationType
+    )
+    {
+        Debug.Assert(value != null);
+        Debug.Assert(value is NumericComparisonColumnAutoFillUserSettings);
+        Debug.Assert( destinationType == typeof(String) );
+        AssertValid();
 
-		NumericComparisonColumnAutoFillUserSettings
-			oNumericComparisonColumnAutoFillUserSettings =
-			(NumericComparisonColumnAutoFillUserSettings)value;
+        NumericComparisonColumnAutoFillUserSettings
+            oNumericComparisonColumnAutoFillUserSettings =
+            (NumericComparisonColumnAutoFillUserSettings)value;
 
-		// Use a simple tab-delimited format.  Sample string:
-		//
-		// "GreaterThan\t0\tDV1\tDV2"
+        // Use a simple tab-delimited format.  Sample string:
+        //
+        // "GreaterThan\t0\tDV1\tDV2"
 
-		return ( String.Format(
+        return ( String.Format(CultureInfo.InvariantCulture,
 
-			"{0}\t{1}\t{2}\t{3}"
-			,
-			oNumericComparisonColumnAutoFillUserSettings.ComparisonOperator,
+            "{0}\t{1}\t{2}\t{3}"
+            ,
+            oNumericComparisonColumnAutoFillUserSettings.ComparisonOperator,
 
-			oNumericComparisonColumnAutoFillUserSettings.
-				SourceNumberToCompareTo,
+            oNumericComparisonColumnAutoFillUserSettings.
+                SourceNumberToCompareTo,
 
-			oNumericComparisonColumnAutoFillUserSettings.DestinationString1,
-			oNumericComparisonColumnAutoFillUserSettings.DestinationString2
-			) );
-	}
+            oNumericComparisonColumnAutoFillUserSettings.DestinationString1,
+            oNumericComparisonColumnAutoFillUserSettings.DestinationString2
+            ) );
+    }
 
     //*************************************************************************
     //  Method: ConvertFrom()
     //
     /// <summary>
-	/// Converts the given object to the type of this converter, using the
-	/// specified context and culture information.
+    /// Converts the given object to the type of this converter, using the
+    /// specified context and culture information.
     /// </summary>
-	///
-	/// <param name="context">
-	/// An ITypeDescriptorContext that provides a format context. 
-	/// </param>
-	///
-	/// <param name="culture">
-	/// A CultureInfo. If nullNothingnullptra null reference is passed, the
-	/// current culture is assumed. 
-	/// </param>
-	///
-	/// <param name="value">
-	/// The Object to convert.
-	/// </param>
-	///
-	/// <returns>
-	/// An Object that represents the converted value.
-	/// </returns>
+    ///
+    /// <param name="context">
+    /// An ITypeDescriptorContext that provides a format context. 
+    /// </param>
+    ///
+    /// <param name="culture">
+    /// A CultureInfo. If nullNothingnullptra null reference is passed, the
+    /// current culture is assumed. 
+    /// </param>
+    ///
+    /// <param name="value">
+    /// The Object to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// An Object that represents the converted value.
+    /// </returns>
     //*************************************************************************
 
-	public override Object
-	ConvertFrom
-	(
-		ITypeDescriptorContext context,
-		CultureInfo culture,
-		Object value
-	)
-	{
-		Debug.Assert(value != null);
-		Debug.Assert(value is String);
-		AssertValid();
+    public override Object
+    ConvertFrom
+    (
+        ITypeDescriptorContext context,
+        CultureInfo culture,
+        Object value
+    )
+    {
+        Debug.Assert(value != null);
+        Debug.Assert(value is String);
+        AssertValid();
 
-		NumericComparisonColumnAutoFillUserSettings
-			oNumericComparisonColumnAutoFillUserSettings =
-			new NumericComparisonColumnAutoFillUserSettings();
+        NumericComparisonColumnAutoFillUserSettings
+            oNumericComparisonColumnAutoFillUserSettings =
+            new NumericComparisonColumnAutoFillUserSettings();
 
-		String [] asStrings = ( (String)value ).Split( new Char[] {'\t'} );
+        String [] asStrings = ( (String)value ).Split( new Char[] {'\t'} );
 
-		Debug.Assert(asStrings.Length == 4);
+        Debug.Assert(asStrings.Length == 4);
 
-		oNumericComparisonColumnAutoFillUserSettings.ComparisonOperator =
-			(ComparisonOperator)Enum.Parse(
-				typeof(ComparisonOperator), asStrings[0] );
+        oNumericComparisonColumnAutoFillUserSettings.ComparisonOperator =
+            (ComparisonOperator)Enum.Parse(
+                typeof(ComparisonOperator), asStrings[0] );
 
-		oNumericComparisonColumnAutoFillUserSettings.SourceNumberToCompareTo =
-			Double.Parse( asStrings[1] );
+        oNumericComparisonColumnAutoFillUserSettings.SourceNumberToCompareTo =
+            MathUtil.ParseCultureInvariantDouble( asStrings[1] );
 
-		oNumericComparisonColumnAutoFillUserSettings.DestinationString1 =
-			asStrings[2];
+        oNumericComparisonColumnAutoFillUserSettings.DestinationString1 =
+            asStrings[2];
 
-		oNumericComparisonColumnAutoFillUserSettings.DestinationString2 =
-			asStrings[3];
+        oNumericComparisonColumnAutoFillUserSettings.DestinationString2 =
+            asStrings[3];
 
-		return (oNumericComparisonColumnAutoFillUserSettings);
-	}
+        return (oNumericComparisonColumnAutoFillUserSettings);
+    }
 
 
     //*************************************************************************
@@ -426,7 +426,7 @@ public class NumericComparisonColumnAutoFillUserSettingsTypeConverter :
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

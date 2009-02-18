@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Runtime.Serialization;
@@ -24,26 +24,26 @@ public class RegisterUserException : Exception
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="RegisterUserException" />
-	/// class.
+    /// class.
     /// </summary>
-	///
+    ///
     /// <param name="message">
-	/// Error message, suitable for displaying to the user.
+    /// Error message, suitable for displaying to the user.
     /// </param>
-	///
+    ///
     /// <param name="innerException">
-	/// Inner exception, or null.
+    /// Inner exception, or null.
     /// </param>
     //*************************************************************************
 
     public RegisterUserException
-	(
-		String message,
+    (
+        String message,
         Exception innerException
-	)
-	: base(message, innerException)
+    )
+    : base(message, innerException)
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -60,7 +60,7 @@ public class RegisterUserException : Exception
     public void
     AssertValid()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
 
@@ -68,6 +68,6 @@ public class RegisterUserException : Exception
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 }

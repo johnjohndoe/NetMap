@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Configuration;
@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//	Class: RegisterUserDialog
+//  Class: RegisterUserDialog
 //
 /// <summary>
 /// Allows the user to register for email updates.
@@ -24,53 +24,53 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public partial class RegisterUserDialog : ExcelTemplateForm
 {
-	//*************************************************************************
-	//	Constructor: RegisterUserDialog()
-	//
-	/// <summary>
-	///	Initializes a new instance of the <see cref="RegisterUserDialog" />
-	/// class.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: RegisterUserDialog()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RegisterUserDialog" />
+    /// class.
+    /// </summary>
+    //*************************************************************************
 
-	public RegisterUserDialog()
-	{
-		InitializeComponent();
+    public RegisterUserDialog()
+    {
+        InitializeComponent();
 
-		// Instantiate an object that saves and retrieves the user settings for
-		// this dialog.  Note that the object automatically saves the settings
-		// when the form closes.
+        // Instantiate an object that saves and retrieves the user settings for
+        // this dialog.  Note that the object automatically saves the settings
+        // when the form closes.
 
-		m_oRegisterUserDialogUserSettings =
-			new RegisterUserDialogUserSettings(this);
+        m_oRegisterUserDialogUserSettings =
+            new RegisterUserDialogUserSettings(this);
 
-		AssertValid();
-	}
+        AssertValid();
+    }
 
-	//*************************************************************************
-	//	Method: usrRegisterUser_Done()
-	//
-	/// <summary>
-	///	Handles the Done event on the usrRegisterUser UserControl.
-	/// </summary>
-	///
-	/// <param name="sender">
-	///	Standard event argument.
-	/// </param>
-	///
-	/// <param name="e">
-	/// Standard event argument.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: usrRegisterUser_Done()
+    //
+    /// <summary>
+    /// Handles the Done event on the usrRegisterUser UserControl.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
     private void
-	usrRegisterUser_Done
-	(
-		object sender,
-		EventArgs e
-	)
+    usrRegisterUser_Done
+    (
+        object sender,
+        EventArgs e
+    )
     {
-		AssertValid();
+        AssertValid();
 
         this.Close();
     }
@@ -89,9 +89,9 @@ public partial class RegisterUserDialog : ExcelTemplateForm
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_oRegisterUserDialogUserSettings != null);
+        Debug.Assert(m_oRegisterUserDialogUserSettings != null);
     }
 
 
@@ -99,9 +99,9 @@ public partial class RegisterUserDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-	/// User settings for this dialog.
+    /// User settings for this dialog.
 
-	protected RegisterUserDialogUserSettings m_oRegisterUserDialogUserSettings;
+    protected RegisterUserDialogUserSettings m_oRegisterUserDialogUserSettings;
 }
 
 
@@ -126,25 +126,25 @@ public class RegisterUserDialogUserSettings : FormSettings
     //
     /// <summary>
     /// Initializes a new instance of the <see
-	/// cref="RegisterUserDialogUserSettings" /> class.
+    /// cref="RegisterUserDialogUserSettings" /> class.
     /// </summary>
-	///
-	/// <param name="oForm">
-	/// The form to save settings for.
-	/// </param>
+    ///
+    /// <param name="oForm">
+    /// The form to save settings for.
+    /// </param>
     //*************************************************************************
 
     public RegisterUserDialogUserSettings
-	(
-		Form oForm
-	)
-	: base (oForm, true)
+    (
+        Form oForm
+    )
+    : base (oForm, true)
     {
-		Debug.Assert(oForm != null);
+        Debug.Assert(oForm != null);
 
-		// (Do nothing.)
+        // (Do nothing.)
 
-		AssertValid();
+        AssertValid();
     }
 
 
@@ -161,7 +161,7 @@ public class RegisterUserDialogUserSettings : FormSettings
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

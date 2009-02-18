@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Windows.Forms;
@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace Microsoft.Research.CommunityTechnologies.AppLib
 {
 //*****************************************************************************
-//	Class: MenuItemWithObject
+//  Class: MenuItemWithObject
 //
 /// <summary>
 /// Represents a menu item that contains an arbitrary object.
@@ -22,83 +22,83 @@ namespace Microsoft.Research.CommunityTechnologies.AppLib
 
 public class MenuItemWithObject : MenuItem
 {
-	//*************************************************************************
-	//	Constructor: MenuItemWithObject()
-	//
-	/// <summary>
-	/// Initializes a new instance of the MenuItemWithObject class.
-	/// </summary>
-	///
-	/// <param name="sText">
-	///	The caption for the menu item.
-	/// </param>
-	///
-	/// <param name="oClickEventHandler">
-	///	Event handler for the Click event.
-	/// </param>
-	///
-	/// <param name="oObject">
-	///	Arbitrary object associated with the menu item.  Can be null.
-	/// </param>
-	//*************************************************************************
+    //*************************************************************************
+    //  Constructor: MenuItemWithObject()
+    //
+    /// <summary>
+    /// Initializes a new instance of the MenuItemWithObject class.
+    /// </summary>
+    ///
+    /// <param name="sText">
+    /// The caption for the menu item.
+    /// </param>
+    ///
+    /// <param name="oClickEventHandler">
+    /// Event handler for the Click event.
+    /// </param>
+    ///
+    /// <param name="oObject">
+    /// Arbitrary object associated with the menu item.  Can be null.
+    /// </param>
+    //*************************************************************************
 
-	public MenuItemWithObject
-	(
-		String sText,
-		EventHandler oClickEventHandler,
-		Object oObject
+    public MenuItemWithObject
+    (
+        String sText,
+        EventHandler oClickEventHandler,
+        Object oObject
 
-	) : base (sText, oClickEventHandler)
-	{
-		m_oObject = oObject;
-	}
+    ) : base (sText, oClickEventHandler)
+    {
+        m_oObject = oObject;
+    }
 
-	//*************************************************************************
-	//	Property: Object
-	//
-	/// <summary>
-	/// Gets the arbitrary object associated with the menu item.
-	/// </summary>
-	///
-	/// <value>
-	/// The menu item's arbitrary object.  Can be null.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: Object
+    //
+    /// <summary>
+    /// Gets the arbitrary object associated with the menu item.
+    /// </summary>
+    ///
+    /// <value>
+    /// The menu item's arbitrary object.  Can be null.
+    /// </value>
+    //*************************************************************************
 
-	public Object Object
-	{
-		get
-		{
-			AssertValid();
+    public Object Object
+    {
+        get
+        {
+            AssertValid();
 
-			return (m_oObject);
-		}
-	}
+            return (m_oObject);
+        }
+    }
 
-	//*************************************************************************
-	//	Method: AssertValid()
-	//
-	/// <summary>
-	/// Asserts if the object is in an invalid state.  Debug-only.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: AssertValid()
+    //
+    /// <summary>
+    /// Asserts if the object is in an invalid state.  Debug-only.
+    /// </summary>
+    //*************************************************************************
 
-	[Conditional("DEBUG")]
+    [Conditional("DEBUG")]
 
-	public virtual void
-	AssertValid()
-	{
-		// (Do nothing.)
-	}
+    public virtual void
+    AssertValid()
+    {
+        // (Do nothing.)
+    }
 
 
-	//*************************************************************************
-	//	Protected fields
-	//*************************************************************************
+    //*************************************************************************
+    //  Protected fields
+    //*************************************************************************
 
-	/// Arbitrary object.  Can be null.
+    /// Arbitrary object.  Can be null.
 
-	protected Object m_oObject;
+    protected Object m_oObject;
 }
 
 }

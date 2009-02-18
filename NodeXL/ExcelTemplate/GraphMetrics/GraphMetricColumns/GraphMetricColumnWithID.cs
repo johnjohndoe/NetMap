@@ -26,55 +26,55 @@ public class GraphMetricColumnWithID : GraphMetricColumn
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphMetricColumnWithID" />
-	/// class.
+    /// class.
     /// </summary>
-	///
-	/// <param name="worksheetName">
-	/// Name of the worksheet containing the column.
-	/// </param>
-	///
-	/// <param name="tableName">
-	/// Name of the table (ListObject) containing the column.
-	/// </param>
-	///
-	/// <param name="columnName">
-	/// Name of the column.
-	/// </param>
-	///
-	/// <param name="columnWidthChars">
-	/// Width of the column, in characters.
-	/// </param>
-	///
-	/// <param name="numberFormat">
-	/// Number format of the column, or null if the column is not numeric.
-	/// Sample: "0.00".
-	/// </param>
-	///
-	/// <param name="style">
-	/// Style of the column, or null to not apply a style.  Sample: "Bad".
-	/// </param>
-	///
-	/// <param name="graphMetricValuesWithID">
-	/// Array of graph metric values, one value per calculated column cell.
-	/// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Name of the worksheet containing the column.
+    /// </param>
+    ///
+    /// <param name="tableName">
+    /// Name of the table (ListObject) containing the column.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column.
+    /// </param>
+    ///
+    /// <param name="columnWidthChars">
+    /// Width of the column, in characters.
+    /// </param>
+    ///
+    /// <param name="numberFormat">
+    /// Number format of the column, or null if the column is not numeric.
+    /// Sample: "0.00".
+    /// </param>
+    ///
+    /// <param name="style">
+    /// Style of the column, or null to not apply a style.  Sample: "Bad".
+    /// </param>
+    ///
+    /// <param name="graphMetricValuesWithID">
+    /// Array of graph metric values, one value per calculated column cell.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricColumnWithID
-	(
-		String worksheetName,
-		String tableName,
-		String columnName,
-		Double columnWidthChars,
-		String numberFormat,
-		String style,
-		GraphMetricValueWithID [] graphMetricValuesWithID
-	)
-	: base(worksheetName, tableName, columnName, columnWidthChars,
-		numberFormat, style)
+    (
+        String worksheetName,
+        String tableName,
+        String columnName,
+        Double columnWidthChars,
+        String numberFormat,
+        String style,
+        GraphMetricValueWithID [] graphMetricValuesWithID
+    )
+    : base(worksheetName, tableName, columnName, columnWidthChars,
+        numberFormat, style)
     {
-		m_aoGraphMetricValuesWithID = graphMetricValuesWithID;
+        m_aoGraphMetricValuesWithID = graphMetricValuesWithID;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -87,7 +87,7 @@ public class GraphMetricColumnWithID : GraphMetricColumn
 
     protected GraphMetricColumnWithID()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -114,7 +114,7 @@ public class GraphMetricColumnWithID : GraphMetricColumn
 
         set
         {
-			m_aoGraphMetricValuesWithID = value;
+            m_aoGraphMetricValuesWithID = value;
 
             AssertValid();
         }
@@ -134,9 +134,9 @@ public class GraphMetricColumnWithID : GraphMetricColumn
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		Debug.Assert(m_aoGraphMetricValuesWithID != null);
+        Debug.Assert(m_aoGraphMetricValuesWithID != null);
     }
 
 
@@ -144,9 +144,9 @@ public class GraphMetricColumnWithID : GraphMetricColumn
     //  Protected fields
     //*************************************************************************
 
-	/// Array of graph metric values, one value per calculated column cell.
+    /// Array of graph metric values, one value per calculated column cell.
 
-	protected GraphMetricValueWithID [] m_aoGraphMetricValuesWithID;
+    protected GraphMetricValueWithID [] m_aoGraphMetricValuesWithID;
 }
 
 }

@@ -1,10 +1,9 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
-using System.Windows.Forms;
-using Microsoft.NodeXL.Visualization;
+using Microsoft.NodeXL.Layouts;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ApplicationUtil
@@ -13,19 +12,16 @@ namespace Microsoft.NodeXL.ApplicationUtil
 //  Class: LayoutManager
 //
 /// <summary>
-/// Helper class for managing layouts used by the <see cref="NodeXLControl" />.
+/// Helper class for managing graph layouts.
 /// </summary>
 ///
 /// <remarks>
-/// This class defines a set of layouts available for use with the <see
-/// cref="NodeXLControl" />.  It provides a <see cref="Layout" /> property for
-/// keeping track of the layout currently in use, a <see
-/// cref="LayoutChanged" /> event that is raised when the layout is changed,
-/// and an <see cref="ApplyLayoutToNodeXLControl" /> method for setting the <see
-/// cref="NodeXLControl.Layout" />, <see cref="NodeXLControl.VertexDrawer" />,
-/// and <see cref="NodeXLControl.EdgeDrawer" /> properties on a <see
-/// cref="NodeXLControl" /> with a set of objects that are designed to work
-/// together.
+/// This class defines a set of available layouts.  (A layout is a class that
+/// implements <see cref="IAsyncLayout" />.  It provides a <see
+/// cref="Layout" /> property for keeping track of the layout type currently in
+/// use, a <see cref="LayoutChanged" /> event that is raised when the layout is
+/// changed, and a <see cref="CreateLayout" /> method for creating a layout of
+/// the current type.
 ///
 /// <para>
 /// Use the derived <see cref="LayoutManagerForMenu" /> class if your
@@ -49,9 +45,9 @@ public class LayoutManager : Object
 
     public LayoutManager()
     {
-		m_eLayout = LayoutType.FruchtermanReingold;
+        m_eLayout = LayoutType.FruchtermanReingold;
 
-		AssertValid();
+        AssertValid();
     }
 
     //*************************************************************************
@@ -63,7 +59,7 @@ public class LayoutManager : Object
     ///
     /// <value>
     /// The layout type to use, as a <see cref="LayoutType" />.  The default is
-	/// <see cref="LayoutType.FruchtermanReingold" />.
+    /// <see cref="LayoutType.FruchtermanReingold" />.
     /// </value>
     //*************************************************************************
 
@@ -77,219 +73,146 @@ public class LayoutManager : Object
             return (m_eLayout);
         }
 
-		set
-		{
-			this.ArgumentChecker.CheckPropertyIsDefined(
-				"Layout", value, typeof(LayoutType) );
+        set
+        {
+            this.ArgumentChecker.CheckPropertyIsDefined(
+                "Layout", value, typeof(LayoutType) );
 
-			if (value == m_eLayout)
-			{
-				return;
-			}
+            if (value == m_eLayout)
+            {
+                return;
+            }
 
-			m_eLayout = value;
+            m_eLayout = value;
 
-			EventHandler oLayoutChanged = this.LayoutChanged;
+            EventHandler oLayoutChanged = this.LayoutChanged;
 
-			if (oLayoutChanged != null)
-			{
-				oLayoutChanged(this, EventArgs.Empty);
-			}
+            if (oLayoutChanged != null)
+            {
+                oLayoutChanged(this, EventArgs.Empty);
+            }
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************
-    //  Method: ApplyLayoutToNodeXLControl()
+    //  Method: CreateLayout()
     //
     /// <summary>
-	/// Sets the layout-related properties on a <see cref="NodeXLControl" />.
+    /// Creates a layout of the current type.
     /// </summary>
     ///
-    /// <param name="nodeXLControl">
-	/// Control to set the layout-related properties on.
-    /// </param>
-	///
-    /// <param name="margin">
-	/// The margin to use for the layout.
-    /// </param>
-	///
-	/// <remarks>
-	/// This method sets the <see cref="NodeXLControl.Layout" />, <see
-	/// cref="NodeXLControl.VertexDrawer" />, and <see
-	/// cref="NodeXLControl.EdgeDrawer" /> properties on <paramref
-	/// name="nodeXLControl" /> to a set of objects that are designed to work
-	/// together to render a layout of type <see cref="Layout" />.
-	///
-	/// <para>
-	/// Important: The call to this method must be surrounded by <see
-	/// cref="NodeXLControl.BeginUpdate" /> and <see
-	/// cref="NodeXLControl.EndUpdate()" /> to avoid unwanted graph redraws.
-	/// </para>
-	///
-	/// </remarks>
+    /// <returns>
+    /// A layout of type <see cref="Layout" />.
+    /// </returns>
     //*************************************************************************
 
-    public void
-    ApplyLayoutToNodeXLControl
-	(
-		NodeXLControl nodeXLControl,
-		Int32 margin
-	)
-	{
-		const String MethodName = "ApplyLayoutToNodeXLControl";
+    public IAsyncLayout
+    CreateLayout()
+    {
+        AssertValid();
 
-		this.ArgumentChecker.CheckArgumentNotNull(
-			MethodName, "nodeXLControl", nodeXLControl);
+        switch (m_eLayout)
+        {
+            case LayoutType.Circle:
 
-		this.ArgumentChecker.CheckArgumentNotNegative(
-			MethodName, "margin", margin);
+                return ( new CircleLayout() );
 
-		AssertValid();
+            case LayoutType.Spiral:
 
-		ILayout oLayout = null;
-		IVertexDrawer oVertexDrawer = null;
-		IEdgeDrawer oEdgeDrawer = null;
+                return ( new SpiralLayout() );
 
-		Boolean bUseDefaultVertexDrawer = true;
-		Boolean bUseDefaultEdgeDrawer = true;
+            case LayoutType.SinusoidHorizontal:
 
-		switch (m_eLayout)
-		{
-			case LayoutType.Circle:
+                return ( new SinusoidHorizontalLayout() );
 
-				oLayout = new CircleLayout();
-				break;
+            case LayoutType.SinusoidVertical:
 
-			case LayoutType.Spiral:
+                return ( new SinusoidVerticalLayout() );
 
-				oLayout = new SpiralLayout();
-				break;
+            case LayoutType.Grid:
 
-			case LayoutType.SinusoidHorizontal:
+                return ( new GridLayout() );
 
-				oLayout = new SinusoidHorizontalLayout();
-				break;
+            case LayoutType.FruchtermanReingold:
 
-			case LayoutType.SinusoidVertical:
+                return ( new FruchtermanReingoldLayout() );
 
-				oLayout = new SinusoidVerticalLayout();
-				break;
+            case LayoutType.Random:
 
-			case LayoutType.Grid:
+                return ( new RandomLayout() );
 
-				oLayout = new GridLayout();
-				break;
+            case LayoutType.Sugiyama:
 
-			case LayoutType.FruchtermanReingold:
+                return ( new SugiyamaLayout() );
 
-				oLayout = new FruchtermanReingoldLayout();
-				break;
+            default:
 
-			case LayoutType.Random:
-
-				oLayout = new RandomLayout();
-				break;
-
-			case LayoutType.Sugiyama:
-
-				oLayout = new SugiyamaLayout();
-
-				bUseDefaultVertexDrawer = false;
-				bUseDefaultEdgeDrawer = false;
-
-				oVertexDrawer = new SugiyamaVertexDrawer();
-				oEdgeDrawer = new SugiyamaEdgeDrawer();
-
-				break;
-
-			default:
-
-				Debug.Assert(false);
-				break;
-		}
-
-		if (bUseDefaultVertexDrawer)
-		{
-			oVertexDrawer = new PerVertexWithLabelDrawer();
-		}
-
-		if (bUseDefaultEdgeDrawer)
-		{
-			oEdgeDrawer = new PerEdgeWithLabelDrawer();
-		}
-
-		Debug.Assert(oLayout != null);
-		Debug.Assert(oVertexDrawer != null);
-		Debug.Assert(oEdgeDrawer != null);
-
-		oLayout.Margin = margin;
-
-		nodeXLControl.Layout = oLayout;
-		nodeXLControl.VertexDrawer = oVertexDrawer;
-		nodeXLControl.EdgeDrawer = oEdgeDrawer;
+                Debug.Assert(false);
+                return (null);
+        }
     }
 
-	//*************************************************************************
-	//	Event: LayoutChanged
-	//
-	/// <summary>
-	///	Occurs when the <see cref="Layout" /> property changes.
-	/// </summary>
-	///
+    //*************************************************************************
+    //  Event: LayoutChanged
+    //
+    /// <summary>
+    /// Occurs when the <see cref="Layout" /> property changes.
+    /// </summary>
+    ///
     /// <seealso cref="Layout" />
-	//*************************************************************************
+    //*************************************************************************
 
-	public event EventHandler LayoutChanged;
+    public event EventHandler LayoutChanged;
 
 
-	//*************************************************************************
-	//	Property: ClassName
-	//
-	/// <summary>
-	/// Gets the full name of the class.
-	/// </summary>
-	///
-	/// <value>
-	/// The full name of the class, suitable for use in error messages.
-	/// </value>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ClassName
+    //
+    /// <summary>
+    /// Gets the full name of the class.
+    /// </summary>
+    ///
+    /// <value>
+    /// The full name of the class, suitable for use in error messages.
+    /// </value>
+    //*************************************************************************
 
-	protected String
-	ClassName
-	{
-		get
-		{
-			return (this.GetType().FullName);
-		}
-	}
+    protected String
+    ClassName
+    {
+        get
+        {
+            return (this.GetType().FullName);
+        }
+    }
 
-	//*************************************************************************
-	//	Property: ArgumentChecker
-	//
-	/// <summary>
-	/// Gets a new initialized <see cref="ArgumentChecker" /> object.
-	/// </summary>
-	///
-	/// <value>
-	/// A new initialized <see cref="ArgumentChecker" /> object.
-	/// </value>
-	///
-	/// <remarks>
-	/// The returned object can be used to check the validity of property
-	/// values and method parameters.
-	/// </remarks>
-	//*************************************************************************
+    //*************************************************************************
+    //  Property: ArgumentChecker
+    //
+    /// <summary>
+    /// Gets a new initialized <see cref="ArgumentChecker" /> object.
+    /// </summary>
+    ///
+    /// <value>
+    /// A new initialized <see cref="ArgumentChecker" /> object.
+    /// </value>
+    ///
+    /// <remarks>
+    /// The returned object can be used to check the validity of property
+    /// values and method parameters.
+    /// </remarks>
+    //*************************************************************************
 
-	internal ArgumentChecker
-	ArgumentChecker
-	{
-		get
-		{
-			return ( new ArgumentChecker(this.ClassName) );
-		}
-	}
+    internal ArgumentChecker
+    ArgumentChecker
+    {
+        get
+        {
+            return ( new ArgumentChecker(this.ClassName) );
+        }
+    }
 
 
     //*************************************************************************
@@ -305,7 +228,7 @@ public class LayoutManager : Object
     public virtual void
     AssertValid()
     {
-		// m_eLayout
+        // m_eLayout
     }
 
 
@@ -313,9 +236,9 @@ public class LayoutManager : Object
     //  Protected fields
     //*************************************************************************
 
-	/// Current layout type.
+    /// Current layout type.
 
-	protected LayoutType m_eLayout;
+    protected LayoutType m_eLayout;
 }
 
 }

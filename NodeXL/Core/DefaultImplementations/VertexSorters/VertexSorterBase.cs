@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Collections;
@@ -11,7 +11,7 @@ namespace Microsoft.NodeXL.Core
 //  Class: VertexSorterBase
 //
 /// <summary>
-///	Base class for vertex sorters.
+/// Base class for vertex sorters.
 /// </summary>
 ///
 /// <remarks>
@@ -31,15 +31,15 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexSorterBase" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public VertexSorterBase()
     {
-		// (Do nothing.)
+        // (Do nothing.)
 
-		// AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -48,7 +48,7 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     /// <overloads>
     /// Sorts a collection of vertices.
     /// </overloads>
-	///
+    ///
     /// <summary>
     /// Sorts an <see cref="IVertexCollection" />.
     /// </summary>
@@ -56,34 +56,34 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     /// <param name="vertexCollection">
     /// Collection to sort.  The collection is not modified.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// A sorted <see cref="IVertex" /> array.
+    /// A sorted <see cref="IVertex" /> array.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method creates an array of references to the vertices in <paramref
-	/// name="vertexCollection" />, sorts the array, and returns the array.
-	/// <paramref name="vertexCollection" /> is not modified and no vertices
-	/// are cloned or created.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method creates an array of references to the vertices in <paramref
+    /// name="vertexCollection" />, sorts the array, and returns the array.
+    /// <paramref name="vertexCollection" /> is not modified and no vertices
+    /// are cloned or created.
+    /// </remarks>
     //*************************************************************************
 
-	public IVertex []
-	Sort
-	(
-		IVertexCollection vertexCollection
-	)
-	{
-		AssertValid();
+    public IVertex []
+    Sort
+    (
+        IVertexCollection vertexCollection
+    )
+    {
+        AssertValid();
 
-		const String MethodName = "Sort";
+        const String MethodName = "Sort";
 
         this.ArgumentChecker.CheckArgumentNotNull(
             MethodName, "vertexCollection", vertexCollection);
 
-		return ( ( IVertex [] )Sort( (ICollection)vertexCollection ) );
-	}
+        return ( ( IVertex [] )Sort( (ICollection)vertexCollection ) );
+    }
 
     //*************************************************************************
     //  Method: Sort()
@@ -95,28 +95,28 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     /// <param name="vertices">
     /// Array to sort.  The array is not modified.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// A sorted copy of <paramref name="vertices" />.
+    /// A sorted copy of <paramref name="vertices" />.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method creates a copy of <paramref name="vertices" />, sorts the
-	/// copy, and returns the copy.  <paramref name="vertices" /> is not
-	/// modified and no vertices are cloned or created.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method creates a copy of <paramref name="vertices" />, sorts the
+    /// copy, and returns the copy.  <paramref name="vertices" /> is not
+    /// modified and no vertices are cloned or created.
+    /// </remarks>
     //*************************************************************************
 
-	public IVertex []
-	Sort
-	(
-		IVertex [] vertices
-	)
-	{
-		AssertValid();
+    public IVertex []
+    Sort
+    (
+        IVertex [] vertices
+    )
+    {
+        AssertValid();
 
-		return ( ( IVertex [] )Sort( (ICollection)vertices ) );
-	}
+        return ( ( IVertex [] )Sort( (ICollection)vertices ) );
+    }
 
     //*************************************************************************
     //  Method: Sort()
@@ -128,41 +128,41 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     /// <param name="vertices">
     /// ICollection of vertices to sort.  The array is not modified.
     /// </param>
-	///
+    ///
     /// <returns>
-	/// A sorted copy of <paramref name="vertices" />, as an ICollection.
+    /// A sorted copy of <paramref name="vertices" />, as an ICollection.
     /// </returns>
-	///
-	/// <remarks>
-	/// This method creates a copy of <paramref name="vertices" />, sorts the
-	/// copy, and returns the copy.  <paramref name="vertices" /> is not
-	/// modified and no vertices are cloned or created.
-	/// </remarks>
+    ///
+    /// <remarks>
+    /// This method creates a copy of <paramref name="vertices" />, sorts the
+    /// copy, and returns the copy.  <paramref name="vertices" /> is not
+    /// modified and no vertices are cloned or created.
+    /// </remarks>
     //*************************************************************************
 
-	public ICollection
-	Sort
-	(
-		ICollection vertices
-	)
-	{
-		AssertValid();
+    public ICollection
+    Sort
+    (
+        ICollection vertices
+    )
+    {
+        AssertValid();
 
-		const String MethodName = "Sort";
+        const String MethodName = "Sort";
 
         this.ArgumentChecker.CheckArgumentNotNull(
             MethodName, "vertices", vertices);
 
-		// Copy the array.
+        // Copy the array.
 
-		IVertex [] aoCopy = new IVertex[vertices.Count];
+        IVertex [] aoCopy = new IVertex[vertices.Count];
 
-		vertices.CopyTo(aoCopy, 0);
+        vertices.CopyTo(aoCopy, 0);
 
-		// Sort the copy.
+        // Sort the copy.
 
-		return ( SortCore(aoCopy) );
-	}
+        return ( SortCore(aoCopy) );
+    }
 
     //*************************************************************************
     //  Method: SortCore()
@@ -176,24 +176,24 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     /// </param>
     ///
     /// <returns>
-	/// Sorted <paramref name="vertices" />.
+    /// Sorted <paramref name="vertices" />.
     /// </returns>
-	///
+    ///
     /// <remarks>
-	/// This method sorts <paramref name="vertices" /> in place and returns the
-	/// sorted vertices.
-	///
-	/// <para>
-	/// The arguments have already been checked for validity.
-	/// </para>
-	///
+    /// This method sorts <paramref name="vertices" /> in place and returns the
+    /// sorted vertices.
+    ///
+    /// <para>
+    /// The arguments have already been checked for validity.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
     protected abstract IVertex [] 
     SortCore
     (
-		IVertex [] vertices
+        IVertex [] vertices
     );
 
 
@@ -210,9 +210,9 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
-		// (Do nothing else.)
+        // (Do nothing else.)
     }
 
 
@@ -220,7 +220,7 @@ public abstract class VertexSorterBase : NodeXLBase, IVertexSorter
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

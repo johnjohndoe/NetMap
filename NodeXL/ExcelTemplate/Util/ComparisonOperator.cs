@@ -1,6 +1,6 @@
-﻿
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 
@@ -17,41 +17,41 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public enum
 ComparisonOperator
 {
-	/// <summary>
-	/// Less than.
-	/// </summary>
+    /// <summary>
+    /// Less than.
+    /// </summary>
 
-	LessThan,
+    LessThan,
 
-	/// <summary>
-	/// Less than or equal to.
-	/// </summary>
+    /// <summary>
+    /// Less than or equal to.
+    /// </summary>
 
-	LessThanOrEqual,
+    LessThanOrEqual,
 
-	/// <summary>
-	/// Equal to.
-	/// </summary>
+    /// <summary>
+    /// Equal to.
+    /// </summary>
 
-	Equal,
+    Equal,
 
-	/// <summary>
-	/// Not equal to.
-	/// </summary>
+    /// <summary>
+    /// Not equal to.
+    /// </summary>
 
-	NotEqual,
+    NotEqual,
 
-	/// <summary>
-	/// Greater than.
-	/// </summary>
+    /// <summary>
+    /// Greater than.
+    /// </summary>
 
-	GreaterThan,
+    GreaterThan,
 
-	/// <summary>
-	/// Greater than or equal to.
-	/// </summary>
+    /// <summary>
+    /// Greater than or equal to.
+    /// </summary>
 
-	GreaterThanOrEqual,
+    GreaterThanOrEqual,
 }
 
 }

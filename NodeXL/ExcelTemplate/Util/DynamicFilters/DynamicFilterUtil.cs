@@ -39,466 +39,466 @@ public static class DynamicFilterUtil : Object
     //  Method: GetDynamicFilterParameters()
     //
     /// <summary>
-	/// Gets a collection of all dynamic filter parameters for one table.
+    /// Gets a collection of all dynamic filter parameters for one table.
     /// </summary>
-	///
+    ///
     /// <param name="workbook">
-	/// Workbook containing the graph data.
+    /// Workbook containing the graph data.
     /// </param>
-	///
+    ///
     /// <param name="worksheetName">
-	/// Name of the worksheet containing the table.
+    /// Name of the worksheet containing the table.
     /// </param>
-	///
+    ///
     /// <param name="tableName">
-	/// Name of the table to get filter parameters for.
+    /// Name of the table to get filter parameters for.
     /// </param>
-	///
-	/// <returns>
-	/// One <see cref="DynamicFilterParameters" /> object for each filterable
-	/// column in the specified table.
-	/// </returns>
-	///
-	/// <remarks>
-	/// The returned collection may be empty, but it is never null.
-	/// </remarks>
+    ///
+    /// <returns>
+    /// One <see cref="DynamicFilterParameters" /> object for each filterable
+    /// column in the specified table.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned collection may be empty, but it is never null.
+    /// </remarks>
     //*************************************************************************
 
     public static ICollection<DynamicFilterParameters>
     GetDynamicFilterParameters
-	(
+    (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-		String worksheetName,
-		String tableName
-	)
+        String worksheetName,
+        String tableName
+    )
     {
-		Debug.Assert(workbook != null);
-		Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
-		Debug.Assert( !String.IsNullOrEmpty(tableName) );
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(tableName) );
 
-		#if false  // For testing.
-		return ( GetRandomDynamicFilterParameters(tableName) );
-		#endif
+        #if false  // For testing.
+        return ( GetRandomDynamicFilterParameters(tableName) );
+        #endif
 
-		LinkedList<DynamicFilterParameters> oDynamicFilterParameters = 
-			new LinkedList<DynamicFilterParameters>();
+        LinkedList<DynamicFilterParameters> oDynamicFilterParameters = 
+            new LinkedList<DynamicFilterParameters>();
 
-		// Get the specified table and loop through its columns.
+        // Get the specified table and loop through its columns.
 
-		ListObject oTable;
+        ListObject oTable;
 
-		if ( ExcelUtil.TryGetTable(workbook, worksheetName, tableName,
-			out oTable) )
-		{
-			Application oApplication = workbook.Application;
+        if ( ExcelUtil.TryGetTable(workbook, worksheetName, tableName,
+            out oTable) )
+        {
+            Application oApplication = workbook.Application;
 
-			foreach (ListColumn oColumn in oTable.ListColumns)
-			{
-				if ( ColumnShouldBeExcluded(oColumn) )
-				{
-					continue;
-				}
+            foreach (ListColumn oColumn in oTable.ListColumns)
+            {
+                if ( ColumnShouldBeExcluded(oColumn) )
+                {
+                    continue;
+                }
 
-				ExcelColumnFormat eColumnFormat = GetColumnFormat(oColumn);
+                ExcelColumnFormat eColumnFormat = GetColumnFormat(oColumn);
 
-				switch (eColumnFormat)
-				{
-					case ExcelColumnFormat.Number:
-					case ExcelColumnFormat.Date:
-					case ExcelColumnFormat.Time:
-					case ExcelColumnFormat.DateAndTime:
+                switch (eColumnFormat)
+                {
+                    case ExcelColumnFormat.Number:
+                    case ExcelColumnFormat.Date:
+                    case ExcelColumnFormat.Time:
+                    case ExcelColumnFormat.DateAndTime:
 
-						// Get the range of values in the column.
+                        // Get the range of values in the column.
 
-						Double dMinimumCellValue, dMaximumCellValue;
+                        Double dMinimumCellValue, dMaximumCellValue;
 
-						if ( TryGetNumericRange(worksheetName, oColumn,
-							out dMinimumCellValue, out dMaximumCellValue) )
-						{
-							if (eColumnFormat == ExcelColumnFormat.Number)
-							{
-								oDynamicFilterParameters.AddLast(
-									new NumericFilterParameters(oColumn.Name,
-										dMinimumCellValue,
-										dMaximumCellValue,
+                        if ( TryGetNumericRange(worksheetName, oColumn,
+                            out dMinimumCellValue, out dMaximumCellValue) )
+                        {
+                            if (eColumnFormat == ExcelColumnFormat.Number)
+                            {
+                                oDynamicFilterParameters.AddLast(
+                                    new NumericFilterParameters(oColumn.Name,
+                                        dMinimumCellValue,
+                                        dMaximumCellValue,
                                         GetDecimalPlaces(oColumn) ) );
-							}
-							else
-							{
-								oDynamicFilterParameters.AddLast(
-									new DateTimeFilterParameters(oColumn.Name,
-										dMinimumCellValue, dMaximumCellValue,
-										eColumnFormat) );
-							}
-						}
+                            }
+                            else
+                            {
+                                oDynamicFilterParameters.AddLast(
+                                    new DateTimeFilterParameters(oColumn.Name,
+                                        dMinimumCellValue, dMaximumCellValue,
+                                        eColumnFormat) );
+                            }
+                        }
 
-						break;
+                        break;
 
-					case ExcelColumnFormat.Other:
+                    case ExcelColumnFormat.Other:
 
-						// Skip the column.
+                        // Skip the column.
 
-						break;
+                        break;
 
-					default:
+                    default:
 
-						Debug.Assert(false);
-						break;
-				}
-			}
-		}
+                        Debug.Assert(false);
+                        break;
+                }
+            }
+        }
 
-		return (oDynamicFilterParameters);
+        return (oDynamicFilterParameters);
     }
 
     //*************************************************************************
     //  Method: ColumnShouldBeExcluded()
     //
     /// <summary>
-	/// Determines whether a table column should be excluded.
+    /// Determines whether a table column should be excluded.
     /// </summary>
-	///
+    ///
     /// <param name="oColumn">
-	/// The table column to check.
+    /// The table column to check.
     /// </param>
-	///
-	/// <returns>
-	/// true if the column should be excluded.
-	/// </returns>
+    ///
+    /// <returns>
+    /// true if the column should be excluded.
+    /// </returns>
     //*************************************************************************
 
     private static Boolean
     ColumnShouldBeExcluded
-	(
-		ListColumn oColumn
-	)
+    (
+        ListColumn oColumn
+    )
     {
-		Debug.Assert(oColumn != null);
+        Debug.Assert(oColumn != null);
 
-		switch (oColumn.Name)
-		{
-			case CommonTableColumnNames.ID:
+        switch (oColumn.Name)
+        {
+            case CommonTableColumnNames.ID:
 
-				// It makes no sense to filter on the NodeXL-generated ID
-				// column.
+                // It makes no sense to filter on the NodeXL-generated ID
+                // column.
 
-				return (true);
+                return (true);
 
-			default:
+            default:
 
-				break;
-		}
+                break;
+        }
 
-		Range oColumnData = oColumn.DataBodyRange;
+        Range oColumnData = oColumn.DataBodyRange;
 
-		// Exclude columns with no data or with an empty first data cell.
+        // Exclude columns with no data or with an empty first data cell.
 
-		if (
-			oColumnData == null
-			||
-			oColumnData.Rows.Count < 1
-			||
-			!(oColumnData.Cells[1, 1] is Range)
-			||
-			( (Range)oColumnData.Cells[1, 1] ).get_Value(Missing.Value) == null
-			)
-		{
-			return (true);
-		}
+        if (
+            oColumnData == null
+            ||
+            oColumnData.Rows.Count < 1
+            ||
+            !(oColumnData.Cells[1, 1] is Range)
+            ||
+            ( (Range)oColumnData.Cells[1, 1] ).get_Value(Missing.Value) == null
+            )
+        {
+            return (true);
+        }
 
-		return (false);
+        return (false);
     }
 
     //*************************************************************************
     //  Method: GetColumnFormat()
     //
     /// <summary>
-	/// Determines the format of a table column.
+    /// Determines the format of a table column.
     /// </summary>
-	///
+    ///
     /// <param name="oColumn">
-	/// The table column to check.
+    /// The table column to check.
     /// </param>
-	///
-	/// <returns>
-	/// The column format.
-	/// </returns>
+    ///
+    /// <returns>
+    /// The column format.
+    /// </returns>
     //*************************************************************************
 
     private static ExcelColumnFormat
     GetColumnFormat
-	(
-		ListColumn oColumn
-	)
+    (
+        ListColumn oColumn
+    )
     {
-		Debug.Assert(oColumn != null);
+        Debug.Assert(oColumn != null);
 
-		Range oColumnData = oColumn.DataBodyRange;
+        Range oColumnData = oColumn.DataBodyRange;
 
-		Debug.Assert(oColumnData != null);
-		Debug.Assert(oColumnData.Rows.Count > 0);
+        Debug.Assert(oColumnData != null);
+        Debug.Assert(oColumnData.Rows.Count > 0);
 
-		// Look at the type of the value in the first cell.
+        // Look at the type of the value in the first cell.
 
-		Debug.Assert(oColumnData.Cells[1, 1] is Range);
+        Debug.Assert(oColumnData.Cells[1, 1] is Range);
 
-		Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
-		Object oFirstDataCellValue = oFirstDataCell.get_Value(Missing.Value);
+        Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
+        Object oFirstDataCellValue = oFirstDataCell.get_Value(Missing.Value);
 
-		Debug.Assert(oFirstDataCellValue != null);
+        Debug.Assert(oFirstDataCellValue != null);
 
-		if (oFirstDataCellValue is DateTime)
-		{
-			if ( CellContainsTime(oFirstDataCell) )
-			{
-				// Sample: 1/1/2008 3:40 pm.
+        if (oFirstDataCellValue is DateTime)
+        {
+            if ( CellContainsTime(oFirstDataCell) )
+            {
+                // Sample: 1/1/2008 3:40 pm.
 
-				return (ExcelColumnFormat.DateAndTime);
-			}
-			else
-			{
-				// Sample: 1/1/2008.
+                return (ExcelColumnFormat.DateAndTime);
+            }
+            else
+            {
+                // Sample: 1/1/2008.
 
-				return (ExcelColumnFormat.Date);
-			}
-		}
-		else if (oFirstDataCellValue is Double)
-		{
-			// Cells formatted as a time are returned as Double.  Another test
-			// is required to distinguish times from real Doubles.
+                return (ExcelColumnFormat.Date);
+            }
+        }
+        else if (oFirstDataCellValue is Double)
+        {
+            // Cells formatted as a time are returned as Double.  Another test
+            // is required to distinguish times from real Doubles.
 
-			if ( CellContainsTime(oFirstDataCell) )
-			{
-				// Sample: 3:40 pm.
+            if ( CellContainsTime(oFirstDataCell) )
+            {
+                // Sample: 3:40 pm.
 
-				return (ExcelColumnFormat.Time);
-			}
-			else
-			{
-				// Sample: 123.
+                return (ExcelColumnFormat.Time);
+            }
+            else
+            {
+                // Sample: 123.
 
-				return (ExcelColumnFormat.Number);
-			}
-		}
-		else
-		{
-			return (ExcelColumnFormat.Other);
-		}
+                return (ExcelColumnFormat.Number);
+            }
+        }
+        else
+        {
+            return (ExcelColumnFormat.Other);
+        }
     }
 
     //*************************************************************************
     //  Method: GetDecimalPlaces()
     //
     /// <summary>
-	/// Gets the number of decimal places displayed in a table column of format
-	/// ExcelColumnFormat.Number.
+    /// Gets the number of decimal places displayed in a table column of format
+    /// ExcelColumnFormat.Number.
     /// </summary>
-	///
+    ///
     /// <param name="oColumn">
-	/// The table column to check.  The column must be of format
-	/// ExcelColumnFormat.Number.
+    /// The table column to check.  The column must be of format
+    /// ExcelColumnFormat.Number.
     /// </param>
-	///
-	/// <returns>
-	/// The number of decimal places displayed in <paramref name="oColumn" />.
-	/// </returns>
+    ///
+    /// <returns>
+    /// The number of decimal places displayed in <paramref name="oColumn" />.
+    /// </returns>
     //*************************************************************************
 
     private static Int32
     GetDecimalPlaces
-	(
-		ListColumn oColumn
-	)
+    (
+        ListColumn oColumn
+    )
     {
-		Debug.Assert(oColumn != null);
+        Debug.Assert(oColumn != null);
 
-		Range oColumnData = oColumn.DataBodyRange;
+        Range oColumnData = oColumn.DataBodyRange;
 
-		Debug.Assert(oColumnData != null);
-		Debug.Assert(oColumnData.Rows.Count > 0);
+        Debug.Assert(oColumnData != null);
+        Debug.Assert(oColumnData.Rows.Count > 0);
 
-		// It would be nice if there were a Range.DecimalPlaces property, but
-		// there isn't.  All that Excel provides is Range.NumberFormat, which
-		// is actually a string that needs to be parsed.  Parsing that is
-		// guaranteed to be correct is difficult, because NumberFormat can be
-		// simple ("0.00") or complicated ("$#,##0.00_);[Red]($#,##0.00)").  As
-		// an approximation that will be correct most of the time (for "0.00",
-		// for example), count the characters after the last decimal place.
-		//
-		// Note: Don't use the Text property and count decimal places in that,
-		// because Range.Text can be "###" if the column is too narrow.
+        // It would be nice if there were a Range.DecimalPlaces property, but
+        // there isn't.  All that Excel provides is Range.NumberFormat, which
+        // is actually a string that needs to be parsed.  Parsing that is
+        // guaranteed to be correct is difficult, because NumberFormat can be
+        // simple ("0.00") or complicated ("$#,##0.00_);[Red]($#,##0.00)").  As
+        // an approximation that will be correct most of the time (for "0.00",
+        // for example), count the characters after the last decimal place.
+        //
+        // Note: Don't use the Text property and count decimal places in that,
+        // because Range.Text can be "###" if the column is too narrow.
 
-		Debug.Assert(oColumnData.Cells[1, 1] is Range);
+        Debug.Assert(oColumnData.Cells[1, 1] is Range);
 
-		Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
+        Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
 
-		String sFirstDataCellNumberFormat =
-			(String)oFirstDataCell.NumberFormat;
+        String sFirstDataCellNumberFormat =
+            (String)oFirstDataCell.NumberFormat;
 
-		Int32 iIndexOfLastDecimalPoint =
-			sFirstDataCellNumberFormat.LastIndexOf('.');
+        Int32 iIndexOfLastDecimalPoint =
+            sFirstDataCellNumberFormat.LastIndexOf('.');
 
-		if (iIndexOfLastDecimalPoint < 0)
-		{
-			return (0);
-		}
+        if (iIndexOfLastDecimalPoint < 0)
+        {
+            return (0);
+        }
 
-		Int32 iDecimalPlaces =
-			sFirstDataCellNumberFormat.Length - iIndexOfLastDecimalPoint - 1;
+        Int32 iDecimalPlaces =
+            sFirstDataCellNumberFormat.Length - iIndexOfLastDecimalPoint - 1;
 
-		Debug.Assert(iDecimalPlaces >= 0);
+        Debug.Assert(iDecimalPlaces >= 0);
 
-		return (iDecimalPlaces);
+        return (iDecimalPlaces);
     }
 
     //*************************************************************************
     //  Method: CellContainsTime()
     //
     /// <summary>
-	/// Determines whether a cell contains a time.
+    /// Determines whether a cell contains a time.
     /// </summary>
-	///
+    ///
     /// <param name="oCell">
-	/// The cell to check.
+    /// The cell to check.
     /// </param>
-	///
-	/// <returns>
-	/// true if the cell contains a time.
-	/// </returns>
+    ///
+    /// <returns>
+    /// true if the cell contains a time.
+    /// </returns>
     //*************************************************************************
 
     private static Boolean
     CellContainsTime
-	(
-		Range oCell
-	)
+    (
+        Range oCell
+    )
     {
-		Debug.Assert(oCell != null);
+        Debug.Assert(oCell != null);
 
-		// The easiest (but not perfect) test is to check the number format for
-		// hours.
+        // The easiest (but not perfect) test is to check the number format for
+        // hours.
 
-		Object oNumberFormat = oCell.NumberFormat;
+        Object oNumberFormat = oCell.NumberFormat;
 
-		Debug.Assert(oNumberFormat is String);
+        Debug.Assert(oNumberFormat is String);
 
-		return ( ( (String)oCell.NumberFormat ).Contains("h") );
+        return ( ( (String)oCell.NumberFormat ).Contains("h") );
     }
 
     //*************************************************************************
     //  Method: TryGetNumericRange()
     //
     /// <summary>
-	/// Attempts to get the range of values in a numeric column.
+    /// Attempts to get the range of values in a numeric column.
     /// </summary>
-	///
+    ///
     /// <param name="sWorksheetName">
-	/// Name of the worksheet containing the table.
+    /// Name of the worksheet containing the table.
     /// </param>
-	///
+    ///
     /// <param name="oColumn">
-	/// The numeric column.
+    /// The numeric column.
     /// </param>
-	///
+    ///
     /// <param name="dMinimumCellValue">
-	/// Where the minimum value in the column gets stored if true is returned.
+    /// Where the minimum value in the column gets stored if true is returned.
     /// </param>
-	///
+    ///
     /// <param name="dMaximumCellValue">
-	/// Where the maximum value in the column gets stored if true is returned.
+    /// Where the maximum value in the column gets stored if true is returned.
     /// </param>
-	///
-	/// <returns>
-	/// true if the column contains a range of numeric values.
-	/// </returns>
+    ///
+    /// <returns>
+    /// true if the column contains a range of numeric values.
+    /// </returns>
     //*************************************************************************
 
     private static Boolean
     TryGetNumericRange
-	(
-		String sWorksheetName,
-		ListColumn oColumn,
-		out Double dMinimumCellValue,
-		out Double dMaximumCellValue
-	)
+    (
+        String sWorksheetName,
+        ListColumn oColumn,
+        out Double dMinimumCellValue,
+        out Double dMaximumCellValue
+    )
     {
-		Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
-		Debug.Assert(oColumn != null);
-		Debug.Assert(oColumn.DataBodyRange != null);
+        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
+        Debug.Assert(oColumn != null);
+        Debug.Assert(oColumn.DataBodyRange != null);
 
-		Application oApplication = oColumn.Application;
+        Application oApplication = oColumn.Application;
 
-		String sFunctionCall = String.Format(
+        String sFunctionCall = String.Format(
 
-			"=MIN({0}!{1})"
-			,
-			sWorksheetName,
-			ExcelUtil.GetRangeAddress(oColumn.DataBodyRange)
-			);
+            "=MIN({0}!{1})"
+            ,
+            sWorksheetName,
+            ExcelUtil.GetRangeAddress(oColumn.DataBodyRange)
+            );
 
-		dMinimumCellValue = (Double)oApplication.Evaluate(sFunctionCall);
+        dMinimumCellValue = (Double)oApplication.Evaluate(sFunctionCall);
 
-		sFunctionCall = sFunctionCall.Replace("MIN", "MAX");
+        sFunctionCall = sFunctionCall.Replace("MIN", "MAX");
 
-		dMaximumCellValue = (Double)oApplication.Evaluate(sFunctionCall);
+        dMaximumCellValue = (Double)oApplication.Evaluate(sFunctionCall);
 
-		return (dMaximumCellValue > dMinimumCellValue);
-	}
+        return (dMaximumCellValue > dMinimumCellValue);
+    }
 
 
-	#if false  // For testing.
+    #if false  // For testing.
 
     //*************************************************************************
     //  Method: GetRandomDynamicFilterParameters()
     //
     /// <summary>
-	/// Gets a random collection of dynamic filter parameters for testing.
+    /// Gets a random collection of dynamic filter parameters for testing.
     /// </summary>
-	///
+    ///
     /// <param name="sTableName">
-	/// Name of the table to get filter parameters for.
+    /// Name of the table to get filter parameters for.
     /// </param>
-	///
-	/// <returns>
-	/// A collection of random <see cref="DynamicFilterParameters" /> objects
-	/// for testing.
-	/// </returns>
+    ///
+    /// <returns>
+    /// A collection of random <see cref="DynamicFilterParameters" /> objects
+    /// for testing.
+    /// </returns>
     //*************************************************************************
 
     private static ICollection<DynamicFilterParameters>
     GetRandomDynamicFilterParameters
-	(
-		String sTableName
-	)
+    (
+        String sTableName
+    )
     {
-		Debug.Assert( !String.IsNullOrEmpty(sTableName) );
+        Debug.Assert( !String.IsNullOrEmpty(sTableName) );
 
-		LinkedList<DynamicFilterParameters> oDynamicFilterParameters = 
-			new LinkedList<DynamicFilterParameters>();
+        LinkedList<DynamicFilterParameters> oDynamicFilterParameters = 
+            new LinkedList<DynamicFilterParameters>();
 
-		Random oRandom = new Random();
+        Random oRandom = new Random();
 
-		Int32 iDynamicFilters = oRandom.Next(40);
+        Int32 iDynamicFilters = oRandom.Next(40);
 
-		for (Int32 i = 0; i < iDynamicFilters; i++)
-		{
-			String sColumnName = sTableName + " "
-				+ new String('A', oRandom.Next(100) );
+        for (Int32 i = 0; i < iDynamicFilters; i++)
+        {
+            String sColumnName = sTableName + " "
+                + new String('A', oRandom.Next(100) );
 
-			Double dMinimumCellValue = -1000 + oRandom.NextDouble() * (20000);
+            Double dMinimumCellValue = -1000 + oRandom.NextDouble() * (20000);
 
-			Double dMaximumCellValue =
-				dMinimumCellValue + oRandom.NextDouble() * (20000);
+            Double dMaximumCellValue =
+                dMinimumCellValue + oRandom.NextDouble() * (20000);
 
-			oDynamicFilterParameters.AddLast(
-				new NumericFilterParameters(sColumnName, dMinimumCellValue,
-					dMaximumCellValue) );
-		}
+            oDynamicFilterParameters.AddLast(
+                new NumericFilterParameters(sColumnName, dMinimumCellValue,
+                    dMaximumCellValue) );
+        }
 
-		return (oDynamicFilterParameters);
+        return (oDynamicFilterParameters);
     }
 
-	#endif
+    #endif
 }
 
 }

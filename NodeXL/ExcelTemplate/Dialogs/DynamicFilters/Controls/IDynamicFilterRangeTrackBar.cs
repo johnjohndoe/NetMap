@@ -1,5 +1,5 @@
 
-//	Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Diagnostics;
@@ -103,91 +103,91 @@ public interface IDynamicFilterRangeTrackBar
         get;
     }
 
-	//*************************************************************************
-	//	Method: SetAvailableRange()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetAvailableRange()
+    //
+    /// <summary>
     /// Sets the available range.
-	/// </summary>
-	///
-	/// <param name="availableMinimum">
+    /// </summary>
+    ///
+    /// <param name="availableMinimum">
     /// The minimum value in the available range.  Must be less than or equal
-	/// to <paramref name="availableMaximum" />.
-	/// </param>
-	///
-	/// <param name="availableMaximum">
+    /// to <paramref name="availableMaximum" />.
+    /// </param>
+    ///
+    /// <param name="availableMaximum">
     /// The maximum value in the available range.  Must be greater than or
-	/// equal to <paramref name="availableMinimum" />.
-	/// </param>
-	//*************************************************************************
+    /// equal to <paramref name="availableMinimum" />.
+    /// </param>
+    //*************************************************************************
 
-	void
-	SetAvailableRange
-	(
-		Decimal availableMinimum,
-		Decimal availableMaximum
-	);
+    void
+    SetAvailableRange
+    (
+        Decimal availableMinimum,
+        Decimal availableMaximum
+    );
 
-	//*************************************************************************
-	//	Method: SetSelectedRange()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetSelectedRange()
+    //
+    /// <summary>
     /// Sets the available range.
-	/// </summary>
-	///
-	/// <param name="selectedMinimum">
+    /// </summary>
+    ///
+    /// <param name="selectedMinimum">
     /// The minimum value in the selected range.  Must be less than or equal to
-	/// <paramref name="selectedMaximum" />.
-	/// </param>
-	///
-	/// <param name="selectedMaximum">
+    /// <paramref name="selectedMaximum" />.
+    /// </param>
+    ///
+    /// <param name="selectedMaximum">
     /// The maximum value in the selected range.  Must be greater than or equal
-	/// to <paramref name="selectedMinimum" />.
-	/// </param>
-	//*************************************************************************
+    /// to <paramref name="selectedMinimum" />.
+    /// </param>
+    //*************************************************************************
 
-	void
-	SetSelectedRange
-	(
-		Decimal selectedMinimum,
-		Decimal selectedMaximum
-	);
+    void
+    SetSelectedRange
+    (
+        Decimal selectedMinimum,
+        Decimal selectedMaximum
+    );
 
-	//*************************************************************************
-	//	Method: SetCustomProperties()
-	//
-	/// <summary>
+    //*************************************************************************
+    //  Method: SetCustomProperties()
+    //
+    /// <summary>
     /// Sets the properties specific to the wrapped control.
-	/// </summary>
-	///
-	/// <param name="dynamicFilterParameters">
-	/// Parameters for the range track bar.
-	/// </param>
-	///
-	/// <remarks>
-	/// The <see cref="DynamicFilterDialog" /> calls this after it has called
-	/// <see cref="SetAvailableRange" /> and <see cref="SetSelectedRange" />.
-	/// The implementation should set any custom properties that are specific
-	/// to the wrapped control and not otherwise exposed via this interface.
-	/// </remarks>
-	//*************************************************************************
+    /// </summary>
+    ///
+    /// <param name="dynamicFilterParameters">
+    /// Parameters for the range track bar.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The <see cref="DynamicFilterDialog" /> calls this after it has called
+    /// <see cref="SetAvailableRange" /> and <see cref="SetSelectedRange" />.
+    /// The implementation should set any custom properties that are specific
+    /// to the wrapped control and not otherwise exposed via this interface.
+    /// </remarks>
+    //*************************************************************************
 
-	void
-	SetCustomProperties
-	(
-		DynamicFilterParameters dynamicFilterParameters
-	);
+    void
+    SetCustomProperties
+    (
+        DynamicFilterParameters dynamicFilterParameters
+    );
 
 
-	//*************************************************************************
-	//	Event: SelectedRangeChanged
-	//
-	/// <summary>
-	///	Occurs when the selected range changes.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Event: SelectedRangeChanged
+    //
+    /// <summary>
+    /// Occurs when the selected range changes.
+    /// </summary>
+    //*************************************************************************
 
-	event EventHandler SelectedRangeChanged;
+    event EventHandler SelectedRangeChanged;
 }
 
 }

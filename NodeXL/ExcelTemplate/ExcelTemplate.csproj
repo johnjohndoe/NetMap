@@ -1,0 +1,725 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectTypeGuids>{BAA0C2D2-18E2-41B9-852F-F413020CAA33};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <RootNamespace>Microsoft.NodeXL.ExcelTemplate</RootNamespace>
+    <AssemblyName>Microsoft.NodeXL.ExcelTemplate</AssemblyName>
+    <VSTO_HostDocumentName>NodeXLGraph.xltx</VSTO_HostDocumentName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OfficeApplication>Excel</OfficeApplication>
+    <ProjectGuid>{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}</ProjectGuid>
+    <SolutionID>aa51c0f3-62b4-4782-83a8-a15dcdd17698</SolutionID>
+    <ManifestCertificateThumbprint>54D5CA354825C1C2432CF9E5319B536276A0B92E</ManifestCertificateThumbprint>
+    <ManifestKeyFile>ExcelTemplate_TemporaryKey.pfx</ManifestKeyFile>
+    <SignManifests>true</SignManifests>
+    <IsWebBootstrapper>False</IsWebBootstrapper>
+    <TargetFrameworkSubset>Full</TargetFrameworkSubset>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <PublishUrl>H:\Projects\NodeXL\Releases\1.0.1.54\ExcelAddIn\</PublishUrl>
+    <InstallUrl>
+    </InstallUrl>
+    <TargetCulture>en</TargetCulture>
+    <ApplicationVersion>1.0.1.54</ApplicationVersion>
+    <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateInterval>0</UpdateInterval>
+    <UpdateIntervalUnits>days</UpdateIntervalUnits>
+  </PropertyGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Office.PIARedist.2007">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Office 2007 Primary Interop Assemblies</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.VSTORuntime.3.0">
+      <Visible>False</Visible>
+      <ProductName>Visual Studio Tools for the Office system 3.0 Runtime Service Pack 1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <PropertyGroup>
+    <VSTO_EmbedTypeLibraryInAssembly>false</VSTO_EmbedTypeLibraryInAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Microsoft.NodeXL.ExcelTemplate.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.AddIn, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Tools.Common.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Tools.Excel.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Tools.Applications.Runtime.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Research.WinFormsControls, Version=1.0.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Microsoft.Research.WinFormsControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Tools.Applications.ServerDocument.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsFormsIntegration">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\ColorGradientMapper.cs">
+      <Link>UIComponents\ColorGradientMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\ColorGradientPanel.cs">
+      <Link>UIComponents\ColorGradientPanel.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelActiveWorksheetRestorer.cs">
+      <Link>Util\Excel\ExcelActiveWorksheetRestorer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelActiveWorksheetState.cs">
+      <Link>Util\Excel\ExcelActiveWorksheetState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelCalculationRestorer.cs">
+      <Link>Util\Excel\ExcelCalculationRestorer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelColumnFormat.cs">
+      <Link>Util\Excel\ExcelColumnFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
+      <Link>Util\Excel\ExcelDateTimeUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelRangeSplitter.cs">
+      <Link>Util\Excel\ExcelRangeSplitter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelUtil.cs">
+      <Link>Util\Excel\ExcelUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\GraphicsUtil.cs">
+      <Link>Util\GraphicsUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\AssemblyUtil2.cs">
+      <Link>Util\AssemblyUtil2.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.cs">
+      <Link>Controls\RegisterUser\RegisterUser.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.designer.cs">
+      <Link>Controls\RegisterUser\RegisterUser.designer.cs</Link>
+      <DependentUpon>RegisterUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Common\ProjectInformation.cs">
+      <Link>Util\ProjectInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\RegisterUser\RegisterUserException.cs">
+      <Link>Util\RegisterUser\RegisterUserException.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\RegisterUser\UserRegisterer.cs">
+      <Link>Util\RegisterUser\UserRegisterer.cs</Link>
+    </Compile>
+    <Compile Include="Controls\SubgraphLevels\SubgraphLevelsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SubgraphLevels\SubgraphLevelsControl.designer.cs">
+      <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\About\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\About\AboutDialog.designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialog.Designer.cs">
+      <DependentUpon>AnalyzeEmailNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialogUserSettings.cs">
+    </Compile>
+    <Compile Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.designer.cs">
+      <DependentUpon>AnalyzeTwitterNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AutoFillUserSettings\AutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFillUserSettings\AutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>AutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.designer.cs">
+      <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.designer.cs">
+      <DependentUpon>ConvertOldWorkbookDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialog.designer.cs">
+      <DependentUpon>CreateSubgraphImagesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialogUserSettings.cs" />
+    <Compile Include="Dialogs\DynamicFilters\Controls\DynamicFilterDateTimeRangeTrackBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DynamicFilters\Controls\DynamicFilterRangeTrackBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DynamicFilters\Controls\IDynamicFilterRangeTrackBar.cs" />
+    <Compile Include="Dialogs\DynamicFilters\DynamicFilterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DynamicFilters\DynamicFilterDialog.designer.cs">
+      <DependentUpon>DynamicFilterDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.designer.cs">
+      <DependentUpon>GeneralUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.designer.cs">
+      <DependentUpon>GraphMetricUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.designer.cs">
+      <DependentUpon>ImportEdgesFromWorkbookDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.designer.cs">
+      <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Notification\NotificationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Notification\NotificationDialog.Designer.cs">
+      <DependentUpon>NotificationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\OpenPajekFileDialog\OpenPajekFileDialog.cs" />
+    <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.designer.cs">
+      <DependentUpon>RegisterUserDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.designer.cs">
+      <DependentUpon>SelectSubgraphsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\VertexAttributes\EditedVertexAttributes.cs" />
+    <Compile Include="Dialogs\VertexAttributes\VertexAttributesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\VertexAttributes\VertexAttributesDialog.Designer.cs">
+      <DependentUpon>VertexAttributesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EventArgs\DynamicFilterColumnsChangedEventArgs.cs" />
+    <Compile Include="EventArgs\GraphDrawnEventArgs.cs" />
+    <Compile Include="EventArgs\RequestEdgeCommandEnableEventArgs.cs" />
+    <Compile Include="EventArgs\RequestVertexCommandEnableEventArgs.cs" />
+    <Compile Include="EventArgs\RunEdgeCommandEventArgs.cs" />
+    <Compile Include="EventArgs\RunVertexCommandEventArgs.cs" />
+    <Compile Include="EventArgs\SelectionChangedEventArgs.cs" />
+    <Compile Include="EventArgs\TableSelectionChangedEventArgs.cs" />
+    <Compile Include="EventArgs\VertexAttributesEditedEventArgs.cs" />
+    <Compile Include="EventArgs\VerticesMovedEventArgs2.cs" />
+    <Compile Include="GraphMetrics\CalculateGraphMetricsContext.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculationManager.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\BetweennessCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ClosenessCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ClusterCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\EigenvectorCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\OverallMetricCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
+    <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnOrdered.cs" />
+    <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnWithID.cs" />
+    <Compile Include="GraphMetrics\GraphMetricProgress.cs" />
+    <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValue.cs" />
+    <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueOrdered.cs" />
+    <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueWithID.cs" />
+    <Compile Include="GraphMetrics\GraphMetricWriter.cs" />
+    <Compile Include="GraphMetrics\IGraphMetricCalculator2.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Dialogs\About\AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialog.resx">
+      <DependentUpon>AnalyzeEmailNetworkDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFillUserSettings\AutoFillUserSettingsDialog.resx">
+      <DependentUpon>AutoFillUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialog.resx">
+      <DependentUpon>CreateSubgraphImagesDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.resx">
+      <DependentUpon>GeneralUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\VertexAttributes\VertexAttributesDialog.resx">
+      <DependentUpon>VertexAttributesDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ribbon\Ribbon.resx">
+      <DependentUpon>Ribbon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sheet1.resx">
+      <DependentUpon>Sheet1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sheet2.resx">
+      <DependentUpon>Sheet2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TaskPane\TaskPane.resx">
+      <DependentUpon>TaskPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="NodeXLGraph.xltx" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Ribbon\Ribbon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Ribbon.Designer.cs">
+      <DependentUpon>Ribbon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet1.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet1.Designer.cs">
+      <DependentUpon>Sheet1.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet2.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet2.Designer.cs">
+      <DependentUpon>Sheet2.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet3.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet3.Designer.cs">
+      <DependentUpon>Sheet3.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet4.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet4.Designer.cs">
+      <DependentUpon>Sheet4.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet5.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet5.Designer.cs">
+      <DependentUpon>Sheet5.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet6.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet6.Designer.cs">
+      <DependentUpon>Sheet6.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet7.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="Sheet7.Designer.cs">
+      <DependentUpon>Sheet7.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Sheets1And2Helper.cs" />
+    <Compile Include="TaskPane\TaskPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TaskPane\TaskPane.designer.cs">
+      <DependentUpon>TaskPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThisWorkbook.cs">
+      <DependentUpon>NodeXLGraph.xltx</DependentUpon>
+    </Compile>
+    <Compile Include="ThisWorkbook.Designer.cs">
+      <DependentUpon>ThisWorkbook.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\ExcelTemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UIComponents\SubgraphLinkLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UserSettings\AutoFill\AutoFillUserSettings.cs" />
+    <Compile Include="UserSettings\AutoFill\AutoFillUserSettingsTypeConverterBase.cs" />
+    <Compile Include="UserSettings\AutoFill\ColorColumnAutoFillUserSettings.cs" />
+    <Compile Include="UserSettings\AutoFill\NumericComparisonColumnAutoFillUserSettings.cs" />
+    <Compile Include="UserSettings\AutoFill\NumericRangeColumnAutoFillUserSettings.cs" />
+    <Compile Include="UserSettings\GeneralUserSettings.cs" />
+    <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
+    <Compile Include="UserSettings\LayoutUserSettings.cs" />
+    <Compile Include="UserSettings\NotificationUserSettings.cs" />
+    <Compile Include="Util\ApplicationUtil.cs" />
+    <Compile Include="Util\ComparisonOperator.cs" />
+    <Compile Include="Util\DuplicateEdgeMerger.cs" />
+    <Compile Include="Util\DynamicFilters\DateTimeFilterParameters.cs" />
+    <Compile Include="Util\DynamicFilters\DynamicFilterParameters.cs" />
+    <Compile Include="Util\DynamicFilters\DynamicFilterUtil.cs" />
+    <Compile Include="Util\DynamicFilters\NumericFilterParameters.cs" />
+    <Compile Include="Util\DynamicFilters\RangeFilterParameters.cs" />
+    <Compile Include="Util\EdgeImporter.cs" />
+    <Compile Include="Util\ErrorUtil.cs" />
+    <Compile Include="Util\ExcelColumnWidths.cs" />
+    <Compile Include="Util\ExcelObjectNames.cs" />
+    <Compile Include="Util\ExportWorkbookException.cs" />
+    <Compile Include="Util\ImportEdgeException.cs" />
+    <Compile Include="Util\NodeXLControlUtil.cs" />
+    <Compile Include="Util\NodeXLWorkbookUtil.cs" />
+    <Compile Include="Util\OldWorkbookConversionException.cs" />
+    <Compile Include="Util\OldWorkbookConverter.cs" />
+    <Compile Include="Util\PajekGraphImporter.cs" />
+    <Compile Include="Util\SubgraphImageCreator.cs" />
+    <Compile Include="Util\TableColumnAdder.cs" />
+    <Compile Include="Util\TableColumnMapper.cs" />
+    <Compile Include="Util\TableImagePopulator.cs" />
+    <Compile Include="Util\TemporaryImages.cs" />
+    <Compile Include="Util\VertexWorksheetPopulator.cs" />
+    <Compile Include="Util\WorkbookAutoFiller.cs" />
+    <Compile Include="Util\WorkbookExporter.cs" />
+    <Compile Include="Util\WorksheetContextMenuManager.cs" />
+    <Compile Include="WorkbookReader\ReadWorkbookContext.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\AlphaConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\BooleanConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\ColorConverter2.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\EdgeVisibilityConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\EdgeWidthConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\NumericValueConverterBase.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\TextValueConverterBase.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexDrawingPrecedenceConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexLocationConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexRadiusConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexShapeConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexVisibilityConverter.cs" />
+    <Compile Include="WorkbookReader\WorkbookFormatException.cs" />
+    <Compile Include="WorkbookReader\WorkbookReader.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\ClusterWorksheetReader.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\DynamicFilterSettings.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\EdgeWorksheetReader.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\ImageWorksheetReader.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\PerWorkbookSettings.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\VertexWorksheetReader.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\WorksheetReaderBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ThisWorkbook.Designer.xml">
+      <DependentUpon>ThisWorkbook.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet1.Designer.xml">
+      <DependentUpon>Sheet1.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet2.Designer.xml">
+      <DependentUpon>Sheet2.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet3.Designer.xml">
+      <DependentUpon>Sheet3.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ExcelTemplate_TemporaryKey.pfx" />
+    <None Include="Sheet4.Designer.xml">
+      <DependentUpon>Sheet4.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Adapters\Adapters.csproj">
+      <Project>{49BF210B-2FB1-4955-9553-B4C9DB275352}</Project>
+      <Name>Adapters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Algorithms\Algorithms.csproj">
+      <Project>{1E286552-2364-419B-B8A0-D21B860BC60F}</Project>
+      <Name>Algorithms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ApplicationUtil\ApplicationUtil.csproj">
+      <Project>{F7845042-B212-4D74-9343-DA2052F83234}</Project>
+      <Name>ApplicationUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
+      <Name>Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Layouts\Layouts.csproj">
+      <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>
+      <Name>Layouts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfControl\WpfControl.csproj">
+      <Project>{5E12EC39-6EC0-4962-97C6-C8506D0C6C67}</Project>
+      <Name>WpfControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfVisualization\WpfVisualization.csproj">
+      <Project>{3228C440-7166-44E1-A1A2-036ECDD9371F}</Project>
+      <Name>WpfVisualization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThumbnailLoading.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUser.resx">
+      <Link>Controls\RegisterUser\RegisterUser.resx</Link>
+      <DependentUpon>RegisterUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SubgraphLevels\SubgraphLevelsControl.resx">
+      <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.resx">
+      <DependentUpon>AnalyzeTwitterNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.resx">
+      <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.resx">
+      <DependentUpon>ConvertOldWorkbookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DynamicFilters\DynamicFilterDialog.resx">
+      <DependentUpon>DynamicFilterDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.resx">
+      <DependentUpon>GraphMetricUserSettingsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.resx">
+      <DependentUpon>ImportEdgesFromWorkbookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.resx">
+      <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Notification\NotificationDialog.resx">
+      <DependentUpon>NotificationDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\RegisterUser\RegisterUserDialog.resx">
+      <DependentUpon>RegisterUserDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.resx">
+      <DependentUpon>SelectSubgraphsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\SampleSubgraphs\1.0.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\1.5.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\2.0.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\2.5.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\3.0.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\3.5.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\4.0.jpg" />
+    <EmbeddedResource Include="Images\SampleSubgraphs\4.5.jpg" />
+    <EmbeddedResource Include="Sheet4.resx">
+      <DependentUpon>Sheet4.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet5.Designer.xml">
+      <DependentUpon>Sheet5.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet6.Designer.xml">
+      <DependentUpon>Sheet6.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sheet7.Designer.xml">
+      <DependentUpon>Sheet7.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\OfficeTools\Microsoft.VisualStudio.Tools.Office.Office2007.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
+        <ProjectProperties HostName="NodeXLGraph.xltx" HostPackage="{B284B16A-C42C-4438-BDCD-B72F4AC43CFB}" OfficeVersion="12.0" VstxVersion="3.0" ApplicationType="XLT" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files\Microsoft Office\Office12\Excel.exe" DebugInfoCommandLine="/t &quot;[$OUTPUT]NodeXLGraph.xltx&quot;" />
+        <Host Name="Excel Document" Path=".\NodeXLGraph.xltx" GeneratedCodeNamespace="Microsoft.NodeXL.ExcelTemplate" PublishedHash="4D8E879928CBA270A29ED7FD412557FCA49DBAF9">
+          <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="245DB3698AC9C0D8DC43523F505F15A7AE65DDCD" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
+          <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
+          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="929EB06E3232D25BBFB6DA207F133759A5E75F10" DisplayName="Images" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
+          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="16CC5CE95B1FFE7AAB3A1C0BED926CB7BF5B766E" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
+          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="651F0F18F0DA9DEEF21F2887996E77B7C73F9326" DisplayName="Clusters" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
+          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="1641ABE04217FBFF4F1B81D6385356B84C00F914" DisplayName="Cluster Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
+          <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="9D6EBDFD59407161A65741A2F78E7AC34A88358D" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
+          <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="D0EA144E67D552625DC149C1653F9B8844BAE80B" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
+        </Host>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!--
+    To modify your build process, add your task inside one of the targets below and uncomment it.
+    Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

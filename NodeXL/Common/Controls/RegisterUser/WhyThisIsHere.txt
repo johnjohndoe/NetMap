@@ -1,0 +1,30 @@
+
+This is a user control that registers a user of the ExcelTemplate project.  It
+gets used in two places:
+
+1. In the RegisterUserDialog within ExcelTemplate.  The dialog is opened by
+   the user via an Excel ribbon button.
+
+2. In the ExcelTemplateRegisterUser Windows Forms application.  This
+   application gets called from the ExcelTemplateSetup executable when the user
+   opts to register during setup.
+
+Given that the control is used in two places, the most efficient and consistent
+location for it would be within the ApplicationUtil class library assembly,
+which could then be referenced by both ExcelTemplate and
+ExcelTemplateRegisterUser.  This works fine for ExcelTemplate but not for
+ExcelTemplateRegisterUser.
+
+During setup, the executable specified within the Visual Studio-supplied
+"Register User" dialog gets executed within a temporary folder in the user's
+profile, not within the application folder.  Because of this, the executable
+can't reference any assemblies not present in that temporary folder or
+pre-installed in the GAC.  This rules out having ExcelTemplateRegisterUser
+reference the ApplicationUtil assembly, which exists only in the application
+folder.
+
+For this reason, the user control is put in a common directory and linked to
+the two projects via the Add as Link option in Visual Studio's Add Existing
+Item dialog.  The user control code is thus duplicated in two executables, but
+at least it works.
+

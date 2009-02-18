@@ -1,0 +1,158 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Microsoft.NodeXL.Core</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\Common\KeyFile.snk</AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.NodeXL.Core</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>true</SignAssembly>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG;NOT_BUILDING_NDOC</DefineConstants>
+    <DocumentationFile>bin\Debug\Microsoft.NodeXL.Core.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\ArgumentChecker.cs">
+      <Link>Util\ArgumentChecker.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DefaultImplementations\NodeXLBase.cs" />
+    <Compile Include="DefaultImplementations\Collections\EdgeCollection.cs" />
+    <Compile Include="DefaultImplementations\Collections\EdgeCollectionEnumerator.cs" />
+    <Compile Include="DefaultImplementations\Collections\MetadataProvider.cs" />
+    <Compile Include="DefaultImplementations\Collections\VertexCollection.cs" />
+    <Compile Include="DefaultImplementations\Collections\VertexCollectionReverseEnumerator.cs" />
+    <Compile Include="DefaultImplementations\Edge.cs" />
+    <Compile Include="DefaultImplementations\EdgeEventArgs.cs" />
+    <Compile Include="DefaultImplementations\Factories\EdgeFactory.cs" />
+    <Compile Include="DefaultImplementations\Factories\EdgeFactoryBase.cs" />
+    <Compile Include="DefaultImplementations\Factories\GraphFactory.cs" />
+    <Compile Include="DefaultImplementations\Factories\GraphFactoryBase.cs" />
+    <Compile Include="DefaultImplementations\Factories\GraphVertexEdgeFactoryBase.cs" />
+    <Compile Include="DefaultImplementations\Factories\IDGenerator.cs" />
+    <Compile Include="DefaultImplementations\Factories\VertexFactory.cs" />
+    <Compile Include="DefaultImplementations\Factories\VertexFactoryBase.cs" />
+    <Compile Include="DefaultImplementations\Graph.cs" />
+    <Compile Include="DefaultImplementations\GraphVertexEdgeBase.cs" />
+    <Compile Include="DefaultImplementations\ReservedMetadataKeys.cs" />
+    <Compile Include="DefaultImplementations\Vertex.cs" />
+    <Compile Include="DefaultImplementations\VertexEventArgs.cs" />
+    <Compile Include="DefaultImplementations\VertexSorters\ByDelegateVertexSorter.cs" />
+    <Compile Include="DefaultImplementations\VertexSorters\ByMetadataVertexSorter.cs" />
+    <Compile Include="DefaultImplementations\VertexSorters\VertexSorterBase.cs" />
+    <Compile Include="Interfaces\IEdge.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IEdgeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IEdgeFactory.cs" />
+    <Compile Include="Interfaces\IFormattableNodeXL.cs" />
+    <Compile Include="Interfaces\IGraph.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IGraphFactory.cs" />
+    <Compile Include="Interfaces\IIdentityProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IMetadataProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IVertex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IVertexCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IVertexFactory.cs" />
+    <Compile Include="Interfaces\IVertexSorter.cs" />
+    <Compile Include="Util\EdgeUtil.cs" />
+    <Compile Include="Util\EventUtil.cs" />
+    <Compile Include="Util\LayoutUtil.cs" />
+    <Compile Include="Util\SimpleGraphMatrix.cs" />
+    <Compile Include="Util\ToStringUtil.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

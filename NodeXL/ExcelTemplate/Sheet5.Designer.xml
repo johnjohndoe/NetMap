@@ -1,3 +1,0 @@
-﻿<hostitem:hostItem hostitem:baseType="Microsoft.Office.Tools.Excel.Worksheet" hostitem:namespace="Microsoft.NodeXL.ExcelTemplate" hostitem:className="Sheet5" hostitem:identifier="Sheet5" hostitem:primaryCookie="Sheet5" hostitem:startupIndex="4" xmlns:hostitem="http://schemas.microsoft.com/2004/VisualStudio/Tools/Applications/HostItem.xsd">
-  <hostitem:hostControl hostitem:name="Clusters" hostitem:identifier="Clusters" hostitem:type="Microsoft.Office.Tools.Excel.ListObject" hostitem:primaryCookie="Sheet5:Clusters" hostitem:extenderCookie="" hostitem:modifier="Internal" />
-</hostitem:hostItem>

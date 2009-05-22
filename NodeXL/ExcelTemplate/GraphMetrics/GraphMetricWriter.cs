@@ -20,7 +20,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <remarks>
 /// Call <see cref="WriteGraphMetricColumnsToWorkbook" /> to write one or more
-/// <see cref="GraphMetricColumn" /> objects to a workbook.
+/// <see cref="GraphMetricColumn" /> objects to a workbook, then call <see
+/// cref="ActivateRelevantWorksheet" /> to let the user know that graph metrics
+/// have been calculated.
 /// </remarks>
 //*****************************************************************************
 
@@ -69,6 +71,12 @@ public partial class GraphMetricWriter : Object
         Debug.Assert(graphMetricColumns != null);
         Debug.Assert(workbook != null);
         AssertValid();
+
+        // Show the graph metric column group.  If the graph metric columns
+        // aren't visible, this class won't write any of the graph metrics.
+
+        ColumnGroupManager.ShowOrHideColumnGroup(workbook,
+            ColumnGroup.VertexGraphMetrics, true, false);
 
         // (Note: Don't sort grapMetricColumns by worksheet name/table name in
         // an effort to minimize worksheet switches in the code below.  That
@@ -149,6 +157,78 @@ public partial class GraphMetricWriter : Object
             }
 
             oTable.HeaderRowRange.RowHeight = dHeaderRowHeight;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ActivateRelevantWorksheet()
+    //
+    /// <summary>
+    /// Activates a worksheet to let the user know that graph metrics have been
+    /// calculated.
+    /// </summary>
+    ///
+    /// <param name="graphMetricColumns">
+    /// An array of GraphMetricColumn objects, one for each column of metrics
+    /// that were written to the workbook.
+    /// </param>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the graph contents.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    ActivateRelevantWorksheet
+    (
+        GraphMetricColumn [] graphMetricColumns,
+        Microsoft.Office.Interop.Excel.Workbook workbook
+    )
+    {
+        Debug.Assert(graphMetricColumns != null);
+        Debug.Assert(workbook != null);
+        AssertValid();
+
+        Boolean bVertexMetricCalculated = false;
+        Boolean bOverallMetricsCalculated = false;
+
+        foreach (GraphMetricColumn oGraphMetricColumn in graphMetricColumns)
+        {
+            switch (oGraphMetricColumn.WorksheetName)
+            {
+                case WorksheetNames.Vertices:
+
+                    bVertexMetricCalculated = true;
+                    break;
+
+                case WorksheetNames.OverallMetrics:
+
+                    bOverallMetricsCalculated = true;
+                    break;
+
+                default:
+
+                    break;
+            }
+        }
+
+        String sRelevantWorksheetName = null;
+
+        if (bVertexMetricCalculated)
+        {
+            sRelevantWorksheetName = WorksheetNames.Vertices;
+        }
+        else if (bOverallMetricsCalculated)
+        {
+            sRelevantWorksheetName = WorksheetNames.OverallMetrics;
+        }
+
+        Worksheet oRelevantWorksheet;
+
+        if ( sRelevantWorksheetName != null && ExcelUtil.TryGetWorksheet(
+            workbook, sRelevantWorksheetName, out oRelevantWorksheet) )
+        {
+            ExcelUtil.ActivateWorksheet(oRelevantWorksheet);
         }
     }
 
@@ -471,9 +551,8 @@ public partial class GraphMetricWriter : Object
         if (
             !ExcelUtil.TryGetTableColumn(oTable, sColumnName, out oColumn)
             &&
-            !ExcelUtil.TryInsertTableColumn(oTable, sColumnName,
-                GetNewColumnIndex(oTable), oGraphMetricColumn.ColumnWidthChars,
-                sColumnStyle, out oColumn)
+            !ExcelUtil.TryAddTableColumn(oTable, sColumnName,
+                oGraphMetricColumn.ColumnWidthChars, sColumnStyle, out oColumn)
             )
         {
             // Give up.
@@ -489,7 +568,7 @@ public partial class GraphMetricWriter : Object
             return (false);
         }
 
-        ExcelUtil.SetRangeStyle(oColumn.Range, sColumnStyle);
+        ExcelUtil.SetRangeStyle(oColumnData, sColumnStyle);
 
         String sNumberFormat = oGraphMetricColumn.NumberFormat;
 
@@ -515,97 +594,6 @@ public partial class GraphMetricWriter : Object
         }
 
         return (true);
-    }
-
-    //*************************************************************************
-    //  Method: GetNewColumnIndex()
-    //
-    /// <summary>
-    /// Gets the one-based index of a new graph metric column to insert into a
-    /// table.
-    /// </summary>
-    ///
-    /// <param name="oTable">
-    /// The table that will have a new graph metric column inserted into it.
-    /// </param>
-    ///
-    /// <returns>
-    /// The one-based index of the new column to insert.
-    /// </returns>
-    //*************************************************************************
-
-    protected Int32
-    GetNewColumnIndex
-    (
-        ListObject oTable
-    )
-    {
-        Debug.Assert(oTable != null);
-        AssertValid();
-
-        // If any of these graph metric columns already exist, insert a new
-        // column after the last one found.
-
-        String [] asGraphMetricColumnNamesToInsertAfter;
-
-        // Otherwise, insert a new column after this one.
-
-        String sColumnNameToInsertAfterIfNoGraphMetrics;
-
-        ListColumns oColumns = oTable.ListColumns;
-        Int32 iColumns = oColumns.Count;
-
-        switch (oTable.Name)
-        {
-            case TableNames.Vertices:
-
-                asGraphMetricColumnNamesToInsertAfter =
-                    VertexTableColumnNames.GetGraphMetricColumnNames();
-
-                sColumnNameToInsertAfterIfNoGraphMetrics =
-                    VertexTableColumnNames.VertexName;
-
-                break;
-
-            case TableNames.Edges:
-
-                asGraphMetricColumnNamesToInsertAfter =
-                    EdgeTableColumnNames.GetGraphMetricColumnNames();
-
-                sColumnNameToInsertAfterIfNoGraphMetrics =
-                    EdgeTableColumnNames.Vertex2Name;
-
-                break;
-
-            default:
-
-                // Insert a new column after the last column in the table.
-
-                return (iColumns + 1);
-        }
-
-        // Loop backwards looking for the last graph metric column that already
-        // exists.
-
-        for (Int32 iOneBasedIndex = iColumns; iOneBasedIndex >= 1;
-            iOneBasedIndex--)
-        {
-            if (Array.IndexOf<String>(asGraphMetricColumnNamesToInsertAfter,
-                oColumns[iOneBasedIndex].Name) >= 0)
-            {
-                return (iOneBasedIndex + 1);
-            }
-        }
-
-        ListColumn oColumn;
-
-        if ( ExcelUtil.TryGetTableColumn(oTable,
-            sColumnNameToInsertAfterIfNoGraphMetrics, out oColumn) )
-        {
-            return (oColumn.Index + 1);
-        }
-
-        return (iColumns + 1);
     }
 
 

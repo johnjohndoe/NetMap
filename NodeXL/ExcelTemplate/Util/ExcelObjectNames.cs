@@ -136,9 +136,7 @@ public static class TableNames
 /// </summary>
 ///
 /// <remarks>
-/// All column names are available as public constants.  Use <see
-/// cref="GetGraphMetricColumnNames" /> to get the subset of all column names
-/// that represent graph metrics.
+/// All column names are available as public constants.
 /// </remarks>
 //*****************************************************************************
 
@@ -182,90 +180,19 @@ public static class EdgeTableColumnNames
     public const String Visibility = "Visibility";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex 1 degree.  This
-    /// gets added to the table on demand by <see
-    /// cref="VertexDegreeCalculator2" />.
+    /// Name of the optional table column containing the edge weight.  This
+    /// gets added to the table on demand by various classes.
     /// </summary>
 
-    public const String Vertex1Degree = "Vertex 1 Degree";
-
-    /// <summary>
-    /// Name of the optional table column containing the vertex 1 in-degree.
-    /// This gets added to the table on demand by <see
-    /// cref="VertexDegreeCalculator2" />.
-    /// </summary>
-
-    public const String Vertex1InDegree = "Vertex 1 In-Degree";
-
-    /// <summary>
-    /// Name of the optional table column containing the vertex 1 out-degree.
-    /// This gets added to the table on demand by <see
-    /// cref="VertexDegreeCalculator2" />.
-    /// </summary>
-
-    public const String Vertex1OutDegree = "Vertex 1 Out-Degree";
-
-    /// <summary>
-    /// Name of the optional table column containing the vertex 2 degree.  This
-    /// gets added to the table on demand by <see
-    /// cref="VertexDegreeCalculator2" />.
-    /// </summary>
-
-    public const String Vertex2Degree = "Vertex 2 Degree";
-
-    /// <summary>
-    /// Name of the optional table column containing the vertex 2 in-degree.
-    /// This gets added to the table on demand by <see
-    /// cref="VertexDegreeCalculator2" />.
-    /// </summary>
-
-    public const String Vertex2InDegree = "Vertex 2 In-Degree";
-
-    /// <summary>
-    /// Name of the optional table column containing the vertex 2 out-degree.
-    /// This gets added to the table on demand by <see
-    /// cref="VertexDegreeCalculator2" />.
-    /// </summary>
-
-    public const String Vertex2OutDegree = "Vertex 2 Out-Degree";
-
-    /// <summary>
-    /// Name of the optional table column containing the tie strength.  This
-    /// gets added to the table on demand by <see
-    /// cref="AnalyzeEmailNetworkDialog" />.
-    /// </summary>
-
-    public const String TieStrength = "Tie Strength";
+    public const String EdgeWeight = "Edge Weight";
 
     // IMPORTANT NOTES:
     //
-    // If a new column name is added, AutoFillUserSettingsDialog may need to be
-    // modified to exclude the new column name from its ComboBoxes.
+    // 1. If a new column name is added, AutoFillEdgeColumnComboBox may need to
+    //    be modified to exclude the new column name.
     //
-    // If a new graph metric column name is added, it must also be added to
-    // GetGraphMetricColumnNames().
-
-
-    //*************************************************************************
-    //  Method: GetGraphMetricColumnNames()
-    //
-    /// <summary>
-    /// Gets the names of the columns that represent graph metrics.
-    /// </summary>
-    //*************************************************************************
-
-    public static String []
-    GetGraphMetricColumnNames()
-    {
-        return ( new String [] {
-            Vertex1Degree,
-            Vertex1InDegree,
-            Vertex1OutDegree,
-            Vertex2Degree,
-            Vertex2InDegree,
-            Vertex2OutDegree,
-            } );
-    }
+    // 2. If the new column is part of a column group, ColumnGroupManager must
+    //    be modified.
 }
 
 
@@ -277,9 +204,7 @@ public static class EdgeTableColumnNames
 /// </summary>
 ///
 /// <remarks>
-/// All column names are available as public constants.  Use <see
-/// cref="GetGraphMetricColumnNames" /> to get the subset of all column names
-/// that represent graph metrics.
+/// All column names are available as public constants.
 /// </remarks>
 //*****************************************************************************
 
@@ -304,11 +229,22 @@ public static class VertexTableColumnNames
     public const String Shape = "Shape";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex's
-    /// radius.
+    /// Name of the optional table column containing the vertex's radius.  Note
+    /// that "radius" would more accurately be called "size" and is called that
+    /// in the UI, but that changing "radius" to "size" throughout the source
+    /// code is too difficult.  Thus, the source code uses "radius" but the UI
+    /// uses "size".
     /// </summary>
 
-    public const String Radius = "Radius";
+    public const String Radius = "Size";
+
+    /// <summary>
+    /// Old name of the radius column.  When an old workbook is opened, the
+    /// old name gets changed to the new name.  Therefore, the old name doesn't
+    /// need to be used anywhere outside of the workbook opening code.
+    /// </summary>
+
+    public const String RadiusOld = "Radius";
 
     /// <summary>
     /// Name of the optional table column containing the vertex's image key.
@@ -364,6 +300,12 @@ public static class VertexTableColumnNames
     public const String Visibility = "Visibility";
 
     /// <summary>
+    /// Name of the optional table column containing the vertex's layout order.
+    /// </summary>
+
+    public const String LayoutOrder = "Layout Order";
+
+    /// <summary>
     /// Name of the optional table column containing a boolean flag indicating
     /// whether the vertex should be locked at its current location.
     /// </summary>
@@ -381,6 +323,20 @@ public static class VertexTableColumnNames
     /// </summary>
 
     public const String Y = "Y";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's polar R
+    /// coordinate.
+    /// </summary>
+
+    public const String PolarR = "Polar R";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's polar angle
+    /// coordinate.
+    /// </summary>
+
+    public const String PolarAngle = "Polar Angle";
 
     /// <summary>
     /// Name of the optional table column containing the "this row is marked"
@@ -481,34 +437,11 @@ public static class VertexTableColumnNames
 
     // IMPORTANT NOTES:
     //
-    // If a new column name is added, AutoFillUserSettingsDialog may need to be
-    // modified to exclude the new column name from its ComboBoxes.
+    // 1. If a new column name is added, AutoFillVertexColumnComboBox may need
+    //    to be modified to exclude the new column name.
     //
-    // If a new graph metric column name is added, it must also be added to
-    // GetGraphMetricColumnNames().
-
-
-    //*************************************************************************
-    //  Method: GetGraphMetricColumnNames()
-    //
-    /// <summary>
-    /// Gets the names of the columns that represent graph metrics.
-    /// </summary>
-    //*************************************************************************
-
-    public static String []
-    GetGraphMetricColumnNames()
-    {
-        return ( new String [] {
-            InDegree,
-            OutDegree,
-            Degree,
-            BetweennessCentrality,
-            ClosenessCentrality,
-            EigenvectorCentrality,
-            ClusteringCoefficient,
-            } );
-    }
+    // 2. If the new column is part of a column group, ColumnGroupManager must
+    //    be modified.
 }
 
 
@@ -736,6 +669,37 @@ public static class CommonTableColumnNames
     /// </summary>
 
     public const String DynamicFilter = "Dynamic Filter";
+}
+
+
+//*****************************************************************************
+//  Class: CellStyleNames
+//
+/// <summary>
+/// Names of cell styles that get applied programatically.
+/// </summary>
+///
+/// <remarks>
+/// This class includes standard Excel styles as well as custom styles defined
+/// in the NodeXL template.
+/// </remarks>
+//*****************************************************************************
+
+public static class CellStyleNames
+{
+    /// <summary>
+    /// Style applied to graph metric cells for which graph metric values were
+    /// successfully calculated.  This is a custom NodeXL style.
+    /// </summary>
+
+    public const String GraphMetricGood = "NodeXL Graph Metric";
+
+    /// <summary>
+    /// Style applied to graph metric cells for which graph metric values could
+    /// not be calculated.  This is a standard Excel style.
+    /// </summary>
+
+    public const String GraphMetricBad = "Bad";
 }
 
 }

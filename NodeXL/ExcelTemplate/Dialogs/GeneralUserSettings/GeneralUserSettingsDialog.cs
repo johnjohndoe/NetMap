@@ -39,17 +39,24 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     /// <param name="generalUserSettings">
     /// The object being edited.
     /// </param>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the graph data.
+    /// </param>
     //*************************************************************************
 
     public GeneralUserSettingsDialog
     (
-        GeneralUserSettings generalUserSettings
+        GeneralUserSettings generalUserSettings,
+        Microsoft.Office.Interop.Excel.Workbook workbook
     )
     {
         Debug.Assert(generalUserSettings != null);
+        Debug.Assert(workbook != null);
         generalUserSettings.AssertValid();
 
         m_oGeneralUserSettings = generalUserSettings;
+        m_oWorkbook = workbook;
         m_oFont = m_oGeneralUserSettings.Font;
         m_oLayoutUserSettings = m_oGeneralUserSettings.LayoutUserSettings;
 
@@ -61,23 +68,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             new GeneralUserSettingsDialogUserSettings(this);
 
         InitializeComponent();
-
-        Object[] oAllGraphAndWorkbookValues =
-            ( new ColorConverter2() ).GetAllGraphAndWorkbookValues(false);
-
-        cbxBackColor.PopulateWithObjectsAndText(oAllGraphAndWorkbookValues);
-        cbxVertexColor.PopulateWithObjectsAndText(oAllGraphAndWorkbookValues);
-
-        cbxPrimaryLabelFillColor.PopulateWithObjectsAndText(
-            oAllGraphAndWorkbookValues);
-
-        cbxSelectedVertexColor.PopulateWithObjectsAndText(
-            oAllGraphAndWorkbookValues);
-
-        cbxEdgeColor.PopulateWithObjectsAndText(oAllGraphAndWorkbookValues);
-
-        cbxSelectedEdgeColor.PopulateWithObjectsAndText(
-            oAllGraphAndWorkbookValues);
 
         nudEdgeWidth.Minimum =
             (Decimal)EdgeWidthConverter.MinimumWidthWorkbook;
@@ -106,16 +96,10 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         ( new VertexShapeConverter() ).PopulateComboBox(cbxVertexShape, false);
 
         nudVertexAlpha.Minimum = nudEdgeAlpha.Minimum =
-            nudFilteredAlpha.Minimum =
             (Decimal)AlphaConverter.MinimumAlphaWorkbook;
 
         nudVertexAlpha.Maximum = nudEdgeAlpha.Maximum =
-            nudFilteredAlpha.Maximum =
             (Decimal)AlphaConverter.MaximumAlphaWorkbook;
-
-        lblVertexAlphaMessage.Text = lblEdgeAlphaMessage.Text =
-            lblFilteredAlphaMessage.Text =
-            AlphaConverter.MaximumAlphaMessage;
 
         DoDataExchange(false);
 
@@ -148,11 +132,11 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         if (bFromControls)
         {
             Single fEdgeWidth, fSelectedEdgeWidth, fRelativeArrowSize,
-                fVertexRadius, fVertexAlpha, fEdgeAlpha, fFilteredAlpha;
+                fVertexRadius, fVertexAlpha, fEdgeAlpha;
 
             if (
                 !ValidateNumericUpDown(nudVertexRadius,
-                    "a vertex radius", out fVertexRadius)
+                    "a vertex size", out fVertexRadius)
                 ||
                 !ValidateNumericUpDown(nudVertexAlpha, "a vertex opacity",
                     out fVertexAlpha)
@@ -168,48 +152,33 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
                 ||
                 !ValidateNumericUpDown(nudSelectedEdgeWidth,
                     "a width for selected edges", out fSelectedEdgeWidth)
-                ||
-                !ValidateNumericUpDown(nudFilteredAlpha,
-                    "an opacity for dynamically filtered vertices and edges",
-                    out fFilteredAlpha)
                 )
             {
                 return (false);
             }
 
-            m_oGeneralUserSettings.BackColor =
-                (KnownColor)cbxBackColor.SelectedValue;
-
-            m_oGeneralUserSettings.FilteredAlpha = fFilteredAlpha;
-
+            m_oGeneralUserSettings.BackColor = usrBackColor.Color;
             m_oGeneralUserSettings.EdgeWidth = fEdgeWidth;
             m_oGeneralUserSettings.SelectedEdgeWidth = fSelectedEdgeWidth;
-
             m_oGeneralUserSettings.RelativeArrowSize = fRelativeArrowSize;
-
-            m_oGeneralUserSettings.EdgeColor =
-                (KnownColor)cbxEdgeColor.SelectedValue;
-
-            m_oGeneralUserSettings.EdgeAlpha = (Single)nudEdgeAlpha.Value;
+            m_oGeneralUserSettings.EdgeColor = usrEdgeColor.Color;
+            m_oGeneralUserSettings.EdgeAlpha = fEdgeAlpha;
 
             m_oGeneralUserSettings.SelectedEdgeColor =
-                (KnownColor)cbxSelectedEdgeColor.SelectedValue;
+				usrSelectedEdgeColor.Color;
 
             m_oGeneralUserSettings.VertexShape =
                 (VertexShape)cbxVertexShape.SelectedValue;
 
             m_oGeneralUserSettings.VertexRadius = fVertexRadius;
-
-            m_oGeneralUserSettings.VertexColor =
-                (KnownColor)cbxVertexColor.SelectedValue;
-
-            m_oGeneralUserSettings.VertexAlpha = (Single)nudVertexAlpha.Value;
+            m_oGeneralUserSettings.VertexColor = usrVertexColor.Color;
+            m_oGeneralUserSettings.VertexAlpha = fVertexAlpha;
 
             m_oGeneralUserSettings.PrimaryLabelFillColor =
-                (KnownColor)cbxPrimaryLabelFillColor.SelectedValue;
+                usrPrimaryLabelFillColor.Color;
 
             m_oGeneralUserSettings.SelectedVertexColor =
-                (KnownColor)cbxSelectedVertexColor.SelectedValue;
+				usrSelectedVertexColor.Color;
 
             m_oGeneralUserSettings.AutoSelect = chkAutoSelect.Checked;
 
@@ -219,11 +188,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         }
         else
         {
-            cbxBackColor.SelectedValue = m_oGeneralUserSettings.BackColor;
-
-            nudFilteredAlpha.Value =
-                (Decimal)m_oGeneralUserSettings.FilteredAlpha;
-
+            usrBackColor.Color = m_oGeneralUserSettings.BackColor;
             nudEdgeWidth.Value = (Decimal)m_oGeneralUserSettings.EdgeWidth;
 
             nudSelectedEdgeWidth.Value =
@@ -232,27 +197,25 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             nudRelativeArrowSize.Value =
                 (Decimal)m_oGeneralUserSettings.RelativeArrowSize;
 
-            cbxEdgeColor.SelectedValue = m_oGeneralUserSettings.EdgeColor;
-
+            usrEdgeColor.Color = m_oGeneralUserSettings.EdgeColor;
             nudEdgeAlpha.Value = (Decimal)m_oGeneralUserSettings.EdgeAlpha;
 
-            cbxSelectedEdgeColor.SelectedValue =
-                m_oGeneralUserSettings.SelectedEdgeColor;
+            usrSelectedEdgeColor.Color =
+				m_oGeneralUserSettings.SelectedEdgeColor;
 
             cbxVertexShape.SelectedValue = m_oGeneralUserSettings.VertexShape;
 
             nudVertexRadius.Value =
                 (Decimal)m_oGeneralUserSettings.VertexRadius;
 
-            cbxVertexColor.SelectedValue = m_oGeneralUserSettings.VertexColor;
-
+            usrVertexColor.Color = m_oGeneralUserSettings.VertexColor;
             nudVertexAlpha.Value = (Decimal)m_oGeneralUserSettings.VertexAlpha;
 
-            cbxPrimaryLabelFillColor.SelectedValue =
+            usrPrimaryLabelFillColor.Color =
                 m_oGeneralUserSettings.PrimaryLabelFillColor;
 
-            cbxSelectedVertexColor.SelectedValue =
-                m_oGeneralUserSettings.SelectedVertexColor;
+            usrSelectedVertexColor.Color =
+				m_oGeneralUserSettings.SelectedVertexColor;
 
             chkAutoSelect.Checked = m_oGeneralUserSettings.AutoSelect;
 
@@ -263,6 +226,89 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         }
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: btnCustomizeVertexMenu_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCustomizeVertexMenu button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnCustomizeVertexMenu_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        const String Message =
+            "Use this to add custom menu items to the menu that appears when"
+            + " you right-click a vertex in the NodeXL graph."
+            + "\r\n\r\n"
+            + "Clicking \"Yes\" below will add a pair of columns to the"
+            + " Vertices worksheet -- one for menu item text and another for"
+            + " the action to take when the menu item is selected."
+            + "\r\n\r\n"
+            + "For example, if you add the column pair and enter \"Send Mail"
+            + " To\" for a vertex's menu item text and \"mailto:bob@msn.com\""
+            + " for the action, then right-clicking the vertex in the NodeXL"
+            + " graph and selecting \"Send Mail To\" from the right-click menu"
+            + " will open a new email message addressed to bob@msn.com."
+            + "\r\n\r\n"
+            + "If you want to open a Web page when the menu item is selected,"
+            + " enter an URL for the action."
+            + "\r\n\r\n"
+            + "If you want to add more than one custom menu item to a vertex's"
+            + " right-click menu, run this again to add another pair of"
+            + " columns."
+            + "\r\n\r\n"
+            + "Do you want to add a pair of columns to the Vertices worksheet?"
+            ;
+
+        if (MessageBox.Show(Message, this.ApplicationName,
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information) !=
+                DialogResult.Yes)
+        {
+            return;
+        }
+
+        // Create and use the object that adds the columns to the vertex
+        // table.
+
+        TableColumnAdder oTableColumnAdder = new TableColumnAdder();
+
+        this.UseWaitCursor = true;
+
+        try
+        {
+            oTableColumnAdder.AddColumnPair(m_oWorkbook,
+                WorksheetNames.Vertices, TableNames.Vertices,
+                VertexTableColumnNames.CustomMenuItemTextBase,
+                VertexTableColumnWidths.CustomMenuItemText,
+                VertexTableColumnNames.CustomMenuItemActionBase,
+                VertexTableColumnWidths.CustomMenuItemAction
+                );
+
+            this.UseWaitCursor = false;
+        }
+        catch (Exception oException)
+        {
+            this.UseWaitCursor = false;
+
+            ErrorUtil.OnException(oException);
+        }
     }
 
     //*************************************************************************
@@ -420,6 +466,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oGeneralUserSettings != null);
+        Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oFont != null);
         Debug.Assert(m_oLayoutUserSettings != null);
         Debug.Assert(m_oGeneralUserSettingsDialogUserSettings != null);
@@ -433,6 +480,10 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     /// Object whose properties are being edited.
 
     protected GeneralUserSettings m_oGeneralUserSettings;
+
+    /// Workbook containing the graph data.
+
+    protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
 
     /// A copy of the LayoutUserSettings object owned by
     /// m_oGeneralUserSettings.  This gets edited by a
@@ -465,7 +516,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GeneralUserSettingsDialog2") ]
+[ SettingsGroupNameAttribute("GeneralUserSettingsDialog3") ]
 
 public class GeneralUserSettingsDialogUserSettings : FormSettings
 {

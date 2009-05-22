@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Layouts;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -25,12 +26,15 @@ namespace Microsoft.NodeXL.ApplicationUtil
 ///
 /// <para>
 /// Use the derived <see cref="LayoutManagerForMenu" /> class if your
-/// application uses ToolStripMenuItems for selecting the current layout.
+/// application uses ToolStripMenuItems for selecting the current layout.  Use
+/// the derived <see cref="LayoutManagerForComboBox" /> class if your
+/// application uses a ComboBox for selecting the current layout.
 /// </para>
 ///
 /// </remarks>
 ///
 /// <seealso cref="LayoutManagerForMenu" />
+/// <seealso cref="LayoutManagerForComboBox" />
 //*****************************************************************************
 
 public class LayoutManager : Object
@@ -85,12 +89,7 @@ public class LayoutManager : Object
 
             m_eLayout = value;
 
-            EventHandler oLayoutChanged = this.LayoutChanged;
-
-            if (oLayoutChanged != null)
-            {
-                oLayoutChanged(this, EventArgs.Empty);
-            }
+            EventUtil.FireEvent(this, this.LayoutChanged);
 
             AssertValid();
         }
@@ -113,45 +112,7 @@ public class LayoutManager : Object
     {
         AssertValid();
 
-        switch (m_eLayout)
-        {
-            case LayoutType.Circle:
-
-                return ( new CircleLayout() );
-
-            case LayoutType.Spiral:
-
-                return ( new SpiralLayout() );
-
-            case LayoutType.SinusoidHorizontal:
-
-                return ( new SinusoidHorizontalLayout() );
-
-            case LayoutType.SinusoidVertical:
-
-                return ( new SinusoidVerticalLayout() );
-
-            case LayoutType.Grid:
-
-                return ( new GridLayout() );
-
-            case LayoutType.FruchtermanReingold:
-
-                return ( new FruchtermanReingoldLayout() );
-
-            case LayoutType.Random:
-
-                return ( new RandomLayout() );
-
-            case LayoutType.Sugiyama:
-
-                return ( new SugiyamaLayout() );
-
-            default:
-
-                Debug.Assert(false);
-                return (null);
-        }
+        return ( AllLayouts.CreateLayout(m_eLayout) );
     }
 
     //*************************************************************************

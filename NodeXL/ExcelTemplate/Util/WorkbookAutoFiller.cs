@@ -13,19 +13,19 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: WorkbookAutoFiller
 //
 /// <summary>
-/// Runs the application's AutoFill feature on a workbook.
+/// Automatically fills one or more edge and vertex attribute columns by
+/// mapping values from user-specified source columns.
 /// </summary>
 ///
 /// <remarks>
-/// The AutoFill feature automatically fills edge and vertex attribute columns
-/// using values from user-specified source columns.
-///
-/// <para>
-/// Call the <see cref="AutoFillWorkbook" /> method to autofill the edge and
-/// vertex attribute columns.  The method takes a <see
-/// cref="AutoFillUserSettings" /> object that contains all the user-specified
-/// AutoFill settings.
-/// </para>
+/// Call the <see cref="AutoFillWorkbook" /> method to autofill one or more
+/// edge and vertex attribute columns.  The method takes an <see
+/// cref="AutoFillUserSettings" /> object that specifies one or more
+/// source-to-destination column mappings.  For example, the settings might
+/// specify that the vertex color column should be autofilled by mapping the
+/// numbers in a numeric source to a specified range of colors, and that the
+/// edge width column should be autofilled by mapping the numbers in another
+/// numeric source column to a specified range of widths.
 ///
 /// <para>
 /// All methods are static.
@@ -48,8 +48,12 @@ public static class WorkbookAutoFiller : Object
     /// </param>
     ///
     /// <param name="autoFillUserSettings">
-    /// Contains all the user-specified AutoFill settings.
+    /// Specifies one or more source-to-destination column mappings.
     /// </param>
+    ///
+    /// <remarks>
+    /// See the class topic for information on the AutoFill feature.
+    /// </remarks>
     //*************************************************************************
 
     public static void
@@ -62,23 +66,87 @@ public static class WorkbookAutoFiller : Object
         Debug.Assert(workbook != null);
         Debug.Assert(autoFillUserSettings != null);
 
-        if (!autoFillUserSettings.UseAutoFill)
+        Application oApplication = workbook.Application;
+
+        oApplication.ScreenUpdating = false;
+
+        try
         {
-            return;
+            AutoFillWorkbookInternal(workbook, autoFillUserSettings);
         }
+        finally
+        {
+            oApplication.ScreenUpdating = true;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AutoFillWorkbookInternal()
+    //
+    /// <summary>
+    /// Runs the application's AutoFill feature on a workbook.
+    /// </summary>
+    ///
+    /// <param name="oWorkbook">
+    /// The workbook to autofill.
+    /// </param>
+    ///
+    /// <param name="oAutoFillUserSettings">
+    /// Specifies one or more source-to-destination column mappings.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    AutoFillWorkbookInternal
+    (
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook,
+        AutoFillUserSettings oAutoFillUserSettings
+    )
+    {
+        Debug.Assert(oWorkbook != null);
+        Debug.Assert(oAutoFillUserSettings != null);
+
+        // Populate the vertex worksheet with the name of each unique vertex in
+        // the edge worksheet.
+
+        ( new VertexWorksheetPopulator() ).PopulateVertexWorksheet(
+            oWorkbook, false);
 
         ListObject oTable;
+        ExcelHiddenColumns oHiddenColumns;
 
-        if ( ExcelUtil.TryGetTable(workbook, WorksheetNames.Edges,
+        if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Edges,
             TableNames.Edges, out oTable) )
         {
-            AutoFillEdgeTable(oTable, autoFillUserSettings);
+            // The TableColumnMapper class that does the actual autofilling
+            // fills only visible cells.  Temporarily show all hidden columns
+            // in the table.
+
+            oHiddenColumns = ExcelColumnHider.ShowHiddenColumns(oTable);
+
+            try
+            {
+                AutoFillEdgeTable(oTable, oAutoFillUserSettings);
+            }
+            finally
+            {
+                ExcelColumnHider.RestoreHiddenColumns(oTable, oHiddenColumns);
+            }
         }
 
-        if ( ExcelUtil.TryGetTable(workbook, WorksheetNames.Vertices,
+        if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Vertices,
             TableNames.Vertices, out oTable) )
         {
-            AutoFillVertexTable(oTable, autoFillUserSettings);
+            oHiddenColumns = ExcelColumnHider.ShowHiddenColumns(oTable);
+
+            try
+            {
+                AutoFillVertexTable(oTable, oAutoFillUserSettings);
+            }
+            finally
+            {
+                ExcelColumnHider.RestoreHiddenColumns(oTable, oHiddenColumns);
+            }
         }
     }
 
@@ -94,7 +162,7 @@ public static class WorkbookAutoFiller : Object
     /// </param>
     ///
     /// <param name="oAutoFillUserSettings">
-    /// Contains all the user-specified AutoFill settings.
+    /// Specifies one or more source-to-destination column mappings.
     /// </param>
     //*************************************************************************
 
@@ -145,7 +213,7 @@ public static class WorkbookAutoFiller : Object
     /// </param>
     ///
     /// <param name="oAutoFillUserSettings">
-    /// Contains all the user-specified AutoFill settings.
+    /// Specifies one or more source-to-destination column mappings.
     /// </param>
     //*************************************************************************
 
@@ -211,6 +279,12 @@ public static class WorkbookAutoFiller : Object
             );
 
         AutoFillNumericRangeColumn(oVertexTable,
+            oAutoFillUserSettings.VertexLayoutOrderSourceColumnName,
+            VertexTableColumnNames.LayoutOrder,
+            oAutoFillUserSettings.VertexLayoutOrderDetails
+            );
+
+        AutoFillNumericRangeColumn(oVertexTable,
             oAutoFillUserSettings.VertexXSourceColumnName,
             VertexTableColumnNames.X,
             oAutoFillUserSettings.VertexXDetails
@@ -234,6 +308,19 @@ public static class WorkbookAutoFiller : Object
 
             LockVertices(oVertexTable);
         }
+
+        AutoFillNumericRangeColumn(oVertexTable,
+            oAutoFillUserSettings.VertexPolarRSourceColumnName,
+            VertexTableColumnNames.PolarR,
+            oAutoFillUserSettings.VertexPolarRDetails
+            );
+
+        AutoFillNumericRangeColumn(oVertexTable,
+            oAutoFillUserSettings.VertexPolarAngleSourceColumnName,
+            VertexTableColumnNames.PolarAngle,
+            oAutoFillUserSettings.VertexPolarAngleDetails
+            );
+
     }
 
     //*************************************************************************
@@ -285,8 +372,8 @@ public static class WorkbookAutoFiller : Object
             oDetails.UseSourceNumber2,
             oDetails.SourceNumber1,
             oDetails.SourceNumber2,
-            Color.FromKnownColor(oDetails.DestinationColor1),
-            Color.FromKnownColor(oDetails.DestinationColor2),
+            oDetails.DestinationColor1,
+            oDetails.DestinationColor2,
             oDetails.IgnoreOutliers
             );
     }

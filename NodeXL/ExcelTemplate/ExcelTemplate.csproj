@@ -160,8 +160,14 @@
     <Compile Include="..\..\Common\Excel\ExcelColumnFormat.cs">
       <Link>Util\Excel\ExcelColumnFormat.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelColumnHider.cs">
+      <Link>Util\Excel\ExcelColumnHider.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
       <Link>Util\Excel\ExcelDateTimeUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelHiddenColumns.cs">
+      <Link>Util\Excel\ExcelHiddenColumns.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Excel\ExcelRangeSplitter.cs">
       <Link>Util\Excel\ExcelRangeSplitter.cs</Link>
@@ -169,8 +175,22 @@
     <Compile Include="..\..\Common\Excel\ExcelUtil.cs">
       <Link>Util\Excel\ExcelUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelWorkbookListBox.cs">
+      <Link>Util\Excel\ExcelWorkbookListBox.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\ListBoxPlus.cs">
+      <Link>Util\ListBoxPlus.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\..\Common\Win32Functions.cs">
+      <Link>Util\Win32Functions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Win32Window.cs">
+      <Link>Util\Win32Window.cs</Link>
     </Compile>
     <Compile Include="..\Common\AssemblyUtil2.cs">
       <Link>Util\AssemblyUtil2.cs</Link>
@@ -204,6 +224,12 @@
     <Compile Include="Dialogs\About\AboutDialog.designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\Alpha\AlphaDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Alpha\AlphaDialog.designer.cs">
+      <DependentUpon>AlphaDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,11 +244,17 @@
     <Compile Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.designer.cs">
       <DependentUpon>AnalyzeTwitterNetworkDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\AutoFillUserSettings\AutoFillUserSettingsDialog.cs">
+    <Compile Include="Dialogs\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\AutoFillUserSettings\AutoFillUserSettingsDialog.designer.cs">
-      <DependentUpon>AutoFillUserSettingsDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.designer.cs">
+      <DependentUpon>AutoFillWorkbookWithSchemeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AutoFillWorkbook\AutoFillWorkbookDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFillWorkbook\AutoFillWorkbookDialog.designer.cs">
+      <DependentUpon>AutoFillWorkbookDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.cs">
       <SubType>Form</SubType>
@@ -262,29 +294,53 @@
     <Compile Include="Dialogs\DynamicFilters\DynamicFilterDialog.designer.cs">
       <DependentUpon>DynamicFilterDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\EdgeWidth\EdgeWidthDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\EdgeWidth\EdgeWidthDialog.designer.cs">
+      <DependentUpon>EdgeWidthDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.designer.cs">
       <DependentUpon>GeneralUserSettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.cs">
+    <Compile Include="Dialogs\GraphImageUserSettings\GraphImageUserSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.designer.cs">
-      <DependentUpon>GraphMetricUserSettingsDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\GraphImageUserSettings\GraphImageUserSettingsDialog.designer.cs">
+      <DependentUpon>GraphImageUserSettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.cs">
+    <Compile Include="Dialogs\GraphMetrics\GraphMetricsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.designer.cs">
-      <DependentUpon>ImportEdgesFromWorkbookDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\GraphMetrics\GraphMetricsDialog.designer.cs">
+      <DependentUpon>GraphMetricsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportFromEdgeWorkbook\ImportFromEdgeWorkbookDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImportFromEdgeWorkbook\ImportFromEdgeWorkbookDialog.designer.cs">
+      <DependentUpon>ImportFromEdgeWorkbookDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportFromMatrixWorkbook\ImportFromMatrixWorkbookDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImportFromMatrixWorkbook\ImportFromMatrixWorkbookDialog.designer.cs">
+      <DependentUpon>ImportFromMatrixWorkbookDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.designer.cs">
       <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\MatrixWorkbookSamples\MatrixWorkbookSamplesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\MatrixWorkbookSamples\MatrixWorkbookSamplesDialog.designer.cs">
+      <DependentUpon>MatrixWorkbookSamplesDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Notification\NotificationDialog.cs">
       <SubType>Form</SubType>
@@ -324,6 +380,12 @@
     <Compile Include="Dialogs\VertexAttributes\VertexAttributesDialog.Designer.cs">
       <DependentUpon>VertexAttributesDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\VertexRadius\VertexRadiusDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\VertexRadius\VertexRadiusDialog.designer.cs">
+      <DependentUpon>VertexRadiusDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -335,8 +397,10 @@
     <Compile Include="EventArgs\RequestEdgeCommandEnableEventArgs.cs" />
     <Compile Include="EventArgs\RequestVertexCommandEnableEventArgs.cs" />
     <Compile Include="EventArgs\RunEdgeCommandEventArgs.cs" />
+    <Compile Include="EventArgs\RunRibbonCommandEventArgs.cs" />
     <Compile Include="EventArgs\RunVertexCommandEventArgs.cs" />
     <Compile Include="EventArgs\SelectionChangedEventArgs.cs" />
+    <Compile Include="EventArgs\SetVisualAttributeEventArgs.cs" />
     <Compile Include="EventArgs\TableSelectionChangedEventArgs.cs" />
     <Compile Include="EventArgs\VertexAttributesEditedEventArgs.cs" />
     <Compile Include="EventArgs\VerticesMovedEventArgs2.cs" />
@@ -353,7 +417,8 @@
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnOrdered.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnWithID.cs" />
-    <Compile Include="GraphMetrics\GraphMetricProgress.cs" />
+    <Compile Include="GraphMetrics\GraphMetricProgress.cs">
+    </Compile>
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValue.cs" />
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueOrdered.cs" />
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueWithID.cs" />
@@ -366,10 +431,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialog.resx">
       <DependentUpon>AnalyzeEmailNetworkDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\AutoFillUserSettings\AutoFillUserSettingsDialog.resx">
-      <DependentUpon>AutoFillUserSettingsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.resx">
@@ -435,6 +496,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Ribbon\LayoutManagerForRibbonDropDown.cs" />
     <Compile Include="Ribbon\Ribbon.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -483,7 +545,6 @@
     <Compile Include="Sheet7.Designer.cs">
       <DependentUpon>Sheet7.Designer.xml</DependentUpon>
     </Compile>
-    <Compile Include="Sheets1And2Helper.cs" />
     <Compile Include="TaskPane\TaskPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -495,6 +556,15 @@
     </Compile>
     <Compile Include="ThisWorkbook.Designer.cs">
       <DependentUpon>ThisWorkbook.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\AutoFillColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UIComponents\AutoFillEdgeColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UIComponents\AutoFillVertexColumnComboBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UIComponents\ExcelTemplateForm.cs">
       <SubType>Form</SubType>
@@ -508,10 +578,12 @@
     <Compile Include="UserSettings\AutoFill\NumericComparisonColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\AutoFill\NumericRangeColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\GeneralUserSettings.cs" />
+    <Compile Include="UserSettings\GraphImageUserSettings.cs" />
     <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
     <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
     <Compile Include="Util\ApplicationUtil.cs" />
+    <Compile Include="Util\ColumnGroupManager.cs" />
     <Compile Include="Util\ComparisonOperator.cs" />
     <Compile Include="Util\DuplicateEdgeMerger.cs" />
     <Compile Include="Util\DynamicFilters\DateTimeFilterParameters.cs" />
@@ -519,12 +591,9 @@
     <Compile Include="Util\DynamicFilters\DynamicFilterUtil.cs" />
     <Compile Include="Util\DynamicFilters\NumericFilterParameters.cs" />
     <Compile Include="Util\DynamicFilters\RangeFilterParameters.cs" />
-    <Compile Include="Util\EdgeImporter.cs" />
     <Compile Include="Util\ErrorUtil.cs" />
     <Compile Include="Util\ExcelColumnWidths.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
-    <Compile Include="Util\ExportWorkbookException.cs" />
-    <Compile Include="Util\ImportEdgeException.cs" />
     <Compile Include="Util\NodeXLControlUtil.cs" />
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
     <Compile Include="Util\OldWorkbookConversionException.cs" />
@@ -536,9 +605,18 @@
     <Compile Include="Util\TableImagePopulator.cs" />
     <Compile Include="Util\TemporaryImages.cs" />
     <Compile Include="Util\VertexWorksheetPopulator.cs" />
+    <Compile Include="Util\VisualAttributes.cs" />
     <Compile Include="Util\WorkbookAutoFiller.cs" />
-    <Compile Include="Util\WorkbookExporter.cs" />
+    <Compile Include="Util\WorkbookSchemeAutoFiller.cs" />
     <Compile Include="Util\WorksheetContextMenuManager.cs" />
+    <Compile Include="Util\WorksheetHelpers\SheetHelper.cs" />
+    <Compile Include="Util\WorksheetHelpers\Sheets1And2Helper.cs" />
+    <Compile Include="WorkbookExporters\ExportWorkbookException.cs" />
+    <Compile Include="WorkbookExporters\WorkbookExporter.cs" />
+    <Compile Include="WorkbookImporters\EdgeWorkbookImporter.cs" />
+    <Compile Include="WorkbookImporters\ImportWorkbookException.cs" />
+    <Compile Include="WorkbookImporters\MatrixWorkbookImporter.cs" />
+    <Compile Include="WorkbookImporters\WorkbookImporterBase.cs" />
     <Compile Include="WorkbookReader\ReadWorkbookContext.cs" />
     <Compile Include="WorkbookReader\ValueConverters\AlphaConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\BooleanConverter.cs" />
@@ -634,8 +712,17 @@
       <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Alpha\AlphaDialog.resx">
+      <DependentUpon>AlphaDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.resx">
       <DependentUpon>AnalyzeTwitterNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.resx">
+      <DependentUpon>AutoFillWorkbookWithSchemeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFillWorkbook\AutoFillWorkbookDialog.resx">
+      <DependentUpon>AutoFillWorkbookDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.resx">
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
@@ -647,15 +734,26 @@
     <EmbeddedResource Include="Dialogs\DynamicFilters\DynamicFilterDialog.resx">
       <DependentUpon>DynamicFilterDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\GraphMetricUserSettings\GraphMetricUserSettingsDialog.resx">
-      <DependentUpon>GraphMetricUserSettingsDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="Dialogs\EdgeWidth\EdgeWidthDialog.resx">
+      <DependentUpon>EdgeWidthDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ImportEdgesFromWorkbook\ImportEdgesFromWorkbookDialog.resx">
-      <DependentUpon>ImportEdgesFromWorkbookDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\GraphImageUserSettings\GraphImageUserSettingsDialog.resx">
+      <DependentUpon>GraphImageUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GraphMetrics\GraphMetricsDialog.resx">
+      <DependentUpon>GraphMetricsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImportFromEdgeWorkbook\ImportFromEdgeWorkbookDialog.resx">
+      <DependentUpon>ImportFromEdgeWorkbookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImportFromMatrixWorkbook\ImportFromMatrixWorkbookDialog.resx">
+      <DependentUpon>ImportFromMatrixWorkbookDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.resx">
       <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\MatrixWorkbookSamples\MatrixWorkbookSamplesDialog.resx">
+      <DependentUpon>MatrixWorkbookSamplesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Notification\NotificationDialog.resx">
       <DependentUpon>NotificationDialog.cs</DependentUpon>
@@ -666,6 +764,9 @@
     <EmbeddedResource Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.resx">
       <DependentUpon>SelectSubgraphsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\VertexRadius\VertexRadiusDialog.resx">
+      <DependentUpon>VertexRadiusDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\SampleSubgraphs\1.0.jpg" />
     <EmbeddedResource Include="Images\SampleSubgraphs\1.5.jpg" />

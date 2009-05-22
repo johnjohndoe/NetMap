@@ -117,32 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="rddGraphDirectedness.SuperTip" xml:space="preserve">
-    <value>Specify whether the graph is directed or undirected.
+  <data name="btnImportPajekFile.SuperTip" xml:space="preserve">
+    <value>Import edge and vertex lists from a Pajek text file.
 
-In a directed graph, "A,B" and "B,A" are different edges.  In an undirected graph, they are the same edge.
-
-Arrows are included on the edges in a directed graph.  You can set the arrow size by clicking Options in the NodeXL graph pane.
-
-Graph metrics are calculated differently for directed and undirected graphs.</value>
+This clears the workbook, then imports the "vertices," "edges," "edgeslist," "arcs," and "arcslist" sections of a Pajek text file into the workbook.  Only the vertex names are imported; all edge and vertex attributes are ignored.</value>
   </data>
-  <data name="btnToggleGraphVisibility.SuperTip" xml:space="preserve">
-    <value>Show or hide the NodeXL graph pane.
+  <data name="btnImportFromEdgeWorkbook.SuperTip" xml:space="preserve">
+    <value>Import edges from an open workbook that contains at least two columns, one for Vertex 1 and one for Vertex 2.  You can import additional edge columns as well.
 
-The NodeXL graph pane appears at the right edge of the Excel window by default.  Use this button to hide it.
-
-You can move the NodeXL graph pane by clicking and dragging the pane's title bar.  (The title bar says "Document Actions," but that's only because Excel doesn't allow the title to be changed.)  The dragging behavior is finicky, so it might take some practice.
-</value>
+Excel can read comma-delimited, tab-delimited, and various other file formats, so this feature can be used to import edges from a wide variety of sources.</value>
   </data>
-  <data name="btnEditAutoFillUserSettings.SuperTip" xml:space="preserve">
-    <value>Automatically fill in the edge and vertex attribute columns when the workbook is read into the graph.
+  <data name="btnAnalyzeEmailNetwork.SuperTip" xml:space="preserve">
+    <value>Analyze the relationships between the people in my email network.
 
-Use this feature to automatically calculate and fill in the graph's visual attribute columns, such as edge width and vertex shape, using values from other columns.  The visual attribute columns get filled in when the workbook is read into the graph.</value>
+If your computer has Windows Desktop Search and you use Outlook, Outlook Express, or Windows Mail, you can use this feature to analyze the relationships between the people you communicate with via email.  (Windows Desktop Search is included with Windows Vista.  It can also be downloaded and installed on Windows XP.)</value>
   </data>
   <data name="btnMergeDuplicateEdges.SuperTip" xml:space="preserve">
-    <value>Merge edges that connect the same vertices and add a Tie Strength column to the Edges worksheet.
+    <value>Merge edges that connect the same vertices and add an Edge Weight column to the Edges worksheet.
 
-If the Edges worksheet contains two "A,B" rows, for example, then one of the rows is removed and the Tie Strength cell in the remaining row is set to 2.
+If the Edges worksheet contains two "A,B" rows, for example, then one of the rows is removed and the Edge Weight cell in the remaining row is set to 2.
 
 In a directed graph, "A,B" and "B,A" are not considered duplicates.  In an undirected graph, they are considered duplicates.
 
@@ -155,46 +148,144 @@ This occurs automatically when you read the workbook into the graph, but you can
 
 Vertex names that are already in the Vertices worksheet do not get overwritten.</value>
   </data>
-  <data name="spltCalculateGraphMetrics.SuperTip" xml:space="preserve">
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnReadWorkbook.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-Calculate the selected graph metrics and insert the results into the workbook.
+        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
+</value>
+  </data>
+  <data name="btnReadWorkbook.SuperTip" xml:space="preserve">
+    <value>Read the workbook contents into the graph pane.
 
-To select the graph metrics to calculate, click the down-arrow at the right edge of this button, then click Select Graph Metrics.
-	</value>
+The NodeXL graph pane appears at the right edge of the Excel window by default.  You can move it by clicking and dragging the pane's title bar.  (The title bar says "Document Actions," but that's only because Excel doesn't allow the title to be changed.)  The dragging behavior is finicky, so it might take some practice.</value>
+  </data>
+  <data name="rddGraphDirectedness.SuperTip" xml:space="preserve">
+    <value>Specify whether the graph is directed or undirected.
+
+In a directed graph, "A,B" and "B,A" are different edges.  In an undirected graph, they are the same edge.
+
+Arrows are included on the edges in a directed graph.  You can set the arrow size by clicking Options in the NodeXL graph pane.
+
+Graph metrics are calculated differently for directed and undirected graphs.</value>
+  </data>
+  <data name="rddLayout.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAONJREFUOE9j/P//PwM2YGgX1MfKzFT4+++/sPOH1q3GqggkCDIAGzZ1CP5/98WP/+bW
+        9kBp7GrAloMIA9vAPpAGIB0KUwxigzQD7UAWw1AHNoBY27Cpg7kAwzaQwS5RtSjOx+YqrP6HaUSnsYUF
+        Vv+DFNqFlP8HYn0QjawRPbww/A+y1T604r+5f4GMvnv6f1X7+CXyFuH/JU2CwAahhwPIBVj9DzTgv6ZT
+        Ug/QALzhgDUMQC4A2aZgGQGmQS7AlRZwpgOQBpizkdIGHdMBsamTOnkBWwDhih10tThdgC8HIssBAPSa
+        YEjD5lgzAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnAutoFillWorkbookWithScheme.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        XZ+MAAAAAElFTkSuQmCC
+</value>
   </data>
   <data name="btnCreateClusters.SuperTip" xml:space="preserve">
     <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
 	
 The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.
 
-The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Create Clusters will clear any manually-entered clusters.
+The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Find Clusters will clear any manually-entered clusters.
 
-The Show Clusters checkbox must be checked if you want the clusters to be read when the workbook is read into the graph.
+The Clusters checkbox in the Show/Hide ribbon group must be checked if you want the clusters to be read when the workbook is read into the graph.
 
-Create Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
+Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
-  <data name="chkReadClusters.SuperTip" xml:space="preserve">
+  <data name="cbxReadClusters.SuperTip" xml:space="preserve">
     <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
 	
 When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
 	
-You can fill in these worksheets manually, or click the Create Clusters button to fill them in automatically.  Create Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
+You can fill in these worksheets manually, or click the Find Clusters button to fill them in automatically.  Find Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
 
-Create Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
+Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
-  <data name="btnImportPajekFile.SuperTip" xml:space="preserve">
-    <value>Import edge and vertex lists from a Pajek text file.
+  <data name="cbxAutoReadWorkbook.SuperTip" xml:space="preserve">
+    <value>Automatically refresh the graph after setting a visual property in the Ribbon, applying a scheme, or autofilling columns.
 
-This clears the workbook, then imports the "vertices," "edges," "edgeslist," "arcs," and "arcslist" sections of a Pajek text file into the workbook.  Only the vertex names are imported; all edge and vertex attributes are ignored.</value>
+When a visual property is set in the Ribbon, the graph will not be laid out again.
+
+For large graphs that take a long time to refresh, you can uncheck this and manually refresh the graph instead.
+
+If you enter a visual property directly in the workbook, the graph will not be automatically refreshed.</value>
   </data>
-  <data name="btnImportEdgesFromWorkbook.SuperTip" xml:space="preserve">
-    <value>Import edges from another open workbook that contains at least two columns, one for Vertex 1 and one for Vertex 2.  You can import additional edge columns as well.
+  <data name="cbxReadClusters.SuperTip" xml:space="preserve">
+    <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
+	
+When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
+	
+You can fill in these worksheets manually, or click the Find Clusters button to fill them in automatically.  Find Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
 
-Excel can read comma-delimited, tab-delimited, and various other file formats, so this feature can be used to import edges from a wide variety of sources.</value>
-  </data>
-  <data name="btnAnalyzeEmailNetwork.SuperTip" xml:space="preserve">
-    <value>Analyze the relationships between the people in my email network.
-
-If your computer has Windows Desktop Search and you use Outlook, Outlook Express, or Windows Mail, you can use this feature to analyze the relationships between the people you communicate with via email.  (Windows Desktop Search is included with Windows Vista.  It can also be downloaded and installed on Windows XP.)</value>
+Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
 </root>

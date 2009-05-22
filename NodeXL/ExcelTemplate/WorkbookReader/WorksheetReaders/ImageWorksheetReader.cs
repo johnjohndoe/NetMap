@@ -80,9 +80,25 @@ public class ImageWorksheetReader : WorksheetReaderBase
         if ( ExcelUtil.TryGetTable(workbook, WorksheetNames.Images,
             TableNames.Images, out oImageTable) )
         {
+            // The code that reads the table can handle hidden rows, but not
+            // hidden columns.  Temporarily show all hidden columns in the
+            // table.
+
+            ExcelHiddenColumns oHiddenColumns =
+                ExcelColumnHider.ShowHiddenColumns(oImageTable);
+
             // Add the images in the table to the dictionary.
 
-            AddImageTableToDictionary(oImageTable, readWorkbookContext);
+            try
+            {
+                AddImageTableToDictionary(workbook, oImageTable,
+                    readWorkbookContext);
+            }
+            finally
+            {
+                ExcelColumnHider.RestoreHiddenColumns(oImageTable,
+                    oHiddenColumns);
+            }
         }
     }
 
@@ -131,6 +147,10 @@ public class ImageWorksheetReader : WorksheetReaderBase
     /// Adds the contents of the image table to an image dictionary.
     /// </summary>
     ///
+    /// <param name="oWorkbook">
+    /// Workbook containing the graph data.
+    /// </param>
+    ///
     /// <param name="oImageTable">
     /// Table that contains the image data.
     /// </param>
@@ -144,10 +164,12 @@ public class ImageWorksheetReader : WorksheetReaderBase
     protected void
     AddImageTableToDictionary
     (
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook,
         ListObject oImageTable,
         ReadWorkbookContext oReadWorkbookContext
     )
     {
+        Debug.Assert(oWorkbook != null);
         Debug.Assert(oImageTable != null);
         Debug.Assert(oReadWorkbookContext != null);
         AssertValid();
@@ -182,7 +204,7 @@ public class ImageWorksheetReader : WorksheetReaderBase
         {
             // Add the contents of the area to the dictionary.
 
-            AddImageRangeAreaToDictionary(oImageRangeArea,
+            AddImageRangeAreaToDictionary(oWorkbook, oImageRangeArea,
                 oImageTableColumnIndexes, oReadWorkbookContext);
         }
     }
@@ -194,6 +216,10 @@ public class ImageWorksheetReader : WorksheetReaderBase
     /// Adds the contents of one area of the image range to an image
     /// dictionary.
     /// </summary>
+    ///
+    /// <param name="oWorkbook">
+    /// Workbook containing the graph data.
+    /// </param>
     ///
     /// <param name="oImageRangeArea">
     /// One area of the range that contains image data.
@@ -217,11 +243,13 @@ public class ImageWorksheetReader : WorksheetReaderBase
     protected void
     AddImageRangeAreaToDictionary
     (
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook,
         Range oImageRangeArea,
         ImageTableColumnIndexes oImageTableColumnIndexes,
         ReadWorkbookContext oReadWorkbookContext
     )
     {
+        Debug.Assert(oWorkbook != null);
         Debug.Assert(oImageRangeArea != null);
         Debug.Assert(oImageTableColumnIndexes.Key != NoSuchColumn);
         Debug.Assert(oImageTableColumnIndexes.FilePath != NoSuchColumn);
@@ -287,6 +315,30 @@ public class ImageWorksheetReader : WorksheetReaderBase
                     ;
 
                 goto InvalidFilePath;
+            }
+
+            if ( !Path.IsPathRooted(sFilePath) )
+            {
+                // The file path is relative to the workbook location.
+
+                String sWorkbookPath = oWorkbook.Path;
+
+                if ( String.IsNullOrEmpty(sWorkbookPath) )
+                {
+                    sInvalidFilePathErrorMessage = 
+
+                        "The image file specified in cell {0} has a relative"
+                        + " path.  Relative paths must be relative to the"
+                        + " saved workbook file, but the workbook hasn't been"
+                        + " saved yet.  Either save the workbook or change the"
+                        + " image file to an absolute path, such as"
+                        + " \"C:\\MyImages\\Image.jpg\"."
+                        ;
+
+                    goto InvalidFilePath;
+                }
+
+                sFilePath = Path.Combine(sWorkbookPath, sFilePath);
             }
 
             if ( !File.Exists(sFilePath) )

@@ -334,7 +334,7 @@ public static class TableColumnMapper : Object
             dSourceCalculationNumber1, dSourceCalculationNumber2,
             destinationColor1, destinationColor2);
 
-        ColorConverter oColorConverter = new ColorConverter();
+        ColorConverter2 oColorConverter2 = new ColorConverter2();
 
         // Loop through the areas.
 
@@ -374,11 +374,11 @@ public static class TableColumnMapper : Object
                     oColorGradientMapper.ColorMetricToColor(dSourceNumber);
 
                 // Write the color in a format that is understood by
-                // ColorConverter.ConvertFromString(), which is what
+                // ColorConverter2.WorkbookToGraph(), which is what
                 // WorksheetReaderBase uses.
 
                 aoDestinationAreaValues[iRow, 1] =
-                    oColorConverter.ConvertToString(oDestinationColor);
+                    oColorConverter2.GraphToWorkbook(oDestinationColor);
             }
 
             oDestinationArea.set_Value(Missing.Value, aoDestinationAreaValues);
@@ -696,20 +696,12 @@ public static class TableColumnMapper : Object
 
         oVisibleSourceRange = oVisibleDestinationRange = null;
 
-        Range oSourceRange, oDestinationRange;
-
         return (
-            ExcelUtil.TryGetTableColumnData(oTable, sSourceColumnName,
-                out oSourceRange)
+            ExcelUtil.TryGetVisibleTableColumnData(oTable,
+                sSourceColumnName, out oVisibleSourceRange)
             &&
-            ExcelUtil.TryGetTableColumnData(oTable, sDestinationColumnName,
-                out oDestinationRange)
-            &&
-            ExcelUtil.TryGetVisibleRange(oSourceRange,
-                out oVisibleSourceRange)
-            &&
-            ExcelUtil.TryGetVisibleRange(oDestinationRange,
-                out oVisibleDestinationRange)
+            ExcelUtil.TryGetVisibleTableColumnData(oTable,
+                sDestinationColumnName, out oVisibleDestinationRange)
             );
     }
 
@@ -756,6 +748,15 @@ public static class TableColumnMapper : Object
             case "System.Double":
 
                 dNumber = (Double)oValue;
+                return (true);
+
+            case "System.DateTime":
+
+                // This is the value type returned by Excel when a cell is
+                // formatted as a Date.  (When a cell is formatted as a Time,
+                // Excel returns a Double.)
+
+                dNumber = ( (DateTime)oValue ).Ticks;
                 return (true);
 
             default:
@@ -1209,7 +1210,7 @@ public static class TableColumnMapper : Object
         {
             // ColorGradientMapper doesn't allow a zero-width number range.
 
-            dSourceCalculationNumber2 += 0.1;
+            dSourceCalculationNumber2 *= 1.1;
         }
 
         const Int32 DiscreteColorCount = 40;

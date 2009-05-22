@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.Research.WinFormsControls;
 using System.Diagnostics;
+using Microsoft.NodeXL.Core;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -24,8 +25,13 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
+/// This is a modeless dialog.  To show it, call its <see
+/// cref="Form.Show(IWin32Window)" /> method.
+///
+/// <para>
 /// A dynamic filter is a control that can be adjusted to selectively show and
 /// hide edges and vertices in the graph in real time.
+/// </para>
 ///
 /// <para>
 /// This dialog shows a RangeTrackBar or DateTimeRangeTrackBar control for each
@@ -62,6 +68,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// recalculate the Dynamic Filter column in the edge or vertex worksheet, and
 /// fires a <see cref="DynamicFilterColumnsChanged" /> event telling the
 /// TaskPane to read the columns.
+/// </para>
+///
+/// <para>
+/// In addition to the <see cref="DynamicFilterColumnsChanged" /> event, the
+/// TaskPane should handle the <see cref="FilteredAlphaChanged" /> event and
+/// redraw the graph with the new filtered alpha value when the event fires.
 /// </para>
 ///
 /// </remarks>
@@ -110,17 +122,26 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         m_oExcelCalculationRestorer.TimerIntervalMs =
             CalculationRestorerTimerIntervalMs;
 
-        m_bHandleRangeTrackBarEvents = false;
+        m_bHandleControlEvents = false;
 
-        m_oRangeTrackBarTimer = new Timer();
-        m_oRangeTrackBarTimer.Interval = RangeTrackBarTimerIntervalMs;
+        m_oChangeEventDelayTimer = new Timer();
+        m_oChangeEventDelayTimer.Interval = ChangeEventTimerIntervalMs;
 
-        m_oRangeTrackBarTimer.Tick += new EventHandler(
-            this.m_oRangeTrackBarTimer_Tick);
+        m_oChangeEventDelayTimer.Tick += new EventHandler(
+            this.m_oChangeEventDelayTimer_Tick);
 
         m_oDynamicFilterSettings = null;
         m_oEdgeDynamicFilterColumnData = null;
         m_oVertexDynamicFilterColumnData = null;
+
+        nudFilteredAlpha.Minimum =
+            (Decimal)AlphaConverter.MinimumAlphaWorkbook;
+
+        nudFilteredAlpha.Maximum =
+            (Decimal)AlphaConverter.MaximumAlphaWorkbook;
+
+        nudFilteredAlpha.Value = (Decimal)
+            ( new PerWorkbookSettings(m_oWorkbook) ).FilteredAlpha;
 
         AssertValid();
     }
@@ -148,15 +169,70 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Property: FilteredAlpha
+    //
+    /// <summary>
+    /// Gets the alpha component to use for vertices and edges that are
+    /// filtered.
+    /// </summary>
+    ///
+    /// <value>
+    /// The alpha value to use for vertices and edges that have a <see
+    /// cref="Microsoft.NodeXL.Core.ReservedMetadataKeys.Visibility" /> value
+    /// of <see cref="Microsoft.NodeXL.Core.VisibilityKeyValue.Filtered" />.
+    /// The value is in workbook units, between
+    /// <see cref="AlphaConverter.MinimumAlphaWorkbook" /> and <see
+    /// cref="AlphaConverter.MaximumAlphaWorkbook" />.  The value must be
+    /// converted using <see cref="AlphaConverter.WorkbookToGraph" /> before
+    /// applying it to a graph.
+    /// </value>
+    ///
+    /// <remarks>
+    /// The TaskPane should read this property from its <see
+    /// cref="FilteredAlphaChanged" /> event handler.
+    /// </remarks>
+    //*************************************************************************
+
+    public Single
+    FilteredAlpha
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Single)nudFilteredAlpha.Value );
+        }
+    }
+
+    //*************************************************************************
     //  Event: DynamicFilterColumnsChanged
     //
     /// <summary>
     /// Occurs when one or more dynamic filter columns change.
     /// </summary>
+    ///
+    /// <remarks>
+    /// See the class topic for details on how this event should be handled.
+    /// </remarks>
     //*************************************************************************
 
     public event DynamicFilterColumnsChangedEventHandler
         DynamicFilterColumnsChanged;
+
+
+    //*************************************************************************
+    //  Event: FilteredAlphaChanged
+    //
+    /// <summary>
+    /// Occurs when the <see cref="FilteredAlpha" /> property changes.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// See the class topic for details on how this event should be handled.
+    /// </remarks>
+    //*************************************************************************
+
+    public event EventHandler FilteredAlphaChanged;
 
 
     //*************************************************************************
@@ -195,7 +271,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        m_bHandleRangeTrackBarEvents = false;
+        m_bHandleControlEvents = false;
 
         m_oEdgeDynamicFilterColumnData =
             InitializeDynamicFiltersForOneTable(WorksheetNames.Edges,
@@ -209,7 +285,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         grpEdgeFilters.Visible = grpVertexFilters.Visible = true;
 
-        m_bHandleRangeTrackBarEvents = true;
+        m_bHandleControlEvents = true;
     }
 
     //*************************************************************************
@@ -389,7 +465,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         // events from being handled, which would be inefficient.  Instead,
         // process all the changes at once when done looping.
 
-        m_bHandleRangeTrackBarEvents = false;
+        m_bHandleControlEvents = false;
 
         // Loop through all child controls of both group boxes.
 
@@ -430,7 +506,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
             }
         }
 
-        m_bHandleRangeTrackBarEvents = true;
+        m_bHandleControlEvents = true;
 
         // Now recalculate the dynamic filter columns using the values just
         // written to the dynamic filter settings table.
@@ -606,7 +682,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         // Make sure that a bunch of unwanted events during initialization are
         // avoided.
 
-        Debug.Assert(!m_bHandleRangeTrackBarEvents);
+        Debug.Assert(!m_bHandleControlEvents);
 
         oDynamicFilterRangeTrackBar.SelectedRangeChanged +=
             new EventHandler(this.RangeTrackBar_SelectedRangeChanged);
@@ -913,6 +989,38 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: StartChangeEventDelayTimer()
+    //
+    /// <summary>
+    /// Starts the timer used to delay the DynamicFilterColumnsChanged and
+    /// FilteredAlphaChanged events.
+    /// </summary>
+    ///
+    /// <param name="oChangedControl">
+    /// The control that was just changed by the user.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    StartChangeEventDelayTimer
+    (
+        Object oChangedControl
+    )
+    {
+        Debug.Assert(oChangedControl != null);
+        AssertValid();
+
+        m_oChangeEventDelayTimer.Stop();
+
+        // Store the changed control in the timer's Tag for use by the Tick
+        // event handler.
+
+        m_oChangeEventDelayTimer.Tag = oChangedControl;
+
+        m_oChangeEventDelayTimer.Start();
+    }
+
+    //*************************************************************************
     //  Method: FireDynamicFilterColumnsChanged()
     //
     /// <summary>
@@ -941,6 +1049,22 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
             oEventHandler( this, new DynamicFilterColumnsChangedEventArgs(
                 eDynamicFilterColumns) );
         }
+    }
+
+    //*************************************************************************
+    //  Method: FireFilteredAlphaChanged()
+    //
+    /// <summary>
+    /// Fires the <see cref="FilteredAlphaChanged" /> event if appropriate.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    FireFilteredAlphaChanged()
+    {
+        AssertValid();
+
+        EventUtil.FireEvent(this, this.FilteredAlphaChanged);
     }
 
     //*************************************************************************
@@ -1084,15 +1208,18 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         base.OnClosed(e);
 
-        if (m_oRangeTrackBarTimer != null)
+        if (m_oChangeEventDelayTimer != null)
         {
-            m_oRangeTrackBarTimer.Stop();
+            m_oChangeEventDelayTimer.Stop();
         }
 
         // Immediately restore the original value of the
         // Application.Calculation property.
 
         m_oExcelCalculationRestorer.Restore();
+
+        ( new PerWorkbookSettings(m_oWorkbook) ).FilteredAlpha =
+            (Single)nudFilteredAlpha.Value;
     }
 
     //*************************************************************************
@@ -1120,7 +1247,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        if (!m_bHandleRangeTrackBarEvents)
+        if (!m_bHandleControlEvents)
         {
             return;
         }
@@ -1136,66 +1263,17 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         // come in.  This allows the RangeTrackBar control to update more
         // quickly and postpones the redrawing of the graph until the user
         // pauses or stops changing the RangeTrackBar control.
-        //
-        // Store the range track bar in the timer's Tag for use by the Tick
-        // event handler.
 
         Debug.Assert(sender is IDynamicFilterRangeTrackBar);
 
-        m_oRangeTrackBarTimer.Stop();
-        m_oRangeTrackBarTimer.Tag = (IDynamicFilterRangeTrackBar)sender;
-        m_oRangeTrackBarTimer.Start();
+        StartChangeEventDelayTimer( (IDynamicFilterRangeTrackBar)sender );
     }
 
     //*************************************************************************
-    //  Method: m_oRangeTrackBarTimer_Tick()
+    //  Method: nudFilteredAlpha_ValueChanged()
     //
     /// <summary>
-    /// Handles the Tick event on the RangeTrackBar timer.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    m_oRangeTrackBarTimer_Tick
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        // See RangeTrackBar_SelectedRangeChanged() for details on how this
-        // timer is used.
-
-        m_oRangeTrackBarTimer.Stop();
-
-        Debug.Assert(m_oRangeTrackBarTimer.Tag is IDynamicFilterRangeTrackBar);
-
-        try
-        {
-            OnSelectedRangeChanged(
-                (IDynamicFilterRangeTrackBar)m_oRangeTrackBarTimer.Tag );
-        }
-        catch (Exception oException)
-        {
-            ErrorUtil.OnException(oException);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: tsbResetAllDynamicFilters_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the tsbResetAllDynamicFilters
-    /// ToolStripButton.
+    /// Handles the ValueChanged event on the nudFilteredAlpha NumericUpdDown.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1208,7 +1286,97 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    tsbResetAllDynamicFilters_Click
+    nudFilteredAlpha_ValueChanged
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if (!m_bHandleControlEvents)
+        {
+            return;
+        }
+
+        // See the comments in RangeTrackBar_SelectedRangeChanged() for details
+        // on how the change event delay timer works.
+
+        StartChangeEventDelayTimer(nudFilteredAlpha);
+    }
+
+    //*************************************************************************
+    //  Method: m_oChangeEventDelayTimer_Tick()
+    //
+    /// <summary>
+    /// Handles the Tick event on the change event delay timer.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    m_oChangeEventDelayTimer_Tick
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        // See RangeTrackBar_SelectedRangeChanged() for details on how this
+        // timer is used.
+
+        m_oChangeEventDelayTimer.Stop();
+
+        Object oChangedControl = m_oChangeEventDelayTimer.Tag;
+
+        try
+        {
+            if (oChangedControl is IDynamicFilterRangeTrackBar)
+            {
+                OnSelectedRangeChanged(
+                    (IDynamicFilterRangeTrackBar)oChangedControl );
+            }
+            else if (oChangedControl is NumericUpDown)
+            {
+                FireFilteredAlphaChanged();
+            }
+            else
+            {
+                Debug.Assert(false);
+            }
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: btnResetAllDynamicFilters_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnResetAllDynamicFilters Button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnResetAllDynamicFilters_Click
     (
         object sender,
         EventArgs e
@@ -1227,10 +1395,10 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: tsbReadWorkbook_Click()
+    //  Method: btnReadWorkbook_Click()
     //
     /// <summary>
-    /// Handles the Click event on the tsbReadWorkbook ToolStripButton.
+    /// Handles the Click event on the btnReadWorkbook Button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1243,7 +1411,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    tsbReadWorkbook_Click
+    btnReadWorkbook_Click
     (
         object sender,
         EventArgs e
@@ -1264,10 +1432,10 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: tsbClose_Click()
+    //  Method: btnClose_Click()
     //
     /// <summary>
-    /// Handles the Click event on the tsbClose ToolStripButton.
+    /// Handles the Click event on the btnClose Button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1280,7 +1448,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    tsbClose_Click
+    btnClose_Click
     (
         object sender,
         EventArgs e
@@ -1310,8 +1478,8 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         Debug.Assert(m_oDynamicFilterDialogUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oExcelCalculationRestorer != null);
-        // m_bHandleRangeTrackBarEvents
-        Debug.Assert(m_oRangeTrackBarTimer != null);
+        // m_bHandleControlEvents
+        Debug.Assert(m_oChangeEventDelayTimer != null);
         // m_oDynamicFilterSettings
         // m_oEdgeDynamicFilterColumnData
         // m_oVertexDynamicFilterColumnData
@@ -1349,9 +1517,9 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
     protected const Int32 CalculationRestorerTimerIntervalMs = 2000;
 
-    /// Interval to use for the RangeTrackBar event timer, in milliseconds.
+    /// Interval to use for the change event delay timer, in milliseconds.
 
-    protected const Int32 RangeTrackBarTimerIntervalMs = 50;
+    protected const Int32 ChangeEventTimerIntervalMs = 50;
 
 
     //*************************************************************************
@@ -1372,14 +1540,15 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
     protected ExcelCalculationRestorer m_oExcelCalculationRestorer;
 
-    /// true if the RangeTrackBar.SelectedRangeChanged events should be
-    /// handled.
+    /// true if the RangeTrackBar.SelectedRangeChanged and
+    /// nudFilteredAlpha.ValueChanged events should be handled.
 
-    protected Boolean m_bHandleRangeTrackBarEvents;
+    protected Boolean m_bHandleControlEvents;
 
-    /// Timer used to fire the DynamicFilterColumnsChanged event.
+    /// Timer used to delay the DynamicFilterColumnsChanged and
+    /// FilteredAlphaChanged events.
 
-    protected Timer m_oRangeTrackBarTimer;
+    protected Timer m_oChangeEventDelayTimer;
 
     /// Persisted settings for the dynamic filters, or null if the settings
     /// haven't been obtained yet.
@@ -1481,7 +1650,7 @@ DynamicFilterColumns
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("DynamicFilterDialog2") ]
+[ SettingsGroupNameAttribute("DynamicFilterDialog3") ]
 
 public class DynamicFilterDialogUserSettings : FormSettings
 {

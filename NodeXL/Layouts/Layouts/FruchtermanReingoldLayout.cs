@@ -59,6 +59,68 @@ namespace Microsoft.NodeXL.Layouts
 /// is included in layout calculations but its own location is left unmodified.
 /// </para>
 ///
+/// <example>
+/// Here is sample C# code that uses a <see
+/// cref="FruchtermanReingoldLayout" /> to synchronously lay out a graph.
+///
+/// <code>
+/// using System;
+/// using System.Drawing;
+/// using Microsoft.NodeXL.Core;
+/// using Microsoft.NodeXL.Layouts;
+///
+/// namespace PopulateAndLayOutGraph
+/// {
+/// class Program
+/// {
+///     static void Main(string[] args)
+///     {
+///         // Create a graph.  The graph has no visual representation; it is
+///         // just a data structure.
+///
+///         Graph oGraph = new Graph(GraphDirectedness.Directed);
+///         IVertexCollection oVertices = oGraph.Vertices;
+///         IEdgeCollection oEdges = oGraph.Edges;
+///
+///         // Add three vertices.
+///
+///         IVertex oVertexA = oVertices.Add();
+///         oVertexA.Name = "Vertex A";
+///         IVertex oVertexB = oVertices.Add();
+///         oVertexB.Name = "Vertex B";
+///         IVertex oVertexC = oVertices.Add();
+///         oVertexC.Name = "Vertex C";
+///
+///         // Connect the vertices with directed edges.
+///
+///         IEdge oEdge1 = oEdges.Add(oVertexA, oVertexB, true);
+///         IEdge oEdge2 = oEdges.Add(oVertexB, oVertexC, true);
+///         IEdge oEdge3 = oEdges.Add(oVertexC, oVertexA, true);
+///
+///         // Lay out the graph within a 100x100 rectangle.  This sets the
+///         // IVertex.Location property of each vertex.
+///
+///         ILayout oLayout = new FruchtermanReingoldLayout();
+///
+///         LayoutContext oLayoutContext =
+///             new LayoutContext(new Rectangle(0, 0, 100, 100));
+///
+///         oLayout.LayOutGraph(oGraph, oLayoutContext);
+///
+///         // List the results.
+///
+///         foreach (IVertex oVertex in oVertices)
+///         {
+///             Console.WriteLine("The location of {0} is {1}.",
+///                 oVertex.Name, oVertex.Location);
+///         }
+///     }
+/// }
+/// }
+/// </code>
+///
+/// </example>
+///
 /// </remarks>
 //*****************************************************************************
 

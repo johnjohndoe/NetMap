@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.NodeXL.ExcelTemplate, Version=1.0.1.76, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExcelTemplate\bin\Debug\Microsoft.NodeXL.ExcelTemplate.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -116,6 +112,10 @@
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExcelTemplate\ExcelTemplate.csproj">
+      <Project>{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}</Project>
+      <Name>ExcelTemplate</Name>
     </ProjectReference>
     <ProjectReference Include="..\Layouts\Layouts.csproj">
       <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>

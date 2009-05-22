@@ -81,9 +81,13 @@ public class WorkbookReader : Object
 
         IGraph oGraph = null;
 
-        // Turn off screen updating.  Reading the workbook involves writing to
-        // edge and vertex ID columns, which can be slow when updating is
-        // turned on.
+        // Turn off screen updating, for two reasons:
+        //
+        // 1. Reading the workbook involves writing to edge and vertex ID
+        //    columns, which can be slow when updating is turned on.
+        //
+        // 2. Any hidden columns get temporarily shown as each worksheet is
+        //    read.
 
         Application oApplication = workbook.Application;
         Boolean bOldScreenUpdating = oApplication.ScreenUpdating;
@@ -92,6 +96,20 @@ public class WorkbookReader : Object
         try
         {
             oGraph = ReadWorkbookInternal(workbook, readWorkbookContext);
+        }
+        catch (WorkbookFormatException oWorkbookFormatException)
+        {
+            Range oRangeToSelect = oWorkbookFormatException.RangeToSelect;
+
+            if (oRangeToSelect != null)
+            {
+                // The user may have hidden the column group containing the
+                // error.  Make sure the column is visible.
+
+                oRangeToSelect.EntireColumn.Hidden = false;
+            }
+
+            throw oWorkbookFormatException;
         }
         finally
         {
@@ -156,14 +174,6 @@ public class WorkbookReader : Object
                 // Ignore this type of error, which occurs when the vertex
                 // worksheet is missing, for example.
             }
-        }
-
-        if (readWorkbookContext.AutoFillWorkbook)
-        {
-            // Run the autofill feature on the workbook.
-
-            WorkbookAutoFiller.AutoFillWorkbook(
-                workbook, new AutoFillUserSettings() );
         }
 
         // Create a graph with the appropriate directedness.

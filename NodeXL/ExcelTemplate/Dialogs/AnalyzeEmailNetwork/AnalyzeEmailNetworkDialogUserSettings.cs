@@ -433,15 +433,15 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     }
 
     //*************************************************************************
-    //  Property: UseCcForTieStrengths
+    //  Property: UseCcForEdgeWeights
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Cc line should be used when
-    /// calculating tie strengths.
+    /// calculating edge weights.
     /// </summary>
     ///
     /// <value>
-    /// true if the Cc line should be used when calculating tie strengths.
+    /// true if the Cc line should be used when calculating edge weights.
     /// </value>
     //*************************************************************************
 
@@ -449,33 +449,33 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
-    UseCcForTieStrengths
+    UseCcForEdgeWeights
     {
         get
         {
             AssertValid();
 
-            return ( (Boolean)this[UseCcForTieStrengthsKey] );
+            return ( (Boolean)this[UseCcForEdgeWeightsKey] );
         }
 
         set
         {
-            this[UseCcForTieStrengthsKey] = value;
+            this[UseCcForEdgeWeightsKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: UseBccForTieStrengths
+    //  Property: UseBccForEdgeWeights
     //
     /// <summary>
     /// Gets or sets a flag indicating whether the Bcc line should be used when
-    /// calculating tie strengths.
+    /// calculating edge weights.
     /// </summary>
     ///
     /// <value>
-    /// true if the Bcc line should be used when calculating tie strengths.
+    /// true if the Bcc line should be used when calculating edge weights.
     /// </value>
     //*************************************************************************
 
@@ -483,18 +483,18 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-    UseBccForTieStrengths
+    UseBccForEdgeWeights
     {
         get
         {
             AssertValid();
 
-            return ( (Boolean)this[UseBccForTieStrengthsKey] );
+            return ( (Boolean)this[UseBccForEdgeWeightsKey] );
         }
 
         set
         {
-            this[UseBccForTieStrengthsKey] = value;
+            this[UseBccForEdgeWeightsKey] = value;
 
             AssertValid();
         }
@@ -568,13 +568,13 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
 
     protected const String AttachmentFilterKey = "AttachmentFilter";
 
-    /// Name of the settings key for the UseCcForTieStrengths property.
+    /// Name of the settings key for the UseCcForEdgeWeights property.
 
-    protected const String UseCcForTieStrengthsKey = "UseCcForTieStrengths";
+    protected const String UseCcForEdgeWeightsKey = "UseCcForEdgeWeights";
 
-    /// Name of the settings key for the UseBccForTieStrengths property.
+    /// Name of the settings key for the UseBccForEdgeWeights property.
 
-    protected const String UseBccForTieStrengthsKey = "UseBccForTieStrengths";
+    protected const String UseBccForEdgeWeightsKey = "UseBccForEdgeWeights";
 
 
     //*************************************************************************

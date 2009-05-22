@@ -33,6 +33,7 @@ namespace Microsoft.NodeXL.ApplicationUtil
 /// </remarks>
 ///
 /// <seealso cref="LayoutManager" />
+/// <seealso cref="LayoutManagerForComboBox" />
 //*****************************************************************************
 
 public class LayoutManagerForMenu : LayoutManager
@@ -140,56 +141,26 @@ public class LayoutManagerForMenu : LayoutManager
         }
 
         Int32 iMenuItems = Enum.GetValues( typeof(LayoutType) ).Length;
-
         m_aoMenuItems = new ToolStripMenuItem[iMenuItems];
 
-        m_aoMenuItems[ (Int32)LayoutType.FruchtermanReingold ] =
-            AddMenuItem(parentDropDownItem, LayoutType.FruchtermanReingold,
-                "&Fruchterman-Reingold",
-                "Use a Fruchterman-Reingold force-directed layout"
-                );
+        // AllLayouts.GetAllLayouts() returns one array entry for each layout
+        // in the LayoutType enumeration.  There may be additional entries that
+        // are set to the LayoutGroupSeparator constant.
 
-        AddMenuItemSeparator(parentDropDownItem);
-
-        m_aoMenuItems[ (Int32)LayoutType.Circle ] =
-            AddMenuItem(parentDropDownItem, LayoutType.Circle, "&Circle",
-                "Place the vertices on the circumference of a circle"
-                );
-
-        m_aoMenuItems[ (Int32)LayoutType.Spiral ] =
-            AddMenuItem(parentDropDownItem, LayoutType.Spiral, "&Spiral",
-                "Place the vertices along a spiral"
-                );
-
-        m_aoMenuItems[ (Int32)LayoutType.SinusoidHorizontal ] =
-            AddMenuItem(parentDropDownItem, LayoutType.SinusoidHorizontal,
-                "&Horizontal Sine Wave",
-                "Place the vertices along a sine wave running left to right"
-                );
-
-        m_aoMenuItems[ (Int32)LayoutType.SinusoidVertical ] =
-            AddMenuItem(parentDropDownItem, LayoutType.SinusoidVertical,
-                "&Vertical Sine Wave",
-                "Place the vertices along a sine wave running top to bottom"
-                );
-
-        m_aoMenuItems[ (Int32)LayoutType.Grid ] =
-            AddMenuItem(parentDropDownItem, LayoutType.Grid, "&Grid",
-                "Place the vertices on an evenly-spaced grid"
-                );
-
-        AddMenuItemSeparator(parentDropDownItem);
-
-        m_aoMenuItems[ (Int32)LayoutType.Sugiyama ] =
-            AddMenuItem(parentDropDownItem, LayoutType.Sugiyama, "Sugi&yama",
-                "Use a modified Sugiyama layered layout that tries to minimize"
-                + " edge crossings"
-                );
-
-        m_aoMenuItems[ (Int32)LayoutType.Random ] =
-            AddMenuItem(parentDropDownItem, LayoutType.Random, "&Random",
-                "Place the vertices at random locations"
-                );
+        foreach ( LayoutInfo oLayoutInfo in AllLayouts.GetAllLayouts() )
+        {
+            if (oLayoutInfo == AllLayouts.LayoutGroupSeparator)
+            {
+                AddMenuItemSeparator(parentDropDownItem);
+            }
+            else
+            {
+                m_aoMenuItems[ (Int32)oLayoutInfo.Layout ] = AddMenuItem(
+                    parentDropDownItem, oLayoutInfo.Layout,
+                    oLayoutInfo.MenuText, oLayoutInfo.Description
+                    );
+            }
+        }
 
         // Check the menu item corresponding to the current layout.
 
@@ -197,44 +168,15 @@ public class LayoutManagerForMenu : LayoutManager
 
         #if DEBUG
 
+        // Verify that AllLayouts.GetAllLayouts() returned one array entry for
+        // each layout in the LayoutType enumeration.
+
         for (Int32 i = 0; i < m_aoMenuItems.Length; i++)
         {
             Debug.Assert(m_aoMenuItems[i] != null);
         }
 
         #endif
-    }
-
-    //*************************************************************************
-    //  Method: EnableMenuItems()
-    //
-    /// <summary>
-    /// Enables or disables the child menu items added by <see
-    /// cref="AddMenuItems" />.
-    /// </summary>
-    ///
-    /// <param name="enable">
-    /// true to enable the menu items, false to disable them.
-    /// </param>
-    //*************************************************************************
-
-    public void
-    EnableMenuItems
-    (
-        Boolean enable
-    )
-    {
-        if (m_aoMenuItems == null)
-        {
-            // AddMenuItems() hasn't been called.
-
-            return;
-        }
-
-        foreach (ToolStripMenuItem oMenuItem in m_aoMenuItems)
-        {
-            oMenuItem.Enabled = enable;
-        }
     }
 
     //*************************************************************************
@@ -253,7 +195,7 @@ public class LayoutManagerForMenu : LayoutManager
     /// Layout represented by the child menu item.
     /// </param>
     ///
-    /// <param name="sText">
+    /// <param name="sMenuText">
     /// Text for the menu item.
     /// </param>
     /// 
@@ -271,20 +213,20 @@ public class LayoutManagerForMenu : LayoutManager
     (
         ToolStripDropDownItem oParentDropDownItem,
         LayoutType eLayoutType,
-        String sText,
+        String sMenuText,
         String sToolTipText
     )
     {
         Debug.Assert(oParentDropDownItem != null);
-        Debug.Assert( !String.IsNullOrEmpty(sText) );
+        Debug.Assert( !String.IsNullOrEmpty(sMenuText) );
         Debug.Assert( !String.IsNullOrEmpty(sToolTipText) );
         AssertValid();
 
         ToolStripMenuItem oMenuItem = new ToolStripMenuItem();
 
-        oMenuItem.Name = sText;
+        oMenuItem.Name = sMenuText;
         oMenuItem.Tag = eLayoutType;
-        oMenuItem.Text = sText;
+        oMenuItem.Text = sMenuText;
         oMenuItem.ToolTipText = sToolTipText;
         oMenuItem.Click += new System.EventHandler(this.MenuItem_Click);
 
@@ -301,7 +243,7 @@ public class LayoutManagerForMenu : LayoutManager
     /// </summary>
     ///
     /// <param name="oParentDropDownItem">
-    /// Parent item to add a spearator menu item to.
+    /// Parent item to add a separator menu item to.
     /// </param>
     //*************************************************************************
 
@@ -352,9 +294,7 @@ public class LayoutManagerForMenu : LayoutManager
 
         Debug.Assert(oMenuItem.Tag is LayoutType);
 
-        LayoutType eLayoutType = (LayoutType)oMenuItem.Tag;
-
-        this.Layout = eLayoutType;
+        this.Layout = (LayoutType)oMenuItem.Tag;
     }
 
 
@@ -381,8 +321,9 @@ public class LayoutManagerForMenu : LayoutManager
     //  Protected fields
     //*************************************************************************
 
-    /// One menu item for each layout, or null if AddMenuItems() hasn't been
-    /// called yet.
+    /// One menu item for each layout in the LayoutType enumeration, or null if
+    /// AddMenuItems() hasn't been called yet.  The items are indexed by the
+    /// LayoutType enumeration values cast to Int32s.
 
     protected ToolStripMenuItem [] m_aoMenuItems;
 }

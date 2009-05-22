@@ -134,6 +134,11 @@ public class CircleLayout : SortableLayoutBase
         Debug.Assert(verticesToLayOut != null);
         AssertValid();
 
+        if (backgroundWorker != null && backgroundWorker.CancellationPending)
+        {
+            return (false);
+        }
+
         Int32 iVertices = verticesToLayOut.Count;
 
         Debug.Assert(iVertices > 0);
@@ -141,65 +146,28 @@ public class CircleLayout : SortableLayoutBase
         // The vertices are placed at equal angles around the circle's
         // circumference.
 
-        Double dAngleBetweenVertices = (2 * Math.PI) / (Double)iVertices;
+        Double dAngleBetweenVerticesRadians =
+            (2 * Math.PI) / (Double)iVertices;
 
-        // The layout is animated the first time the graph is drawn by
-        // uniformly increasing the circle's radius with each iteration.
-
-        Int32 iIterations = AnimationIterations;
-
-        if ( graph.ContainsKey(ReservedMetadataKeys.CircleLayoutCircleDrawn) )
-        {
-            // The graph has been completely drawn before.  Don't animate it
-            // this time.
-
-            iIterations = 1;
-        }
-
-        Double dCenterX, dCenterY, dHalfSize;
+        Double dCenterX, dCenterY, dRadius;
 
         GetRectangleCenterAndHalfSize(layoutContext.GraphRectangle,
-            out dCenterX, out dCenterY, out dHalfSize);
+            out dCenterX, out dCenterY, out dRadius);
 
-        for (Int32 i = 0; i < iIterations; i++)
+        Double dAngleRadians = 0;
+
+        foreach (IVertex oVertex in verticesToLayOut)
         {
-            if (backgroundWorker != null &&
-                backgroundWorker.CancellationPending)
+            if ( !VertexIsLocked(oVertex) )
             {
-                return (false);
+                Double dX = dCenterX + dRadius * Math.Cos(dAngleRadians);
+                Double dY = dCenterY + dRadius * Math.Sin(dAngleRadians);
+
+                oVertex.Location = new PointF( (Single)dX, (Single)dY );
             }
 
-            Double dRadius =
-                dHalfSize * ( (Double)i + 1) / (Double)iIterations;
-
-            Double dAngle = 0;
-
-            // Set the location on each vertex.
-
-            foreach (IVertex oVertex in verticesToLayOut)
-            {
-                if ( !VertexIsLocked(oVertex) )
-                {
-                    Double dX = dCenterX + dRadius * Math.Cos(dAngle);
-                    Double dY = dCenterY + dRadius * Math.Sin(dAngle);
-
-                    oVertex.Location = new PointF( (Single)dX,  (Single)dY );
-                }
-
-                dAngle += dAngleBetweenVertices;
-            }
-
-            System.Threading.Thread.Sleep(AnimationSleepMs);
-
-            if (backgroundWorker != null)
-            {
-                FireLayOutGraphIterationCompleted();
-            }
+            dAngleRadians += dAngleBetweenVerticesRadians;
         }
-
-        // Mark the graph as having been completely drawn.
-
-        graph.SetValue(ReservedMetadataKeys.CircleLayoutCircleDrawn, null);
 
         return (true);
     }
@@ -222,20 +190,6 @@ public class CircleLayout : SortableLayoutBase
 
         // (Do nothing.)
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number of iterations used to animate the graph the first time it is
-    /// drawn.
-
-    protected const Int32 AnimationIterations = 10;
-
-    /// Number of milliseconds to sleep between animation iterations.
-
-    protected const Int32 AnimationSleepMs = 10;
 
 
     //*************************************************************************

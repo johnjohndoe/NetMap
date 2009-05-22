@@ -215,7 +215,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AnalyzeTwitterNetworkDialog";
-            this.Text = "Analyze Twitter Network";
+            this.Text = "Import from Twitter Network";
             this.pnlUserInputs.ResumeLayout(false);
             this.pnlUserInputs.PerformLayout();
             this.groupBox1.ResumeLayout(false);

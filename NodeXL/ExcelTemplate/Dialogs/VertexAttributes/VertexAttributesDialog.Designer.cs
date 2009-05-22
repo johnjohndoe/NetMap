@@ -36,13 +36,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCancel = new System.Windows.Forms.Button();
             this.cbxShape = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.label1 = new System.Windows.Forms.Label();
-            this.cbxColor = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.label2 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.nudRadius = new System.Windows.Forms.NumericUpDown();
             this.nudAlpha = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.lblMaximumAlphaMessage = new System.Windows.Forms.Label();
+            this.lblAlpha = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.cbxLocked = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.label6 = new System.Windows.Forms.Label();
@@ -53,6 +52,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkVisibility = new System.Windows.Forms.LinkLabel();
             this.label8 = new System.Windows.Forms.Label();
             this.cbxVertexDrawingPrecedence = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
+            this.usrColor = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
             ((System.ComponentModel.ISupportInitialize)(this.nudRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAlpha)).BeginInit();
             this.SuspendLayout();
@@ -95,15 +95,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label1.TabIndex = 2;
             this.label1.Text = "&Shape:";
             // 
-            // cbxColor
-            // 
-            this.cbxColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxColor.FormattingEnabled = true;
-            this.cbxColor.Location = new System.Drawing.Point(94, 15);
-            this.cbxColor.Name = "cbxColor";
-            this.cbxColor.Size = new System.Drawing.Size(159, 21);
-            this.cbxColor.TabIndex = 1;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -118,9 +109,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(12, 85);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 13);
+            this.label7.Size = new System.Drawing.Size(30, 13);
             this.label7.TabIndex = 4;
-            this.label7.Text = "Radi&us:";
+            this.label7.Text = "Si&ze:";
             // 
             // nudRadius
             // 
@@ -147,14 +138,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label3.TabIndex = 6;
             this.label3.Text = "O&pacity:";
             // 
-            // lblMaximumAlphaMessage
+            // lblAlpha
             // 
-            this.lblMaximumAlphaMessage.AutoSize = true;
-            this.lblMaximumAlphaMessage.Location = new System.Drawing.Point(156, 118);
-            this.lblMaximumAlphaMessage.Name = "lblMaximumAlphaMessage";
-            this.lblMaximumAlphaMessage.Size = new System.Drawing.Size(90, 13);
-            this.lblMaximumAlphaMessage.TabIndex = 8;
-            this.lblMaximumAlphaMessage.Text = "[Gets set in code]";
+            this.lblAlpha.AutoSize = true;
+            this.lblAlpha.Location = new System.Drawing.Point(153, 118);
+            this.lblAlpha.Name = "lblAlpha";
+            this.lblAlpha.Size = new System.Drawing.Size(15, 13);
+            this.lblAlpha.TabIndex = 8;
+            this.lblAlpha.Text = "%";
             // 
             // label5
             // 
@@ -250,6 +241,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexDrawingPrecedence.Size = new System.Drawing.Size(118, 21);
             this.cbxVertexDrawingPrecedence.TabIndex = 10;
             // 
+            // usrColor
+            // 
+            this.usrColor.Color = System.Drawing.Color.White;
+            this.usrColor.Location = new System.Drawing.Point(92, 9);
+            this.usrColor.Name = "usrColor";
+            this.usrColor.ShowButton = true;
+            this.usrColor.Size = new System.Drawing.Size(64, 32);
+            this.usrColor.TabIndex = 1;
+            // 
             // VertexAttributesDialog
             // 
             this.AcceptButton = this.btnOK;
@@ -257,6 +257,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(343, 332);
+            this.Controls.Add(this.usrColor);
             this.Controls.Add(this.cbxVertexDrawingPrecedence);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lnkVisibility);
@@ -267,13 +268,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.Controls.Add(this.label6);
             this.Controls.Add(this.cbxLocked);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.lblMaximumAlphaMessage);
+            this.Controls.Add(this.lblAlpha);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.nudAlpha);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.nudRadius);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.cbxColor);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbxShape);
             this.Controls.Add(this.btnCancel);
@@ -282,7 +282,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "VertexAttributesDialog";
-            this.Text = "Vertex Attributes";
+            this.Text = "Vertex Properties";
             ((System.ComponentModel.ISupportInitialize)(this.nudRadius)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAlpha)).EndInit();
             this.ResumeLayout(false);
@@ -296,13 +296,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Button btnCancel;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxShape;
         private System.Windows.Forms.Label label1;
-        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxColor;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown nudRadius;
         private System.Windows.Forms.NumericUpDown nudAlpha;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblMaximumAlphaMessage;
+        private System.Windows.Forms.Label lblAlpha;
         private System.Windows.Forms.Label label5;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxLocked;
         private System.Windows.Forms.Label label6;
@@ -313,5 +312,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.LinkLabel lnkVisibility;
         private System.Windows.Forms.Label label8;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexDrawingPrecedence;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrColor;
     }
 }

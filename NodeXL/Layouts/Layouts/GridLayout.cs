@@ -134,27 +134,18 @@ public class GridLayout : SortableLayoutBase
         Debug.Assert(verticesToLayOut.Count > 0);
         AssertValid();
 
+        if (backgroundWorker != null && backgroundWorker.CancellationPending)
+        {
+            return (false);
+        }
+
         RectangleF oRectangleF = layoutContext.GraphRectangle;
 
         Debug.Assert(oRectangleF.Width > 0 && oRectangleF.Height > 0);
 
-        // The layout is animated the first time the graph is drawn by
-        // uniformly increasing the size of the grid with each iteration.  The
-        // grid's upper-left corner is always the upper-left corner of the
-        // specified rectangle, and the grid's aspect ratio is always equal to
-        // the aspect ratio of the rectangle.
-
-        Int32 iIterations = AnimationIterations;
-
-        if ( graph.ContainsKey(ReservedMetadataKeys.GridLayoutGridDrawn) )
-        {
-            // The graph has been completely drawn before.  Don't animate it
-            // this time.
-
-            iIterations = 1;
-        }
-
-        // Get the number of rows and columns to use in the grid.
+        // Get the number of rows and columns to use in the grid.  The grid's
+        // upper-left corner is the upper-left corner of the specified
+        // rectangle.
 
         Int32 iRows, iColumns;
 
@@ -164,78 +155,40 @@ public class GridLayout : SortableLayoutBase
         Debug.Assert(iRows > 0);
         Debug.Assert(iColumns > 0);
 
-        for (Int32 i = 0; i < iIterations; i++)
+        // Get the distances between vertices;
+
+        Double dRowSpacing = (Double)oRectangleF.Height / (Double)iRows;
+        Double dColumnSpacing = (Double)oRectangleF.Width / (Double)iColumns;
+
+        // Set the location on each vertex.  The vertices are placed at the
+        // intersections of the grid lines.
+
+        Double dX = oRectangleF.Left + dColumnSpacing;
+        Double dY = oRectangleF.Top + dRowSpacing;
+
+        Int32 iColumn = 0;
+
+        foreach (IVertex oVertex in verticesToLayOut)
         {
-            if (backgroundWorker != null &&
-                backgroundWorker.CancellationPending)
+            if ( !VertexIsLocked(oVertex) )
             {
-                return (false);
+                oVertex.Location = new PointF( (Single)dX,  (Single)dY );
             }
 
-            // Calculate the rectangle to use for this iteration.  Don't let
-            // the rectangle have a zero dimension, which would cause various
-            // problems with the calculations.
+            iColumn++;
 
-            Double dIterationFactor =
-                ( (Double)i + 1 ) / (Double)iIterations;
-
-            RectangleF oIterationRectangleF = new RectangleF(
-                oRectangleF.X,
-                oRectangleF.Y,
-                Math.Max( (Single)(oRectangleF.Width * dIterationFactor), 1 ),
-                Math.Max( (Single)(oRectangleF.Height * dIterationFactor), 1 )
-                );
-
-            // Get the distances between vertices;
-
-            Double dRowSpacing =
-                (Double)oIterationRectangleF.Height / (Double)iRows;
-
-            Double dColumnSpacing =
-                (Double)oIterationRectangleF.Width / (Double)iColumns;
-
-            // Set the location on each vertex.  The vertices are placed at the
-            // intersections of the grid lines.
-
-            Double dX = oIterationRectangleF.Left + dColumnSpacing;
-            Double dY = oIterationRectangleF.Top + dRowSpacing;
-
-            Int32 iColumn = 0;
-
-            foreach (IVertex oVertex in verticesToLayOut)
+            if (iColumn >= iColumns - 1)
             {
-                if ( !VertexIsLocked(oVertex) )
-                {
-                    oVertex.Location = new PointF( (Single)dX,  (Single)dY );
-                }
+                dX = oRectangleF.Left + dColumnSpacing;
+                dY += dRowSpacing;
 
-                iColumn++;
-
-                if (iColumn >= iColumns - 1)
-                {
-                    dX = oIterationRectangleF.Left + dColumnSpacing;
-
-                    dY += dRowSpacing;
-
-                    iColumn = 0;
-                }
-                else
-                {
-                    dX += dColumnSpacing;
-                }
+                iColumn = 0;
             }
-
-            System.Threading.Thread.Sleep(AnimationSleepMs);
-
-            if (backgroundWorker != null)
+            else
             {
-                FireLayOutGraphIterationCompleted();
+                dX += dColumnSpacing;
             }
         }
-
-        // Mark the graph as having been completely drawn.
-
-        graph.SetValue(ReservedMetadataKeys.GridLayoutGridDrawn, null);
 
         return (true);
     }
@@ -478,20 +431,6 @@ public class GridLayout : SortableLayoutBase
 
         // (Do nothing.)
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number of iterations used to animate the graph the first time it is
-    /// drawn.
-
-    protected const Int32 AnimationIterations = 10;
-
-    /// Number of milliseconds to sleep between animation iterations.
-
-    protected const Int32 AnimationSleepMs = 10;
 
 
     //*************************************************************************

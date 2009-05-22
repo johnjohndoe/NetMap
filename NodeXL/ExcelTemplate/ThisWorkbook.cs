@@ -1,5 +1,4 @@
 
-
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
@@ -11,6 +10,7 @@ using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Core;
 using System.Reflection;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -127,15 +127,16 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: ImportEdgesFromWorkbook()
+    //  Method: ImportFromMatrixWorkbook()
     //
     /// <summary>
-    /// Imports edges from another open workbook.
+    /// Imports edges from another open workbook that contains a graph
+    /// represented as an adjacency matrix.
     /// </summary>
     //*************************************************************************
 
     public void
-    ImportEdgesFromWorkbook()
+    ImportFromMatrixWorkbook()
     {
         AssertValid();
 
@@ -144,24 +145,61 @@ public partial class ThisWorkbook
             return;
         }
 
-        // The ImportEdgesFromWorkbookDialog does all the work.
+        // The ImportFromMatrixWorkbookDialog does all the work.
 
-        ImportEdgesFromWorkbookDialog oImportEdgesFromWorkbookDialog =
-            new ImportEdgesFromWorkbookDialog(this.InnerObject);
+        ImportFromMatrixWorkbookDialog oImportFromMatrixWorkbookDialog =
+            new ImportFromMatrixWorkbookDialog(this.InnerObject);
 
-        oImportEdgesFromWorkbookDialog.ShowDialog();
+        if (oImportFromMatrixWorkbookDialog.ShowDialog() == DialogResult.OK)
+        {
+            GraphDirectedness eGraphDirectedness =
+                oImportFromMatrixWorkbookDialog.SourceWorkbookDirectedness;
+
+            this.GraphDirectedness = eGraphDirectedness;
+
+            // Pass the workbook's directedness to the Ribbon.
+
+            this.Ribbon.GraphDirectedness = eGraphDirectedness;
+        }
     }
 
     //*************************************************************************
-    //  Method: ExportSelectionToNewWorkbook()
+    //  Method: ImportFromEdgeWorkbook()
     //
     /// <summary>
-    /// Exports the selection to a new workbook.
+    /// Imports two edge columns from another open workbook.
     /// </summary>
     //*************************************************************************
 
     public void
-    ExportSelectionToNewWorkbook()
+    ImportFromEdgeWorkbook()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        // The ImportFromEdgeWorkbookDialog does all the work.
+
+        ImportFromEdgeWorkbookDialog oImportFromEdgeWorkbookDialog =
+            new ImportFromEdgeWorkbookDialog(this.InnerObject);
+
+        oImportFromEdgeWorkbookDialog.ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: ExportSelectionToNewNodeXLWorkbook()
+    //
+    /// <summary>
+    /// Exports the selected rows of the edge and vertex tables to a new NodeXL
+    /// workbook.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ExportSelectionToNewNodeXLWorkbook()
     {
         AssertValid();
 
@@ -177,21 +215,22 @@ public partial class ThisWorkbook
 
         this.ScreenUpdating = false;
 
-        Workbook oNewWorkbook = null;
-
         try
         {
             WorkbookExporter oWorkbookExporter =
                 new WorkbookExporter(this.InnerObject);
 
-            oNewWorkbook = oWorkbookExporter.ExportSelectionToNewWorkbook();
+            Workbook oNewWorkbook =
+                oWorkbookExporter.ExportSelectionToNewNodeXLWorkbook();
+
+            // Reactivate the original active worksheet.
 
             if (oOldActiveSheet is Worksheet)
             {
                 ExcelUtil.ActivateWorksheet( (Worksheet)oOldActiveSheet );
             }
 
-            // Select the edge worksheet.
+            // Activate the edge worksheet in the new workbook.
 
             // Note: When run in the debugger, activating the new workbook
             // causes a "System.Runtime.InteropServices.ExternalException
@@ -226,15 +265,15 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: ToggleGraphVisibility()
+    //  Method: ExportToNewMatrixWorkbook()
     //
     /// <summary>
-    /// Toggles the visibility of the NodeXL graph.
+    /// Exports the edge table to a new workbook as an adjacency matrix.
     /// </summary>
     //*************************************************************************
 
     public void
-    ToggleGraphVisibility()
+    ExportToNewMatrixWorkbook()
     {
         AssertValid();
 
@@ -243,7 +282,72 @@ public partial class ThisWorkbook
             return;
         }
 
-        this.GraphVisibility = !this.GraphVisibility;
+        const String Message =
+            "This will remove any filters that are applied to the Edges"
+            + " worksheet, merge any duplicate edges, add an Edge Weight"
+            + " column, and export the edges to a new workbook as an adjacency"
+            + " matrix."
+            + "\r\n\r\n"
+            + "Do you want to continue?"
+            ;
+
+        if (MessageBox.Show(Message, FormUtil.ApplicationName,
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information) !=
+                DialogResult.Yes)
+        {
+            return;
+        }
+
+        this.Application.Cursor =
+            Microsoft.Office.Interop.Excel.XlMousePointer.xlWait;
+
+        this.ScreenUpdating = false;
+
+        try
+        {
+            WorkbookExporter oWorkbookExporter =
+                new WorkbookExporter(this.InnerObject);
+
+            oWorkbookExporter.ExportToNewMatrixWorkbook();
+
+            this.ScreenUpdating = true;
+        }
+        catch (ExportWorkbookException oExportWorkbookException)
+        {
+            this.ScreenUpdating = true;
+
+            FormUtil.ShowWarning(oExportWorkbookException.Message);
+        }
+        catch (Exception oException)
+        {
+            this.ScreenUpdating = true;
+
+            ErrorUtil.OnException(oException);
+        }
+
+        this.Application.Cursor =
+            Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
+    }
+
+    //*************************************************************************
+    //  Method: ShowGraph()
+    //
+    /// <summary>
+    /// Shows the NodeXL graph.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ShowGraph()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        this.GraphVisibility = true;
     }
 
     //*************************************************************************
@@ -285,6 +389,21 @@ public partial class ThisWorkbook
         AssertValid();
 
         if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        const String Message =
+            "This will remove any filters that are applied to the Edges"
+            + " worksheet, merge any duplicate edges, and add an Edge Weight"
+            + " column."
+            + "\r\n\r\n"
+            + "Do you want to continue?"
+            ;
+
+        if (MessageBox.Show(Message, FormUtil.ApplicationName,
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information) !=
+                DialogResult.Yes)
         {
             return;
         }
@@ -443,24 +562,15 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: CustomizeVertexMenu()
+    //  Method: DeleteSubgraphThumbnails()
     //
     /// <summary>
-    /// Adds two columns to the vertex table for customizing vertex context
-    /// menus in the NodeXL graph.
+    /// Deletes any subgraph image thumbnails in the vertex worksheet.
     /// </summary>
-    ///
-    /// <param name="notifyUserOnError">
-    /// If true, the user is notified when an error occurs.  If false, an
-    /// exception is thrown when an error occurs.
-    /// </param>
     //*************************************************************************
 
     public void
-    CustomizeVertexMenu
-    (
-        Boolean notifyUserOnError
-    )
+    DeleteSubgraphThumbnails()
     {
         AssertValid();
 
@@ -469,71 +579,8 @@ public partial class ThisWorkbook
             return;
         }
 
-        const String Message =
-            "Use this to add custom menu items to the menu that appears when"
-            + " you right-click a vertex in the NodeXL graph."
-            + "\r\n\r\n"
-            + "Clicking \"Yes\" below will add a pair of columns to the"
-            + " Vertices worksheet -- one for menu item text and another for"
-            + " the action to take when the menu item is selected."
-            + "\r\n\r\n"
-            + " For example, if you add the column pair and enter \"Send Mail"
-            + " To\" for a vertex's menu item text and \"mailto:bob@msn.com\""
-            + " for the action, then right-clicking the vertex in the NodeXL"
-            + " graph and selecting \"Send Mail To\" from the right-click menu"
-            + " will open a new email message addressed to bob@msn.com."
-            + "\r\n\r\n"
-            + "If you want to open a Web page when the menu item is selected,"
-            + " enter an URL for the action."
-            + "\r\n\r\n"
-            + "If you want to add more than one custom menu item to a vertex's"
-            + " right-click menu, run this again to add another pair of"
-            + " columns."
-            + "\r\n\r\n"
-            + "Do you want to add a pair of columns to the Vertices worksheet?"
-            ;
-
-        if (MessageBox.Show(Message, FormUtil.ApplicationName,
-                MessageBoxButtons.YesNo, MessageBoxIcon.Information) !=
-                DialogResult.Yes)
-        {
-            return;
-        }
-
-        // Create and use the object that adds the columns to the vertex
-        // table.
-
-        TableColumnAdder oTableColumnAdder = new TableColumnAdder();
-
-        this.ScreenUpdating = false;
-
-        try
-        {
-            oTableColumnAdder.AddColumnPair(this.InnerObject,
-                WorksheetNames.Vertices, TableNames.Vertices,
-                VertexTableColumnNames.CustomMenuItemTextBase,
-                VertexTableColumnWidths.CustomMenuItemText,
-                VertexTableColumnNames.CustomMenuItemActionBase,
-                VertexTableColumnWidths.CustomMenuItemAction
-                );
-
-            this.ScreenUpdating = true;
-        }
-        catch (Exception oException)
-        {
-            // Don't let Excel handle unhandled exceptions.
-
-            this.ScreenUpdating = true;
-
-            if (notifyUserOnError)
-            {
-                ErrorUtil.OnException(oException);
-            }
-            else
-            {
-                throw oException;
-            }
-        }
+        TableImagePopulator.DeleteImagesInColumn(this.InnerObject,
+            WorksheetNames.Vertices, VertexTableColumnNames.SubgraphImage);
     }
 
     //*************************************************************************
@@ -587,18 +634,16 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: EditAutoFillUserSettings()
+    //  Method: AutoFillWorkbook()
     //
     /// <summary>
-    /// Shows the dialog that lets the user edit his settings for the
-    /// application's AutoFill feature, which automatically fills edge and
-    /// vertex attribute columns using values from user-specified source
-    /// columns.
+    /// Shows the dialog that fills edge and vertex attribute columns using
+    /// values from user-specified source columns.
     /// </summary>
     //*************************************************************************
 
     public void
-    EditAutoFillUserSettings()
+    AutoFillWorkbook()
     {
         AssertValid();
 
@@ -607,21 +652,66 @@ public partial class ThisWorkbook
             return;
         }
 
-        // Allow the user to edit the AutoFill settings.  The dialog makes a
-        // copy of the settings.
+        AutoFillWorkbookDialog oAutoFillWorkbookDialog =
+            new AutoFillWorkbookDialog(this.InnerObject);
 
-        AutoFillUserSettings oAutoFillUserSettings =
-            new AutoFillUserSettings();
+        Int32 iHwnd = this.Application.Hwnd;
 
-        AutoFillUserSettingsDialog oAutoFillUserSettingsDialog =
-            new AutoFillUserSettingsDialog(this.InnerObject,
-                oAutoFillUserSettings);
-
-        if (oAutoFillUserSettingsDialog.ShowDialog() == DialogResult.OK)
+        oAutoFillWorkbookDialog.WorkbookAutoFilled += delegate
         {
-            // Save the edited copy.
+            FireWorkbookAutoFilled();
+        };
 
-            oAutoFillUserSettingsDialog.AutoFillUserSettings.Save();
+        oAutoFillWorkbookDialog.Closed += delegate
+        {
+            // Activate the Excel window.
+            //
+            // This is a workaround for an annoying and frustrating bug
+            // involving the modeless AutoFillWorkbookDialog.  If the user
+            // takes no action in AutoFillWorkbookDialog before closing it, the
+            // Excel window gets activated when AutoFillWorkbookDialog closes,
+            // as expected.  However, if he opens one of
+            // AutoFillWorkbookDialog's modal dialogs, such as
+            // NumericRangeColumnAutoFillUserSettingsDialog, and then closes
+            // the modal dialog and AutoFillWorkbookDialog, some other
+            // application besides Excel gets activated.
+            //
+            // Setting the owner of the modal dialog to the Excel window
+            // (this.Application.Hwnd) didn't help.  Neither did setting the
+            // owner of the modal dialog to AutoFillWorkbookDialog.  Nothing
+            // worked except explicitly activating the Excel window when the
+            // AutoFillWorkbookDialog closes.
+
+            Win32Functions.SetForegroundWindow( new IntPtr(iHwnd) );
+        };
+
+        oAutoFillWorkbookDialog.Show( new Win32Window(iHwnd) );
+    }
+
+    //*************************************************************************
+    //  Method: AutoFillWorkbookWithScheme()
+    //
+    /// <summary>
+    /// Shows the dialog that fills attribute columns with a visual scheme.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    AutoFillWorkbookWithScheme()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        AutoFillWorkbookWithSchemeDialog oAutoFillWorkbookWithSchemeDialog =
+            new AutoFillWorkbookWithSchemeDialog(this.InnerObject);
+
+        if (oAutoFillWorkbookWithSchemeDialog.ShowDialog() == DialogResult.OK)
+        {
+            FireWorkbookAutoFilled();
         }
     }
 
@@ -715,16 +805,16 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: EditGraphMetricUserSettings()
+    //  Method: ShowGraphMetrics()
     //
     /// <summary>
-    /// Shows the dialog that lets the user edit his settings for calculating
-    /// graph metrics.
+    /// Shows the dialog that lists available graph metrics and calculates them
+    /// if requested by the user.
     /// </summary>
     //*************************************************************************
 
     public void
-    EditGraphMetricUserSettings()
+    ShowGraphMetrics()
     {
         AssertValid();
 
@@ -733,65 +823,20 @@ public partial class ThisWorkbook
             return;
         }
 
-        // Allow the user to edit the graph metric settings.
+        // Create the object that might be edited by the dialog.
 
         GraphMetricUserSettings oGraphMetricUserSettings =
             new GraphMetricUserSettings();
 
-        GraphMetricUserSettingsDialog oGraphMetricUserSettingsDialog =
-            new GraphMetricUserSettingsDialog(oGraphMetricUserSettings);
+        GraphMetricsDialog oGraphMetricsDialog =
+            new GraphMetricsDialog(this.InnerObject, oGraphMetricUserSettings);
 
-        if (oGraphMetricUserSettingsDialog.ShowDialog() == DialogResult.OK)
+        if (oGraphMetricsDialog.ShowDialog() == DialogResult.OK)
         {
             // Save the edited object.
 
             oGraphMetricUserSettings.Save();
         }
-    }
-
-    //*************************************************************************
-    //  Method: CalculateGraphMetrics()
-    //
-    /// <summary>
-    /// Calculates the graph metrics.
-    /// </summary>
-    //*************************************************************************
-
-    public void
-    CalculateGraphMetrics()
-    {
-        AssertValid();
-
-        if ( !this.ExcelApplicationIsReady(true) )
-        {
-            return;
-        }
-
-        GraphMetricUserSettings oGraphMetricUserSettings =
-            new GraphMetricUserSettings();
-
-        if (!oGraphMetricUserSettings.AtLeastOneMetricSelected)
-        {
-            FormUtil.ShowInformation(
-                "No graph metrics have been selected.  To select one or more"
-                + " graph metrics, click the down-arrow to the right of the"
-                + " \"Calculate Graph Metrics\" button, then click the"
-                + " \"Select Graph Metrics\" button."
-                );
-
-            return;
-        }
-
-        // The CalculateGraphMetricsDialog does all the work.  Use the
-        // constructor overload that uses a default list of graph metric
-        // calculators.
-
-        CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
-            new CalculateGraphMetricsDialog( this.InnerObject,
-            oGraphMetricUserSettings, new NotificationUserSettings()
-            );
-
-        oCalculateGraphMetricsDialog.ShowDialog();
     }
 
     //*************************************************************************
@@ -844,6 +889,173 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: ShowColumnGroup()
+    //
+    /// <summary>
+    /// Shows or hides a specified group of related columns in a single table.
+    /// </summary>
+    ///
+    /// <param name="columnGroup">
+    /// The group of columns to show or hide.
+    /// </param>
+    ///
+    /// <param name="show">
+    /// true to show the column group, false to hide it.
+    /// </param>
+    ///
+    /// <param name="activateWorksheet">
+    /// true to activate the worksheet containing the column group.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Columns that don't exist are ignored.
+    ///
+    /// <para>
+    /// The column group's new show/hide state is stored in the workbook using
+    /// the <see cref="PerWorkbookSettings" /> class.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    ShowColumnGroup
+    (
+        ColumnGroup columnGroup,
+        Boolean show,
+        Boolean activateWorksheet
+    )
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        this.ScreenUpdating = false;
+
+        try
+        {
+            ColumnGroupManager.ShowOrHideColumnGroup(this.InnerObject,
+                columnGroup, show, activateWorksheet);
+        }
+        finally
+        {
+            this.ScreenUpdating = true;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ShowOrHideAllColumnGroups()
+    //
+    /// <summary>
+    /// Shows or hides all column groups in the workbook.
+    /// </summary>
+    ///
+    /// <param name="show">
+    /// true to show all column groups, false to hide them.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Hidden column groups that are only for internal use by NodeXL are not
+    /// shown.
+    ///
+    /// <para>
+    /// Columns that don't exist are ignored.
+    /// </para>
+    ///
+    /// <para>
+    /// The column groups' new show/hide states are stored in the workbook
+    /// using the <see cref="PerWorkbookSettings" /> class.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    ShowOrHideAllColumnGroups
+    (
+        Boolean show
+    )
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        // Uncomment the ScreenUpdating calls to prevent screen updates as the
+        // groups are shown.  The updates may provide useful feedback, so show
+        // the updates for now.
+
+        // this.ScreenUpdating = false;
+
+        try
+        {
+            ColumnGroupManager.ShowOrHideAllColumnGroups(
+                this.InnerObject, show);
+        }
+        finally
+        {
+            // this.ScreenUpdating = true;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: SetVisualAttribute()
+    //
+    /// <summary>
+    /// Sets a visual attribute in the selected rows of the active worksheet.
+    /// </summary>
+    ///
+    /// <param name="visualAttribute">
+    /// Specifies the visual attribute to set.  Must be only one of the flags
+    /// in the <see cref="VisualAttributes" /> enumeration; it cannot be an
+    /// ORed combination.
+    /// </param>
+    ///
+    /// <param name="attributeValue">
+    /// The visual attribute value, or null if the value isn't known yet and
+    /// must be obtained from the user.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    SetVisualAttribute
+    (
+        VisualAttributes visualAttribute,
+        Object attributeValue
+    )
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        SetVisualAttributeEventHandler oSetVisualAttributeEventHandler =
+            this.SetVisualAttribute2;
+
+        if (oSetVisualAttributeEventHandler != null)
+        {
+            SetVisualAttributeEventArgs oSetVisualAttributeEventArgs =
+                new SetVisualAttributeEventArgs(visualAttribute,
+                    attributeValue);
+
+            oSetVisualAttributeEventHandler(this,
+                oSetVisualAttributeEventArgs);
+
+            if (oSetVisualAttributeEventArgs.VisualAttributeSet)
+            {
+                FireVisualAttributeSetInWorkbook();
+            }
+        }
+    }
+
+    //*************************************************************************
     //  Event: SelectionChangedInWorkbook
     //
     /// <summary>
@@ -871,6 +1083,18 @@ public partial class ThisWorkbook
     //*************************************************************************
 
     public event SelectionChangedEventHandler SelectionChangedInWorkbook;
+
+
+    //*************************************************************************
+    //  Event: VisualAttributeSetInWorkbook
+    //
+    /// <summary>
+    /// Occurs when a visual attribute is set in the selected rows of the
+    /// active worksheet.
+    /// </summary>
+    //*************************************************************************
+
+    public event EventHandler VisualAttributeSetInWorkbook;
 
 
     //*************************************************************************
@@ -933,6 +1157,36 @@ public partial class ThisWorkbook
     //*************************************************************************
 
     public event VerticesMovedEventHandler2 VerticesMoved;
+
+
+    //*************************************************************************
+    //  Event: WorkbookAutoFilled
+    //
+    /// <summary>
+    /// Occurs when the workbook is autofilled by the <see
+    /// cref="AutoFillWorkbookDialog" /> or <see
+    /// cref="AutoFillWorkbookWithSchemeDialog" />.
+    /// </summary>
+    //*************************************************************************
+
+    public event EventHandler WorkbookAutoFilled;
+
+
+    //*************************************************************************
+    //  Event: SetVisualAttribute2
+    //
+    /// <summary>
+    /// Occurs when one of the visual attribute buttons in the Ribbon is
+    /// clicked.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This is named SetVisualAttribute2 to avoid a conflict with the method
+    /// of the same name.
+    /// </remarks>
+    //*************************************************************************
+
+    public event SetVisualAttributeEventHandler SetVisualAttribute2;
 
 
     //*************************************************************************
@@ -1068,7 +1322,8 @@ public partial class ThisWorkbook
     //  Property: ScreenUpdating
     //
     /// <summary>
-    /// Set a flag specifying whether Excel's screen updating is on or off.
+    /// Gets or sets a flag specifying whether Excel's screen updating is on or
+    /// off.
     /// </summary>
     ///
     /// <value>
@@ -1079,12 +1334,121 @@ public partial class ThisWorkbook
     private Boolean
     ScreenUpdating
     {
+        get
+        {
+            AssertValid();
+
+            return (this.Application.ScreenUpdating);
+        }
+
         set
         {
             this.Application.ScreenUpdating = value;
 
             AssertValid();
         }
+    }
+
+    //*************************************************************************
+    //  Method: EnableSetVisualAttributes
+    //
+    /// <summary>
+    /// Enables the "set visual attribute" buttons in the Ribbon.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    EnableSetVisualAttributes()
+    {
+        AssertValid();
+
+        VisualAttributes eVisualAttributes = VisualAttributes.None;
+        String sWorksheetName = null;
+        Object oActiveSheet = this.ActiveSheet;
+
+        if (oActiveSheet is Worksheet)
+        {
+            sWorksheetName = ( (Worksheet)oActiveSheet ).Name;
+        }
+
+        // Determine whether the active worksheet has a NodeXL table that
+        // includes a selection.
+
+        String sTableName = null;
+
+        switch (sWorksheetName)
+        {
+            case WorksheetNames.Edges:
+
+                sTableName = TableNames.Edges;
+                break;
+
+            case WorksheetNames.Vertices:
+
+                sTableName = TableNames.Vertices;
+                break;
+
+            case WorksheetNames.Clusters:
+
+                sTableName = TableNames.Clusters;
+                break;
+
+            default:
+
+                break;
+        }
+
+        ListObject oTable;
+        Range oSelectedTableRange;
+
+        if (
+            sTableName != null
+            &&
+            ExcelUtil.TryGetSelectedTableRange(this.InnerObject,
+                sWorksheetName, sTableName, out oTable,
+                out oSelectedTableRange)
+            )
+        {
+            if (sWorksheetName == WorksheetNames.Edges)
+            {
+                eVisualAttributes |= VisualAttributes.Color;
+                eVisualAttributes |= VisualAttributes.Alpha;
+                eVisualAttributes |= VisualAttributes.EdgeWidth;
+                eVisualAttributes |= VisualAttributes.EdgeVisibility;
+            }
+            else if (sWorksheetName == WorksheetNames.Vertices)
+            {
+                eVisualAttributes |= VisualAttributes.Color;
+                eVisualAttributes |= VisualAttributes.Alpha;
+                eVisualAttributes |= VisualAttributes.VertexShape;
+                eVisualAttributes |= VisualAttributes.VertexRadius;
+                eVisualAttributes |= VisualAttributes.VertexVisibility;
+            }
+            else if (sWorksheetName == WorksheetNames.Clusters)
+            {
+                eVisualAttributes |= VisualAttributes.Color;
+                eVisualAttributes |= VisualAttributes.VertexShape;
+            }
+        }
+
+        this.Ribbon.EnableSetVisualAttributes(eVisualAttributes);
+    }
+
+    //*************************************************************************
+    //  Method: UpdateColumnNames()
+    //
+    /// <summary>
+    /// Updates any columns whose names have been changed since earlier NodeXL
+    /// versions.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    UpdateColumnNames()
+    {
+        AssertValid();
+
+        Globals.Sheet2.UpdateColumnNames();
     }
 
     //*************************************************************************
@@ -1139,6 +1503,60 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: FireVisualAttributeSetInWorkbook()
+    //
+    /// <summary>
+    /// Fires the <see cref="VisualAttributeSetInWorkbook" /> event if
+    /// appropriate.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    FireVisualAttributeSetInWorkbook()
+    {
+        AssertValid();
+
+        if (this.Ribbon.AutoReadWorkbook)
+        {
+            // The TaskPane handles this event by reading the workbook, which
+            // clears the selection in the graph.  That fires the TaskPane's
+            // SelectionChangedInGraph event, which this class handles by
+            // clearing the selection in the workbook.  That can be jarring to
+            // the user, who just made a selection, set a visual attribute on
+            // the selection, and then saw the selection disappear.
+            //
+            // Fix this by temporarily igoring the SelectionChangedInGraph
+            // event, which causes the selection in the workbook to be
+            // retained.  The selection in the graph (which is empty) will then
+            // be out of sync with the selection in the workbook, but I think
+            // that is tolerable.
+
+            m_bIgnoreSelectionChangedInGraph = true;
+            EventUtil.FireEvent(this, this.VisualAttributeSetInWorkbook);
+            m_bIgnoreSelectionChangedInGraph = false;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: FireWorkbookAutoFilled()
+    //
+    /// <summary>
+    /// Fires the <see cref="WorkbookAutoFilled" /> event if appropriate.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    FireWorkbookAutoFilled()
+    {
+        AssertValid();
+
+        if (this.Ribbon.AutoReadWorkbook)
+        {
+            EventUtil.FireEvent(this, this.WorkbookAutoFilled);
+        }
+    }
+
+    //*************************************************************************
     //  Method: Workbook_Startup()
     //
     /// <summary>
@@ -1162,33 +1580,56 @@ public partial class ThisWorkbook
     )
     {
         m_bTaskPaneCreated = false;
+        m_bIgnoreSelectionChangedInGraph = false;
+
+        Sheet1 oSheet1 = Globals.Sheet1;
+        Sheet2 oSheet2 = Globals.Sheet2;
+        Sheet5 oSheet5 = Globals.Sheet5;
 
         m_oWorksheetContextMenuManager = new WorksheetContextMenuManager(
-            this, Globals.Sheet1, Globals.Sheet1.Edges, Globals.Sheet2,
-            Globals.Sheet2.Vertices);
+            this, oSheet1, oSheet1.Edges, oSheet2, oSheet2.Vertices, oSheet5,
+            oSheet5.Clusters);
 
         // In message boxes, show the name of this document customization
         // instead of the default, which is the name of the Excel application.
 
         FormUtil.ApplicationName = ApplicationUtil.ApplicationName;
 
-        Globals.Sheet1.EdgeSelectionChanged +=
-            new TableSelectionChangedEventHandler(
-                this.Sheet1_EdgeSelectionChanged);
+        oSheet1.EdgeSelectionChanged += new TableSelectionChangedEventHandler(
+            this.Sheet1_EdgeSelectionChanged);
 
-        Globals.Sheet2.VertexSelectionChanged +=
+        oSheet2.VertexSelectionChanged += new TableSelectionChangedEventHandler(
+            this.Sheet2_VertexSelectionChanged);
+
+        oSheet5.ClusterSelectionChanged +=
             new TableSelectionChangedEventHandler(
-                this.Sheet2_VertexSelectionChanged);
+                this.Sheet5_ClusterSelectionChanged);
+
+        this.New += new
+            Microsoft.Office.Tools.Excel.WorkbookEvents_NewEventHandler(
+                ThisWorkbook_New);
+
+        this.ActivateEvent += new
+            Microsoft.Office.Interop.Excel.WorkbookEvents_ActivateEventHandler(
+                ThisWorkbook_ActivateEvent);
+
+        this.SheetActivate += new WorkbookEvents_SheetActivateEventHandler(
+            ThisWorkbook_SheetActivate);
 
         // Show the NodeXL graph by default.
 
         this.GraphVisibility = true;
 
+        // Update any columns whose names have been changed since earlier
+        // NodeXL versions.
+
+        UpdateColumnNames();
+
         AssertValid();
     }
 
     //*************************************************************************
-    //  Method: Workbook_New()
+    //  Method: ThisWorkbook_New()
     //
     /// <summary>
     /// Handles the New event on the workbook.
@@ -1210,7 +1651,7 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: Workbook_ActivateEvent()
+    //  Method: ThisWorkbook_ActivateEvent()
     //
     /// <summary>
     /// Handles the ActivateEvent event on the workbook.
@@ -1222,13 +1663,38 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        // Pass the workbook's directedness to the Ribbon.
+        // Update the Ribbon.
 
         this.Ribbon.GraphDirectedness = this.GraphDirectedness;
+        EnableSetVisualAttributes();
     }
 
     //*************************************************************************
-    //  Method: Workbook_Shutdown()
+    //  Method: ThisWorkbook_SheetActivate()
+    //
+    /// <summary>
+    /// Handles the SheetActivate event on the workbook.
+    /// </summary>
+    ///
+    /// <param name="Sh">
+    /// The activated sheet.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    ThisWorkbook_SheetActivate
+    (
+        object Sh
+    )
+    {
+        AssertValid();
+        Debug.Assert(Sh != null);
+
+        EnableSetVisualAttributes();
+    }
+
+    //*************************************************************************
+    //  Method: ThisWorkbook_Shutdown()
     //
     /// <summary>
     /// Handles the Shutdown event on the workbook.
@@ -1297,6 +1763,8 @@ public partial class ThisWorkbook
             FireSelectionChangedInWorkbook(e.SelectedIDs,
                 WorksheetReaderBase.EmptyIDArray);
         }
+
+        EnableSetVisualAttributes();
     }
 
     //*************************************************************************
@@ -1342,6 +1810,42 @@ public partial class ThisWorkbook
             FireSelectionChangedInWorkbook(WorksheetReaderBase.EmptyIDArray,
                 e.SelectedIDs);
         }
+
+        EnableSetVisualAttributes();
+    }
+
+    //*************************************************************************
+    //  Method: Sheet5_ClusterSelectionChanged()
+    //
+    /// <summary>
+    /// Handles the ClusterSelectionChanged event on the Sheet5 (cluster)
+    /// worksheet.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    Sheet5_ClusterSelectionChanged
+    (
+        Object sender,
+        TableSelectionChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(false) )
+        {
+            return;
+        }
+
+        EnableSetVisualAttributes();
     }
 
     //*************************************************************************
@@ -1374,7 +1878,8 @@ public partial class ThisWorkbook
         Debug.Assert(e != null);
         AssertValid();
 
-        if ( !this.ExcelApplicationIsReady(false) )
+        if (!this.ExcelApplicationIsReady(false) ||
+            m_bIgnoreSelectionChangedInGraph)
         {
             return;
         }
@@ -1395,6 +1900,8 @@ public partial class ThisWorkbook
                 ErrorUtil.OnException(oException);
             }
         }
+
+        EnableSetVisualAttributes();
     }
 
     //*************************************************************************
@@ -1563,14 +2070,6 @@ public partial class ThisWorkbook
     {
         this.Startup += new System.EventHandler(ThisWorkbook_Startup);
 
-        this.New += new
-            Microsoft.Office.Tools.Excel.WorkbookEvents_NewEventHandler(
-                ThisWorkbook_New);
-
-        this.ActivateEvent += new
-            Microsoft.Office.Interop.Excel.WorkbookEvents_ActivateEventHandler(
-                ThisWorkbook_ActivateEvent);
-
         this.Shutdown += new System.EventHandler(ThisWorkbook_Shutdown);
     }
         
@@ -1607,6 +2106,10 @@ public partial class ThisWorkbook
     /// true if the task pane has been created.
 
     private Boolean m_bTaskPaneCreated;
+
+    /// true to ignore the TaskPane.SelectionChangedInGraph event.
+
+    private Boolean m_bIgnoreSelectionChangedInGraph;
 }
 
 }

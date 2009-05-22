@@ -46,8 +46,8 @@ public class ColorColumnAutoFillUserSettings : Object
         m_bUseSourceNumber2 = false;
         m_dSourceNumber1 = 0;
         m_dSourceNumber2 = 10;
-        m_eDestinationColor1 = KnownColor.Red;
-        m_eDestinationColor2 = KnownColor.Green;
+        m_eDestinationColor1 = Color.Red;
+        m_eDestinationColor2 = Color.Green;
         m_bIgnoreOutliers = true;
 
         AssertValid();
@@ -195,7 +195,7 @@ public class ColorColumnAutoFillUserSettings : Object
     /// </value>
     //*************************************************************************
 
-    public KnownColor
+    public Color
     DestinationColor1
     {
         get
@@ -226,7 +226,7 @@ public class ColorColumnAutoFillUserSettings : Object
     /// </value>
     //*************************************************************************
 
-    public KnownColor
+    public Color
     DestinationColor2
     {
         get
@@ -356,11 +356,11 @@ public class ColorColumnAutoFillUserSettings : Object
 
     /// The first color to use in the destination column.
 
-    protected KnownColor m_eDestinationColor1;
+    protected Color m_eDestinationColor1;
 
     /// The second color to use in the destination column.
 
-    protected KnownColor m_eDestinationColor2;
+    protected Color m_eDestinationColor2;
 
     /// true if outliers should be ignored in the source column.
 
@@ -447,6 +447,8 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
         ColorColumnAutoFillUserSettings oColorColumnAutoFillUserSettings =
             (ColorColumnAutoFillUserSettings)value;
 
+        ColorConverter oColorConverter = new ColorConverter();
+
         // Use a simple tab-delimited format.  Sample string:
         //
         // "false\tfalse\t0\t10\tRed\tGreen\ttrue"
@@ -459,8 +461,13 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
             oColorColumnAutoFillUserSettings.UseSourceNumber2,
             oColorColumnAutoFillUserSettings.SourceNumber1,
             oColorColumnAutoFillUserSettings.SourceNumber2,
-            oColorColumnAutoFillUserSettings.DestinationColor1,
-            oColorColumnAutoFillUserSettings.DestinationColor2,
+
+            oColorConverter.ConvertToString(
+                oColorColumnAutoFillUserSettings.DestinationColor1),
+
+            oColorConverter.ConvertToString(
+                oColorColumnAutoFillUserSettings.DestinationColor2),
+
             oColorColumnAutoFillUserSettings.IgnoreOutliers
             ) );
     }
@@ -506,6 +513,8 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
         ColorColumnAutoFillUserSettings oColorColumnAutoFillUserSettings =
             new ColorColumnAutoFillUserSettings();
 
+        ColorConverter oColorConverter = new ColorConverter();
+
         String [] asStrings = ( (String)value ).Split( new Char[] {'\t'} );
 
         Debug.Assert(asStrings.Length == 7);
@@ -523,10 +532,10 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
             MathUtil.ParseCultureInvariantDouble(asStrings[3]);
 
         oColorColumnAutoFillUserSettings.DestinationColor1 =
-            Color.FromName( asStrings[4] ).ToKnownColor();
+            (Color)oColorConverter.ConvertFromString( asStrings[4] );
 
         oColorColumnAutoFillUserSettings.DestinationColor2 =
-            Color.FromName( asStrings[5] ).ToKnownColor();
+            (Color)oColorConverter.ConvertFromString( asStrings[5] );
 
         oColorColumnAutoFillUserSettings.IgnoreOutliers =
             Boolean.Parse( asStrings[6] );

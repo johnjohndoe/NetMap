@@ -116,7 +116,7 @@ public class EmailNetworkAnalyzer : Object
     ///
     /// <remarks>
     /// This method uses the Windows Desktop Search index to analyze the user's
-    /// email.  For each email item in the index, a tie strength of 1 is
+    /// email.  For each email item in the index, an edge weight of 1 is
     /// assigned to each From-To and From-Cc participant pair.  For example, if
     /// an email item has these fields:
     ///
@@ -271,15 +271,15 @@ public class EmailNetworkAnalyzer : Object
     ///
     /// </param>
     ///
-    /// <param name="useCcForTieStrengths">
-    /// If true, a tie strength of one is assigned to the sender and each
-    /// participant on the Cc line.  (A tie strength of one is always assigned
+    /// <param name="useCcForEdgeWeights">
+    /// If true, an edge weight of one is assigned to the sender and each
+    /// participant on the Cc line.  (An edge weight of one is always assigned
     /// to the sender and each participant on the To line.)
     /// </param>
     ///
-    /// <param name="useBccForTieStrengths">
-    /// If true, a tie strength of one is assigned to the sender and each
-    /// participant on the Bcc line.  (A tie strength of one is always assigned
+    /// <param name="useBccForEdgeWeights">
+    /// If true, an edge weight of one is assigned to the sender and each
+    /// participant on the Bcc line.  (An edge weight of one is always assigned
     /// to the sender and each participant on the To line.)
     /// </param>
     ///
@@ -310,8 +310,8 @@ public class EmailNetworkAnalyzer : Object
         Nullable<Boolean> hasCc,
         Nullable<Boolean> hasBcc,
         Nullable<Boolean> isReplyFromParticipant1,
-        Boolean useCcForTieStrengths,
-        Boolean useBccForTieStrengths
+        Boolean useCcForEdgeWeights,
+        Boolean useBccForEdgeWeights
     )
     {
         AssertValid();
@@ -319,7 +319,7 @@ public class EmailNetworkAnalyzer : Object
         return ( AnalyzeEmailNetworkInternal(participantsCriteria, startTime,
             endTime, bodyText, folder, minimumSize, maximumSize,
             attachmentFilter, hasCc, hasBcc, isReplyFromParticipant1,
-            useCcForTieStrengths, useBccForTieStrengths, null, null) );
+            useCcForEdgeWeights, useBccForEdgeWeights, null, null) );
     }
 
     //*************************************************************************
@@ -374,11 +374,11 @@ public class EmailNetworkAnalyzer : Object
     /// See the synchronous method.
     /// </param>
     ///
-    /// <param name="useCcForTieStrengths">
+    /// <param name="useCcForEdgeWeights">
     /// See the synchronous method.
     /// </param>
     ///
-    /// <param name="useBccForTieStrengths">
+    /// <param name="useBccForEdgeWeights">
     /// See the synchronous method.
     /// </param>
     ///
@@ -411,8 +411,8 @@ public class EmailNetworkAnalyzer : Object
         Nullable<Boolean> hasCc,
         Nullable<Boolean> hasBcc,
         Nullable<Boolean> isReplyFromParticipant1,
-        Boolean useCcForTieStrengths,
-        Boolean useBccForTieStrengths
+        Boolean useCcForEdgeWeights,
+        Boolean useBccForEdgeWeights
     )
     {
         AssertValid();
@@ -452,11 +452,11 @@ public class EmailNetworkAnalyzer : Object
         oAnalyzeEmailNetworkAsyncArgs.IsReplyFromParticipant1 =
             isReplyFromParticipant1;
 
-        oAnalyzeEmailNetworkAsyncArgs.UseCcForTieStrengths =
-            useCcForTieStrengths;
+        oAnalyzeEmailNetworkAsyncArgs.UseCcForEdgeWeights =
+            useCcForEdgeWeights;
 
-        oAnalyzeEmailNetworkAsyncArgs.UseBccForTieStrengths =
-            useBccForTieStrengths;
+        oAnalyzeEmailNetworkAsyncArgs.UseBccForEdgeWeights =
+            useBccForEdgeWeights;
 
         // Create a BackgroundWorker and handle its events.
 
@@ -687,11 +687,11 @@ public class EmailNetworkAnalyzer : Object
     /// See AnalyzeEmailNetwork().
     /// </param>
     ///
-    /// <param name="useCcForTieStrengths">
+    /// <param name="useCcForEdgeWeights">
     /// See the synchronous method.
     /// </param>
     ///
-    /// <param name="useBccForTieStrengths">
+    /// <param name="useBccForEdgeWeights">
     /// See the synchronous method.
     /// </param>
     ///
@@ -724,8 +724,8 @@ public class EmailNetworkAnalyzer : Object
         Nullable<Boolean> hasCc,
         Nullable<Boolean> hasBcc,
         Nullable<Boolean> isReplyFromParticipant1,
-        Boolean useCcForTieStrengths,
-        Boolean useBccForTieStrengths,
+        Boolean useCcForEdgeWeights,
+        Boolean useBccForEdgeWeights,
         BackgroundWorker backgroundWorker,
         DoWorkEventArgs doWorkEventArgs
     )
@@ -749,7 +749,7 @@ public class EmailNetworkAnalyzer : Object
         try
         {
             aoEmailParticipantPairs = AnalyzeEmailNetworkInternal(
-                oDataReader, useCcForTieStrengths, useBccForTieStrengths,
+                oDataReader, useCcForEdgeWeights, useBccForEdgeWeights,
                 backgroundWorker, doWorkEventArgs);
         }
         finally
@@ -803,11 +803,11 @@ public class EmailNetworkAnalyzer : Object
     /// An <see cref="OleDbDataReader" /> object for reading email items.
     /// </param>
     ///
-    /// <param name="bUseCcForTieStrengths">
+    /// <param name="bUseCcForEdgeWeights">
     /// See the synchronous AnalyzeEmailNetwork() method.
     /// </param>
     ///
-    /// <param name="bUseBccForTieStrengths">
+    /// <param name="bUseBccForEdgeWeights">
     /// See the synchronous AnalyzeEmailNetwork() method.
     /// </param>
     ///
@@ -832,8 +832,8 @@ public class EmailNetworkAnalyzer : Object
     AnalyzeEmailNetworkInternal
     (
         OleDbDataReader oDataReader,
-        Boolean bUseCcForTieStrengths,
-        Boolean bUseBccForTieStrengths,
+        Boolean bUseCcForEdgeWeights,
+        Boolean bUseBccForEdgeWeights,
         BackgroundWorker oBackgroundWorker,
         DoWorkEventArgs oDoWorkEventArgs
     )
@@ -844,7 +844,7 @@ public class EmailNetworkAnalyzer : Object
 
         // Create a dictionary to keep track of participant pairs.  The key is
         // the pair of participants in the format used by ParticipantsToKey()
-        // and the value is the tie strength between the participants.  The
+        // and the value is the edge weight between the participants.  The
         // contents of this aggregated dictionary get returned by this method.
 
         Dictionary<String, Int32> oAggregatedDictionary =
@@ -862,7 +862,7 @@ public class EmailNetworkAnalyzer : Object
             Object oBccField = oDataReader["System.Message.BccAddress"];
 
             AnalyzeOneEmail(oFromField, oToField, oCcField, oBccField,
-                bUseCcForTieStrengths, bUseBccForTieStrengths,
+                bUseCcForEdgeWeights, bUseBccForEdgeWeights,
                 oAggregatedDictionary);
 
             if (oBackgroundWorker != null)
@@ -932,18 +932,18 @@ public class EmailNetworkAnalyzer : Object
     /// The email's "Bcc" fields.  Can be DBNull.
     /// </param>
     ///
-    /// <param name="bUseCcForTieStrengths">
+    /// <param name="bUseCcForEdgeWeights">
     /// See the synchronous AnalyzeEmailNetwork() method.
     /// </param>
     ///
-    /// <param name="bUseBccForTieStrengths">
+    /// <param name="bUseBccForEdgeWeights">
     /// See the synchronous AnalyzeEmailNetwork() method.
     /// </param>
     ///
     /// <param name="oAggregatedDictionary">
     /// Aggregated participant pairs.  The key is the pair of participants in
-    /// the format used by ParticipantsToKey() and the value is the tie
-    /// strength between the participants.
+    /// the format used by ParticipantsToKey() and the value is the edge
+    /// weight between the participants.
     /// </param>
     //*************************************************************************
 
@@ -954,8 +954,8 @@ public class EmailNetworkAnalyzer : Object
         Object oToField,
         Object oCcField,
         Object oBccField,
-        Boolean bUseCcForTieStrengths,
-        Boolean bUseBccForTieStrengths,
+        Boolean bUseCcForEdgeWeights,
+        Boolean bUseBccForEdgeWeights,
         Dictionary<String, Int32> oAggregatedDictionary
     )
     {
@@ -996,13 +996,13 @@ public class EmailNetworkAnalyzer : Object
 
         // Analyze the Cc and Bcc fields only if requested.
 
-        if (bUseCcForTieStrengths)
+        if (bUseCcForEdgeWeights)
         {
             AnalyzeOneEmailField(sFrom, oCcField, oPerEmailDictionary,
                 oAggregatedDictionary);
         }
 
-        if (bUseBccForTieStrengths)
+        if (bUseBccForEdgeWeights)
         {
             AnalyzeOneEmailField(sFrom, oBccField, oPerEmailDictionary,
                 oAggregatedDictionary);
@@ -1031,8 +1031,8 @@ public class EmailNetworkAnalyzer : Object
     ///
     /// <param name="oAggregatedDictionary">
     /// Aggregated participant pairs.  The key is the pair of participants in
-    /// the format used by ParticipantsToKey() and the value is the tie
-    /// strength between the participants.
+    /// the format used by ParticipantsToKey() and the value is the edge
+    /// weight between the participants.
     /// </param>
     //*************************************************************************
 
@@ -1086,19 +1086,19 @@ public class EmailNetworkAnalyzer : Object
             if (sParticipantLower != sFromLower)
             {
                 String sKey = ParticipantsToKey(sFromLower, sParticipantLower);
-                Int32 iTieStrength = 0;
+                Int32 iEdgeWeight = 0;
 
                 if ( oAggregatedDictionary.TryGetValue(
-                    sKey, out iTieStrength) )
+                    sKey, out iEdgeWeight) )
                 {
-                    iTieStrength++;
+                    iEdgeWeight++;
                 }
                 else
                 {
-                    iTieStrength = 1;
+                    iEdgeWeight = 1;
                 }
 
-                oAggregatedDictionary[sKey] = iTieStrength;
+                oAggregatedDictionary[sKey] = iEdgeWeight;
             }
         }
     }
@@ -1876,8 +1876,8 @@ public class EmailNetworkAnalyzer : Object
             oAnalyzeEmailNetworkAsyncArgs.HasCc,
             oAnalyzeEmailNetworkAsyncArgs.HasBcc,
             oAnalyzeEmailNetworkAsyncArgs.IsReplyFromParticipant1,
-            oAnalyzeEmailNetworkAsyncArgs.UseCcForTieStrengths,
-            oAnalyzeEmailNetworkAsyncArgs.UseBccForTieStrengths,
+            oAnalyzeEmailNetworkAsyncArgs.UseCcForEdgeWeights,
+            oAnalyzeEmailNetworkAsyncArgs.UseBccForEdgeWeights,
             oBackgroundWorker,
             e
             );
@@ -2026,9 +2026,9 @@ public class EmailNetworkAnalyzer : Object
         ///
         public Nullable<Boolean> IsReplyFromParticipant1;
         ///
-        public Boolean UseCcForTieStrengths;
+        public Boolean UseCcForEdgeWeights;
         ///
-        public Boolean UseBccForTieStrengths;
+        public Boolean UseBccForEdgeWeights;
     };
 }
 

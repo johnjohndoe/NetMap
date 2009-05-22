@@ -134,6 +134,11 @@ public class SpiralLayout : SortableLayoutBase
         Debug.Assert(verticesToLayOut != null);
         AssertValid();
 
+        if (backgroundWorker != null && backgroundWorker.CancellationPending)
+        {
+            return (false);
+        }
+
         Int32 iVertices = verticesToLayOut.Count;
 
         Debug.Assert(iVertices > 0);
@@ -142,77 +147,34 @@ public class SpiralLayout : SortableLayoutBase
 
         Double dAngleBetweenVertices = MaximumSpiralAngle / (Double)iVertices;
 
-        // The layout is animated the first time the graph is drawn by
-        // uniformly increasing the spiral's width with each iteration.
-
-        Int32 iIterations = AnimationIterations;
-
-        if ( graph.ContainsKey(ReservedMetadataKeys.SpiralLayoutSpiralDrawn) )
-        {
-            // The graph has been completely drawn before.  Don't animate it
-            // this time.
-
-            iIterations = 1;
-        }
-
         Double dCenterX, dCenterY, dHalfSize;
 
         GetRectangleCenterAndHalfSize(layoutContext.GraphRectangle,
             out dCenterX, out dCenterY, out dHalfSize);
 
-        for (Int32 i = 0; i < iIterations; i++)
+        // Parametric equations for a spiral:
+        //
+        //     dX = dA * dAngle * cos(dAngle)
+        //     dY = dA * dAngle * sin(dAngle)
+        //
+        // where A is a constant.
+
+        double dA = dHalfSize / MaximumSpiralAngle;
+
+        Double dAngle = 0;
+
+        foreach (IVertex oVertex in verticesToLayOut)
         {
-            if (backgroundWorker != null &&
-                backgroundWorker.CancellationPending)
+            if ( !VertexIsLocked(oVertex) )
             {
-                return (false);
+                Double dX = dCenterX + dA * dAngle * Math.Cos(dAngle);
+                Double dY = dCenterY + dA * dAngle * Math.Sin(dAngle);
+
+                oVertex.Location = new PointF( (Single)dX, (Single)dY );
             }
 
-            // Get the distance of the outer end of the spiral from the
-            // rectangle's center.
-
-            Double dOuterEndDistance =
-                dHalfSize * ( (Double)i + 1) / (Double)iIterations;
-
-            // Parametric equations for a spiral:
-            //
-            //     dX = dA * dAngle * cos(dAngle)
-            //     dY = dA * dAngle * sin(dAngle)
-            //
-            // where A is a constant.
-
-            // Compute dA.
-
-            double dA = dOuterEndDistance / MaximumSpiralAngle;
-
-            Double dAngle = 0;
-
-            // Set the location on each vertex.
-
-            foreach (IVertex oVertex in verticesToLayOut)
-            {
-                if ( !VertexIsLocked(oVertex) )
-                {
-                    Double dX = dCenterX + dA * dAngle * Math.Cos(dAngle);
-                    Double dY = dCenterY + dA * dAngle * Math.Sin(dAngle);
-
-                    oVertex.Location = new PointF( (Single)dX, (Single)dY );
-                }
-
-                dAngle += dAngleBetweenVertices;
-            }
-
-            System.Threading.Thread.Sleep(AnimationSleepMs);
-
-            if (backgroundWorker != null)
-            {
-                FireLayOutGraphIterationCompleted();
-            }
+            dAngle += dAngleBetweenVertices;
         }
-
-        // Mark the graph as having been completely drawn.
-
-        graph.SetValue(ReservedMetadataKeys.SpiralLayoutSpiralDrawn, null);
 
         return (true);
     }
@@ -244,15 +206,6 @@ public class SpiralLayout : SortableLayoutBase
     /// Maximum angle of the spiral, in radians.
 
     protected const Double MaximumSpiralAngle = 6 * Math.PI;
-
-    /// Number of iterations used to animate the graph the first time it is
-    /// drawn.
-
-    protected const Int32 AnimationIterations = 10;
-
-    /// Number of milliseconds to sleep between animation iterations.
-
-    protected const Int32 AnimationSleepMs = 10;
 
 
     //*************************************************************************

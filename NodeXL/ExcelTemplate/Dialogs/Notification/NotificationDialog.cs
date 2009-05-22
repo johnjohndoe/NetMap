@@ -221,7 +221,7 @@ public partial class NotificationDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("NotificationDialog") ]
+[ SettingsGroupNameAttribute("NotificationDialog2") ]
 
 public class NotificationDialogUserSettings : FormSettings
 {

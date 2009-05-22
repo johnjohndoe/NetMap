@@ -122,6 +122,38 @@ public class ColorPicker : UserControl
 
     public event EventHandler ColorChanged;
 
+
+    //*************************************************************************
+    //  Method: ChangeColor()
+    //
+    /// <summary>
+    /// Gets a color from the user.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    ChangeColor()
+    {
+        AssertValid();
+
+        ColorDialog oColorDialog = new ColorDialog();
+        oColorDialog.Color = this.Color;
+
+        if (oColorDialog.ShowDialog() == DialogResult.OK)
+        {
+            Color oOldColor = this.Color;
+
+            this.Color = oColorDialog.Color;
+
+            if (this.Color != oOldColor && ColorChanged != null)
+            {
+                // Fire a ColorChanged event.
+
+                ColorChanged( this, new EventArgs() );
+            }
+        }
+    }
+
     //*************************************************************************
     //  Method: btnColor_Click()
     //
@@ -145,23 +177,39 @@ public class ColorPicker : UserControl
         System.EventArgs e
     )
     {
-        ColorDialog oColorDialog = new ColorDialog();
-        oColorDialog.Color = this.Color;
+        AssertValid();
 
-        if (oColorDialog.ShowDialog() == DialogResult.OK)
-        {
-            Color oOldColor = this.Color;
-
-            this.Color = oColorDialog.Color;
-
-            if (this.Color != oOldColor && ColorChanged != null)
-            {
-                // Fire a ColorChanged event.
-
-                ColorChanged( this, new EventArgs() );
-            }
-        }
+        ChangeColor();
     }
+
+    //*************************************************************************
+    //  Method: pnlColor_MouseDown()
+    //
+    /// <summary>
+    /// Handles the MouseDown event on the pnlColor Panel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    pnlColor_MouseDown
+    (
+        object sender,
+        MouseEventArgs e
+    )
+    {
+        AssertValid();
+
+        ChangeColor();
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -208,11 +256,13 @@ public class ColorPicker : UserControl
         // 
         // btnColor
         // 
+        this.btnColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        this.btnColor.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
         this.btnColor.Location = new System.Drawing.Point(36, 4);
         this.btnColor.Name = "btnColor";
         this.btnColor.Size = new System.Drawing.Size(24, 24);
         this.btnColor.TabIndex = 3;
-        this.btnColor.Text = "...";
+        this.btnColor.Text = "\u25bc";
         this.btnColor.Click += new System.EventHandler(this.btnColor_Click);
         // 
         // pnlColor
@@ -222,6 +272,7 @@ public class ColorPicker : UserControl
         this.pnlColor.Name = "pnlColor";
         this.pnlColor.Size = new System.Drawing.Size(24, 24);
         this.pnlColor.TabIndex = 4;
+        this.pnlColor.MouseDown += new MouseEventHandler(this.pnlColor_MouseDown);
         // 
         // ColorPicker
         // 

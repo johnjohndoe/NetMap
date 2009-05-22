@@ -245,7 +245,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
 
                     if (asFields.Length != 2 ||
                         !MathUtil.TryParseCultureInvariantInt32(
-							asFields[1], out iVerticesExpected) ||
+                            asFields[1], out iVerticesExpected) ||
                         iVerticesExpected < 0)
                     {
                         OnLoadFormatError(sLine, iLineNumber, "*vertices N");
@@ -687,7 +687,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
         if (!oMatch.Success
             ||
             !MathUtil.TryParseCultureInvariantInt32(
-				oMatch.Groups["VertexNumber"].Value, out iVertexNumber)
+                oMatch.Groups["VertexNumber"].Value, out iVertexNumber)
             )
         {
             OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
@@ -719,7 +719,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
             if (!MathUtil.TryParseCultureInvariantSingle(sX, out fX) ||
 
                 !MathUtil.TryParseCultureInvariantSingle(
-					oMatch.Groups["Y"].Value, out fY) ||
+                    oMatch.Groups["Y"].Value, out fY) ||
 
                 fX < 0 || fX > 1.0F ||
                 fY < 0 || fY > 1.0F
@@ -785,17 +785,17 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
 
         Int32 iFirstVertexNumber = 0;
         Int32 iSecondVertexNumber = 0;
-        Single fWeight = 0;
+        Double dWeight = 0;
 
         if (asFields.Length < 3 ||
 
             !MathUtil.TryParseCultureInvariantInt32(
-				asFields[0], out iFirstVertexNumber) ||
+                asFields[0], out iFirstVertexNumber) ||
 
             !MathUtil.TryParseCultureInvariantInt32(
-				asFields[1], out iSecondVertexNumber) ||
+                asFields[1], out iSecondVertexNumber) ||
 
-            !MathUtil.TryParseCultureInvariantSingle(asFields[2], out fWeight)
+            !MathUtil.TryParseCultureInvariantDouble(asFields[2], out dWeight)
             )
         {
             OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
@@ -805,7 +805,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
         CheckVertexNumber(iSecondVertexNumber, sLine, iLineNumber, iVertices);
 
         oEdgeData.Add( new PajekEdgeData(
-            iFirstVertexNumber, iSecondVertexNumber, fWeight) );
+            iFirstVertexNumber, iSecondVertexNumber, dWeight) );
     }
 
     //*************************************************************************
@@ -871,7 +871,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
             Int32 iVertexNumber = 0;
 
             if ( !MathUtil.TryParseCultureInvariantInt32(
-				asFields[i], out iVertexNumber) )
+                asFields[i], out iVertexNumber) )
             {
                 OnLoadFormatError(sLine, iLineNumber, ExpectedFormat);
             }
@@ -1184,12 +1184,12 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
         // Retrieve the edge weight, if it exists.
 
         Object oWeight = null;
-        Single fWeight = DefaultEdgeWeight;
+        Double dWeight = DefaultEdgeWeight;
 
         if ( oEdge.TryGetValue(
-            ReservedMetadataKeys.EdgeWeight, typeof(Single), out oWeight) )
+            ReservedMetadataKeys.EdgeWeight, typeof(Double), out oWeight) )
         {
-            fWeight = (Single)oWeight;
+            dWeight = (Double)oWeight;
         }
 
         // Format:
@@ -1202,7 +1202,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
             ,
             iVertex1Number,
             iVertex2Number,
-            fWeight
+            dWeight
             );
     }
 
@@ -1285,7 +1285,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
 
     /// Default edge weight to use when an edge weight isn't specified.
 
-    protected const Single DefaultEdgeWeight = 1.0F;
+    protected const Double DefaultEdgeWeight = 1.0;
 
 
     //*************************************************************************

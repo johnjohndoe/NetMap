@@ -51,7 +51,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnYes
             // 
             this.btnYes.DialogResult = System.Windows.Forms.DialogResult.Yes;
-            this.btnYes.Location = new System.Drawing.Point(173, 135);
+            this.btnYes.Location = new System.Drawing.Point(173, 152);
             this.btnYes.Name = "btnYes";
             this.btnYes.Size = new System.Drawing.Size(75, 23);
             this.btnYes.TabIndex = 2;
@@ -61,7 +61,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnNo
             // 
             this.btnNo.DialogResult = System.Windows.Forms.DialogResult.No;
-            this.btnNo.Location = new System.Drawing.Point(254, 135);
+            this.btnNo.Location = new System.Drawing.Point(254, 152);
             this.btnNo.Name = "btnNo";
             this.btnNo.Size = new System.Drawing.Size(75, 23);
             this.btnNo.TabIndex = 3;
@@ -71,7 +71,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // chkDisableFutureNotifications
             // 
             this.chkDisableFutureNotifications.AutoSize = true;
-            this.chkDisableFutureNotifications.Location = new System.Drawing.Point(12, 135);
+            this.chkDisableFutureNotifications.Location = new System.Drawing.Point(12, 152);
             this.chkDisableFutureNotifications.Name = "chkDisableFutureNotifications";
             this.chkDisableFutureNotifications.Size = new System.Drawing.Size(125, 17);
             this.chkDisableFutureNotifications.TabIndex = 1;
@@ -93,7 +93,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnNo;
-            this.ClientSize = new System.Drawing.Size(341, 170);
+            this.ClientSize = new System.Drawing.Size(341, 189);
             this.Controls.Add(this.picNotification);
             this.Controls.Add(this.chkDisableFutureNotifications);
             this.Controls.Add(this.btnNo);

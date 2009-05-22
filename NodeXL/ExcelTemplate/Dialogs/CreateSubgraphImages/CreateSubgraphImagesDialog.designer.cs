@@ -342,7 +342,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkSaveToFolder.Name = "chkSaveToFolder";
             this.chkSaveToFolder.Size = new System.Drawing.Size(178, 17);
             this.chkSaveToFolder.TabIndex = 2;
-            this.chkSaveToFolder.Text = "&Save subgraph images to folder:";
+            this.chkSaveToFolder.Text = "&Save subgraph image files in folder:";
             this.chkSaveToFolder.UseVisualStyleBackColor = true;
             this.chkSaveToFolder.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
@@ -401,7 +401,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CreateSubgraphImagesDialog";
-            this.Text = "Create Subgraph Images";
+            this.Text = "Subgraph Images";
             this.pnlDisableWhileCreating.ResumeLayout(false);
             this.pnlDisableWhileCreating.PerformLayout();
             this.grpThumbnailSize.ResumeLayout(false);

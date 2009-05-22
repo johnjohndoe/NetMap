@@ -115,6 +115,11 @@ public class RandomLayout : AsyncLayoutBase
         Debug.Assert(layoutContext != null);
         AssertValid();
 
+        if (backgroundWorker != null && backgroundWorker.CancellationPending)
+        {
+            return (false);
+        }
+
         // Honor the optional LayOutTheseVerticesOnly key on the graph.
 
         ICollection oVerticesToLayOut = GetVerticesToLayOut(graph);
@@ -128,24 +133,8 @@ public class RandomLayout : AsyncLayoutBase
             return (true);
         }
 
-        for (Int32 i = 0; i < AnimationIterations; i++)
-        {
-            if (backgroundWorker != null &&
-                backgroundWorker.CancellationPending)
-            {
-                return (false);
-            }
-
-            base.RandomizeVertexLocations(oVerticesToLayOut, layoutContext,
-                new Random(), false);
-
-            System.Threading.Thread.Sleep(AnimationSleepMs);
-
-            if (backgroundWorker != null)
-            {
-                FireLayOutGraphIterationCompleted();
-            }
-        }
+        base.RandomizeVertexLocations(oVerticesToLayOut, layoutContext,
+            new Random(), false);
 
         return (true);
     }
@@ -166,19 +155,6 @@ public class RandomLayout : AsyncLayoutBase
     {
         base.AssertValid();
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number of iterations used to animate the graph.
-
-    protected const Int32 AnimationIterations = 5;
-
-    /// Number of milliseconds to sleep between animation iterations.
-
-    protected const Int32 AnimationSleepMs = 10;
 
 
     //*************************************************************************

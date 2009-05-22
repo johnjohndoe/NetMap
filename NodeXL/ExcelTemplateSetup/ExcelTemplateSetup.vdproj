@@ -33,42 +33,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
-        "OwnerKey" = "8:_C16257C5B81D35972545BF4F9C32AF8C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
-        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
-        "OwnerKey" = "8:_6428BE06CC302B159341DC7B786C1A50"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
-        "OwnerKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
-        "OwnerKey" = "8:_697D18E74C7D4488D5968BE555EDCBDA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
-        "OwnerKey" = "8:_A218D4A4AB3E7C735581476048687CC6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0CC613CC23E801922BE1B64CC243EBF3"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
@@ -83,42 +47,6 @@
         {
         "MsmKey" = "8:_0CC613CC23E801922BE1B64CC243EBF3"
         "OwnerKey" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D346533987DA973F215E3777FF462D6"
-        "OwnerKey" = "8:_C16257C5B81D35972545BF4F9C32AF8C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D346533987DA973F215E3777FF462D6"
-        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D346533987DA973F215E3777FF462D6"
-        "OwnerKey" = "8:_6428BE06CC302B159341DC7B786C1A50"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D346533987DA973F215E3777FF462D6"
-        "OwnerKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D346533987DA973F215E3777FF462D6"
-        "OwnerKey" = "8:_AAF676133119AB35D581B46F6194DCA9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D346533987DA973F215E3777FF462D6"
-        "OwnerKey" = "8:_A218D4A4AB3E7C735581476048687CC6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -149,6 +77,18 @@
         {
         "MsmKey" = "8:_2E59189D8A1645F4875E0BCD5FC022DE"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+        "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -207,13 +147,55 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6428BE06CC302B159341DC7B786C1A50"
-        "OwnerKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
+        "MsmKey" = "8:_5D96C1A3C205CF2B46F64DB6A406DFD5"
+        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6428BE06CC302B159341DC7B786C1A50"
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_86E63028DE99EA01A1C23565AAA93835"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_6AEC068F1235A9ABF183289DA8B49D60"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
+        "OwnerKey" = "8:_5D96C1A3C205CF2B46F64DB6A406DFD5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -231,7 +213,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_697D18E74C7D4488D5968BE555EDCBDA"
+        "MsmKey" = "8:_6AEC068F1235A9ABF183289DA8B49D60"
+        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6AEC068F1235A9ABF183289DA8B49D60"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -243,8 +231,56 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_86E63028DE99EA01A1C23565AAA93835"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_6AEC068F1235A9ABF183289DA8B49D60"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
+        "OwnerKey" = "8:_5D96C1A3C205CF2B46F64DB6A406DFD5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_81B863B968F049D584EF6BEF69F060D2"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_86E63028DE99EA01A1C23565AAA93835"
+        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -285,31 +321,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A218D4A4AB3E7C735581476048687CC6"
-        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
+        "MsmKey" = "8:_AD948868991A0E94B975195165346421"
+        "OwnerKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AAF676133119AB35D581B46F6194DCA9"
-        "OwnerKey" = "8:_697D18E74C7D4488D5968BE555EDCBDA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AAF676133119AB35D581B46F6194DCA9"
-        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AAF676133119AB35D581B46F6194DCA9"
-        "OwnerKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C16257C5B81D35972545BF4F9C32AF8C"
+        "MsmKey" = "8:_AD948868991A0E94B975195165346421"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -345,20 +363,26 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CD634B9392CFE84F381BD5626D2A8D2F"
-        "OwnerKey" = "8:_AAF676133119AB35D581B46F6194DCA9"
+        "MsmKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_CD634B9392CFE84F381BD5626D2A8D2F"
+        "MsmKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
+        "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
+        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -377,18 +401,6 @@
         {
         "MsmKey" = "8:_DD9434747BF79F4432B04A9B8F49B02B"
         "OwnerKey" = "8:_5D73043A0E9751022E8F1B78A9933AF2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
-        "OwnerKey" = "8:_697D18E74C7D4488D5968BE555EDCBDA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
-        "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -430,55 +442,55 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_697D18E74C7D4488D5968BE555EDCBDA"
+        "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E765CE72E71F0DDA3D711E6AB803BD9C"
+        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6428BE06CC302B159341DC7B786C1A50"
+        "OwnerKey" = "8:_6AEC068F1235A9ABF183289DA8B49D60"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AAF676133119AB35D581B46F6194DCA9"
+        "OwnerKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CD634B9392CFE84F381BD5626D2A8D2F"
+        "OwnerKey" = "8:_AD948868991A0E94B975195165346421"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A218D4A4AB3E7C735581476048687CC6"
+        "OwnerKey" = "8:_5D96C1A3C205CF2B46F64DB6A406DFD5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C16257C5B81D35972545BF4F9C32AF8C"
+        "OwnerKey" = "8:_86E63028DE99EA01A1C23565AAA93835"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_05DFD73AC7E4F1E946DD76803F82E0CF"
+        "OwnerKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0D346533987DA973F215E3777FF462D6"
+        "OwnerKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -749,37 +761,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_05DFD73AC7E4F1E946DD76803F82E0CF"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Util, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_05DFD73AC7E4F1E946DD76803F82E0CF"
-                    {
-                    "Name" = "8:Microsoft.NodeXL.Util.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.NodeXL.Util.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0CC613CC23E801922BE1B64CC243EBF3"
             {
             "AssemblyRegister" = "3:1"
@@ -808,37 +789,6 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0D346533987DA973F215E3777FF462D6"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Core, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_0D346533987DA973F215E3777FF462D6"
-                    {
-                    "Name" = "8:Microsoft.NodeXL.Core.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.NodeXL.Core.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -911,6 +861,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Control.Wpf, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_35B0BAD5D30C324FABB4A3A452EF5CDE"
+                    {
+                    "Name" = "8:Microsoft.NodeXL.Control.Wpf.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.NodeXL.Control.Wpf.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4E81E2AB58D4D2141E635E61B8AFAA60"
@@ -995,20 +976,82 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6428BE06CC302B159341DC7B786C1A50"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5D96C1A3C205CF2B46F64DB6A406DFD5"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Visualization.Wpf, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Algorithms, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6428BE06CC302B159341DC7B786C1A50"
+                    "_5D96C1A3C205CF2B46F64DB6A406DFD5"
                     {
-                    "Name" = "8:Microsoft.NodeXL.Visualization.Wpf.dll"
+                    "Name" = "8:Microsoft.NodeXL.Algorithms.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Microsoft.NodeXL.Visualization.Wpf.dll"
+            "SourcePath" = "8:Microsoft.NodeXL.Algorithms.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_60BB7CE7209677A75DCC24192CBA5890"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Util, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_60BB7CE7209677A75DCC24192CBA5890"
+                    {
+                    "Name" = "8:Microsoft.NodeXL.Util.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.NodeXL.Util.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6928A3C23638DD4BD3B7BE2725FEE4E9"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ApplicationUtil, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6928A3C23638DD4BD3B7BE2725FEE4E9"
+                    {
+                    "Name" = "8:Microsoft.NodeXL.ApplicationUtil.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.NodeXL.ApplicationUtil.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
@@ -1057,20 +1100,82 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_697D18E74C7D4488D5968BE555EDCBDA"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6AEC068F1235A9ABF183289DA8B49D60"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ApplicationUtil, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Visualization.Wpf, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_697D18E74C7D4488D5968BE555EDCBDA"
+                    "_6AEC068F1235A9ABF183289DA8B49D60"
                     {
-                    "Name" = "8:Microsoft.NodeXL.ApplicationUtil.dll"
+                    "Name" = "8:Microsoft.NodeXL.Visualization.Wpf.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Microsoft.NodeXL.ApplicationUtil.dll"
+            "SourcePath" = "8:Microsoft.NodeXL.Visualization.Wpf.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7E726C199B8AABAF49C92D8BF69B7496"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Core, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_7E726C199B8AABAF49C92D8BF69B7496"
+                    {
+                    "Name" = "8:Microsoft.NodeXL.Core.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.NodeXL.Core.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_86E63028DE99EA01A1C23565AAA93835"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Adapters, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_86E63028DE99EA01A1C23565AAA93835"
+                    {
+                    "Name" = "8:Microsoft.NodeXL.Adapters.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.NodeXL.Adapters.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
@@ -1139,82 +1244,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A218D4A4AB3E7C735581476048687CC6"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AD948868991A0E94B975195165346421"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Algorithms, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.GLEE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f84f738e1fc245c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A218D4A4AB3E7C735581476048687CC6"
+                    "_AD948868991A0E94B975195165346421"
                     {
-                    "Name" = "8:Microsoft.NodeXL.Algorithms.dll"
+                    "Name" = "8:Microsoft.GLEE.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Microsoft.NodeXL.Algorithms.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AAF676133119AB35D581B46F6194DCA9"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Layouts, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_AAF676133119AB35D581B46F6194DCA9"
-                    {
-                    "Name" = "8:Microsoft.NodeXL.Layouts.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.NodeXL.Layouts.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C16257C5B81D35972545BF4F9C32AF8C"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Adapters, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_C16257C5B81D35972545BF4F9C32AF8C"
-                    {
-                    "Name" = "8:Microsoft.NodeXL.Adapters.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.NodeXL.Adapters.dll"
+            "SourcePath" = "8:Microsoft.GLEE.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
@@ -1314,20 +1357,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CD634B9392CFE84F381BD5626D2A8D2F"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CFB4CE07CE9282744778769DB186A1B6"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.GLEE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f84f738e1fc245c, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Layouts, Version=1.0.1.85, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CD634B9392CFE84F381BD5626D2A8D2F"
+                    "_CFB4CE07CE9282744778769DB186A1B6"
                     {
-                    "Name" = "8:Microsoft.GLEE.dll"
+                    "Name" = "8:Microsoft.NodeXL.Layouts.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Microsoft.GLEE.dll"
+            "SourcePath" = "8:Microsoft.NodeXL.Layouts.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
@@ -1393,37 +1436,6 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E765CE72E71F0DDA3D711E6AB803BD9C"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Control.Wpf, Version=1.0.1.76, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_E765CE72E71F0DDA3D711E6AB803BD9C"
-                    {
-                    "Name" = "8:Microsoft.NodeXL.Control.Wpf.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.NodeXL.Control.Wpf.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1573,14 +1585,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Microsoft NodeXL Excel Template"
-        "ProductCode" = "8:{CA279F6C-6133-408F-80B0-8390AD01DECB}"
-        "PackageCode" = "8:{2613DC1D-521C-4A38-B5B0-8ED24128ED97}"
+        "ProductCode" = "8:{1E8CFC60-96C2-4597-ABFE-4F75041A6121}"
+        "PackageCode" = "8:{3E131604-F521-45B4-8034-A0048156FD05}"
         "UpgradeCode" = "8:{87DDE855-47E5-48B2-9D6E-03B84139823A}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.76"
+        "ProductVersion" = "8:1.0.85"
         "Manufacturer" = "8:Microsoft Research"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2132,7 +2144,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_DCEA35EA982149D2A68E1906F2EE8F1F"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "RegisterExeArgs"

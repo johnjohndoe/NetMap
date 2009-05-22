@@ -426,6 +426,8 @@ public static class DynamicFilterUtil : Object
         Debug.Assert(oColumn != null);
         Debug.Assert(oColumn.DataBodyRange != null);
 
+        dMinimumCellValue = dMaximumCellValue = Double.MinValue;
+
         Application oApplication = oColumn.Application;
 
         String sFunctionCall = String.Format(
@@ -436,11 +438,19 @@ public static class DynamicFilterUtil : Object
             ExcelUtil.GetRangeAddress(oColumn.DataBodyRange)
             );
 
-        dMinimumCellValue = (Double)oApplication.Evaluate(sFunctionCall);
+        if ( !ExcelUtil.TryEvaluateDoubleFunction(oApplication, sFunctionCall,
+            out dMinimumCellValue) )
+        {
+            return (false);
+        }
 
         sFunctionCall = sFunctionCall.Replace("MIN", "MAX");
 
-        dMaximumCellValue = (Double)oApplication.Evaluate(sFunctionCall);
+        if ( !ExcelUtil.TryEvaluateDoubleFunction(oApplication, sFunctionCall,
+            out dMaximumCellValue) )
+        {
+            return (false);
+        }
 
         return (dMaximumCellValue > dMinimumCellValue);
     }

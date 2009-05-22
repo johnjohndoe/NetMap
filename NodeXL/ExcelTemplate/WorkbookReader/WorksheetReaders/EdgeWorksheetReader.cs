@@ -119,7 +119,20 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
         ListObject oEdgeTable = GetEdgeTable(workbook);
 
-        AddEdgeTableToGraph(oEdgeTable, readWorkbookContext, graph);
+        // The code that reads the table can handle hidden rows, but not hidden
+        // columns.  Temporarily show all hidden columns in the table.
+
+        ExcelHiddenColumns oHiddenColumns =
+            ExcelColumnHider.ShowHiddenColumns(oEdgeTable);
+
+        try
+        {
+            AddEdgeTableToGraph(oEdgeTable, readWorkbookContext, graph);
+        }
+        finally
+        {
+            ExcelColumnHider.RestoreHiddenColumns(oEdgeTable, oHiddenColumns);
+        }
     }
 
     //*************************************************************************
@@ -254,6 +267,9 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
         oEdgeTableColumnIndexes.Visibility = GetTableColumnIndex(
             edgeTable, EdgeTableColumnNames.Visibility, false);
+
+        oEdgeTableColumnIndexes.EdgeWeight = GetTableColumnIndex(
+            edgeTable, EdgeTableColumnNames.EdgeWeight, false);
 
         oEdgeTableColumnIndexes.ID = GetTableColumnIndex(
             edgeTable, CommonTableColumnNames.ID, false);
@@ -516,6 +532,14 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                     oEdgeTableColumnIndexes.Width,
                     oReadWorkbookContext.EdgeWidthConverter, oEdge);
             }
+
+            // If edge weight values should be set, set the edge's weight.
+
+            if (oReadWorkbookContext.SetEdgeWeightValues)
+            {
+                SetEdgeWeight(oEdgeSubrange, aoEdgeValues, iRowOneBased,
+                    oEdgeTableColumnIndexes.EdgeWeight, oEdge);
+            }
         }
     }
 
@@ -604,6 +628,75 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
         oEdge.SetValue(ReservedMetadataKeys.PerEdgeWidth, 
             oEdgeWidthConverter.WorkbookToGraph(fWidth) );
+    }
+
+    //*************************************************************************
+    //  Method: SetEdgeWeight()
+    //
+    /// <summary>
+    /// Sets the edge weight on an edge.
+    /// </summary>
+    ///
+    /// <param name="oEdgeRange">
+    /// Range containing the edge data.
+    /// </param>
+    ///
+    /// <param name="aoEdgeValues">
+    /// Values from <paramref name="oEdgeRange" />.
+    /// </param>
+    ///
+    /// <param name="iRowOneBased">
+    /// One-based row index to check.
+    /// </param>
+    ///
+    /// <param name="iColumnOneBased">
+    /// One-based column index to check, or NoSuchColumn if there is no edge
+    /// weight column.
+    /// </param>
+    ///
+    /// <param name="oEdge">
+    /// Edge to set the edge weight on.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If there is no edge weight column, the edge weight on the edge is set
+    /// to 1.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    SetEdgeWeight
+    (
+        Range oEdgeRange,
+        Object [,] aoEdgeValues,
+        Int32 iRowOneBased,
+        Int32 iColumnOneBased,
+        IEdge oEdge
+    )
+    {
+        Debug.Assert(oEdge != null);
+        Debug.Assert(oEdgeRange != null);
+        Debug.Assert(aoEdgeValues != null);
+        Debug.Assert(iRowOneBased >= 1);
+        Debug.Assert(iColumnOneBased == NoSuchColumn || iColumnOneBased >= 1);
+        AssertValid();
+
+        Double dEdgeWeight = 0;
+
+        if (
+            iColumnOneBased == NoSuchColumn
+            ||
+            !ExcelUtil.TryGetDoubleFromCell(aoEdgeValues,
+                iRowOneBased, iColumnOneBased, out dEdgeWeight)
+            )
+        {
+            // There is no edge weight column, or the edge weight cell for this
+            // edge is empty.
+
+            dEdgeWeight = 1;
+        }
+
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, dEdgeWeight);
     }
 
     //*************************************************************************
@@ -753,6 +846,10 @@ public class EdgeWorksheetReader : WorksheetReaderBase
         /// The edge's optional visibility.
 
         public Int32 Visibility;
+
+        /// The edge's optional edge weight.
+
+        public Int32 EdgeWeight;
 
         /// The edge's ID, which is filled in by ReadWorksheet().
 

@@ -139,9 +139,43 @@ public class VertexWorksheetReader : WorksheetReaderBase
         if ( ExcelUtil.TryGetTable(workbook, WorksheetNames.Vertices,
             TableNames.Vertices, out oVertexTable) )
         {
-            // Add the vertices in the table to the graph.
+            // The code that reads the table can handle hidden rows, but not
+            // hidden columns.  Temporarily show all hidden columns in the
+            // table.
 
-            AddVertexTableToGraph(oVertexTable, readWorkbookContext, graph);
+            ExcelHiddenColumns oHiddenColumns =
+                ExcelColumnHider.ShowHiddenColumns(oVertexTable);
+
+            try
+            {
+                // Add the vertices in the table to the graph.
+
+                AddVertexTableToGraph(oVertexTable, readWorkbookContext,
+                    graph);
+            }
+            finally
+            {
+                ExcelColumnHider.RestoreHiddenColumns(oVertexTable,
+                    oHiddenColumns);
+            }
+
+            if (readWorkbookContext.LayoutOrderSet)
+            {
+                // The layout order was specified for at least one vertex.
+                // The ByMetadataVertexSorter used by SortableLayoutBase
+                // requires that if layout order is set on one vertex, it must
+                // be set on all vertices.  This isn't required in the Excel
+                // template, though, so set a default layout order for each
+                // vertex that doesn't already specify one.
+
+                SetUnsetVertexOrders(graph);
+
+                // The layout order is ignored unless this key is added to the
+                // graph.
+
+                graph.SetValue(
+                    ReservedMetadataKeys.SortableLayoutOrderSet, null);
+            }
         }
     }
 
@@ -211,11 +245,20 @@ public class VertexWorksheetReader : WorksheetReaderBase
         oVertexTableColumnIndexes.Visibility = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Visibility, false);
 
+        oVertexTableColumnIndexes.Order = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.LayoutOrder, false);
+
         oVertexTableColumnIndexes.X = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.X, false);
 
         oVertexTableColumnIndexes.Y = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Y, false);
+
+        oVertexTableColumnIndexes.PolarR = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.PolarR, false);
+
+        oVertexTableColumnIndexes.PolarAngle = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.PolarAngle, false);
 
         oVertexTableColumnIndexes.Locked = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Locked, false);
@@ -538,6 +581,18 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oReadWorkbookContext.VertexIDDictionary);
             }
 
+            // If there is an order column and the order for this row isn't
+            // empty, set the vertex's order.
+
+            if (oVertexTableColumnIndexes.Order != NoSuchColumn)
+            {
+                if ( CheckForOrder(oVertexSubrange, aoVertexValues,
+                    iRowOneBased, oVertexTableColumnIndexes.Order, oVertex) )
+                {
+                    oReadWorkbookContext.LayoutOrderSet = true;
+                }
+            }
+
             if (!oReadWorkbookContext.IgnoreVertexLocations)
             {
                 Boolean bLocationSpecified = false;
@@ -566,6 +621,18 @@ public class VertexWorksheetReader : WorksheetReaderBase
                         iRowOneBased, oVertexTableColumnIndexes.Locked,
                         bLocationSpecified, oVertex);
                 }
+            }
+
+            // If there are polar coordinate columns and polar coordinates have
+            // been specified for the vertex, set the vertex's polar
+            // coordinates.
+
+            if (oVertexTableColumnIndexes.PolarR != NoSuchColumn &&
+                oVertexTableColumnIndexes.PolarAngle != NoSuchColumn)
+            {
+                CheckForPolarCoordinates(oVertexSubrange, aoVertexValues,
+                    iRowOneBased, oVertexTableColumnIndexes.PolarR,
+                    oVertexTableColumnIndexes.PolarAngle, oVertex);
             }
 
             // If there is a mark column and a mark flag has been specified for
@@ -767,7 +834,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             OnWorkbookFormatError( String.Format(
 
-                "The cell {0} contains an invalid radius.  The vertex radius,"
+                "The cell {0} contains an invalid size.  The vertex size,"
                 + " which is optional, must be a number.  Any number is"
                 + " acceptable, although {1} is used for any number less than"
                 + " {1} and {2} is used for any number greater than {2}."
@@ -944,6 +1011,88 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         oVertex.SetValue(ReservedMetadataKeys.PerVertexDrawingPrecedence,
             eVertexDrawingPrecedence);
+    }
+
+    //*************************************************************************
+    //  Method: CheckForOrder()
+    //
+    /// <summary>
+    /// If a sort order has been specified for a vertex, sets the vertex's
+    /// sort order.
+    /// </summary>
+    ///
+    /// <param name="oVertexRange">
+    /// Range containing the vertex data.
+    /// </param>
+    ///
+    /// <param name="aoVertexValues">
+    /// Values from <paramref name="oVertexRange" />.
+    /// </param>
+    ///
+    /// <param name="iRowOneBased">
+    /// One-based row index to check.
+    /// </param>
+    ///
+    /// <param name="iColumnOneBased">
+    /// One-based column index to check.
+    /// </param>
+    ///
+    /// <param name="oVertex">
+    /// Vertex to set the sort order on.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if a sort order was specified.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    CheckForOrder
+    (
+        Range oVertexRange,
+        Object [,] aoVertexValues,
+        Int32 iRowOneBased,
+        Int32 iColumnOneBased,
+        IVertex oVertex
+    )
+    {
+        Debug.Assert(oVertexRange != null);
+        Debug.Assert(aoVertexValues != null);
+        Debug.Assert(iRowOneBased >= 1);
+        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oVertex != null);
+        AssertValid();
+
+        String sOrder;
+
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
+            iRowOneBased, iColumnOneBased, out sOrder) )
+        {
+            return (false);
+        }
+
+        Single fOrder;
+
+        if ( !Single.TryParse(sOrder, out fOrder) )
+        {
+            Range oInvalidCell =
+                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
+
+            OnWorkbookFormatError( String.Format(
+
+                "The cell {0} contains an invalid layout order.  The layout"
+                + " order, which is optional, must be a number."
+                ,
+                ExcelUtil.GetRangeAddress(oInvalidCell)
+                ),
+
+                oInvalidCell
+            );
+        }
+
+        oVertex.SetValue( ReservedMetadataKeys.SortableLayoutOrder, fOrder);
+
+        return (true);
     }
 
     //*************************************************************************
@@ -1134,6 +1283,124 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
                 VertexLocationConverter.MaximumXYWorkbook.ToString(
                     ExcelTemplateForm.Int32Format)
+                ),
+
+                oInvalidCell
+                );
+
+            // Make the compiler happy.
+
+            return (false);
+    }
+
+    //*************************************************************************
+    //  Method: CheckForPolarCoordinates()
+    //
+    /// <summary>
+    /// If polar coordinates have been specified for a vertex, sets the
+    /// vertex's polar coordinates.
+    /// </summary>
+    ///
+    /// <param name="oVertexRange">
+    /// Range containing the vertex data.
+    /// </param>
+    ///
+    /// <param name="aoValues">
+    /// Values from <paramref name="oVertexRange" />.
+    /// </param>
+    ///
+    /// <param name="iRowOneBased">
+    /// One-based row index to check.
+    /// </param>
+    ///
+    /// <param name="iPolarRColumnOneBased">
+    /// One-based polar R coordinate column index to check.
+    /// </param>
+    ///
+    /// <param name="iPolarAngleColumnOneBased">
+    /// One-based polar angle coordinate column index to check.
+    /// </param>
+    ///
+    /// <param name="oVertex">
+    /// Vertex to set the location on.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if a location was specified.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    CheckForPolarCoordinates
+    (
+        Range oVertexRange,
+        Object [,] aoValues,
+        Int32 iRowOneBased,
+        Int32 iPolarRColumnOneBased,
+        Int32 iPolarAngleColumnOneBased,
+        IVertex oVertex
+    )
+    {
+        Debug.Assert(oVertexRange != null);
+        Debug.Assert(aoValues != null);
+        Debug.Assert(iRowOneBased >= 1);
+        Debug.Assert(iPolarRColumnOneBased >= 1);
+        Debug.Assert(iPolarAngleColumnOneBased >= 1);
+        Debug.Assert(oVertex != null);
+        AssertValid();
+
+        String sR;
+
+        Boolean bHasR = ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
+            iRowOneBased, iPolarRColumnOneBased, out sR);
+
+        String sAngle;
+
+        Boolean bHasAngle = ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
+            iRowOneBased, iPolarAngleColumnOneBased, out sAngle);
+
+        if (bHasR != bHasAngle)
+        {
+            // R or Angle alone won't do.
+
+            goto Error;
+        }
+
+        if (!bHasR && !bHasAngle)
+        {
+            return (false);
+        }
+
+        Single fR, fAngle;
+
+        if ( !Single.TryParse(sR, out fR) ||
+            !Single.TryParse(sAngle, out fAngle) )
+        {
+            goto Error;
+        }
+
+        oVertex.SetValue(ReservedMetadataKeys.PolarLayoutCoordinates,
+            new SinglePolarCoordinates(fR, fAngle) );
+
+        return (true);
+
+        Error:
+
+            Range oInvalidCell = (Range)oVertexRange.Cells[
+                iRowOneBased, iPolarRColumnOneBased];
+
+            OnWorkbookFormatError( String.Format(
+
+                "There is a problem with the vertex polar coordinates at {0}."
+                + " If you enter polar coordinates, they must include both"
+                + " {1} and {2} numbers.  Any numbers are acceptable."
+                + "\r\n\r\n"
+                + "Polar coordinates are used only when a Layout Type of Polar"
+                + " is selected in the graph pane."
+                ,
+                ExcelUtil.GetRangeAddress(oInvalidCell),
+                VertexTableColumnNames.PolarR,
+                VertexTableColumnNames.PolarAngle
                 ),
 
                 oInvalidCell
@@ -1446,6 +1713,43 @@ public class VertexWorksheetReader : WorksheetReaderBase
         }
     }
 
+    //*************************************************************************
+    //  Method: SetUnsetVertexOrders()
+    //
+    /// <summary>
+    /// Sets a default layout order for each vertex that doesn't already
+    /// specify one.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// Graph containing the vertices.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    SetUnsetVertexOrders
+    (
+        IGraph oGraph
+    )
+    {
+        Debug.Assert(oGraph != null);
+        AssertValid();
+
+        foreach (IVertex oVertex in oGraph.Vertices)
+        {
+            if ( !oVertex.ContainsKey(
+                ReservedMetadataKeys.SortableLayoutOrder) )
+            {
+                // This causes SortableLayoutBase to put the vertex at the end
+                // of the sort order.
+
+                oVertex.SetValue(
+                    ReservedMetadataKeys.SortableLayoutOrder,
+                    Single.MaxValue);
+            }
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -1545,6 +1849,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         public Int32 Visibility;
 
+        /// The vertex's optional sort order.
+
+        public Int32 Order;
+
         /// The vertex's optional x-coordinate.
 
         public Int32 X;
@@ -1552,6 +1860,14 @@ public class VertexWorksheetReader : WorksheetReaderBase
         /// The vertex's optional y-coordinate.
 
         public Int32 Y;
+
+        /// The vertex's optional polar R coordinate.
+
+        public Int32 PolarR;
+
+        /// The vertex's optional polar angle coordinate.
+
+        public Int32 PolarAngle;
 
         /// The vertex's optional "lock vertex location" boolean flag.
 

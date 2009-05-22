@@ -19,7 +19,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GeneralUserSettings2") ]
+[ SettingsGroupNameAttribute("GeneralUserSettings4") ]
 
 public class GeneralUserSettings : ApplicationSettingsBase
 {
@@ -47,12 +47,12 @@ public class GeneralUserSettings : ApplicationSettingsBase
     ///
     /// <value>
     /// The graph directedness applied to a new workbook, as a
-    /// GraphDirectedness.  The default value is GraphDirectedness.Directed.
+    /// GraphDirectedness.  The default value is GraphDirectedness.Undirected.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("Directed") ]
+    [ DefaultSettingValueAttribute("Undirected") ]
 
     public GraphDirectedness
     NewWorkbookGraphDirectedness
@@ -108,6 +108,41 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: AutoReadWorkbook
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the workbook should be read into
+    /// the graph when a visual property is set in the workbook, a scheme is
+    /// applied, or the workbook is autofilled.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the workbook into the graph.  The default value is true.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
+
+    public Boolean
+    AutoReadWorkbook
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[AutoReadWorkbookKey] );
+        }
+
+        set
+        {
+            this[AutoReadWorkbookKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: Font
     //
     /// <summary>
@@ -153,7 +188,7 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The graph's background color, as a KnownColor.  The default value is
+    /// The graph's background color, as a Color.  The default value is
     /// Color.White.
     /// </value>
     //*************************************************************************
@@ -161,14 +196,14 @@ public class GeneralUserSettings : ApplicationSettingsBase
     [ UserScopedSettingAttribute() ]
     [ DefaultSettingValueAttribute("White") ]
 
-    public KnownColor
+    public Color
     BackColor
     {
         get
         {
             AssertValid();
 
-            return ( (KnownColor)this[BackColorKey] );
+            return ( (Color)this[BackColorKey] );
         }
 
         set
@@ -264,22 +299,22 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The color of unselected edges, as a KnownColor.  The default value
-    /// is Color.Black.
+    /// The color of unselected edges, as a Color.  The default value is
+    /// Color.Black.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
     [ DefaultSettingValueAttribute("Black") ]
 
-    public KnownColor
+    public Color
     EdgeColor
     {
         get
         {
             AssertValid();
 
-            return ( (KnownColor)this[EdgeColorKey] );
+            return ( (Color)this[EdgeColorKey] );
         }
 
         set
@@ -300,12 +335,12 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// <value>
     /// The alpha component of the color of unselected edges.  Must be between
     /// AlphaConverter.MinimumAlphaWorkbook and
-    /// AlphaConverter.MaximumAlphaConverter.  The default value is 10.
+    /// AlphaConverter.MaximumAlphaWorkbook.  The default value is 100.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("10") ]
+    [ DefaultSettingValueAttribute("100") ]
 
     public Single
     EdgeAlpha
@@ -333,22 +368,22 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The color of selected edges, as a KnownColor.  The default value
-    /// is Color.Red.
+    /// The color of selected edges, as a Color.  The default value is
+    /// Color.Red.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
     [ DefaultSettingValueAttribute("Red") ]
 
-    public KnownColor
+    public Color
     SelectedEdgeColor
     {
         get
         {
             AssertValid();
 
-            return ( (KnownColor)this[SelectedEdgeColorKey] );
+            return ( (Color)this[SelectedEdgeColorKey] );
         }
 
         set
@@ -485,22 +520,22 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The color of unselected vertices, as a KnownColor.  The default value
-    /// is Color.Black.
+    /// The color of unselected vertices, as a Color.  The default value is
+    /// Color.Black.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
     [ DefaultSettingValueAttribute("Black") ]
 
-    public KnownColor
+    public Color
     VertexColor
     {
         get
         {
             AssertValid();
 
-            return ( (KnownColor)this[VertexColorKey] );
+            return ( (Color)this[VertexColorKey] );
         }
 
         set
@@ -521,7 +556,7 @@ public class GeneralUserSettings : ApplicationSettingsBase
     ///
     /// <value>
     /// The fill color of vertices that are drawn as primary labels, as a
-    /// KnownColor.  The default value is Color.White.
+    /// Color.  The default value is Color.White.
     /// </value>
     ///
     /// <remarks>
@@ -532,14 +567,14 @@ public class GeneralUserSettings : ApplicationSettingsBase
     [ UserScopedSettingAttribute() ]
     [ DefaultSettingValueAttribute("White") ]
 
-    public KnownColor
+    public Color
     PrimaryLabelFillColor
     {
         get
         {
             AssertValid();
 
-            return ( (KnownColor)this[PrimaryLabelFillColorKey] );
+            return ( (Color)this[PrimaryLabelFillColorKey] );
         }
 
         set
@@ -560,12 +595,12 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// <value>
     /// The alpha component of the color of unselected vertices.  Must be
     /// between AlphaConverter.MinimumAlphaWorkbook and
-    /// AlphaConverter.MaximumAlphaConverter.  The default value is 10.
+    /// AlphaConverter.MaximumAlphaWorkbook.  The default value is 100.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("10") ]
+    [ DefaultSettingValueAttribute("100") ]
 
     public Single
     VertexAlpha
@@ -593,65 +628,27 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The color of selected vertices, as a KnownColor.  The default value
-    /// is Color.Red.
+    /// The color of selected vertices, as a Color.  The default value is
+    /// Color.Red.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
     [ DefaultSettingValueAttribute("Red") ]
 
-    public KnownColor
+    public Color
     SelectedVertexColor
     {
         get
         {
             AssertValid();
 
-            return ( (KnownColor)this[SelectedVertexColorKey] );
+            return ( (Color)this[SelectedVertexColorKey] );
         }
 
         set
         {
             this[SelectedVertexColorKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: FilteredAlpha
-    //
-    /// <summary>
-    /// Gets or sets the alpha component to use for vertices and edges that are
-    /// filtered.
-    /// </summary>
-    ///
-    /// <value>
-    /// The alpha value to use for vertices and edges that have a <see
-    /// cref="ReservedMetadataKeys.Visibility" /> value of <see
-    /// cref="VisibilityKeyValue.Filtered" />.  Must be between
-    /// AlphaConverter.MinimumAlphaWorkbook and
-    /// AlphaConverter.MaximumAlphaConverter.  The default value is 0.0.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("0.0") ]
-
-    public Single
-    FilteredAlpha
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Single)this[FilteredAlphaKey] );
-        }
-
-        set
-        {
-            this[FilteredAlphaKey] = value;
 
             AssertValid();
         }
@@ -779,7 +776,7 @@ public class GeneralUserSettings : ApplicationSettingsBase
         AssertValid();
 
         graphDrawer.BackColor =
-            WpfGraphicsUtil.KnownColorToWpfColor(this.BackColor);
+            WpfGraphicsUtil.ColorToWpfColor(this.BackColor);
 
         EdgeDrawer oEdgeDrawer = graphDrawer.EdgeDrawer;
         VertexDrawer oVertexDrawer = graphDrawer.VertexDrawer;
@@ -794,15 +791,12 @@ public class GeneralUserSettings : ApplicationSettingsBase
             oEdgeWidthConverter.WorkbookToGraph(this.SelectedEdgeWidth);
 
         oEdgeDrawer.Color = WpfGraphicsUtil.ColorToWpfColor(
-            Color.FromArgb( oAlphaConverter.WorkbookToGraph(this.EdgeAlpha),
-                Color.FromKnownColor(this.EdgeColor)
-                ) );
+            Color.FromArgb(oAlphaConverter.WorkbookToGraph(this.EdgeAlpha),
+                this.EdgeColor)
+                );
 
-        oEdgeDrawer.SelectedColor =
-            WpfGraphicsUtil.KnownColorToWpfColor(this.SelectedEdgeColor);
-
-        oEdgeDrawer.FilteredAlpha = oVertexDrawer.FilteredAlpha =
-            oAlphaConverter.WorkbookToGraph(this.FilteredAlpha);
+        oEdgeDrawer.SelectedColor = WpfGraphicsUtil.ColorToWpfColor(
+            this.SelectedEdgeColor);
 
         oEdgeDrawer.RelativeArrowSize = this.RelativeArrowSize;
 
@@ -812,15 +806,15 @@ public class GeneralUserSettings : ApplicationSettingsBase
             this.VertexRadius);
 
         oVertexDrawer.Color = WpfGraphicsUtil.ColorToWpfColor(
-            Color.FromArgb( oAlphaConverter.WorkbookToGraph(this.VertexAlpha),
-                Color.FromKnownColor(this.VertexColor)
-                ) );
+            Color.FromArgb(oAlphaConverter.WorkbookToGraph(this.VertexAlpha),
+                this.VertexColor)
+                );
 
-        oVertexDrawer.SelectedColor =
-            WpfGraphicsUtil.KnownColorToWpfColor(this.SelectedVertexColor);
+        oVertexDrawer.SelectedColor = WpfGraphicsUtil.ColorToWpfColor(
+            this.SelectedVertexColor);
 
         oVertexDrawer.PrimaryLabelFillColor =
-            WpfGraphicsUtil.KnownColorToWpfColor(this.PrimaryLabelFillColor);
+            WpfGraphicsUtil.ColorToWpfColor(this.PrimaryLabelFillColor);
 
         Font oFont = this.Font;
 
@@ -879,6 +873,11 @@ public class GeneralUserSettings : ApplicationSettingsBase
     protected const String ReadClustersKey =
         "ReadClusters";
 
+    /// Name of the settings key for the AutoReadWorkbook property.
+
+    protected const String AutoReadWorkbookKey =
+        "AutoReadWorkbook";
+
     /// Name of the settings key for the NewWorkbookGraphDirectedness property.
 
     protected const String NewWorkbookGraphDirectednessKey =
@@ -908,6 +907,7 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String SelectedEdgeColorKey =
         "SelectedEdgeColor";
+
     /// Name of the settings key for the EdgeWidth property.
 
     protected const String EdgeWidthKey =
@@ -952,11 +952,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String SelectedVertexColorKey =
         "SelectedVertexColor";
-
-    /// Name of the settings key for the FilteredAlpha property.
-
-    protected const String FilteredAlphaKey =
-        "FilteredAlpha";
 
     /// Name of the settings key for the LayoutUserSettings property.
 

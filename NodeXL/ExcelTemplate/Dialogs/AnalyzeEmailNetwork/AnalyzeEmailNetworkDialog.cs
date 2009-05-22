@@ -307,11 +307,11 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
                 null;
         }
 
-        m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForTieStrengths =
-            cbxUseCcForTieStrengths.Checked;
+        m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForEdgeWeights =
+            cbxUseCcForEdgeWeights.Checked;
 
-        m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForTieStrengths =
-            cbxUseBccForTieStrengths.Checked;
+        m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForEdgeWeights =
+            cbxUseBccForEdgeWeights.Checked;
 
         return (true);
     }
@@ -462,11 +462,11 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             }
         }
 
-        cbxUseCcForTieStrengths.Checked =
-            m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForTieStrengths;
+        cbxUseCcForEdgeWeights.Checked =
+            m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForEdgeWeights;
 
-        cbxUseBccForTieStrengths.Checked =
-            m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForTieStrengths;
+        cbxUseBccForEdgeWeights.Checked =
+            m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForEdgeWeights;
 
         EnableControls();
     }
@@ -864,8 +864,8 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             aoParticipantsCriteria, oStartTime, oEndTime, sBodyText, sFolder,
             lMinimumSize, lMaximumSize, eAttachmentFilter, bHasCc, bHasBcc,
             bIsReplyFromParticipant1,
-            m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForTieStrengths,
-            m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForTieStrengths
+            m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForEdgeWeights,
+            m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForEdgeWeights
             );
     }
 
@@ -904,9 +904,9 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             return;
         }
 
-        // Create and populate an arrays of tie strengths.
+        // Create and populate an arrays of edge weights.
 
-        Object [,] aoTieStrengths = new Object [iEmailParticipantPairs, 1];
+        Object [,] aoEdgeWeights = new Object [iEmailParticipantPairs, 1];
 
         for (Int32 i = 0; i < iEmailParticipantPairs; i++)
         {
@@ -921,7 +921,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             oEmailParticipantPair.Participant2 =
                 AnalyzerToParticipant(oEmailParticipantPair.Participant2);
 
-            aoTieStrengths[i, 0] = oEmailParticipantPair.TieStrength.ToString();
+            aoEdgeWeights[i, 0] = oEmailParticipantPair.EdgeWeight.ToString();
         }
 
         // Write the arrays to the edge table.
@@ -929,40 +929,40 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         NodeXLWorkbookUtil.PopulateEdgeTableWithParticipantPairs(
             m_oEdgeTable, aoEmailParticipantPairs);
 
-        SetTieStrengthValues(aoTieStrengths);
+        SetEdgeWeightValues(aoEdgeWeights);
 
         ExcelUtil.ActivateWorksheet(m_oEdgeTable);
     }
 
     //*************************************************************************
-    //  Method: SetTieStrengthValues()
+    //  Method: SetEdgeWeightValues()
     //
     /// <summary>
-    /// Sets the values of the edge table's tie strength column.
+    /// Sets the values of the edge table's edge weight column.
     /// </summary>
     ///
-    /// <param name="aoTieStrengths">
-    /// One-column array of tie strengths.
+    /// <param name="aoEdgeWeights">
+    /// One-column array of edge weights.
     /// </param>
     ///
     /// <remarks>
-    /// If the tie strengths column doesn't exist, this method creates it.
+    /// If the edge weight column doesn't exist, this method creates it.
     /// </remarks>
     //*************************************************************************
 
     protected void
-    SetTieStrengthValues
+    SetEdgeWeightValues
     (
-        Object [,] aoTieStrengths
+        Object [,] aoEdgeWeights
     )
     {
-        Debug.Assert(aoTieStrengths != null);
+        Debug.Assert(aoEdgeWeights != null);
         AssertValid();
 
-        Range oTieStrengthColumnData;
+        Range oEdgeWeightColumnData;
 
         Boolean bFound = ExcelUtil.TryGetTableColumnData(m_oEdgeTable,
-            EdgeTableColumnNames.TieStrength, out oTieStrengthColumnData);
+            EdgeTableColumnNames.EdgeWeight, out oEdgeWeightColumnData);
 
         if (!bFound)
         {
@@ -971,23 +971,23 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             ListColumn oListColumn;
 
             if ( !ExcelUtil.TryAddTableColumn(m_oEdgeTable,
-                EdgeTableColumnNames.TieStrength,
+                EdgeTableColumnNames.EdgeWeight,
                 ExcelUtil.AutoColumnWidth, null, out oListColumn) )
             {
                 this.ShowWarning(
-                    "The tie strength column wasn't added."
+                    "The edge weight column wasn't added."
                     );
 
                 return;
             }
 
             bFound = ExcelUtil.TryGetTableColumnData(m_oEdgeTable,
-                EdgeTableColumnNames.TieStrength, out oTieStrengthColumnData);
+                EdgeTableColumnNames.EdgeWeight, out oEdgeWeightColumnData);
 
             Debug.Assert(bFound);
         }
 
-        ExcelUtil.SetRangeValues(oTieStrengthColumnData, aoTieStrengths);
+        ExcelUtil.SetRangeValues(oEdgeWeightColumnData, aoEdgeWeights);
     }
 
     //*************************************************************************
@@ -1645,7 +1645,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         + " Vista.  It can also be downloaded and installed on Windows XP.)"
         + "\r\n\r\n"
         + "You can analyze all your emails or specify a filtered subset.  For"
-        + " each analyzed email, a \"tie strength\" of one is assigned to each"
+        + " each analyzed email, an \"edge weight\" of one is assigned to each"
         + " From/To email address pair.  For example, if an email has these"
         + " lines:"
         + "\r\n\r\n"
@@ -1657,41 +1657,41 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         + "\r\n"
         + "Bcc: bill@msn.com"
         + "\r\n\r\n"
-        + "then a tie strength of 1 is assigned to these email address pairs:"
+        + "then an edge weight of 1 is assigned to these email address pairs:"
         + "\r\n\r\n"
         + "john@msn.com, mary@msn.com"
         + "\r\n"
         + "john@msn.com, bob@msn.com"
         + "\r\n\r\n"
-        + "If the \"Use Cc line when calculating tie strengths\" checkbox is"
-        + " checked, a tie strength of 1 is also assigned to this pair:"
+        + "If the \"Use Cc line when calculating edge weights\" checkbox is"
+        + " checked, an edge weight of 1 is also assigned to this pair:"
         + "\r\n\r\n"
         + "john@msn.com, sarah@msn.com"
         + "\r\n\r\n"
-        + "And if the \"Use Bcc line when calculating tie strengths\" checkbox"
-        + " is checked, a tie strength of 1 is also assigned to this pair:"
+        + "And if the \"Use Bcc line when calculating edge weights\" checkbox"
+        + " is checked, an edge weight of 1 is also assigned to this pair:"
         + "\r\n\r\n"
         + "john@msn.com, bill@msn.com"
         + "\r\n\r\n"
-        + "This is repeated for each email, and the tie strengths for"
+        + "This is repeated for each email, and the edge weights for"
         + " repeated pairs are added together.  The results are then written"
         + " to the Edges worksheet."
         + "\r\n\r\n"
         + "Note that \"john@msn.com, mary@msn.com\" and \"mary@msn.com,"
         + " john@msn.com\" are considered to be repeated pairs and get added"
         + " together.  If John writes to Mary once and Mary writes to John"
-        + " once, the \"john@msn.com, mary@msn.com\" pair will have a tie"
-        + " strength of 2.  In the Edges worksheet, the email addresses within"
+        + " once, the \"john@msn.com, mary@msn.com\" pair will have an edge"
+        + " weight of 2.  In the Edges worksheet, the email addresses within"
         + " each pair are ordered alphabetically -- John in the first column,"
         + " in this case."
         + "\r\n\r\n"
         + "If you read the workbook into the NodeXL graph, you'll see a"
         + " vertex representing you, a vertex representing each person you"
         + " have communicated with, and an edge connecting you to each person."
-        + "  You can filter the Edges worksheet on the tie strength column to"
+        + "  You can filter the Edges worksheet on the edge weight column to"
         + " show only those people with whom you communicate often, or use"
         + " Excel formulas to vary edge or vertex attributes (Color, Width,"
-        + " Shape, etc.) based on tie strength."
+        + " Shape, etc.) based on edge weight."
         ;
 
 

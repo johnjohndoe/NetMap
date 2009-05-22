@@ -21,7 +21,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AutoFillUserSettings") ]
+[ SettingsGroupNameAttribute("AutoFillUserSettings3") ]
 
 public class AutoFillUserSettings : ApplicationSettingsBase
 {
@@ -38,39 +38,6 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         // (Do nothing.)
 
         AssertValid();
-    }
-
-    //*************************************************************************
-    //  Property: UseAutoFill
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether AutoFill should be used.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to use AutoFill.   The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    UseAutoFill
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[UseAutoFillKey] );
-        }
-
-        set
-        {
-            this[UseAutoFillKey] = value;
-
-            AssertValid();
-        }
     }
 
     //*************************************************************************
@@ -259,7 +226,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\t1\t10\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t100\t1\t100\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     EdgeAlphaDetails
@@ -604,7 +571,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\t1\t10\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t100\t1\t100\ttrue") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexAlphaDetails
@@ -1012,6 +979,216 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: VertexLayoutOrderSourceColumnName
+    //
+    /// <summary>
+    /// Gets or sets the name of the column to use as a data source for the
+    /// vertex layout order column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the column to use as a data source for the vertex
+    /// layout order column.  The default is String.Empty.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
+
+    public String
+    VertexLayoutOrderSourceColumnName
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (String)this[VertexLayoutOrderSourceColumnNameKey] );
+        }
+
+        set
+        {
+            this[VertexLayoutOrderSourceColumnNameKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexLayoutOrderDetails
+    //
+    /// <summary>
+    /// Gets or sets the details for auto-filling the vertex layout order
+    /// column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The details for auto-filling the vertex layout order column.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t1\t9999\tfalse") ]
+
+    public NumericRangeColumnAutoFillUserSettings
+    VertexLayoutOrderDetails
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexLayoutOrderDetailsKey] );
+        }
+
+        set
+        {
+            this[VertexLayoutOrderDetailsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexPolarRSourceColumnName
+    //
+    /// <summary>
+    /// Gets or sets the name of the column to use as a data source for the
+    /// vertex polar R-coordinate column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the column to use as a data source for the vertex
+    /// R-coordindate column.  The default is String.Empty.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
+
+    public String
+    VertexPolarRSourceColumnName
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (String)this[VertexPolarRSourceColumnNameKey] );
+        }
+
+        set
+        {
+            this[VertexPolarRSourceColumnNameKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexPolarRDetails
+    //
+    /// <summary>
+    /// Gets or sets the details for auto-filling the vertex polar R-coordinate
+    /// column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The details for auto-filling the vertex polar R-coordinate column.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t1\ttrue") ]
+
+    public NumericRangeColumnAutoFillUserSettings
+    VertexPolarRDetails
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexPolarRDetailsKey] );
+        }
+
+        set
+        {
+            this[VertexPolarRDetailsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexPolarAngleSourceColumnName
+    //
+    /// <summary>
+    /// Gets or sets the name of the column to use as a data source for the
+    /// vertex polar angle-coordinate column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the column to use as a data source for the vertex
+    /// angle-coordindate column.  The default is String.Empty.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
+
+    public String
+    VertexPolarAngleSourceColumnName
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (String)this[VertexPolarAngleSourceColumnNameKey] );
+        }
+
+        set
+        {
+            this[VertexPolarAngleSourceColumnNameKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexPolarAngleDetails
+    //
+    /// <summary>
+    /// Gets or sets the details for auto-filling the vertex polar
+    /// angle-coordinate column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The details for auto-filling the vertex polar angle-coordinate column.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t359\ttrue") ]
+
+    public NumericRangeColumnAutoFillUserSettings
+    VertexPolarAngleDetails
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (NumericRangeColumnAutoFillUserSettings)
+                this[VertexPolarAngleDetailsKey] );
+        }
+
+        set
+        {
+            this[VertexPolarAngleDetailsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: Copy()
     //
     /// <summary>
@@ -1094,6 +1271,21 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
         oCopy.VertexYDetails = this.VertexYDetails.Copy();
 
+        oCopy.VertexLayoutOrderSourceColumnName = String.Copy(
+            this.VertexLayoutOrderSourceColumnName);
+
+        oCopy.VertexLayoutOrderDetails = this.VertexLayoutOrderDetails.Copy();
+
+        oCopy.VertexPolarRSourceColumnName = String.Copy(
+            this.VertexPolarRSourceColumnName);
+
+        oCopy.VertexPolarRDetails = this.VertexPolarRDetails.Copy();
+
+        oCopy.VertexPolarAngleSourceColumnName = String.Copy(
+            this.VertexPolarAngleSourceColumnName);
+
+        oCopy.VertexPolarAngleDetails = this.VertexPolarAngleDetails.Copy();
+
         return (oCopy);
     }
 
@@ -1118,11 +1310,6 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
-
-    /// Name of the settings key for the UseAutoFill property.
-
-    protected const String UseAutoFillKey =
-        "UseAutoFill";
 
     /// Name of the settings key for the EdgeColorSourceColumnName property.
 
@@ -1266,6 +1453,38 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
     protected const String VertexYDetailsKey =
         "VertexYDetails";
+
+    /// Name of the settings key for the VertexLayoutOrderSourceColumnName
+    /// property.
+
+    protected const String VertexLayoutOrderSourceColumnNameKey =
+        "VertexLayoutOrderSourceColumnName";
+
+    /// Name of the settings key for the VertexLayoutOrderDetailsKey property.
+
+    protected const String VertexLayoutOrderDetailsKey =
+        "VertexLayoutOrderDetails";
+
+    /// Name of the settings key for the VertexPolarRSourceColumnName property.
+
+    protected const String VertexPolarRSourceColumnNameKey =
+        "VertexPolarRSourceColumnName";
+
+    /// Name of the settings key for the VertexPolarRDetailsKey property.
+
+    protected const String VertexPolarRDetailsKey =
+        "VertexPolarRDetails";
+
+    /// Name of the settings key for the VertexPolarAngleSourceColumnName
+    /// property.
+
+    protected const String VertexPolarAngleSourceColumnNameKey =
+        "VertexPolarAngleSourceColumnName";
+
+    /// Name of the settings key for the VertexPolarAngleDetailsKey property.
+
+    protected const String VertexPolarAngleDetailsKey =
+        "VertexPolarAngleDetails";
 
 
     //*************************************************************************

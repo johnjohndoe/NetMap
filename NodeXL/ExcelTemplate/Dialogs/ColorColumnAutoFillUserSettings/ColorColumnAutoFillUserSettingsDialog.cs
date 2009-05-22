@@ -72,16 +72,9 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
         m_oColorColumnAutoFillUserSettingsDialogUserSettings =
             new ColorColumnAutoFillUserSettingsDialogUserSettings(this);
 
-        Object [] oAllGraphAndWorkbookValues =
-            ( new ColorConverter2() ).GetAllGraphAndWorkbookValues(false);
-
-        cbxDestinationColor1.PopulateWithObjectsAndText(
-            oAllGraphAndWorkbookValues);
-
-        cbxDestinationColor2.PopulateWithObjectsAndText(
-            oAllGraphAndWorkbookValues);
-
         DoDataExchange(false);
+
+        UpdateColorGradient();
 
         AssertValid();
     }
@@ -171,10 +164,10 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
             m_oColorColumnAutoFillUserSettings.SourceNumber2 = dSourceNumber2;
 
             m_oColorColumnAutoFillUserSettings.DestinationColor1 =
-                (KnownColor)cbxDestinationColor1.SelectedValue;
+                usrDestinationColor1.Color;
 
             m_oColorColumnAutoFillUserSettings.DestinationColor2 =
-                (KnownColor)cbxDestinationColor2.SelectedValue;
+                usrDestinationColor2.Color;
 
             m_oColorColumnAutoFillUserSettings.IgnoreOutliers =
                 chkIgnoreOutliers.Checked;
@@ -193,10 +186,10 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
             txbSourceNumber2.Text =
                 m_oColorColumnAutoFillUserSettings.SourceNumber2.ToString();
 
-            cbxDestinationColor1.SelectedValue =
+            usrDestinationColor1.Color =
                 m_oColorColumnAutoFillUserSettings.DestinationColor1;
 
-            cbxDestinationColor2.SelectedValue =
+            usrDestinationColor2.Color =
                 m_oColorColumnAutoFillUserSettings.DestinationColor2;
 
             chkIgnoreOutliers.Checked =
@@ -238,6 +231,23 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: UpdateColorGradient()
+    //
+    /// <summary>
+    /// Updates the colors in the pnlColorGradient control.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    UpdateColorGradient()
+    {
+        AssertValid();
+
+        pnlColorGradient.MinimumColor = usrDestinationColor1.Color;
+        pnlColorGradient.MaximumColor = usrDestinationColor2.Color;
+    }
+
+    //*************************************************************************
     //  Method: OnEventThatRequiresControlEnabling()
     //
     /// <summary>
@@ -267,11 +277,11 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: OnColorChanged()
+    //  Method: ColorPicker_ColorChanged()
     //
     /// <summary>
-    /// Handles the SelectedIndexChanged event on the cbxDestinationColor1 and
-    /// cbxDestinationColor2 ComboBoxes.
+    /// Handles the ColorChanged event on the usrDestinationColor1 and
+    /// usrDestinationColor2 ColorPickers.
     /// </summary>
     ///
     /// <param name="sender">
@@ -284,7 +294,7 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    OnColorChanged
+    ColorPicker_ColorChanged
     (
         object sender,
         EventArgs e
@@ -292,19 +302,7 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        if (cbxDestinationColor1.Items.Count == 0 ||
-            cbxDestinationColor2.Items.Count == 0)
-        {
-            // The ComboBoxes are still being populated.
-
-            return;
-        }
-
-        pnlColorGradient.MinimumColor = Color.FromKnownColor(
-            (KnownColor)cbxDestinationColor1.SelectedValue);
-
-        pnlColorGradient.MaximumColor = Color.FromKnownColor(
-            (KnownColor)cbxDestinationColor2.SelectedValue);
+        UpdateColorGradient();
     }
 
     //*************************************************************************
@@ -332,7 +330,7 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        this.ShowInformation(AutoFillUserSettingsDialog.IgnoreOutliersMessage);
+        this.ShowInformation(AutoFillWorkbookDialog.IgnoreOutliersMessage);
     }
 
     //*************************************************************************

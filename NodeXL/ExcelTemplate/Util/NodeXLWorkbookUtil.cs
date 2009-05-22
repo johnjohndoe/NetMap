@@ -2,6 +2,8 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Drawing;
+using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 using Microsoft.SocialNetworkLib;
@@ -53,6 +55,9 @@ public static class NodeXLWorkbookUtil
     )
     {
         Debug.Assert(workbook != null);
+
+        TableImagePopulator.DeleteImagesInColumn(workbook,
+            WorksheetNames.Vertices, VertexTableColumnNames.SubgraphImage);
 
         ExcelUtil.ClearTables(workbook,
             WorksheetNames.Edges, TableNames.Edges,
@@ -136,6 +141,45 @@ public static class NodeXLWorkbookUtil
         {
             ExcelUtil.SetRangeValues(oVertexColumnData, aoVertex2Names);
         }
+    }
+
+    //*************************************************************************
+    //  Method: TryGetColor()
+    //
+    /// <summary>
+    /// Attempts to get a color from the user in a format appropriate for use
+    /// in the workbook.
+    /// </summary>
+    ///
+    /// <param name="color">
+    /// Where the color gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if a color was obtained from the user, false if the user
+    /// cancelled.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetColor
+    (
+        out String color
+    )
+    {
+        color = null;
+
+        ColorDialog oColorDialog = new ColorDialog();
+
+        if (oColorDialog.ShowDialog() == DialogResult.OK)
+        {
+            color = ( new ColorConverter2() ).GraphToWorkbook(
+                oColorDialog.Color);
+
+            return (true);
+        }
+
+        return (false);
     }
 }
 

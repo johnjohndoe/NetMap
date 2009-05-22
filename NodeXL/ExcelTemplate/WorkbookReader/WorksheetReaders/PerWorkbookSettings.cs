@@ -78,9 +78,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
                 return ( (Int32)(Double)oTemplateVersion );
             }
 
-            // Return a default value.
-
-            return (1);
+            return (DefaultTemplateVersion);
         }
     }
 
@@ -122,9 +120,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
                 }
             }
 
-            // Return a default value.
-
-            return (GraphDirectedness.Directed);
+            return (DefaultGraphDirectedness);
         }
 
         set
@@ -133,6 +129,154 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
             AssertValid();
         }
+    }
+
+    //*************************************************************************
+    //  Property: FilteredAlpha
+    //
+    /// <summary>
+    /// Gets or sets the alpha component to use for vertices and edges that are
+    /// filtered.
+    /// </summary>
+    ///
+    /// <value>
+    /// The alpha value to use for vertices and edges that have a <see
+    /// cref="ReservedMetadataKeys.Visibility" /> value of <see
+    /// cref="VisibilityKeyValue.Filtered" />.  Must be between
+    /// AlphaConverter.MinimumAlphaWorkbook and
+    /// AlphaConverter.MaximumAlphaConverter.  The default value is 0.0.
+    /// </value>
+    //*************************************************************************
+
+    public Single
+    FilteredAlpha
+    {
+        get
+        {
+            AssertValid();
+
+            // The filtered alpha is stored in the workbook as a Double with
+            // zero decimal places.  Sample: 30.
+
+            Single fFilteredAlpha = DefaultFilteredAlpha;
+            Object oFilteredAlpha;
+
+            if ( TryGetValue(FilteredAlphaSettingName, typeof(Double),
+                out oFilteredAlpha) )
+            {
+                fFilteredAlpha = (Single)(Double)oFilteredAlpha;
+
+                if (fFilteredAlpha < AlphaConverter.MinimumAlphaWorkbook ||
+                    fFilteredAlpha > AlphaConverter.MaximumAlphaWorkbook)
+                {
+                    fFilteredAlpha = DefaultFilteredAlpha;
+                }
+            }
+
+            return (fFilteredAlpha);
+        }
+
+        set
+        {
+            SetValue(FilteredAlphaSettingName, value);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetColumnGroupVisibility
+    //
+    /// <summary>
+    /// Gets a flag specifying whether a column group should be shown.
+    /// </summary>
+    ///
+    /// <param name="columnGroup">
+    /// The column group to get the visibility for.
+    /// </param>
+    ///
+    /// <returns>
+    /// true to show the column group.
+    /// </returns>
+    //*************************************************************************
+
+    public Boolean
+    GetColumnGroupVisibility
+    (
+        ColumnGroup columnGroup
+    )
+    {
+        AssertValid();
+
+        Boolean bColumnGroupVisibility = false;
+        Object oColumnGroupVisibility;
+
+        if ( TryGetValue(GetColumnGroupSettingName(columnGroup),
+            typeof(Boolean), out oColumnGroupVisibility) )
+        {
+            bColumnGroupVisibility = (Boolean)oColumnGroupVisibility;
+        }
+
+        return (bColumnGroupVisibility);
+    }
+
+    //*************************************************************************
+    //  Method: SetColumnGroupVisibility
+    //
+    /// <summary>
+    /// Sets a flag specifying whether a column group should be shown.
+    /// </summary>
+    ///
+    /// <param name="columnGroup">
+    /// The column group to set the visibility for.
+    /// </param>
+    ///
+    /// <param name="show">
+    /// true if the column group should be shown.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    SetColumnGroupVisibility
+    (
+        ColumnGroup columnGroup,
+        Boolean show
+    )
+    {
+        AssertValid();
+
+        SetValue(GetColumnGroupSettingName(columnGroup), show);
+    }
+
+    //*************************************************************************
+    //  Method: GetColumnGroupSettingName
+    //
+    /// <summary>
+    /// Gets the setting name to use for getting or setting a flag specifying
+    /// whether a column group should be shown.
+    /// </summary>
+    ///
+    /// <param name="columnGroup">
+    /// The column group.
+    /// </param>
+    ///
+    /// <returns>
+    /// The setting name to use.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    GetColumnGroupSettingName
+    (
+        ColumnGroup columnGroup
+    )
+    {
+        AssertValid();
+
+        // Sample setting name: "Show Vertex Graph Metrics"
+
+        return ( "Show " + EnumUtil.SplitName(
+            columnGroup.ToString(), EnumSplitStyle.AllWordsStartUpperCase) );
     }
 
     //*************************************************************************
@@ -408,16 +552,38 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
 
     //*************************************************************************
-    //  Protected constants
+    //  Setting name constants
     //*************************************************************************
 
-    /// Name of the template version setting.
+    /// Name of the TemplateVersion setting.
 
     protected const String TemplateVersionSettingName = "Template Version";
 
-    /// Name of the graph directedness setting.
+    /// Name of the GraphDirectedness setting.
 
     protected const String GraphDirectednessSettingName = "Graph Directedness";
+
+    /// Name of the FilteredAlpha setting.
+
+    protected const String FilteredAlphaSettingName = "Filtered Alpha";
+
+
+    //*************************************************************************
+    //  Default property value constants
+    //*************************************************************************
+
+    /// Default value of the TemplateVersion property.
+
+    protected const Int32 DefaultTemplateVersion = 1;
+
+    /// Default value of the GraphDirectedness property.
+
+    protected const GraphDirectedness DefaultGraphDirectedness =
+        GraphDirectedness.Undirected;
+
+    /// Default value of the FilteredAlpha property.
+
+    protected const Single DefaultFilteredAlpha = 0;
 
 
     //*************************************************************************

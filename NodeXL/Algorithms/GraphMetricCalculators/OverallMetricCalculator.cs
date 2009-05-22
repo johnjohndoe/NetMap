@@ -22,7 +22,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// <para>
 /// The calculations for graph density skip all self-loops, which would render
 /// the density invalid.  The graph density is rendered invalid if the graph
-/// has duplicate edges, however.
+/// has duplicate edges, however.  You can check for duplicate edges with <see
+/// cref="DuplicateEdgeDetector" />.
 /// </para>
 ///
 /// </remarks>

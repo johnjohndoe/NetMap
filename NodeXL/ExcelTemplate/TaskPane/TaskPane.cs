@@ -76,34 +76,39 @@ public partial class TaskPane : UserControl
         m_oSaveImageFileDialog = null;
         m_oDynamicFilterDialog = null;
 
-        // Instantiate an object that populates the ddbLayout
-        // menu and handles the Clicked events on the child menu items.
+        LayoutType eInitialLayout =
+            ( new GeneralUserSettings() ).LayoutUserSettings.Layout;
 
-        m_oLayoutManagerForMenu = new LayoutManagerForMenu();
+        // Instantiate an object that populates the cbxLayout ComboBox and
+        // handles its SelectedIndexChanged event.
+
+        m_oLayoutManagerForComboBox = new LayoutManagerForComboBox();
+        m_oLayoutManagerForComboBox.AddComboBoxItems(this.cbxLayout.ComboBox);
+        m_oLayoutManagerForComboBox.Layout = eInitialLayout;
 
         // Instantiate an object that populates the msiContextLayout
         // context menu and handles the Clicked events on the child menu items.
 
         m_oLayoutManagerForContextMenu = new LayoutManagerForMenu();
-
-        LayoutType eInitialLayout =
-            ( new GeneralUserSettings() ).LayoutUserSettings.Layout;
-
-        m_oLayoutManagerForMenu.AddMenuItems(this.ddbLayout);
-        m_oLayoutManagerForMenu.Layout = eInitialLayout;
-
         m_oLayoutManagerForContextMenu.AddMenuItems(this.msiContextLayout);
         m_oLayoutManagerForContextMenu.Layout = eInitialLayout;
 
-        m_oLayoutManagerForMenu.LayoutChanged +=
+        m_oLayoutManagerForComboBox.LayoutChanged +=
             new EventHandler(this.LayoutManager_LayoutChanged);
 
         m_oLayoutManagerForContextMenu.LayoutChanged +=
             new EventHandler(this.LayoutManager_LayoutChanged);
 
+
         thisWorkbook.SelectionChangedInWorkbook +=
             new SelectionChangedEventHandler(
                 ThisWorkbook_SelectionChangedInWorkbook);
+
+        thisWorkbook.VisualAttributeSetInWorkbook +=
+            new EventHandler(ThisWorkbook_VisualAttributeSetInWorkbook);
+
+        thisWorkbook.WorkbookAutoFilled +=
+            new EventHandler(ThisWorkbook_WorkbookAutoFilled);
 
         thisWorkbook.WorksheetContextMenuManager.RequestVertexCommandEnable +=
             new RequestVertexCommandEnableEventHandler(
@@ -120,6 +125,13 @@ public partial class TaskPane : UserControl
         thisWorkbook.WorksheetContextMenuManager.RunEdgeCommand +=
             new RunEdgeCommandEventHandler(
                 WorksheetContextMenuManager_RunEdgeCommand);
+
+
+        m_oRibbon.Layout = eInitialLayout;
+
+        m_oRibbon.RunRibbonCommand += new RunRibbonCommandEventHandler(
+            Ribbon_RunRibbonCommand);
+
 
         CreateWpfNodeXLControl();
 
@@ -189,7 +201,6 @@ public partial class TaskPane : UserControl
     //
     /// <summary>
     /// Gets the graph rectangle, in WPF units.
-    /// progress.
     /// </summary>
     ///
     /// <value>
@@ -202,7 +213,7 @@ public partial class TaskPane : UserControl
     /// </remarks>
     //*************************************************************************
 
-    public System.Drawing.Rectangle
+    protected System.Drawing.Rectangle
     GraphRectangle
     {
         get
@@ -210,6 +221,53 @@ public partial class TaskPane : UserControl
             return ( new System.Drawing.Rectangle(0, 0,
                 (Int32)oNodeXLControl.ActualWidth,
                 (Int32)oNodeXLControl.ActualHeight) );
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexCount
+    //
+    /// <summary>
+    /// Gets the number of vertices in the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The number of vertices in the graph.
+    /// </value>
+    ///
+    /// <remarks>
+    /// Zero is returned if the workbook hasn't been read yet.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Int32
+    VertexCount
+    {
+        get
+        {
+            return (oNodeXLControl.Graph.Vertices.Count);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: WorkbookRead
+    //
+    /// <summary>
+    /// Gets a flag indicating whether a non-empty graph has been read from the
+    /// workbook.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if a non-empty graph has been read from the workbook.
+    /// </value>
+    //*************************************************************************
+
+    protected Boolean
+    WorkbookRead
+    {
+        get
+        {
+            return (this.VertexCount > 0);
         }
     }
 
@@ -245,13 +303,16 @@ public partial class TaskPane : UserControl
         ehNodeXLControlHost.Child = oNodeXLControl;
     }
 
-
     //*************************************************************************
     //  Method: ReadWorkbook()
     //
+    /// <overloads>
+    /// Transfers data from the workbook to the NodeXLControl.
+    /// </overloads>
+    ///
     /// <summary>
-    /// Transfers data from the workbook to the NodeXLControl and refreshes the
-    /// NodeXLControl.
+    /// Transfers data from the workbook to the NodeXLControl and lays out the
+    /// graph.
     /// </summary>
     //*************************************************************************
 
@@ -260,7 +321,41 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
+        ReadWorkbook(true);
+    }
+
+    //*************************************************************************
+    //  Method: ReadWorkbook()
+    //
+    /// <summary>
+    /// Transfers data from the workbook to the NodeXLControl and optionally
+    /// lays out the graph.
+    /// </summary>
+    ///
+    /// <param name="bLayOutGraph">
+    /// true to lay out the graph.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ReadWorkbook
+    (
+        Boolean bLayOutGraph
+    )
+    {
+        AssertValid();
+
         if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        if (
+            !this.WorkbookRead &&
+            m_oLayoutManagerForComboBox.Layout == LayoutType.Null
+            &&
+            !ShowLayoutTypeIsNoneNotification()
+            )
         {
             return;
         }
@@ -272,7 +367,6 @@ public partial class TaskPane : UserControl
         oReadWorkbookContext.GraphRectangle = this.GraphRectangle;
         oReadWorkbookContext.FillIDColumns = true;
         oReadWorkbookContext.ReadClusters = m_oRibbon.ReadClusters;
-        oReadWorkbookContext.AutoFillWorkbook = true;
 
         // Populate the vertex worksheet.  This isn't strictly necessary, but
         // it does enable the vertex worksheet to be updated when the user
@@ -321,9 +415,10 @@ public partial class TaskPane : UserControl
             if (m_oDynamicFilterDialog != null)
             {
                 ReadDynamicFilterColumns(false);
+                ReadFilteredAlpha(false);
             }
 
-            oNodeXLControl.DrawGraph(true);
+            oNodeXLControl.DrawGraph(bLayOutGraph);
         }
         catch (Exception oException)
         {
@@ -337,6 +432,13 @@ public partial class TaskPane : UserControl
         {
             EnableGraphControls(true);
         }
+
+        // Change the button text to indicate that if any of the buttons is
+        // clicked again, the graph will be read again.
+
+        tsbReadWorkbook.Text = msiContextReadWorkbook.Text =
+            m_oRibbon.ReadWorkbookButtonText =
+            "Refresh Graph";
     }
 
     //*************************************************************************
@@ -354,6 +456,12 @@ public partial class TaskPane : UserControl
 
         if (oNodeXLControl.IsDrawing)
         {
+            return;
+        }
+
+        if (m_oLayoutManagerForComboBox.Layout == LayoutType.Null)
+        {
+            ShowLayoutTypeIsNoneWarning("lay out the graph again");
             return;
         }
 
@@ -377,6 +485,12 @@ public partial class TaskPane : UserControl
 
         if (oNodeXLControl.IsDrawing)
         {
+            return;
+        }
+
+        if (m_oLayoutManagerForComboBox.Layout == LayoutType.Null)
+        {
+            ShowLayoutTypeIsNoneWarning("lay out the selected vertices again");
             return;
         }
 
@@ -417,7 +531,7 @@ public partial class TaskPane : UserControl
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         GeneralUserSettingsDialog oGeneralUserSettingsDialog =
-            new GeneralUserSettingsDialog(oGeneralUserSettings);
+            new GeneralUserSettingsDialog(oGeneralUserSettings, m_oWorkbook);
 
         if (oGeneralUserSettingsDialog.ShowDialog() == DialogResult.OK)
         {
@@ -430,6 +544,103 @@ public partial class TaskPane : UserControl
             ApplyUserSettings(oGeneralUserSettings);
             oNodeXLControl.DrawGraph();
         }
+    }
+
+    //*************************************************************************
+    //  Method: ShowLayoutTypeIsNoneWarning()
+    //
+    /// <summary>
+    /// Warns the user that the layout is LayoutType.Null.
+    /// </summary>
+    ///
+    /// <param name="sAction">
+    /// Action that the user can't perform because of the layout type.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Call this when an action can't be performed because the layout is
+    /// LayoutType.Null.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    ShowLayoutTypeIsNoneWarning
+    (
+        String sAction
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sAction) );
+        AssertValid();
+
+        FormUtil.ShowWarning(
+            "The Layout Type is set to None.  Before you can " + sAction + 
+                ", you must select a different Layout Type.\r\n\r\n"
+                + HowToSetLayoutType
+            );
+    }
+
+    //*************************************************************************
+    //  Method: ShowLayoutTypeIsNoneNotification()
+    //
+    /// <summary>
+    /// Notifies the user that the layout is LayoutType.Null.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if the user wants to read the workbook even though the layout is
+    /// LayoutType.Null, false if he wants to cancel.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// Call this when the user attempts to read the workbook when the layout
+    /// is LayoutType.Null.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    ShowLayoutTypeIsNoneNotification()
+    {
+        AssertValid();
+
+        NotificationUserSettings oNotificationUserSettings =
+            new NotificationUserSettings();
+
+        if (!oNotificationUserSettings.LayoutTypeIsNone)
+        {
+            // The user doesn't want to be notified.
+
+            return (true);
+        }
+
+        Boolean bReturn = true;
+
+        const String Message =
+            "The Layout Type is set to None.  If the graph has never been laid"
+            + " out, all the vertices will be placed at the upper-left corner"
+            + " of the graph pane."
+            + "\r\n\r\n"
+            + "If you want to lay out the graph, click No and select a"
+            + " different Layout Type.  "
+            + HowToSetLayoutType
+            + "\r\n\r\n"
+            + "Do you want to read the workbook?"
+            ;
+
+        NotificationDialog oNotificationDialog = new NotificationDialog(
+            "Layout Type is None", SystemIcons.Warning, Message);
+
+        if (oNotificationDialog.ShowDialog() != DialogResult.Yes)
+        {
+            bReturn = false;
+        }
+
+        if (oNotificationDialog.DisableFutureNotifications)
+        {
+            oNotificationUserSettings.LayoutTypeIsNone = false;
+            oNotificationUserSettings.Save();
+        }
+
+        return (bReturn);
     }
 
     //*************************************************************************
@@ -480,13 +691,13 @@ public partial class TaskPane : UserControl
 
         // Make sure the two layout managers are in sync.
 
-        Debug.Assert(m_oLayoutManagerForMenu.Layout ==
+        Debug.Assert(m_oLayoutManagerForComboBox.Layout ==
             m_oLayoutManagerForContextMenu.Layout);
 
         // Either layout manager will work; arbitrarily use one of them to
         // create a layout.
 
-        IAsyncLayout oLayout = m_oLayoutManagerForMenu.CreateLayout();
+        IAsyncLayout oLayout = m_oLayoutManagerForComboBox.CreateLayout();
         oLayout.Margin = oGeneralUserSettings.LayoutUserSettings.Margin;
         oNodeXLControl.Layout = oLayout;
     }
@@ -551,11 +762,12 @@ public partial class TaskPane : UserControl
 
         if (bEnable2)
         {
-            Int32 iVertices = oNodeXLControl.Graph.Vertices.Count;
+            Int32 iVertices = this.VertexCount;
 
             tssbForceLayout.Enabled = (iVertices > 0);
 
             tsbShowDynamicFilters.Enabled =
+                m_oRibbon.EnableShowDynamicFilters =
                 msiContextShowDynamicFilters.Enabled =
                 (iVertices > 0 && m_iTemplateVersion >= 58);
         }
@@ -605,7 +817,7 @@ public partial class TaskPane : UserControl
             }
         }
 
-        Int32 iVertices = oNodeXLControl.Graph.Vertices.Count;
+        Int32 iVertices = this.VertexCount;
         IVertex [] aoSelectedVertices = oNodeXLControl.SelectedVertices;
         Int32 iSelectedVertices = aoSelectedVertices.Length;
 
@@ -833,7 +1045,7 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        Int32 iVertices = oNodeXLControl.Graph.Vertices.Count;
+        Int32 iVertices = this.VertexCount;
         Int32 iSelectedVertices = oNodeXLControl.SelectedVertices.Length;
         Boolean bVertexClicked = (oClickedVertex != null);
 
@@ -929,8 +1141,10 @@ public partial class TaskPane : UserControl
         // Get the size of the bitmap.
 
         Size oBitmapSize = ehNodeXLControlHost.ClientSize;
+        Int32 iWidthPx = oBitmapSize.Width;
+        Int32 iHeightPx = oBitmapSize.Height;
 
-        if (oBitmapSize.Width == 0 || oBitmapSize.Height == 0)
+        if (iWidthPx == 0 || iHeightPx == 0)
         {
             // The size is unusable.
 
@@ -944,13 +1158,51 @@ public partial class TaskPane : UserControl
 
         // Tell the NodeXLControl to copy its graph to a bitmap.
 
-        Bitmap oBitmapCopy = oNodeXLControl.CopyGraphToBitmap();
+        Bitmap oBitmapCopy =
+            oNodeXLControl.CopyGraphToBitmap(iWidthPx, iHeightPx);
 
         // Copy the bitmap to the clipboard.
 
         Clipboard.SetDataObject(oBitmapCopy);
 
         // Note: Do not call oBitmapCopy.Dispose().
+    }
+
+    //*************************************************************************
+    //  Method: SetImageSize()
+    //
+    /// <summary>
+    /// Shows a dialog for setting the size of images saved to a file.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    SetImageSize()
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        // Allow the user to edit the graph image settings.
+
+        GraphImageUserSettings oGraphImageUserSettings =
+            new GraphImageUserSettings();
+
+        Size oNodeXLControlSizePx = ehNodeXLControlHost.ClientSize;
+
+        GraphImageUserSettingsDialog oGraphImageUserSettingsDialog =
+            new GraphImageUserSettingsDialog(oGraphImageUserSettings,
+                oNodeXLControlSizePx);
+
+        if (oGraphImageUserSettingsDialog.ShowDialog() == DialogResult.OK)
+        {
+            // Save the new settings.
+
+            oGraphImageUserSettings.Save();
+        }
     }
 
     //*************************************************************************
@@ -973,23 +1225,39 @@ public partial class TaskPane : UserControl
 
         // Get the size of the bitmap.
 
-        Size oBitmapSize = ehNodeXLControlHost.ClientSize;
+        GraphImageUserSettings oGraphImageUserSettings =
+            new GraphImageUserSettings();
 
-        if (oBitmapSize.Width == 0 || oBitmapSize.Height == 0)
+        Int32 iWidthPx, iHeightPx;
+
+        if (oGraphImageUserSettings.UseControlSize)
         {
-            // The size is unusable.
+            Size oNodeXLControlSizePx = ehNodeXLControlHost.ClientSize;
+            iWidthPx = oNodeXLControlSizePx.Width;
+            iHeightPx = oNodeXLControlSizePx.Height;
 
-            FormUtil.ShowWarning(
-                "The graph is too small to save.  Make the graph window"
-                + " larger."
-                );
+            if (iWidthPx == 0 || iHeightPx == 0)
+            {
+                // The size is unusable.
 
-            return;
+                FormUtil.ShowWarning(
+                    "The graph is too small to save.  Make the graph window"
+                    + " larger."
+                    );
+
+                return;
+            }
+        }
+        else
+        {
+            iWidthPx = oGraphImageUserSettings.WidthPx;
+            iHeightPx = oGraphImageUserSettings.HeightPx;
         }
 
-        // Tell the NodeXLControl to copy its bitmap.
+        // Tell the NodeXLControl to copy its graph to a bitmap.
 
-        Bitmap oBitmapCopy = oNodeXLControl.CopyGraphToBitmap();
+        Bitmap oBitmapCopy =
+            oNodeXLControl.CopyGraphToBitmap(iWidthPx, iHeightPx);
 
         // Save it.
 
@@ -1353,6 +1621,75 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: ShowDynamicFilters()
+    //
+    /// <summary>
+    /// Shows the dynamic filters dialog.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    ShowDynamicFilters()
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing || !this.WorkbookRead)
+        {
+            // The control is busy, or the workbook hasn't been read yet, or
+            // the graph is empty.
+
+            return;
+        }
+
+        if (m_oDynamicFilterDialog == null)
+        {
+            // The dialog is created on demand.
+
+            m_oDynamicFilterDialog = new DynamicFilterDialog(m_oWorkbook);
+
+            m_oDynamicFilterDialog.DynamicFilterColumnsChanged +=
+                new DynamicFilterColumnsChangedEventHandler(
+                    m_oDynamicFilterDialog_DynamicFilterColumnsChanged);
+
+            m_oDynamicFilterDialog.FilteredAlphaChanged +=
+                new EventHandler(m_oDynamicFilterDialog_FilteredAlphaChanged);
+
+            m_oDynamicFilterDialog.FormClosed +=
+                new FormClosedEventHandler(
+                    m_oDynamicFilterDialog_FormClosed);
+
+            // Create a dictionary of edges that have been filtered by edge
+            // filters, and a dictionary of vertices that have been filtered by
+            // vertex filters.
+            //
+            // The key is the IEdge.ID or IVertex.ID and the value isn't used.
+            // Store the dictionaries within the dialog so they are
+            // automatically destroyed when the dialog is destroyed.
+
+            m_oDynamicFilterDialog.Tag = new Dictionary<Int32, Char> [] {
+                new Dictionary<Int32, Char>(),
+                new Dictionary<Int32, Char>()
+                };
+
+            m_oDynamicFilterDialog.Show(this);
+
+            // If the dialog throws an exception during initialization,
+            // m_oDynamicFilterDialog gets set to null by
+            // m_oDynamicFilterDialog_FormClosed().
+
+            if (m_oDynamicFilterDialog != null)
+            {
+                ReadDynamicFilterColumns(false);
+                ReadFilteredAlpha(true);
+            }
+        }
+        else
+        {
+            m_oDynamicFilterDialog.Activate();
+        }
+    }
+
+    //*************************************************************************
     //  Method: WorksheetContextMenuManagerIDToVertex()
     //
     /// <summary>
@@ -1707,6 +2044,38 @@ public partial class TaskPane : UserControl
                 oOnEdgeOrVertexFiltered(oEdgeOrVertex2, bMakeVisible);
             }
         }
+
+        if (bForceRedraw)
+        {
+            oNodeXLControl.DrawGraph();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ReadFilteredAlpha()
+    //
+    /// <summary>
+    /// Reads the filtered alpha specified by the user in the
+    /// m_oDynamicFilterDialog and applies it to the NodeXLControl.
+    /// </summary>
+    ///
+    /// <param name="bForceRedraw">
+    /// true if the graph should be redrawn after the filtered alpha is read.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ReadFilteredAlpha
+    (
+        Boolean bForceRedraw
+    )
+    {
+        AssertValid();
+
+        oNodeXLControl.FilteredAlpha =
+            ( new AlphaConverter() ).WorkbookToGraph(
+                m_oDynamicFilterDialog.FilteredAlpha
+                );
 
         if (bForceRedraw)
         {
@@ -2142,76 +2511,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing ||
-            oNodeXLControl.Graph.Vertices.Count == 0)
-        {
-            // The control is busy, or the workbook hasn't been read yet, or
-            // the graph is empty.
-
-            return;
-        }
-
-        if (tsbShowDynamicFilters.CheckState == CheckState.Unchecked)
-        {
-            if (m_oDynamicFilterDialog == null)
-            {
-                // The dialog is created on demand.
-
-                m_oDynamicFilterDialog = new DynamicFilterDialog(m_oWorkbook);
-
-                m_oDynamicFilterDialog.DynamicFilterColumnsChanged +=
-                    new DynamicFilterColumnsChangedEventHandler(
-                        m_oDynamicFilterDialog_DynamicFilterColumnsChanged);
-
-                m_oDynamicFilterDialog.FormClosed +=
-                    new FormClosedEventHandler(
-                        m_oDynamicFilterDialog_FormClosed);
-
-                // Create a dictionary of edges that have been filtered by edge
-                // filters, and a dictionary of vertices that have been
-                // filtered by vertex filters.
-                //
-                // The key is the IEdge.ID or IVertex.ID and the value isn't
-                // used.  Store the dictionaries within the dialog so they are
-                // automatically destroyed when the dialog is destroyed.
-
-                m_oDynamicFilterDialog.Tag = new Dictionary<Int32, Char> [] {
-                    new Dictionary<Int32, Char>(),
-                    new Dictionary<Int32, Char>()
-                    };
-            }
-
-            m_oDynamicFilterDialog.Show(this);
-
-            // If the dialog throws an exception during initialization,
-            // m_oDynamicFilterDialog gets set to null by
-            // m_oDynamicFilterDialog_FormClosed().
-
-            if (m_oDynamicFilterDialog != null)
-            {
-                ReadDynamicFilterColumns(true);
-
-                tsbShowDynamicFilters.CheckState =
-                    msiContextShowDynamicFilters.CheckState =
-                    CheckState.Checked;
-            }
-        }
-        else
-        {
-            Debug.Assert(tsbShowDynamicFilters.CheckState ==
-                CheckState.Checked);
-
-            Debug.Assert(msiContextShowDynamicFilters.CheckState ==
-                CheckState.Checked);
-
-            Debug.Assert(m_oDynamicFilterDialog != null);
-
-            m_oDynamicFilterDialog.Close();
-            m_oDynamicFilterDialog = null;
-
-            tsbShowDynamicFilters.CheckState =
-                msiContextShowDynamicFilters.CheckState = CheckState.Unchecked;
-        }
+        ShowDynamicFilters();
     }
 
     //*************************************************************************
@@ -2672,10 +2972,10 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: msiContextSaveImageToFile_Click()
+    //  Method: msiContextSetImageSize_Click()
     //
     /// <summary>
-    /// Handles the Click event on the msiContextSaveImageToFile
+    /// Handles the Click event on the msiContextSetImageSize
     /// ToolStripMenuItem.
     /// </summary>
     ///
@@ -2689,7 +2989,35 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     private void
-    msiContextSaveImageToFile_Click
+    msiContextSetImageSize_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        SetImageSize();
+    }
+
+    //*************************************************************************
+    //  Method: msiContextSaveImage_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the msiContextSaveImage ToolStripMenuItem.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    msiContextSaveImage_Click
     (
         object sender,
         EventArgs e
@@ -2958,6 +3286,8 @@ public partial class TaskPane : UserControl
             aiMovedVertexIDs[i] = (Int32)oVertex.Tag;
         }
 
+        this.UseWaitCursor = true;
+
         try
         {
             oVerticesMoved( this, new VerticesMovedEventArgs2(
@@ -2965,7 +3295,12 @@ public partial class TaskPane : UserControl
         }
         catch (Exception oException)
         {
+            this.UseWaitCursor = false;
             ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            this.UseWaitCursor = false;
         }
     }
 
@@ -3076,6 +3411,39 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: m_oDynamicFilterDialog_FilteredAlphaChanged()
+    //
+    /// <summary>
+    /// Handles the FilteredAlphaChanged event on the m_oDynamicFilterDialog.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    m_oDynamicFilterDialog_FilteredAlphaChanged
+    (
+        Object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        ReadFilteredAlpha(true);
+    }
+
+    //*************************************************************************
     //  Method: m_oDynamicFilterDialog_FormClosed()
     //
     /// <summary>
@@ -3101,9 +3469,6 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         m_oDynamicFilterDialog = null;
-
-        tsbShowDynamicFilters.CheckState =
-            msiContextShowDynamicFilters.CheckState = CheckState.Unchecked;
     }
 
     //*************************************************************************
@@ -3261,6 +3626,76 @@ public partial class TaskPane : UserControl
             CollectionUtil.DictionaryValuesToArray<Int32, IEdge>(
                 oEdgesToSelect)
             );
+    }
+
+    //*************************************************************************
+    //  Method: ThisWorkbook_WorkbookAutoFilled()
+    //
+    /// <summary>
+    /// Handles the WorkbookAutoFilled event on the ThisWorkbook workbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ThisWorkbook_WorkbookAutoFilled
+    (
+        Object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        ReadWorkbook();
+    }
+
+    //*************************************************************************
+    //  Method: ThisWorkbook_VisualAttributeSetInWorkbook()
+    //
+    /// <summary>
+    /// Handles the VisualAttributeSetInWorkbook event on the ThisWorkbook
+    /// workbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ThisWorkbook_VisualAttributeSetInWorkbook
+    (
+        Object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        // If the workbook hasn't been read yet, read it and lay out the graph.
+        // Otherwise, read it but don't lay it out again.
+
+        ReadWorkbook(!this.WorkbookRead);
     }
 
     //*************************************************************************
@@ -3527,11 +3962,59 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: Ribbon_RunRibbonCommand()
+    //
+    /// <summary>
+    /// Handles the RunRibbonCommand event on the Ribbon object.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    Ribbon_RunRibbonCommand
+    (
+        Object sender,
+        RunRibbonCommandEventArgs e
+    )
+    {
+        AssertValid();
+
+        switch (e.RibbonCommand)
+        {
+            case RibbonCommand.ShowDynamicFilters:
+
+                ShowDynamicFilters();
+                break;
+
+            case RibbonCommand.LayoutChanged:
+
+                LayoutManager_LayoutChanged(sender, e);
+                break;
+
+            case RibbonCommand.ReadWorkbook:
+
+                ReadWorkbook();
+                break;
+
+            default:
+
+                Debug.Assert(false);
+                break;
+        }
+    }
+
+    //*************************************************************************
     //  Method: LayoutManager_LayoutChanged()
     //
     /// <summary>
-    /// Handles the LayoutChanged event on the m_oLayoutManagerForMenu and
-    /// m_oLayoutManagerForContextMenu objects.
+    /// Handles all LayoutChanged events.
     /// </summary>
     ///
     /// <param name="sender">
@@ -3565,15 +4048,23 @@ public partial class TaskPane : UserControl
         // The user just selected a layout via one of the Layout menus.
         // Synchronize the layout managers that manage those menus.
 
-        if (sender == m_oLayoutManagerForMenu)
+        if (sender == m_oLayoutManagerForComboBox)
         {
+            m_oRibbon.Layout =
             m_oLayoutManagerForContextMenu.Layout =
-                m_oLayoutManagerForMenu.Layout;
+                m_oLayoutManagerForComboBox.Layout;
         }
         else if (sender == m_oLayoutManagerForContextMenu)
         {
-            m_oLayoutManagerForMenu.Layout =
+            m_oRibbon.Layout =
+            m_oLayoutManagerForComboBox.Layout =
                 m_oLayoutManagerForContextMenu.Layout;
+        }
+        else if (sender == m_oRibbon)
+        {
+            m_oLayoutManagerForContextMenu.Layout =
+            m_oLayoutManagerForComboBox.Layout =
+                m_oRibbon.Layout;
         }
         else
         {
@@ -3585,7 +4076,7 @@ public partial class TaskPane : UserControl
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         oGeneralUserSettings.LayoutUserSettings.Layout =
-            m_oLayoutManagerForMenu.Layout;
+            m_oLayoutManagerForComboBox.Layout;
 
         oGeneralUserSettings.Save();
 
@@ -3611,7 +4102,7 @@ public partial class TaskPane : UserControl
         Debug.Assert(m_oRibbon != null);
         Debug.Assert(m_iTemplateVersion > 0);
 
-        Debug.Assert(m_oLayoutManagerForMenu != null);
+        Debug.Assert(m_oLayoutManagerForComboBox != null);
         Debug.Assert(m_oLayoutManagerForContextMenu != null);
 
         // m_bHandlingLayoutChanged
@@ -3627,6 +4118,18 @@ public partial class TaskPane : UserControl
                 Dictionary<Int32, Char>[] );
         }
     }
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// Message that explains how to set the layout type.
+
+    protected const String HowToSetLayoutType =
+        "The Layout Type can be set from the toolbar at the top of the graph"
+        + " pane, or by right-clicking within the graph pane."
+        ;
 
 
     //*************************************************************************
@@ -3651,7 +4154,7 @@ public partial class TaskPane : UserControl
 
     /// Helper objects for managing layouts.
 
-    protected LayoutManagerForMenu m_oLayoutManagerForMenu;
+    protected LayoutManagerForComboBox m_oLayoutManagerForComboBox;
     ///
     protected LayoutManagerForMenu m_oLayoutManagerForContextMenu;
 
@@ -3682,7 +4185,9 @@ public partial class TaskPane : UserControl
     protected SaveImageFileDialog m_oSaveImageFileDialog;
 
     /// Modeless dialog for dynamically filtering vertices and edges in the
-    /// graph, or null if the dialog hasn't been created yet.
+    /// graph.  The dialog is created on demand, so this is initially null,
+    /// then gets set to a dialog when the user wants to use dynamic filters,
+    /// then gets reset to null when the user closes the dialog.
 
     protected DynamicFilterDialog m_oDynamicFilterDialog;
 }

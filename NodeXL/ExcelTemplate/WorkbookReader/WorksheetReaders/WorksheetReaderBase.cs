@@ -510,8 +510,8 @@ public class WorksheetReaderBase : NodeXLBase
 
             OnWorkbookFormatError( String.Format(
 
-                "The cell {0} contains an unrecognized color.  Try"
-                + " selecting from the cell's drop-down list instead."
+                "The cell {0} contains an unrecognized color.  Right-click the"
+                + " cell and select Select Color on the right-click menu."
                 ,
                 ExcelUtil.GetRangeAddress(oInvalidCell)
                 ),

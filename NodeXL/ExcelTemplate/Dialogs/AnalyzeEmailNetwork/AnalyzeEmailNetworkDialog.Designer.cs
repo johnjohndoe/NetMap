@@ -54,6 +54,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radHasAttachment = new System.Windows.Forms.RadioButton();
             this.cbxUseAttachmentFilter = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.lnkFolderHelp = new System.Windows.Forms.LinkLabel();
             this.txbFolder = new System.Windows.Forms.TextBox();
             this.cbxUseFolder = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -77,9 +78,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxUseStartTime = new System.Windows.Forms.CheckBox();
             this.dtpStartTime = new System.Windows.Forms.DateTimePicker();
             this.dtpEndTime = new System.Windows.Forms.DateTimePicker();
-            this.cbxUseCcForTieStrengths = new System.Windows.Forms.CheckBox();
-            this.cbxUseBccForTieStrengths = new System.Windows.Forms.CheckBox();
-            this.lnkFolderHelp = new System.Windows.Forms.LinkLabel();
+            this.cbxUseCcForEdgeWeights = new System.Windows.Forms.CheckBox();
+            this.cbxUseBccForEdgeWeights = new System.Windows.Forms.CheckBox();
             this.pnlWhichEmails.SuspendLayout();
             this.grpFilters.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -117,12 +117,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // lnkHelp
             // 
-            this.lnkHelp.Location = new System.Drawing.Point(632, 10);
+            this.lnkHelp.Location = new System.Drawing.Point(533, 10);
             this.lnkHelp.Name = "lnkHelp";
-            this.lnkHelp.Size = new System.Drawing.Size(137, 13);
+            this.lnkHelp.Size = new System.Drawing.Size(236, 17);
             this.lnkHelp.TabIndex = 6;
             this.lnkHelp.TabStop = true;
-            this.lnkHelp.Text = "How email is analyzed";
+            this.lnkHelp.Text = "How email is analyzed and imported";
             this.lnkHelp.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.lnkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelp_LinkClicked);
             // 
@@ -325,6 +325,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox7.TabIndex = 5;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Folder";
+            // 
+            // lnkFolderHelp
+            // 
+            this.lnkFolderHelp.AutoSize = true;
+            this.lnkFolderHelp.Location = new System.Drawing.Point(13, 68);
+            this.lnkFolderHelp.Name = "lnkFolderHelp";
+            this.lnkFolderHelp.Size = new System.Drawing.Size(76, 13);
+            this.lnkFolderHelp.TabIndex = 2;
+            this.lnkFolderHelp.TabStop = true;
+            this.lnkFolderHelp.Text = "Sample folders";
+            this.lnkFolderHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkFolderHelp_LinkClicked);
             // 
             // txbFolder
             // 
@@ -593,36 +604,25 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.dtpEndTime.Size = new System.Drawing.Size(95, 20);
             this.dtpEndTime.TabIndex = 3;
             // 
-            // cbxUseCcForTieStrengths
+            // cbxUseCcForEdgeWeights
             // 
-            this.cbxUseCcForTieStrengths.AutoSize = true;
-            this.cbxUseCcForTieStrengths.Location = new System.Drawing.Point(12, 399);
-            this.cbxUseCcForTieStrengths.Name = "cbxUseCcForTieStrengths";
-            this.cbxUseCcForTieStrengths.Size = new System.Drawing.Size(223, 17);
-            this.cbxUseCcForTieStrengths.TabIndex = 2;
-            this.cbxUseCcForTieStrengths.Text = "Use Cc line &when calculating tie strengths";
-            this.cbxUseCcForTieStrengths.UseVisualStyleBackColor = true;
+            this.cbxUseCcForEdgeWeights.AutoSize = true;
+            this.cbxUseCcForEdgeWeights.Location = new System.Drawing.Point(12, 399);
+            this.cbxUseCcForEdgeWeights.Name = "cbxUseCcForEdgeWeights";
+            this.cbxUseCcForEdgeWeights.Size = new System.Drawing.Size(229, 17);
+            this.cbxUseCcForEdgeWeights.TabIndex = 2;
+            this.cbxUseCcForEdgeWeights.Text = "Use Cc line &when calculating edge weights";
+            this.cbxUseCcForEdgeWeights.UseVisualStyleBackColor = true;
             // 
-            // cbxUseBccForTieStrengths
+            // cbxUseBccForEdgeWeights
             // 
-            this.cbxUseBccForTieStrengths.AutoSize = true;
-            this.cbxUseBccForTieStrengths.Location = new System.Drawing.Point(12, 422);
-            this.cbxUseBccForTieStrengths.Name = "cbxUseBccForTieStrengths";
-            this.cbxUseBccForTieStrengths.Size = new System.Drawing.Size(229, 17);
-            this.cbxUseBccForTieStrengths.TabIndex = 3;
-            this.cbxUseBccForTieStrengths.Text = "Use Bcc &line when calculating tie strengths";
-            this.cbxUseBccForTieStrengths.UseVisualStyleBackColor = true;
-            // 
-            // lnkFolderHelp
-            // 
-            this.lnkFolderHelp.AutoSize = true;
-            this.lnkFolderHelp.Location = new System.Drawing.Point(13, 68);
-            this.lnkFolderHelp.Name = "lnkFolderHelp";
-            this.lnkFolderHelp.Size = new System.Drawing.Size(76, 13);
-            this.lnkFolderHelp.TabIndex = 2;
-            this.lnkFolderHelp.TabStop = true;
-            this.lnkFolderHelp.Text = "Sample folders";
-            this.lnkFolderHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkFolderHelp_LinkClicked);
+            this.cbxUseBccForEdgeWeights.AutoSize = true;
+            this.cbxUseBccForEdgeWeights.Location = new System.Drawing.Point(12, 422);
+            this.cbxUseBccForEdgeWeights.Name = "cbxUseBccForEdgeWeights";
+            this.cbxUseBccForEdgeWeights.Size = new System.Drawing.Size(235, 17);
+            this.cbxUseBccForEdgeWeights.TabIndex = 3;
+            this.cbxUseBccForEdgeWeights.Text = "Use Bcc &line when calculating edge weights";
+            this.cbxUseBccForEdgeWeights.UseVisualStyleBackColor = true;
             // 
             // AnalyzeEmailNetworkDialog
             // 
@@ -631,8 +631,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(782, 451);
-            this.Controls.Add(this.cbxUseBccForTieStrengths);
-            this.Controls.Add(this.cbxUseCcForTieStrengths);
+            this.Controls.Add(this.cbxUseBccForEdgeWeights);
+            this.Controls.Add(this.cbxUseCcForEdgeWeights);
             this.Controls.Add(this.grpFilters);
             this.Controls.Add(this.pnlWhichEmails);
             this.Controls.Add(this.lnkHelp);
@@ -642,7 +642,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AnalyzeEmailNetworkDialog";
-            this.Text = "Analyze Email Network";
+            this.Text = "Import from Email Network";
             this.pnlWhichEmails.ResumeLayout(false);
             this.pnlWhichEmails.PerformLayout();
             this.grpFilters.ResumeLayout(false);
@@ -717,8 +717,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.DataGridViewCheckBoxColumn colTo;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colCc;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colBcc;
-        private System.Windows.Forms.CheckBox cbxUseCcForTieStrengths;
-        private System.Windows.Forms.CheckBox cbxUseBccForTieStrengths;
+        private System.Windows.Forms.CheckBox cbxUseCcForEdgeWeights;
+        private System.Windows.Forms.CheckBox cbxUseBccForEdgeWeights;
         private System.Windows.Forms.LinkLabel lnkFolderHelp;
     }
 }

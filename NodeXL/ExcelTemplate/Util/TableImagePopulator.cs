@@ -21,7 +21,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
+/// Call <see cref="PopulateColumnWithImages" /> to populate an image column.
+/// Call <see cref="ShowOrHideImagesInColumn" /> to hide or show the images.
+/// Call <see cref="DeleteImagesInColumn" /> to delete the images.
+///
+/// <para>
 /// All methods are static.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -48,12 +55,8 @@ public static class TableImagePopulator : Object
     /// </param>
     ///
     /// <param name="imageColumnName">
-    /// Name of the image column.  The column gets inserted after <paramref
-    /// name="oneBasedImageColumnIndex" /> if it doesn't already exist.
-    /// </param>
-    ///
-    /// <param name="oneBasedImageColumnIndex">
-    /// One-based index of the image column after it is inserted.
+    /// Name of the image column.  The column gets added to the end of the
+    /// table if it doesn't already exist.
     /// </param>
     ///
     /// <param name="keyColumnName">
@@ -69,10 +72,15 @@ public static class TableImagePopulator : Object
     ///
     /// <remarks>
     /// If a column named <paramref name="imageColumnName" /> doesn't already
-    /// exist, this method inserts it at position <paramref
-    /// name="oneBasedImageColumnIndex" />.  It then populates the column with
-    /// the temporary images specified by <paramref name="temporaryImages" />,
-    /// and deletes the temporary folder containing the images.
+    /// exist, this method adds it to the end of the table.  It then populates
+    /// the column with the temporary images specified by <paramref
+    /// name="temporaryImages" />, and deletes the temporary folder containing
+    /// the images.
+    ///
+    /// <para>
+    /// The images are shown by default.  Call <see
+    /// cref="ShowOrHideImagesInColumn" /> to hide or reshow them.
+    /// </para>
     ///
     /// <para>
     /// If the specified table doesn't exist, this method does nothing.
@@ -88,7 +96,6 @@ public static class TableImagePopulator : Object
         String worksheetName,
         String tableName,
         String imageColumnName,
-        Int32 oneBasedImageColumnIndex,
         String keyColumnName,
         TemporaryImages temporaryImages
     )
@@ -97,7 +104,6 @@ public static class TableImagePopulator : Object
         Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
         Debug.Assert( !String.IsNullOrEmpty(tableName) );
         Debug.Assert( !String.IsNullOrEmpty(imageColumnName) );
-        Debug.Assert(oneBasedImageColumnIndex >= 1);
         Debug.Assert( !String.IsNullOrEmpty(keyColumnName) );
         Debug.Assert(temporaryImages != null);
 
@@ -120,12 +126,12 @@ public static class TableImagePopulator : Object
 
         Range oImageColumnData;
 
-        // Insert the image column if it doesn't already exist.
+        // Add the image column if it doesn't already exist.
 
         if ( !TryGetImageColumnData(oTable, imageColumnName,
-            oneBasedImageColumnIndex, out oImageColumnData) )
+            out oImageColumnData) )
         {
-            // The image column doesn't exist and couldn't be inserted.
+            // The image column doesn't exist and couldn't be added.
 
             return;
         }
@@ -174,8 +180,9 @@ public static class TableImagePopulator : Object
 
         Debug.Assert(oTable.Parent is Worksheet);
 
-        Dictionary<String, Microsoft.Office.Interop.Excel.Shape> oOldImages =
-            GetOldImages( (Worksheet)oTable.Parent, imageColumnName );
+        Dictionary<String, Microsoft.Office.Interop.Excel.Shape>
+            oOldImagesInColumn = GetImagesInColumn( (Worksheet)oTable.Parent,
+                imageColumnName );
 
         // Populate each area of the image column with images.
 
@@ -187,7 +194,7 @@ public static class TableImagePopulator : Object
             {
                 PopulateAreaWithImages(oVisibleKeyColumnData.Areas[iArea],
                     oVisibleImageColumnData.Areas[iArea], imageColumnName,
-                    oImageSizePt, oOldImages, temporaryImages);
+                    oImageSizePt, oOldImagesInColumn, temporaryImages);
             }
         }
         finally
@@ -198,6 +205,110 @@ public static class TableImagePopulator : Object
         // Delete the entire temporary folder.
 
         Directory.Delete(sFolder, true);
+    }
+
+    //*************************************************************************
+    //  Method: ShowOrHideImagesInColumn()
+    //
+    /// <summary>
+    /// Shows or hides any images in a column that were added by other methods
+    /// in this class.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the images.
+    /// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Worksheet containing the images.
+    /// </param>
+    ///
+    /// <param name="imageColumnName">
+    /// Name of the image column.
+    /// </param>
+    ///
+    /// <param name="show">
+    /// true to show the images, false to hide them.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    ShowOrHideImagesInColumn
+    (
+        Workbook workbook,
+        String worksheetName,
+        String imageColumnName,
+        Boolean show
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(imageColumnName) );
+
+        Worksheet oWorksheet;
+
+        if ( !ExcelUtil.TryGetWorksheet(workbook, worksheetName,
+            out oWorksheet) )
+        {
+            return;
+        }
+
+        MsoTriState eVisible = show ?
+            MsoTriState.msoTrue : MsoTriState.msoFalse; 
+
+        foreach (Microsoft.Office.Interop.Excel.Shape oImage in
+            GetImagesInColumn(oWorksheet, imageColumnName).Values)
+        {
+            oImage.Visible = eVisible;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: DeleteImagesInColumn()
+    //
+    /// <summary>
+    /// Deletes any images in a column that were added by other methods in this
+    /// class.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the images.
+    /// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Worksheet containing the images.
+    /// </param>
+    ///
+    /// <param name="imageColumnName">
+    /// Name of the image column.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    DeleteImagesInColumn
+    (
+        Workbook workbook,
+        String worksheetName,
+        String imageColumnName
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(imageColumnName) );
+
+        Worksheet oWorksheet;
+
+        if ( !ExcelUtil.TryGetWorksheet(workbook, worksheetName,
+            out oWorksheet) )
+        {
+            return;
+        }
+
+        foreach (Microsoft.Office.Interop.Excel.Shape oImage in
+            GetImagesInColumn(oWorksheet, imageColumnName).Values)
+        {
+            oImage.Delete();
+        }
     }
 
     //*************************************************************************
@@ -212,12 +323,8 @@ public static class TableImagePopulator : Object
     /// </param>
     ///
     /// <param name="sImageColumnName">
-    /// Name of the image column.  The column gets inserted after <paramref
-    /// name="iOneBasedImageColumnIndex" /> if it doesn't already exist.
-    /// </param>
-    ///
-    /// <param name="iOneBasedImageColumnIndex">
-    /// One-based index of the image column after it is inserted.
+    /// Name of the image column.  The column gets added to the end of
+    /// <paramref name="oTable" /> if it doesn't already exist.
     /// </param>
     ///
     /// <param name="oImageColumnData">
@@ -230,8 +337,7 @@ public static class TableImagePopulator : Object
     ///
     /// <remarks>
     /// If a column named <paramref name="sImageColumnName" /> doesn't already
-    /// exist, this method inserts it at position <paramref
-    /// name="iOneBasedImageColumnIndex" />.
+    /// exist, this method adds it to <paramref name="oTable" />.
     /// </remarks>
     //*************************************************************************
 
@@ -240,38 +346,24 @@ public static class TableImagePopulator : Object
     (
         ListObject oTable,
         String sImageColumnName,
-        Int32 iOneBasedImageColumnIndex,
         out Range oImageColumnData
     )
     {
         Debug.Assert(oTable != null);
         Debug.Assert( !String.IsNullOrEmpty(sImageColumnName) );
-        Debug.Assert(iOneBasedImageColumnIndex >= 1);
+
+        oImageColumnData = null;
 
         ListColumn oImageColumn;
 
-        // Insert the image column if it doesn't already exist.
+        // Add the image column if it doesn't already exist.
 
-        if (
-            !ExcelUtil.TryGetTableColumnData(oTable, sImageColumnName,
-                out oImageColumnData)
+        return (
+            ExcelUtil.TryGetOrAddTableColumn(oTable, sImageColumnName,
+                ImageColumnWidthChars, null, out oImageColumn)
             &&
-                (
-                !ExcelUtil.TryInsertTableColumn(oTable, sImageColumnName,
-                    iOneBasedImageColumnIndex, ImageColumnWidthChars, null,
-                    out oImageColumn)
-                ||
-                !ExcelUtil.TryGetTableColumnData(oTable, sImageColumnName,
-                    out oImageColumnData)
-                )
-            )
-        {
-            // The image column doesn't exist and couldn't be inserted.
-
-            return (false);
-        }
-
-        return (true);
+            ExcelUtil.TryGetTableColumnData(oImageColumn, out oImageColumnData)
+            );
     }
 
     //*************************************************************************
@@ -297,7 +389,7 @@ public static class TableImagePopulator : Object
     /// Size of each image, in points.
     /// </param>
     ///
-    /// <param name="oOldImages">
+    /// <param name="oOldImagesInColumn">
     /// A dictionary of zero or more key/value pairs.  The key is the
     /// Shape.Name of an old image in the image column and the value is the
     /// image, as a Shape.
@@ -320,14 +412,15 @@ public static class TableImagePopulator : Object
         Range oImageColumnArea,
         String sImageColumnName,
         SizeF oImageSizePt,
-        Dictionary<String, Microsoft.Office.Interop.Excel.Shape> oOldImages,
+        Dictionary<String, Microsoft.Office.Interop.Excel.Shape>
+            oOldImagesInColumn,
         TemporaryImages oTemporaryImages
     )
     {
         Debug.Assert(oKeyColumnArea != null);
         Debug.Assert(oImageColumnArea != null);
         Debug.Assert( !String.IsNullOrEmpty(sImageColumnName) );
-        Debug.Assert(oOldImages != null);
+        Debug.Assert(oOldImagesInColumn != null);
         Debug.Assert(oTemporaryImages != null);
 
         // Gather some required information.
@@ -371,7 +464,7 @@ public static class TableImagePopulator : Object
                 )
             {
                 // Give the picture a name that can be recognized by
-                // GetOldImages().
+                // GetImagesInColumn().
 
                 String sPictureName = sImageColumnName + "-" + sKey;
 
@@ -380,7 +473,8 @@ public static class TableImagePopulator : Object
                 // If an old version of the picture remains from a previous
                 // call to this method, delete it.
 
-                if ( oOldImages.TryGetValue(sPictureName, out oPicture) )
+                if ( oOldImagesInColumn.TryGetValue(sPictureName,
+                    out oPicture) )
                 {
                     oPicture.Delete();
                 }
@@ -406,14 +500,15 @@ public static class TableImagePopulator : Object
     }
 
     //*************************************************************************
-    //  Method: GetOldImages()
+    //  Method: GetImagesInColumn()
     //
     /// <summary>
-    /// Gets a dictionary of any old images in the image column.
+    /// Gets a dictionary of any images in a column that were added by this
+    /// class.
     /// </summary>
     ///
     /// <param name="oWorksheet">
-    /// Worksheet containing the table.
+    /// Worksheet containing the images.
     /// </param>
     ///
     /// <param name="sImageColumnName">
@@ -422,13 +517,13 @@ public static class TableImagePopulator : Object
     ///
     /// <returns>
     /// A dictionary of zero or more key/value pairs.  The key is the
-    /// Shape.Name of an old image in the image column and the value is the
-    /// image, as a Shape.
+    /// Shape.Name of an image in the image column and the value is the image,
+    /// as a Shape.
     /// </returns>
     //*************************************************************************
 
     private static Dictionary<String, Microsoft.Office.Interop.Excel.Shape>
-    GetOldImages
+    GetImagesInColumn
     (
         Worksheet oWorksheet,
         String sImageColumnName
@@ -437,8 +532,9 @@ public static class TableImagePopulator : Object
         Debug.Assert(oWorksheet != null);
         Debug.Assert( !String.IsNullOrEmpty(sImageColumnName) );
 
-        Dictionary<String, Microsoft.Office.Interop.Excel.Shape> oOldImages =
-            new Dictionary<String, Microsoft.Office.Interop.Excel.Shape>();
+        Dictionary<String, Microsoft.Office.Interop.Excel.Shape>
+            oImagesInColumn =
+                new Dictionary<String, Microsoft.Office.Interop.Excel.Shape>();
 
         foreach (Microsoft.Office.Interop.Excel.Shape oShape in
             oWorksheet.Shapes)
@@ -451,11 +547,11 @@ public static class TableImagePopulator : Object
             if ( sShapeName != null &&
                 sShapeName.StartsWith(sImageColumnName) )
             {
-                oOldImages[sShapeName] = oShape;
+                oImagesInColumn[sShapeName] = oShape;
             }
         }
 
-        return (oOldImages);
+        return (oImagesInColumn);
     }
 
     //*************************************************************************

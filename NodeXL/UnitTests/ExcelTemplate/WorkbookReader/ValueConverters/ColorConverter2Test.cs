@@ -165,7 +165,7 @@ public class ColorConverter2Test : Object
     public void
     TestGraphToWorkbook()
     {
-        Assert.AreEqual( "Alice Blue",
+        Assert.AreEqual( "AliceBlue",
             m_oColorConverter2.GraphToWorkbook(Color.AliceBlue) );
 
         Assert.AreEqual( "Blue",

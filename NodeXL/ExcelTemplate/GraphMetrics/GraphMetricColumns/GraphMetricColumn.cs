@@ -297,19 +297,6 @@ public abstract class GraphMetricColumn : Object
 
 
     //*************************************************************************
-    //  Public constants
-    //*************************************************************************
-
-    /// Name of Excel's pre-defined "normal" style.
-
-    public const String ExcelStyleNormal = "Normal";
-
-    /// Name of Excel's pre-defined "bad" style.
-
-    public const String ExcelStyleBad = "Bad";
-
-
-    //*************************************************************************
     //  Protected fields
     //*************************************************************************
 

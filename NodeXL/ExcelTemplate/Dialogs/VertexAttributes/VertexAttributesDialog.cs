@@ -79,8 +79,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
         m_oEditedVertexAttributes = GetInitialVertexAttributes();
 
-        ( new ColorConverter2() ).PopulateComboBox(cbxColor, true);
-
         ( new VertexShapeConverter() ).PopulateComboBox(cbxShape, true);
 
         nudRadius.Minimum =
@@ -91,8 +89,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
         nudAlpha.Minimum = (Decimal)AlphaConverter.MinimumAlphaWorkbook;
         nudAlpha.Maximum = (Decimal)AlphaConverter.MaximumAlphaWorkbook;
-
-        lblMaximumAlphaMessage.Text = AlphaConverter.MaximumAlphaMessage;
 
         ( new VertexDrawingPrecedenceConverter() ).PopulateComboBox(
             cbxVertexDrawingPrecedence, true);
@@ -208,7 +204,7 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 fRadius = null;
             }
             else if ( ValidateNumericUpDown(
-                nudRadius, "a radius", out fRadius2) )
+                nudRadius, "a size", out fRadius2) )
             {
                 fRadius = fRadius2;
             }
@@ -236,29 +232,15 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
             // The controls are valid.
 
-            Object oSelectedColor = cbxColor.SelectedValue;
+            Color oSelectedColor = usrColor.Color;
 
-            // oSelectedColor must be checked for null.  Here is how a null
-            // value can arise:
-            //
-            // 1. The user enters a color in the vertex worksheet in the format
-            //    "R,G,B".
-            //
-            // 2. The vertex worksheet is read into the graph.
-            //
-            // 3. DoDataExchange(false) in this dialog is called.
-            //
-            // 4. cbxColor.SelectedValue is set to the RGB value, which is not
-            //    one of the values in the ComboBox.
-
-            if (oSelectedColor == null || oSelectedColor is String)
+            if (oSelectedColor == ColorNotEditedMarker)
             {
                 m_oEditedVertexAttributes.Color = null;
             }
             else
             {
-                m_oEditedVertexAttributes.Color =
-                    Color.FromKnownColor( (KnownColor)oSelectedColor );
+                m_oEditedVertexAttributes.Color = oSelectedColor;
             }
 
             Object oSelectedShape = cbxShape.SelectedValue;
@@ -315,12 +297,11 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
         {
             if (m_oEditedVertexAttributes.Color.HasValue)
             {
-                cbxColor.SelectedValue =
-                    m_oEditedVertexAttributes.Color.Value.ToKnownColor();
+                usrColor.Color = m_oEditedVertexAttributes.Color.Value;
             }
             else
             {
-                cbxColor.SelectedValue = NotEditedMarker;
+                usrColor.Color = ColorNotEditedMarker;
             }
 
             if (m_oEditedVertexAttributes.Shape.HasValue)
@@ -796,6 +777,12 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
     /// can't be used as the marker.
 
     protected String NotEditedMarker = String.Empty;
+
+    /// Object stored in a ColorPicker as the value that represents "not
+    /// edited."  This is arbitrary.  It is different from any color the user
+    /// might actually select because it has an alpha value of 0.
+
+    protected Color ColorNotEditedMarker = Color.FromArgb(0, 1, 1, 1);
 
 
     //*************************************************************************

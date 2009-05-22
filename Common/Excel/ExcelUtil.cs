@@ -26,6 +26,52 @@ namespace Microsoft.Research.CommunityTechnologies.AppLib
 public static class ExcelUtil
 {
     //*************************************************************************
+    //  Property: SpecialCellsBeingCalled
+    //
+    /// <summary>
+    /// Gets a flag indicating whether a call to Range.SpecialCells() is in
+    /// progress.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if a call to Range.SpecialCells() is in progress.
+    /// </value>
+    ///
+    /// <remarks>
+    /// There is a bug in Excel's Range.SpecialCells() method that causes the
+    /// Microsoft.Office.Tools.Excel.ListObject.SelectionChange event to fire
+    /// if the range has hidden cells when the method is called.  ExcelUtil
+    /// sets this property to true during all such calls.  An application can
+    /// work around the Excel bug by checking this property during the
+    /// SelectionChange event and ignoring the event if the property is true.
+    ///
+    /// <para>
+    /// WARNING: This is not thread-safe and is not a good solution.  The
+    /// correct way to do this would be to turn ExcelUtil into a non-static
+    /// class and make m_bSpecialCellsBeingCalled an instance member instead of
+    /// a static member.
+    /// </para>
+    ///
+    /// <para>
+    /// In the ExcelTemplate VSTO project for which this class was originally
+    /// written, each workbook gets its own AppDomain, each of which gets its
+    /// own copy of ExcelUtil.  Therefore this static implementation works in
+    /// that project, but it won't work in the general case.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    SpecialCellsBeingCalled
+    {
+        get
+        {
+            return (m_bSpecialCellsBeingCalled);
+        }
+    }
+
+    //*************************************************************************
     //  Method: ExcelApplicationIsReady()
     //
     /// <summary>
@@ -264,6 +310,46 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: GetCellAddress()
+    //
+    /// <summary>
+    /// Gets a cell's address in A1 style.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// Worksheet containing the cell.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number of the cell.  Sample: 3.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number of the cell.  Sample: 2.
+    /// </param>
+    ///
+    /// <returns>
+    /// The A1-style address of the cell.  Sample: "B3".
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    GetCellAddress
+    (
+        Microsoft.Office.Interop.Excel.Worksheet worksheet,
+        Int32 rowOneBased,
+        Int32 columnOneBased
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+
+        return ( GetRangeAddress(
+            (Range)worksheet.Cells[rowOneBased, columnOneBased] ) );
+    }
+
+    //*************************************************************************
     //  Method: GetRangeAddress()
     //
     /// <summary>
@@ -404,10 +490,10 @@ public static class ExcelUtil
     /// name="visibleRange" /> and true is returned.  false is returned
     /// otherwise.
     ///
-    /// <param>
+    /// <para>
     /// WARNING: Due to an apparent bug in Excel, this method can cause the
     /// Microsoft.Office.Tools.Excel.ListObject.SelectionChange event to fire.
-    /// </param>
+    /// </para>
     ///
     /// </remarks>
     //*************************************************************************
@@ -425,10 +511,30 @@ public static class ExcelUtil
 
         // WARNING: If the range contains hidden cells, range.SpecialCells()
         // causes the Microsoft.Office.Tools.Excel.ListObject.SelectionChange
-        // event to fire.  It shouldn't, but it does.
+        // event to fire.  It shouldn't, but it does.  Allow the application to
+        // work around this Excel bug by checking the SpeciealCellsBeingCalled
+        // property from within the application's event handler.
+
+        m_bSpecialCellsBeingCalled = true;
 
         try
         {
+            if (range.Rows.Count == 1 && range.Columns.Count == 1)
+            {
+                // The Range.SpecialCells() call below does not work for single
+                // cells.  For example, if range is "B3", Range.SpecialCells()
+                // returns "A:Y,AB:XFD".
+
+                if ( (Boolean)range.EntireRow.Hidden ||
+                    (Boolean)range.EntireColumn.Hidden)
+                {
+                    return (false);
+                }
+
+                visibleRange = range;
+                return (true);
+            }
+
             visibleRange = range.SpecialCells(
                 XlCellType.xlCellTypeVisible, Missing.Value);
         }
@@ -437,6 +543,10 @@ public static class ExcelUtil
             // This can definitely occur.
 
             return (false);
+        }
+        finally
+        {
+            m_bSpecialCellsBeingCalled = false;
         }
 
         // Can a null visibleRange occur as well?  The documentation doesn't
@@ -624,6 +734,231 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: GetValuesInRow()
+    //
+    /// <summary>
+    /// Gets a specified number of cell values in a row starting at a specified
+    /// cell.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// Worksheet that contains the values to get.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number.
+    /// </param>
+    ///
+    /// <param name="firstColumnOneBased">
+    /// One-based column number of the first cell to get.
+    /// </param>
+    ///
+    /// <param name="columns">
+    /// Number of cells to get.  Must be greater than zero.
+    /// </param>
+    ///
+    /// <returns>
+    /// The cell values.  A value can be null.
+    /// </returns>
+    //*************************************************************************
+
+    public static Object [,]
+    GetValuesInRow
+    (
+        Microsoft.Office.Interop.Excel.Worksheet worksheet,
+        Int32 rowOneBased,
+        Int32 firstColumnOneBased,
+        Int32 columns
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(firstColumnOneBased >= 1);
+        Debug.Assert(columns >= 1);
+
+        Range oRange = (Range)worksheet.get_Range(
+
+            (Range)worksheet.Cells[rowOneBased, firstColumnOneBased],
+
+            (Range)worksheet.Cells[rowOneBased,
+                firstColumnOneBased + columns - 1]
+            );
+
+        return ( ExcelUtil.GetRangeValues(oRange) );
+    }
+
+    //*************************************************************************
+    //  Method: GetValuesInColumn()
+    //
+    /// <summary>
+    /// Gets a specified number of cell values in a column starting at a
+    /// specified cell.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// Worksheet that contains the values to get.
+    /// </param>
+    ///
+    /// <param name="firstRowOneBased">
+    /// One-based row number of the first cell to get.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number.
+    /// </param>
+    ///
+    /// <param name="rows">
+    /// Number of cells to get.  Must be greater than zero.
+    /// </param>
+    ///
+    /// <returns>
+    /// The cell values.  A value can be null.
+    /// </returns>
+    //*************************************************************************
+
+    public static Object [,]
+    GetValuesInColumn
+    (
+        Microsoft.Office.Interop.Excel.Worksheet worksheet,
+        Int32 firstRowOneBased,
+        Int32 columnOneBased,
+        Int32 rows
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(firstRowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+        Debug.Assert(rows >= 1);
+
+        Range oRange = (Range)worksheet.get_Range(
+
+            (Range)worksheet.Cells[firstRowOneBased, columnOneBased],
+
+            (Range)worksheet.Cells[firstRowOneBased + rows - 1,
+                columnOneBased]
+            );
+
+        return ( ExcelUtil.GetRangeValues(oRange) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetContiguousValuesInRow()
+    //
+    /// <summary>
+    /// Attempts to get the contiguous values in a row starting at a specified
+    /// cell.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// Worksheet that contains the values to get.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number.
+    /// </param>
+    ///
+    /// <param name="firstColumnOneBased">
+    /// One-based column number of the first cell to get.
+    /// </param>
+    ///
+    /// <param name="values">
+    /// Where the contiguous cell values get stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the cell at [rowOneBased, firstColumnOneBased] is not empty.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the [rowOneBased, firstColumnOneBased] cell is not empty, the values
+    /// from that cell and all contiguous cells to the right get stored at
+    /// <paramref name="values" /> and true is returned.  false is returned
+    /// otherwise.
+    ///
+    /// <para>
+    /// Note that any of the contiguous cells can contain strings consisting of
+    /// nothing but spaces.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetContiguousValuesInRow
+    (
+        Microsoft.Office.Interop.Excel.Worksheet worksheet,
+        Int32 rowOneBased,
+        Int32 firstColumnOneBased,
+        out Object [,] values
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(firstColumnOneBased >= 1);
+
+        return ( TryGetContiguousValuesInRowOrColumn(worksheet, rowOneBased,
+            firstColumnOneBased, true, out values) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetContiguousValuesInColumn()
+    //
+    /// <summary>
+    /// Attempts to get the contiguous values in a column starting at a
+    /// specified cell.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// Worksheet that contains the values to get.
+    /// </param>
+    ///
+    /// <param name="firstRowOneBased">
+    /// One-based row number of the first cell to get.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number.
+    /// </param>
+    ///
+    /// <param name="values">
+    /// Where the contiguous cell values get stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the cell at [firstRowOneBased, columnOneBased] is not empty.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the [firstRowOneBased, columnOneBased] cell is not empty, the values
+    /// from that cell and all contiguous cells below get stored at <paramref
+    /// name="values" /> and true is returned.  false is returned otherwise.
+    ///
+    /// <para>
+    /// Note that any of the contiguous cells can contain strings consisting of
+    /// nothing but spaces.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetContiguousValuesInColumn
+    (
+        Microsoft.Office.Interop.Excel.Worksheet worksheet,
+        Int32 firstRowOneBased,
+        Int32 columnOneBased,
+        out Object [,] values
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(firstRowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+
+        return ( TryGetContiguousValuesInRowOrColumn(worksheet,
+            firstRowOneBased, columnOneBased, false, out values) );
+    }
+
+    //*************************************************************************
     //  Method: TryGetLastNonEmptyRow()
     //
     /// <summary>
@@ -780,7 +1115,7 @@ public static class ExcelUtil
     /// The values are set on the parent worksheet starting at this range's
     /// upper-left corner.  Only those cells that correspond to <paramref
     /// name="values" /> are set, so the only requirement for this range is
-    /// that it's upper-left corner be in the desired location.  It's size is
+    /// that it's upper-left corner be in the desired location.  Its size is
     /// unimportant.
     /// </param>
     ///
@@ -865,28 +1200,198 @@ public static class ExcelUtil
             return;
         }
 
-        // Loop through the areas.
-
         foreach (Range oVisibleArea in oVisibleRange.Areas)
         {
-            Int32 iRows = oVisibleArea.Rows.Count;
-            Int32 iColumns = oVisibleArea.Columns.Count;
+            oVisibleArea.set_Value(Missing.Value, value);
+        }
+    }
 
-            Object [,] oVisibleAreaValues = ( Object [,] )
-                Array.CreateInstance(
-                    typeof(Object), new Int32[] {iRows, iColumns},
-                    new Int32[] {1,1} 
-                    );
+    //*************************************************************************
+    //  Method: SetVisibleTableColumnData()
+    //
+    /// <overloads>
+    /// Sets the values in the visible data range of a table column to a
+    /// specified value.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Sets the values in the visible data range of a table column to a
+    /// specified value given a workbook.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the column.
+    /// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Name of the worksheet containing the column.
+    /// </param>
+    ///
+    /// <param name="tableName">
+    /// Name of the table containing the column.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to set.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// The value to set.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method sets the value of every visible data cell in <paramref
+    /// name="columnName" /> to <paramref name="value" />.
+    /// </remarks>
+    //*************************************************************************
 
-            for (Int32 iRow = 1; iRow <= iRows; iRow++)
-            {
-                for (Int32 iColumn = 1; iColumn <= iColumns; iColumn++)
-                {
-                    oVisibleAreaValues[iRow, iColumn] = value;
-                }
-            }
+    public static void
+    SetVisibleTableColumnData
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        String worksheetName,
+        String tableName,
+        String columnName,
+        Object value
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(tableName) );
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
 
-            oVisibleArea.set_Value(Missing.Value, oVisibleAreaValues);
+        ListObject oTable;
+
+        if ( TryGetTable(workbook, worksheetName, tableName, out oTable) )
+        {
+            SetVisibleTableColumnData(oTable, columnName, value);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: SetVisibleTableColumnData()
+    //
+    /// <summary>
+    /// Sets the values in the visible data range of a table column to a
+    /// specified value given a table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table containing the column.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to set.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// The value to set.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method sets the value of every visible data cell in <paramref
+    /// name="columnName" /> to <paramref name="value" />.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    SetVisibleTableColumnData
+    (
+        ListObject table,
+        String columnName,
+        Object value
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        Range oColumnData;
+
+        if ( TryGetTableColumnData(table, columnName, out oColumnData) )
+        {
+            SetVisibleRangeValue(oColumnData, value);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: SetVisibleSelectedTableColumnData()
+    //
+    /// <summary>
+    /// Sets the selected, visible data cells of a table column to a specified
+    /// value.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table containing the column.  The table must be within the active
+    /// worksheet.
+    /// </param>
+    ///
+    /// <param name="selectedRange">
+    /// The application's current selected range.  The range may contain
+    /// multiple areas.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to set.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// The value to set.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method sets the value of every selected, visible data cell in
+    /// <paramref name="columnName" /> to <paramref name="value" />.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    SetVisibleSelectedTableColumnData
+    (
+        ListObject table,
+        Range selectedRange,
+        String columnName,
+        Object value
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert(table.Parent is Worksheet);
+        Debug.Assert(WorksheetIsActive( (Worksheet)table.Parent) );
+        Debug.Assert(selectedRange != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        Range oSelectedTableRange, oVisibleSelectedTableRange;
+        ListColumn oColumn;
+
+        if (
+            !TryGetSelectedTableRange(table, selectedRange,
+                out oSelectedTableRange)
+            ||
+            !TryGetVisibleRange(oSelectedTableRange,
+                out oVisibleSelectedTableRange)
+            ||
+            !TryGetTableColumn(table, columnName, out oColumn)
+            )
+        {
+            return;
+        }
+
+        Worksheet oWorksheet = (Worksheet)table.Parent;
+        Int32 iColumnOneBased = oColumn.Range.Columns.Column;
+
+        foreach (Range oVisibleSelectedArea in
+            oVisibleSelectedTableRange.Areas)
+        {
+            Range oRows = oVisibleSelectedArea.Rows;
+            Int32 iFirstRowOneBased = oRows.Row;
+            Int32 iRows = oRows.Count;
+
+            Range oRangeToSet = (Range)oWorksheet.get_Range(
+                oWorksheet.Cells[iFirstRowOneBased, iColumnOneBased],
+                oWorksheet.Cells[iFirstRowOneBased + iRows - 1, iColumnOneBased]
+                );
+
+            oRangeToSet.set_Value(Missing.Value, value);
         }
     }
 
@@ -1057,8 +1562,111 @@ public static class ExcelUtil
     //*************************************************************************
     //  Method: TryGetNonEmptyStringFromCell()
     //
-    /// <summary>
+    /// <overloads>
     /// Attempts to get a non-empty string from a worksheet cell.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Attempts to get a non-empty string from a worksheet cell given the
+    /// worksheet.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// The worksheet to get the non-empty string from.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number to read.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number to read.
+    /// </param>
+    ///
+    /// <param name="nonEmptyString">
+    /// Where a string gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified cell value contains anything besides spaces, the cell
+    /// value is trimmed and stored at <paramref name="nonEmptyString" />, and
+    /// true is returned.  false is returned otherwise.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetNonEmptyStringFromCell
+    (
+        Worksheet worksheet,
+        Int32 rowOneBased,
+        Int32 columnOneBased,
+        out String nonEmptyString
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+
+        return ( TryGetNonEmptyStringFromCell(
+            (Range)worksheet.Cells[rowOneBased, columnOneBased],
+            out nonEmptyString)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetNonEmptyStringFromCell()
+    //
+    /// <summary>
+    /// Attempts to get a non-empty string from a worksheet cell given a
+    /// one-cell range from the worksheet.
+    /// </summary>
+    ///
+    /// <param name="oneCellRange">
+    /// A range containing one cell.
+    /// </param>
+    ///
+    /// <param name="nonEmptyString">
+    /// Where a string gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified cell value contains anything besides spaces, the cell
+    /// value is trimmed and stored at <paramref name="nonEmptyString" />, and
+    /// true is returned.  false is returned otherwise.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetNonEmptyStringFromCell
+    (
+        Range oneCellRange,
+        out String nonEmptyString
+    )
+    {
+        Debug.Assert(oneCellRange != null);
+        Debug.Assert(oneCellRange.Rows.Count == 1);
+        Debug.Assert(oneCellRange.Columns.Count == 1);
+
+        nonEmptyString = null;
+
+        return ( TryGetNonEmptyStringFromCell(GetRangeValues(oneCellRange),
+            1, 1, out nonEmptyString) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetNonEmptyStringFromCell()
+    //
+    /// <summary>
+    /// Attempts to get a non-empty string from a worksheet cell given an array
+    /// of cell values read from the worksheet.
     /// </summary>
     ///
     /// <param name="cellValues">
@@ -1818,8 +2426,13 @@ public static class ExcelUtil
     //*************************************************************************
     //  Method: TryGetTableColumnData()
     //
-    /// <summary>
+    /// <overloads>
     /// Attempts to get the data range of one column of a table.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Attempts to get the data range of one column of a table given a table
+    /// and column name.
     /// </summary>
     ///
     /// <param name="table">
@@ -1865,12 +2478,54 @@ public static class ExcelUtil
 
         ListColumn oColumn;
 
-        if ( !TryGetTableColumn(table, columnName, out oColumn) )
-        {
-            return (false);
-        }
+        return (
+            TryGetTableColumn(table, columnName, out oColumn)
+            &&
+            TryGetTableColumnData(oColumn, out tableColumnData)
+            );
+    }
 
-        Range oDataBodyRange = table.DataBodyRange;
+    //*************************************************************************
+    //  Method: TryGetTableColumnData()
+    //
+    /// <summary>
+    /// Attempts to get the data range of one column of a table given the
+    /// column.
+    /// </summary>
+    ///
+    /// <param name="column">
+    /// Column to get the data range from.
+    /// </param>
+    ///
+    /// <param name="tableColumnData">
+    /// Where the column data range gets stored if true is returned.  The data
+    /// range includes only that part of the column within the table's data
+    /// body range.  This excludes any header or totals row.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //
+    //  TODO: This hasn't been tested with a totals row.
+    //*************************************************************************
+
+    public static Boolean
+    TryGetTableColumnData
+    (
+        ListColumn column,
+        out Range tableColumnData
+    )
+    {
+        Debug.Assert(column != null);
+
+        tableColumnData = null;
+
+        Debug.Assert(column.Parent is ListObject);
+
+        ListObject oTable = (ListObject)column.Parent;
+
+        Range oDataBodyRange = oTable.DataBodyRange;
 
         if (oDataBodyRange == null)
         {
@@ -1882,7 +2537,7 @@ public static class ExcelUtil
 
             // Is there a header row?
 
-            Range oRangeToUse = table.HeaderRowRange;
+            Range oRangeToUse = oTable.HeaderRowRange;
 
             if (oRangeToUse != null)
             {
@@ -1894,14 +2549,14 @@ public static class ExcelUtil
             {
                 // No.  Use the first row of the table.
 
-                oRangeToUse = table.Range;
+                oRangeToUse = oTable.Range;
 
                 iRow = oRangeToUse.Row;
             }
 
-            Debug.Assert(table.Parent is Worksheet);
+            Debug.Assert(oTable.Parent is Worksheet);
 
-            Worksheet oWorksheet = (Worksheet)table.Parent;
+            Worksheet oWorksheet = (Worksheet)oTable.Parent;
 
             oDataBodyRange = oWorksheet.get_Range(
 
@@ -1912,8 +2567,110 @@ public static class ExcelUtil
                 );
         }
 
-        return ( ExcelUtil.TryIntersectRanges(oDataBodyRange, oColumn.Range,
+        return ( ExcelUtil.TryIntersectRanges(oDataBodyRange, column.Range,
             out tableColumnData) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetVisibleTableColumnData()
+    //
+    /// <summary>
+    /// Attempts to get the visible data range of one column of a table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table to get the visible column data range from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to get visible data range for.
+    /// </param>
+    ///
+    /// <param name="visibleTableColumnData">
+    /// Where the visible column data range gets stored if true is returned.
+    /// The data range includes only that part of the column within the table's
+    /// data body range.  This excludes any header or totals row.  The range
+    /// may consist of multiple areas.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="table" /> contains a column named <paramref
+    /// name="columnName" />, the column's visible data range is stored at
+    /// <paramref name="visibleTableColumnData" /> and true is returned.  false
+    /// is returned otherwise.
+    /// </remarks>
+    //
+    //  TODO: This hasn't been tested with a totals row.
+    //*************************************************************************
+
+    public static Boolean
+    TryGetVisibleTableColumnData
+    (
+        ListObject table,
+        String columnName,
+        out Range visibleTableColumnData
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        visibleTableColumnData = null;
+
+        Range oTempRange;
+
+        return (
+            TryGetTableColumnData(table, columnName, out oTempRange)
+            &&
+            TryGetVisibleRange(oTempRange, out visibleTableColumnData)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TryClearTableColumnDataContents()
+    //
+    /// <summary>
+    /// Attempts to clear the contents of the data range of one column of a
+    /// table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table containing the column.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to clear.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //
+    //  TODO: This hasn't been tested with a totals row.
+    //*************************************************************************
+
+    public static Boolean
+    TryClearTableColumnDataContents
+    (
+        ListObject table,
+        String columnName
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        Range oTableColumnData;
+
+        if ( !TryGetTableColumnData(table, columnName, out oTableColumnData) )
+        {
+            return (false);
+        }
+
+        oTableColumnData.ClearContents();
+        return (true);
     }
 
     //*************************************************************************
@@ -2843,6 +3600,9 @@ public static class ExcelUtil
         listColumn = null;
 
         Object oPosition;
+        ListColumns oColumns = table.ListColumns;
+        Int32 iColumns = oColumns.Count;
+        Double [] adColumnWidthChars = null;
 
         if (oneBasedColumnIndex == -1)
         {
@@ -2851,11 +3611,28 @@ public static class ExcelUtil
         else
         {
             oPosition = oneBasedColumnIndex;
+
+            // When inserting a column, Excel messes up the widths of the
+            // columns after the insertion point.  Save the widths of those
+            // columns.
+
+            if (oneBasedColumnIndex <= iColumns)
+            {
+                adColumnWidthChars =
+                    new Double[iColumns - oneBasedColumnIndex + 1];
+
+                for (Int32 iOneBasedIndex = oneBasedColumnIndex;
+                    iOneBasedIndex <= iColumns; iOneBasedIndex++)
+                {
+                    adColumnWidthChars[iOneBasedIndex - oneBasedColumnIndex] =
+                        (Double)oColumns[iOneBasedIndex].Range.ColumnWidth;
+                }
+            }
         }
 
         try
         {
-            listColumn = table.ListColumns.Add(oPosition);
+            listColumn = oColumns.Add(oPosition);
         }
         catch (COMException oCOMException)
         {
@@ -2890,7 +3667,77 @@ public static class ExcelUtil
 
         SetRangeStyle(oColumnRange, columnStyle);
 
+        if (adColumnWidthChars != null)
+        {
+            // Restore the widths of the columns after the insertion point.
+
+            for (Int32 iOneBasedIndex = oneBasedColumnIndex;
+                iOneBasedIndex <= iColumns; iOneBasedIndex++)
+            {
+                oColumns[iOneBasedIndex + 1].Range.ColumnWidth =
+                    adColumnWidthChars[iOneBasedIndex - oneBasedColumnIndex];
+            }
+        }
+
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: TryEvaluateDoubleFunction()
+    //
+    /// <summary>
+    /// Attempts to evaluate an Excel function that should return a Double.
+    /// </summary>
+    ///
+    /// <param name="application">
+    /// Excel Application object.
+    /// </param>
+    ///
+    /// <param name="functionCall">
+    /// Function call text.  Sample: "=SUM(A:A)".
+    /// </param>
+    ///
+    /// <param name="functionReturn">
+    /// Where the Double returned by the function gets stored if true is
+    /// returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the returned a Double, false if it failed and returned an
+    /// Int32 error code.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TryEvaluateDoubleFunction
+    (
+        Application application,
+        String functionCall,
+        out Double functionReturn
+    )
+    {
+        Debug.Assert(application != null);
+        Debug.Assert( !String.IsNullOrEmpty(functionCall) );
+
+        functionReturn = Double.MinValue;
+
+        Object oFunctionReturn = application.Evaluate(functionCall);
+
+        // If the function failed, it returned an Int32 error code.  See this
+        // post for details on how .NET deals with CVErr values:
+        //
+        // Dealing with CVErr Values in .NET - Part I: The Problem
+        //
+        // http://xldennis.wordpress.com/2006/11/22/dealing-with-cverr-values-
+        // in-net-%E2%80%93-part-i-the-problem/
+
+        if (oFunctionReturn is Double)
+        {
+            functionReturn = (Double)oFunctionReturn;
+            return (true);
+        }
+
+        return (false);
     }
 
     //*************************************************************************
@@ -2926,7 +3773,7 @@ public static class ExcelUtil
     /// </param>
     ///
     /// <returns>
-    /// A two-dimensional Object array with one row and one column.  Each
+    /// A two-dimensional Object array with N rows and one column.  Each
     /// dimension is one-based.  The elements in the array are initialized to
     /// null.
     /// </returns>
@@ -2947,6 +3794,39 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: GetSingleRow2DArray()
+    //
+    /// <summary>
+    /// Gets a two-dimensional Object array with 1 row and N columns.
+    /// </summary>
+    ///
+    /// <param name="columns">
+    /// Number of columns to include in the array.  Must be greater than or
+    /// equal to zero.
+    /// </param>
+    ///
+    /// <returns>
+    /// A two-dimensional Object array with one row and N columns.  Each
+    /// dimension is one-based.  The elements in the array are initialized to
+    /// null.
+    /// </returns>
+    //*************************************************************************
+
+    public static Object [,]
+    GetSingleRow2DArray
+    (
+        Int32 columns
+    )
+    {
+        Debug.Assert(columns >= 0);
+
+        Object [,] aoSingleColumn2DArray = ( Object [,] )Array.CreateInstance(
+            typeof(Object), new Int32[] {1, columns}, new Int32[] {1,1} );
+
+        return (aoSingleColumn2DArray);
+    }
+
+    //*************************************************************************
     //  Method: GetSingleColumn2DStringArray()
     //
     /// <summary>
@@ -2959,7 +3839,7 @@ public static class ExcelUtil
     /// </param>
     ///
     /// <returns>
-    /// A two-dimensional String array with one row and one column.  Each
+    /// A two-dimensional String array with N rows and one column.  Each
     /// dimension is one-based.  The elements in the array are initialized to
     /// null.
     /// </returns>
@@ -2978,6 +3858,146 @@ public static class ExcelUtil
 
         return (asSingleColumn2DArray);
     }
+
+    //*************************************************************************
+    //  Method: GetSingleRow2DStringArray()
+    //
+    /// <summary>
+    /// Gets a two-dimensional String array with 1 row and N columns.
+    /// </summary>
+    ///
+    /// <param name="columns">
+    /// Number of columns to include in the array.  Must be greater than or
+    /// equal to zero.
+    /// </param>
+    ///
+    /// <returns>
+    /// A two-dimensional String array with one row and N columns.  Each
+    /// dimension is one-based.  The elements in the array are initialized to
+    /// null.
+    /// </returns>
+    //*************************************************************************
+
+    public static String [,]
+    GetSingleRow2DStringArray
+    (
+        Int32 columns
+    )
+    {
+        Debug.Assert(columns >= 0);
+
+        String [,] asSingleRow2DArray = ( String [,] )Array.CreateInstance(
+            typeof(String), new Int32[] {1, columns}, new Int32[] {1,1} );
+
+        return (asSingleRow2DArray);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetContiguousValuesInRowOrColumn()
+    //
+    /// <summary>
+    /// Attempts to get the contiguous values in a row or column starting at a
+    /// specified cell.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// Worksheet that contains the values to get.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number of the first cell to get.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number of the first cell to get.
+    /// </param>
+    ///
+    /// <param name="inRow">
+    /// true to get the contiguous values in the row, false to get the
+    /// contiguous values in the column.
+    /// </param>
+    ///
+    /// <param name="values">
+    /// Where the contiguous cell values get stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the cell at [rowOneBased, columnOneBased] is not empty.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the [rowOneBased, columnOneBased] cell is not empty, the values
+    /// from that cell and all contiguous cells to the right or below get
+    /// stored at <paramref name="values" /> and true is returned.  false is
+    /// returned otherwise.
+    ///
+    /// <para>
+    /// Note that any of the contiguous cells can contain strings consisting of
+    /// nothing but spaces.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    private static Boolean
+    TryGetContiguousValuesInRowOrColumn
+    (
+        Microsoft.Office.Interop.Excel.Worksheet worksheet,
+        Int32 rowOneBased,
+        Int32 columnOneBased,
+        Boolean inRow,
+        out Object [,] values
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+
+        values = null;
+
+        Range oFirstCell = (Range)worksheet.Cells[rowOneBased, columnOneBased];
+
+        String sTemp;
+
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(oFirstCell, out sTemp) )
+        {
+            return (false);
+        }
+
+        Range oNextCell = (Range)worksheet.Cells[
+            rowOneBased + (inRow ? 0 : 1),
+            columnOneBased + (inRow ? 1 : 0)
+            ];
+
+        Range oLastCell;
+
+        // If the next cell is empty, Range.get_End() can't be used because it
+        // jumps beyond the empty cell, possibly to the end of the worksheet.
+
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(oNextCell, out sTemp) )
+        {
+            oLastCell = oFirstCell;
+        }
+        else
+        {
+            oLastCell = oFirstCell.get_End(
+                inRow ? XlDirection.xlToRight : XlDirection.xlDown);
+        }
+
+        values = ExcelUtil.GetRangeValues(
+            worksheet.get_Range(oFirstCell, oLastCell) );
+
+        return (true);
+    }
+
+
+    //*************************************************************************
+    //  Private members
+    //*************************************************************************
+
+    /// true if a call to Range.SpecialCells() is in progress.
+
+    private static Boolean m_bSpecialCellsBeingCalled = false;
 
 
     //*************************************************************************

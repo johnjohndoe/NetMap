@@ -122,14 +122,14 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
             return (false);
         }
 
-        String sDuplicateEdgeStyle = GraphMetricColumn.ExcelStyleNormal;
+        String sDuplicateEdgeStyle = CellStyleNames.GraphMetricGood;
 
         if (oOverallMetrics.EdgesWithDuplicates > 0)
         {
             // The graph density is rendered invalid when the graph has
             // duplicate edges.
 
-            sDuplicateEdgeStyle = GraphMetricColumn.ExcelStyleBad;
+            sDuplicateEdgeStyle = CellStyleNames.GraphMetricBad;
         }
 
         Double dGraphDensity = oOverallMetrics.GraphDensity;
@@ -202,14 +202,16 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
                 TableNames.OverallMetrics,
                 OverallMetricsTableColumnNames.Name,
                 OverallMetricsTableColumnWidths.Name,
-                null, null, aoMetricNameGraphMetricValues
+                null, CellStyleNames.GraphMetricGood,
+                aoMetricNameGraphMetricValues
                 ),
 
             new GraphMetricColumnOrdered(WorksheetNames.OverallMetrics,
                 TableNames.OverallMetrics,
                 OverallMetricsTableColumnNames.Value,
                 OverallMetricsTableColumnWidths.Value,
-                null, null, aoMetricValueGraphMetricValues
+                null, CellStyleNames.GraphMetricGood,
+                aoMetricValueGraphMetricValues
                 ),
             };
 

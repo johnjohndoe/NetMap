@@ -37,12 +37,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </para>
 ///
 /// <para>
-/// Set <see cref="ReadClusters" /> to true to read the cluster worksheets.
+/// Set <see cref="SetEdgeWeightValues" /> to true to read any edge weight
+/// column in the edge table and set the edge weight value on each edge.
 /// </para>
 ///
 /// <para>
-/// Set <see cref="AutoFillWorkbook" /> to true to run the AutoFill feature on
-/// the workbook before the workbook is read.
+/// Set <see cref="ReadClusters" /> to true to read the cluster worksheets.
 /// </para>
 ///
 /// </remarks>
@@ -64,9 +64,10 @@ public class ReadWorkbookContext : Object
         m_bIgnoreVertexLocations = true;
         m_bFillIDColumns = false;
         m_bPopulateVertexWorksheet = false;
+        m_bSetEdgeWeightValues = false;
         m_bReadClusters = false;
-        m_bAutoFillWorkbook = false;
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
+        m_bLayoutOrderSet = false;
         m_oColorConverter2 = new ColorConverter2();
         m_oEdgeWidthConverter = new EdgeWidthConverter();
         m_oVertexRadiusConverter = new VertexRadiusConverter();
@@ -192,6 +193,43 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
+    //  Property: SetEdgeWeightValues
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether to read any edge weight column
+    /// in the edge table and set the edge weight value on the each edge.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read any edge weight column and set the edge weight value on
+    /// each edge.  The default is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If true, the <see cref="ReservedMetadataKeys.EdgeWeight" /> value is
+    /// set on each edge.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    SetEdgeWeightValues
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bSetEdgeWeightValues);
+        }
+
+        set
+        {
+            m_bSetEdgeWeightValues = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: ReadClusters
     //
     /// <summary>
@@ -217,37 +255,6 @@ public class ReadWorkbookContext : Object
         set
         {
             m_bReadClusters = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: AutoFillWorkbook
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the AutoFill feature should be
-    /// run on the workbook before the workbook is read.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to run the AutoFill feature.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    public Boolean
-    AutoFillWorkbook
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_bAutoFillWorkbook);
-        }
-
-        set
-        {
-            m_bAutoFillWorkbook = value;
 
             AssertValid();
         }
@@ -283,6 +290,45 @@ public class ReadWorkbookContext : Object
 
             m_oVertexLocationConverter =
                 new VertexLocationConverter(m_oGraphRectangle);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: LayoutOrderSet
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether a vertex layout order has been
+    /// specified.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if a vertex layout order has been specified.
+    /// </value>
+    ///
+    /// <remarks>
+    /// Vertex layout order is specified with the <see
+    /// cref="ReservedMetadataKeys.SortableLayoutOrder" /> and <see
+    /// cref="ReservedMetadataKeys.SortableLayoutOrderSet" /> keys.  The order
+    /// is used only by layouts derived from <see
+    /// cref="Microsoft.NodeXL.Layouts.SortableLayoutBase" />.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    LayoutOrderSet
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bLayoutOrderSet);
+        }
+
+        set
+        {
+            m_bLayoutOrderSet = value;
 
             AssertValid();
         }
@@ -539,9 +585,10 @@ public class ReadWorkbookContext : Object
         // m_bIgnoreVertexLocations
         // m_bFillIDColumns
         // m_bPopulateVertexWorksheet
+        // m_bSetEdgeWeightValues
         // m_bReadClusters
-        // m_bAutoFillWorkbook
         // m_oGraphRectangle
+        // m_bLayoutOrderSet
         Debug.Assert(m_oColorConverter2 != null);
         Debug.Assert(m_oEdgeWidthConverter != null);
         Debug.Assert(m_oVertexRadiusConverter != null);
@@ -570,17 +617,22 @@ public class ReadWorkbookContext : Object
 
     protected Boolean m_bPopulateVertexWorksheet;
 
+    /// true to read any edge weight column and set the edge weight value on
+    /// each edge.
+
+    protected Boolean m_bSetEdgeWeightValues;
+
     /// true to read the cluster worksheets.
 
     protected Boolean m_bReadClusters;
 
-    /// true to run the AutoFill feature on the workbook.
-
-    protected Boolean m_bAutoFillWorkbook;
-
     /// The rectangle the graph is being drawn within.
 
     protected Rectangle m_oGraphRectangle;
+
+    /// true if a vertex layout order has been specified.
+
+    protected Boolean m_bLayoutOrderSet;
 
     /// Object for converting strings to colors.
 

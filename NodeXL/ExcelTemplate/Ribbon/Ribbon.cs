@@ -8,6 +8,8 @@ using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Visualization.Wpf;
+using Microsoft.NodeXL.ApplicationUtil;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -34,6 +36,17 @@ public partial class Ribbon : OfficeRibbon
     {
         InitializeComponent();
 
+        // Populate the rddLayouts RibbonDropDown.
+
+        m_oLayoutManagerForRibbonDropDown =
+            new LayoutManagerForRibbonDropDown();
+
+        m_oLayoutManagerForRibbonDropDown.AddRibbonDropDownItems(
+            this.rddLayout);
+
+        m_oLayoutManagerForRibbonDropDown.LayoutChanged += new
+            EventHandler(this.m_oLayoutManagerForRibbonDropDown_LayoutChanged);
+
         AssertValid();
     }
 
@@ -57,12 +70,44 @@ public partial class Ribbon : OfficeRibbon
         {
             AssertValid();
 
-            return (chkReadClusters.Checked);
+            return (cbxReadClusters.Checked);
         }
 
         set
         {
-            chkReadClusters.Checked = value;
+            cbxReadClusters.Checked = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AutoReadWorkbook
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the workbook should be read into
+    /// the graph when a visual property is set in the workbook, a scheme is
+    /// applied, or the workbook is autofilled.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the workbook into the graph.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    AutoReadWorkbook
+    {
+        get
+        {
+            AssertValid();
+
+            return (cbxAutoReadWorkbook.Checked);
+        }
+
+        set
+        {
+            cbxAutoReadWorkbook.Checked = value;
 
             AssertValid();
         }
@@ -111,6 +156,155 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Property: Layout
+    //
+    /// <summary>
+    /// Gets or sets the layout type to use.
+    /// </summary>
+    ///
+    /// <value>
+    /// The layout type to use, as a <see cref="LayoutType" />.
+    /// </value>
+    //*************************************************************************
+
+    public LayoutType
+    Layout
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_oLayoutManagerForRibbonDropDown.Layout);
+        }
+
+        set
+        {
+            m_oLayoutManagerForRibbonDropDown.Layout = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadWorkbookButtonText
+    //
+    /// <summary>
+    /// Sets the text for the read workbook button.
+    /// </summary>
+    ///
+    /// <value>
+    /// The text for the read workbook button.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    ReadWorkbookButtonText
+    {
+        set
+        {
+            btnReadWorkbook.Label = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: EnableSetVisualAttributes
+    //
+    /// <summary>
+    /// Enables the "set visual attribute" buttons.
+    /// </summary>
+    ///
+    /// <param name="visualAttributes">
+    /// ORed flags specifying which buttons to enable.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    EnableSetVisualAttributes
+    (
+        VisualAttributes visualAttributes
+    )
+    {
+        AssertValid();
+
+        this.btnSetColor.Enabled =
+            ( (visualAttributes & VisualAttributes.Color) != 0 );
+
+        this.btnSetAlpha.Enabled =
+            ( (visualAttributes & VisualAttributes.Alpha) != 0 );
+
+        this.btnSetEdgeWidth.Enabled =
+            ( (visualAttributes & VisualAttributes.EdgeWidth) != 0 );
+
+        this.mnuSetVertexShape.Enabled =
+            ( (visualAttributes & VisualAttributes.VertexShape) != 0 );
+
+        this.btnSetVertexRadius.Enabled =
+            ( (visualAttributes & VisualAttributes.VertexRadius) != 0 );
+
+        // The mnuSetVisibility menu has a set of child buttons for edge
+        // visibility and another set for vertex visibility.  Show only one
+        // of the sets.
+
+        Boolean bShowSetEdgeVisibility =
+            ( (visualAttributes & VisualAttributes.EdgeVisibility) != 0 );
+
+        Boolean bShowSetVertexVisibility =
+            ( (visualAttributes & VisualAttributes.VertexVisibility) != 0 );
+
+        this.mnuSetVisibility.Enabled =
+            (bShowSetEdgeVisibility || bShowSetVertexVisibility);
+
+        this.btnSetEdgeVisibilityShow.Visible =
+            this.btnSetEdgeVisibilitySkip.Visible =
+            this.btnSetEdgeVisibilityHide.Visible =
+            bShowSetEdgeVisibility;
+
+        this.btnSetVertexVisibilityShowIfInAnEdge.Visible =
+            this.btnSetVertexVisibilitySkip.Visible =
+            this.btnSetVertexVisibilityHide.Visible =
+            this.btnSetVertexVisibilityShow.Visible =
+            bShowSetVertexVisibility;
+    }
+
+    //*************************************************************************
+    //  Property: EnableShowDynamicFilters
+    //
+    /// <summary>
+    /// Sets a flag indicating whether the "show dynamic filters" button should
+    /// be enabled.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to enable the dynamic filters button.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    EnableShowDynamicFilters
+    {
+        set
+        {
+            btnShowDynamicFilters.Enabled = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Event: RunRibbonCommand
+    //
+    /// <summary>
+    /// Occurs when a ribbon command must be executed elsewhere in the
+    /// application.
+    /// </summary>
+    //*************************************************************************
+
+    public event RunRibbonCommandEventHandler RunRibbonCommand;
+
+
+    //*************************************************************************
     //  Property: ThisWorkbook
     //
     /// <summary>
@@ -130,6 +324,55 @@ public partial class Ribbon : OfficeRibbon
             AssertValid();
 
             return (Globals.ThisWorkbook);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetPerWorkbookSettings()
+    //
+    /// <summary>
+    /// Gets a new PerWorkbookSettings object.
+    /// </summary>
+    ///
+    /// <returns>
+    /// A new PerWorkbookSettings object.
+    /// </returns>
+    //*************************************************************************
+
+    protected PerWorkbookSettings
+    GetPerWorkbookSettings()
+    {
+        AssertValid();
+
+        return ( new PerWorkbookSettings(this.ThisWorkbook.InnerObject) );
+    }
+
+    //*************************************************************************
+    //  Method: FireRunRibbonCommandEvent()
+    //
+    /// <summary>
+    /// Fires the <see cref="RunRibbonCommand" /> event if appropriate.
+    /// </summary>
+    ///
+    /// <param name="eRibbonCommand">
+    /// The ribbon command to run.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    FireRunRibbonCommandEvent
+    (
+        RibbonCommand eRibbonCommand
+    )
+    {
+        AssertValid();
+
+        RunRibbonCommandEventHandler oRunRibbonCommand = this.RunRibbonCommand;
+
+        if (oRunRibbonCommand != null)
+        {
+            oRunRibbonCommand( this,
+                new RunRibbonCommandEventArgs(eRibbonCommand) );
         }
     }
 
@@ -158,14 +401,11 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        PerWorkbookSettings oPerWorkbookSettings = new PerWorkbookSettings(
-            this.ThisWorkbook.InnerObject);
-
         // The graph directedness RibbonDropDown should be enabled only if the
         // template the workbook is based on supports changing the
         // directedness.
 
-        Int32 iTemplateVersion = oPerWorkbookSettings.TemplateVersion;
+        Int32 iTemplateVersion = GetPerWorkbookSettings().TemplateVersion;
 
         rddGraphDirectedness.Enabled = (iTemplateVersion >= 51);
 
@@ -178,6 +418,7 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         this.ReadClusters = oGeneralUserSettings.ReadClusters;
+        this.AutoReadWorkbook = oGeneralUserSettings.AutoReadWorkbook;
     }
 
     //*************************************************************************
@@ -210,15 +451,16 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         oGeneralUserSettings.ReadClusters = this.ReadClusters;
+        oGeneralUserSettings.AutoReadWorkbook = this.AutoReadWorkbook;
 
         oGeneralUserSettings.Save();
     }
 
     //*************************************************************************
-    //  Method: btnImportEdgesFromWorkbook_Click()
+    //  Method: btnImportFromMatrixWorkbook_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnImportEdgesFromWorkbook button.
+    /// Handles the Click event on the btnImportFromMatrixWorkbook button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -231,7 +473,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnImportEdgesFromWorkbook_Click
+    btnImportFromMatrixWorkbook_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -239,14 +481,14 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.ImportEdgesFromWorkbook();
+        this.ThisWorkbook.ImportFromMatrixWorkbook();
     }
 
     //*************************************************************************
-    //  Method: btnExportSelectionToNewWorkbook_Click()
+    //  Method: btnImportFromEdgeWorkbook_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnExportSelectionToNewWorkbook button.
+    /// Handles the Click event on the btnImportFromEdgeWorkbook button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -259,7 +501,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnExportSelectionToNewWorkbook_Click
+    btnImportFromEdgeWorkbook_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -267,7 +509,64 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.ExportSelectionToNewWorkbook();
+        this.ThisWorkbook.ImportFromEdgeWorkbook();
+    }
+
+    //*************************************************************************
+    //  Method: btnExportSelectionToNewNodeXLWorkbook_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnExportSelectionToNewNodeXLWorkbook
+    /// button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnExportSelectionToNewNodeXLWorkbook_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ExportSelectionToNewNodeXLWorkbook();
+    }
+
+    //*************************************************************************
+    //  Method: btnExportToNewMatrixWorkbook()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnExportToNewMatrixWorkbook button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnExportToNewMatrixWorkbook_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ExportToNewMatrixWorkbook();
     }
 
     //*************************************************************************
@@ -315,10 +614,11 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: btnToggleGraphVisibility_Click()
+    //  Method: m_oLayoutManagerForRibbonDropDown_LayoutChanged()
     //
     /// <summary>
-    /// Handles the Click event on the btnToggleGraphVisibility button.
+    /// Handles the LayoutChanged event on the
+    /// m_oLayoutManagerForRibbonDropDown.
     /// </summary>
     ///
     /// <param name="sender">
@@ -331,7 +631,35 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnToggleGraphVisibility_Click
+    m_oLayoutManagerForRibbonDropDown_LayoutChanged
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        FireRunRibbonCommandEvent(RibbonCommand.LayoutChanged);
+    }
+
+    //*************************************************************************
+    //  Method: btnReadWorkbook_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnReadWorkbook button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnReadWorkbook_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -339,12 +667,40 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        // Note: The button should actually be a checkbox.  However, no event
-        // is fired when the user manually closes the ActionsPane, so it's not
-        // possible to update a checkbox when he does so.  Using a button that
-        // toggles the visibility of the action pane is a workaround.
+        // Make sure the graph is showing, then tell the TaskPane to read the
+        // workbook.
 
-        this.ThisWorkbook.ToggleGraphVisibility();
+        this.ThisWorkbook.ShowGraph();
+
+        FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
+    }
+
+    //*************************************************************************
+    //  Method: btnShowDynamicFilters_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnShowDynamicFilters button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnShowDynamicFilters_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        FireRunRibbonCommandEvent(RibbonCommand.ShowDynamicFilters);
     }
 
     //*************************************************************************
@@ -404,10 +760,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: btnCustomizeVertexMenu_Click()
+    //  Method: btnShowGraphMetrics_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnCustomizeVertexMenu button.
+    /// Handles the Click event on the btnShowGraphMetrics button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -420,7 +776,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnCustomizeVertexMenu_Click
+    btnShowGraphMetrics_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -428,63 +784,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.CustomizeVertexMenu(true);
-    }
-
-    //*************************************************************************
-    //  Method: btnEditGraphMetricUserSettings_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnEditGraphMetricUserSettings button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnEditGraphMetricUserSettings_Click
-    (
-        object sender,
-        RibbonControlEventArgs e
-    )
-    {
-        AssertValid();
-
-        this.ThisWorkbook.EditGraphMetricUserSettings();
-    }
-
-    //*************************************************************************
-    //  Method: btnCalculateGraphMetrics_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnCalculateGraphMetrics button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    spltCalculateGraphMetrics_Click
-    (
-        object sender,
-        RibbonControlEventArgs e
-    )
-    {
-        AssertValid();
-
-        this.ThisWorkbook.CalculateGraphMetrics();
+        this.ThisWorkbook.ShowGraphMetrics();
     }
 
     //*************************************************************************
@@ -519,7 +819,7 @@ public partial class Ribbon : OfficeRibbon
     //  Method: btnCreateSubgraphImages_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnCreateSubgraphImages button.
+    /// Handles the Click event on the btnCreateSubgraphImages Button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -541,6 +841,48 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         this.ThisWorkbook.CreateSubgraphImages();
+    }
+
+    //*************************************************************************
+    //  Method: btnDeleteSubgraphThumbnails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnDeleteSubgraphThumbnails Button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnDeleteSubgraphThumbnails_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        if ( MessageBox.Show(
+
+                "This will delete any subgraph thumbnails in the Vertices"
+                + " worksheet.  It will not delete any subgraph image files"
+                + " you saved in a folder."
+                + "\r\n\r\n"
+                + "Do you want to delete subgraph thumbnails?"
+                ,
+                ApplicationUtil.ApplicationName, MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
+                == DialogResult.Yes
+            )
+        {
+            this.ThisWorkbook.DeleteSubgraphThumbnails();
+        }
     }
 
     //*************************************************************************
@@ -600,10 +942,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: btnEditAutoFillUserSettings_Click()
+    //  Method: btnAutoFillWorkbook_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnEditAutoFillUserSettings button.
+    /// Handles the Click event on the btnAutoFillWorkbook button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -616,7 +958,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnEditAutoFillUserSettings_Click
+    btnAutoFillWorkbook_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -624,7 +966,186 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.EditAutoFillUserSettings();
+        this.ThisWorkbook.AutoFillWorkbook();
+    }
+
+    //*************************************************************************
+    //  Method: btnAutoFillWorkbookWithScheme_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnAutoFillWorkbookWithScheme button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnAutoFillWorkbookWithScheme_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.AutoFillWorkbookWithScheme();
+    }
+
+    //*************************************************************************
+    //  Method: btnSetVisualAttribute_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on several of the "set visual attribute"
+    /// buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This handles the click event for all "set visual attribute" buttons
+    /// for which the visual attribute value isn't known yet and must be
+    /// obtained from the user.
+    /// </remarks>
+    //*************************************************************************
+
+    private void
+    btnSetVisualAttribute_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // A VisualAttributes flag is stored in the Tag of each visual
+        // attribute button.
+
+        Debug.Assert(sender is RibbonComponent);
+        Debug.Assert( ( (RibbonComponent)sender ).Tag is VisualAttributes );
+
+        this.ThisWorkbook.SetVisualAttribute(
+            (VisualAttributes)( (RibbonComponent)sender ).Tag, null);
+    }
+
+    //*************************************************************************
+    //  Method: btnSetEdgeVisibility_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on all of the "set edge visibility" buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnSetEdgeVisibility_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // An EdgeVisibility value is stored in the Tag of each "set edge
+        // visibility" button.
+
+        Debug.Assert(sender is RibbonComponent);
+
+        Debug.Assert( ( (RibbonComponent)sender ).Tag is
+            EdgeWorksheetReader.Visibility );
+
+        this.ThisWorkbook.SetVisualAttribute(VisualAttributes.EdgeVisibility,
+            (EdgeWorksheetReader.Visibility)( (RibbonComponent)sender ).Tag);
+    }
+
+    //*************************************************************************
+    //  Method: btnSetVertexVisibility_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on all of the "set vertex visibility" buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnSetVertexVisibility_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // An VertexVisibility value is stored in the Tag of each "set vertex
+        // visibility" button.
+
+        Debug.Assert(sender is RibbonComponent);
+
+        Debug.Assert( ( (RibbonComponent)sender ).Tag is
+            VertexWorksheetReader.Visibility );
+
+        this.ThisWorkbook.SetVisualAttribute(VisualAttributes.VertexVisibility,
+            (VertexWorksheetReader.Visibility)( (RibbonComponent)sender ).Tag);
+    }
+
+    //*************************************************************************
+    //  Method: btnSetVertexShape_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on all of the "set vertex shape" buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnSetVertexShape_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // A VertexShape value is stored in the Tag of each "set vertex shape"
+        // button.
+
+        Debug.Assert(sender is RibbonComponent);
+        Debug.Assert( ( (RibbonComponent)sender ).Tag is VertexShape );
+
+        this.ThisWorkbook.SetVisualAttribute(VisualAttributes.VertexShape,
+            (VertexShape)( (RibbonComponent)sender ).Tag);
     }
 
     //*************************************************************************
@@ -770,6 +1291,265 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: mnuShowColumnGroups_ItemsLoading()
+    //
+    /// <summary>
+    /// Handles the ItemsLoading event on the mnuShowColumnGroups RibbonMenu.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    mnuShowColumnGroups_ItemsLoading
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        PerWorkbookSettings oPerWorkbookSettings = GetPerWorkbookSettings();
+
+        // Note that the cbxShowVisualAttributesColumnGroups RibbonCheckBox
+        // controls the visibility of two column groups:
+        // ColumnGroup.EdgeVisualAttributes and
+        // ColumnGroup.VertexVisualAttributes.
+
+        cbxShowVisualAttributesColumnGroups.Checked =
+            oPerWorkbookSettings.GetColumnGroupVisibility(
+                ColumnGroup.EdgeVisualAttributes);
+
+        cbxShowVertexLabelsColumnGroup.Checked =
+            oPerWorkbookSettings.GetColumnGroupVisibility(
+                ColumnGroup.VertexLabels);
+
+        cbxShowVertexLayoutColumnGroup.Checked =
+            oPerWorkbookSettings.GetColumnGroupVisibility(
+                ColumnGroup.VertexLayout);
+
+        cbxShowVertexGraphMetricsColumnGroup.Checked =
+            oPerWorkbookSettings.GetColumnGroupVisibility(
+                ColumnGroup.VertexGraphMetrics);
+
+        // Note that the cbxShowOtherColumns RibbonCheckBox controls the
+        // visibility of two column groups: ColumnGroup.EdgeOtherColumns and
+        // ColumnGroup.VertexOtherColumns.
+
+        cbxShowOtherColumns.Checked =
+            oPerWorkbookSettings.GetColumnGroupVisibility(
+                ColumnGroup.EdgeOtherColumns);
+
+        // This is required to force the ItemsLoading event to fire the next
+        // time the mnuShowColumnGroups menu is opened.
+
+        this.RibbonUI.InvalidateControl(this.mnuShowColumnGroups.Name);
+    }
+
+    //*************************************************************************
+    //  Method: cbxShowVisualASttributesColumnGroup_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowVisualASttributesColumnGroup
+    /// RibbonCheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowVisualAttributesColumnGroups_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        Boolean bShow = this.cbxShowVisualAttributesColumnGroups.Checked;
+        ThisWorkbook oThisWorkbook = this.ThisWorkbook;
+
+        oThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeVisualAttributes,
+            bShow, false);
+
+        oThisWorkbook.ShowColumnGroup(ColumnGroup.VertexVisualAttributes,
+            bShow, false);
+    }
+
+    //*************************************************************************
+    //  Method: cbxShowVertexLabelsColumnGroup_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowVertexLabelsColumnGroup
+    /// RibbonCheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowVertexLabelsColumnGroup_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexLabels,
+            this.cbxShowVertexLabelsColumnGroup.Checked, true);
+    }
+
+    //*************************************************************************
+    //  Method: cbxShowVertexLayoutColumnGroup_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowVertexLayoutColumnGroup
+    /// RibbonCheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowVertexLayoutColumnGroup_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexLayout,
+            this.cbxShowVertexLayoutColumnGroup.Checked, true);
+    }
+
+    //*************************************************************************
+    //  Method: cbxShowVertexGraphMetricsColumnGroup_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowVertexGraphMetricsColumnGroup
+    /// RibbonCheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowVertexGraphMetricsColumnGroup_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexGraphMetrics,
+            this.cbxShowVertexGraphMetricsColumnGroup.Checked, true);
+    }
+
+    //*************************************************************************
+    //  Method: cbxShowOtherColumns_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowOtherColumns RibbonCheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowOtherColumns_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        Boolean bShow = this.cbxShowOtherColumns.Checked;
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeOtherColumns,
+            bShow, false);
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexOtherColumns,
+            bShow, false);
+    }
+
+    //*************************************************************************
+    //  Method: btnShowOrHideAllColumnGroups_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnShowAllColumnGroups and
+    /// btnHideAllColumnGroups buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnShowOrHideAllColumnGroups_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // This method handles the Click event for two buttons.  The buttons
+        // are distinguished by their Boolean Tags, which specify true to show
+        // or false to hide.
+
+        Debug.Assert(sender is RibbonButton);
+        RibbonButton oButton = (RibbonButton)sender;
+        Debug.Assert(oButton.Tag is Boolean);
+
+        this.ThisWorkbook.ShowOrHideAllColumnGroups( (Boolean)oButton.Tag );
+    }
+
+    //*************************************************************************
     //  Method: btnAbout_Click()
     //
     /// <summary>
@@ -813,7 +1593,7 @@ public partial class Ribbon : OfficeRibbon
     public void
     AssertValid()
     {
-        // (Do nothing.)
+        Debug.Assert(m_oLayoutManagerForRibbonDropDown != null);
     }
 
 
@@ -821,7 +1601,41 @@ public partial class Ribbon : OfficeRibbon
     //  Protected fields
     //*************************************************************************
 
-    // (None.)
+    /// Helper objects for managing layouts.
+
+    protected LayoutManagerForRibbonDropDown m_oLayoutManagerForRibbonDropDown;
+}
+
+
+//*****************************************************************************
+//  Enum: RibbonCommand
+//
+/// <summary>
+/// Specifies a command run from the NodeXL ribbon.
+/// </summary>
+//*****************************************************************************
+
+public enum
+RibbonCommand
+{
+    /// <summary>
+    /// Show the dynamic filters dialog.
+    /// </summary>
+
+    ShowDynamicFilters,
+
+    /// <summary>
+    /// The selected layout has changed.  The new layout can be obtained from
+    /// the <see cref="Ribbon.Layout" /> property.
+    /// </summary>
+
+    LayoutChanged,
+
+    /// <summary>
+    /// The workbook should be read into the graph pane.
+    /// </summary>
+
+    ReadWorkbook,
 }
 
 }

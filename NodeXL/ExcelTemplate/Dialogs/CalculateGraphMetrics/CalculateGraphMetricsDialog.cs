@@ -255,6 +255,11 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
         {
             oGraphMetricWriter.WriteGraphMetricColumnsToWorkbook(
                 aoGraphMetricColumns, m_oWorkbook);
+
+            // Let the user know that graph metrics have been calculated.
+
+            oGraphMetricWriter.ActivateRelevantWorksheet(
+                aoGraphMetricColumns, m_oWorkbook);
         }
         catch (Exception oException)
         {
@@ -396,7 +401,7 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 
         const String Message =
             "The workbook contains duplicate edges that may cause some of"
-            + " the graph metrics to be inaccurate.  Do you want to calculate"
+            + " the graph metrics to be inaccurate.  Do you want to compute"
             + " graph metrics anyway?"
             + "\r\n\r\n"
             + "If you answer Yes, any inaccurate metrics will be highlighted"

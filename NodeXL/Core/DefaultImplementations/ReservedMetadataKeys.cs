@@ -42,7 +42,8 @@ public static class ReservedMetadataKeys : Object
     public static readonly Char FirstChar = '~';
 
     /// <summary>
-    /// Key added to an edge to specify an edge weight.
+    /// Key added to an edge to specify an edge weight.  The key's value is a
+    /// Double.
     /// </summary>
 
     public static readonly String EdgeWeight =
@@ -230,6 +231,38 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
+    //  Keys used by SortableLayoutBase
+    //*************************************************************************
+
+    /// <summary>
+    /// To specify the order in which the vertices are laid out in the graph
+    /// when using a layout derived from SortableLayoutBase, add the <see
+    /// cref="SortableLayoutOrder" /> key to every vertex.  The key's value is
+    /// of type Single.  You must also add the <see
+    /// cref="SortableLayoutOrderSet" /> key to the graph.
+    ///
+    /// <para>
+    /// If the <see cref="SortableLayoutOrder" /> key is added to some vertices
+    /// but not others, an exception is thrown.
+    /// </para>
+    ///
+    /// </summary>
+
+    public static readonly String SortableLayoutOrder =
+        FirstChar + "SLOrder";
+
+    /// <summary>
+    /// Key added to the graph to specify that the vertex layout order has been
+    /// set on each vertex with the <see cref="SortableLayoutOrder" /> key.
+    /// The value of the <see cref="SortableLayoutOrderSet" /> key is null.
+    /// This key is used only by layouts derived from SortableLayoutBase.
+    /// </summary>
+
+    public static readonly String SortableLayoutOrderSet =
+        FirstChar + "SLOrderSpecified";
+
+
+    //*************************************************************************
     //  Keys used by several layouts
     //*************************************************************************
 
@@ -257,55 +290,33 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
-    //  Keys used by CircleLayout
+    //  Keys used by PolarLayout
     //*************************************************************************
 
     /// <summary>
-    /// Key added to the graph after it has been completely drawn.  The key's
-    /// value is null.
+    /// Key added to a vertex to specify its location in polar coordinates.
+    /// The key's value is a SinglePolarCoordinates.
+    ///
+    /// <para>
+    /// The SinglePolarCoordinates.R value should be between 0.0 and 1.0.  0.0
+    /// represents the origin and 1.0 represents the maximum distance from the
+    /// origin, which is the smaller of half the graph rectangle's width or
+    /// height.  R values less than 0.0 are the same as 0.0, and R values
+    /// greater than 1.0 are the same as 1.0.
+    /// </para>
+    ///
+    /// <para>
+    /// The SinglePolarCoordinates.Angle value should be an angle in degrees,
+    /// where 0.0 represents points on the positive x-axis and 90.0 represents
+    /// points on the positive y-axis.  Any angle is valid.  361.0 degrees is
+    /// the same as 1.0 degree, for example, and -1.0 degree is the same as
+    /// 359.0 degrees.
+    /// </para>
+    ///
     /// </summary>
 
-    public static readonly String CircleLayoutCircleDrawn =
-        FirstChar + "CLCircleDrawn";
-
-
-    //*************************************************************************
-    //  Keys used by SpiralLayout
-    //*************************************************************************
-
-    /// <summary>
-    /// Key added to the graph after it has been completely drawn.  The key's
-    /// value is null.
-    /// </summary>
-
-    public static readonly String SpiralLayoutSpiralDrawn =
-        FirstChar + "SLSpiralDrawn";
-
-
-    //*************************************************************************
-    //  Keys used by SinusoidLayout
-    //*************************************************************************
-
-    /// <summary>
-    /// Key added to the graph after it has been completely drawn.  The key's
-    /// value is null.
-    /// </summary>
-
-    public static readonly String SinusoidLayoutSinusoidDrawn =
-        FirstChar + "SLSinusoidDrawn";
-
-
-    //*************************************************************************
-    //  Keys used by GridLayout
-    //*************************************************************************
-
-    /// <summary>
-    /// Key added to the graph after it has been completely drawn.  The key's
-    /// value is null.
-    /// </summary>
-
-    public static readonly String GridLayoutGridDrawn =
-        FirstChar + "GLGridDrawn";
+    public static readonly String PolarLayoutCoordinates =
+        FirstChar + "PLCoordinates";
 
 
     //*************************************************************************

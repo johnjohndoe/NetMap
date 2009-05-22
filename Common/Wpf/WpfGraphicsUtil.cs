@@ -107,33 +107,6 @@ public static class WpfGraphicsUtil
     }
 
     //*************************************************************************
-    //  Method: KnownColorToWpfColor()
-    //
-    /// <summary>
-    /// Converts a System.Drawing.KnownColor to a System.Windows.Media.Color.
-    /// </summary>
-    ///
-    /// <param name="knownColor">
-    /// The System.Drawing.KnownColor to convert.
-    /// </param>
-    ///
-    /// <returns>
-    /// <paramref name="knownColor" /> converted to a
-    /// System.Windows.Media color.
-    /// </returns>
-    //*************************************************************************
-
-    public static System.Windows.Media.Color
-    KnownColorToWpfColor
-    (
-        System.Drawing.KnownColor knownColor
-    )
-    {
-        return ( ColorToWpfColor(
-            System.Drawing.Color.FromKnownColor(knownColor) ) );
-    }
-
-    //*************************************************************************
     //  Method: VisualToBitmap()
     //
     /// <summary>
@@ -144,11 +117,11 @@ public static class WpfGraphicsUtil
     /// The Visual to render.
     /// </param>
     ///
-    /// <param name="bitmapWidth">
+    /// <param name="bitmapWidthPx">
     /// Bitmap width, in pixels.
     /// </param>
     ///
-    /// <param name="bitmapHeight">
+    /// <param name="bitmapHeightPx">
     /// Bitmap height, in pixels.
     /// </param>
     ///
@@ -161,16 +134,16 @@ public static class WpfGraphicsUtil
     VisualToBitmap
     (
         Visual visual,
-        Int32 bitmapWidth,
-        Int32 bitmapHeight
+        Int32 bitmapWidthPx,
+        Int32 bitmapHeightPx
     )
     {
         Debug.Assert(visual != null);
-        Debug.Assert(bitmapWidth > 0);
-        Debug.Assert(bitmapHeight > 0);
+        Debug.Assert(bitmapWidthPx > 0);
+        Debug.Assert(bitmapHeightPx > 0);
 
         RenderTargetBitmap oRenderTargetBitmap = new RenderTargetBitmap(
-            bitmapWidth, bitmapHeight, 96, 96, PixelFormats.Default);
+            bitmapWidthPx, bitmapHeightPx, 96, 96, PixelFormats.Default);
 
         oRenderTargetBitmap.Render(visual);
 

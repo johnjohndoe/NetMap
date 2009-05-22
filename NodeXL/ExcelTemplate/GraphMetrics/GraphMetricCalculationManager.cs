@@ -520,7 +520,7 @@ public class GraphMetricCalculationManager : Object
 
         oBackgroundWorker.ReportProgress(100,
             new GraphMetricProgress(
-                "Writing results to the workbook.",
+                "Inserting metrics into the workbook.",
                 true)
             );
 
@@ -601,7 +601,7 @@ public class GraphMetricCalculationManager : Object
         {
             // There are two sources of this event: the graph metric
             // calculators in the Algorithms namespace, which set e.UserState
-            // to a simple string ("Calculating vertex degrees," for example);
+            // to a simple string ("Computing vertex degrees," for example);
             // and this GraphMetricCalculationManager class, which sets
             // e.UserState to a GraphMetricProgress object.  In the first case,
             // wrap the simple string in a new GraphMetricProgress object.

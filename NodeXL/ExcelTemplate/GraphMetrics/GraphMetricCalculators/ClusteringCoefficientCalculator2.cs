@@ -139,15 +139,15 @@ public class ClusteringCoefficientCalculator2 : GraphMetricCalculatorBase2
             }
         }
 
-        String sStyle = null;
+        String sStyle = CellStyleNames.GraphMetricGood;
 
         if (calculateGraphMetricsContext.DuplicateEdgeDetector.
             GraphContainsDuplicateEdges)
         {
             // The calculations are rendered invalid if the graph has duplicate
-            // edges, so warn the user with Excel's "bad" pre-defined style.
+            // edges, so warn the user with a "bad" cell style.
 
-            sStyle = GraphMetricColumn.ExcelStyleBad;
+            sStyle = CellStyleNames.GraphMetricBad;
         }
 
         graphMetricColumns = new GraphMetricColumn [] {

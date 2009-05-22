@@ -74,7 +74,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CalculateGraphMetricsDialog";
-            this.Text = "Calculate Graph Metrics";
+            this.Text = "Computing Metrics";
             this.ResumeLayout(false);
 
         }

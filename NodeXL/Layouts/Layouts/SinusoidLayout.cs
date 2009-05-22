@@ -257,6 +257,11 @@ public class SinusoidLayout : SortableLayoutBase
         Debug.Assert(verticesToLayOut != null);
         AssertValid();
 
+        if (backgroundWorker != null && backgroundWorker.CancellationPending)
+        {
+            return (false);
+        }
+
         Int32 iVertices = verticesToLayOut.Count;
 
         Debug.Assert(iVertices != 0);
@@ -282,67 +287,24 @@ public class SinusoidLayout : SortableLayoutBase
         Single fXorYOffset =
             m_bIsHorizontal ? oRectangle.Left : oRectangle.Top;
 
-        // The layout is animated the first time the graph is drawn by
-        // uniformly increasing the sine wave's amplitude with each iteration.
+        Double dXorY = 0;
 
-        Int32 iIterations = AnimationIterations;
-
-        if ( graph.ContainsKey(
-            ReservedMetadataKeys.SinusoidLayoutSinusoidDrawn) )
+        foreach (IVertex oVertex in verticesToLayOut)
         {
-            // The graph has been completely drawn before.  Don't animate it
-            // this time.
+            if ( !VertexIsLocked(oVertex) )
+            {
+                Single fYorX = fYorXOffset -
+                    (Single)( dAmplitude * Math.Sin(dXorY * dSinFactor) );
 
-            iIterations = 1;
+                oVertex.Location = m_bIsHorizontal ?
+
+                    new PointF( (Single)dXorY + fXorYOffset, fYorX)
+                    :
+                    new PointF(fYorX, (Single)dXorY + fXorYOffset);
+            }
+
+            dXorY += dXorYIncrement;
         }
-
-        for (Int32 i = 0; i < iIterations; i++)
-        {
-            if (backgroundWorker != null &&
-                backgroundWorker.CancellationPending)
-            {
-                return (false);
-            }
-
-            Double dAmplitudeThisIteration = (m_bIsHorizontal ? 1.0 : -1.0) *
-                dAmplitude * ( (Double)i + 1) / (Double)iIterations;
-
-            Double dXorY = 0;
-
-            // Set the location on each vertex.
-
-            foreach (IVertex oVertex in verticesToLayOut)
-            {
-                if ( !VertexIsLocked(oVertex) )
-                {
-                    Single fYorX = fYorXOffset -
-
-                        (Single)( dAmplitudeThisIteration *
-                            Math.Sin(dXorY * dSinFactor) )
-                            ;
-
-                    oVertex.Location = m_bIsHorizontal ?
-
-                        new PointF( (Single)dXorY + fXorYOffset, fYorX) :
-
-                        new PointF(fYorX, (Single)dXorY + fXorYOffset);
-                }
-
-                dXorY += dXorYIncrement;
-            }
-
-            System.Threading.Thread.Sleep(AnimationSleepMs);
-
-            if (backgroundWorker != null)
-            {
-                FireLayOutGraphIterationCompleted();
-            }
-        }
-
-        // Mark the graph as having been completely drawn.
-
-        graph.SetValue(ReservedMetadataKeys.SinusoidLayoutSinusoidDrawn,
-            null);
 
         return (true);
     }
@@ -366,20 +328,6 @@ public class SinusoidLayout : SortableLayoutBase
         // m_bIsHorizontal
         Debug.Assert(m_dCycleLength > 0);
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number of iterations used to animate the graph the first time it is
-    /// drawn.
-
-    protected const Int32 AnimationIterations = 10;
-
-    /// Number of milliseconds to sleep between animation iterations.
-
-    protected const Int32 AnimationSleepMs = 10;
 
 
     //*************************************************************************

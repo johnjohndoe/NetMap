@@ -37,7 +37,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </description></item>
 ///
 /// <item><description>
-/// Modify <see cref="GraphMetricUserSettingsDialog" />.
+/// Modify <see cref="GraphMetricsDialog" />.
 /// </description></item>
 ///
 /// <item><description>

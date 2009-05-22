@@ -333,7 +333,7 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
     {
         AssertValid();
 
-        this.ShowInformation(AutoFillUserSettingsDialog.IgnoreOutliersMessage);
+        this.ShowInformation(AutoFillWorkbookDialog.IgnoreOutliersMessage);
     }
 
     //*************************************************************************

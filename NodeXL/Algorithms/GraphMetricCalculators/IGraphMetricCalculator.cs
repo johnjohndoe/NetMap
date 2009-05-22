@@ -106,7 +106,7 @@ public interface IGraphMetricCalculator
     /// It should also periodically report progress by calling the
     /// BackgroundWorker.<see
     /// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
-    /// second argument must be a string in the format "Calculating
+    /// second argument must be a string in the format "Computing
     /// [GraphMetricDescription]."
     /// </para>
     ///

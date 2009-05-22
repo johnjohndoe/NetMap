@@ -37,7 +37,7 @@ public class EmailParticipantPair : ParticipantPair
     /// The second participant, as an email address.  Can't be null or empty.
     /// </param>
     ///
-    /// <param name="tieStrength">
+    /// <param name="edgeWeight">
     /// The strength of the tie between the participants.  Must be
     /// non-negative.
     /// </param>
@@ -47,11 +47,11 @@ public class EmailParticipantPair : ParticipantPair
     (
         String participant1,
         String participant2,
-        Int32 tieStrength
+        Int32 edgeWeight
     )
     : base(participant1, participant2)
     {
-        m_iTieStrength = tieStrength;
+        m_iEdgeWeight = edgeWeight;
 
         AssertValid();
     }
@@ -79,7 +79,7 @@ public class EmailParticipantPair : ParticipantPair
     }
 
     //*************************************************************************
-    //  Property: TieStrength
+    //  Property: EdgeWeight
     //
     /// <summary>
     /// Gets or sets the strength of the tie between the participants.
@@ -92,18 +92,18 @@ public class EmailParticipantPair : ParticipantPair
     //*************************************************************************
 
     public Int32
-    TieStrength
+    EdgeWeight
     {
         get
         {
             AssertValid();
 
-            return (m_iTieStrength);
+            return (m_iEdgeWeight);
         }
 
         set
         {
-            m_iTieStrength = value;
+            m_iEdgeWeight = value;
 
             AssertValid();
         }
@@ -125,7 +125,7 @@ public class EmailParticipantPair : ParticipantPair
     {
         base.AssertValid();
 
-        Debug.Assert(m_iTieStrength >= 0);
+        Debug.Assert(m_iEdgeWeight >= 0);
     }
 
 
@@ -135,7 +135,7 @@ public class EmailParticipantPair : ParticipantPair
 
     /// The strength of the tie between the participants.
 
-    protected Int32 m_iTieStrength;
+    protected Int32 m_iEdgeWeight;
 }
 
 }

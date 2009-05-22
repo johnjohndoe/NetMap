@@ -100,6 +100,9 @@
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\PolarCoordinates.cs">
+      <Link>Util\PolarCoordinates.cs</Link>
+    </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,17 +118,24 @@
     <Compile Include="Layouts\GridLayout.cs" />
     <Compile Include="Layouts\LayoutBase.cs" />
     <Compile Include="Layouts\LayOutGraphAsyncArguments.cs" />
+    <Compile Include="Layouts\NullLayout.cs" />
+    <Compile Include="Layouts\PolarLayout.cs" />
     <Compile Include="Layouts\RandomLayout.cs" />
     <Compile Include="Layouts\SinusoidLayout.cs" />
     <Compile Include="Layouts\SortableLayoutBase.cs" />
     <Compile Include="Layouts\SpiralLayout.cs" />
     <Compile Include="Layouts\SugiyamaLayout.cs" />
     <Compile Include="Util\LayoutContext.cs" />
+    <Compile Include="Util\LayoutSaver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
+      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

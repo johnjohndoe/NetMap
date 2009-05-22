@@ -624,9 +624,8 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
 
                 TableImagePopulator.PopulateColumnWithImages(m_oWorkbook,
                     WorksheetNames.Vertices, TableNames.Vertices,
-                    VertexTableColumnNames.SubgraphImage, 2,
-                    VertexTableColumnNames.VertexName,
-                    oTemporaryImages
+                    VertexTableColumnNames.SubgraphImage,
+                    VertexTableColumnNames.VertexName, oTemporaryImages
                     );
 
                 lblStatus.Text = sLastStatusFromSubgraphImageCreator;

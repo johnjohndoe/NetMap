@@ -49,12 +49,12 @@ protected struct PajekEdgeData
     (
         Int32 firstVertexNumber,
         Int32 secondVertexNumber,
-        Single weight
+        Double weight
     )
     {
         m_iFirstVertexNumber = firstVertexNumber;
         m_iSecondVertexNumber = secondVertexNumber;
-        m_fWeight = weight;
+        m_dWeight = weight;
 
         AssertValid();
     }
@@ -117,14 +117,14 @@ protected struct PajekEdgeData
     /// </value>
     //*************************************************************************
 
-    public Single
+    public Double
     Weight
     {
         get
         {
             AssertValid();
 
-            return (m_fWeight);
+            return (m_dWeight);
         }
     }
 
@@ -144,7 +144,7 @@ protected struct PajekEdgeData
     {
         Debug.Assert(m_iFirstVertexNumber > 0);
         Debug.Assert(m_iSecondVertexNumber > 0);
-        // m_fWeight
+        // m_dWeight
     }
 
 
@@ -162,7 +162,7 @@ protected struct PajekEdgeData
 
     /// Edge weight.
 
-    private Single m_fWeight;
+    private Double m_dWeight;
 }
 
 }

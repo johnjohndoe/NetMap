@@ -94,10 +94,31 @@ public class ClusterWorksheetReader : WorksheetReaderBase
                 TableNames.ClusterVertices, out oClusterVertexTable)
             )
         {
-            // Add the cluster data in the tables to the graph.
+            // The code that reads the tables can handle hidden rows, but not
+            // hidden columns.  Temporarily show all hidden columns in the
+            // table.
 
-            AddClusterTablesToGraph(oClusterTable, oClusterVertexTable,
-                readWorkbookContext, graph);
+            ExcelHiddenColumns oHiddenClusterColumns =
+                ExcelColumnHider.ShowHiddenColumns(oClusterTable);
+
+            ExcelHiddenColumns oHiddenClusterVertexColumns =
+                ExcelColumnHider.ShowHiddenColumns(oClusterVertexTable);
+
+            try
+            {
+                // Add the cluster data in the tables to the graph.
+
+                AddClusterTablesToGraph(oClusterTable, oClusterVertexTable,
+                    readWorkbookContext, graph);
+            }
+            finally
+            {
+                ExcelColumnHider.RestoreHiddenColumns(oClusterTable,
+                    oHiddenClusterColumns);
+
+                ExcelColumnHider.RestoreHiddenColumns(oClusterVertexTable,
+                    oHiddenClusterVertexColumns);
+            }
         }
     }
 

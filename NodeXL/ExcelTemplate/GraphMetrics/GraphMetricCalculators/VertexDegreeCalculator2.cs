@@ -134,7 +134,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
             new Dictionary<Int32, Int32>();
 
         // Calculate the degrees for each vertex using the
-        // VertexDegreeCalculator class in the Algorithms namespace, which
+		// VertexDegreeCalculator class in the Algorithms namespace, which
         // knows nothing about Excel.
         //
         // For simplicity, all degree metrics (in-degree, out-degree, and
@@ -188,94 +188,11 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
                 oInDegreeGraphMetricValues.Count - 1);
         }
 
-        // The following lists correspond to edge worksheet columns.  There
-        // is a set of three lists for each of the edge's two vertices.
-
-        List<GraphMetricValueWithID> oVertex1InDegreeGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        List<GraphMetricValueWithID> oVertex1OutDegreeGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        List<GraphMetricValueWithID> oVertex1DegreeGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        List<GraphMetricValueWithID> oVertex2InDegreeGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        List<GraphMetricValueWithID> oVertex2OutDegreeGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        List<GraphMetricValueWithID> oVertex2DegreeGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        // Loop through the edges.
-
-        foreach (IEdge oEdge in graph.Edges)
-        {
-            if ( !TryGetRowID(oEdge, out iRowID) )
-            {
-                continue;
-            }
-
-            IVertex [] oEdgeVertices = oEdge.Vertices;
-            IVertex oVertex1 = oEdgeVertices[0];
-            IVertex oVertex2 = oEdgeVertices[1];
-            Int32 iIndex;
-
-            if ( oVertexIDDictionary.TryGetValue(oVertex1.ID, out iIndex) )
-            {
-                oVertex1InDegreeGraphMetricValues.Add(
-                    new GraphMetricValueWithID(
-                        iRowID,
-                        oInDegreeGraphMetricValues[iIndex].Value)
-                        );
-
-                oVertex1OutDegreeGraphMetricValues.Add(
-                    new GraphMetricValueWithID(
-                        iRowID,
-                        oOutDegreeGraphMetricValues[iIndex].Value)
-                        );
-
-                oVertex1DegreeGraphMetricValues.Add(
-                    new GraphMetricValueWithID(
-                        iRowID,
-                        oDegreeGraphMetricValues[iIndex].Value)
-                        );
-            }
-
-            if ( oVertexIDDictionary.TryGetValue(oVertex2.ID, out iIndex) )
-            {
-                oVertex2InDegreeGraphMetricValues.Add(
-                    new GraphMetricValueWithID(
-                        iRowID,
-                        oInDegreeGraphMetricValues[iIndex].Value)
-                        );
-
-                oVertex2OutDegreeGraphMetricValues.Add(
-                    new GraphMetricValueWithID(
-                        iRowID,
-                        oOutDegreeGraphMetricValues[iIndex].Value)
-                        );
-
-                oVertex2DegreeGraphMetricValues.Add(
-                    new GraphMetricValueWithID(
-                        iRowID,
-                        oDegreeGraphMetricValues[iIndex].Value)
-                        );
-            }
-        }
-
         // Figure out which columns to add.
 
         graphMetricColumns = FilterGraphMetricColumns(graph,
-            calculateGraphMetricsContext,
-            oInDegreeGraphMetricValues, oOutDegreeGraphMetricValues,
-            oDegreeGraphMetricValues, oVertex1InDegreeGraphMetricValues,
-            oVertex1OutDegreeGraphMetricValues,
-            oVertex1DegreeGraphMetricValues, oVertex2InDegreeGraphMetricValues,
-            oVertex2OutDegreeGraphMetricValues, oVertex2DegreeGraphMetricValues
-            );
+            calculateGraphMetricsContext, oInDegreeGraphMetricValues,
+			oOutDegreeGraphMetricValues, oDegreeGraphMetricValues);
 
         return (true);
     }
@@ -310,36 +227,6 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
     /// worksheet.
     /// </param>
     ///
-    /// <param name="oVertex1InDegreeGraphMetricValues">
-    /// List of GraphMetricValue objects for the vertex 1 in-degree column on
-    /// the edge worksheet.
-    /// </param>
-    ///
-    /// <param name="oVertex1OutDegreeGraphMetricValues">
-    /// List of GraphMetricValue objects for the vertex 1 out-degree column on
-    /// the edge worksheet.
-    /// </param>
-    ///
-    /// <param name="oVertex1DegreeGraphMetricValues">
-    /// List of GraphMetricValue objects for the vertex 1 degree column on the
-    /// edge worksheet.
-    /// </param>
-    ///
-    /// <param name="oVertex2InDegreeGraphMetricValues">
-    /// List of GraphMetricValue objects for the vertex 2 in-degree column on
-    /// the edge worksheet.
-    /// </param>
-    ///
-    /// <param name="oVertex2OutDegreeGraphMetricValues">
-    /// List of GraphMetricValue objects for the vertex 2 out-degree column on
-    /// the edge worksheet.
-    /// </param>
-    ///
-    /// <param name="oVertex2DegreeGraphMetricValues">
-    /// List of GraphMetricValue objects for the vertex 2 degree column on the
-    /// edge worksheet.
-    /// </param>
-    ///
     /// <returns>
     /// An array of GraphMetricColumn objects.
     /// </returns>
@@ -352,13 +239,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
         CalculateGraphMetricsContext oCalculateGraphMetricsContext,
         List<GraphMetricValueWithID> oInDegreeGraphMetricValues,
         List<GraphMetricValueWithID> oOutDegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oDegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oVertex1InDegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oVertex1OutDegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oVertex1DegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oVertex2InDegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oVertex2OutDegreeGraphMetricValues,
-        List<GraphMetricValueWithID> oVertex2DegreeGraphMetricValues
+        List<GraphMetricValueWithID> oDegreeGraphMetricValues
     )
     {
         AssertValid();
@@ -368,12 +249,6 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
         Debug.Assert(oInDegreeGraphMetricValues != null);
         Debug.Assert(oOutDegreeGraphMetricValues != null);
         Debug.Assert(oDegreeGraphMetricValues != null);
-        Debug.Assert(oVertex1InDegreeGraphMetricValues != null);
-        Debug.Assert(oVertex1OutDegreeGraphMetricValues != null);
-        Debug.Assert(oVertex1DegreeGraphMetricValues != null);
-        Debug.Assert(oVertex2InDegreeGraphMetricValues != null);
-        Debug.Assert(oVertex2OutDegreeGraphMetricValues != null);
-        Debug.Assert(oVertex2DegreeGraphMetricValues != null);
 
         GraphMetricUserSettings oGraphMetricUserSettings =
             oCalculateGraphMetricsContext.GraphMetricUserSettings;
@@ -390,16 +265,16 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
         Boolean bCalculateDegree = !bGraphIsDirected &&
             oGraphMetricUserSettings.CalculateDegree;
 
-        String sStyle = null;
+        String sStyle = CellStyleNames.GraphMetricGood;
 
         if (oCalculateGraphMetricsContext.DuplicateEdgeDetector.
             GraphContainsDuplicateEdges)
         {
             // The calculations include duplicate edges, which may not be
-            // expected by the user.  Warn her with Excel's "bad" pre-defined
+            // expected by the user.  Warn her with the "bad" cell
             // style.
 
-            sStyle = GraphMetricColumn.ExcelStyleBad;
+            sStyle = CellStyleNames.GraphMetricBad;
         }
 
         // Figure out which columns to add.
@@ -435,67 +310,6 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
                 ExcelUtil.AutoColumnWidth,
                 NumericFormat, sStyle,
                 oDegreeGraphMetricValues.ToArray() ) );
-        }
-
-        if (bCalculateInDegree)
-        {
-            oGraphMetricColumns.Add( new GraphMetricColumnWithID(
-                WorksheetNames.Edges, TableNames.Edges,
-                EdgeTableColumnNames.Vertex1InDegree,
-                ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
-                oVertex1InDegreeGraphMetricValues.ToArray() ) );
-        }
-
-        if (bCalculateOutDegree)
-        {
-            oGraphMetricColumns.Add( new GraphMetricColumnWithID(
-                WorksheetNames.Edges, TableNames.Edges,
-                EdgeTableColumnNames.Vertex1OutDegree,
-                ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
-                oVertex1OutDegreeGraphMetricValues.ToArray() ) );
-        }
-
-        if (bCalculateDegree)
-        {
-            oGraphMetricColumns.Add( new GraphMetricColumnWithID(
-                WorksheetNames.Edges, TableNames.Edges,
-                EdgeTableColumnNames.Vertex1Degree,
-                ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
-                oVertex1DegreeGraphMetricValues.ToArray() ) );
-        }
-
-        if (bCalculateInDegree)
-        {
-            oGraphMetricColumns.Add( new GraphMetricColumnWithID(
-                WorksheetNames.Edges, TableNames.Edges,
-                EdgeTableColumnNames.Vertex2InDegree,
-                ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
-                oVertex2InDegreeGraphMetricValues.ToArray() ) );
-        }
-
-        if (bCalculateOutDegree)
-        {
-
-            oGraphMetricColumns.Add( new GraphMetricColumnWithID(
-                WorksheetNames.Edges, TableNames.Edges,
-                EdgeTableColumnNames.Vertex2OutDegree,
-                ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
-                oVertex2OutDegreeGraphMetricValues.ToArray() ) );
-        }
-
-        if (bCalculateDegree)
-        {
-            oGraphMetricColumns.Add( new GraphMetricColumnWithID(
-                WorksheetNames.Edges, TableNames.Edges,
-                EdgeTableColumnNames.Vertex2Degree,
-                ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
-                oVertex2DegreeGraphMetricValues.ToArray() ) );
         }
 
         return ( oGraphMetricColumns.ToArray() );

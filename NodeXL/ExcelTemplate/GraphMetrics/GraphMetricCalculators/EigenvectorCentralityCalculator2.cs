@@ -146,7 +146,8 @@ public class EigenvectorCentralityCalculator2 : GraphMetricCalculatorBase2
                 TableNames.Vertices,
                 VertexTableColumnNames.EigenvectorCentrality,
                 VertexTableColumnWidths.EigenvectorCentrality,
-                NumericFormat, null, oGraphMetricValues.ToArray()
+                NumericFormat, CellStyleNames.GraphMetricGood,
+                oGraphMetricValues.ToArray()
                 ) };
 
         return (true);

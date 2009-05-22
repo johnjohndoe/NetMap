@@ -134,7 +134,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "VertexShapeColumnAutoFillUserSettingsDialog";
-            this.Text = "Vertex Shape Details";
+            this.Text = "Vertex Shape Options";
             this.ResumeLayout(false);
             this.PerformLayout();
 

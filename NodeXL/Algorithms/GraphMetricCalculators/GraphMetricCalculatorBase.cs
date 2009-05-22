@@ -132,7 +132,7 @@ public abstract class GraphMetricCalculatorBase :
     /// It also periodically reports progress by calling the
     /// BackgroundWorker.<see
     /// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
-    /// second argument is a string in the format "Calculating
+    /// second argument is a string in the format "Computing
     /// [GraphMetricDescription]."
     /// </para>
     ///
@@ -238,7 +238,7 @@ public abstract class GraphMetricCalculatorBase :
 
         String sProgress = String.Format(
 
-            "Calculating {0}."
+            "Computing {0}."
             ,
             this.GraphMetricDescription
             );

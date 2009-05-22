@@ -15,8 +15,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: WorksheetContextMenuManager
 //
 /// <summary>
-/// Adds custom menu items to the Excel context menus that appear when the
-/// vertex or edge table is clicked in the workbook.
+/// Adds custom menu items to the Excel context menus that appear when one of
+/// several tables is clicked in the workbook.
 /// </summary>
 ///
 /// <remarks>
@@ -66,6 +66,14 @@ public class WorksheetContextMenuManager : Object
     /// <param name="vertexTable">
     /// The vertex table on the vertex worksheet.
     /// </param>
+    ///
+    /// <param name="clusterWorksheet">
+    /// The cluster worksheet in the Excel workbook.
+    /// </param>
+    ///
+    /// <param name="clusterTable">
+    /// The cluster table on the cluster worksheet.
+    /// </param>
     //*************************************************************************
 
     public WorksheetContextMenuManager
@@ -74,7 +82,9 @@ public class WorksheetContextMenuManager : Object
         Microsoft.Office.Tools.Excel.Worksheet edgeWorksheet,
         Microsoft.Office.Tools.Excel.ListObject edgeTable,
         Microsoft.Office.Tools.Excel.Worksheet vertexWorksheet,
-        Microsoft.Office.Tools.Excel.ListObject vertexTable
+        Microsoft.Office.Tools.Excel.ListObject vertexTable,
+        Microsoft.Office.Tools.Excel.Worksheet clusterWorksheet,
+        Microsoft.Office.Tools.Excel.ListObject clusterTable
     )
     {
         Debug.Assert(workbook != null);
@@ -82,10 +92,13 @@ public class WorksheetContextMenuManager : Object
         Debug.Assert(edgeTable != null);
         Debug.Assert(vertexWorksheet != null);
         Debug.Assert(vertexTable != null);
+        Debug.Assert(clusterWorksheet != null);
+        Debug.Assert(clusterTable != null);
 
         m_oWorkbook = workbook;
         m_oEdgeTable = edgeTable;
         m_oVertexTable = vertexTable;
+        m_oClusterTable = clusterTable;
 
         // Handle the events involved in adding, handling, and removing custom
         // menu items.
@@ -100,12 +113,19 @@ public class WorksheetContextMenuManager : Object
         vertexWorksheet.Deactivate += new Microsoft.Office.Interop.
             Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
 
+        clusterWorksheet.Deactivate += new Microsoft.Office.Interop.
+            Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
+
+        edgeTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
+            DocEvents_BeforeRightClickEventHandler(EdgeTable_BeforeRightClick);
+
         vertexTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
             DocEvents_BeforeRightClickEventHandler(
                 VertexTable_BeforeRightClick);
 
-        edgeTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
-            DocEvents_BeforeRightClickEventHandler(EdgeTable_BeforeRightClick);
+        clusterTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
+            DocEvents_BeforeRightClickEventHandler(
+                ClusterTable_BeforeRightClick);
     }
 
     //*************************************************************************
@@ -338,7 +358,7 @@ public class WorksheetContextMenuManager : Object
                 oSelectSubgraphsButton_Click) );
 
         CommandBarButton oEditVertexAttributesButton = AddContextMenuItem(
-            oTopLevelPopup, "&Edit Selected Vertex Attributes...",
+            oTopLevelPopup, "&Edit Selected Vertex Properties...",
             iClickedVertexID,
             new _CommandBarButtonEvents_ClickEventHandler(
                 oEditVertexAttributesButton_Click) );
@@ -382,6 +402,12 @@ public class WorksheetContextMenuManager : Object
             oEventArgs.EnableEditVertexAttributes;
 
         oSelectSubgraphsButton.Enabled = oEventArgs.EnableSelectSubgraphs;
+
+        // Add a "set color" menu item if the clicked range is a color cell.
+
+        AddSetColorContextMenuItem(m_oVertexTable, oClickedRange,
+            VertexTableColumnNames.Color,
+            VertexTableColumnNames.PrimaryLabelFillColor);
     }
 
     //*************************************************************************
@@ -464,6 +490,43 @@ public class WorksheetContextMenuManager : Object
 
         oDeselectAdjacentVerticesOfEdgeButton.Enabled =
             oEventArgs.EnableDeselectAdjacentVertices;
+
+        // Add a "set color" menu item if the clicked range is a color cell.
+
+        AddSetColorContextMenuItem(m_oEdgeTable, oClickedRange,
+            EdgeTableColumnNames.Color);
+    }
+
+    //*************************************************************************
+    //  Method: AddClusterContextMenuItems()
+    //
+    /// <summary>
+    /// Adds custom menu items to the context menu that appears when a cell is
+    /// right-clicked in the cluster table.
+    /// </summary>
+    ///
+    /// <param name="oClickedRange">
+    /// Range that was right-clicked.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddClusterContextMenuItems
+    (
+        Microsoft.Office.Interop.Excel.Range oClickedRange
+    )
+    {
+        Debug.Assert(oClickedRange != null);
+        AssertValid();
+
+        // Start with a clean slate.
+
+        RemoveContextMenuItems();
+
+        // Add a "set color" menu item if the clicked range is a color cell.
+
+        AddSetColorContextMenuItem(m_oClusterTable, oClickedRange,
+            ClusterTableColumnNames.VertexColor);
     }
 
     //*************************************************************************
@@ -685,6 +748,90 @@ public class WorksheetContextMenuManager : Object
     }
 
     //*************************************************************************
+    //  Method: AddSetColorContextMenuItem()
+    //
+    /// <summary>
+    /// Adds a "set color" custom menu item to the context menu that appears
+    /// when a color cell is right-clicked in the edge table.
+    /// </summary>
+    ///
+    /// <param name="oClickedRange">
+    /// Range that was right-clicked.
+    /// </param>
+    ///
+    /// <param name="oTable">
+    /// Table containing the range.
+    /// </param>
+    ///
+    /// <param name="asColorColumnNames">
+    /// One or more names of columns that contain a color.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddSetColorContextMenuItem
+    (
+        Microsoft.Office.Tools.Excel.ListObject oTable,
+        Microsoft.Office.Interop.Excel.Range oClickedRange,
+        params String [] asColorColumnNames
+    )
+    {
+        Debug.Assert(oTable != null);
+        Debug.Assert(oClickedRange != null);
+        Debug.Assert(asColorColumnNames != null);
+        AssertValid();
+
+        // If the selected cells aren't in a single column, a color can't be
+        // set.
+
+        Int32 iClickedColumnOneBased = oClickedRange.Areas[1].Column;
+
+        foreach (Microsoft.Office.Interop.Excel.Range oClickedArea in
+            oClickedRange.Areas)
+        {
+            if (oClickedArea.Columns.Count != 1 ||
+                oClickedArea.Column != iClickedColumnOneBased)
+            {
+                return;
+            }
+        }
+
+        // Check whether the selected cells are all in one of the specified
+        // color columns.
+
+        Microsoft.Office.Interop.Excel.ListColumn oColorColumn;
+
+        foreach (String sColorColumnName in asColorColumnNames)
+        {
+            if (
+                ExcelUtil.TryGetTableColumn(oTable.InnerObject,
+                    sColorColumnName, out oColorColumn)
+                &&
+                oColorColumn.Range.Column == iClickedColumnOneBased
+                )
+            {
+                CommandBar oTableContextCommandBar =
+                    ExcelUtil.GetTableContextCommandBar(
+                        m_oWorkbook.Application);
+
+                CommandBarButton oSetColorButton =
+                    (CommandBarButton)oTableContextCommandBar.Controls.Add(
+                        MsoControlType.msoControlButton, 1, Missing.Value, 1,
+                        true);
+
+                oSetColorButton.Caption = ColorMenuItemCaption;
+                oSetColorButton.Style = MsoButtonStyle.msoButtonCaption;
+
+                oSetColorButton.Click += new
+                    _CommandBarButtonEvents_ClickEventHandler(
+                        this.oSetColorButton_Click);
+
+                return;
+            }
+        }
+    }
+
+    //*************************************************************************
     //  Method: RemoveContextMenuItems()
     //
     /// <summary>
@@ -716,6 +863,18 @@ public class WorksheetContextMenuManager : Object
             // its child menu items.
 
             oTableContextCommandBar.Controls[TopLevelMenuCaption].Delete(false);
+        }
+        catch (ArgumentException)
+        {
+        }
+
+        try
+        {
+            // Delete the menu item for a color cell.  (This menu item doesn't
+            // exist for other cells.)
+
+            oTableContextCommandBar.Controls[ColorMenuItemCaption].Delete(
+                false);
         }
         catch (ArgumentException)
         {
@@ -1016,6 +1175,41 @@ public class WorksheetContextMenuManager : Object
     }
 
     //*************************************************************************
+    //  Method: ClusterTable_BeforeRightClick()
+    //
+    /// <summary>
+    /// Handles the BeforeRightClick event on the cluster table.
+    /// </summary>
+    ///
+    /// <param name="Target">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="Cancel">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ClusterTable_BeforeRightClick
+    (
+        Microsoft.Office.Interop.Excel.Range Target,
+        ref bool Cancel
+    )
+    {
+        AssertValid();
+
+        try
+        {
+            AddClusterContextMenuItems(Target);
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+    }
+
+    //*************************************************************************
     //  Method: Worksheet_Deactivate()
     //
     /// <summary>
@@ -1058,6 +1252,48 @@ public class WorksheetContextMenuManager : Object
         catch (Exception oException)
         {
             ErrorUtil.OnException(oException);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: oSetColorButton_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the oSetColorButton CommandBarButton.
+    /// </summary>
+    ///
+    /// <param name="Ctrl">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="CancelDefault">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    oSetColorButton_Click
+    (
+        CommandBarButton Ctrl,
+        ref bool CancelDefault
+    )
+    {
+        AssertValid();
+
+        String sColor;
+
+        // Get a color from the user.
+
+        if ( NodeXLWorkbookUtil.TryGetColor(out sColor) )
+        {
+            Debug.Assert(m_oWorkbook.Application.Selection is
+                Microsoft.Office.Interop.Excel.Range);
+
+            Microsoft.Office.Interop.Excel.Range oClickedRange =
+                (Microsoft.Office.Interop.Excel.Range)
+                    m_oWorkbook.Application.Selection;
+
+            oClickedRange.set_Value(Missing.Value, sColor);
         }
     }
 
@@ -1442,9 +1678,13 @@ public class WorksheetContextMenuManager : Object
     //  Protected constants
     //*************************************************************************
 
-    /// Caption of the top-level menu added to context menus.
+    /// Caption of the top-level NodeXL menu added to context menus.
 
-    protected const String TopLevelMenuCaption = ".Net&Map";
+    protected const String TopLevelMenuCaption = "NodeXL";
+
+    /// Caption of the menu added to the context menu for a color cell.
+
+    protected const String ColorMenuItemCaption = "Select Color...";
 
 
     //*************************************************************************
@@ -1462,6 +1702,10 @@ public class WorksheetContextMenuManager : Object
     /// The vertex table on the vertex worksheet.
 
     protected Microsoft.Office.Tools.Excel.ListObject m_oVertexTable;
+
+    /// The cluster table on the cluster worksheet.
+
+    protected Microsoft.Office.Tools.Excel.ListObject m_oClusterTable;
 }
 
 }

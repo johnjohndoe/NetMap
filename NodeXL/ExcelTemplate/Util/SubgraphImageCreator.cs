@@ -842,8 +842,7 @@ public class SubgraphImageCreator : Object
             WpfGraphicsUtil.RectangleToRect(oSubgraphRectangle),
             oGeneralUserSettings.LayoutUserSettings.Margin,
 
-            WpfGraphicsUtil.ColorToWpfColor(
-                Color.FromKnownColor(oGeneralUserSettings.BackColor) ) 
+            WpfGraphicsUtil.ColorToWpfColor(oGeneralUserSettings.BackColor) 
             ) );
     }
 

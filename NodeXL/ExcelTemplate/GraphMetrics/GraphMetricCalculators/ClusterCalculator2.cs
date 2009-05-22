@@ -184,7 +184,7 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
         Int32 iCommunities = oCommunities.Count;
         Int32 iCommunity = 0;
 
-        ColorConverter oColorConverter = new ColorConverter();
+        ColorConverter2 oColorConverter2 = new ColorConverter2();
 
         VertexShapeConverter oVertexShapeConverter =
             new VertexShapeConverter();
@@ -206,12 +206,12 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
                 oClusterNameGraphMetricValue);
 
             // Write the color in a format that is understood by
-            // ColorConverter.ConvertFromString(), which is what
+            // ColorConverter2.WorkbookToGraph(), which is what
             // WorksheetReaderBase uses.
 
             oVertexColorsForClusterWorksheet.Add(
                 new GraphMetricValueOrdered(
-                    oColorConverter.ConvertToString(oColor) ) );
+                    oColorConverter2.GraphToWorkbook(oColor) ) );
 
             oVertexShapesForClusterWorksheet.Add(
                 new GraphMetricValueOrdered(

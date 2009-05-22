@@ -40,18 +40,18 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label2 = new System.Windows.Forms.Label();
             this.radUseSourceNumber2 = new System.Windows.Forms.RadioButton();
             this.lnkIgnoreOutliers = new System.Windows.Forms.LinkLabel();
-            this.cbxDestinationColor2 = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.label3 = new System.Windows.Forms.Label();
             this.lblMaximum = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.usrDestinationColor2 = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
             this.radUseMinimumSourceNumber = new System.Windows.Forms.RadioButton();
             this.lblMinimum = new System.Windows.Forms.Label();
             this.pnlColorGradient = new Microsoft.Research.CommunityTechnologies.AppLib.ColorGradientPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.txbSourceNumber1 = new System.Windows.Forms.TextBox();
             this.radUseSourceNumber1 = new System.Windows.Forms.RadioButton();
-            this.cbxDestinationColor1 = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.usrDestinationColor1 = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -138,18 +138,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkIgnoreOutliers.Text = "What is this?";
             this.lnkIgnoreOutliers.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkIgnoreOutliers_LinkClicked);
             // 
-            // cbxDestinationColor2
-            // 
-            this.cbxDestinationColor2.DisplayMember = "Text";
-            this.cbxDestinationColor2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxDestinationColor2.FormattingEnabled = true;
-            this.cbxDestinationColor2.Location = new System.Drawing.Point(14, 118);
-            this.cbxDestinationColor2.Name = "cbxDestinationColor2";
-            this.cbxDestinationColor2.Size = new System.Drawing.Size(159, 21);
-            this.cbxDestinationColor2.TabIndex = 5;
-            this.cbxDestinationColor2.ValueMember = "Object";
-            this.cbxDestinationColor2.SelectedIndexChanged += new System.EventHandler(this.OnColorChanged);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -164,23 +152,33 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lblMaximum.AutoSize = true;
             this.lblMaximum.Location = new System.Drawing.Point(13, 13);
             this.lblMaximum.Name = "lblMaximum";
-            this.lblMaximum.Size = new System.Drawing.Size(198, 13);
+            this.lblMaximum.Size = new System.Drawing.Size(160, 13);
             this.lblMaximum.TabIndex = 0;
             this.lblMaximum.Text = "M&ap this source column number:";
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.usrDestinationColor2);
             this.groupBox2.Controls.Add(this.txbSourceNumber2);
             this.groupBox2.Controls.Add(this.radUseMaximumSourceNumber);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.radUseSourceNumber2);
-            this.groupBox2.Controls.Add(this.cbxDestinationColor2);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(250, 9);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(230, 154);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
+            // 
+            // usrDestinationColor2
+            // 
+            this.usrDestinationColor2.Color = System.Drawing.Color.White;
+            this.usrDestinationColor2.Location = new System.Drawing.Point(25, 114);
+            this.usrDestinationColor2.Name = "usrDestinationColor2";
+            this.usrDestinationColor2.ShowButton = true;
+            this.usrDestinationColor2.Size = new System.Drawing.Size(64, 32);
+            this.usrDestinationColor2.TabIndex = 5;
+            this.usrDestinationColor2.ColorChanged += new System.EventHandler(this.ColorPicker_ColorChanged);
             // 
             // radUseMinimumSourceNumber
             // 
@@ -219,7 +217,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 172);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(12, 13);
+            this.label1.Size = new System.Drawing.Size(356, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "And map the in-between source column numbers to the in-between colors:";
             // 
@@ -242,31 +240,29 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radUseSourceNumber1.UseVisualStyleBackColor = true;
             this.radUseSourceNumber1.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
-            // cbxDestinationColor1
-            // 
-            this.cbxDestinationColor1.DisplayMember = "Text";
-            this.cbxDestinationColor1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxDestinationColor1.FormattingEnabled = true;
-            this.cbxDestinationColor1.Location = new System.Drawing.Point(14, 118);
-            this.cbxDestinationColor1.Name = "cbxDestinationColor1";
-            this.cbxDestinationColor1.Size = new System.Drawing.Size(159, 21);
-            this.cbxDestinationColor1.TabIndex = 5;
-            this.cbxDestinationColor1.ValueMember = "Object";
-            this.cbxDestinationColor1.SelectedIndexChanged += new System.EventHandler(this.OnColorChanged);
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.usrDestinationColor1);
             this.groupBox1.Controls.Add(this.txbSourceNumber1);
             this.groupBox1.Controls.Add(this.radUseMinimumSourceNumber);
             this.groupBox1.Controls.Add(this.lblMinimum);
             this.groupBox1.Controls.Add(this.radUseSourceNumber1);
-            this.groupBox1.Controls.Add(this.cbxDestinationColor1);
             this.groupBox1.Controls.Add(this.lblMaximum);
             this.groupBox1.Location = new System.Drawing.Point(12, 9);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(230, 154);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // usrDestinationColor1
+            // 
+            this.usrDestinationColor1.Color = System.Drawing.Color.White;
+            this.usrDestinationColor1.Location = new System.Drawing.Point(25, 114);
+            this.usrDestinationColor1.Name = "usrDestinationColor1";
+            this.usrDestinationColor1.ShowButton = true;
+            this.usrDestinationColor1.Size = new System.Drawing.Size(64, 32);
+            this.usrDestinationColor1.TabIndex = 5;
+            this.usrDestinationColor1.ColorChanged += new System.EventHandler(this.ColorPicker_ColorChanged);
             // 
             // ColorColumnAutoFillUserSettingsDialog
             // 
@@ -307,7 +303,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RadioButton radUseSourceNumber2;
         private System.Windows.Forms.LinkLabel lnkIgnoreOutliers;
-        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxDestinationColor2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblMaximum;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -317,7 +312,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txbSourceNumber1;
         private System.Windows.Forms.RadioButton radUseSourceNumber1;
-        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxDestinationColor1;
         private System.Windows.Forms.GroupBox groupBox1;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrDestinationColor2;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrDestinationColor1;
     }
 }

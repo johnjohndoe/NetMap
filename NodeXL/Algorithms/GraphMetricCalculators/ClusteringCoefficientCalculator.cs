@@ -33,7 +33,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// <para>
 /// This calculator skips all self-loops, which would render the calculations
 /// invalid.  The calculations are rendered invalid if the graph has duplicate
-/// edges, however.
+/// edges, however.  You can check for duplicate edges with <see
+/// cref="DuplicateEdgeDetector" />.
 /// </para>
 ///
 /// </remarks>

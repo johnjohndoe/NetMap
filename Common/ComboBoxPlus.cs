@@ -38,11 +38,11 @@ public class ComboBoxPlus : ComboBox
     /// Populates the ComboBox with all values in an enumeration.
     /// </summary>
     ///
-    /// <param name="oEnumType">
+    /// <param name="enumType">
     /// Enumeration to populate the ComboBox with.
     /// </param>
     ///
-    /// <param name="bFormatForUser">
+    /// <param name="formatForUser">
     /// If true, spaces are inserted between each word in the enum values, and
     /// the values are sorted alphabetically.  The value
     /// "DaysActiveInNewsgroup" gets displayed as "Days active in newsgroup",
@@ -61,11 +61,11 @@ public class ComboBoxPlus : ComboBox
     public void
     PopulateWithEnumValues
     (
-        Type oEnumType,
-        Boolean bFormatForUser
+        Type enumType,
+        Boolean formatForUser
     )
     {
-        ListControlPlus.PopulateWithEnumValues(this, oEnumType, bFormatForUser);
+        ListControlPlus.PopulateWithEnumValues(this, enumType, formatForUser);
     }
 
     //*************************************************************************
@@ -75,7 +75,7 @@ public class ComboBoxPlus : ComboBox
     /// Populates the ComboBox with arbitrary objects and associated text.
     /// </summary>
     ///
-    /// <param name="aoObjectTextPairs">
+    /// <param name="objectTextPairs">
     /// One or more object/text pairs.  The text is what gets displayed in the
     /// ComboBox.  The associated object, which can be of any type, is hidden
     /// from the user but can be retrieved using the <see
@@ -104,10 +104,41 @@ public class ComboBoxPlus : ComboBox
     public void
     PopulateWithObjectsAndText
     (
-        params Object [] aoObjectTextPairs
+        params Object [] objectTextPairs
     )
     {
-        ListControlPlus.PopulateWithObjectsAndText(this, aoObjectTextPairs);
+        ListControlPlus.PopulateWithObjectsAndText(this, objectTextPairs);
+    }
+
+    //*************************************************************************
+    //  Method: SetTextIfEmpty()
+    //
+    /// <summary>
+    /// Sets the ComboBox's Text property to a specified value if the Text is
+    /// empty.
+    /// </summary>
+    ///
+    /// <param name="newText">
+    /// New text to set.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If the Text is not empty, this method does nothing.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    SetTextIfEmpty
+    (
+        String newText
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(newText) );
+
+        if ( String.IsNullOrEmpty(this.Text) )
+        {
+            this.Text = newText;
+        }
     }
 }
 

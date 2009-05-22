@@ -56,10 +56,10 @@ public class DuplicateEdgeMerger : Object
     /// </param>
     ///
     /// <remarks>
-    /// This method adds a tie strength column to the edge worksheet, then
+    /// This method adds an edge weight column to the edge worksheet, then
     /// searches for rows that represent the same edge.  For each set of
     /// duplicate rows, all but the first row in the set are deleted, and the
-    /// tie strength cell for the first row is set to the number of duplicate
+    /// edge weight cell for the first row is set to the number of duplicate
     /// edges.
     ///
     /// <para>
@@ -120,31 +120,30 @@ public class DuplicateEdgeMerger : Object
             return;
         }
 
-        // Add a tie strength column if it doesn't already exist.
+        // Add an edge weight column if it doesn't already exist.
 
-        ListColumn oTieStrengthColumn;
+        ListColumn oEdgeWeightColumn;
 
         if (
             !ExcelUtil.TryGetTableColumn(oEdgeTable,
-                EdgeTableColumnNames.TieStrength, out oTieStrengthColumn)
+                EdgeTableColumnNames.EdgeWeight, out oEdgeWeightColumn)
             &&
             !ExcelUtil.TryAddTableColumn(oEdgeTable,
-                EdgeTableColumnNames.TieStrength,
-                ExcelUtil.AutoColumnWidth, null,
-                out oTieStrengthColumn)
+                EdgeTableColumnNames.EdgeWeight, ExcelUtil.AutoColumnWidth,
+                null, out oEdgeWeightColumn)
             )
         {
             return;
         }
 
-        // Get the tie strength data.
+        // Get the edge weight data.
 
-        Range oTieStrengthData;
-        Object [,] aoTieStrengthValues;
+        Range oEdgeWeightData;
+        Object [,] aoEdgeWeightValues;
 
         if ( !ExcelUtil.TryGetTableColumnDataAndValues(oEdgeTable,
-                EdgeTableColumnNames.TieStrength, out oTieStrengthData,
-                out aoTieStrengthValues) )
+                EdgeTableColumnNames.EdgeWeight, out oEdgeWeightData,
+                out aoEdgeWeightValues) )
         {
             return;
         }
@@ -161,8 +160,8 @@ public class DuplicateEdgeMerger : Object
         // merge.
 
         MergeDuplicateEdges(oEdgeTable, oVertex1NameData, aoVertex1NameValues,
-            oVertex2NameData, aoVertex2NameValues, oTieStrengthColumn,
-            oTieStrengthData, aoTieStrengthValues, bGraphIsDirected);
+            oVertex2NameData, aoVertex2NameValues, oEdgeWeightColumn,
+            oEdgeWeightData, aoEdgeWeightValues, bGraphIsDirected);
 
         oEdgeTable.HeaderRowRange.Select();
     }
@@ -195,16 +194,16 @@ public class DuplicateEdgeMerger : Object
     /// Data values from the vertex 2 name column.
     /// </param>
     ///
-    /// <param name="oTieStrengthColumn">
-    /// Tie strength column.
+    /// <param name="oEdgeWeightColumn">
+    /// Edge weight column.
     /// </param>
     ///
-    /// <param name="oTieStrengthData">
-    /// Data range for the tie strength column.
+    /// <param name="oEdgeWeightData">
+    /// Data range for the edge weight column.
     /// </param>
     ///
-    /// <param name="aoTieStrengthValues">
-    /// Data values from the tie strength column.
+    /// <param name="aoEdgeWeightValues">
+    /// Data values from the edge weight column.
     /// </param>
     ///
     /// <param name="bGraphIsDirected">
@@ -220,9 +219,9 @@ public class DuplicateEdgeMerger : Object
         Object [,] aoVertex1NameValues,
         Range oVertex2NameData,
         Object [,] aoVertex2NameValues,
-        ListColumn oTieStrengthColumn,
-        Range oTieStrengthData,
-        Object [,] aoTieStrengthValues,
+        ListColumn oEdgeWeightColumn,
+        Range oEdgeWeightData,
+        Object [,] aoEdgeWeightValues,
         Boolean bGraphIsDirected
     )
     {
@@ -231,9 +230,9 @@ public class DuplicateEdgeMerger : Object
         Debug.Assert(aoVertex1NameValues != null);
         Debug.Assert(oVertex2NameData != null);
         Debug.Assert(aoVertex2NameValues != null);
-        Debug.Assert(oTieStrengthColumn != null);
-        Debug.Assert(oTieStrengthData != null);
-        Debug.Assert(aoTieStrengthValues != null);
+        Debug.Assert(oEdgeWeightColumn != null);
+        Debug.Assert(oEdgeWeightData != null);
+        Debug.Assert(aoEdgeWeightValues != null);
         AssertValid();
 
         // This dictionary contains one key/value pair for each unique edge.
@@ -276,23 +275,23 @@ public class DuplicateEdgeMerger : Object
                 continue;
             }
 
-            // Does the row already have a tie strength?
+            // Does the row already have an edge weight?
 
-            Int32 iInitialTieStrength = 1;
+            Double dInitialEdgeWeight = 1;
 
-            Object oInitialTieStrength = aoTieStrengthValues[iRowOneBased, 1];
+            Object oInitialEdgeWeight = aoEdgeWeightValues[iRowOneBased, 1];
 
-            if (oInitialTieStrength != null && oInitialTieStrength is Double)
+            if (oInitialEdgeWeight != null && oInitialEdgeWeight is Double)
             {
                 // Yes.
 
-                iInitialTieStrength = (Int32)(Double)oInitialTieStrength;
+                dInitialEdgeWeight = (Double)oInitialEdgeWeight;
             }
             else
             {
-                // No.  Set the initial tie strength.
+                // No.  Set the initial edge weight.
 
-                aoTieStrengthValues[iRowOneBased, 1] = 1.0;
+                aoEdgeWeightValues[iRowOneBased, 1] = 1.0;
             }
 
             // Has an instance of this edge already been found?
@@ -306,19 +305,19 @@ public class DuplicateEdgeMerger : Object
                 sVertexNamePair, out iFirstInstanceRowOneBased) )
             {
                 // Yes.  This row will need to be deleted.  Mark it by nulling
-                // its tie strength.
+                // its edge weight.
 
-                aoTieStrengthValues[iRowOneBased, 1] = null;
+                aoEdgeWeightValues[iRowOneBased, 1] = null;
 
-                // Update the tie strength for the row with the edge's first
+                // Update the edge weight for the row with the edge's first
                 // instance.
 
-                Debug.Assert(aoTieStrengthValues[iFirstInstanceRowOneBased, 1]
+                Debug.Assert(aoEdgeWeightValues[iFirstInstanceRowOneBased, 1]
                     is Double);
 
-                aoTieStrengthValues[iFirstInstanceRowOneBased, 1] = 
-                    (Double)aoTieStrengthValues[iFirstInstanceRowOneBased, 1]
-                    + (Double)iInitialTieStrength;
+                aoEdgeWeightValues[iFirstInstanceRowOneBased, 1] = 
+                    (Double)aoEdgeWeightValues[iFirstInstanceRowOneBased, 1]
+                    + dInitialEdgeWeight;
             }
             else
             {
@@ -328,14 +327,14 @@ public class DuplicateEdgeMerger : Object
             }
         }
 
-        // Save the updated tie strengths to the table.
+        // Save the updated edge weights to the table.
 
-        oTieStrengthData.set_Value(Missing.Value, aoTieStrengthValues);
+        oEdgeWeightData.set_Value(Missing.Value, aoEdgeWeightValues);
 
         // Delete the duplicate rows.
 
-        DeleteDuplicateRows(oEdgeTable, oTieStrengthColumn, oTieStrengthData,
-            aoTieStrengthValues);
+        DeleteDuplicateRows(oEdgeTable, oEdgeWeightColumn, oEdgeWeightData,
+            aoEdgeWeightValues);
     }
 
     //*************************************************************************
@@ -349,20 +348,20 @@ public class DuplicateEdgeMerger : Object
     /// Edge table.
     /// </param>
     ///
-    /// <param name="oTieStrengthColumn">
-    /// Tie strength column.
+    /// <param name="oEdgeWeightColumn">
+    /// Edge weight column.
     /// </param>
     ///
-    /// <param name="oTieStrengthData">
-    /// Data range for the tie strength column.
+    /// <param name="oEdgeWeightData">
+    /// Data range for the edge weight column.
     /// </param>
     ///
-    /// <param name="aoTieStrengthValues">
-    /// Data values from the tie strength column.
+    /// <param name="aoEdgeWeightValues">
+    /// Data values from the edge weight column.
     /// </param>
     ///
     /// <remarks>
-    /// All rows for which the tie strength cell is null are deleted.
+    /// All rows for which the edge weight cell is null are deleted.
     /// </remarks>
     //*************************************************************************
 
@@ -370,22 +369,22 @@ public class DuplicateEdgeMerger : Object
     DeleteDuplicateRows
     (
         ListObject oEdgeTable,
-        ListColumn oTieStrengthColumn,
-        Range oTieStrengthData,
-        Object [,] aoTieStrengthValues
+        ListColumn oEdgeWeightColumn,
+        Range oEdgeWeightData,
+        Object [,] aoEdgeWeightValues
     )
     {
         Debug.Assert(oEdgeTable != null);
-        Debug.Assert(oTieStrengthColumn != null);
-        Debug.Assert(oTieStrengthData != null);
-        Debug.Assert(aoTieStrengthValues != null);
+        Debug.Assert(oEdgeWeightColumn != null);
+        Debug.Assert(oEdgeWeightData != null);
+        Debug.Assert(aoEdgeWeightValues != null);
         AssertValid();
 
         Range oDuplicateRows = null;
 
-        // Find the rows with null tie strengths, which are the duplicates.  To
+        // Find the rows with null edge weights, which are the duplicates.  To
         // avoid multiple areas, which can slow things down signficantly, sort
-        // the table on the tie strength column.  That forces the duplicates
+        // the table on the edge weight column.  That forces the duplicates
         // to be contiguous.
         //
         // But first, add a temporary column and set its values to the
@@ -404,17 +403,17 @@ public class DuplicateEdgeMerger : Object
         SortFields oSortFields = oSort.SortFields;
         oSortFields.Clear();
 
-        oSortFields.Add(oTieStrengthColumn.Range, XlSortOn.xlSortOnValues,
+        oSortFields.Add(oEdgeWeightColumn.Range, XlSortOn.xlSortOnValues,
             XlSortOrder.xlAscending, Missing.Value,
             XlSortDataOption.xlSortNormal);
 
         oSort.Apply();
 
-        if (oTieStrengthData.Rows.Count != 1)
+        if (oEdgeWeightData.Rows.Count != 1)
         {
             try
             {
-                oDuplicateRows = oTieStrengthData.SpecialCells(
+                oDuplicateRows = oEdgeWeightData.SpecialCells(
                     XlCellType.xlCellTypeBlanks, Missing.Value);
             }
             catch (COMException)
@@ -441,9 +440,9 @@ public class DuplicateEdgeMerger : Object
             //
             // Instead, just check the single row.
 
-            if (aoTieStrengthValues[1, 1] == null)
+            if (aoEdgeWeightValues[1, 1] == null)
             {
-                oDuplicateRows = oTieStrengthData.EntireRow;
+                oDuplicateRows = oEdgeWeightData.EntireRow;
             }
         }
 

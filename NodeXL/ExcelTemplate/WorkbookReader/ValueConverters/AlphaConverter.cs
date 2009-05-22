@@ -36,32 +36,6 @@ public class AlphaConverter : NumericValueConverterBase
     }
 
     //*************************************************************************
-    //  Property: MaximumAlphaMessage
-    //
-    /// <summary>
-    /// Gets a message suitable for display in a dialog telling the user what
-    /// the maximum alpha value represents.
-    /// </summary>
-    ///
-    /// <value>
-    /// A message suitable for display in a dialog.
-    /// </value>
-    //*************************************************************************
-
-    public static String
-    MaximumAlphaMessage
-    {
-        get
-        {
-            return ( String.Format(
-                "({0} is opaque)"
-                ,
-                (Int32)MaximumAlphaWorkbook
-                ) );
-        }
-    }
-
-    //*************************************************************************
     //  Method: WorkbookToGraph()
     //
     /// <summary>
@@ -128,7 +102,7 @@ public class AlphaConverter : NumericValueConverterBase
     /// Represents "opaque."
     /// </summary>
 
-    public static readonly Single MaximumAlphaWorkbook = 10F;
+    public static readonly Single MaximumAlphaWorkbook = 100F;
 
     /// <summary>
     /// Minimum alpha value in the NodeXL graph.  Represents "transparent."

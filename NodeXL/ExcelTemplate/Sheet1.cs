@@ -3,7 +3,9 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Windows.Forms;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -61,6 +63,10 @@ public partial class Sheet1
 
         m_oSheets1And2Helper.Sheet_Startup(sender, e);
 
+        Globals.ThisWorkbook.SetVisualAttribute2 +=
+            new SetVisualAttributeEventHandler(
+                this.ThisWorkbook_SetVisualAttribute2);
+
         AssertValid();
     }
 
@@ -94,6 +100,79 @@ public partial class Sheet1
     }
 
     //*************************************************************************
+    //  Method: ThisWorkbook_SetVisualAttribute2()
+    //
+    /// <summary>
+    /// Handles the SetVisualAttribute2 event on ThisWorkbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    ThisWorkbook_SetVisualAttribute2
+    (
+        Object sender,
+        SetVisualAttributeEventArgs e
+    )
+    {
+        Debug.Assert(e != null);
+        AssertValid();
+
+        Microsoft.Office.Interop.Excel.Range oSelectedRange;
+
+        if ( e.VisualAttributeSet ||
+            !m_oSheets1And2Helper.TryGetSelectedRange(out oSelectedRange) )
+        {
+            return;
+        }
+
+        // See if the specified attribute is set by the helper class.
+
+        m_oSheets1And2Helper.SetVisualAttribute(e, oSelectedRange,
+            EdgeTableColumnNames.Color, EdgeTableColumnNames.Alpha);
+
+        if (e.VisualAttributeSet)
+        {
+            return;
+        }
+
+        if (e.VisualAttribute == VisualAttributes.EdgeWidth)
+        {
+            EdgeWidthDialog oEdgeWidthDialog = new EdgeWidthDialog();
+
+            if (oEdgeWidthDialog.ShowDialog() == DialogResult.OK)
+            {
+                ExcelUtil.SetVisibleSelectedTableColumnData(
+                    this.Edges.InnerObject, oSelectedRange,
+                    EdgeTableColumnNames.Width, oEdgeWidthDialog.EdgeWidth);
+
+                e.VisualAttributeSet = true;
+            }
+        }
+        else if (e.VisualAttribute == VisualAttributes.EdgeVisibility)
+        {
+            Debug.Assert(e.AttributeValue is EdgeWorksheetReader.Visibility);
+
+            ExcelUtil.SetVisibleSelectedTableColumnData(
+                this.Edges.InnerObject, oSelectedRange,
+                EdgeTableColumnNames.Visibility,
+
+                ( new EdgeVisibilityConverter() ).GraphToWorkbook(
+                    (EdgeWorksheetReader.Visibility)e.AttributeValue)
+                );
+
+            e.VisualAttributeSet = true;
+        }
+    }
+
+    //*************************************************************************
     //  Method: Sheet1_Shutdown()
     //
     /// <summary>
@@ -118,7 +197,7 @@ public partial class Sheet1
     {
         AssertValid();
 
-        m_oSheets1And2Helper.Sheet_Shutdown(sender, e);
+        // (Do nothing.)
     }
 
     //*************************************************************************

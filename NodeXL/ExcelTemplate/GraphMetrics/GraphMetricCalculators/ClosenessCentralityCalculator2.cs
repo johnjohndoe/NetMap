@@ -146,7 +146,8 @@ public class ClosenessCentralityCalculator2 : GraphMetricCalculatorBase2
                 TableNames.Vertices,
                 VertexTableColumnNames.ClosenessCentrality,
                 VertexTableColumnWidths.ClosenessCentrality,
-                NumericFormat, null, oGraphMetricValues.ToArray()
+                NumericFormat, CellStyleNames.GraphMetricGood,
+                oGraphMetricValues.ToArray()
                 ) };
 
         return (true);

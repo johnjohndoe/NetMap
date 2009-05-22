@@ -182,32 +182,32 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 3, 4, false, 4.2F);
-        FindEdge(oGraph, 9, 8, false, 1.2F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 3, 4, false, 4.2);
+        FindEdge(oGraph, 9, 8, false, 1.2);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
-        FindEdge(oGraph, 6, 8, false, 1F);
-        FindEdge(oGraph, 6, 3, false, 1F);
-        FindEdge(oGraph, 6, 2, false, 1F);
+        FindEdge(oGraph, 6, 8, false, 1);
+        FindEdge(oGraph, 6, 3, false, 1);
+        FindEdge(oGraph, 6, 2, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 9, 1, true, 98.7F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 9, 1, true, 98.7);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
-        FindEdge(oGraph, 8, 7, true, 1F);
-        FindEdge(oGraph, 8, 1, true, 1F);
-        FindEdge(oGraph, 8, 2, true, 1F);
+        FindEdge(oGraph, 8, 7, true, 1);
+        FindEdge(oGraph, 8, 1, true, 1);
+        FindEdge(oGraph, 8, 2, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -479,27 +479,27 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -597,32 +597,32 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 3, 4, false, 4.2F);
-        FindEdge(oGraph, 9, 8, false, 1.2F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 3, 4, false, 4.2);
+        FindEdge(oGraph, 9, 8, false, 1.2);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
-        FindEdge(oGraph, 6, 8, false, 1F);
-        FindEdge(oGraph, 6, 3, false, 1F);
-        FindEdge(oGraph, 6, 2, false, 1F);
+        FindEdge(oGraph, 6, 8, false, 1);
+        FindEdge(oGraph, 6, 3, false, 1);
+        FindEdge(oGraph, 6, 2, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 9, 1, true, 98.7F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 9, 1, true, 98.7);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
-        FindEdge(oGraph, 8, 7, true, 1F);
-        FindEdge(oGraph, 8, 1, true, 1F);
-        FindEdge(oGraph, 8, 2, true, 1F);
+        FindEdge(oGraph, 8, 7, true, 1);
+        FindEdge(oGraph, 8, 1, true, 1);
+        FindEdge(oGraph, 8, 2, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -735,32 +735,32 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 3, 4, false, 4.2F);
-        FindEdge(oGraph, 9, 8, false, 1.2F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 3, 4, false, 4.2);
+        FindEdge(oGraph, 9, 8, false, 1.2);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
-        FindEdge(oGraph, 6, 8, false, 1F);
-        FindEdge(oGraph, 6, 3, false, 1F);
-        FindEdge(oGraph, 6, 2, false, 1F);
+        FindEdge(oGraph, 6, 8, false, 1);
+        FindEdge(oGraph, 6, 3, false, 1);
+        FindEdge(oGraph, 6, 2, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 9, 1, true, 98.7F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 9, 1, true, 98.7);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
-        FindEdge(oGraph, 8, 7, true, 1F);
-        FindEdge(oGraph, 8, 1, true, 1F);
-        FindEdge(oGraph, 8, 2, true, 1F);
+        FindEdge(oGraph, 8, 7, true, 1);
+        FindEdge(oGraph, 8, 1, true, 1);
+        FindEdge(oGraph, 8, 2, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -922,32 +922,32 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 3, 4, false, 4.2F);
-        FindEdge(oGraph, 9, 8, false, 1.2F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 3, 4, false, 4.2);
+        FindEdge(oGraph, 9, 8, false, 1.2);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
-        FindEdge(oGraph, 6, 8, false, 1F);
-        FindEdge(oGraph, 6, 3, false, 1F);
-        FindEdge(oGraph, 6, 2, false, 1F);
+        FindEdge(oGraph, 6, 8, false, 1);
+        FindEdge(oGraph, 6, 3, false, 1);
+        FindEdge(oGraph, 6, 2, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 9, 1, true, 98.7F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 9, 1, true, 98.7);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
-        FindEdge(oGraph, 8, 7, true, 1F);
-        FindEdge(oGraph, 8, 1, true, 1F);
-        FindEdge(oGraph, 8, 2, true, 1F);
+        FindEdge(oGraph, 8, 7, true, 1);
+        FindEdge(oGraph, 8, 1, true, 1);
+        FindEdge(oGraph, 8, 2, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1022,23 +1022,23 @@ public class PajekGraphAdapterTest : Object
 
         const Int32 Vertices = 10;
 
-		const String FileContents =
+        const String FileContents =
 
-			"*vertices 	 10\r\n"
-			+ 	 "1 	 \"Vertex1\" 	 0.1 	 0.2 	 0.3\r\n"
-			+ 	 "2 	 \"Vertex2\" 	 0.2 	 0.2 	 0.3\r\n"
-			+ 	 "3 	 \"Vertex3\" 	 0.3 	 0.2 	 0.3\r\n"
-			+ 	 "4 	 \"Vertex4\" 	 0.4 	 0.2 	 0.3\r\n"
-			+ 	 "5 	 \"Vertex5\" 	 0.5 	 0.2 	 0.3\r\n"
-			+ 	 "6 	 \"Vertex6\" 	 0.6 	 0.2 	 0.3\r\n"
-			+ 	 "7 	 \"Vertex7\" 	 0.7 	 0.2 	 0.3\r\n"
-			+ 	 "8 	 \"Vertex8\" 	 0.8 	 0.2 	 0.3\r\n"
-			+ 	 "9 	 \"Vertex9\" 	 0.9 	 0.2 	 0.3\r\n"
-			+ 	 "10 	 \"Vertex10\" 	 0.10 	 0.2 	 0.3\r\n"
-			+ 	 "\r\n"
-			+ 	 "*edges\r\n"
-			+ 	 "1 	 2 	 3.1\r\n"
-			;
+            "*vertices   10\r\n"
+            +    "1      \"Vertex1\"     0.1     0.2     0.3\r\n"
+            +    "2      \"Vertex2\"     0.2     0.2     0.3\r\n"
+            +    "3      \"Vertex3\"     0.3     0.2     0.3\r\n"
+            +    "4      \"Vertex4\"     0.4     0.2     0.3\r\n"
+            +    "5      \"Vertex5\"     0.5     0.2     0.3\r\n"
+            +    "6      \"Vertex6\"     0.6     0.2     0.3\r\n"
+            +    "7      \"Vertex7\"     0.7     0.2     0.3\r\n"
+            +    "8      \"Vertex8\"     0.8     0.2     0.3\r\n"
+            +    "9      \"Vertex9\"     0.9     0.2     0.3\r\n"
+            +    "10     \"Vertex10\"    0.10    0.2     0.3\r\n"
+            +    "\r\n"
+            +    "*edges\r\n"
+            +    "1      2   3.1\r\n"
+            ;
 
         WriteFile(FileContents);
 
@@ -1129,8 +1129,8 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, "a", "b", false, 1F);
-        FindEdge(oGraph, "a", "e", false, 1F);
+        FindEdge(oGraph, "a", "b", false, 1);
+        FindEdge(oGraph, "a", "e", false, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1237,19 +1237,19 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, "I1", "W3", false, 1F);
-        FindEdge(oGraph, "W1", "W3", false, 1F);
-        FindEdge(oGraph, "W1", "W4", false, 1F);
-        FindEdge(oGraph, "W3", "W4", false, 1F);
-        FindEdge(oGraph, "W7", "W8", false, 1F);
-        FindEdge(oGraph, "W7", "W9", false, 1F);
-        FindEdge(oGraph, "W8", "W9", false, 1F);
-        FindEdge(oGraph, "W1", "S1", false, 1F);
-        FindEdge(oGraph, "W3", "S1", false, 1F);
-        FindEdge(oGraph, "W4", "S1", false, 1F);
-        FindEdge(oGraph, "W8", "S4", false, 1F);
-        FindEdge(oGraph, "W9", "S4", false, 1F);
-        FindEdge(oGraph, "W7", "S1", false, 1F);
+        FindEdge(oGraph, "I1", "W3", false, 1);
+        FindEdge(oGraph, "W1", "W3", false, 1);
+        FindEdge(oGraph, "W1", "W4", false, 1);
+        FindEdge(oGraph, "W3", "W4", false, 1);
+        FindEdge(oGraph, "W7", "W8", false, 1);
+        FindEdge(oGraph, "W7", "W9", false, 1);
+        FindEdge(oGraph, "W8", "W9", false, 1);
+        FindEdge(oGraph, "W1", "S1", false, 1);
+        FindEdge(oGraph, "W3", "S1", false, 1);
+        FindEdge(oGraph, "W4", "S1", false, 1);
+        FindEdge(oGraph, "W8", "S4", false, 1);
+        FindEdge(oGraph, "W9", "S4", false, 1);
+        FindEdge(oGraph, "W7", "S1", false, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1393,8 +1393,8 @@ public class PajekGraphAdapterTest : Object
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1461,7 +1461,7 @@ public class PajekGraphAdapterTest : Object
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
@@ -1534,12 +1534,12 @@ public class PajekGraphAdapterTest : Object
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1602,8 +1602,8 @@ public class PajekGraphAdapterTest : Object
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
@@ -1677,8 +1677,8 @@ public class PajekGraphAdapterTest : Object
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
@@ -1686,8 +1686,8 @@ public class PajekGraphAdapterTest : Object
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1753,12 +1753,12 @@ public class PajekGraphAdapterTest : Object
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
@@ -1831,17 +1831,17 @@ public class PajekGraphAdapterTest : Object
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -1900,7 +1900,7 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
@@ -1974,7 +1974,7 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
@@ -1986,8 +1986,8 @@ public class PajekGraphAdapterTest : Object
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -2049,7 +2049,7 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
@@ -2057,7 +2057,7 @@ public class PajekGraphAdapterTest : Object
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
@@ -2126,7 +2126,7 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
@@ -2134,12 +2134,12 @@ public class PajekGraphAdapterTest : Object
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -2202,12 +2202,12 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
@@ -2280,12 +2280,12 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
@@ -2293,8 +2293,8 @@ public class PajekGraphAdapterTest : Object
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -2360,16 +2360,16 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
@@ -2441,21 +2441,21 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -4453,32 +4453,32 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 3, 4, false, 4.2F);
-        FindEdge(oGraph, 9, 8, false, 1.2F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 3, 4, false, 4.2);
+        FindEdge(oGraph, 9, 8, false, 1.2);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
-        FindEdge(oGraph, 6, 8, false, 1F);
-        FindEdge(oGraph, 6, 3, false, 1F);
-        FindEdge(oGraph, 6, 2, false, 1F);
+        FindEdge(oGraph, 6, 8, false, 1);
+        FindEdge(oGraph, 6, 3, false, 1);
+        FindEdge(oGraph, 6, 2, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 9, 1, true, 98.7F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 9, 1, true, 98.7);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
-        FindEdge(oGraph, 8, 7, true, 1F);
-        FindEdge(oGraph, 8, 1, true, 1F);
-        FindEdge(oGraph, 8, 2, true, 1F);
+        FindEdge(oGraph, 8, 7, true, 1);
+        FindEdge(oGraph, 8, 1, true, 1);
+        FindEdge(oGraph, 8, 2, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -4647,32 +4647,32 @@ public class PajekGraphAdapterTest : Object
 
         // *edges
 
-        FindEdge(oGraph, 1, 2, false, 3.1F);
-        FindEdge(oGraph, 3, 4, false, 4.2F);
-        FindEdge(oGraph, 9, 8, false, 1.2F);
+        FindEdge(oGraph, 1, 2, false, 3.1);
+        FindEdge(oGraph, 3, 4, false, 4.2);
+        FindEdge(oGraph, 9, 8, false, 1.2);
 
         // *edgeslist
 
-        FindEdge(oGraph, 1, 4, false, 1F);
-        FindEdge(oGraph, 1, 5, false, 1F);
+        FindEdge(oGraph, 1, 4, false, 1);
+        FindEdge(oGraph, 1, 5, false, 1);
 
-        FindEdge(oGraph, 6, 8, false, 1F);
-        FindEdge(oGraph, 6, 3, false, 1F);
-        FindEdge(oGraph, 6, 2, false, 1F);
+        FindEdge(oGraph, 6, 8, false, 1);
+        FindEdge(oGraph, 6, 3, false, 1);
+        FindEdge(oGraph, 6, 2, false, 1);
 
         // *arcs
 
-        FindEdge(oGraph, 10, 9, true, 123.34F);
-        FindEdge(oGraph, 9, 1, true, 98.7F);
+        FindEdge(oGraph, 10, 9, true, 123.34);
+        FindEdge(oGraph, 9, 1, true, 98.7);
 
         // *arcslist
 
-        FindEdge(oGraph, 4, 2, true, 1F);
-        FindEdge(oGraph, 4, 5, true, 1F);
+        FindEdge(oGraph, 4, 2, true, 1);
+        FindEdge(oGraph, 4, 5, true, 1);
 
-        FindEdge(oGraph, 8, 7, true, 1F);
-        FindEdge(oGraph, 8, 1, true, 1F);
-        FindEdge(oGraph, 8, 2, true, 1F);
+        FindEdge(oGraph, 8, 7, true, 1);
+        FindEdge(oGraph, 8, 1, true, 1);
+        FindEdge(oGraph, 8, 2, true, 1);
 
         // Verify that every edge was searched for and found.
 
@@ -4789,13 +4789,13 @@ public class PajekGraphAdapterTest : Object
         IEdge oEdge;
 
         oEdge = oEdges.Add(aoVertices[0], aoVertices[1], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23);
 
         oEdge = oEdges.Add(aoVertices[1], aoVertices[2], true);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01);
 
         oEdge = oEdges.Add(aoVertices[2], aoVertices[3], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11);
 
         oEdges.Add(aoVertices[3], aoVertices[4], true);
         // (No weight, should be default.)
@@ -4960,16 +4960,16 @@ public class PajekGraphAdapterTest : Object
         IEdge oEdge;
 
         oEdge = oEdges.Add(aoVertices[0], aoVertices[1], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23);
 
         oEdge = oEdges.Add(aoVertices[0], aoVertices[1], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23);
 
         oEdge = oEdges.Add(aoVertices[1], aoVertices[2], true);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01);
 
         oEdge = oEdges.Add(aoVertices[2], aoVertices[3], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11);
 
         oEdges.Add(aoVertices[3], aoVertices[4], true);
         // (No weight, should be default.)
@@ -5043,13 +5043,13 @@ public class PajekGraphAdapterTest : Object
         IEdge oEdge;
 
         oEdge = oEdges.Add(aoVertices[0], aoVertices[1], true);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23);
 
         oEdge = oEdges.Add(aoVertices[1], aoVertices[2], true);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01);
 
         oEdge = oEdges.Add(aoVertices[2], aoVertices[3], true);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11);
 
         oEdges.Add(aoVertices[3], aoVertices[4], true);
         // (No weight, should be default.)
@@ -5121,13 +5121,13 @@ public class PajekGraphAdapterTest : Object
         IEdge oEdge;
 
         oEdge = oEdges.Add(aoVertices[0], aoVertices[1], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23);
 
         oEdge = oEdges.Add(aoVertices[1], aoVertices[2], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01);
 
         oEdge = oEdges.Add(aoVertices[2], aoVertices[3], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11);
 
         oEdges.Add(aoVertices[3], aoVertices[4], false);
         // (No weight, should be default.)
@@ -5194,19 +5194,19 @@ public class PajekGraphAdapterTest : Object
             aoVertices[i].Name = (i + 1).ToString();
         }
 
-        aoVertices[0].Location = new PointF(-10F, -20F);
-        aoVertices[1].Location = new PointF(30F, 30F);
+        aoVertices[0].Location = new PointF(-10F, -20);
+        aoVertices[1].Location = new PointF(30F, 30);
 
         IEdge oEdge;
 
         oEdge = oEdges.Add(aoVertices[0], aoVertices[1], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 1.23);
 
         oEdge = oEdges.Add(aoVertices[1], aoVertices[2], true);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 2.01);
 
         oEdge = oEdges.Add(aoVertices[2], aoVertices[3], false);
-        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11F);
+        oEdge.SetValue(ReservedMetadataKeys.EdgeWeight, 5.11);
 
         oEdges.Add(aoVertices[3], aoVertices[4], true);
         // (No weight, should be default.)
@@ -5623,7 +5623,7 @@ public class PajekGraphAdapterTest : Object
     /// true if the edge should be directed.
     /// </param>
     ///
-    /// <param name="fWeight">
+    /// <param name="dWeight">
     /// Expected edge weight, or -1 if no weight is expected.
     /// </param>
     //*************************************************************************
@@ -5635,13 +5635,13 @@ public class PajekGraphAdapterTest : Object
         Int32 iOneBasedVertex1Index,
         Int32 iOneBasedVertex2Index,
         Boolean bIsDirected,
-        Single fWeight
+        Double dWeight
     )
     {
         String sVertex1Name = GetVertexName(iOneBasedVertex1Index);
         String sVertex2Name = GetVertexName(iOneBasedVertex2Index);
 
-        FindEdge(oGraph, sVertex1Name, sVertex2Name, bIsDirected, fWeight);
+        FindEdge(oGraph, sVertex1Name, sVertex2Name, bIsDirected, dWeight);
     }
 
     //*************************************************************************
@@ -5668,7 +5668,7 @@ public class PajekGraphAdapterTest : Object
     /// true if the edge should be directed.
     /// </param>
     ///
-    /// <param name="fWeight">
+    /// <param name="dWeight">
     /// Expected edge weight, or -1 if no weight is expected.
     /// </param>
     //*************************************************************************
@@ -5680,7 +5680,7 @@ public class PajekGraphAdapterTest : Object
         String sVertex1Name,
         String sVertex2Name,
         Boolean bIsDirected,
-        Single fWeight
+        Double dWeight
     )
     {
         const String ClassName = "PajekGraphAdapterTest";
@@ -5713,7 +5713,7 @@ public class PajekGraphAdapterTest : Object
             Boolean bHasWeight = oEdge.TryGetValue(
                 ReservedMetadataKeys.EdgeWeight, out oWeight);
 
-            if (fWeight == -1)
+            if (dWeight == -1)
             {
                 if (bHasWeight)
                 {
@@ -5728,7 +5728,7 @@ public class PajekGraphAdapterTest : Object
                 }
             }
 
-            if ( (Single)oWeight != fWeight )
+            if ( (Double)oWeight != dWeight )
             {
                 continue;
             }

@@ -5,9 +5,11 @@
 using System;
 using System.Drawing;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -53,6 +55,41 @@ public partial class Sheet2
             m_oSheets1And2Helper.GetSelectedColumnValues(oSelectedRange,
                 VertexTableColumnNames.VertexName)
             ) );
+    }
+
+    //*************************************************************************
+    //  Method: UpdateColumnNames()
+    //
+    /// <summary>
+    /// Updates any columns whose names have been changed since earlier NodeXL
+    /// versions.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    UpdateColumnNames()
+    {
+        // AssertValid();
+
+        Microsoft.Office.Interop.Excel.ListColumn oRadiusColumn;
+
+        if ( ExcelUtil.TryGetTableColumn(this.Vertices.InnerObject,
+            VertexTableColumnNames.RadiusOld, out oRadiusColumn) )
+        {
+            oRadiusColumn.Name = VertexTableColumnNames.Radius;
+
+            FormUtil.ShowInformation(String.Format(
+
+                "This workbook was created with an older version of NodeXL."
+                + "  To make the workbook compatible with this newer version,"
+                + " the {0} column in the {1} worksheet has been renamed to"
+                + " {2}."
+                ,
+                VertexTableColumnNames.RadiusOld,
+                WorksheetNames.Vertices,
+                VertexTableColumnNames.Radius
+                ) );
+        }
     }
 
     //*************************************************************************
@@ -368,15 +405,15 @@ public partial class Sheet2
         Microsoft.Office.Interop.Excel.ListObject oVertexTable =
             Vertices.InnerObject;
 
-        // Get the ID and location columns from the vertex table.  These are
-        // the entire table columns, including the headers.
+        // Get a dictionary that maps IDs to row numbers, and get the location
+        // columns from the vertex table.  These are the entire table columns,
+        // including the headers.
 
-        Microsoft.Office.Interop.Excel.ListColumn
-            oIDColumn, oXColumn, oYColumn;
+        Dictionary<Int32, Int32> oRowIDDictionary;
+        Microsoft.Office.Interop.Excel.ListColumn oXColumn, oYColumn;
 
-        if (
-            !ExcelUtil.TryGetTableColumn(oVertexTable,
-                CommonTableColumnNames.ID, out oIDColumn)
+        if ( 
+            !m_oSheets1And2Helper.TryGetIDsOfAllRows(out oRowIDDictionary)
             ||
             !ExcelUtil.TryGetTableColumn(oVertexTable,
                 VertexTableColumnNames.X, out oXColumn)
@@ -407,8 +444,8 @@ public partial class Sheet2
 
             Int32 iRowOneBased;
 
-            if ( !m_oSheets1And2Helper.TryGetIDRow(oIDColumn,
-                aiMovedVertexIDs[i], out iRowOneBased) )
+            if ( !oRowIDDictionary.TryGetValue(aiMovedVertexIDs[i],
+                out iRowOneBased) )
             {
                 continue;
             }
@@ -451,12 +488,11 @@ public partial class Sheet2
         Microsoft.Office.Interop.Excel.ListObject oVertexTable =
             Vertices.InnerObject;
 
-        // Get a dictionary containing the ID of each visible row in the table.
+        // Get a dictionary containing the ID of each row in the table.
 
         Dictionary<Int32, Int32> oRowIDDictionary;
 
-        if ( !m_oSheets1And2Helper.TryGetIDsOfVisibleRows(
-            out oRowIDDictionary) )
+        if ( !m_oSheets1And2Helper.TryGetIDsOfAllRows(out oRowIDDictionary) )
         {
             // Nothing can be done without the IDs.
 
@@ -867,6 +903,10 @@ public partial class Sheet2
             new VertexAttributesEditedEventHandler(
                 this.ThisWorkbook_VertexAttributesEditedInGraph);
 
+        oThisWorkbook.SetVisualAttribute2 +=
+            new SetVisualAttributeEventHandler(
+                this.ThisWorkbook_SetVisualAttribute2);
+
         // Create the object that does most of the work for this class.
 
         m_oSheets1And2Helper = new Sheets1And2Helper(this, this.Vertices);
@@ -934,7 +974,7 @@ public partial class Sheet2
     {
         AssertValid();
 
-        m_oSheets1And2Helper.Sheet_Shutdown(sender, e);
+        // (Do nothing.)
     }
 
     //*************************************************************************
@@ -1035,6 +1075,94 @@ public partial class Sheet2
         if (m_oSheets1And2Helper.TableExists)
         {
             OnVertexAttributesEditedInGraph(e);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ThisWorkbook_SetVisualAttribute2()
+    //
+    /// <summary>
+    /// Handles the SetVisualAttribute2 event on ThisWorkbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    ThisWorkbook_SetVisualAttribute2
+    (
+        Object sender,
+        SetVisualAttributeEventArgs e
+    )
+    {
+        Debug.Assert(e != null);
+        AssertValid();
+
+        Microsoft.Office.Interop.Excel.Range oSelectedRange;
+
+        if ( e.VisualAttributeSet ||
+            !m_oSheets1And2Helper.TryGetSelectedRange(out oSelectedRange) )
+        {
+            return;
+        }
+
+        // See if the specified attribute is set by the helper class.
+
+        m_oSheets1And2Helper.SetVisualAttribute(e, oSelectedRange,
+            VertexTableColumnNames.Color, VertexTableColumnNames.Alpha);
+
+        if (e.VisualAttributeSet)
+        {
+            return;
+        }
+
+        if (e.VisualAttribute == VisualAttributes.VertexShape)
+        {
+            Debug.Assert(e.AttributeValue is VertexShape);
+
+            ExcelUtil.SetVisibleSelectedTableColumnData(
+                this.Vertices.InnerObject, oSelectedRange,
+                VertexTableColumnNames.Shape,
+
+                ( new VertexShapeConverter() ).GraphToWorkbook(
+                    (VertexShape)e.AttributeValue)
+                );
+
+            e.VisualAttributeSet = true;
+        }
+        else if (e.VisualAttribute == VisualAttributes.VertexRadius)
+        {
+            VertexRadiusDialog oVertexRadiusDialog = new VertexRadiusDialog();
+
+            if (oVertexRadiusDialog.ShowDialog() == DialogResult.OK)
+            {
+                ExcelUtil.SetVisibleSelectedTableColumnData(
+                    this.Vertices.InnerObject, oSelectedRange,
+                    VertexTableColumnNames.Radius,
+                    oVertexRadiusDialog.VertexRadius);
+
+                e.VisualAttributeSet = true;
+            }
+        }
+        else if (e.VisualAttribute == VisualAttributes.VertexVisibility)
+        {
+            Debug.Assert(e.AttributeValue is VertexWorksheetReader.Visibility);
+
+            ExcelUtil.SetVisibleSelectedTableColumnData(
+                this.Vertices.InnerObject, oSelectedRange,
+                VertexTableColumnNames.Visibility,
+
+                ( new VertexVisibilityConverter() ).GraphToWorkbook(
+                    (VertexWorksheetReader.Visibility)e.AttributeValue)
+                );
+
+            e.VisualAttributeSet = true;
         }
     }
 

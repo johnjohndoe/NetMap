@@ -70,6 +70,40 @@ public class NotificationUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: LayoutTypeIsNone
+    //
+    /// <summary>
+    /// Gets or sets a flag specifying whether the user should be warned that
+    /// the layout type is set to NoneLayout when the workbook is read.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to warn the user.  The default is true.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
+
+    public Boolean
+    LayoutTypeIsNone
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[LayoutTypeIsNoneKey] );
+        }
+
+        set
+        {
+            this[LayoutTypeIsNoneKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: EnableAllNotifications()
     //
     /// <summary>
@@ -81,6 +115,7 @@ public class NotificationUserSettings : ApplicationSettingsBase
     EnableAllNotifications()
     {
         this.GraphHasDuplicateEdge = true;
+        this.LayoutTypeIsNone = true;
     }
 
 
@@ -109,6 +144,11 @@ public class NotificationUserSettings : ApplicationSettingsBase
 
     protected const String GraphHasDuplicateEdgeKey =
         "GraphHasDuplicateEdge";
+
+    /// Name of the settings key for the LayoutTypeIsNone property.
+
+    protected const String LayoutTypeIsNoneKey =
+        "LayoutTypeIsNone";
 
 
     //*************************************************************************

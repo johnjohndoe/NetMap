@@ -2188,27 +2188,89 @@ public class NodeXLControl : FrameworkElement
     /// Creates a bitmap image of the graph.
     /// </summary>
     ///
+    /// <param name="bitmapWidthPx">
+    /// Width of the bitmap image, in pixels.  Must be greater than 0.
+    /// </param>
+    ///
+    /// <param name="bitmapHeightPx">
+    /// Height of the bitmap image, in pixels.  Must be greater than 0.
+    /// </param>
+    ///
     /// <returns>
-    /// A bitmap image of the graph displayed within the control.  The bitmap
-    /// is the size of the control's client area.
+    /// A bitmap image of the graph displayed within the control, with the
+    /// specified dimensions.
     /// </returns>
+    ///
+    /// <remarks>
+    /// An exception is thrown if the graph is being drawn when this method is
+    /// called.  Check the <see cref="IsDrawing" /> property before calling
+    /// this.
+    /// </remarks>
     //*************************************************************************
 
     public System.Drawing.Bitmap
-    CopyGraphToBitmap()
+    CopyGraphToBitmap
+    (
+        Int32 bitmapWidthPx,
+        Int32 bitmapHeightPx
+    )
     {
         AssertValid();
 
+        const String MethodName = "CopyGraphToBitmap";
+
+        this.ArgumentChecker.CheckArgumentPositive(MethodName, "bitmapWidthPx",
+            bitmapWidthPx);
+
+        this.ArgumentChecker.CheckArgumentPositive(MethodName, "bitmapHeightPx",
+            bitmapHeightPx);
+
+        CheckIfDrawing(MethodName);
+
+        // Save the current vertex locations.
+
+        LayoutSaver oLayoutSaver = new LayoutSaver(this.Graph);
+
+        // Transform the graph's layout to the specified size.
+
+        Double dOriginalActualWidth = this.ActualWidth;
+        Double dOriginalActualHeight = this.ActualHeight;
+
         ScaleTransform oScaleTransformForLayout = this.ScaleTransformForLayout;
 
-        return ( WpfGraphicsUtil.VisualToBitmap( this,
-
-            (Int32)Math.Ceiling(
-                this.ActualWidth * oScaleTransformForLayout.ScaleX),
-
-            (Int32)Math.Ceiling(
-                this.ActualHeight * oScaleTransformForLayout.ScaleY) )
+        Rect oBitmapRectangle = new Rect(0, 0,
+            (Double)bitmapWidthPx / oScaleTransformForLayout.ScaleX,
+            (Double)bitmapHeightPx / oScaleTransformForLayout.ScaleY
             );
+
+        TransformLayout(oBitmapRectangle);
+
+        Debug.Assert(m_eLayoutState == LayoutState.Stable);
+
+        DrawGraph(oBitmapRectangle);
+
+        System.Drawing.Bitmap oBitmap = WpfGraphicsUtil.VisualToBitmap(this,
+            bitmapWidthPx, bitmapHeightPx);
+
+        // Restore the original layout.
+        //
+        // NOTE:
+        //
+        // Don't try calling TransformLayout() again using the original
+        // rectangle.  The first call to TransformLayout() lost "resolution" if
+        // the layout was transformed to a smaller rectangle, and attempting to
+        // reverse the transform will yield poor results.
+
+        oLayoutSaver.RestoreLayout();
+
+        oBitmapRectangle =
+            new Rect(0, 0, dOriginalActualWidth, dOriginalActualHeight);
+
+        Debug.Assert(m_eLayoutState == LayoutState.Stable);
+
+        DrawGraph(oBitmapRectangle);
+
+        return (oBitmap);
     }
 
     //*************************************************************************
@@ -3264,13 +3326,29 @@ public class NodeXLControl : FrameworkElement
 
                 FireDrawingGraph();
 
-                // Start an asynchronous layout.  The m_oAsyncLayout object
-                // will fire LayOutGraphIterationCompleted and
-                // LayOutGraphCompleted events as it does its work.
-
                 m_oLastLayoutContext = new LayoutContext(oGraphRectangle2);
 
                 m_eLayoutState = LayoutState.LayingOut;
+
+                if (m_oAsyncLayout is SortableLayoutBase)
+                {
+                    // If the vertex layout order has been set, tell the layout
+                    // object to sort the vertices before laying them out.
+
+                    ( (SortableLayoutBase)m_oAsyncLayout ).VertexSorter =
+
+                        m_oGraph.ContainsKey(
+                            ReservedMetadataKeys.SortableLayoutOrderSet) ? 
+
+                        new ByMetadataVertexSorter<Single>(
+                            ReservedMetadataKeys.SortableLayoutOrder)
+                        :
+                        null;
+                }
+
+                // Start an asynchronous layout.  The m_oAsyncLayout object
+                // will fire LayOutGraphIterationCompleted and
+                // LayOutGraphCompleted events as it does its work.
 
                 m_oAsyncLayout.LayOutGraphAsync(
                     m_oGraph, m_oLastLayoutContext);
@@ -3317,7 +3395,7 @@ public class NodeXLControl : FrameworkElement
                     Debug.WriteLine("NodeXLControl: Transforming layout.");
                     #endif
 
-                    TransformLayout(oGraphRectangle);
+                    m_oLastLayoutContext = TransformLayout(oGraphRectangle);
                 }
 
                 DrawGraph(oGraphRectangle);
@@ -3329,7 +3407,7 @@ public class NodeXLControl : FrameworkElement
                 // The control has been resized and now the graph's layout
                 // needs to be transformed to the new size.
 
-                TransformLayout(oGraphRectangle);
+                m_oLastLayoutContext = TransformLayout(oGraphRectangle);
 
                 m_eLayoutState = LayoutState.Stable;
 
@@ -3374,15 +3452,19 @@ public class NodeXLControl : FrameworkElement
     //  Method: TransformLayout()
     //
     /// <summary>
-    /// Transform the graph's layout to a new size.
+    /// Transforms the graph's layout to a new size.
     /// </summary>
     ///
     /// <param name="oNewGraphRectangle">
     /// The new size.
     /// </param>
+    ///
+    /// <returns>
+    /// The new LayoutContext object that was used to transform the layout.
+    /// </returns>
     //*************************************************************************
 
-    protected void
+    protected LayoutContext
     TransformLayout
     (
         Rect oNewGraphRectangle
@@ -3396,7 +3478,7 @@ public class NodeXLControl : FrameworkElement
         m_oAsyncLayout.TransformLayout(m_oGraph,
             m_oLastLayoutContext, oNewLayoutContext);
 
-        m_oLastLayoutContext = oNewLayoutContext;
+        return (oNewLayoutContext);
     }
 
     //*************************************************************************
@@ -4857,21 +4939,47 @@ public class NodeXLControl : FrameworkElement
 
         if (m_oVertexToolTip != null)
         {
-            Debug.Assert(m_oVertexToolTipTracker.TrackedObject != null);
-            Debug.Assert(m_oVertexToolTipTracker.TrackedObject is IVertex);
+            // The height of the visible cursor is needed here, but that
+            // doesn't seem to be available in any API.  You can get the cursor
+            // size, but that size represents the entire cursor, part of which
+            // may be transparent.  Several posts, including the following,
+            // indicate that getting the visible height may not be practical:
+            //
+            // http://www.codeguru.com/forum/showthread.php?threadid=449040
+            //
+            // As a workaround, use just a hard-coded fraction of the cursor
+            // height.  This works fine for the standard and large cursors.  If
+            // extra large cursors are used, the cursor intrudes a bit into the
+            // tooltip.
+            //
+            // This has been tested on both 96 and 120 DPI screen resolutions.
 
-            IVertex oTrackedVertex =
-                (IVertex)m_oVertexToolTipTracker.TrackedObject;
+            Point oMousePosition = Mouse.GetPosition(this);
 
-            // Limit the tooltip to the graph rectangle.
+            Double dCursorHeight = SystemParameters.CursorHeight * 0.75;
 
             Rect oToolTipRectangle = new Rect(
-                WpfGraphicsUtil.PointFToWpfPoint(oTrackedVertex.Location),
+
+                new Point(oMousePosition.X, oMousePosition.Y + dCursorHeight),
+
                 m_oVertexToolTip.DesiredSize);
+
+            // Limit the tooltip to the graph rectangle.
 
             Rect oBoundedToolTipRectangle =
                 WpfGraphicsUtil.MoveRectangleWithinBounds(oToolTipRectangle,
                     new Rect(new Point(0, 0), finalSize), true);
+
+            if (oBoundedToolTipRectangle.Bottom == finalSize.Height)
+            {
+                // The tooltip is at the bottom of the graph rectangle, where
+                // it would be partially obscured by the cursor.  Move it so
+                // its bottom is at the top of the cursor.
+
+                oBoundedToolTipRectangle.Offset(0, 
+                    oMousePosition.Y - oBoundedToolTipRectangle.Bottom
+                    );
+            }
 
             m_oVertexToolTip.Arrange(oBoundedToolTipRectangle);
         }
@@ -5309,6 +5417,8 @@ public class NodeXLControl : FrameworkElement
     )
     {
         AssertValid();
+
+        e.Handled = true;
 
         // Do nothing if the drawing isn't in a stable state or a drag is in
         // progress.

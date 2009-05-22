@@ -274,7 +274,9 @@ public partial class MainForm : Form
                 oVertex.SetValue( ReservedMetadataKeys.PerVertexImage,
                     new System.Windows.Media.Imaging.BitmapImage(
                         new Uri( oRandom.Next(2) == 1 ?
-                            "C:\\Temp\\1.jpg" : "C:\\Temp\\2.jpg") ) );
+                            "..\\..\\Images\\TestImage1.gif" :
+                            "..\\..\\Images\\TestImage2.jpg",
+                            UriKind.Relative)));
             }
             #endif
 
@@ -648,13 +650,6 @@ public partial class MainForm : Form
     )
     {
         txbStatus.Clear();
-
-        // TODO
-
-        Bitmap oBitmap = oWpfNodeXLControl.CopyGraphToBitmap();
-
-        oBitmap.Save("C:\\Temp\\Temp.jpg",
-            System.Drawing.Imaging.ImageFormat.Jpeg);
     }
 
     private void

@@ -32,6 +32,42 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public interface IDynamicFilterRangeTrackBar
 {
     //*************************************************************************
+    //  Property: TableName
+    //
+    /// <summary>
+    /// Gets the name of the table containing the column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the table containing the column.
+    /// </value>
+    //*************************************************************************
+
+    String
+    TableName
+    {
+        get;
+    }
+
+    //*************************************************************************
+    //  Property: ColumnName
+    //
+    /// <summary>
+    /// Gets the name of the column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the column.
+    /// </value>
+    //*************************************************************************
+
+    String
+    ColumnName
+    {
+        get;
+    }
+
+    //*************************************************************************
     //  Property: AvailableMinimum
     //
     /// <summary>
@@ -99,6 +135,25 @@ public interface IDynamicFilterRangeTrackBar
 
     Decimal
     SelectedMaximum
+    {
+        get;
+    }
+
+    //*************************************************************************
+    //  Property: AvailableRangeSelected
+    //
+    /// <summary>
+    /// Gets a flag indicating whether the user has selected the filter's
+    /// entire available range.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the user has selected the filter's entire available range.
+    /// </value>
+    //*************************************************************************
+
+    Boolean
+    AvailableRangeSelected
     {
         get;
     }
@@ -176,6 +231,34 @@ public interface IDynamicFilterRangeTrackBar
     SetCustomProperties
     (
         DynamicFilterParameters dynamicFilterParameters
+    );
+
+    //*************************************************************************
+    //  Method: ValueToString()
+    //
+    /// <summary>
+    /// Converts a value to a string.
+    /// </summary>
+    ///
+    /// <param name="value">
+    /// The value to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="value" /> converted to a string as it would appear in
+    /// the control.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method uses the wrapped control's formatting properties to convert
+    /// a value to a string.
+    /// </remarks>
+    //*************************************************************************
+
+    String
+    ValueToString
+    (
+        Decimal value
     );
 
 

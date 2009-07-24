@@ -86,7 +86,7 @@ public class VertexLocationConverterTest : Object
         Single WorkbookX = VertexLocationConverter.MinimumXYWorkbook;
         Single WorkbookY = VertexLocationConverter.MinimumXYWorkbook;
         Single ExpectedGraphX = 100;
-        Single ExpectedGraphY = 200;
+        Single ExpectedGraphY = 2200;
 
         PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
             WorkbookX, WorkbookY);
@@ -113,7 +113,7 @@ public class VertexLocationConverterTest : Object
         Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook;
         Single WorkbookY = VertexLocationConverter.MaximumXYWorkbook;
         Single ExpectedGraphX = 1100;
-        Single ExpectedGraphY = 2200;
+        Single ExpectedGraphY = 200;
 
         PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
             WorkbookX, WorkbookY);
@@ -197,7 +197,7 @@ public class VertexLocationConverterTest : Object
         Single WorkbookX = VertexLocationConverter.MinimumXYWorkbook - 1F;
         Single WorkbookY = VertexLocationConverter.MinimumXYWorkbook - 123F;
         Single ExpectedGraphX = 100;
-        Single ExpectedGraphY = 200;
+        Single ExpectedGraphY = 2200;
 
         PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
             WorkbookX, WorkbookY);
@@ -224,7 +224,7 @@ public class VertexLocationConverterTest : Object
         Single WorkbookX = VertexLocationConverter.MaximumXYWorkbook + 1F;
         Single WorkbookY = VertexLocationConverter.MaximumXYWorkbook + 123F;
         Single ExpectedGraphX = 1100;
-        Single ExpectedGraphY = 2200;
+        Single ExpectedGraphY = 200;
 
         PointF oGraphPointF = m_oVertexLocationConverter.WorkbookToGraph(
             WorkbookX, WorkbookY);
@@ -251,7 +251,7 @@ public class VertexLocationConverterTest : Object
         Single fGraphX = 100;
         Single fGraphY = 200;
         Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
-        Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
 
         Single fWorkbookX, fWorkbookY;
 
@@ -280,7 +280,7 @@ public class VertexLocationConverterTest : Object
         Single fGraphX = 1100;
         Single fGraphY = 2200;
         Single ExpectedWorkbookX = VertexLocationConverter.MaximumXYWorkbook;
-        Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
 
         Single fWorkbookX, fWorkbookY;
 
@@ -375,7 +375,7 @@ public class VertexLocationConverterTest : Object
         Single fGraphX = 100 - 1;
         Single fGraphY = 200 - 123;
         Single ExpectedWorkbookX = VertexLocationConverter.MinimumXYWorkbook;
-        Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
 
         Single fWorkbookX, fWorkbookY;
 
@@ -404,7 +404,7 @@ public class VertexLocationConverterTest : Object
         Single fGraphX = 1100 + 1;
         Single fGraphY = 2200 + 123;
         Single ExpectedWorkbookX = VertexLocationConverter.MaximumXYWorkbook;
-        Single ExpectedWorkbookY = VertexLocationConverter.MaximumXYWorkbook;
+        Single ExpectedWorkbookY = VertexLocationConverter.MinimumXYWorkbook;
 
         Single fWorkbookX, fWorkbookY;
 

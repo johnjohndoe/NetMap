@@ -1031,7 +1031,8 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
             eDirectedness = GraphDirectedness.Directed;
         }
 
-        IGraph oGraph = new Graph(eDirectedness);
+        IGraph oGraph = oGraphFactory.CreateGraph(
+            eDirectedness, GraphRestrictions.None);
 
         IVertexCollection oVertices = oGraph.Vertices;
         IEdgeCollection oEdges = oGraph.Edges;

@@ -62,13 +62,13 @@
     <Compile Include="..\Common\AssemblyUtil2.cs">
       <Link>Util\AssemblyUtil2.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.cs">
-      <Link>Controls\RegisterUser\RegisterUser.cs</Link>
+    <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.cs">
+      <Link>Controls\RegisterUser\RegisterUserControl.cs</Link>
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.designer.cs">
-      <Link>Controls\RegisterUser\RegisterUser.designer.cs</Link>
-      <DependentUpon>RegisterUser.cs</DependentUpon>
+    <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.designer.cs">
+      <Link>Controls\RegisterUser\RegisterUserControl.designer.cs</Link>
+      <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="..\Common\ProjectInformation.cs">
       <Link>Util\ProjectInformation.cs</Link>
@@ -91,9 +91,9 @@
       <Link>Util\FormPlus.resx</Link>
       <DependentUpon>FormPlus.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUser.resx">
-      <Link>Controls\RegisterUser\RegisterUser.resx</Link>
-      <DependentUpon>RegisterUser.cs</DependentUpon>
+    <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUserControl.resx">
+      <Link>Controls\RegisterUser\RegisterUserControl.resx</Link>
+      <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

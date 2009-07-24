@@ -57,7 +57,8 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
         m_oGeneralUserSettings = generalUserSettings;
         m_oWorkbook = workbook;
-        m_oFont = m_oGeneralUserSettings.Font;
+        m_oLabelFont = m_oGeneralUserSettings.LabelFont;
+        m_oAxisFont = m_oGeneralUserSettings.AxisFont;
         m_oLayoutUserSettings = m_oGeneralUserSettings.LayoutUserSettings;
 
         // Instantiate an object that saves and retrieves the position of this
@@ -165,7 +166,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             m_oGeneralUserSettings.EdgeAlpha = fEdgeAlpha;
 
             m_oGeneralUserSettings.SelectedEdgeColor =
-				usrSelectedEdgeColor.Color;
+                usrSelectedEdgeColor.Color;
 
             m_oGeneralUserSettings.VertexShape =
                 (VertexShape)cbxVertexShape.SelectedValue;
@@ -178,13 +179,15 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
                 usrPrimaryLabelFillColor.Color;
 
             m_oGeneralUserSettings.SelectedVertexColor =
-				usrSelectedVertexColor.Color;
+                usrSelectedVertexColor.Color;
 
             m_oGeneralUserSettings.AutoSelect = chkAutoSelect.Checked;
-
-            m_oGeneralUserSettings.Font = m_oFont;
-
+            m_oGeneralUserSettings.LabelFont = m_oLabelFont;
+            m_oGeneralUserSettings.AxisFont = m_oAxisFont;
             m_oGeneralUserSettings.LayoutUserSettings = m_oLayoutUserSettings;
+
+            m_oGeneralUserSettings.AutoReadWorkbook =
+                chkAutoReadWorkbook.Checked;
         }
         else
         {
@@ -201,7 +204,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             nudEdgeAlpha.Value = (Decimal)m_oGeneralUserSettings.EdgeAlpha;
 
             usrSelectedEdgeColor.Color =
-				m_oGeneralUserSettings.SelectedEdgeColor;
+                m_oGeneralUserSettings.SelectedEdgeColor;
 
             cbxVertexShape.SelectedValue = m_oGeneralUserSettings.VertexShape;
 
@@ -215,17 +218,78 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
                 m_oGeneralUserSettings.PrimaryLabelFillColor;
 
             usrSelectedVertexColor.Color =
-				m_oGeneralUserSettings.SelectedVertexColor;
+                m_oGeneralUserSettings.SelectedVertexColor;
 
             chkAutoSelect.Checked = m_oGeneralUserSettings.AutoSelect;
 
-            m_oFont = m_oGeneralUserSettings.Font;
+            m_oLabelFont = m_oGeneralUserSettings.LabelFont;
+            m_oAxisFont = m_oGeneralUserSettings.AxisFont;
 
             m_oLayoutUserSettings =
                 m_oGeneralUserSettings.LayoutUserSettings.Copy();
+
+            chkAutoReadWorkbook.Checked =
+                m_oGeneralUserSettings.AutoReadWorkbook;
         }
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: EditFont()
+    //
+    /// <summary>
+    /// Edits a Font object.
+    /// </summary>
+    ///
+    /// <param name="oFont">
+    /// The Font object to edit.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    EditFont
+    (
+        ref Font oFont
+    )
+    {
+        AssertValid();
+
+        FontDialog oFontDialog = new FontDialog();
+
+        // Note that the FontDialog makes a copy of oFont, so if the user edits
+        // the font within FontDialog but then cancels this
+        // GeneralUserSettingsDialog, the m_oGeneralUserSettings.Font object
+        // doesn't get modified.  This is the correct behavior.
+
+        oFontDialog.Font = oFont;
+        oFontDialog.FontMustExist = true;
+        oFontDialog.ScriptsOnly = true;
+        oFontDialog.ShowEffects = false;
+
+        // The FontConverter class implicity used by ApplicationsSettingsBase
+        // to persist GeneralUserSettings's Font objects does not persist the
+        // script, so don't allow the user to change the script from the
+        // default.
+
+        oFontDialog.AllowScriptChange = false;
+
+        try
+        {
+            if (oFontDialog.ShowDialog() == DialogResult.OK)
+            {
+                oFont = oFontDialog.Font;
+            }
+        }
+        catch (ArgumentException)
+        {
+            // Known bug: Selecting the Visual UI font in the dialog throws an
+            // ArgumentException of "Only TrueType fonts are supported. This is
+            // not a TrueType font."  See the following post:
+            //
+            // http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/
+            // e50a3dc2-a9d9-4eea-aae6-39bc7c18b04e
+        }
     }
 
     //*************************************************************************
@@ -312,10 +376,10 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: btnFont_Click()
+    //  Method: btnLabelFont_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnFont button.
+    /// Handles the Click event on the btnLabelFont button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -328,7 +392,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    btnFont_Click
+    btnLabelFont_Click
     (
         object sender,
         EventArgs e
@@ -336,26 +400,35 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        FontDialog oFontDialog = new FontDialog();
+        EditFont(ref m_oLabelFont);
+    }
 
-        // Note that the FontDialog makes a copy of m_oFont, so if the user
-        // edits the font within FontDialog but then cancels this
-        // GeneralUserSettingsDialog, the m_oGeneralUserSettings.Font object
-        // doesn't get modified.  This is the correct behavior.
+    //*************************************************************************
+    //  Method: btnAxisFont_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnAxisFont button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
 
-        oFontDialog.Font = m_oFont;
-        oFontDialog.FontMustExist = true;
+    private void
+    btnAxisFont_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
 
-        // The FontConverter class implicity used by ApplicationsSettingsBase
-        // to persist GeneralUserSettings.Font does not persist the script, so
-        // don't allow the user to change the script from the default.
-
-        oFontDialog.AllowScriptChange = false;
-
-        if (oFontDialog.ShowDialog() == DialogResult.OK)
-        {
-            m_oFont = oFontDialog.Font;
-        }
+        EditFont(ref m_oAxisFont);
     }
 
     //*************************************************************************
@@ -467,7 +540,8 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
         Debug.Assert(m_oGeneralUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
-        Debug.Assert(m_oFont != null);
+        Debug.Assert(m_oLabelFont != null);
+        Debug.Assert(m_oAxisFont != null);
         Debug.Assert(m_oLayoutUserSettings != null);
         Debug.Assert(m_oGeneralUserSettingsDialogUserSettings != null);
     }
@@ -491,10 +565,12 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
     protected LayoutUserSettings m_oLayoutUserSettings;
 
-    /// Font property of m_oGeneralUserSettings.  This gets edited by a
+    /// Font properties of m_oGeneralUserSettings.  These get edited by a
     /// FontDialog.
 
-    protected Font m_oFont;
+    protected Font m_oLabelFont;
+    ///
+    protected Font m_oAxisFont;
 
     /// User settings for this dialog.
 

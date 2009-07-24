@@ -21,6 +21,7 @@ using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Layouts;
 using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.Visualization.Wpf
 {
@@ -429,7 +430,7 @@ public partial class Form1 : Form
 /// </remarks>
 //*****************************************************************************
 
-public class NodeXLControl : FrameworkElement
+public partial class NodeXLControl : FrameworkElement
 {
     //*************************************************************************
     //  Static constructor: NodeXLControl()
@@ -505,7 +506,7 @@ public class NodeXLControl : FrameworkElement
 
         this.FocusVisualStyle = null;
 
-        AssertValid();
+        // AssertValid();
     }
 
     #if false 
@@ -1727,11 +1728,11 @@ public class NodeXLControl : FrameworkElement
     //  Method: SetFont()
     //
     /// <summary>
-    /// Sets the font used to draw primary and secondary vertex labels.
+    /// Sets the font used to draw primary and secondary labels.
     /// </summary>
     ///
-    /// <param name="fontFamily">
-    /// The FontFamily to use.
+    /// <param name="typeface">
+    /// The Typeface to use.
     /// </param>
     ///
     /// <param name="emSize">
@@ -1746,7 +1747,7 @@ public class NodeXLControl : FrameworkElement
     public void
     SetFont
     (
-        FontFamily fontFamily,
+        Typeface typeface,
         Double emSize
     )
     {
@@ -1755,7 +1756,7 @@ public class NodeXLControl : FrameworkElement
         // It is okay to change the font while the graph is being laid out,
         // because the font is not used until OnRender() is called.
 
-        this.VertexDrawer.SetFont(fontFamily, emSize);
+        this.VertexDrawer.SetFont(typeface, emSize);
     }
 
     //*************************************************************************
@@ -2231,6 +2232,14 @@ public class NodeXLControl : FrameworkElement
 
         LayoutSaver oLayoutSaver = new LayoutSaver(this.Graph);
 
+        // Adjust the control's transforms so that the image will be centered
+        // on the same point on the graph that the control is centered on.
+
+        GraphImageCenterer oGraphImageCenterer = new GraphImageCenterer(this);
+
+        oGraphImageCenterer.CenterGraphImage(
+            new Size(bitmapWidthPx, bitmapHeightPx) );
+
         // Transform the graph's layout to the specified size.
 
         Double dOriginalActualWidth = this.ActualWidth;
@@ -2269,6 +2278,8 @@ public class NodeXLControl : FrameworkElement
         Debug.Assert(m_eLayoutState == LayoutState.Stable);
 
         DrawGraph(oBitmapRectangle);
+
+        oGraphImageCenterer.RestoreCenter();
 
         return (oBitmap);
     }
@@ -2561,6 +2572,19 @@ public class NodeXLControl : FrameworkElement
     [Category("Mouse")]
 
     public event EventHandler GraphZoomChanged;
+
+
+    //*************************************************************************
+    //  Event: GraphTranslationChanged
+    //
+    /// <summary>
+    /// Occurs when the graph is moved with the mouse.
+    /// </summary>
+    //*************************************************************************
+
+    [Category("Mouse")]
+
+    public event EventHandler GraphTranslationChanged;
 
 
     //*************************************************************************
@@ -3175,6 +3199,8 @@ public class NodeXLControl : FrameworkElement
 
         oTranslateTransformForRender.X = dTranslateX;
         oTranslateTransformForRender.Y = dTranslateY;
+
+        FireGraphTranslationChanged();
     }
 
     //*************************************************************************
@@ -3441,6 +3467,11 @@ public class NodeXLControl : FrameworkElement
     )
     {
         AssertValid();
+
+        #if TRACE_LAYOUT_AND_DRAW
+        Debug.WriteLine("NodeXLControl: DrawGraph(), oGraphRectangle = "
+            + oGraphRectangle);
+        #endif
 
         m_oLastGraphDrawingContext = new GraphDrawingContext(
             oGraphRectangle, m_oAsyncLayout.Margin, m_oGraphDrawer.BackColor);
@@ -4051,6 +4082,8 @@ public class NodeXLControl : FrameworkElement
 
         oTranslateTransform.X = dNewTranslateX;
         oTranslateTransform.Y = dNewTranslateY;
+
+        FireGraphTranslationChanged();
     }
 
     //*************************************************************************
@@ -4704,6 +4737,22 @@ public class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
+    //  Method: FireGraphTranslationChanged()
+    //
+    /// <summary>
+    /// Fires the <see cref="GraphTranslationChanged" /> event if appropriate.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    FireGraphTranslationChanged()
+    {
+        AssertValid();
+
+        EventUtil.FireEvent(this, this.GraphTranslationChanged);
+    }
+
+    //*************************************************************************
     //  Method: FireVerticesMoved()
     //
     /// <summary>
@@ -4899,16 +4948,29 @@ public class NodeXLControl : FrameworkElement
     {
         AssertValid();
 
-        #if TRACE_LAYOUT_AND_DRAW
-        Debug.WriteLine("NodeXLControl: MeasureOverride");
-        #endif
-
         if (m_oVertexToolTip != null)
         {
             m_oVertexToolTip.Measure(availableSize);
         }
 
-        return ( base.MeasureOverride(availableSize) );
+        Size oDesiredSize;
+
+        if (availableSize.Width == Double.PositiveInfinity ||
+            availableSize.Height == Double.PositiveInfinity)
+        {
+            oDesiredSize = new Size(1000, 1000);
+        }
+        else
+        {
+            oDesiredSize = availableSize;
+        }
+
+        #if TRACE_LAYOUT_AND_DRAW
+        Debug.WriteLine("NodeXLControl: MeasureOverride: availableSize=" +
+            availableSize + ", DesiredSize=" + oDesiredSize);
+        #endif
+
+        return (oDesiredSize);
     }
 
     //*************************************************************************
@@ -4936,6 +4998,11 @@ public class NodeXLControl : FrameworkElement
     )
     {
         AssertValid();
+
+        #if TRACE_LAYOUT_AND_DRAW
+        Debug.WriteLine("NodeXLControl: ArrangeOverride: finalSize=" +
+            finalSize);
+        #endif
 
         if (m_oVertexToolTip != null)
         {
@@ -4984,7 +5051,7 @@ public class NodeXLControl : FrameworkElement
             m_oVertexToolTip.Arrange(oBoundedToolTipRectangle);
         }
 
-        return ( base.ArrangeOverride(finalSize) );
+        return (finalSize);
     }
 
     //*************************************************************************
@@ -5701,7 +5768,7 @@ public class NodeXLControl : FrameworkElement
 
     [Conditional("DEBUG")]
 
-    public void
+    public virtual void
     AssertValid()
     {
         Debug.Assert(m_oGraph != null);

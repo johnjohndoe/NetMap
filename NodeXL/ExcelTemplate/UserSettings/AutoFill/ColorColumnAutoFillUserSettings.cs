@@ -48,7 +48,7 @@ public class ColorColumnAutoFillUserSettings : Object
         m_dSourceNumber2 = 10;
         m_eDestinationColor1 = Color.Red;
         m_eDestinationColor2 = Color.Green;
-        m_bIgnoreOutliers = true;
+        m_bIgnoreOutliers = false;
 
         AssertValid();
     }
@@ -255,7 +255,7 @@ public class ColorColumnAutoFillUserSettings : Object
     /// <value>
     /// true if outliers should be ignored in the source column.  Valid only if
     /// <paramref name="useSourceNumber1" /> and <paramref
-    /// name="useSourceNumber2" /> are false.  The default is true.
+    /// name="useSourceNumber2" /> are false.  The default is false.
     /// </value>
     //*************************************************************************
 

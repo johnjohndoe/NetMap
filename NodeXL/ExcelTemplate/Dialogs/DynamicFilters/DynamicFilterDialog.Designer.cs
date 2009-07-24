@@ -138,9 +138,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnReadWorkbook.ImageList = this.imageList1;
             this.btnReadWorkbook.Location = new System.Drawing.Point(249, 209);
             this.btnReadWorkbook.Name = "btnReadWorkbook";
-            this.btnReadWorkbook.Size = new System.Drawing.Size(115, 23);
+            this.btnReadWorkbook.Size = new System.Drawing.Size(109, 23);
             this.btnReadWorkbook.TabIndex = 5;
-            this.btnReadWorkbook.Text = "Read &Workbook";
+            this.btnReadWorkbook.Text = "&Refresh Filters";
             this.btnReadWorkbook.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.toolTip1.SetToolTip(this.btnReadWorkbook, "Refresh the filter list from the workbook after the workbook is edited");
             this.btnReadWorkbook.UseVisualStyleBackColor = true;

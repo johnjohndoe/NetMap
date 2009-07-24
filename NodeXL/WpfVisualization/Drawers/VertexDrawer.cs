@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.Research.CommunityTechnologies.AppLib;
-using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.Visualization.Wpf
 {
@@ -115,7 +115,10 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         m_eShape = VertexShape.Disk;
         m_dRadius = 3.0;
         m_oPrimaryLabelFillColor = SystemColors.WindowColor;
-        m_oFontFamily = SystemFonts.MessageFontFamily;
+
+        m_oTypeface = new Typeface(SystemFonts.MessageFontFamily,
+            FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+
         m_dFontSizeEm = 10;
 
         AssertValid();
@@ -412,8 +415,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// Sets the font used to draw primary and secondary labels.
     /// </summary>
     ///
-    /// <param name="fontFamily">
-    /// The FontFamily to use.
+    /// <param name="typeface">
+    /// The Typeface to use.
     /// </param>
     ///
     /// <param name="emSize">
@@ -428,20 +431,20 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     public void
     SetFont
     (
-        FontFamily fontFamily,
+        Typeface typeface,
         Double emSize
     )
     {
-        Debug.Assert(fontFamily != null);
+        Debug.Assert(typeface != null);
         Debug.Assert(emSize > 0);
         AssertValid();
 
-        if (m_oFontFamily == fontFamily && m_dFontSizeEm == emSize)
+        if (m_oTypeface == typeface && m_dFontSizeEm == emSize)
         {
             return;
         }
 
-        m_oFontFamily = fontFamily;
+        m_oTypeface = typeface;
         m_dFontSizeEm = emSize;
 
         FireLayoutRequired();
@@ -957,8 +960,22 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
         Rect oVertexRectangleWithPadding = oVertexRectangle;
 
-        oVertexRectangleWithPadding.Inflate(
-            PrimaryLabelPadding, PrimaryLabelPadding * 0.8);
+        oVertexRectangleWithPadding.Inflate(PrimaryLabelPadding,
+            PrimaryLabelPadding * 0.8);
+
+        if (m_oTypeface.Style != FontStyles.Normal)
+        {
+            // This is a hack to move the right edge of the padded rectangle
+            // to the right to adjust for wider italic text, which
+            // FormattedText.Width does not account for.  What is the correct
+            // way to do this?  It might involve the FormattedText.Overhang*
+            // properties, but I'll be darned if I can understand how those
+            // properties work.
+
+            Double dItalicCompensation = m_dFontSizeEm / 7.0;
+            oVertexRectangleWithPadding.Inflate(dItalicCompensation, 0);
+            oVertexRectangleWithPadding.Offset(dItalicCompensation, 0);
+        }
 
         // Move the vertex if it falls outside the graph rectangle.
 
@@ -1385,9 +1402,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Debug.Assert(sText != null);
 
         FormattedText oFormattedText = new FormattedText( sText,
-            CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-            new Typeface(m_oFontFamily, FontStyles.Normal, FontWeights.Normal,
-                FontStretches.Normal), m_dFontSizeEm, GetBrush(oColor) );
+            CultureInfo.CurrentCulture, FlowDirection.LeftToRight, m_oTypeface,
+            m_dFontSizeEm, GetBrush(oColor) );
 
         return (oFormattedText);
     }
@@ -1461,7 +1477,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Debug.Assert(m_dRadius >= MinimumRadius);
         Debug.Assert(m_dRadius <= MaximumRadius);
         // m_oPrimaryLabelFillColor
-        Debug.Assert(m_oFontFamily != null);
+        Debug.Assert(m_oTypeface != null);
         Debug.Assert(m_dFontSizeEm > 0);
     }
 
@@ -1520,9 +1536,9 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
     protected Color m_oPrimaryLabelFillColor;
 
-    /// The font family to use to draw primary and secondary labels.
+    /// The Typeface to use to draw primary and secondary labels.
 
-    protected FontFamily m_oFontFamily;
+    protected Typeface m_oTypeface;
 
     /// The font size to use to draw primary and secondary labels, in ems.
 

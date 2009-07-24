@@ -185,7 +185,143 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: GetColumnGroupVisibility
+    //  Property: AutoFillWorkbookResults
+    //
+    /// <summary>
+    /// Gets or sets the results of running the application's autofill feature.
+    /// </summary>
+    ///
+    /// <value>
+    /// The results of running the application's autofill feature, as an <see
+    /// cref="ExcelTemplate.AutoFillWorkbookResults" /> object.  If the feature
+    /// hasn't been run on the workbook, all TryXX() methods on the returned
+    /// object will return false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// Because the autofill and "autofill with scheme" features are mutually
+    /// exclusive, setting this property may clear any <see
+    /// cref="ExcelTemplate.AutoFillWorkbookWithSchemeResults" /> object that
+    /// was saved set by the <see cref="AutoFillWorkbookWithSchemeResults" />
+    /// property.  (It does this only if one or more columns were actually
+    /// autofilled.)
+    /// </remarks>
+    //*************************************************************************
+
+    public AutoFillWorkbookResults
+    AutoFillWorkbookResults
+    {
+        get
+        {
+            AssertValid();
+
+            // The results are stored in the workbook as a String, using the
+            // AutoFillWorkbookResults.ConvertToString() and
+            // ConvertFromString() methods.
+
+            Object oAutoFillWorkbookResults;
+
+            if ( !TryGetValue(AutoFillWorkbookResultsSettingName,
+                typeof(String), out oAutoFillWorkbookResults) )
+            {
+                // Return an object whose TryXX() methods will all return
+                // false.
+
+                return ( new AutoFillWorkbookResults() );
+            }
+
+            return ( AutoFillWorkbookResults.FromString(
+                (String)oAutoFillWorkbookResults) );
+        }
+
+        set
+        {
+            SetValue( AutoFillWorkbookResultsSettingName,
+                value.ConvertToString() );
+
+            // Clear the scheme results if necessary.  (See the property
+            // comments.)
+
+            if (value.AutoFilledNonXYColumnCount > 0)
+            {
+                ClearAutoFillWorkbookWithSchemeResults();
+            }
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AutoFillWorkbookWithSchemeResults
+    //
+    /// <summary>
+    /// Gets or sets the results of running the application's "autofill with
+    /// scheme" feature.
+    /// </summary>
+    ///
+    /// <value>
+    /// The results of running the application's "autofill with scheme"
+    /// feature, as an <see
+    /// cref="ExcelTemplate.AutoFillWorkbookWithSchemeResults" /> object.  If
+    /// the feature hasn't been run on the workbook, the <see
+    /// cref="ExcelTemplate.AutoFillWorkbookWithSchemeResults.SchemeType" />
+    /// property on the returned object will return <see
+    /// cref="AutoFillSchemeType.None" />.
+    /// </value>
+    ///
+    /// <remarks>
+    /// Because the autofill and "autofill with scheme" features are mutually
+    /// exclusive, setting this property clears any <see
+    /// cref="ExcelTemplate.AutoFillWorkbookResults" /> object that was saved
+    /// by the <see cref="AutoFillWorkbookResults" /> property.
+    /// </remarks>
+    //*************************************************************************
+
+    public AutoFillWorkbookWithSchemeResults
+    AutoFillWorkbookWithSchemeResults
+    {
+        get
+        {
+            AssertValid();
+
+            // The results are stored in the workbook as a String, using the
+            // AutoFillWorkbookWithSchemeResults.ConvertToString() and
+            // ConvertFromString() methods.
+
+            Object oAutoFillWorkbookWithSchemeResults;
+
+            if ( !TryGetValue(AutoFillWorkbookWithSchemeResultsSettingName,
+                typeof(String), out oAutoFillWorkbookWithSchemeResults) )
+            {
+                // Return an object whose Type property will return
+                // SchemeType.None.
+
+                return ( new AutoFillWorkbookWithSchemeResults() );
+            }
+
+            return ( AutoFillWorkbookWithSchemeResults.ConvertFromString(
+                (String)oAutoFillWorkbookWithSchemeResults) );
+        }
+
+        set
+        {
+            SetValue( AutoFillWorkbookWithSchemeResultsSettingName,
+                value.ConvertToString() );
+
+            // Clear the autofill results if necessary.  (See the property
+            // comments.)
+
+            if (value.SchemeType != AutoFillSchemeType.None)
+            {
+                ClearAutoFillWorkbookResults();
+            }
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetColumnGroupVisibility()
     //
     /// <summary>
     /// Gets a flag specifying whether a column group should be shown.
@@ -221,7 +357,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: SetColumnGroupVisibility
+    //  Method: SetColumnGroupVisibility()
     //
     /// <summary>
     /// Sets a flag specifying whether a column group should be shown.
@@ -249,7 +385,60 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: GetColumnGroupSettingName
+    //  Method: OnWorkbookTablesCleared()
+    //
+    /// <summary>
+    /// Clears properties that are no longer valid after the workbook's tables
+    /// have been cleared.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    OnWorkbookTablesCleared()
+    {
+        AssertValid();
+
+        ClearAutoFillWorkbookResults();
+        ClearAutoFillWorkbookWithSchemeResults();
+    }
+
+    //*************************************************************************
+    //  Method: ClearAutoFillWorkbookResults()
+    //
+    /// <summary>
+    /// Clears the results of running the application's autofill feature.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ClearAutoFillWorkbookResults()
+    {
+        AssertValid();
+
+        SetValue( AutoFillWorkbookResultsSettingName,
+            ( new AutoFillWorkbookResults() ).ConvertToString() );
+    }
+
+    //*************************************************************************
+    //  Method: ClearAutoFillWorkbookWithSchemeResults()
+    //
+    /// <summary>
+    /// Clears the results of running the application's "autofill with scheme"
+    /// feature.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ClearAutoFillWorkbookWithSchemeResults()
+    {
+        AssertValid();
+
+        SetValue( AutoFillWorkbookWithSchemeResultsSettingName,
+            ( new AutoFillWorkbookWithSchemeResults() ).ConvertToString() );
+    }
+
+    //*************************************************************************
+    //  Method: GetColumnGroupSettingName()
     //
     /// <summary>
     /// Gets the setting name to use for getting or setting a flag specifying
@@ -280,7 +469,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: SetValue
+    //  Method: SetValue()
     //
     /// <summary>
     /// Sets the value of a setting.
@@ -312,7 +501,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: TryGetValue
+    //  Method: TryGetValue()
     //
     /// <summary>
     /// Attempts to get the value of a specified setting.
@@ -566,6 +755,17 @@ public class PerWorkbookSettings : WorksheetReaderBase
     /// Name of the FilteredAlpha setting.
 
     protected const String FilteredAlphaSettingName = "Filtered Alpha";
+
+    /// Name of the AutoFillWorkbookResults setting.
+
+    protected const String AutoFillWorkbookResultsSettingName =
+        "Autofill Workbook Results";
+
+    /// Name of the AutoFillWorkbookWithSchemeResults setting.
+
+    protected const String AutoFillWorkbookWithSchemeResultsSettingName =
+        "Autofill Workbook With Scheme Results";
+
 
 
     //*************************************************************************

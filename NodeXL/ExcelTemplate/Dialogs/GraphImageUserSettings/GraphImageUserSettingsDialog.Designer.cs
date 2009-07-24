@@ -37,12 +37,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.grpThisSize = new System.Windows.Forms.GroupBox();
-            this.nudHeightPx = new System.Windows.Forms.NumericUpDown();
+            this.nudHeight = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.nudWidthPx = new System.Windows.Forms.NumericUpDown();
+            this.nudWidth = new System.Windows.Forms.NumericUpDown();
             this.grpUseControlSize = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -52,29 +52,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lblControlWidth = new System.Windows.Forms.Label();
             this.radThisSize = new System.Windows.Forms.RadioButton();
             this.radUseControlSize = new System.Windows.Forms.RadioButton();
+            this.lnkUnits = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.grpThisSize.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudHeightPx)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudWidthPx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             this.grpUseControlSize.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(139, 268);
+            this.btnCancel.Location = new System.Drawing.Point(129, 298);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(53, 268);
+            this.btnOK.Location = new System.Drawing.Point(43, 298);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -95,40 +96,40 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.panel1.Controls.Add(this.radUseControlSize);
             this.panel1.Location = new System.Drawing.Point(23, 51);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(198, 202);
+            this.panel1.Size = new System.Drawing.Size(188, 202);
             this.panel1.TabIndex = 1;
             // 
             // grpThisSize
             // 
-            this.grpThisSize.Controls.Add(this.nudHeightPx);
+            this.grpThisSize.Controls.Add(this.nudHeight);
             this.grpThisSize.Controls.Add(this.label13);
             this.grpThisSize.Controls.Add(this.label4);
             this.grpThisSize.Controls.Add(this.label12);
             this.grpThisSize.Controls.Add(this.label6);
-            this.grpThisSize.Controls.Add(this.nudWidthPx);
+            this.grpThisSize.Controls.Add(this.nudWidth);
             this.grpThisSize.Location = new System.Drawing.Point(22, 125);
             this.grpThisSize.Name = "grpThisSize";
-            this.grpThisSize.Size = new System.Drawing.Size(174, 72);
+            this.grpThisSize.Size = new System.Drawing.Size(164, 72);
             this.grpThisSize.TabIndex = 3;
             this.grpThisSize.TabStop = false;
             // 
-            // nudHeightPx
+            // nudHeight
             // 
-            this.nudHeightPx.Location = new System.Drawing.Point(55, 38);
-            this.nudHeightPx.Maximum = new decimal(new int[] {
+            this.nudHeight.Location = new System.Drawing.Point(55, 38);
+            this.nudHeight.Maximum = new decimal(new int[] {
             5000,
             0,
             0,
             0});
-            this.nudHeightPx.Minimum = new decimal(new int[] {
+            this.nudHeight.Minimum = new decimal(new int[] {
             20,
             0,
             0,
             0});
-            this.nudHeightPx.Name = "nudHeightPx";
-            this.nudHeightPx.Size = new System.Drawing.Size(62, 20);
-            this.nudHeightPx.TabIndex = 4;
-            this.nudHeightPx.Value = new decimal(new int[] {
+            this.nudHeight.Name = "nudHeight";
+            this.nudHeight.Size = new System.Drawing.Size(62, 20);
+            this.nudHeight.TabIndex = 4;
+            this.nudHeight.Value = new decimal(new int[] {
             20,
             0,
             0,
@@ -148,18 +149,18 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(127, 42);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 13);
+            this.label4.Size = new System.Drawing.Size(29, 13);
             this.label4.TabIndex = 5;
-            this.label4.Text = "pixels";
+            this.label4.Text = "units";
             // 
             // label12
             // 
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(127, 16);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(33, 13);
+            this.label12.Size = new System.Drawing.Size(29, 13);
             this.label12.TabIndex = 2;
-            this.label12.Text = "pixels";
+            this.label12.Text = "units";
             // 
             // label6
             // 
@@ -170,23 +171,23 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label6.TabIndex = 3;
             this.label6.Text = "&Height:";
             // 
-            // nudWidthPx
+            // nudWidth
             // 
-            this.nudWidthPx.Location = new System.Drawing.Point(55, 12);
-            this.nudWidthPx.Maximum = new decimal(new int[] {
+            this.nudWidth.Location = new System.Drawing.Point(55, 12);
+            this.nudWidth.Maximum = new decimal(new int[] {
             5000,
             0,
             0,
             0});
-            this.nudWidthPx.Minimum = new decimal(new int[] {
+            this.nudWidth.Minimum = new decimal(new int[] {
             20,
             0,
             0,
             0});
-            this.nudWidthPx.Name = "nudWidthPx";
-            this.nudWidthPx.Size = new System.Drawing.Size(62, 20);
-            this.nudWidthPx.TabIndex = 1;
-            this.nudWidthPx.Value = new decimal(new int[] {
+            this.nudWidth.Name = "nudWidth";
+            this.nudWidth.Size = new System.Drawing.Size(62, 20);
+            this.nudWidth.TabIndex = 1;
+            this.nudWidth.Value = new decimal(new int[] {
             20,
             0,
             0,
@@ -202,7 +203,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.grpUseControlSize.Controls.Add(this.lblControlWidth);
             this.grpUseControlSize.Location = new System.Drawing.Point(22, 26);
             this.grpUseControlSize.Name = "grpUseControlSize";
-            this.grpUseControlSize.Size = new System.Drawing.Size(174, 64);
+            this.grpUseControlSize.Size = new System.Drawing.Size(164, 64);
             this.grpUseControlSize.TabIndex = 1;
             this.grpUseControlSize.TabStop = false;
             // 
@@ -211,9 +212,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(125, 40);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(33, 13);
+            this.label7.Size = new System.Drawing.Size(29, 13);
             this.label7.TabIndex = 5;
-            this.label7.Text = "pixels";
+            this.label7.Text = "units";
             // 
             // label2
             // 
@@ -238,9 +239,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(125, 14);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(33, 13);
+            this.label3.Size = new System.Drawing.Size(29, 13);
             this.label3.TabIndex = 2;
-            this.label3.Text = "pixels";
+            this.label3.Text = "units";
             // 
             // label5
             // 
@@ -284,13 +285,26 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radUseControlSize.UseVisualStyleBackColor = true;
             this.radUseControlSize.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
+            // lnkUnits
+            // 
+            this.lnkUnits.AutoSize = true;
+            this.lnkUnits.Location = new System.Drawing.Point(109, 264);
+            this.lnkUnits.Name = "lnkUnits";
+            this.lnkUnits.Size = new System.Drawing.Size(100, 13);
+            this.lnkUnits.TabIndex = 2;
+            this.lnkUnits.TabStop = true;
+            this.lnkUnits.Text = "What are the units?";
+            this.lnkUnits.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lnkUnits.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkUnits_LinkClicked);
+            // 
             // GraphImageUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(236, 304);
+            this.ClientSize = new System.Drawing.Size(226, 338);
+            this.Controls.Add(this.lnkUnits);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);
@@ -304,11 +318,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.panel1.PerformLayout();
             this.grpThisSize.ResumeLayout(false);
             this.grpThisSize.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudHeightPx)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudWidthPx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
             this.grpUseControlSize.ResumeLayout(false);
             this.grpUseControlSize.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -328,11 +343,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label lblControlHeight;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown nudWidthPx;
-        private System.Windows.Forms.NumericUpDown nudHeightPx;
+        private System.Windows.Forms.NumericUpDown nudWidth;
+        private System.Windows.Forms.NumericUpDown nudHeight;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox grpUseControlSize;
         private System.Windows.Forms.GroupBox grpThisSize;
+        private System.Windows.Forms.LinkLabel lnkUnits;
     }
 }

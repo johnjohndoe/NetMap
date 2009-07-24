@@ -122,6 +122,102 @@ public static class EdgeUtil
         vertex1 = aoVertices[0];
         vertex2 = aoVertices[1];
     }
+
+    //*************************************************************************
+    //  Method: GetEdgeWeight()
+    //
+    /// <summary>
+    /// Gets the edge weight between two vertices.
+    /// </summary>
+    ///
+    /// <param name="vertex1">
+    /// The first vertex.
+    /// </param>
+    ///
+    /// <param name="vertex2">
+    /// The second vertex.
+    /// </param>
+    ///
+    /// <returns>
+    /// The edge weight between the two vertices.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// It's assumed that duplicate edges have been merged, and that the
+    /// <see cref="ReservedMetadataKeys.EdgeWeight" /> key has been set on
+    /// each of the graph's edges.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Double
+    GetEdgeWeight
+    (
+        IVertex vertex1,
+        IVertex vertex2
+    )
+    {
+        Debug.Assert(vertex1 != null);
+        Debug.Assert(vertex2 != null);
+
+        Double dEdgeWeight = 0;
+
+        // Get the edges that connect the two vertices.  This includes all
+        // connecting edges and does not take directedness into account.
+
+        IEdge [] aoConnectingEdges = vertex1.GetConnectingEdges(vertex2);
+        Int32 iConnectingEdges = aoConnectingEdges.Length;
+        IEdge oConnectingEdgeWithEdgeWeight = null;
+
+        switch (vertex1.ParentGraph.Directedness)
+        {
+            case GraphDirectedness.Directed:
+
+                // There can be 0, 1, or 2 edges between the vertices.  Only
+                // one of them can originate at vertex1.
+
+                Debug.Assert(iConnectingEdges <= 2);
+
+                foreach (IEdge oConnectingEdge in aoConnectingEdges)
+                {
+                    if (oConnectingEdge.BackVertex == vertex1)
+                    {
+                        oConnectingEdgeWithEdgeWeight = oConnectingEdge;
+                        break;
+                    }
+                }
+
+                break;
+
+            case GraphDirectedness.Undirected:
+
+                // There can be 0 or 1 edges between the vertices.  There can't
+                // be 2 edges, because the duplicate edges (A,B) and (B,A) have
+                // been merged.
+
+                Debug.Assert(iConnectingEdges <= 1);
+
+                if (iConnectingEdges == 1)
+                {
+                    oConnectingEdgeWithEdgeWeight = aoConnectingEdges[0];
+                }
+
+                break;
+
+            default:
+
+                Debug.Assert(false);
+                break;
+        }
+
+        if (oConnectingEdgeWithEdgeWeight != null)
+        {
+            dEdgeWeight = (Double)
+                oConnectingEdgeWithEdgeWeight.GetRequiredValue(
+                    ReservedMetadataKeys.EdgeWeight, typeof(Double) );
+        }
+
+        return (dEdgeWeight);
+    }
 }
 
 }

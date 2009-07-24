@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.Visualization.Wpf

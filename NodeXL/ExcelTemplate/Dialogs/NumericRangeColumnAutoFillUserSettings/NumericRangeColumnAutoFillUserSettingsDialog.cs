@@ -53,8 +53,15 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
     ///
     /// <param name="destinationColumnName">
     /// The name of the destination column, suitable for use as the placeholder
-    /// in MinimumDestinationLabel and DestinationLabel2.  Can't be null
-    /// or empty.
+    /// in DestinationLabel1 and DestinationLabel2.  Can't be null or empty.
+    /// Sample: "vertex opacity".
+    /// </param>
+    ///
+    /// <param name="destinationColumnNamePlural">
+    /// Plural and possibly abbreviated form of <paramref
+    /// name="destinationColumnName" />, suitable for use as the placeholder in
+    /// the "swap destination numbers" button.  Can't be null or empty.
+    /// Sample: "Opacities".
     /// </param>
     ///
     /// <param name="minimumDestinationNumber">
@@ -73,6 +80,7 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
 
         String dialogCaption,
         String destinationColumnName,
+        String destinationColumnNamePlural,
         Double minimumDestinationNumber,
         Double maximumDestinationNumber
     )
@@ -81,6 +89,7 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
         Debug.Assert(numericRangeColumnAutoFillUserSettings != null);
         Debug.Assert( !String.IsNullOrEmpty(dialogCaption) );
         Debug.Assert( !String.IsNullOrEmpty(destinationColumnName) );
+        Debug.Assert( !String.IsNullOrEmpty(destinationColumnNamePlural) );
 
         m_oNumericRangeColumnAutoFillUserSettings =
             numericRangeColumnAutoFillUserSettings;
@@ -104,6 +113,9 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
 
         nudDestinationNumber1.Maximum = nudDestinationNumber2.Maximum =
             (Decimal)maximumDestinationNumber;
+
+        btnSwapDestinationNumbers.Text = "<- Swap " +
+            destinationColumnNamePlural + " ->";
 
         // Instantiate an object that saves and retrieves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -306,6 +318,37 @@ public partial class NumericRangeColumnAutoFillUserSettingsDialog :
         AssertValid();
 
         EnableControls();
+    }
+
+    //*************************************************************************
+    //  Method: btnSwapDestinationNumbers_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnSwapDestinationNumbers button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnSwapDestinationNumbers_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        Decimal decTempNumber = nudDestinationNumber1.Value;
+
+        nudDestinationNumber1.Value = nudDestinationNumber2.Value;
+        nudDestinationNumber2.Value = decTempNumber;
     }
 
     //*************************************************************************

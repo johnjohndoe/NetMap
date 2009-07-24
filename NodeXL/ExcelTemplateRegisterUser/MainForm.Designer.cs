@@ -32,7 +32,7 @@ namespace Microsoft.NodeXL.ExcelTemplateRegisterUser
         /// </summary>
         private void InitializeComponent()
         {
-            this.usrRegisterUser = new Microsoft.NodeXL.Common.RegisterUser();
+            this.usrRegisterUser = new Microsoft.NodeXL.Common.RegisterUserControl();
             this.SuspendLayout();
             // 
             // usrRegisterUser
@@ -60,7 +60,7 @@ namespace Microsoft.NodeXL.ExcelTemplateRegisterUser
 
         #endregion
 
-        private Microsoft.NodeXL.Common.RegisterUser usrRegisterUser;
+        private Microsoft.NodeXL.Common.RegisterUserControl usrRegisterUser;
     }
 }
 

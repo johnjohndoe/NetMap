@@ -144,6 +144,7 @@
     <Compile Include="Interfaces\IVertexSorter.cs" />
     <Compile Include="Util\EdgeUtil.cs" />
     <Compile Include="Util\EventUtil.cs" />
+    <Compile Include="Util\GraphUtil.cs" />
     <Compile Include="Util\LayoutUtil.cs" />
     <Compile Include="Util\SimpleGraphMatrix.cs" />
     <Compile Include="Util\ToStringUtil.cs" />

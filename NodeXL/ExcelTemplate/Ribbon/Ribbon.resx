@@ -117,18 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnImportPajekFile.SuperTip" xml:space="preserve">
-    <value>Import edge and vertex lists from a Pajek text file.
+  <data name="btnImportFromPajekFile.SuperTip" xml:space="preserve">
+    <value>Optionally clear the NodeXL workbook, then import edges and vertices from a Pajek text file.
 
-This clears the workbook, then imports the "vertices," "edges," "edgeslist," "arcs," and "arcslist" sections of a Pajek text file into the workbook.  Only the vertex names are imported; all edge and vertex attributes are ignored.</value>
+This imports the "vertices," "edges," "edgeslist," "arcs," and "arcslist" sections of a Pajek text file into the workbook.  Only the vertex names are imported; all edge and vertex properties are ignored.</value>
   </data>
   <data name="btnImportFromEdgeWorkbook.SuperTip" xml:space="preserve">
-    <value>Import edges from an open workbook that contains at least two columns, one for Vertex 1 and one for Vertex 2.  You can import additional edge columns as well.
+    <value>Optionally clear the NodeXL workbook, then import edges from another open workbook that contains at least two columns, one for Vertex 1 and one for Vertex 2.  You can import additional edge columns as well.
 
 Excel can read comma-delimited, tab-delimited, and various other file formats, so this feature can be used to import edges from a wide variety of sources.</value>
   </data>
   <data name="btnAnalyzeEmailNetwork.SuperTip" xml:space="preserve">
-    <value>Analyze the relationships between the people in my email network.
+    <value>Optionally clear the NodeXL workbook, then analyze the relationships between the people in my email network.
 
 If your computer has Windows Desktop Search and you use Outlook, Outlook Express, or Windows Mail, you can use this feature to analyze the relationships between the people you communicate with via email.  (Windows Desktop Search is included with Windows Vista.  It can also be downloaded and installed on Windows XP.)</value>
   </data>
@@ -250,6 +250,153 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
         XZ+MAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="btnAutoFillWorkbook.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        SUVORK5CYII=
+</value>
+  </data>
+  <data name="btnSetVertexShapeCircle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALAAAA
+        CwAB5DetvwAAAYJJREFUOE+lk1tLAlEUhYugfxAE/ameew0EIah/ET0ERUREhA8VSUR0QYxIMaSLVAoJ
+        dnswiXTUuTqOOqOw2ns4ymjT0wwsGOacb611hn3GAYwFetggiP7As0trE6QwKUGyST1SirRImhwNGzKg
+        DdOkzNZRArn3Etq2TXKQffvC9nEStPZCmvGaDAxEciYav0e314PT7cJ2HNek1emg2W5jP3bbNxk08RqE
+        NqPXA7gjYEvADcuC0Wxi4/CKTRb6LbwG6fznN2xKZphTLUo1Wy0wrBOsNhp4yH+wQdrPoFbXjKHKDHOq
+        ZpouLBsGKrLCBravQVXV4Vb2pDKsECjrOmqahpJUYwPT9wjZ16Jb2eDKIpXhOsFVgiVFQTpX+PcIofWD
+        y+HKIrWqqqgQXJZlrO7F2CDs14AH6C5ymnIrcypXlgT8Q/DOiTsLT96BGh2kKVo8W949x81zAcWy5Cr5
+        mMdK5ILhOA+b7yB5P9KmOTHKOv8w8T7vd2cCXST3Jge5icz+AuUT3qRjSzPIAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnSetVertexShapeDisk.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAbhJREFUOE+l0+srQ2EcB3BS/gOl/FNeyhuhZGvFhJrrcsmlmZkNW20yMZrLZrkczLBY
+        Ls1cM0Juub5QXin19X3WpoPj1Vbfdto5n+/znPV70gGkpfQRBankD84tN2UwKibAfDCfzCpTxmT+XuxH
+        AR/IZrYqrBI6vSfoX32CJXAPvTsCtXEGvHfA5MhLvgsSK2/pnCE4w2+wh15gXXlAj3QDw+wF2rynUHf7
+        kyXfO5EXlGgtCwn8ij6BFwW+JI6hyXOI+tEIClvHRIkmuQt5Qcjgj3Fl4uAj8S26iNuJmz1HaBjdg25o
+        GxqzJApCSgXP1sBdHJuXiOeIfcQTxG5i1zYqHRso6w+Kgg/Fgh7pmviO+AodvjO0TByj0R1FjWsHVY5N
+        lA+sQW1eFAXviq/QPB6FcZ54hniSeIx4mNhJbFuDxrKMovbpf1+hRGXwEp8TnxDvx3E1sda2ThxAqWkB
+        eXWDokCltAMxQJtqox964trhXeIwtHZiq8AS8htcAu/KB+r3IGXxpq+gaQSaXonvHOS32PYU8mqdAs+L
+        YVMcJPmPfCg/Mcpv4g9LXBcrnZmUDlL8JKdyEoX9AjVanOpSnO0qAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnSetVertexShapeSphere.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAYRJREFUOE+lU11LAkEULYL+QRD0pwr6gIhUAsEIFIMofUsFobIIJR9Es3ooI0r6UKlI
+        lIpFIQiCgkihntJALAgjOM0ZzDZb6WEXDndnZ86Zc+/e2w6gTddDAT34Q+61LXUIWAROBWoCnwJpAatA
+        Z/NlvwTEgW4BxRZIYf7gHqHLKvxnJTjWcjB5YhB71wI9apGGQP1mxbF6jvgdcFKEjBtXNQTSZbh2bmH8
+        EWk4UQuYrf6kJN2UgMLLh4xch5U3zB0WMRVRMOQM08nEtwu1QNZ3VJA3k1ypVmXkOpp/x0LyEdPRHAye
+        bQpktQSeg5nyvw5M3j0K1DQFFlNPMudWNbAGMxhxSQevmik41/OyYMyZthm59u4/SPtmXwIDjkjLFMxG
+        96asNgvGnBm5Jnl8+Rgjs+JX2gMUsGg5YANdGNxbstokMdI2bya5b3KF5Ly6oZobqUtsxgdnQhh1x2D0
+        7sqc+2nb7ic5wWbTbCT1R3FouN7KFRas/j6mNTO6BklOsp5JJPcLDn2psFSK6zoAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="btnSetVertexShapeSquare.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAM1JREFUOE+lk2kOgjAQRvWGHsWjeEd3KEtZWyh8zhAwlTgkWpL5Q/LeyzTtHsAu6GNB
+        yLzhw/GEX2aJfgjoJ8ZxxEDjhgG9c+j6HrbrYKxFYwzqtp1CXwUTTKAjkGFLsCG4neGK4LJpZMFWlcGi
+        rqGrShZsVTXBeVkiLQpZsN7Vr2YzrLSWBetd/WpCoMpzRFkmC/iEpWpM8JPgR5rKAoal6pPAe5LgppQs
+        4BP2d/WrC3yNY1nAJ+zv6lcZvEQRzjTiRQq6yv8+qKCXyNEXdqAIwUkipcgAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="btnSetVertexShapeSolidSquare.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAVxJREFUOE+l01lLQkEYxvH6hn2ALoKCgooMVLJoNdssUUFLK0tD2zczSjLUFlu0JFvM
+        bKMiQ6MgKIIunt45pxMEzUWdgbn8/Z+bmXwAebIOC8i537hAYcRfrjT6IzCW+IA7/g5n9BWO7RfYNp5g
+        CWZhXLmHfukGbd4LNE+nhKFfAwy7YiK2MxzKwkS4m3C79xItMynUjx/zA67Y2ze2hnIwBTIiXmD4TMA1
+        7gN+YIgtbz5Dwj3Lt+ggrCXcMHECDWHl8B4/0M9wOAfzagYivoJ2VsIJKJ37qBrY4Qd6w4+EH0TsYzhN
+        y0loPAmoCCsGd1HeF+EHGDb479Dpu0brXBqNk0nUeg6hcn1hWwSlljV+QMCLDJ+LeJThOKppuULA6yg2
+        BfmBLsI6wk1Tp6gjrGbYESW8hTLCJYSLDAF+QDcv4SOoR0RcaSdsJWwWcaHezw/Iesr//VCyfiIb/QRx
+        s7gAJ4VqGwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="btnSetVertexShapeDiamond.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAPxJREFUOE+lk9sKgkAQhusNuw58hx6ld0qKCMQKMotOlx3U9awQTDubq6vtKqQwV+P3
+        /TMyDgFg0OtBwWgyVdWY9rCkfRbeIkDwXZRU0iZg8PpwA9O+gkqiEjDYpHCa55BkGRjWRSqRCWpwTOEo
+        TSFMEljtTj+SpuAL05ExNS7AII7BjyLwwhCW22NNIgpqME9FmBSwEwTw8n1YbOxSIgo0nh7RcXkqoaku
+        BR0KvgiBh+eJAq25ApMY1rlMRRhTnwU8r9LxXXYCzTtgEtxVTL27LuimxUdnsEqADfY9cFccGeFZBdcO
+        qvOQdHOvhNsm4Hff65RFSffPhLv8Wx+VpDmmRs2fJwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="btnSetVertexShapeSolidDiamond.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAU1JREFUOE+lk9tKAlEUhusNuw686gBdZEMZU9hRGkWjccgIosREQ5PUkgw1k+gisjQs
+        c0o6Sud3CP7cmxmbsZkRdMO6Wnzf3mvx724AXR0dIuhhBL3qrfdIafbp5QYCAv5IpSkxElCYi4qwRcrQ
+        k+gJKGyPiVjOfmIp9QproKAp0RL8wUdf4NNvcO4/YyF+D4v39J+kWUBhR1yEJyfByRdwuw+Y27mDNVTG
+        8OqxSqIUSPAtVnLfcGfe4UrWwO1JcPgGbKCEUd8FBoVMQ6IUmOSlCYcfWDyowZ54xHy0iqlwBWyQwAWY
+        18/Qx6dkgal5BCqZDZXgSDzBFqtieruCieAVxjaLMG/k0c+nGzDJhtYSqYT15TETETG5dQ2Lv4iROjzg
+        VsN6ApI4ug9m7QTj/ksw3nMlrApUyyANebK6sNEL5Nx3FGWlpPVnIrO0W7+CHAx262IhdAAAAABJRU5E
+        rkJggg==
+</value>
+  </data>
+  <data name="btnSetVertexShapeTriangle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAThJREFUOE+lkb9Kw1AUxhWhk5Orqw/QB/ANXJz7BoJDN7eu4iBkqjiILgHFiihFLKgU
+        QYUOitBBUAQhVZOb3Py5baEgfJ4TTIghbW288MHlXn6/78CZBjD1r8OC5bI2KjPD/sPyMYISwSt5BbME
+        GhSHMpclGTdBZee4ib3TaxC8OalgngDVERIyUCwYUBbSklET6PrZDVS/j6DXw0HjjiX1vwoW17T9GPa6
+        XbhKoVI9YslSUpI1Aa/soXH7CJ9Aj0AZBHB8H1etNgueKYVIkiUobezWEbUybBMsPA+W60LTz1myOkwQ
+        rq3Vfolb7R/QlBKfjoP7p1cWxGtNT7C+XbsM4WQrwx8Ev9s2OkJg6/CCJVWeIingFQ0MU+BXawo2LAtv
+        psmCL0oxKTihB/6YJM1YwJe8yQ1Ghd8Nez0tGFkC9AAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="btnSetVertexShapeSolidTriangle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
+        Cv8BNGKaggAAAWxJREFUOE+lkc1KQlEUhYugUaOmTXuAHqA3aNIwRAoiA03FoqQslZuUGEjWBYPCIk3t
+        z+qGUSSEgVCUKBlmpUWDpo0aCcFq7wuKiD9pBxYczuH7zjrsVgAt/1os6De4aqWt2r38eB2BgmB1s4IO
+        Aj8pX5TOSpJ6DSx68Ry61QsQ7GxU0EXAt13Kwn6aY0Ge0l0uqdXAb3BH4Ah/YOEkh7EVuUX4r4LeIWEH
+        S2cESzkIoWfM7aahtPpY0lcqqdSAR5Y0emJYlN4IfoF5L41p/wPUYoQFWUp7QVJJoFA5QvTvd8wfvcK8
+        /4QZfwqT2wkYPHdQCkGWaKsJ5LGZfHHYCLYQbAqkMOVNYHzzHtr1G4y45BbFsZY3sGuWw7AdZ2E9yMAU
+        fITRm5RhHcFqdwwqMYoBa4Albm5RKuAR5YXDjAzPMuxLYmIrDv3GLTRrMYyK1xh2XWHQecmCH0pPqUCi
+        A75oJNGigDfNpmmw8OAvUUgTM1UG9fQAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="btnCreateClusters.SuperTip" xml:space="preserve">
     <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
 	
@@ -261,23 +408,19 @@ The Clusters checkbox in the Show/Hide ribbon group must be checked if you want 
 
 Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
-  <data name="cbxReadClusters.SuperTip" xml:space="preserve">
-    <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
-	
-When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
-	
-You can fill in these worksheets manually, or click the Find Clusters button to fill them in automatically.  Find Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
-
-Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
-  </data>
-  <data name="cbxAutoReadWorkbook.SuperTip" xml:space="preserve">
-    <value>Automatically refresh the graph after setting a visual property in the Ribbon, applying a scheme, or autofilling columns.
-
-When a visual property is set in the Ribbon, the graph will not be laid out again.
-
-For large graphs that take a long time to refresh, you can uncheck this and manually refresh the graph instead.
-
-If you enter a visual property directly in the workbook, the graph will not be automatically refreshed.</value>
+  <data name="mnuShowGraphElements.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAa5JREFUOE+NkctK
+        AmEYhu2O2nQPdRdBNxBEUYIVhJ1Ac1G4CyGoFi1EI6cTqWWZlY2n0cazldnJRkvTPNT7zzdOtmv4FuPv
+        877/wzc9Vo6XNJ2nhpffX+yUnfw9QiAjfWPSb5h2qthOvrZ9oiTk6+JT8+axGX1oCPmvyP1X6Lbe2z+o
+        oQBooDLdSry0dIbdkRmbzZ0hOnzH6GCupgRMm04MioHGn1soNq565swu/cqRfsVp3rgam91eswt85pMF
+        LBxPGioNjVhB0dg6SAxPW4tSdXx+x5/qBLppoKp0IPtpsninlvaRsVhDl4mqcgMpUXFHuk40xp+qXiWr
+        oC/iFTlg5WkbskaD895PGvfQOmd2myxnQGW64hMr5zcfFGDdqsbEgiMUewhG86N6O9EoJvos+q4ESIl2
+        p13kImIBGZ1hjzR84oc3xuhToRPARwnf1UEHsrXtkxwu0S46bO4cFav0Sbgs38C68VEYjU1jd90aoFHs
+        iZRBH4dKSoCU/jMsAI7P1K7TrJikoYFDkla73cESDpUAaai7gwb+80TeZY0yUIwrICmB5fXDvoGh/88P
+        kA0gXKGCwioAAAAASUVORK5CYII=
+</value>
   </data>
   <data name="cbxReadClusters.SuperTip" xml:space="preserve">
     <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
@@ -287,5 +430,11 @@ When checked, the Clusters and Cluster Vertices worksheets are read when the wor
 You can fill in these worksheets manually, or click the Find Clusters button to fill them in automatically.  Find Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
 
 Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
+  </data>
+  <data name="cbxShowGraphAxes.SuperTip" xml:space="preserve">
+    <value>Show or hide the x- and y-axes in the graph pane.
+
+The axes initially show the numbers in the X and Y columns in the Vertices worksheet.  If you use Autofill Columns to autofill the X and Y columns using source columns, the axes will show the values in those source columns.
+</value>
   </data>
 </root>

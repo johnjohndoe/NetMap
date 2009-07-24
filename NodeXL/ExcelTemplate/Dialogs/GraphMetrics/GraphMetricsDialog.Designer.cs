@@ -166,7 +166,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxClosenessCentrality.Name = "cbxClosenessCentrality";
             this.cbxClosenessCentrality.Size = new System.Drawing.Size(152, 17);
             this.cbxClosenessCentrality.TabIndex = 2;
-            this.cbxClosenessCentrality.Text = "&Closeness centrality  (slow)";
+            this.cbxClosenessCentrality.Text = "&Closeness centrality";
             this.cbxClosenessCentrality.UseVisualStyleBackColor = true;
             // 
             // lnkEigenvectorCentrality

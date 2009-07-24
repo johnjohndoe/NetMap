@@ -94,7 +94,9 @@
     <Compile Include="GraphAdapters\GraphAdapterBase.cs" />
     <Compile Include="GraphAdapters\PajekEdgeData.cs" />
     <Compile Include="GraphAdapters\PajekGraphAdapter.cs" />
+    <Compile Include="GraphAdapters\SaveGraphException.cs" />
     <Compile Include="GraphAdapters\SimpleGraphAdapter.cs" />
+    <Compile Include="GraphAdapters\UcinetGraphAdapter.cs" />
     <Compile Include="Interfaces\IGraphAdapter.cs">
       <SubType>Code</SubType>
     </Compile>

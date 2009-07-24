@@ -64,6 +64,11 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
     /// The directedness of the graph represented by the source workbook.
     /// </param>
     ///
+    /// <param name="clearDestinationTablesFirst">
+    /// true if the NodeXL tables in <paramref
+    /// name="destinationNodeXLWorkbook" /> should be cleared first.
+    /// </param>
+    ///
     /// <param name="destinationNodeXLWorkbook">
     /// NodeXL workbook the graph will be imported to.
     /// </param>
@@ -104,6 +109,7 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
         String sourceWorkbookName,
         Boolean sourceWorkbookHasVertexNames,
         GraphDirectedness sourceWorkbookDirectedness,
+        Boolean clearDestinationTablesFirst,
         Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook
     )
     {
@@ -170,7 +176,7 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
             );
 
         WriteToDestinationWorkbook(oVertex1Names, oVertex2Names, oEdgeWeights,
-            destinationNodeXLWorkbook);
+            clearDestinationTablesFirst, destinationNodeXLWorkbook);
     }
 
     //*************************************************************************
@@ -679,6 +685,11 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
     /// Edge weights to write to the edge weight column.
     /// </param>
     ///
+    /// <param name="bClearDestinationTablesFirst">
+    /// true if the NodeXL tables in <paramref
+    /// name="destinationNodeXLWorkbook" /> should be cleared first.
+    /// </param>
+    ///
     /// <param name="oDestinationNodeXLWorkbook">
     /// NodeXL workbook the graph will be imported to.
     /// </param>
@@ -690,6 +701,7 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
         LinkedList<String> oVertex1Names,
         LinkedList<String> oVertex2Names,
         LinkedList <Double> oEdgeWeights,
+        Boolean bClearDestinationTablesFirst,
         Microsoft.Office.Interop.Excel.Workbook oDestinationNodeXLWorkbook
     )
     {
@@ -708,9 +720,17 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
 
         ExcelUtil.ActivateWorksheet(oDestinationEdgeTable);
 
-        // Clear the various tables.
+        Int32 iRowOffsetToWriteTo = 0;
 
-        NodeXLWorkbookUtil.ClearTables(oDestinationNodeXLWorkbook);
+        if (bClearDestinationTablesFirst)
+        {
+            NodeXLWorkbookUtil.ClearTables(oDestinationNodeXLWorkbook);
+        }
+        else
+        {
+            iRowOffsetToWriteTo =
+                ExcelUtil.GetOffsetOfFirstEmptyTableRow(oDestinationEdgeTable);
+        }
 
         // Create an array to hold the vertex 1 names and write them to the
         // edge table.  Repeat for the vertex 2 names.
@@ -737,6 +757,9 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
 
             Range oVertexColumnData = GetVertexColumnData(
                 oDestinationEdgeTable, bVertex1);
+
+            ExcelUtil.OffsetRange(ref oVertexColumnData, iRowOffsetToWriteTo,
+                0);
 
             ExcelUtil.SetRangeValues(oVertexColumnData, asVertexNames);
         }
@@ -776,6 +799,9 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
                 EdgeTableColumnNames.EdgeWeight
                 ) );
         }
+
+        ExcelUtil.OffsetRange(ref oEdgeWeightColumnData, iRowOffsetToWriteTo,
+            0);
 
         ExcelUtil.SetRangeValues(oEdgeWeightColumnData, aoEdgeWeights);
     }

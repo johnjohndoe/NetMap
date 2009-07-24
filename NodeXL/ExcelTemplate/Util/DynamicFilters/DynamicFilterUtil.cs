@@ -99,7 +99,8 @@ public static class DynamicFilterUtil : Object
                     continue;
                 }
 
-                ExcelColumnFormat eColumnFormat = GetColumnFormat(oColumn);
+                ExcelColumnFormat eColumnFormat =
+                    ExcelUtil.GetColumnFormat(oColumn);
 
                 switch (eColumnFormat)
                 {
@@ -210,83 +211,6 @@ public static class DynamicFilterUtil : Object
     }
 
     //*************************************************************************
-    //  Method: GetColumnFormat()
-    //
-    /// <summary>
-    /// Determines the format of a table column.
-    /// </summary>
-    ///
-    /// <param name="oColumn">
-    /// The table column to check.
-    /// </param>
-    ///
-    /// <returns>
-    /// The column format.
-    /// </returns>
-    //*************************************************************************
-
-    private static ExcelColumnFormat
-    GetColumnFormat
-    (
-        ListColumn oColumn
-    )
-    {
-        Debug.Assert(oColumn != null);
-
-        Range oColumnData = oColumn.DataBodyRange;
-
-        Debug.Assert(oColumnData != null);
-        Debug.Assert(oColumnData.Rows.Count > 0);
-
-        // Look at the type of the value in the first cell.
-
-        Debug.Assert(oColumnData.Cells[1, 1] is Range);
-
-        Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
-        Object oFirstDataCellValue = oFirstDataCell.get_Value(Missing.Value);
-
-        Debug.Assert(oFirstDataCellValue != null);
-
-        if (oFirstDataCellValue is DateTime)
-        {
-            if ( CellContainsTime(oFirstDataCell) )
-            {
-                // Sample: 1/1/2008 3:40 pm.
-
-                return (ExcelColumnFormat.DateAndTime);
-            }
-            else
-            {
-                // Sample: 1/1/2008.
-
-                return (ExcelColumnFormat.Date);
-            }
-        }
-        else if (oFirstDataCellValue is Double)
-        {
-            // Cells formatted as a time are returned as Double.  Another test
-            // is required to distinguish times from real Doubles.
-
-            if ( CellContainsTime(oFirstDataCell) )
-            {
-                // Sample: 3:40 pm.
-
-                return (ExcelColumnFormat.Time);
-            }
-            else
-            {
-                // Sample: 123.
-
-                return (ExcelColumnFormat.Number);
-            }
-        }
-        else
-        {
-            return (ExcelColumnFormat.Other);
-        }
-    }
-
-    //*************************************************************************
     //  Method: GetDecimalPlaces()
     //
     /// <summary>
@@ -349,40 +273,6 @@ public static class DynamicFilterUtil : Object
         Debug.Assert(iDecimalPlaces >= 0);
 
         return (iDecimalPlaces);
-    }
-
-    //*************************************************************************
-    //  Method: CellContainsTime()
-    //
-    /// <summary>
-    /// Determines whether a cell contains a time.
-    /// </summary>
-    ///
-    /// <param name="oCell">
-    /// The cell to check.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the cell contains a time.
-    /// </returns>
-    //*************************************************************************
-
-    private static Boolean
-    CellContainsTime
-    (
-        Range oCell
-    )
-    {
-        Debug.Assert(oCell != null);
-
-        // The easiest (but not perfect) test is to check the number format for
-        // hours.
-
-        Object oNumberFormat = oCell.NumberFormat;
-
-        Debug.Assert(oNumberFormat is String);
-
-        return ( ( (String)oCell.NumberFormat ).Contains("h") );
     }
 
     //*************************************************************************

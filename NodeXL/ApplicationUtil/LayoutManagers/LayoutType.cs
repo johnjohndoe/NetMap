@@ -78,6 +78,12 @@ LayoutType
 
     Polar,
 
+    /// <summary>
+    /// Use a <see cref="HarelKorenFastMultiscaleLayout" />.
+    /// </summary>
+
+    HarelKorenFastMultiscale,
+
     // To add support for an additional layout, do the following:
     //
     //   1. Add a value to this enumeration.
@@ -367,6 +373,10 @@ public static class AllLayouts
 
                 return ( new PolarLayout() );
 
+            case LayoutType.HarelKorenFastMultiscale:
+
+                return ( new HarelKorenFastMultiscaleLayout() );
+
             default:
 
                 Debug.Assert(false);
@@ -401,6 +411,12 @@ public static class AllLayouts
             LayoutType.FruchtermanReingold,
             "&Fruchterman-Reingold",
             "Use a Fruchterman-Reingold force-directed layout"
+            ),
+
+        new LayoutInfo(
+            LayoutType.HarelKorenFastMultiscale,
+            "Harel-&Koren Fast Multiscale",
+            "Use a Harel-Koren fast multiscale layout"
             ),
 
         LayoutGroupSeparator,

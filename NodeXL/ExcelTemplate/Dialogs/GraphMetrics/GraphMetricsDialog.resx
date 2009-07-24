@@ -122,11 +122,7 @@
 
 http://en.wikipedia.org/wiki/Centrality#Closeness_centrality
 
-NodeXL uses the Floyd-Warshall algorithm to compute the shortest paths.  The algorithm is outlined here:
-
-http://en.wikipedia.org/wiki/Floyd-Warshall_algorithm
-
-The algorithm skips self-loops and duplicate edges.  An isolated vertex is assigned an arbitrary closeness centrality of zero.
+NodeXL uses a breadth-first search to compute the shortest paths.  Self-loops, duplicate edges, and isolated vertices are ignored.
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>

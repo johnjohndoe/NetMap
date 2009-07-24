@@ -11,7 +11,7 @@ using Microsoft.Research.CommunityTechnologies.AppLib;
 namespace Microsoft.NodeXL.Common
 {
 //*****************************************************************************
-//  Class: RegisterUser
+//  Class: RegisterUserControl
 //
 /// <summary>
 /// Registers a user by sending his email address to a Web service.
@@ -24,17 +24,18 @@ namespace Microsoft.NodeXL.Common
 /// </remarks>
 //*****************************************************************************
 
-public partial class RegisterUser : UserControl
+public partial class RegisterUserControl : UserControl
 {
     //*************************************************************************
-    //  Constructor: RegisterUser()
+    //  Constructor: RegisterUserControl()
     //
     /// <summary>
-    /// Initializes a new instance of the <see cref="RegisterUser" /> class.
+    /// Initializes a new instance of the <see cref="RegisterUserControl" />
+    /// class.
     /// </summary>
     //*************************************************************************
 
-    public RegisterUser()
+    public RegisterUserControl()
     {
         InitializeComponent();
 

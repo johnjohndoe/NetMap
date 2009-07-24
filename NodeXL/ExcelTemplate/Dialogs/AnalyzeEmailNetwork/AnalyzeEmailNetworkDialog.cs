@@ -49,11 +49,17 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
     /// <param name="workbook">
     /// Workbook containing the graph data.
     /// </param>
+    ///
+    /// <param name="clearTablesFirst">
+    /// true if the NodeXL tables in <paramref name="workbook" /> should be
+    /// cleared first.
+    /// </param>
     //*************************************************************************
 
     public AnalyzeEmailNetworkDialog
     (
-        Microsoft.Office.Interop.Excel.Workbook workbook
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        Boolean clearTablesFirst
     )
     : this()
     {
@@ -67,6 +73,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             new AnalyzeEmailNetworkDialogUserSettings(this);
 
         m_oWorkbook = workbook;
+        m_bClearTablesFirst = clearTablesFirst;
 
         m_oEmailNetworkAnalyzer = new EmailNetworkAnalyzer();
 
@@ -904,7 +911,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             return;
         }
 
-        // Create and populate an arrays of edge weights.
+        // Create and populate an array of edge weights.
 
         Object [,] aoEdgeWeights = new Object [iEmailParticipantPairs, 1];
 
@@ -924,12 +931,20 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             aoEdgeWeights[i, 0] = oEmailParticipantPair.EdgeWeight.ToString();
         }
 
+        Int32 iRowOffsetToWriteTo = 0;
+
+        if (!m_bClearTablesFirst)
+        {
+            iRowOffsetToWriteTo = ExcelUtil.GetOffsetOfFirstEmptyTableRow(
+                m_oEdgeTable);
+        }
+
         // Write the arrays to the edge table.
 
         NodeXLWorkbookUtil.PopulateEdgeTableWithParticipantPairs(
-            m_oEdgeTable, aoEmailParticipantPairs);
+            m_oEdgeTable, aoEmailParticipantPairs, iRowOffsetToWriteTo);
 
-        SetEdgeWeightValues(aoEdgeWeights);
+        SetEdgeWeightValues(aoEdgeWeights, iRowOffsetToWriteTo);
 
         ExcelUtil.ActivateWorksheet(m_oEdgeTable);
     }
@@ -945,6 +960,11 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
     /// One-column array of edge weights.
     /// </param>
     ///
+    /// <param name="iRowOffsetToWriteTo">
+    /// Offset to write to in the edge table, measured from the first row in
+    /// the table's data range.
+    /// </param>
+    ///
     /// <remarks>
     /// If the edge weight column doesn't exist, this method creates it.
     /// </remarks>
@@ -953,7 +973,8 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
     protected void
     SetEdgeWeightValues
     (
-        Object [,] aoEdgeWeights
+        Object [,] aoEdgeWeights,
+        Int32 iRowOffsetToWriteTo
     )
     {
         Debug.Assert(aoEdgeWeights != null);
@@ -986,6 +1007,9 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
 
             Debug.Assert(bFound);
         }
+
+        ExcelUtil.OffsetRange(ref oEdgeWeightColumnData, iRowOffsetToWriteTo,
+            0);
 
         ExcelUtil.SetRangeValues(oEdgeWeightColumnData, aoEdgeWeights);
     }
@@ -1417,9 +1441,10 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         }
         else
         {
-            // Clear the required edge table and other optional tables.
-
-            NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
+            if (m_bClearTablesFirst)
+            {
+                NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
+            }
 
             // Populate the edge table with participant pairs.
 
@@ -1427,7 +1452,6 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
 
             EmailParticipantPair[] aoEmailParticipantPairs =
                 ( EmailParticipantPair[] )e.Result;
-
 
             if (aoEmailParticipantPairs.Length > 0)
             {
@@ -1594,6 +1618,45 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
 
         this.ShowInformation(Message);
     }
+
+    //*************************************************************************
+    //  Method: lnkEmailHelp_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkEmailHelp LinkLabel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    lnkEmailHelp_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
+    {
+        AssertValid();
+
+        const String Message = 
+            "If you enter multiple email addresses, they are logically ORed"
+            + " together.  For example, if you enter \"johndoe@msn.com\" and"
+            + " \"marysmith@msn.com\" and then check their From checkboxes,"
+            + " email that is from either John or Mary will be analyzed."
+            + "\r\n\r\n"
+            + "Your own email address is not automatically included in the"
+            + " list.  If you want to analyze email you sent yourself, you"
+            + " must enter your own email address."
+            ;
+
+        this.ShowInformation(Message);
+    }
         
 
     //*************************************************************************
@@ -1614,6 +1677,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         Debug.Assert(m_oAnalyzeEmailNetworkDialogUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oEmailNetworkAnalyzer != null);
+        // m_bClearTablesFirst
         // m_oEdgeTable
     }
 
@@ -1707,6 +1771,10 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
     /// Workbook containing the graph data.
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
+
+    /// true if the NodeXL tables should be cleared first.
+
+    protected Boolean m_bClearTablesFirst;
 
     /// Object that does most of the work.
 

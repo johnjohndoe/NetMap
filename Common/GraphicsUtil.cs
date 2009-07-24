@@ -759,6 +759,69 @@ internal class GraphicsUtil
     }
 
     //*************************************************************************
+    //  Method: Draw3DHorizontalLine()
+    //
+    /// <summary>
+    /// Draws a 3-dimensional horizontal line.
+    /// </summary>
+    ///
+    /// <param name="oGraphics">
+    /// Objects to draw with.
+    /// </param>
+    ///
+    /// <param name="fLeft">
+    /// x-coordinate of the left end of the line.
+    /// </param>
+    ///
+    /// <param name="fTop">
+    /// y-coordinate of the left end of the line.
+    /// </param>
+    ///
+    /// <param name="fRight">
+    /// x-coordinate of the right end of the line.
+    /// </param>
+    ///
+    /// <returns>
+    /// The height of the line.
+    /// </returns>
+    //*************************************************************************
+
+    public static Single
+    Draw3DHorizontalLine
+    (
+        Graphics oGraphics,
+        Single fLeft,
+        Single fTop,
+        Single fRight
+    )
+    {
+        Debug.Assert(oGraphics != null);
+
+        if (fRight <= fLeft)
+        {
+            return (0);
+        }
+
+        oGraphics.DrawLines(SystemPens.ControlDark, new PointF [] {
+            new PointF(fLeft, fTop + 2),
+            new PointF(fLeft, fTop),
+            new PointF(fRight - 2, fTop)
+            } );
+
+        oGraphics.DrawLine(SystemPens.ControlDarkDark,
+            fLeft + 1, fTop + 1, fRight - 3, fTop + 1);
+
+        oGraphics.DrawLines(SystemPens.ControlLightLight, new PointF [] {
+            new PointF(fLeft, fTop + 3),
+            new PointF(fRight - 1, fTop + 3),
+            new PointF(fRight - 1, fTop)
+            } );
+
+        return (4);
+    }
+
+
+    //*************************************************************************
     //  Method: Clear()
     //
     /// <summary>

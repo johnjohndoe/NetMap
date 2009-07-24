@@ -223,7 +223,8 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
                     oClusterNameGraphMetricValue);
 
                 oVertexNamesForClusterVertexWorksheet.Add(
-                    new GraphMetricValueOrdered(oVertex.Name) );
+                    new GraphMetricValueOrdered(
+                        ExcelUtil.ForceCellText(oVertex.Name) ) );
             }
 
             iCommunity++;
@@ -293,7 +294,7 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
         Debug.Assert(oCommunity != null);
         AssertValid();
 
-        return ( (oCommunity.ID).ToString(ExcelTemplateForm.Int32Format) );
+        return ( 'C' + oCommunity.ID.ToString() );
     }
 
     //*************************************************************************

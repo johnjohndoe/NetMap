@@ -47,6 +47,17 @@ public partial class Ribbon : OfficeRibbon
         m_oLayoutManagerForRibbonDropDown.LayoutChanged += new
             EventHandler(this.m_oLayoutManagerForRibbonDropDown_LayoutChanged);
 
+        // Read the general user settings directly controlled by the ribbon.
+
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+
+        this.ReadClusters = oGeneralUserSettings.ReadClusters;
+        this.ShowGraphLegend = oGeneralUserSettings.ShowGraphLegend;
+        this.ShowGraphAxes = oGeneralUserSettings.ShowGraphAxes;
+
+        this.ClearTablesBeforeImport =
+            oGeneralUserSettings.ClearTablesBeforeImport;
+
         AssertValid();
     }
 
@@ -76,38 +87,6 @@ public partial class Ribbon : OfficeRibbon
         set
         {
             cbxReadClusters.Checked = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: AutoReadWorkbook
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the workbook should be read into
-    /// the graph when a visual property is set in the workbook, a scheme is
-    /// applied, or the workbook is autofilled.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to read the workbook into the graph.
-    /// </value>
-    //*************************************************************************
-
-    public Boolean
-    AutoReadWorkbook
-    {
-        get
-        {
-            AssertValid();
-
-            return (cbxAutoReadWorkbook.Checked);
-        }
-
-        set
-        {
-            cbxAutoReadWorkbook.Checked = value;
 
             AssertValid();
         }
@@ -186,6 +165,68 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Property: ShowGraphLegend
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the graph legend should be shown
+    /// in the graph pane.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the graph legend in the graph pane.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ShowGraphLegend
+    {
+        get
+        {
+            AssertValid();
+
+            return (cbxShowGraphLegend.Checked);
+        }
+
+        set
+        {
+            cbxShowGraphLegend.Checked = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ShowGraphAxes
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the graph axes should be shown
+    /// in the graph pane.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the graph axes in the graph pane.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ShowGraphAxes
+    {
+        get
+        {
+            AssertValid();
+
+            return (cbxShowGraphAxes.Checked);
+        }
+
+        set
+        {
+            cbxShowGraphAxes.Checked = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: ReadWorkbookButtonText
     //
     /// <summary>
@@ -203,6 +244,39 @@ public partial class Ribbon : OfficeRibbon
         set
         {
             btnReadWorkbook.Label = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ClearTablesBeforeImport
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether NodeXL tables should be cleared
+    /// before anything is imported into the workbook.
+    /// </summary>
+    ///
+    /// <value>
+    /// If true, the NodeXL tables are cleared before anything is imported into
+    /// the workbook.  If false, the imported contents are appended to the
+    /// workbook.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ClearTablesBeforeImport
+    {
+        get
+        {
+            AssertValid();
+
+            return (cbxClearTablesBeforeImport.Checked);
+        }
+
+        set
+        {
+            cbxClearTablesBeforeImport.Checked = value;
 
             AssertValid();
         }
@@ -305,6 +379,22 @@ public partial class Ribbon : OfficeRibbon
 
 
     //*************************************************************************
+    //  Event: RibbonControlsChanged
+    //
+    /// <summary>
+    /// Occurs when the state of one or more controls in the ribbon changes.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This event fires only for controls in the <see cref="RibbonControl" />
+    /// enumeration.  It does not fire for ribbon controls in general.
+    /// </remarks>
+    //*************************************************************************
+
+    public event RibbonControlsChangedEventHandler RibbonControlsChanged;
+
+
+    //*************************************************************************
     //  Property: ThisWorkbook
     //
     /// <summary>
@@ -345,6 +435,36 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         return ( new PerWorkbookSettings(this.ThisWorkbook.InnerObject) );
+    }
+
+    //*************************************************************************
+    //  Method: FireRibbonControlsChangedEvent()
+    //
+    /// <summary>
+    /// Fires the <see cref="RibbonControlsChanged" /> event if appropriate.
+    /// </summary>
+    ///
+    /// <param name="eRibbonControls">
+    /// The controls in the ribbon whose states have changed.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    FireRibbonControlsChangedEvent
+    (
+        RibbonControls eRibbonControls
+    )
+    {
+        AssertValid();
+
+        RibbonControlsChangedEventHandler oRibbonControlsChanged =
+            this.RibbonControlsChanged;
+
+        if (oRibbonControlsChanged != null)
+        {
+            oRibbonControlsChanged( this,
+                new RibbonControlsChangedEventArgs(eRibbonControls) );
+        }
     }
 
     //*************************************************************************
@@ -404,6 +524,10 @@ public partial class Ribbon : OfficeRibbon
         // The graph directedness RibbonDropDown should be enabled only if the
         // template the workbook is based on supports changing the
         // directedness.
+        //
+        // This is done here rather than in the constructor because a
+        // PerWorkbookSettings object can't be created until this.ThisWorkbook
+        // is available, which doesn't happen until the Ribbon is fully loaded.
 
         Int32 iTemplateVersion = GetPerWorkbookSettings().TemplateVersion;
 
@@ -412,13 +536,6 @@ public partial class Ribbon : OfficeRibbon
         // The ability to create clusters depends on the template version.
 
         btnCreateClusters.Enabled = (iTemplateVersion >= 54);
-
-        // Read the general user settings directly controlled by the ribbon.
-
-        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
-
-        this.ReadClusters = oGeneralUserSettings.ReadClusters;
-        this.AutoReadWorkbook = oGeneralUserSettings.AutoReadWorkbook;
     }
 
     //*************************************************************************
@@ -451,7 +568,11 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         oGeneralUserSettings.ReadClusters = this.ReadClusters;
-        oGeneralUserSettings.AutoReadWorkbook = this.AutoReadWorkbook;
+        oGeneralUserSettings.ShowGraphLegend = this.ShowGraphLegend;
+        oGeneralUserSettings.ShowGraphAxes = this.ShowGraphAxes;
+
+        oGeneralUserSettings.ClearTablesBeforeImport =
+            this.ClearTablesBeforeImport;
 
         oGeneralUserSettings.Save();
     }
@@ -539,6 +660,62 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         this.ThisWorkbook.ExportSelectionToNewNodeXLWorkbook();
+    }
+
+    //*************************************************************************
+    //  Method: btnExportToUcinetFile_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnExportToUcinetFile button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnExportToUcinetFile_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ExportToUcinetFile();
+    }
+
+    //*************************************************************************
+    //  Method: btnExportToPajekFile_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnExportToPajekFile button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnExportToPajekFile_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ExportToPajekFile();
     }
 
     //*************************************************************************
@@ -639,7 +816,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        FireRunRibbonCommandEvent(RibbonCommand.LayoutChanged);
+        FireRibbonControlsChangedEvent(RibbonControls.Layout);
     }
 
     //*************************************************************************
@@ -1149,10 +1326,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: btnImportPajekFile_Click()
+    //  Method: btnImportFromUcinetFile_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnImportPajekFile button.
+    /// Handles the Click event on the btnImportFromUcinetFile button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1165,7 +1342,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnImportPajekFile_Click
+    btnImportFromUcinetFile_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1173,7 +1350,35 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.ImportPajekFile();
+        this.ThisWorkbook.ImportFromUcinetFile();
+    }
+
+    //*************************************************************************
+    //  Method: btnImportFromPajekFile_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnImportFromPajekFile button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnImportFromPajekFile_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ImportFromPajekFile();
     }
 
     //*************************************************************************
@@ -1550,6 +1755,105 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: cbxShowGraphLegend_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowGraphLegend CheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowGraphLegend_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        FireRibbonControlsChangedEvent(RibbonControls.ShowGraphLegend);
+    }
+
+    //*************************************************************************
+    //  Method: cbxShowGraphAxes_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the cbxShowGraphAxes CheckBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    cbxShowGraphAxes_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        FireRibbonControlsChangedEvent(RibbonControls.ShowGraphAxes);
+    }
+
+    //*************************************************************************
+    //  Method: btnShowOrHideAllGraphElements_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnShowAllGraphElements and
+    /// btnHideAllGraphElements buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnShowOrHideAllGraphElements_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // This method handles the Click event for two buttons.  The buttons
+        // are distinguished by their Boolean Tags, which specify true to show
+        // or false to hide.
+
+        Debug.Assert(sender is RibbonButton);
+        RibbonButton oButton = (RibbonButton)sender;
+        Debug.Assert(oButton.Tag is Boolean);
+
+        Boolean bShow = (Boolean)oButton.Tag;
+
+        cbxReadClusters.Checked = cbxShowGraphLegend.Checked
+            = cbxShowGraphAxes.Checked = bShow;
+
+        FireRibbonControlsChangedEvent(RibbonControls.ShowGraphLegend |
+            RibbonControls.ShowGraphAxes);
+    }
+
+    //*************************************************************************
     //  Method: btnAbout_Click()
     //
     /// <summary>
@@ -1608,6 +1912,42 @@ public partial class Ribbon : OfficeRibbon
 
 
 //*****************************************************************************
+//  Enum: RibbonControls
+//
+/// <summary>
+/// Specifies one or more controls in the NodeXL ribbon.
+/// </summary>
+//*****************************************************************************
+
+[System.FlagsAttribute]
+
+public enum
+RibbonControls
+{
+    /// <summary>
+    /// The layout RibbonDropDown control.  The selected layout can be obtained
+    /// from the <see cref="Ribbon.Layout" /> property.
+    /// </summary>
+
+    Layout = 1,
+
+    /// <summary>
+    /// The "show graph legend" CheckBox.  The "show graph legend" flag can be
+    /// obtained from the <see cref="Ribbon.ShowGraphLegend" /> property.
+    /// </summary>
+
+    ShowGraphLegend = 2,
+
+    /// <summary>
+    /// The "show graph axes" CheckBox.  The "show graph axes" flag can be
+    /// obtained from the <see cref="Ribbon.ShowGraphAxes" /> property.
+    /// </summary>
+
+    ShowGraphAxes = 4,
+}
+
+
+//*****************************************************************************
 //  Enum: RibbonCommand
 //
 /// <summary>
@@ -1625,17 +1965,9 @@ RibbonCommand
     ShowDynamicFilters,
 
     /// <summary>
-    /// The selected layout has changed.  The new layout can be obtained from
-    /// the <see cref="Ribbon.Layout" /> property.
-    /// </summary>
-
-    LayoutChanged,
-
-    /// <summary>
     /// The workbook should be read into the graph pane.
     /// </summary>
 
     ReadWorkbook,
 }
-
 }

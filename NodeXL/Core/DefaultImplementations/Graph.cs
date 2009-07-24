@@ -920,12 +920,8 @@ public class Graph : GraphVertexEdgeBase, IGraph
         // m_bPerformExtraValidations
         Debug.Assert(m_oVertexCollection != null);
         Debug.Assert(m_oEdgeCollection != null);
-
-        Debug.Assert( Enum.IsDefined(
-            typeof(GraphDirectedness), m_eDirectedness) );
-
-        Debug.Assert( Enum.IsDefined(
-            typeof(GraphRestrictions), m_eRestrictions) );
+        // m_eDirectedness
+        // m_eRestrictions
     }
 
 

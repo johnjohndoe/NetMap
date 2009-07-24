@@ -205,6 +205,79 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: GetDynamicFilterRangeTrackBars()
+    //
+    /// <summary>
+    /// Gets collection of <see cref="IDynamicFilterRangeTrackBar" /> objects,
+    /// one for each filtered column in the workbook.
+    /// </summary>
+    ///
+    /// <param name="edgeDynamicFilterRangeTrackBars">
+    /// Where a collection of <see cref="IDynamicFilterRangeTrackBar" />
+    /// objects gets stored, one for each filtered column in the edge
+    /// worksheet.
+    /// </param>
+    ///
+    /// <param name="vertexDynamicFilterRangeTrackBars">
+    /// Where a collection of <see cref="IDynamicFilterRangeTrackBar" />
+    /// objects gets stored, one for each filtered column in the vertex
+    /// worksheet.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If the user has selected a dynamic filter's entire available range,
+    /// meaning that its column is not filtered on, that filter is not
+    /// returned.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    GetDynamicFilterRangeTrackBars
+    (
+        out ICollection<IDynamicFilterRangeTrackBar>
+            edgeDynamicFilterRangeTrackBars,
+
+        out ICollection<IDynamicFilterRangeTrackBar>
+            vertexDynamicFilterRangeTrackBars
+    )
+    {
+        AssertValid();
+
+        LinkedList<IDynamicFilterRangeTrackBar> oEdgeLinkedList =
+            new LinkedList<IDynamicFilterRangeTrackBar>();
+
+        LinkedList<IDynamicFilterRangeTrackBar> oVertexLinkedList =
+            new LinkedList<IDynamicFilterRangeTrackBar>();
+
+        LinkedList<IDynamicFilterRangeTrackBar> oLinkedListToAddTo =
+            oEdgeLinkedList;
+
+        foreach ( GroupBox oGroupBox in
+            new GroupBox[] {grpEdgeFilters, grpVertexFilters} )
+        {
+            foreach (Control oControl in oGroupBox.Controls)
+            {
+                if (oControl is IDynamicFilterRangeTrackBar)
+                {
+                    IDynamicFilterRangeTrackBar oDynamicFilterRangeTrackBar =
+                        (IDynamicFilterRangeTrackBar)oControl;
+
+                    if (!oDynamicFilterRangeTrackBar.AvailableRangeSelected)
+                    {
+                        oLinkedListToAddTo.AddLast(
+                            oDynamicFilterRangeTrackBar);
+                    }
+                }
+            }
+
+            oLinkedListToAddTo = oVertexLinkedList;
+        }
+
+        edgeDynamicFilterRangeTrackBars = oEdgeLinkedList;
+        vertexDynamicFilterRangeTrackBars = oVertexLinkedList;
+    }
+
+    //*************************************************************************
     //  Event: DynamicFilterColumnsChanged
     //
     /// <summary>
@@ -490,14 +563,11 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
                     // This updates two cells in the dynamic filter settings
                     // table.
 
-                    Debug.Assert(oControl.Tag is ColumnInfo);
-
-                    ColumnInfo oColumnInfo = (ColumnInfo)oControl.Tag;
-
                     String sSelectedMinimumAddress, sSelectedMaximumAddress;
 
                     m_oDynamicFilterSettings.SetSettings(
-                        oColumnInfo.TableName, oColumnInfo.ColumnName,
+                        oDynamicFilterRangeTrackBar.TableName,
+                        oDynamicFilterRangeTrackBar.ColumnName,
                         oDynamicFilterRangeTrackBar.SelectedMinimum,
                         oDynamicFilterRangeTrackBar.SelectedMaximum,
                         out sSelectedMinimumAddress,
@@ -641,11 +711,13 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         if (oNumericFilterParameters is DateTimeFilterParameters)
         {
             oDynamicFilterRangeTrackBar =
-                new DynamicFilterDateTimeRangeTrackBar();
+                new DynamicFilterDateTimeRangeTrackBar(
+                    sTableName, sColumnName);
         }
         else
         {
-            oDynamicFilterRangeTrackBar = new DynamicFilterRangeTrackBar();
+            oDynamicFilterRangeTrackBar = new DynamicFilterRangeTrackBar(
+                sTableName, sColumnName);
         }
 
         // Set the range track bar's ranges and custom properties.
@@ -670,14 +742,6 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         oControl.Anchor = AnchorStyles.Left | AnchorStyles.Top
             | AnchorStyles.Right;
-
-        // Store the column information in the control's Tag.  This is needed
-        // by the SelectedRangeChanged event handler.
-
-        ColumnInfo oColumnInfo = new ColumnInfo();
-        oColumnInfo.TableName = sTableName;
-        oColumnInfo.ColumnName = sColumnName;
-        oControl.Tag = oColumnInfo;
 
         // Make sure that a bunch of unwanted events during initialization are
         // avoided.
@@ -1136,16 +1200,6 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         Debug.Assert(oDynamicFilterRangeTrackBar != null);
         AssertValid();
 
-        // Retrieve the column information for this range track bar.
-
-        Debug.Assert(oDynamicFilterRangeTrackBar is Control);
-
-        Control oControl = (Control)oDynamicFilterRangeTrackBar;
-
-        Debug.Assert(oControl.Tag is ColumnInfo);
-
-        ColumnInfo oColumnInfo = (ColumnInfo)oControl.Tag;
-
         // Turn off automatic recalculation.  The dynamic filter column in the
         // edge or vertex table needs to be recalculated as the RangeTrackBar
         // is manipulated, but to minimize delays nothing else should be
@@ -1158,8 +1212,9 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         String sSelectedMinimumAddress, sSelectedMaximumAddress;
 
-        m_oDynamicFilterSettings.SetSettings(oColumnInfo.TableName,
-            oColumnInfo.ColumnName,
+        m_oDynamicFilterSettings.SetSettings(
+            oDynamicFilterRangeTrackBar.TableName,
+            oDynamicFilterRangeTrackBar.ColumnName,
             oDynamicFilterRangeTrackBar.SelectedMinimum,
             oDynamicFilterRangeTrackBar.SelectedMaximum,
             out sSelectedMinimumAddress, out sSelectedMaximumAddress);
@@ -1168,11 +1223,11 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         DynamicFilterColumns eDynamicFilterColumns = DynamicFilterColumns.None;
 
-        if (oColumnInfo.TableName == TableNames.Edges)
+        if (oDynamicFilterRangeTrackBar.TableName == TableNames.Edges)
         {
             eDynamicFilterColumns = DynamicFilterColumns.EdgeTable;
         }
-        else if (oColumnInfo.TableName == TableNames.Vertices)
+        else if (oDynamicFilterRangeTrackBar.TableName == TableNames.Vertices)
         {
             eDynamicFilterColumns = DynamicFilterColumns.VertexTable;
         }
@@ -1566,75 +1621,6 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
     protected Microsoft.Office.Interop.Excel.Range
         m_oVertexDynamicFilterColumnData;
-
-
-    //*************************************************************************
-    //  Embedded class: ColumnInfo
-    //
-    /// <summary>
-    /// Contains information about a column being filtered on.
-    /// </summary>
-    ///
-    /// <remarks>
-    /// When a RangeTrackBar is created, its Tag is set to one of these
-    /// objects.  The information is needed by the RangeTrackBar's
-    /// SelectedRangeChanged event handler.
-    /// </remarks>
-    //*************************************************************************
-
-    protected class ColumnInfo
-    {
-        /// Name of the table containing the column being filtered on.
-
-        public String TableName;
-
-        /// Name of the column being filtered on.
-
-        public String ColumnName;
-    }
-}
-
-//*****************************************************************************
-//  Enum: DynamicFilterColumns
-//
-/// <summary>
-/// Specifies the dynamic filter column in the edge table, the vertex
-/// table, or both.
-/// </summary>
-///
-/// <remarks>
-/// These values can be ORed together.
-/// </remarks>
-//*****************************************************************************
-
-[System.FlagsAttribute]
-
-public enum
-DynamicFilterColumns
-{
-    /// <summary>
-    /// Specifies no dynamic filter column.
-    /// </summary>
-
-    None = 0,
-
-    /// <summary>
-    /// Specifies the dynamic filter column in the edge table.
-    /// </summary>
-
-    EdgeTable = 1,
-
-    /// <summary>
-    /// Specifies the dynamic filter column in the vertex table.
-    /// </summary>
-
-    VertexTable = 2,
-
-    /// <summary>
-    /// Specifies the dynamic filter column in all tables.
-    /// </summary>
-
-    AllTables = EdgeTable | VertexTable,
 }
 
 

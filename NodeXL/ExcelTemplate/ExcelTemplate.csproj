@@ -120,6 +120,9 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="ReachFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>False</Private>
     </Reference>
@@ -131,6 +134,9 @@
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Printing">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase">
@@ -195,13 +201,13 @@
     <Compile Include="..\Common\AssemblyUtil2.cs">
       <Link>Util\AssemblyUtil2.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.cs">
-      <Link>Controls\RegisterUser\RegisterUser.cs</Link>
+    <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.cs">
+      <Link>Controls\RegisterUser\RegisterUserControl.cs</Link>
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="..\Common\Controls\RegisterUser\RegisterUser.designer.cs">
-      <Link>Controls\RegisterUser\RegisterUser.designer.cs</Link>
-      <DependentUpon>RegisterUser.cs</DependentUpon>
+    <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.designer.cs">
+      <Link>Controls\RegisterUser\RegisterUserControl.designer.cs</Link>
+      <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="..\Common\ProjectInformation.cs">
       <Link>Util\ProjectInformation.cs</Link>
@@ -211,6 +217,16 @@
     </Compile>
     <Compile Include="..\Common\RegisterUser\UserRegisterer.cs">
       <Link>Util\RegisterUser\UserRegisterer.cs</Link>
+    </Compile>
+    <Compile Include="Controls\ExcelTemplateNodeXLControl.cs" />
+    <Compile Include="Controls\Legend\AutoFillResultsLegendControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Legend\DynamicFiltersLegendControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Legend\LegendControlBase.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\SubgraphLevels\SubgraphLevelsControl.cs">
       <SubType>UserControl</SubType>
@@ -360,13 +376,22 @@
     <Compile Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.designer.cs">
       <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\OpenPajekFileDialog\OpenPajekFileDialog.cs" />
+    <Compile Include="Dialogs\OpenPajekFile\OpenPajekFileDialog.cs" />
+    <Compile Include="Dialogs\OpenUcinetFile\OpenUcinetFileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\OpenUcinetFile\OpenUcinetFileDialog.designer.cs">
+      <DependentUpon>OpenUcinetFileDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.designer.cs">
       <DependentUpon>RegisterUserDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SaveGraphImageFile\SaveGraphImageFileDialog.cs" />
+    <Compile Include="Dialogs\SavePajekFile\SavePajekFileDialog.cs" />
+    <Compile Include="Dialogs\SaveUcinetFile\SaveUcinetFileDialog.cs" />
     <Compile Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -396,6 +421,7 @@
     <Compile Include="EventArgs\GraphDrawnEventArgs.cs" />
     <Compile Include="EventArgs\RequestEdgeCommandEnableEventArgs.cs" />
     <Compile Include="EventArgs\RequestVertexCommandEnableEventArgs.cs" />
+    <Compile Include="EventArgs\RibbonControlsChangedEventArgs.cs" />
     <Compile Include="EventArgs\RunEdgeCommandEventArgs.cs" />
     <Compile Include="EventArgs\RunRibbonCommandEventArgs.cs" />
     <Compile Include="EventArgs\RunVertexCommandEventArgs.cs" />
@@ -583,10 +609,19 @@
     <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
     <Compile Include="Util\ApplicationUtil.cs" />
+    <Compile Include="Util\AutoFill\Results\AutoFillColorColumnResults.cs" />
+    <Compile Include="Util\AutoFill\Results\AutoFillColumnResults.cs" />
+    <Compile Include="Util\AutoFill\Results\AutoFillNumericRangeColumnResults.cs" />
+    <Compile Include="Util\AutoFill\Results\AutoFillWorkbookResults.cs" />
+    <Compile Include="Util\AutoFill\Results\AutoFillWorkbookWithSchemeResults.cs" />
+    <Compile Include="Util\AutoFill\TableColumnMapper.cs" />
+    <Compile Include="Util\AutoFill\WorkbookAutoFiller.cs" />
+    <Compile Include="Util\AutoFill\WorkbookSchemeAutoFiller.cs" />
     <Compile Include="Util\ColumnGroupManager.cs" />
     <Compile Include="Util\ComparisonOperator.cs" />
     <Compile Include="Util\DuplicateEdgeMerger.cs" />
     <Compile Include="Util\DynamicFilters\DateTimeFilterParameters.cs" />
+    <Compile Include="Util\DynamicFilters\DynamicFilterColumns.cs" />
     <Compile Include="Util\DynamicFilters\DynamicFilterParameters.cs" />
     <Compile Include="Util\DynamicFilters\DynamicFilterUtil.cs" />
     <Compile Include="Util\DynamicFilters\NumericFilterParameters.cs" />
@@ -594,20 +629,17 @@
     <Compile Include="Util\ErrorUtil.cs" />
     <Compile Include="Util\ExcelColumnWidths.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
+    <Compile Include="Util\GraphImporter.cs" />
     <Compile Include="Util\NodeXLControlUtil.cs" />
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
     <Compile Include="Util\OldWorkbookConversionException.cs" />
     <Compile Include="Util\OldWorkbookConverter.cs" />
-    <Compile Include="Util\PajekGraphImporter.cs" />
     <Compile Include="Util\SubgraphImageCreator.cs" />
     <Compile Include="Util\TableColumnAdder.cs" />
-    <Compile Include="Util\TableColumnMapper.cs" />
     <Compile Include="Util\TableImagePopulator.cs" />
     <Compile Include="Util\TemporaryImages.cs" />
     <Compile Include="Util\VertexWorksheetPopulator.cs" />
     <Compile Include="Util\VisualAttributes.cs" />
-    <Compile Include="Util\WorkbookAutoFiller.cs" />
-    <Compile Include="Util\WorkbookSchemeAutoFiller.cs" />
     <Compile Include="Util\WorksheetContextMenuManager.cs" />
     <Compile Include="Util\WorksheetHelpers\SheetHelper.cs" />
     <Compile Include="Util\WorksheetHelpers\Sheets1And2Helper.cs" />
@@ -704,9 +736,9 @@
     <None Include="Resources\ThumbnailLoading.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUser.resx">
-      <Link>Controls\RegisterUser\RegisterUser.resx</Link>
-      <DependentUpon>RegisterUser.cs</DependentUpon>
+    <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUserControl.resx">
+      <Link>Controls\RegisterUser\RegisterUserControl.resx</Link>
+      <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SubgraphLevels\SubgraphLevelsControl.resx">
       <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
@@ -757,6 +789,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Notification\NotificationDialog.resx">
       <DependentUpon>NotificationDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\OpenUcinetFile\OpenUcinetFileDialog.resx">
+      <DependentUpon>OpenUcinetFileDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\RegisterUser\RegisterUserDialog.resx">
       <DependentUpon>RegisterUserDialog.cs</DependentUpon>

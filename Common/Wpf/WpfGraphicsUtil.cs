@@ -7,8 +7,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.GraphicsLib;
 
-namespace Microsoft.Research.CommunityTechnologies.GraphicsLib
+namespace Microsoft.WpfGraphicsLib
 {
 //*****************************************************************************
 //  Class: WpfGraphicsUtil
@@ -104,6 +105,104 @@ public static class WpfGraphicsUtil
     {
         return ( System.Windows.Media.Color.FromArgb(newAlpha,
             color.R, color.G, color.B) );
+    }
+
+    //*************************************************************************
+    //  Method: FontToTypeface()
+    //
+    /// <summary>
+    /// Converts a System.Drawing.Font to a System.Windows.Media.Typeface.
+    /// </summary>
+    ///
+    /// <param name="font">
+    /// The System.Drawing.Font to convert.
+    /// </param>
+    //*************************************************************************
+
+    public static Typeface
+    FontToTypeface
+    (
+        System.Drawing.Font font
+    )
+    {
+        Debug.Assert(font != null);
+
+        return ( new System.Windows.Media.Typeface(
+            new FontFamily(font.Name),
+            font.Italic ? FontStyles.Italic : FontStyles.Normal,
+            font.Bold ? FontWeights.Bold : FontWeights.Normal,
+            FontStretches.Normal
+            ) );
+    }
+
+    //*************************************************************************
+    //  Method: WindowsFormsFontSizeToWpfFontSize()
+    //
+    /// <summary>
+    /// Converts a Windows Forms font size to a WPF font size.
+    /// </summary>
+    ///
+    /// <param name="windowsFormsFontSize">
+    /// Font size as used by Windows Forms.
+    /// </param>
+    ///
+    /// <returns>
+    /// Equivalent font size as used by WPF.
+    /// </returns>
+    //*************************************************************************
+
+    public static double
+    WindowsFormsFontSizeToWpfFontSize
+    (
+        Double windowsFormsFontSize
+    )
+    {
+        Debug.Assert(windowsFormsFontSize >= 0);
+
+        // The 0.75 comes from page 571 of "Windows Presentation Foundation
+        // Unleashed," by Adam Nathan.
+
+        return (windowsFormsFontSize / 0.75);
+    }
+
+    //*************************************************************************
+    //  Method: CreateOnePixelPen()
+    //
+    /// <summary>
+    /// Creates a pen that is one pixel wide, regardless of the screen
+    /// resolution.
+    /// </summary>
+    ///
+    /// <param name="visual">
+    /// The Visual being drawn.
+    /// </param>
+    ///
+    /// <param name="brush">
+    /// The brush to use for the pen.
+    /// </param>
+    //*************************************************************************
+
+    public static Pen
+    CreateOnePixelPen
+    (
+        Visual visual,
+        Brush brush
+    )
+    {
+        Debug.Assert(visual != null);
+
+        // This technique was suggested here:
+        //
+        // http://www.wpftutorial.net/DrawOnPhysicalDevicePixels.html
+
+        Matrix oMatrix = PresentationSource.FromVisual(visual).
+            CompositionTarget.TransformToDevice;
+
+        Debug.Assert(oMatrix.M11 != 0);
+
+        Double dDpiFactor = 1/oMatrix.M11;
+
+        return ( new Pen(brush, dDpiFactor) );
     }
 
     //*************************************************************************
@@ -780,6 +879,57 @@ public static class WpfGraphicsUtil
             centerOfRotation.X, centerOfRotation.Y);
 
         return (oMatrix);
+    }
+
+    //*************************************************************************
+    //  Method: TransformLength()
+    //
+    /// <summary>
+    /// Transforms a length along the x or y direction.
+    /// </summary>
+    ///
+    /// <param name="length">
+    /// Length to transform.
+    /// </param>
+    ///
+    /// <param name="transform">
+    /// The Transform to use.
+    /// </param>
+    ///
+    /// <param name="transformAlongX">
+    /// true to transform the length along the x direction, false to transform
+    /// the length along the y direction.
+    /// </param>
+    ///
+    /// <returns>
+    /// The transformed distance.
+    /// </returns>
+    //*************************************************************************
+
+    public static Double
+    TransformLength
+    (
+        Double length,
+        Transform transform,
+        Boolean transformAlongX
+    )
+    {
+        Debug.Assert(transform != null);
+
+        Point oPoint;
+
+        if (transformAlongX)
+        {
+            oPoint = new Point(length, 0);
+        }
+        else
+        {
+            oPoint = new Point(0, length);
+        }
+
+        oPoint = transform.Transform(oPoint);
+
+        return (transformAlongX ? oPoint.X : oPoint.Y);
     }
 
     //*************************************************************************

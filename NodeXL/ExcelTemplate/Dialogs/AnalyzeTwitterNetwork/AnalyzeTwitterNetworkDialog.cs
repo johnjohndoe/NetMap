@@ -49,11 +49,17 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
     /// <param name="workbook">
     /// Workbook containing the graph data.
     /// </param>
+    ///
+    /// <param name="clearTablesFirst">
+    /// true if the NodeXL tables in <paramref name="workbook" /> should be
+    /// cleared first.
+    /// </param>
     //*************************************************************************
 
     public AnalyzeTwitterNetworkDialog
     (
-        Microsoft.Office.Interop.Excel.Workbook workbook
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        Boolean clearTablesFirst
     )
     : this()
     {
@@ -67,6 +73,7 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         m_sCredentialsPassword = String.Empty;
 
         m_oWorkbook = workbook;
+        m_bClearTablesFirst = clearTablesFirst;
 
         m_oTwitterNetworkAnalyzer = new TwitterNetworkAnalyzer();
 
@@ -467,9 +474,10 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         Debug.Assert(e != null);
         AssertValid();
 
-        // Clear the required edge table and other optional tables.
-
-        NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
+        if (m_bClearTablesFirst)
+        {
+            NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
+        }
 
         Debug.Assert(e.Result is TwitterNetworkAnalysisResults);
 
@@ -490,8 +498,16 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
 
         // Populate the edge table with participant pairs.
 
+        Int32 iRowOffsetToWriteTo = 0;
+
+        if (!m_bClearTablesFirst)
+        {
+            iRowOffsetToWriteTo = ExcelUtil.GetOffsetOfFirstEmptyTableRow(
+                m_oEdgeTable);
+        }
+
         NodeXLWorkbookUtil.PopulateEdgeTableWithParticipantPairs(
-            m_oEdgeTable, aoParticipantPairs);
+            m_oEdgeTable, aoParticipantPairs, iRowOffsetToWriteTo);
 
         // Populate the vertex table with the screen name of each participant
         // and optionally his latest post.
@@ -537,13 +553,14 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
 
         // Get the vertex name and primary label column ranges.
 
-        Range oVertexNameRange, oPrimaryLabelRange;
+        Range oVertexNameColumnData, oPrimaryLabelColumnData;
         
         if ( !ExcelUtil.TryGetTableColumnData(oVertexTable,
-                VertexTableColumnNames.VertexName, out oVertexNameRange)
+                VertexTableColumnNames.VertexName, out oVertexNameColumnData)
             ||
             !ExcelUtil.TryGetTableColumnData(oVertexTable,
-                VertexTableColumnNames.PrimaryLabel, out oPrimaryLabelRange)
+                VertexTableColumnNames.PrimaryLabel,
+                out oPrimaryLabelColumnData)
             )
         {
             return;
@@ -555,7 +572,7 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         // Read the vertex names in the vertex table all at once.
 
         Object [,] aoVertexNameValues =
-            ExcelUtil.GetRangeValues(oVertexNameRange);
+            ExcelUtil.GetRangeValues(oVertexNameColumnData);
 
         Int32 iVertexNames = aoVertexNameValues.GetUpperBound(0);
 
@@ -587,7 +604,7 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
                     oTwitterParticipants);
         }
 
-        oPrimaryLabelRange.set_Value(Missing.Value, asPrimaryLabelValues);
+        oPrimaryLabelColumnData.set_Value(Missing.Value, asPrimaryLabelValues);
     }
 
     //*************************************************************************
@@ -628,7 +645,9 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         if ( !oTwitterParticipants.TryGetValue(
             sTwitterScreenName, out oTwitterParticipant) )
         {
-            Debug.Assert(false);
+            // This can occur when the tables are not cleared first and there
+            // are already rows in the vertex table that are not Twitter
+            // participants.
 
             return (String.Empty);
         }
@@ -873,6 +892,7 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         Debug.Assert(m_oAnalyzeTwitterNetworkDialogUserSettings != null);
         // m_sCredentialsPassword
         Debug.Assert(m_oWorkbook != null);
+        // m_bClearTablesFirst
         Debug.Assert(m_oTwitterNetworkAnalyzer != null);
         // m_oEdgeTable
     }
@@ -911,6 +931,10 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
     /// Workbook containing the graph data.
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
+
+    /// true if the NodeXL tables should be cleared first.
+
+    protected Boolean m_bClearTablesFirst;
 
     /// Object that does most of the work.
 

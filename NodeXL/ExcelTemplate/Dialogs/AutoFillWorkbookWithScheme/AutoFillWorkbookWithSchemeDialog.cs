@@ -478,6 +478,7 @@ public partial class AutoFillWorkbookWithSchemeDialog : ExcelTemplateForm
             return;
         }
 
+        this.DialogResult = DialogResult.OK;
         this.Close();
     }
 

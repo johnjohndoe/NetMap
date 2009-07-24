@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Research.CommunityTechnologies.AppLib;
-using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Layouts;
 using Microsoft.NodeXL.Visualization.Wpf;
@@ -66,18 +66,22 @@ public partial class TaskPane : UserControl
 
         // Get the template version from the per-workbook settings.
 
-        m_iTemplateVersion =
-            ( new PerWorkbookSettings(m_oWorkbook) ).TemplateVersion;
+        PerWorkbookSettings oPerWorkbookSettings =
+            this.PerWorkbookSettings;
+
+        m_iTemplateVersion = oPerWorkbookSettings.TemplateVersion;
 
         m_bHandlingLayoutChanged = false;
         m_iEnableGraphControlsCount = 0;
         m_oEdgeIDDictionary = null;
         m_oVertexIDDictionary = null;
-        m_oSaveImageFileDialog = null;
+        m_oSaveGraphImageFileDialog = null;
         m_oDynamicFilterDialog = null;
 
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+
         LayoutType eInitialLayout =
-            ( new GeneralUserSettings() ).LayoutUserSettings.Layout;
+            oGeneralUserSettings.LayoutUserSettings.Layout;
 
         // Instantiate an object that populates the cbxLayout ComboBox and
         // handles its SelectedIndexChanged event.
@@ -129,13 +133,22 @@ public partial class TaskPane : UserControl
 
         m_oRibbon.Layout = eInitialLayout;
 
+        m_oRibbon.RibbonControlsChanged +=
+            new RibbonControlsChangedEventHandler(
+                Ribbon_RibbonControlsChanged);
+
         m_oRibbon.RunRibbonCommand += new RunRibbonCommandEventHandler(
             Ribbon_RunRibbonCommand);
 
 
-        CreateWpfNodeXLControl();
-
+        CreateNodeXLControl(oGeneralUserSettings);
         usrGraphZoomAndScale.NodeXLControl = oNodeXLControl;
+
+        this.ShowGraphLegend = m_oRibbon.ShowGraphLegend;
+
+        UpdateAutoFillResultsLegend(oPerWorkbookSettings);
+        UpdateDynamicFiltersLegend();
+        UpdateAxes(oPerWorkbookSettings);
 
         AssertValid();
     }
@@ -272,18 +285,111 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: CreateWpfNodeXLControl()
+    //  Property: PerWorkbookSettings
     //
     /// <summary>
-    /// Creates a WpfNodeXLControl, hooks up its events, and assigns it as the
+    /// Gets the per-workbook settings.
+    /// </summary>
+    ///
+    /// <value>
+    /// The per-workbook settings.
+    /// </value>
+    //*************************************************************************
+
+    protected PerWorkbookSettings
+    PerWorkbookSettings
+    {
+        get
+        {
+            // AssertValid();
+            Debug.Assert(m_oWorkbook != null);
+
+            return ( new PerWorkbookSettings(m_oWorkbook) );
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ShowGraphLegend
+    //
+    /// <summary>
+    /// Sets a flag indicating whether the graph legend should be shown.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the graph legend.
+    /// </value>
+    //*************************************************************************
+
+    protected Boolean
+    ShowGraphLegend
+    {
+        set
+        {
+            this.splLegend.Panel2Collapsed = !value;
+
+            // AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ShowGraphAxes
+    //
+    /// <summary>
+    /// Sets a flag indicating whether the graph axes should be shown.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the graph axes.
+    /// </value>
+    //*************************************************************************
+
+    protected Boolean
+    ShowGraphAxes
+    {
+        set
+        {
+            Debug.Assert(m_oNodeXLWithAxesControl != null);
+
+            m_oNodeXLWithAxesControl.ShowAxes = value;
+
+            // AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: CreateNodeXLControl()
+    //
+    /// <summary>
+    /// Creates a NodeXLControl, hooks up its events, and assigns it as the
     /// child of an ElementHost.
     /// </summary>
+    ///
+    /// <param name="oGeneralUserSettings">
+    /// The user's general settings.
+    /// </param>
     //*************************************************************************
 
     protected void
-    CreateWpfNodeXLControl()
+    CreateNodeXLControl
+    (
+        GeneralUserSettings oGeneralUserSettings
+    )
     {
-        oNodeXLControl = new NodeXLControl();
+        Debug.Assert(oGeneralUserSettings != null);
+        // AssertValid();
+
+        // Control hierarchy:
+        //
+        // 1. ehElementHost contains a NodeXLWithAxesControl.
+        //
+        // 2. The NodeXLWithAxesControl contains an ExcelTemplateNodeXLControl.
+        //
+        // 3. The ExcelTemplateNodeXLControl is derived from NodeXLControl.
+
+        oNodeXLControl = new ExcelTemplateNodeXLControl();
+
+        m_oNodeXLWithAxesControl = new NodeXLWithAxesControl(oNodeXLControl);
+        m_oNodeXLWithAxesControl.ShowAxes = oGeneralUserSettings.ShowGraphAxes;
 
         oNodeXLControl.SelectionChanged +=
             new System.EventHandler(this.oNodeXLControl_SelectionChanged);
@@ -300,7 +406,9 @@ public partial class TaskPane : UserControl
         oNodeXLControl.GraphDrawn += new System.EventHandler(
             this.oNodeXLControl_GraphDrawn);
 
-        ehNodeXLControlHost.Child = oNodeXLControl;
+        ehNodeXLControlHost.Child = m_oNodeXLWithAxesControl;
+
+        ApplyUserSettings(oGeneralUserSettings);
     }
 
     //*************************************************************************
@@ -363,7 +471,6 @@ public partial class TaskPane : UserControl
         ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
 
         oReadWorkbookContext.IgnoreVertexLocations = false;
-
         oReadWorkbookContext.GraphRectangle = this.GraphRectangle;
         oReadWorkbookContext.FillIDColumns = true;
         oReadWorkbookContext.ReadClusters = m_oRibbon.ReadClusters;
@@ -419,6 +526,13 @@ public partial class TaskPane : UserControl
             }
 
             oNodeXLControl.DrawGraph(bLayOutGraph);
+
+            PerWorkbookSettings oPerWorkbookSettings =
+                this.PerWorkbookSettings;
+
+            UpdateAutoFillResultsLegend(oPerWorkbookSettings);
+            UpdateDynamicFiltersLegend();
+            UpdateAxes(oPerWorkbookSettings);
         }
         catch (Exception oException)
         {
@@ -723,7 +837,8 @@ public partial class TaskPane : UserControl
         Debug.Assert(oGeneralUserSettings != null);
         AssertValid();
 
-        oGeneralUserSettings.TransferToNodeXLControl(oNodeXLControl);
+        oGeneralUserSettings.TransferToNodeXLWithAxesControl(
+            m_oNodeXLWithAxesControl);
     }
 
     //*************************************************************************
@@ -773,8 +888,13 @@ public partial class TaskPane : UserControl
         }
 
         tsToolStrip.Enabled = usrGraphZoomAndScale.Enabled = bEnable2;
-
         this.UseWaitCursor = !bEnable2;
+
+        // Setting this.UseWaitCursor affects the cursor when the mouse is
+        // over the tsToolStrip, but not when it's over the NodeXLControl.
+
+        oNodeXLControl.Cursor =
+            bEnable2 ? null : System.Windows.Input.Cursors.Wait;
     }
 
     //*************************************************************************
@@ -1206,15 +1326,15 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: SaveGraphBitmap()
+    //  Method: SaveImage()
     //
     /// <summary>
-    /// Saves the graph bitmap to a file.
+    /// Saves the graph image to a file.
     /// </summary>
     //*************************************************************************
 
     protected void
-    SaveGraphBitmap()
+    SaveImage()
     {
         AssertValid();
 
@@ -1223,20 +1343,20 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        // Get the size of the bitmap.
+        // Get the size of the image.
 
         GraphImageUserSettings oGraphImageUserSettings =
             new GraphImageUserSettings();
 
-        Int32 iWidthPx, iHeightPx;
+        Int32 iWidth, iHeight;
 
         if (oGraphImageUserSettings.UseControlSize)
         {
             Size oNodeXLControlSizePx = ehNodeXLControlHost.ClientSize;
-            iWidthPx = oNodeXLControlSizePx.Width;
-            iHeightPx = oNodeXLControlSizePx.Height;
+            iWidth = oNodeXLControlSizePx.Width;
+            iHeight = oNodeXLControlSizePx.Height;
 
-            if (iWidthPx == 0 || iHeightPx == 0)
+            if (iWidth == 0 || iHeight == 0)
             {
                 // The size is unusable.
 
@@ -1250,28 +1370,20 @@ public partial class TaskPane : UserControl
         }
         else
         {
-            iWidthPx = oGraphImageUserSettings.WidthPx;
-            iHeightPx = oGraphImageUserSettings.HeightPx;
+            iWidth = oGraphImageUserSettings.Width;
+            iHeight = oGraphImageUserSettings.Height;
         }
 
-        // Tell the NodeXLControl to copy its graph to a bitmap.
-
-        Bitmap oBitmapCopy =
-            oNodeXLControl.CopyGraphToBitmap(iWidthPx, iHeightPx);
-
-        // Save it.
-
-        if (m_oSaveImageFileDialog == null)
+        if (m_oSaveGraphImageFileDialog == null)
         {
-            m_oSaveImageFileDialog =
-                new SaveImageFileDialog(String.Empty, "GraphImage");
+            m_oSaveGraphImageFileDialog =
+                new SaveGraphImageFileDialog(String.Empty, "GraphImage");
 
-            m_oSaveImageFileDialog.DialogTitle = "Save Image to File";
+            m_oSaveGraphImageFileDialog.DialogTitle = "Save Image to File";
         }
 
-        m_oSaveImageFileDialog.ShowDialogAndSaveImage(oBitmapCopy);
-
-        oBitmapCopy.Dispose();
+        m_oSaveGraphImageFileDialog.ShowDialogAndSaveGraphImage(oNodeXLControl,
+            iWidth, iHeight);
     }
 
     //*************************************************************************
@@ -1681,12 +1793,298 @@ public partial class TaskPane : UserControl
             {
                 ReadDynamicFilterColumns(false);
                 ReadFilteredAlpha(true);
+                UpdateDynamicFiltersLegend();
             }
         }
         else
         {
             m_oDynamicFilterDialog.Activate();
         }
+    }
+
+    //*************************************************************************
+    //  Method: UpdateAutoFillResultsLegend()
+    //
+    /// <summary>
+    /// Updates the autofill results legend control.
+    /// </summary>
+    ///
+    /// <param name="oPerWorkbookSettings">
+    /// Provides access to settings that are stored on a per-workbook basis.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    UpdateAutoFillResultsLegend
+    (
+        PerWorkbookSettings oPerWorkbookSettings
+    )
+    {
+        Debug.Assert(oPerWorkbookSettings != null);
+        AssertValid();
+
+        // The autofill and "autofill with scheme" results are stored in the
+        // per-workbook settings.  Transfer them to the visual attributes
+        // legend control, which can display either set of results but not
+        // both.
+        //
+        // (The PerWorkbookSettings property setter for the autofill results
+        // clears the "autofill with scheme" results, and vice versa.)
+
+        AutoFillWorkbookResults oAutoFillWorkbookResults =
+            oPerWorkbookSettings.AutoFillWorkbookResults;
+
+        AutoFillWorkbookWithSchemeResults oAutoFillWorkbookWithSchemeResults =
+            oPerWorkbookSettings.AutoFillWorkbookWithSchemeResults;
+
+        if (oAutoFillWorkbookResults.AutoFilledNonXYColumnCount > 0)
+        {
+            usrAutoFillResultsLegend.Update(oAutoFillWorkbookResults);
+        }
+        else if (oAutoFillWorkbookWithSchemeResults.SchemeType !=
+            AutoFillSchemeType.None)
+        {
+            usrAutoFillResultsLegend.Update(
+                oAutoFillWorkbookWithSchemeResults);
+        }
+        else
+        {
+            usrAutoFillResultsLegend.Clear();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: UpdateDynamicFiltersLegend()
+    //
+    /// <summary>
+    /// Updates the dynamic filters legend control.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    UpdateDynamicFiltersLegend()
+    {
+        AssertValid();
+
+        if (m_oDynamicFilterDialog == null)
+        {
+            usrDynamicFiltersLegend.Clear();
+            return;
+        }
+ 
+        // Transfer the track bar information from the DynamicFilterDialog to
+        // the dynamic filters legend control.
+
+        ICollection<IDynamicFilterRangeTrackBar>
+            oEdgeDynamicFilterRangeTrackBars,
+            oVertexDynamicFilterRangeTrackBars;
+
+        m_oDynamicFilterDialog.GetDynamicFilterRangeTrackBars(
+            out oEdgeDynamicFilterRangeTrackBars,
+            out oVertexDynamicFilterRangeTrackBars);
+
+        usrDynamicFiltersLegend.Update(oEdgeDynamicFilterRangeTrackBars,
+            oVertexDynamicFilterRangeTrackBars);
+    }
+
+    //*************************************************************************
+    //  Method: UpdateAxes()
+    //
+    /// <summary>
+    /// Updates the graph's axes.
+    /// </summary>
+    ///
+    /// <param name="oPerWorkbookSettings">
+    /// Provides access to settings that are stored on a per-workbook basis.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    UpdateAxes
+    (
+        PerWorkbookSettings oPerWorkbookSettings
+    )
+    {
+        Debug.Assert(oPerWorkbookSettings != null);
+        AssertValid();
+
+        AutoFillWorkbookResults oAutoFillWorkbookResults =
+            oPerWorkbookSettings.AutoFillWorkbookResults;
+
+        String sXSourceColumnName, sYSourceColumnName;
+
+        Double dXSourceCalculationNumber1, dXSourceCalculationNumber2,
+            dXDestinationNumber1, dXDestinationNumber2,
+            dYSourceCalculationNumber1, dYSourceCalculationNumber2,
+            dYDestinationNumber1, dYDestinationNumber2;
+
+        AutoFillNumericRangeColumnResults oVertexXResults =
+            oAutoFillWorkbookResults.VertexXResults;
+
+        AutoFillNumericRangeColumnResults oVertexYResults =
+            oAutoFillWorkbookResults.VertexYResults;
+
+        if (oVertexXResults.ColumnAutoFilled)
+        {
+            sXSourceColumnName = oVertexXResults.SourceColumnName;
+
+            dXSourceCalculationNumber1 =
+                oVertexXResults.SourceCalculationNumber1;
+
+            dXSourceCalculationNumber2 =
+                oVertexXResults.SourceCalculationNumber2;
+
+            dXDestinationNumber1 = oVertexXResults.DestinationNumber1;
+            dXDestinationNumber2 = oVertexXResults.DestinationNumber2;
+
+            // The X and Y columns are always autofilled together.
+
+            Debug.Assert(oVertexYResults.ColumnAutoFilled);
+
+            sYSourceColumnName = oVertexYResults.SourceColumnName;
+
+            dYSourceCalculationNumber1 =
+                oVertexYResults.SourceCalculationNumber1;
+
+            dYSourceCalculationNumber2 =
+                oVertexYResults.SourceCalculationNumber2;
+
+            dYDestinationNumber1 = oVertexYResults.DestinationNumber1;
+            dYDestinationNumber2 = oVertexYResults.DestinationNumber2;
+
+        }
+        else
+        {
+            // The X and Y columns weren't autofilled.  Use default axis
+            // values.
+
+            sXSourceColumnName = "X";
+            sYSourceColumnName = "Y";
+
+            dXSourceCalculationNumber1 = dXDestinationNumber1 =
+                dYSourceCalculationNumber1 = dYDestinationNumber1 =
+                VertexLocationConverter.MinimumXYWorkbook;
+
+            dXSourceCalculationNumber2 = dXDestinationNumber2 =
+                dYSourceCalculationNumber2 = dYDestinationNumber2 =
+                VertexLocationConverter.MaximumXYWorkbook;
+        }
+
+        UpdateAxis(m_oNodeXLWithAxesControl.XAxis, sXSourceColumnName,
+            dXSourceCalculationNumber1, dXSourceCalculationNumber2,
+            dXDestinationNumber1, dXDestinationNumber2);
+
+        UpdateAxis(m_oNodeXLWithAxesControl.YAxis, sYSourceColumnName,
+            dYSourceCalculationNumber1, dYSourceCalculationNumber2,
+            dYDestinationNumber1, dYDestinationNumber2);
+    }
+
+    //*************************************************************************
+    //  Method: UpdateAxis()
+    //
+    /// <summary>
+    /// Updates one of the graph's axes.
+    /// </summary>
+    ///
+    /// <param name="oAxis">
+    /// The axis to update.
+    /// </param>
+    ///
+    /// <param name="sAxisLabel">
+    /// The axis label.
+    /// </param>
+    ///
+    /// <param name="dSourceCalculationNumber1">
+    /// The actual first source number used in the calculations.
+    /// </param>
+    ///
+    /// <param name="dSourceCalculationNumber2">
+    /// The actual second source number used in the calculations.
+    /// </param>
+    ///
+    /// <param name="dDestinationNumber1">
+    /// The first number used in the destination column.
+    /// </param>
+    ///
+    /// <param name="dDestinationNumber2">
+    /// The second number used in the destination column.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    UpdateAxis
+    (
+        Microsoft.WpfGraphicsLib.Axis oAxis,
+        String sAxisLabel,
+        Double dSourceCalculationNumber1,
+        Double dSourceCalculationNumber2,
+        Double dDestinationNumber1,
+        Double dDestinationNumber2
+    )
+    {
+        Debug.Assert(oAxis != null);
+        Debug.Assert(sAxisLabel != null);
+        Debug.Assert(oNodeXLControl != null);
+        // AssertValid();
+
+        oAxis.Label = sAxisLabel;
+
+        Double dAxisLength =
+            oAxis.IsXAxis ? oAxis.ActualWidth : oAxis.ActualHeight;
+
+        if (dAxisLength == 0)
+        {
+            // The axis control hasn't been drawn yet.
+
+            oAxis.SetRange(VertexLocationConverter.MinimumXYWorkbook, 0,
+                VertexLocationConverter.MaximumXYWorkbook, 0);
+
+            return;
+        }
+
+        // dSourceCalculationNumber1 and dDestinationNumber1 are not
+        // necessarily at the near end of the axis.
+
+        Double dNearSourceCalculationNumber, dNearDestinationNumber,
+            dFarSourceCalculationNumber, dFarDestinationNumber,
+            dNearOffset;
+
+        if (dDestinationNumber2 >= dDestinationNumber1)
+        {
+            dNearSourceCalculationNumber = dSourceCalculationNumber1;
+            dNearDestinationNumber = dDestinationNumber1;
+
+            dFarSourceCalculationNumber = dSourceCalculationNumber2;
+            dFarDestinationNumber = dDestinationNumber2;
+        }
+        else
+        {
+            dNearSourceCalculationNumber = dSourceCalculationNumber2;
+            dNearDestinationNumber = dDestinationNumber2;
+
+            dFarSourceCalculationNumber = dSourceCalculationNumber1;
+            dFarDestinationNumber = dDestinationNumber1;
+        }
+
+        // Use the point-slope equation of a line to map destination units to
+        // WPF units.
+
+        Double dX1 = VertexLocationConverter.MinimumXYWorkbook;
+        Double dY1 = 0;
+        Double dX2 = VertexLocationConverter.MaximumXYWorkbook;
+        Double dY2 = dAxisLength;
+
+        Debug.Assert(dX1 != dX2);
+        Double dM = (dY1 - dY2) / (dX1 - dX2);
+
+        dNearOffset = dY1 + dM * (dNearDestinationNumber - dX1);
+        Double dFarX = dY1 + dM * (dFarDestinationNumber - dX1);
+
+        // Use Math.Max() to fix rounding errors that result in very small
+        // negative offsets, which are prohibited.
+
+        oAxis.SetRange( dNearSourceCalculationNumber, Math.Max(dNearOffset, 0),
+            dFarSourceCalculationNumber, Math.Max(dAxisLength - dFarX, 0) );
     }
 
     //*************************************************************************
@@ -3025,7 +3423,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        SaveGraphBitmap();
+        SaveImage();
     }
 
     //*************************************************************************
@@ -3408,6 +3806,8 @@ public partial class TaskPane : UserControl
         {
             ReadVertexDynamicFilterColumn(true);
         }
+
+        UpdateDynamicFiltersLegend();
     }
 
     //*************************************************************************
@@ -3658,7 +4058,22 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        ReadWorkbook();
+        if (this.PerWorkbookSettings.AutoFillWorkbookResults.VertexXResults
+            .ColumnAutoFilled )
+        {
+            // When the X and Y columns are autofilled, the layout shouldn't
+            // be updated.
+            //
+            // (The user can clear the X and Y autofill results by changing the
+            // layout type.)
+
+            m_oLayoutManagerForComboBox.Layout = LayoutType.Null;
+        }
+
+        if ( (new GeneralUserSettings() ).AutoReadWorkbook )
+        {
+            ReadWorkbook();
+        }
     }
 
     //*************************************************************************
@@ -3687,7 +4102,8 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsDrawing ||
+            !( new GeneralUserSettings() ).AutoReadWorkbook)
         {
             return;
         }
@@ -3962,6 +4378,49 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: Ribbon_RibbonControlsChanged()
+    //
+    /// <summary>
+    /// Handles the RibbonControlsChanged event on the Ribbon object.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    Ribbon_RibbonControlsChanged
+    (
+        Object sender,
+        RibbonControlsChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        RibbonControls eRibbonControls = e.RibbonControls;
+
+        if ( (eRibbonControls & RibbonControls.Layout) != 0 )
+        {
+            LayoutManager_LayoutChanged(sender, e);
+        }
+
+        if ( (eRibbonControls & RibbonControls.ShowGraphLegend) != 0 )
+        {
+            this.ShowGraphLegend = m_oRibbon.ShowGraphLegend;
+        }
+
+        if ( (eRibbonControls & RibbonControls.ShowGraphAxes) != 0 )
+        {
+            this.ShowGraphAxes = m_oRibbon.ShowGraphAxes;
+        }
+    }
+
+    //*************************************************************************
     //  Method: Ribbon_RunRibbonCommand()
     //
     /// <summary>
@@ -3993,11 +4452,6 @@ public partial class TaskPane : UserControl
                 ShowDynamicFilters();
                 break;
 
-            case RibbonCommand.LayoutChanged:
-
-                LayoutManager_LayoutChanged(sender, e);
-                break;
-
             case RibbonCommand.ReadWorkbook:
 
                 ReadWorkbook();
@@ -4008,6 +4462,85 @@ public partial class TaskPane : UserControl
                 Debug.Assert(false);
                 break;
         }
+    }
+
+    //*************************************************************************
+    //  Method: splLegend_Panel2_Resize()
+    //
+    /// <summary>
+    /// Handles the Resize event on the splLegend_Panel2 Panel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    splLegend_Panel2_Resize
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        // The usrAutoFillResultsLegend and usrDynamicFiltersLegend controls
+        // are stacked within a scrollable Panel, splLegend.Panel2.  Adjust
+        // their widths to make them fill the width of the Panel.
+        //
+        // Why not just set their Anchor to Top|Left|Right to have the Windows
+        // Forms layout engine do this automatically?  That doesn't work, due
+        // to the following bug:
+        //
+        // If you put a control in a SplitContainer's lower Panel, anchor the
+        // control to the left and right edges of the Panel, and initially
+        // collapse the Panel (SplitContainer.Panel2Collapsed = true), the
+        // control will be wider than the Panel when the Panel is uncollapsed
+        // at runtime.  This can be reproduced in a simple Windows Forms
+        // application, so it is not limited to NodeXL.
+
+        usrAutoFillResultsLegend.Width = usrDynamicFiltersLegend.Width
+            = splLegend.Panel2.Width;
+    }
+
+    //*************************************************************************
+    //  Method: usrAutoFillResultsLegend_Resize()
+    //
+    /// <summary>
+    /// Handles the Resize event on the usrAutoFillResultsLegend control.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    usrAutoFillResultsLegend_Resize
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        // Don't do this.  On large-font machines, the child controls get
+        // resized before the TaskPane is fully initialized.
+
+        // AssertValid();
+
+        // The usrAutoFillResultsLegend and usrDynamicFiltersLegend controls
+        // are stacked within a scrollable Panel, splLegend.Panel2.  Each
+        // dynamically sets its height to accommodate its contents.  When the
+        // upper control, usrAutoFillResultsLegend, changes height, the top of
+        // the lower control must be adjusted.
+
+        usrDynamicFiltersLegend.Top = usrAutoFillResultsLegend.Bottom + 1;
     }
 
     //*************************************************************************
@@ -4080,6 +4613,36 @@ public partial class TaskPane : UserControl
 
         oGeneralUserSettings.Save();
 
+        // If the layout was just changed from Null to something else and the
+        // X and Y columns were autofilled, the X and Y autofill results need
+        // to be cleared.
+
+        if (m_oLayoutManagerForComboBox.Layout != LayoutType.Null)
+        {
+            PerWorkbookSettings oPerWorkbookSettings =
+                this.PerWorkbookSettings;
+
+            AutoFillWorkbookResults oAutoFillWorkbookResults =
+                oPerWorkbookSettings.AutoFillWorkbookResults;
+                
+            if (oAutoFillWorkbookResults.VertexXResults.ColumnAutoFilled)
+            {
+                oAutoFillWorkbookResults.VertexXResults =
+                    new AutoFillNumericRangeColumnResults();
+
+                oAutoFillWorkbookResults.VertexYResults =
+                    new AutoFillNumericRangeColumnResults();
+
+                // The PerWorkbookSettings object doesn't persist its settings
+                // to the workbook unless one of its own properties is set.
+
+                oPerWorkbookSettings.AutoFillWorkbookResults =
+                    oAutoFillWorkbookResults;
+                
+                UpdateAxes(oPerWorkbookSettings);
+            }
+        }
+
         m_bHandlingLayoutChanged = false;
     }
 
@@ -4098,6 +4661,7 @@ public partial class TaskPane : UserControl
     AssertValid()
     {
         Debug.Assert(oNodeXLControl != null);
+        Debug.Assert(m_oNodeXLWithAxesControl != null);
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oRibbon != null);
         Debug.Assert(m_iTemplateVersion > 0);
@@ -4110,7 +4674,7 @@ public partial class TaskPane : UserControl
         // m_iEnableGraphControlsCount
         // m_oEdgeIDDictionary
         // m_oVertexIDDictionary
-        // m_oSaveImageFileDialog
+        // m_oSaveGraphImageFileDialog
 
         if (m_oDynamicFilterDialog != null)
         {
@@ -4138,7 +4702,11 @@ public partial class TaskPane : UserControl
 
     /// The control that displays the graph.
 
-    protected NodeXLControl oNodeXLControl;
+    protected ExcelTemplateNodeXLControl oNodeXLControl;
+
+    /// The parent of oNodeXLControl.
+
+    protected NodeXLWithAxesControl m_oNodeXLWithAxesControl;
 
     /// The workbook attached to this TaskPane.
 
@@ -4182,7 +4750,7 @@ public partial class TaskPane : UserControl
     /// This is kept as a field instead of being created each time an image is
     /// saved so that the dialog retains its file type setting.
 
-    protected SaveImageFileDialog m_oSaveImageFileDialog;
+    protected SaveGraphImageFileDialog m_oSaveGraphImageFileDialog;
 
     /// Modeless dialog for dynamically filtering vertices and edges in the
     /// graph.  The dialog is created on demand, so this is initially null,

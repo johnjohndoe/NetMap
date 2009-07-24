@@ -15,12 +15,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: WorkbookExporter
 //
 /// <summary>
-/// Exports a workbook's contents.
+/// Exports a workbook's contents to another workbook.
 /// </summary>
 ///
 /// <remarks>
 /// Use <see cref="ExportSelectionToNewNodeXLWorkbook" /> to export the
 /// selected rows of the edge and vertex tables to a new NodeXL workbook.
+/// Use <see cref="ExportToNewMatrixWorkbook" /> to export the edge table to a
+/// new workbook as an adjacency matrix.
 /// </remarks>
 //*****************************************************************************
 
@@ -212,25 +214,17 @@ public class WorkbookExporter
             m_oWorkbookToExport, oReadWorkbookContext);
 
         // Get an array of non-isolated vertices.  Isolated vertices don't get
-        // exported, at least for now.  (How are isolated vertices typically
-        // handled when working with adjacency matrices?)
+        // exported.
 
-        List<IVertex> oNonIsolatedVertices = new List<IVertex>();
-
-        foreach (IVertex oVertex in oGraph.Vertices)
-        {
-            if (oVertex.IncidentEdges.Length > 0)
-            {
-                oNonIsolatedVertices.Add(oVertex);
-            }
-        }
+        List<IVertex> oNonIsolatedVertices =
+            GraphUtil.GetNonIsolatedVertices(oGraph);
 
         Int32 iNonIsolatedVertices = oNonIsolatedVertices.Count;
 
         if (iNonIsolatedVertices == 0)
         {
             throw new ExportWorkbookException(
-                "There are no edges to export to a new workbook."
+                "There are no edges to export."
                 );
         }
 
@@ -275,7 +269,7 @@ public class WorkbookExporter
 
             for (Int32 j = 0; j < iNonIsolatedVertices; j++)
             {
-                aoEdgeWeights[1, j + 1] = GetEdgeWeight( oVertexI,
+                aoEdgeWeights[1, j + 1] = EdgeUtil.GetEdgeWeight( oVertexI,
                     oNonIsolatedVertices[j] );
             }
 
@@ -285,102 +279,6 @@ public class WorkbookExporter
         }
 
         return (oNewWorkbook);
-    }
-
-    //*************************************************************************
-    //  Method: GetEdgeWeight()
-    //
-    /// <summary>
-    /// Gets the edge weight between two vertices.
-    /// </summary>
-    ///
-    /// <param name="oVertex1">
-    /// The first vertex.
-    /// </param>
-    ///
-    /// <param name="oVertex2">
-    /// The second vertex.
-    /// </param>
-    ///
-    /// <returns>
-    /// The edge weight between the two vertices.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// It's assumed that DuplicateEdgeMerger has been used to merge duplicate
-    /// edges and set the edge weight value on all the edges.
-    /// </remarks>
-    //*************************************************************************
-
-    protected Double
-    GetEdgeWeight
-    (
-        IVertex oVertex1,
-        IVertex oVertex2
-    )
-    {
-        Debug.Assert(oVertex1 != null);
-        Debug.Assert(oVertex2 != null);
-        AssertValid();
-
-        Double dEdgeWeight = 0;
-
-        // Get the edges that connect the two vertices.  This includes all
-        // connecting edges and does not take directedness into account.
-
-        IEdge [] aoConnectingEdges = oVertex1.GetConnectingEdges(oVertex2);
-        Int32 iConnectingEdges = aoConnectingEdges.Length;
-        IEdge oConnectingEdgeWithEdgeWeight = null;
-
-        switch (oVertex1.ParentGraph.Directedness)
-        {
-            case GraphDirectedness.Directed:
-
-                // There can be 0, 1, or 2 edges between the vertices.  Only
-                // one of them can originate at oVertex1.
-
-                Debug.Assert(iConnectingEdges <= 2);
-
-                foreach (IEdge oConnectingEdge in aoConnectingEdges)
-                {
-                    if (oConnectingEdge.BackVertex == oVertex1)
-                    {
-                        oConnectingEdgeWithEdgeWeight = oConnectingEdge;
-                        break;
-                    }
-                }
-
-                break;
-
-            case GraphDirectedness.Undirected:
-
-                // There can be 0 or 1 edges between the vertices.  There can't
-                // be 2 edges, because DuplicateEdgeMerger combined (A,B) with
-                // (B,A).
-
-                Debug.Assert(iConnectingEdges <= 1);
-
-                if (iConnectingEdges == 1)
-                {
-                    oConnectingEdgeWithEdgeWeight = aoConnectingEdges[0];
-                }
-
-                break;
-
-            default:
-
-                Debug.Assert(false);
-                break;
-        }
-
-        if (oConnectingEdgeWithEdgeWeight != null)
-        {
-            dEdgeWeight = (Double)
-                oConnectingEdgeWithEdgeWeight.GetRequiredValue(
-                    ReservedMetadataKeys.EdgeWeight, typeof(Double) );
-        }
-
-        return (dEdgeWeight);
     }
 
     //*************************************************************************

@@ -334,15 +334,15 @@ public class UserRegisterer : Object
 
     /// User name and password of the SDS account.
 
-    protected const String UserName = "UserRegistration";
+    protected const String UserName = "NodeXLUsers";
     ///
-    protected const String Password = "7m%DpH4#!2";
+    protected const String Password = "9jUhbGiiej98bHGtu6";
 
     /// URL of the SDS containter.  The SDS authority is "users2" and the
     /// container is "users".
 
     protected const String ContainerUrl =
-        "https://users2.data.database.windows.net/v1/users";
+        "https://nodexlusers.data.database.windows.net/v1/nodexlusers";
 
 
     //*************************************************************************

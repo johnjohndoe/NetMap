@@ -28,7 +28,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public static class TableColumnMapper : Object
 {
     //*************************************************************************
-    //  Method: MapToNumericRange()
+    //  Method: TryMapToNumericRange()
     //
     /// <summary>
     /// Maps the numbers in a source column to a range of numbers in a
@@ -85,6 +85,20 @@ public static class TableColumnMapper : Object
     /// name="useSourceNumber2" /> are false.
     /// </param>
     ///
+    /// <param name="sourceCalculationNumber1">
+    /// Where the actual first source number used in the calculations gets
+    /// stored if true is returned.
+    /// </param>
+    ///
+    /// <param name="sourceCalculationNumber2">
+    /// Where the actual second source number used in the calculations gets
+    /// stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the mapping was performed.
+    /// </returns>
+    ///
     /// <remarks>
     /// Each numeric cell in the source column is mapped to a number in the
     /// destination column.
@@ -97,8 +111,8 @@ public static class TableColumnMapper : Object
     /// </remarks>
     //*************************************************************************
 
-    public static void
-    MapToNumericRange
+    public static Boolean
+    TryMapToNumericRange
     (
         ListObject table,
         String sourceColumnName,
@@ -109,12 +123,16 @@ public static class TableColumnMapper : Object
         Double sourceNumber2,
         Double destinationNumber1,
         Double destinationNumber2,
-        Boolean ignoreOutliers
+        Boolean ignoreOutliers,
+        out Double sourceCalculationNumber1,
+        out Double sourceCalculationNumber2
     )
     {
         Debug.Assert(table != null);
         Debug.Assert( !String.IsNullOrEmpty(sourceColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(destinationColumnName) );
+
+        sourceCalculationNumber1 = sourceCalculationNumber2 = Double.MinValue;
 
         Range oVisibleSourceRange, oVisibleDestinationRange;
 
@@ -122,21 +140,19 @@ public static class TableColumnMapper : Object
             destinationColumnName, out oVisibleSourceRange,
             out oVisibleDestinationRange) )
         {
-            return;
+            return (false);
         }
 
         // Get the source calculation range, which is the range of source
         // numbers used in calculating the mapping of source numbers to
         // destination numbers.
 
-        Double dSourceCalculationNumber1, dSourceCalculationNumber2;
-
         if ( !TryGetSourceCalculationRange(oVisibleSourceRange,
             useSourceNumber1, useSourceNumber2, sourceNumber1, sourceNumber2,
-            ignoreOutliers, out dSourceCalculationNumber1,
-            out dSourceCalculationNumber2) )
+            ignoreOutliers, out sourceCalculationNumber1,
+            out sourceCalculationNumber2) )
         {
-            return;
+            return (false);
         }
 
         // Loop through the areas.
@@ -177,7 +193,7 @@ public static class TableColumnMapper : Object
 
                 Double dDestinationNumber;
 
-                if (dSourceCalculationNumber2 == dSourceCalculationNumber1)
+                if (sourceCalculationNumber2 == sourceCalculationNumber1)
                 {
                     dDestinationNumber = destinationNumber1;
                 }
@@ -185,11 +201,11 @@ public static class TableColumnMapper : Object
                 {
                     dDestinationNumber =
                         destinationNumber1
-                        + (dSourceNumber - dSourceCalculationNumber1)
+                        + (dSourceNumber - sourceCalculationNumber1)
                         * (destinationNumber2 - destinationNumber1)
 
-                        / (dSourceCalculationNumber2 -
-                            dSourceCalculationNumber1)
+                        / (sourceCalculationNumber2 -
+                            sourceCalculationNumber1)
                         ;
                 }
 
@@ -217,10 +233,12 @@ public static class TableColumnMapper : Object
 
             oDestinationArea.set_Value(Missing.Value, aoDestinationAreaValues);
         }
+
+        return (true);
     }
 
     //*************************************************************************
-    //  Method: MapToColor()
+    //  Method: TryMapToColor()
     //
     /// <summary>
     /// Maps the numbers in a source column to colors in a destination column.
@@ -274,20 +292,33 @@ public static class TableColumnMapper : Object
     /// name="useSourceNumber2" /> are false.
     /// </param>
     ///
+    /// <param name="sourceCalculationNumber1">
+    /// Where the actual first source number used in the calculations gets
+    /// stored if true is returned.
+    /// </param>
+    ///
+    /// <param name="sourceCalculationNumber2">
+    /// Where the actual second source number used in the calculations gets
+    /// stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the mapping was performed.
+    /// </returns>
+    ///
     /// <remarks>
     /// Each numeric cell in the source column is mapped to a color in the
     /// destination column.
     ///
     /// <para>
-    /// If the source or destination column doesn't exist, this method does
-    /// nothing.
+    /// If the source or destination column doesn't exist, false is returned.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
-    public static void
-    MapToColor
+    public static Boolean
+    TryMapToColor
     (
         ListObject table,
         String sourceColumnName,
@@ -298,12 +329,16 @@ public static class TableColumnMapper : Object
         Double sourceNumber2,
         Color destinationColor1,
         Color destinationColor2,
-        Boolean ignoreOutliers
+        Boolean ignoreOutliers,
+        out Double sourceCalculationNumber1,
+        out Double sourceCalculationNumber2
     )
     {
         Debug.Assert(table != null);
         Debug.Assert( !String.IsNullOrEmpty(sourceColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(destinationColumnName) );
+
+        sourceCalculationNumber1 = sourceCalculationNumber2 = Double.MinValue;
 
         Range oVisibleSourceRange, oVisibleDestinationRange;
 
@@ -311,27 +346,25 @@ public static class TableColumnMapper : Object
             destinationColumnName, out oVisibleSourceRange,
             out oVisibleDestinationRange) )
         {
-            return;
+            return (false);
         }
 
         // Get the source calculation range, which is the range of source
         // numbers used in calculating the mapping of source numbers to
         // destination numbers.
 
-        Double dSourceCalculationNumber1, dSourceCalculationNumber2;
-
         if ( !TryGetSourceCalculationRange(oVisibleSourceRange,
             useSourceNumber1, useSourceNumber2, sourceNumber1, sourceNumber2,
-            ignoreOutliers, out dSourceCalculationNumber1,
-            out dSourceCalculationNumber2) )
+            ignoreOutliers, out sourceCalculationNumber1,
+            out sourceCalculationNumber2) )
         {
-            return;
+            return (false);
         }
 
         // Create an object that maps a range of numbers to a range of colors.
 
         ColorGradientMapper oColorGradientMapper = GetColorGradientMapper(
-            dSourceCalculationNumber1, dSourceCalculationNumber2,
+            sourceCalculationNumber1, sourceCalculationNumber2,
             destinationColor1, destinationColor2);
 
         ColorConverter2 oColorConverter2 = new ColorConverter2();
@@ -383,6 +416,8 @@ public static class TableColumnMapper : Object
 
             oDestinationArea.set_Value(Missing.Value, aoDestinationAreaValues);
         }
+
+        return (true);
     }
 
     //*************************************************************************

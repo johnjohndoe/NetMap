@@ -15,7 +15,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GraphImageUserSettings") ]
+[ SettingsGroupNameAttribute("GraphImageUserSettings2") ]
 
 public class GraphImageUserSettings : ApplicationSettingsBase
 {
@@ -43,8 +43,8 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// true to use the NodeXLControl size, false to use <see cref="WidthPx" />
-    /// and <see cref="HeightPx" />.  The default is true.
+    /// true to use the NodeXLControl size, false to use <see cref="Width" />
+    /// and <see cref="Height" />.  The default is true.
     /// </value>
     //*************************************************************************
 
@@ -70,19 +70,24 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: WidthPx
+    //  Property: Width
     //
     /// <summary>
     /// Gets or sets the width to use when saving a graph image.
     /// </summary>
     ///
     /// <value>
-    /// The width to use when saving a graph image, in pixels.  The default is
-    /// 400.
+    /// The width to use when saving a graph image.  The default is 400.
     /// </value>
     ///
     /// <remarks>
     /// This is used only if <see cref="UseControlSize" /> is false.
+    ///
+    /// <para>
+    /// If saving to XPS, the units are 1/100 of an inch.  Otherwise, the units
+    /// are pixels.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -90,37 +95,42 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     [ DefaultSettingValueAttribute("400") ]
 
     public Int32
-    WidthPx
+    Width
     {
         get
         {
             AssertValid();
 
-            return ( (Int32)this[WidthPxKey] );
+            return ( (Int32)this[WidthKey] );
         }
 
         set
         {
-            this[WidthPxKey] = value;
+            this[WidthKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: HeightPx
+    //  Property: Height
     //
     /// <summary>
     /// Gets or sets the height to use when saving a graph image.
     /// </summary>
     ///
     /// <value>
-    /// The height to use when saving a graph image, in pixels.  The default is
-    /// 200.
+    /// The height to use when saving a graph image.  The default is 200.
     /// </value>
     ///
     /// <remarks>
     /// This is used only if <see cref="UseControlSize" /> is false.
+    ///
+    /// <para>
+    /// If saving to XPS, the units are 1/100 of an inch.  Otherwise, the units
+    /// are pixels.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -128,18 +138,18 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     [ DefaultSettingValueAttribute("200") ]
 
     public Int32
-    HeightPx
+    Height
     {
         get
         {
             AssertValid();
 
-            return ( (Int32)this[HeightPxKey] );
+            return ( (Int32)this[HeightKey] );
         }
 
         set
         {
-            this[HeightPxKey] = value;
+            this[HeightKey] = value;
 
             AssertValid();
         }
@@ -172,15 +182,15 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     protected const String UseControlSizeKey =
         "UseControlSize";
 
-    /// Name of the settings key for the WidthPx property.
+    /// Name of the settings key for the Width property.
 
-    protected const String WidthPxKey =
-        "WidthPx";
+    protected const String WidthKey =
+        "Width";
 
-    /// Name of the settings key for the HeightPx property.
+    /// Name of the settings key for the Height property.
 
-    protected const String HeightPxKey =
-        "HeightPx";
+    protected const String HeightKey =
+        "Height";
 
 
     //*************************************************************************

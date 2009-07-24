@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Media;
 using Microsoft.NodeXL.Core;
-using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.Visualization.Wpf
 {

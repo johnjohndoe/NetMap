@@ -136,21 +136,19 @@ public partial class GraphImageUserSettingsDialog : ExcelTemplateForm
             {
                 // Validate the controls.
 
-                Int32 iWidthPx, iHeightPx;
+                Int32 iWidth, iHeight;
 
                 if (
-                    !ValidateNumericUpDown(nudWidthPx,
-                        "a width in pixels", out iWidthPx)
+                    !ValidateNumericUpDown(nudWidth, "a width", out iWidth)
                     ||
-                    !ValidateNumericUpDown(nudHeightPx,
-                        "a height in pixels", out iHeightPx)
+                    !ValidateNumericUpDown(nudHeight, "a height", out iHeight)
                     )
                 {
                     return (false);
                 }
 
-                m_oGraphImageUserSettings.WidthPx = iWidthPx;
-                m_oGraphImageUserSettings.HeightPx = iHeightPx;
+                m_oGraphImageUserSettings.Width = iWidth;
+                m_oGraphImageUserSettings.Height = iHeight;
             }
 
             m_oGraphImageUserSettings.UseControlSize = bUseControlSize;
@@ -160,8 +158,8 @@ public partial class GraphImageUserSettingsDialog : ExcelTemplateForm
             radThisSize.Checked = !(radUseControlSize.Checked =
                 m_oGraphImageUserSettings.UseControlSize);
 
-            nudWidthPx.Value = m_oGraphImageUserSettings.WidthPx;
-            nudHeightPx.Value = m_oGraphImageUserSettings.HeightPx;
+            nudWidth.Value = m_oGraphImageUserSettings.Width;
+            nudHeight.Value = m_oGraphImageUserSettings.Height;
 
             EnableControls();
         }
@@ -213,6 +211,42 @@ public partial class GraphImageUserSettingsDialog : ExcelTemplateForm
         AssertValid();
 
         EnableControls();
+    }
+
+    //*************************************************************************
+    //  Method: lnkUnits_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkUnits LinkLabel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    lnkUnits_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ShowInformation(
+            "If the image is saved as a BMP, GIF, JPEG, PNG, or TIFF, all of"
+            + " which are raster file formats, the units are pixels."
+            + "\r\n\r\n"
+            + "If the image is saved as an XPS, which is a vector file format,"
+            + " the units are 1/100 of an inch.  If you specify a width of"
+            + " 850, for example, the image will be saved as an XPS file that"
+            + " is 8.5 inches wide."
+            );
     }
 
     //*************************************************************************
@@ -294,7 +328,7 @@ public partial class GraphImageUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GraphImageUserSettingsDialog") ]
+[ SettingsGroupNameAttribute("GraphImageUserSettingsDialog2") ]
 
 public class GraphImageUserSettingsDialogUserSettings : FormSettings
 {

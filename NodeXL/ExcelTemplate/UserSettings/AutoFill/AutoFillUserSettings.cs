@@ -88,7 +88,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\tfalse") ]
 
     public ColorColumnAutoFillUserSettings
     EdgeColorDetails
@@ -157,7 +157,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     EdgeWidthDetails
@@ -226,7 +226,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t100\t1\t100\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t100\t10\t100\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     EdgeAlphaDetails
@@ -364,7 +364,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\tfalse") ]
 
     public ColorColumnAutoFillUserSettings
     VertexColorDetails
@@ -502,7 +502,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1\t10\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t1\t10\t1.5\t10\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexRadiusDetails
@@ -571,7 +571,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t100\t1\t100\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t100\t10\t100\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexAlphaDetails
@@ -678,7 +678,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t10\tRed\tGreen\tfalse") ]
 
     public ColorColumnAutoFillUserSettings
     VertexPrimaryLabelFillColorDetails
@@ -887,7 +887,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexXDetails
@@ -957,7 +957,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t9999\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexYDetails
@@ -1097,7 +1097,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t1\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t1\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexPolarRDetails
@@ -1167,7 +1167,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t359\ttrue") ]
+    [ DefaultSettingValueAttribute("false\tfalse\t0\t0\t0\t359\tfalse") ]
 
     public NumericRangeColumnAutoFillUserSettings
     VertexPolarAngleDetails

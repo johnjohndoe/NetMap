@@ -116,6 +116,8 @@
     <Compile Include="Layouts\FruchtermanReingoldLayout.cs" />
     <Compile Include="Layouts\FruchtermanReingoldVertexInfo.cs" />
     <Compile Include="Layouts\GridLayout.cs" />
+    <Compile Include="Layouts\HarelKorenFastMultiscaleLayout.cs" />
+    <Compile Include="Layouts\HarelKorenFastMultiscaleLayoutInternal.cs" />
     <Compile Include="Layouts\LayoutBase.cs" />
     <Compile Include="Layouts\LayOutGraphAsyncArguments.cs" />
     <Compile Include="Layouts\NullLayout.cs" />

@@ -44,6 +44,103 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// cref="Wpf.GraphDrawer.VisualCollection" />.
 /// </para>
 ///
+/// <example>
+/// Here is sample C# code that uses a <see cref="NodeXLVisual" /> object to
+/// write a NodeXL graph to an ASP.NET Web page.
+///
+/// <code>
+/**
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.IO;
+using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Layouts;
+using Microsoft.NodeXL.Visualization.Wpf;
+
+namespace WebApplication1
+{
+public partial class _Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        const Int32 GraphWidth = 200;
+        const Int32 GraphHeight = 100;
+
+        // The graph will be written to the response stream as a Gif.
+
+        Response.ContentType = "image/gif";
+
+        // Create a graph.  The graph has no visual representation; it is just
+        // a data structure.
+            
+        Graph oGraph = new Graph(GraphDirectedness.Directed);
+        IVertexCollection oVertices = oGraph.Vertices;
+        IEdgeCollection oEdges = oGraph.Edges;
+            
+        // Add three vertices.
+            
+        IVertex oVertexA = oVertices.Add();
+        oVertexA.Name = "Vertex A";
+        IVertex oVertexB = oVertices.Add();
+        oVertexB.Name = "Vertex B";
+        IVertex oVertexC = oVertices.Add();
+        oVertexC.Name = "Vertex C";
+            
+        // Connect the vertices with directed edges.
+            
+        IEdge oEdge1 = oEdges.Add(oVertexA, oVertexB, true);
+        IEdge oEdge2 = oEdges.Add(oVertexB, oVertexC, true);
+        IEdge oEdge3 = oEdges.Add(oVertexC, oVertexA, true);
+            
+        // Synchronously lay out the graph using one of the NodeXL-supplied
+        // layout objects.
+            
+        ILayout oLayout = new FruchtermanReingoldLayout();
+            
+        LayoutContext oLayoutContext = new LayoutContext(
+            new Rectangle(0, 0, GraphWidth, GraphHeight) );
+            
+        oLayout.LayOutGraph(oGraph, oLayoutContext);
+
+        // Create an object that can render a NodeXL graph as a Visual.
+
+        NodeXLVisual oNodeXLVisual = new NodeXLVisual();
+
+        // Use the NodeXLVisual object's GraphDrawer to draw the graph onto the
+        // Visual.
+
+        GraphDrawingContext oGraphDrawingContext = new GraphDrawingContext(
+            new Rect(0, 0, GraphWidth, GraphHeight), oLayout.Margin,
+            System.Windows.Media.Color.FromRgb(255, 255, 255) );
+
+        oNodeXLVisual.GraphDrawer.DrawGraph(oGraph, oGraphDrawingContext);
+
+        // Convert the Visual to a Bitmap.
+
+        RenderTargetBitmap oRenderTargetBitmap = new RenderTargetBitmap(
+            GraphWidth, GraphHeight, 96, 96, PixelFormats.Default);
+
+        oRenderTargetBitmap.Render(oNodeXLVisual);
+        BmpBitmapEncoder oBmpBitmapEncoder = new BmpBitmapEncoder();
+        oBmpBitmapEncoder.Frames.Add( BitmapFrame.Create(oRenderTargetBitmap) );
+        MemoryStream oMemoryStream = new MemoryStream();
+        oBmpBitmapEncoder.Save(oMemoryStream);
+        Bitmap oBitmap = new Bitmap(oMemoryStream);
+
+        // Write the Bitmap's contents to the response stream.
+
+        oBitmap.Save(this.Response.OutputStream, ImageFormat.Gif);
+    }
+}
+}
+*/
+/// </code>
+/// </example>
+///
 /// </remarks>
 //*****************************************************************************
 

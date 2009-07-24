@@ -123,6 +123,23 @@ public class SugiyamaLayout : AsyncLayoutBase
         // uses only the GLEE public interfaces and bypasses all the
         // maintenance headaches that would arise if the GLEE source code were
         // used.
+        //
+        // Note:
+        //
+        // This class was written when the NodeXL visualization layer used
+        // GDI+.  There were complex families of vertex and edge drawers,
+        // including SugiyamaVertexDrawer and EdgeVertexDrawer.  This class
+        // stores vertex and edge metadata meant for use by those
+        // Sugiyama-specific drawers, which were eliminated when the
+        // visualization layer was changed to WPF and the vertex- and edge-
+        // drawing code was vastly simplified.  Therefore, the vertex radius
+        // and edge curve information stored by this class is currently ignored
+        // in the WPF layer.  Vertices are of constant size, and edges are
+        // drawn as straight lines.
+        // 
+        // This could be fixed by modifying the WPF layer to be Sugiyama-aware,
+        // but as of June 2009 no one has complained about these problems and
+        // so the fix is postponed.
 
         // Create a GLEE graph.
 
@@ -239,8 +256,11 @@ public class SugiyamaLayout : AsyncLayoutBase
             // Get the shifted node center and transform it to NodeXL
             // coordinates.
 
-            oVertex.Location = GleePointToTransformedPointF(
-                oGleeNode.Center, oTransformationMatrix);
+            if ( !VertexIsLocked(oVertex) )
+            {
+                oVertex.Location = GleePointToTransformedPointF(
+                    oGleeNode.Center, oTransformationMatrix);
+            }
         }
 
         // Loop through the NodeXL edges again.
@@ -483,6 +503,8 @@ public class SugiyamaLayout : AsyncLayoutBase
         AssertValid();
 
         #if false
+
+        Note:
 
         At one time, LayoutContext contained a GraphDrawer property, and this
         method used oLayoutContext.GraphDrawer.VertexDrawer.Radius as its

@@ -14,16 +14,20 @@ namespace TestWpfNodeXLControl
 {
 public partial class MainForm : Form
 {
+    protected Microsoft.NodeXL.Visualization.Wpf.NodeXLWithAxesControl
+        m_oNodeXLWithAxesControl;
+
     protected Microsoft.NodeXL.Visualization.Wpf.NodeXLControl
-        oWpfNodeXLControl;
+        m_oNodeXLControl;
 
     public MainForm()
     {
         InitializeComponent();
 
-        CreateWpfNodeXLControl();
+        CreateNodeXLControl();
 
-        chkShowVertexToolTips.Checked = oWpfNodeXLControl.ShowVertexToolTips;
+        chkShowVertexToolTips.Checked = m_oNodeXLControl.ShowVertexToolTips;
+        chkShowAxes.Checked = m_oNodeXLWithAxesControl.ShowAxes;
 
         cbxMouseSelectionMode.PopulateWithEnumValues(
             typeof(Microsoft.NodeXL.Visualization.Wpf.MouseSelectionMode),
@@ -33,85 +37,68 @@ public partial class MainForm : Form
             Microsoft.NodeXL.Visualization.Wpf.MouseSelectionMode.
                 SelectVertexAndIncidentEdges;
 
-        tbGraphScale.Value = (Int32)oWpfNodeXLControl.GraphScale * 100;
+        tbGraphScale.Value = (Int32)m_oNodeXLControl.GraphScale * 100;
 
         #if false
-        oWpfNodeXLControl.Layout =
+        m_oNodeXLControl.Layout =
             new Microsoft.NodeXL.Visualization.CircleLayout();
         #endif
 
         PopulateGraph();
-
-        #if false
-        ScaleTransform oScaleTransform = new ScaleTransform();
-        oScaleTransform.ScaleX = 1.0;
-        oScaleTransform.ScaleY = 1.0;
-
-        oWpfNodeXLControl.LayoutTransform = oScaleTransform;
-        #endif
-
-        #if false
-        ScaleTransform oScaleTransform2 = new ScaleTransform();
-        oScaleTransform2.ScaleX = 1.0;
-        oScaleTransform2.ScaleY = 1.0;
-
-        oWpfNodeXLControl.RenderTransform = oScaleTransform2;
-
-        oWpfNodeXLControl.RenderTransformOrigin =
-            new System.Windows.Point(0.0, 0.0);
-        #endif
-
-        ehElementHost.Child = oWpfNodeXLControl;
     }
 
     protected void
-    CreateWpfNodeXLControl()
+    CreateNodeXLControl()
     {
-        oWpfNodeXLControl =
-            new Microsoft.NodeXL.Visualization.Wpf.NodeXLControl();
+        m_oNodeXLWithAxesControl = new NodeXLWithAxesControl();
+        m_oNodeXLWithAxesControl.XAxis.Label = "This is the x-axis";
+        m_oNodeXLWithAxesControl.YAxis.Label = "This is the y-axis";
+        m_oNodeXLControl = m_oNodeXLWithAxesControl.NodeXLControl;
 
-        oWpfNodeXLControl.SelectionChanged +=
-            new System.EventHandler(this.oWpfNodeXLControl_SelectionChanged);
+        m_oNodeXLControl.SelectionChanged +=
+            new System.EventHandler(this.m_oNodeXLControl_SelectionChanged);
 
-        oWpfNodeXLControl.VertexClick +=
+        m_oNodeXLControl.VertexClick +=
             new Microsoft.NodeXL.Core.VertexEventHandler(
-            this.oWpfNodeXLControl_VertexClick);
+            this.m_oNodeXLControl_VertexClick);
 
-        oWpfNodeXLControl.VertexDoubleClick +=
+        m_oNodeXLControl.VertexDoubleClick +=
             new Microsoft.NodeXL.Core.VertexEventHandler(
-            this.oWpfNodeXLControl_VertexDoubleClick);
+            this.m_oNodeXLControl_VertexDoubleClick);
 
-        oWpfNodeXLControl.VertexMouseHover +=
+        m_oNodeXLControl.VertexMouseHover +=
             new Microsoft.NodeXL.Core.VertexEventHandler(
-            this.oWpfNodeXLControl_VertexMouseHover);
+            this.m_oNodeXLControl_VertexMouseHover);
 
-        oWpfNodeXLControl.VertexMouseLeave +=
-            new EventHandler(this.oWpfNodeXLControl_VertexMouseLeave);
+        m_oNodeXLControl.VertexMouseLeave +=
+            new EventHandler(this.m_oNodeXLControl_VertexMouseLeave);
 
-        oWpfNodeXLControl.VerticesMoved +=
+        m_oNodeXLControl.VerticesMoved +=
             new Microsoft.NodeXL.Visualization.Wpf.VerticesMovedEventHandler(
-            this.oWpfNodeXLControl_VerticesMoved);
+            this.m_oNodeXLControl_VerticesMoved);
 
-        oWpfNodeXLControl.PreviewVertexToolTipShown +=
+        m_oNodeXLControl.PreviewVertexToolTipShown +=
             new VertexToolTipShownEventHandler(
-                this.oWpfNodeXLControl_PreviewVertexToolTipShown);
+                this.m_oNodeXLControl_PreviewVertexToolTipShown);
 
-        oWpfNodeXLControl.GraphMouseDown +=
+        m_oNodeXLControl.GraphMouseDown +=
             new Microsoft.NodeXL.Visualization.Wpf.GraphMouseButtonEventHandler(
-            this.oWpfNodeXLControl_GraphMouseDown);
+            this.m_oNodeXLControl_GraphMouseDown);
 
-        oWpfNodeXLControl.GraphMouseUp +=
+        m_oNodeXLControl.GraphMouseUp +=
             new Microsoft.NodeXL.Visualization.Wpf.GraphMouseButtonEventHandler(
-            this.oWpfNodeXLControl_GraphMouseUp);
+            this.m_oNodeXLControl_GraphMouseUp);
 
-        oWpfNodeXLControl.GraphZoomChanged +=
-            new System.EventHandler(this.oWpfNodeXLControl_GraphZoomChanged);
+        m_oNodeXLControl.GraphZoomChanged +=
+            new System.EventHandler(this.m_oNodeXLControl_GraphZoomChanged);
 
-        oWpfNodeXLControl.DrawingGraph +=
-            new System.EventHandler(this.oWpfNodeXLControl_DrawingGraph);
+        m_oNodeXLControl.DrawingGraph +=
+            new System.EventHandler(this.m_oNodeXLControl_DrawingGraph);
 
-        oWpfNodeXLControl.GraphDrawn +=
-            new System.EventHandler(this.oWpfNodeXLControl_GraphDrawn);
+        m_oNodeXLControl.GraphDrawn +=
+            new System.EventHandler(this.m_oNodeXLControl_GraphDrawn);
+
+        ehElementHost.Child = m_oNodeXLWithAxesControl;
     }
 
     protected void
@@ -121,27 +108,27 @@ public partial class MainForm : Form
 
         /*
         ( (Microsoft.NodeXL.Visualization.Wpf.VertexDrawer)
-            oWpfNodeXLControl.VertexDrawer ).Radius = 5;
+            m_oNodeXLControl.VertexDrawer ).Radius = 5;
         */
 
-        oWpfNodeXLControl.Graph = oGraphAdapter.LoadGraph(
+        m_oNodeXLControl.Graph = oGraphAdapter.LoadGraph(
             "..\\..\\SampleGraph.txt");
 
         AddToolTipsToVertices();
 
-        oWpfNodeXLControl.DrawGraph(true);
+        m_oNodeXLControl.DrawGraph(true);
     }
 
     protected void
     PopulateGraph()
     {
-        IVertexCollection oVertices = oWpfNodeXLControl.Graph.Vertices;
-        IEdgeCollection oEdges = oWpfNodeXLControl.Graph.Edges;
+        IVertexCollection oVertices = m_oNodeXLControl.Graph.Vertices;
+        IEdgeCollection oEdges = m_oNodeXLControl.Graph.Edges;
         Double dWidth = this.Width;
         Double dHeight = this.Height;
         Random oRandom = new Random();
 
-        // oWpfNodeXLControl.Layout.Margin = 0;
+        // m_oNodeXLControl.Layout.Margin = 0;
 
         {
         #if false  // Two shapes only.
@@ -174,7 +161,7 @@ public partial class MainForm : Form
 
         // oEdge.SetValue(ReservedMetadataKeys.PerEdgeWidth, 20F);
 
-        oWpfNodeXLControl.ForceLayout();
+        m_oNodeXLControl.ForceLayout();
 
         return;
 
@@ -208,7 +195,7 @@ public partial class MainForm : Form
 
         oEdges.Add(oVertex1, oVertex2, true);
 
-        oWpfNodeXLControl.ForceLayout();
+        m_oNodeXLControl.ForceLayout();
 
         return;
 
@@ -407,13 +394,13 @@ public partial class MainForm : Form
 
         AddToolTipsToVertices();
 
-        oWpfNodeXLControl.DrawGraph(true);
+        m_oNodeXLControl.DrawGraph(true);
     }
 
     protected void
     AddToolTipsToVertices()
     {
-        foreach (IVertex oVertex in oWpfNodeXLControl.Graph.Vertices)
+        foreach (IVertex oVertex in m_oNodeXLControl.Graph.Vertices)
         {
             oVertex.SetValue(ReservedMetadataKeys.VertexToolTip, String.Format(
 
@@ -429,7 +416,7 @@ public partial class MainForm : Form
     {
         AddToStatus("IDs in SelectedVertices:");
 
-        foreach (IVertex oVertex in oWpfNodeXLControl.SelectedVertices)
+        foreach (IVertex oVertex in m_oNodeXLControl.SelectedVertices)
         {
             AddToStatus( oVertex.ID.ToString() );
         }
@@ -440,7 +427,7 @@ public partial class MainForm : Form
     {
         AddToStatus("IDs in SelectedEdges:");
 
-        foreach (IEdge oEdge in oWpfNodeXLControl.SelectedEdges)
+        foreach (IEdge oEdge in m_oNodeXLControl.SelectedEdges)
         {
             AddToStatus( oEdge.ID.ToString() );
         }
@@ -471,7 +458,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_SelectionChanged
+    m_oNodeXLControl_SelectionChanged
     (
         object sender,
         EventArgs e
@@ -488,7 +475,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_GraphZoomChanged
+    m_oNodeXLControl_GraphZoomChanged
     (
         object sender,
         EventArgs e
@@ -498,7 +485,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_DrawingGraph
+    m_oNodeXLControl_DrawingGraph
     (
         object sender,
         EventArgs e
@@ -508,7 +495,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_GraphDrawn
+    m_oNodeXLControl_GraphDrawn
     (
         object sender,
         EventArgs e
@@ -518,7 +505,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_VertexClick
+    m_oNodeXLControl_VertexClick
     (
         object sender,
         VertexEventArgs vertexEventArgs
@@ -538,13 +525,13 @@ public partial class MainForm : Form
             new System.Windows.Media.Imaging.BitmapImage(
                 new Uri("C:\\Temp\\1.jpg") ) );
 
-        // oWpfNodeXLControl.ForceRedraw();
+        // m_oNodeXLControl.ForceRedraw();
 
         #endif
     }
 
     private void
-    oWpfNodeXLControl_VertexDoubleClick
+    m_oNodeXLControl_VertexDoubleClick
     (
         object sender,
         VertexEventArgs vertexEventArgs
@@ -554,7 +541,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_VertexMouseHover
+    m_oNodeXLControl_VertexMouseHover
     (
         object sender,
         VertexEventArgs vertexEventArgs
@@ -564,7 +551,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_VertexMouseLeave
+    m_oNodeXLControl_VertexMouseLeave
     (
         object sender,
         EventArgs eventArgs
@@ -574,7 +561,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_VerticesMoved
+    m_oNodeXLControl_VerticesMoved
     (
         object sender,
         VerticesMovedEventArgs verticesMovedEventArgs
@@ -585,7 +572,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_PreviewVertexToolTipShown
+    m_oNodeXLControl_PreviewVertexToolTipShown
     (
         object sender,
         VertexToolTipShownEventArgs vertexToolTipShownEventArgs
@@ -605,7 +592,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_GraphMouseDown
+    m_oNodeXLControl_GraphMouseDown
     (
         object sender,
         GraphMouseButtonEventArgs graphMouseButtonEventArgs
@@ -624,7 +611,7 @@ public partial class MainForm : Form
     }
 
     private void
-    oWpfNodeXLControl_GraphMouseUp
+    m_oNodeXLControl_GraphMouseUp
     (
         object sender,
         GraphMouseButtonEventArgs graphMouseButtonEventArgs
@@ -659,7 +646,7 @@ public partial class MainForm : Form
         EventArgs e
     )
     {
-        oWpfNodeXLControl.DeselectAll();
+        m_oNodeXLControl.DeselectAll();
     }
 
     private void
@@ -669,7 +656,17 @@ public partial class MainForm : Form
         EventArgs e
     )
     {
-        oWpfNodeXLControl.ShowVertexToolTips = chkShowVertexToolTips.Checked;
+        m_oNodeXLControl.ShowVertexToolTips = chkShowVertexToolTips.Checked;
+    }
+
+    private void
+    chkShowAxes_CheckedChanged
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        m_oNodeXLWithAxesControl.ShowAxes = chkShowAxes.Checked;
     }
 
     private void
@@ -705,13 +702,13 @@ public partial class MainForm : Form
 
             IVertex oVertex;
 
-            if ( !oWpfNodeXLControl.Graph.Vertices.Find(
+            if ( !m_oNodeXLControl.Graph.Vertices.Find(
                 iVertexID, out oVertex) )
             {
                 throw new ArgumentException("No such ID.");
             }
 
-            oWpfNodeXLControl.SetVertexSelected(oVertex,
+            m_oNodeXLControl.SetVertexSelected(oVertex,
                 chkVertexSelected.Checked, chkAlsoIncidentEdges.Checked);
         }
         catch (Exception oException)
@@ -733,12 +730,12 @@ public partial class MainForm : Form
 
             IEdge oEdge;
 
-            if ( !oWpfNodeXLControl.Graph.Edges.Find(iEdgeID, out oEdge) )
+            if ( !m_oNodeXLControl.Graph.Edges.Find(iEdgeID, out oEdge) )
             {
                 throw new ArgumentException("No such ID.");
             }
 
-            oWpfNodeXLControl.SetEdgeSelected(oEdge,
+            m_oNodeXLControl.SetEdgeSelected(oEdge,
                 chkEdgeSelected.Checked, chkAlsoAdjacentVertices.Checked);
         }
         catch (Exception oException)
@@ -754,7 +751,7 @@ public partial class MainForm : Form
         EventArgs e
     )
     {
-        oWpfNodeXLControl.MouseSelectionMode =
+        m_oNodeXLControl.MouseSelectionMode =
             (Microsoft.NodeXL.Visualization.Wpf.MouseSelectionMode)
             cbxMouseSelectionMode.SelectedValue;
     }
@@ -766,19 +763,19 @@ public partial class MainForm : Form
         EventArgs e
     )
     {
-        foreach (IVertex oSelectedVertex in oWpfNodeXLControl.SelectedVertices)
+        foreach (IVertex oSelectedVertex in m_oNodeXLControl.SelectedVertices)
         {
             oSelectedVertex.SetValue(ReservedMetadataKeys.Visibility,
                 VisibilityKeyValue.Hidden);
         }
 
-        foreach (IEdge oSelectedEdge in oWpfNodeXLControl.SelectedEdges)
+        foreach (IEdge oSelectedEdge in m_oNodeXLControl.SelectedEdges)
         {
             oSelectedEdge.SetValue(ReservedMetadataKeys.Visibility,
                 VisibilityKeyValue.Hidden);
         }
 
-        oWpfNodeXLControl.DrawGraph();
+        m_oNodeXLControl.DrawGraph();
     }
 
     private void
@@ -788,17 +785,17 @@ public partial class MainForm : Form
         EventArgs e
     )
     {
-        foreach (IVertex oSelectedVertex in oWpfNodeXLControl.SelectedVertices)
+        foreach (IVertex oSelectedVertex in m_oNodeXLControl.SelectedVertices)
         {
             oSelectedVertex.RemoveKey(ReservedMetadataKeys.Visibility);
         }
 
-        foreach (IEdge oSelectedEdge in oWpfNodeXLControl.SelectedEdges)
+        foreach (IEdge oSelectedEdge in m_oNodeXLControl.SelectedEdges)
         {
             oSelectedEdge.RemoveKey(ReservedMetadataKeys.Visibility);
         }
 
-        oWpfNodeXLControl.DrawGraph();
+        m_oNodeXLControl.DrawGraph();
     }
 
     private void
@@ -808,7 +805,7 @@ public partial class MainForm : Form
         EventArgs e
     )
     {
-        oWpfNodeXLControl.GraphScale = tbGraphScale.Value / 100.0;
+        m_oNodeXLControl.GraphScale = tbGraphScale.Value / 100.0;
     }
 
     protected const String LongPrimaryLabel =

@@ -142,6 +142,109 @@ public static class ExcelDateTimeUtil : Object
             );
     }
 
+    //*************************************************************************
+    //  Method: DateTimeToString()
+    //
+    /// <overloads>
+    /// Converts a DateTime to a string.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Converts a DateTime to a string.
+    /// </summary>
+    ///
+    /// <param name="dateTime">
+    /// The DateTime to convert.
+    /// </param>
+    ///
+    /// <param name="format">
+    /// The format to use.  Must be <see cref="ExcelColumnFormat.Date" />,
+    /// <see cref="ExcelColumnFormat.Time" />, or <see
+    /// cref="ExcelColumnFormat.DateAndTime" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="dateTime" /> converted to a string in the <paramref
+    /// name="format" /> format.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method can be used to convert DateTimes in Excel applications to a
+    /// String using consistent string formats.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    DateTimeToString
+    (
+        DateTime dateTime,
+        ExcelColumnFormat format
+    )
+    {
+        AssertValid();
+
+        switch (format)
+        {
+            case ExcelColumnFormat.Date:
+
+                return ( dateTime.ToShortDateString() );
+
+            case ExcelColumnFormat.Time:
+
+                return ( dateTime.ToLongTimeString() );
+
+            case ExcelColumnFormat.DateAndTime:
+
+                return ( dateTime.ToShortDateString() + " " + 
+                    dateTime.ToShortTimeString() );
+
+            default:
+
+                Debug.Assert(false);
+                return (null);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: DateTimeToString()
+    //
+    /// <summary>
+    /// Converts a DateTime in ticks to a string.
+    /// </summary>
+    ///
+    /// <param name="ticks">
+    /// The date/time to convert, in 100-nanosecond ticks.
+    /// </param>
+    ///
+    /// <param name="format">
+    /// The format to use.  Must be <see cref="ExcelColumnFormat.Date" />,
+    /// <see cref="ExcelColumnFormat.Time" />, or <see
+    /// cref="ExcelColumnFormat.DateAndTime" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="ticks" /> converted to a string in the 
+    /// <paramref name="format" /> format.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method can be used to convert DateTimes in Excel applications to a
+    /// String using consistent string formats.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    DateTimeToString
+    (
+        Int64 ticks,
+        ExcelColumnFormat format
+    )
+    {
+        AssertValid();
+
+        return ( DateTimeToString(new DateTime(ticks), format) );
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()

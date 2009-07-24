@@ -50,6 +50,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lblDestinationNumber2 = new System.Windows.Forms.Label();
             this.radUseSourceNumber2 = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnSwapDestinationNumbers = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudDestinationNumber2)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDestinationNumber1)).BeginInit();
@@ -170,6 +171,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnSwapDestinationNumbers);
             this.groupBox1.Controls.Add(this.txbSourceNumber1);
             this.groupBox1.Controls.Add(this.radUseMinimumSourceNumber);
             this.groupBox1.Controls.Add(this.radUseSourceNumber1);
@@ -243,6 +245,18 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
+            // btnSwapDestinationNumbers
+            // 
+            this.btnSwapDestinationNumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSwapDestinationNumbers.AutoSize = true;
+            this.btnSwapDestinationNumbers.Location = new System.Drawing.Point(122, 121);
+            this.btnSwapDestinationNumbers.Name = "btnSwapDestinationNumbers";
+            this.btnSwapDestinationNumbers.Size = new System.Drawing.Size(100, 23);
+            this.btnSwapDestinationNumbers.TabIndex = 6;
+            this.btnSwapDestinationNumbers.Text = "[Gets set in code]";
+            this.btnSwapDestinationNumbers.UseVisualStyleBackColor = true;
+            this.btnSwapDestinationNumbers.Click += new System.EventHandler(this.btnSwapDestinationNumbers_Click);
+            // 
             // NumericRangeColumnAutoFillUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
@@ -292,5 +306,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label lblDestinationNumber2;
         private System.Windows.Forms.RadioButton radUseSourceNumber2;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button btnSwapDestinationNumbers;
     }
 }

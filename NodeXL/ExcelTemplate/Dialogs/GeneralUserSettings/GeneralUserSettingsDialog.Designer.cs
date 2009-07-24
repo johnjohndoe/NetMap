@@ -31,6 +31,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GeneralUserSettingsDialog));
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -39,7 +40,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label14 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.btnLayout = new System.Windows.Forms.Button();
-            this.btnFont = new System.Windows.Forms.Button();
+            this.btnLabelFont = new System.Windows.Forms.Button();
             this.btnResetAll = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.usrSelectedVertexColor = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
@@ -75,6 +76,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label17 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.usrBackColor = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
+            this.chkAutoReadWorkbook = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnAxisFont = new System.Windows.Forms.Button();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -93,7 +97,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(326, 470);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 10;
+            this.btnOK.TabIndex = 12;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -104,7 +108,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCancel.Location = new System.Drawing.Point(412, 470);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 11;
+            this.btnCancel.TabIndex = 13;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -151,30 +155,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnLayout
             // 
-            this.btnLayout.Location = new System.Drawing.Point(258, 411);
+            this.btnLayout.Location = new System.Drawing.Point(412, 334);
             this.btnLayout.Name = "btnLayout";
             this.btnLayout.Size = new System.Drawing.Size(80, 23);
-            this.btnLayout.TabIndex = 8;
+            this.btnLayout.TabIndex = 7;
             this.btnLayout.Text = "L&ayout...";
             this.btnLayout.UseVisualStyleBackColor = true;
             this.btnLayout.Click += new System.EventHandler(this.btnLayout_Click);
             // 
-            // btnFont
+            // btnLabelFont
             // 
-            this.btnFont.Location = new System.Drawing.Point(258, 382);
-            this.btnFont.Name = "btnFont";
-            this.btnFont.Size = new System.Drawing.Size(80, 23);
-            this.btnFont.TabIndex = 7;
-            this.btnFont.Text = "Fo&nt...";
-            this.btnFont.UseVisualStyleBackColor = true;
-            this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
+            this.btnLabelFont.Location = new System.Drawing.Point(258, 372);
+            this.btnLabelFont.Name = "btnLabelFont";
+            this.btnLabelFont.Size = new System.Drawing.Size(80, 23);
+            this.btnLabelFont.TabIndex = 8;
+            this.btnLabelFont.Text = "Label Fo&nt...";
+            this.btnLabelFont.UseVisualStyleBackColor = true;
+            this.btnLabelFont.Click += new System.EventHandler(this.btnLabelFont_Click);
             // 
             // btnResetAll
             // 
             this.btnResetAll.Location = new System.Drawing.Point(17, 470);
             this.btnResetAll.Name = "btnResetAll";
             this.btnResetAll.Size = new System.Drawing.Size(80, 23);
-            this.btnResetAll.TabIndex = 9;
+            this.btnResetAll.TabIndex = 11;
             this.btnResetAll.Text = "Reset All";
             this.btnResetAll.UseVisualStyleBackColor = true;
             this.btnResetAll.Click += new System.EventHandler(this.btnResetAll_Click);
@@ -488,7 +492,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(255, 344);
+            this.label9.Location = new System.Drawing.Point(255, 339);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(68, 13);
             this.label9.TabIndex = 5;
@@ -497,11 +501,32 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // usrBackColor
             // 
             this.usrBackColor.Color = System.Drawing.Color.White;
-            this.usrBackColor.Location = new System.Drawing.Point(332, 334);
+            this.usrBackColor.Location = new System.Drawing.Point(332, 329);
             this.usrBackColor.Name = "usrBackColor";
             this.usrBackColor.ShowButton = true;
             this.usrBackColor.Size = new System.Drawing.Size(64, 32);
             this.usrBackColor.TabIndex = 6;
+            // 
+            // chkAutoReadWorkbook
+            // 
+            this.chkAutoReadWorkbook.Location = new System.Drawing.Point(255, 405);
+            this.chkAutoReadWorkbook.Name = "chkAutoReadWorkbook";
+            this.chkAutoReadWorkbook.Size = new System.Drawing.Size(237, 52);
+            this.chkAutoReadWorkbook.TabIndex = 10;
+            this.chkAutoReadWorkbook.Text = "A&utomatically refresh the graph after setting a visual property in the Ribbon, a" +
+                "pplying a scheme, or autofilling columns";
+            this.toolTip1.SetToolTip(this.chkAutoReadWorkbook, resources.GetString("chkAutoReadWorkbook.ToolTip"));
+            this.chkAutoReadWorkbook.UseVisualStyleBackColor = true;
+            // 
+            // btnAxisFont
+            // 
+            this.btnAxisFont.Location = new System.Drawing.Point(344, 372);
+            this.btnAxisFont.Name = "btnAxisFont";
+            this.btnAxisFont.Size = new System.Drawing.Size(80, 23);
+            this.btnAxisFont.TabIndex = 9;
+            this.btnAxisFont.Text = "A&xis Font...";
+            this.btnAxisFont.UseVisualStyleBackColor = true;
+            this.btnAxisFont.Click += new System.EventHandler(this.btnAxisFont_Click);
             // 
             // GeneralUserSettingsDialog
             // 
@@ -510,10 +535,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(509, 511);
+            this.Controls.Add(this.btnAxisFont);
+            this.Controls.Add(this.chkAutoReadWorkbook);
             this.Controls.Add(this.usrBackColor);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.btnLayout);
-            this.Controls.Add(this.btnFont);
+            this.Controls.Add(this.btnLabelFont);
             this.Controls.Add(this.btnResetAll);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -581,7 +608,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.NumericUpDown nudEdgeAlpha;
         private System.Windows.Forms.CheckBox chkAutoSelect;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnFont;
+        private System.Windows.Forms.Button btnLabelFont;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button btnLayout;
         private System.Windows.Forms.GroupBox groupBox5;
@@ -594,5 +621,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrPrimaryLabelFillColor;
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrSelectedVertexColor;
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrSelectedEdgeColor;
+        private System.Windows.Forms.CheckBox chkAutoReadWorkbook;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button btnAxisFont;
     }
 }

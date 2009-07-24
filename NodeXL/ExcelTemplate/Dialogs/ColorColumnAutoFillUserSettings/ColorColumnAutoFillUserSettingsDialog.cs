@@ -306,6 +306,38 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: btnSwapDestinationColors_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnSwapDestinationColors button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnSwapDestinationColors_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        Color oTempColor = usrDestinationColor1.Color;
+
+        usrDestinationColor1.Color = usrDestinationColor2.Color;
+        usrDestinationColor2.Color = oTempColor;
+        UpdateColorGradient();
+    }
+
+    //*************************************************************************
     //  Method: lnkIgnoreOutliers_LinkClicked()
     //
     /// <summary>

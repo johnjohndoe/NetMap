@@ -856,14 +856,38 @@ public class EmailNetworkAnalyzer : Object
 
         while ( oDataReader.Read() )
         {
-            Object oFromField = oDataReader["System.Message.FromAddress"];
-            Object oToField = oDataReader["System.Message.ToAddress"];
-            Object oCcField = oDataReader["System.Message.CcAddress"];
-            Object oBccField = oDataReader["System.Message.BccAddress"];
+            try
+            {
+                Object oFromField = oDataReader["System.Message.FromAddress"];
+                Object oToField = oDataReader["System.Message.ToAddress"];
+                Object oCcField = oDataReader["System.Message.CcAddress"];
+                Object oBccField = oDataReader["System.Message.BccAddress"];
 
-            AnalyzeOneEmail(oFromField, oToField, oCcField, oBccField,
-                bUseCcForEdgeWeights, bUseBccForEdgeWeights,
-                oAggregatedDictionary);
+                AnalyzeOneEmail(oFromField, oToField, oCcField, oBccField,
+                    bUseCcForEdgeWeights, bUseBccForEdgeWeights,
+                    oAggregatedDictionary);
+            }
+            catch (OleDbException)
+            {
+                // In June 2009, a NodeXL team member got a repeatable
+                // OleDbException while attempting to analyze his email for a
+                // certain date range.  Unfortunately, the team member was on
+                // the other side of the country and the exception had no inner
+                // exceptions to provide more details.  (OleDbException uses a
+                // custom Errors collection instead of inner exceptions, and
+                // that collection doesn't get displayed by NodeXL's generic
+                // error-handling scheme).  Therefore, the exact cause of the
+                // error couldn't be determined.
+                //
+                // However, the error went away when the date range was
+                // altered, leading me to believe that an email with an invalid
+                // field was encountered.  Although the DataReader.Item[] and
+                // AnalyzeOneEmail() calls shouldn't throw an exception on a
+                // bad field, there may be some invalid field condition I'm
+                // overlooking.
+                //
+                // Workaround: Skip emails that throw such an exception.
+            }
 
             if (oBackgroundWorker != null)
             {
@@ -1460,12 +1484,13 @@ public class EmailNetworkAnalyzer : Object
         AssertValid();
 
         StringBuilder oStringBuilder = new StringBuilder();
-
         oStringBuilder.Append(BaseQuery);
 
         String sEscapedFirstParticipant = null;
-
         Int32 i = 0;
+
+        StringBuilder oParticipantCriteriaStringBuilder =
+            new StringBuilder();
 
         if (participantsCriteria != null)
         {
@@ -1493,39 +1518,60 @@ public class EmailNetworkAnalyzer : Object
                     continue;
                 }
 
+                if (oParticipantCriteriaStringBuilder.Length > 0)
+                {
+                    // The participants are ORed together.
+
+                    oParticipantCriteriaStringBuilder.Append(" OR ");
+                }
+
                 // This part of the query will look like this, in pseudocode:
                 //
-                // AND ( Contains(To, Participant) 
+                // ( Contains(To, Participant) 
                 // OR Contains(From, Participant) OR Contains(Cc, Participant)
                 // OR Contains(Bcc, Participant) )
 
-                // Open the AND clause.
+                // Open the outer clause.
 
-                oStringBuilder.AppendFormat(" AND (");
+                oParticipantCriteriaStringBuilder.Append("(");
 
                 // Append a clause for each IncludedIn flag.
 
                 Boolean bParticipantClauseAppended = false;
 
                 AppendParticipantClauseToQuery(sEscapedParticipant,
-                    eIncludedIn, IncludedIn.From, oStringBuilder,
+                    eIncludedIn, IncludedIn.From,
+                    oParticipantCriteriaStringBuilder,
                     ref bParticipantClauseAppended);
 
                 AppendParticipantClauseToQuery(sEscapedParticipant,
-                    eIncludedIn, IncludedIn.To, oStringBuilder,
+                    eIncludedIn, IncludedIn.To,
+                    oParticipantCriteriaStringBuilder,
                     ref bParticipantClauseAppended);
 
                 AppendParticipantClauseToQuery(sEscapedParticipant,
-                    eIncludedIn, IncludedIn.Cc, oStringBuilder,
+                    eIncludedIn, IncludedIn.Cc,
+                    oParticipantCriteriaStringBuilder,
                     ref bParticipantClauseAppended);
 
                 AppendParticipantClauseToQuery(sEscapedParticipant,
-                    eIncludedIn, IncludedIn.Bcc, oStringBuilder,
+                    eIncludedIn, IncludedIn.Bcc,
+                    oParticipantCriteriaStringBuilder,
                     ref bParticipantClauseAppended);
 
-                // Close the AND clause.
+                // Close the outer clause.
 
-                oStringBuilder.AppendFormat(")");
+                oParticipantCriteriaStringBuilder.Append(")");
+            }
+
+            if (oParticipantCriteriaStringBuilder.Length > 0)
+            {
+                oStringBuilder.AppendFormat(
+
+                    " AND ({0}) "
+                    ,
+                    oParticipantCriteriaStringBuilder
+                    );
             }
         }
 

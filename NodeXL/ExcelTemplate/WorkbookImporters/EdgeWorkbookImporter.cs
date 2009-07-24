@@ -71,6 +71,11 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
     /// true if the columns have headers that should be ignored.
     /// </param>
     ///
+    /// <param name="clearDestinationTablesFirst">
+    /// true if the NodeXL tables in <paramref
+    /// name="destinationNodeXLWorkbook" /> should be cleared first.
+    /// </param>
+    ///
     /// <param name="destinationNodeXLWorkbook">
     /// NodeXL workbook the edge columns will be imported to.
     /// </param>
@@ -99,6 +104,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
         Int32 columnNumberToUseForVertex1OneBased,
         Int32 columnNumberToUseForVertex2OneBased,
         Boolean sourceColumnsHaveHeaders,
+        Boolean clearDestinationTablesFirst,
         Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook
     )
     {
@@ -132,19 +138,29 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
 
         ExcelUtil.ActivateWorksheet(oDestinationEdgeTable);
 
-        // Clear the various tables.
+        Int32 iDestinationRowOffset = 0;
 
-        NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+        if (clearDestinationTablesFirst)
+        {
+            NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+        }
+        else
+        {
+            iDestinationRowOffset =
+                ExcelUtil.GetOffsetOfFirstEmptyTableRow(oDestinationEdgeTable);
+        }
 
         // Copy the vertex columns to the destination NodeXL workbook.
 
         CopyVertexColumn(oSourceWorksheet, columnNumberToUseForVertex1OneBased,
             sourceColumnsHaveHeaders, iFirstNonEmptySourceRowOneBased,
-            iLastNonEmptySourceRowOneBased, oDestinationEdgeTable, true);
+            iLastNonEmptySourceRowOneBased, oDestinationEdgeTable,
+            iDestinationRowOffset, true);
 
         CopyVertexColumn(oSourceWorksheet, columnNumberToUseForVertex2OneBased,
             sourceColumnsHaveHeaders, iFirstNonEmptySourceRowOneBased,
-            iLastNonEmptySourceRowOneBased, oDestinationEdgeTable, false);
+            iLastNonEmptySourceRowOneBased, oDestinationEdgeTable,
+            iDestinationRowOffset, false);
 
         // Copy the other columns.
 
@@ -152,7 +168,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
             columnNumberToUseForVertex1OneBased,
             columnNumberToUseForVertex2OneBased, sourceColumnsHaveHeaders,
             iFirstNonEmptySourceRowOneBased, iLastNonEmptySourceRowOneBased,
-            oDestinationEdgeTable);
+            iDestinationRowOffset, oDestinationEdgeTable);
 
         // Clear the moving border and selection.  The odd cast is to work
         // around the inability to set CutCopyMode to false.
@@ -197,9 +213,9 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
         if ( !ExcelUtil.TryGetNonEmptyRange(oSourceWorksheet,
             out oNonEmptySourceRange) )
         {
-			OnInvalidSourceWorkbook(
+            OnInvalidSourceWorkbook(
                 "The active worksheet in the other workbook is empty.",
-				oSourceWorksheet, 1, 1
+                oSourceWorksheet, 1, 1
                 );
         }
 
@@ -239,6 +255,11 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
     /// Edge table in the destination NodeXL workbook.
     /// </param>
     ///
+    /// <param name="iDestinationRowOffset">
+    /// Offset to copy to in the destination table, measured from the first
+    /// row in the table's data range.
+    /// </param>
+    ///
     /// <param name="bCopyVertex1">
     /// true to copy the vertex 1 column, false to copy the vertex 2 column.
     /// </param>
@@ -253,6 +274,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
         Int32 iFirstNonEmptySourceRowOneBased,
         Int32 iLastNonEmptySourceRowOneBased,
         ListObject oDestinationEdgeTable,
+        Int32 iDestinationRowOffset,
         Boolean bCopyVertex1
     )
     {
@@ -279,10 +301,10 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
         }
 
         Range oDestinationColumnData = GetVertexColumnData(
-			oDestinationEdgeTable, bCopyVertex1);
+            oDestinationEdgeTable, bCopyVertex1);
 
-        oVertexSourceColumn.Copy(Missing.Value);
-        ExcelUtil.PasteValues(oDestinationColumnData);
+        CopyColumn(oVertexSourceColumn, oDestinationColumnData,
+            iDestinationRowOffset);
     }
 
     //*************************************************************************
@@ -323,6 +345,11 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
     /// One-based row number of the last non-empty row in the source worksheet.
     /// </param>
     ///
+    /// <param name="iDestinationRowOffset">
+    /// Offset to copy to in the destination table, measured from the first
+    /// row in the table's data range.
+    /// </param>
+    ///
     /// <param name="oDestinationEdgeTable">
     /// Edge table in the destination NodeXL workbook.
     /// </param>
@@ -338,6 +365,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
         Boolean bSourceColumnsHaveHeaders,
         Int32 iFirstNonEmptySourceRowOneBased,
         Int32 iLastNonEmptySourceRowOneBased,
+        Int32 iDestinationRowOffset,
         ListObject oDestinationEdgeTable
     )
     {
@@ -448,18 +476,63 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
                         oDestinationColumn.Name, out oDestinationColumnData)
                     )
                 {
-					OnInvalidSourceWorkbook(
+                    OnInvalidSourceWorkbook(
                         "One of the columns couldn't be imported.  Importation"
                         + " was stopped."
                         );
                 }
             }
 
-            // Copy the source column to the destination column.
-
-            oSourceColumn.Copy(Missing.Value);
-            ExcelUtil.PasteValues(oDestinationColumnData);
+            CopyColumn(oSourceColumn, oDestinationColumnData,
+                iDestinationRowOffset);
         }
+    }
+
+    //*************************************************************************
+    //  Method: CopyColumn()
+    //
+    /// <summary>
+    /// Copies a column from the source worksheet to the destination NodeXL
+    /// workbook.
+    /// </summary>
+    ///
+    /// <param name="oSourceColumn">
+    /// The source column to copy.
+    /// </param>
+    ///
+    /// <param name="oDestinationColumnData">
+    /// Data range of the destination column.
+    /// </param>
+    ///
+    /// <param name="iDestinationRowOffset">
+    /// Offset to copy to in the destination table, measured from the first
+    /// row in the table's data range.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    CopyColumn
+    (
+        Range oSourceColumn,
+        Range oDestinationColumnData,
+        Int32 iDestinationRowOffset
+    )
+    {
+        Debug.Assert(oSourceColumn != null);
+        Debug.Assert(oDestinationColumnData != null);
+        AssertValid();
+
+        // The destination range will have more rows in it than the source
+        // column if this is not the first copy operation.
+
+        ExcelUtil.ResizeRange(ref oDestinationColumnData,
+            oSourceColumn.Rows.Count, 1);
+
+        ExcelUtil.OffsetRange(ref oDestinationColumnData,
+            iDestinationRowOffset, 0);
+
+        oSourceColumn.Copy(Missing.Value);
+        ExcelUtil.PasteValues(oDestinationColumnData);
     }
 
     //*************************************************************************
@@ -525,9 +598,9 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
 
         if (iRows == 1)
         {
-			OnInvalidSourceWorkbook(
+            OnInvalidSourceWorkbook(
                 "There are no edges to import.",
-				oSourceColumn.Worksheet, 1, 1
+                oSourceColumn.Worksheet, 1, 1
                 );
         }
 
@@ -551,7 +624,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
     public override void
     AssertValid()
     {
-		base.AssertValid();
+        base.AssertValid();
 
         // (Do nothing else.)
     }

@@ -53,12 +53,19 @@
     <Compile Include="..\..\Common\ArgumentChecker.cs">
       <Link>Util\ArgumentChecker.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\ChartUtil.cs">
+      <Link>Util\ChartUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\ToolTipTrackerBase.cs">
       <Link>Util\ToolTipTrackerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Wpf\Axis.cs">
+      <Link>Util\Axis.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Wpf\WpfToolTipTracker.cs">
       <Link>Util\WpfToolTipTracker.cs</Link>
     </Compile>
+    <Compile Include="GraphImageCenterer.cs" />
     <Compile Include="Mouse\DraggedMarquee.cs" />
     <Compile Include="Mouse\DraggedTranslation.cs" />
     <Compile Include="Mouse\DraggedVertices.cs" />
@@ -69,6 +76,7 @@
     <Compile Include="Mouse\VertexToolTipShownEventArgs.cs" />
     <Compile Include="Mouse\VerticesMovedEventArgs.cs" />
     <Compile Include="NodeXLControl.cs" />
+    <Compile Include="NodeXLWithAxesControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

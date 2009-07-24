@@ -15,6 +15,7 @@ using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.ApplicationUtil;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {

@@ -6,6 +6,7 @@ using System.Net;
 using System.Web;
 using System.IO;
 using System.Xml;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -639,8 +640,36 @@ public class TwitterNetworkAnalyzer : Object
 
             if (sCredentialsScreenName != null)
             {
+                #if false
+
+                Don't use the following standard .NET technique, because .NET
+                doesn't send an Authorization header on the first request and
+                relies instead on the server to ask for the header via a 401
+                response.  Twitter doesn't send a 401 response (it sends a 200
+                response instead), so the user is never authenticated.
+
                 oHttpWebRequest.Credentials = new NetworkCredential(
                     sCredentialsScreenName, sCredentialsPassword);
+
+                #endif
+
+                // The following technique was suggested here:
+                //
+                // http://devproj20.blogspot.com/2008/02/
+                // assigning-basic-authorization-http.html 
+
+                String sHeaderValue = String.Format(
+                    "{0}:{1}"
+                    ,
+                    sCredentialsScreenName,
+                    sCredentialsPassword
+                    );
+
+                Byte [] abtHeaderValue = Encoding.UTF8.GetBytes(
+                    sHeaderValue.ToCharArray() );
+
+                oHttpWebRequest.Headers["Authorization"] =
+                    "Basic " + Convert.ToBase64String(abtHeaderValue);
             }
 
             oHttpWebRequest.Timeout = m_iHttpWebRequestTimeoutMs;

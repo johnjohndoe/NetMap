@@ -47,7 +47,7 @@ public class NumericRangeColumnAutoFillUserSettings : Object
         m_dSourceNumber2 = 10;
         m_dDestinationNumber1 = 0;
         m_dDestinationNumber2 = 10;
-        m_bIgnoreOutliers = true;
+        m_bIgnoreOutliers = false;
 
         AssertValid();
     }
@@ -255,7 +255,7 @@ public class NumericRangeColumnAutoFillUserSettings : Object
     /// <value>
     /// true if outliers should be ignored in the source column.  Valid only if
     /// <paramref name="useSourceNumber1" /> and <paramref
-    /// name="useSourceNumber2" /> are false.  The default is true.
+    /// name="useSourceNumber2" /> are false.  The default is false.
     /// </value>
     //*************************************************************************
 

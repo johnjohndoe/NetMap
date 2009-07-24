@@ -18,8 +18,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// <remarks>
 /// This wrapper implements <see cref="IDynamicFilterRangeTrackBar" />, which
 /// allows <see cref="DynamicFilterDialog" /> to communicate with the <see
-/// cref="RangeTrackBar" /> and other track bar controls in a
-/// simple and consistent manner.
+/// cref="RangeTrackBar" /> and other track bar controls in a simple and
+/// consistent manner.
 ///
 /// <para>
 /// This wrapper uses the base-class implementations for most of the
@@ -32,6 +32,108 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public class DynamicFilterRangeTrackBar :
     RangeTrackBar, IDynamicFilterRangeTrackBar
 {
+    //*************************************************************************
+    //  Constructor: DynamicFilterRangeTrackBar()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="DynamicFilterRangeTrackBar" /> class.
+    /// </summary>
+    ///
+    /// <param name="tableName">
+    /// Name of the table containing the column.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column.
+    /// </param>
+    //*************************************************************************
+
+    public DynamicFilterRangeTrackBar
+    (
+        String tableName,
+        String columnName
+    )
+    {
+        m_sTableName = tableName;
+        m_sColumnName = columnName;
+
+        AssertValid();
+    }
+
+    //*************************************************************************
+    //  Property: TableName
+    //
+    /// <summary>
+    /// Gets the name of the table containing the column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the table containing the column.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    TableName
+    {
+        get
+        {
+            AssertValid();
+            Debug.Assert( !String.IsNullOrEmpty(m_sTableName) );
+
+            return (m_sTableName);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ColumnName
+    //
+    /// <summary>
+    /// Gets the name of the column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the column.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    ColumnName
+    {
+        get
+        {
+            AssertValid();
+            Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
+
+            return (m_sColumnName);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AvailableRangeSelected
+    //
+    /// <summary>
+    /// Gets a flag indicating whether the user has selected the filter's
+    /// entire available range.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the user has selected the filter's entire available range.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    AvailableRangeSelected
+    {
+        get
+        {
+            AssertValid();
+
+            return (this.SelectedMinimum == this.AvailableMinimum &&
+                this.SelectedMaximum == this.AvailableMaximum);
+        }
+    }
+
     //*************************************************************************
     //  Method: SetCustomProperties()
     //
@@ -77,6 +179,39 @@ public class DynamicFilterRangeTrackBar :
         }
 
         this.SmallChange = decSmallChange;
+    }
+
+    //*************************************************************************
+    //  Method: ValueToString()
+    //
+    /// <summary>
+    /// Converts a value to a string.
+    /// </summary>
+    ///
+    /// <param name="value">
+    /// The value to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="value" /> converted to a string as it would appear in
+    /// the control.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method uses the wrapped control's formatting properties to convert
+    /// a value to a string.
+    /// </remarks>
+    //*************************************************************************
+
+    public String
+    ValueToString
+    (
+        Decimal value
+    )
+    {
+        AssertValid();
+
+        return ( value.ToString( "N" + this.DecimalPlaces.ToString() ) );
     }
 
     //*************************************************************************
@@ -137,7 +272,11 @@ public class DynamicFilterRangeTrackBar :
     {
         base.AssertValid();
 
-        // (Do nothing else.)
+        // Can't do this, because the base class calls AssertValid() several
+        // times during construction.
+
+        // Debug.Assert( !String.IsNullOrEmpty(m_sTableName) );
+        // Debug.Assert( !String.IsNullOrEmpty(m_sColumnName) );
     }
 
 
@@ -145,7 +284,13 @@ public class DynamicFilterRangeTrackBar :
     //  Protected fields
     //*************************************************************************
 
-    // (None.)
+    /// Name of the table containing the column being filtered on.
+
+    protected String m_sTableName;
+
+    /// Name of the column being filtered on.
+
+    protected String m_sColumnName;
 }
 
 }

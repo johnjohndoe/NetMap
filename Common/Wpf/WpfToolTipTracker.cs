@@ -3,8 +3,9 @@
 
 using System;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.GraphicsLib;
 
-namespace Microsoft.Research.CommunityTechnologies.GraphicsLib
+namespace Microsoft.WpfGraphicsLib
 {
 //*****************************************************************************
 //  Class: WpfToolTipTracker

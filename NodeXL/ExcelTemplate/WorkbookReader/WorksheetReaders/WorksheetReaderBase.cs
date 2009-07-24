@@ -792,13 +792,6 @@ public class WorksheetReaderBase : NodeXLBase
         IVertex oVertex = oVertices.Add();
         oVertex.Name = sVertexName;
 
-        // Start out with a vertex location that will cause
-        // FruchtermanReingoldLayout, if it's being used, to begin the layout
-        // by randomizing the vertex location.  This location may get
-        // overwritten later.
-
-        oVertex.Location = LayoutBase.RandomizeThisLocation;
-
         oVertexNameDictionary.Add(sVertexName, oVertex);
 
         return (oVertex);

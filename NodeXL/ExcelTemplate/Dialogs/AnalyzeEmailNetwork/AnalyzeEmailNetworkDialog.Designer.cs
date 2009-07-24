@@ -40,7 +40,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radAllEmail = new System.Windows.Forms.RadioButton();
             this.grpFilters = new System.Windows.Forms.GroupBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.dgvParticipants = new System.Windows.Forms.DataGridView();
             this.colParticipant = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFrom = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -80,6 +79,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.dtpEndTime = new System.Windows.Forms.DateTimePicker();
             this.cbxUseCcForEdgeWeights = new System.Windows.Forms.CheckBox();
             this.cbxUseBccForEdgeWeights = new System.Windows.Forms.CheckBox();
+            this.lnkEmailHelp = new System.Windows.Forms.LinkLabel();
             this.pnlWhichEmails.SuspendLayout();
             this.grpFilters.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -180,7 +180,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.label1);
+            this.groupBox9.Controls.Add(this.lnkEmailHelp);
             this.groupBox9.Controls.Add(this.dgvParticipants);
             this.groupBox9.Controls.Add(this.cbxUseParticipants);
             this.groupBox9.Location = new System.Drawing.Point(14, 19);
@@ -188,16 +188,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox9.Size = new System.Drawing.Size(284, 205);
             this.groupBox9.TabIndex = 0;
             this.groupBox9.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(13, 48);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(206, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Sample email address: johndoe@msn.com";
             // 
             // dgvParticipants
             // 
@@ -213,7 +203,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.dgvParticipants.RowHeadersWidth = 25;
             this.dgvParticipants.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvParticipants.Size = new System.Drawing.Size(251, 120);
-            this.dgvParticipants.TabIndex = 1;
+            this.dgvParticipants.TabIndex = 2;
             // 
             // colParticipant
             // 
@@ -624,6 +614,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxUseBccForEdgeWeights.Text = "Use Bcc &line when calculating edge weights";
             this.cbxUseBccForEdgeWeights.UseVisualStyleBackColor = true;
             // 
+            // lnkEmailHelp
+            // 
+            this.lnkEmailHelp.AutoSize = true;
+            this.lnkEmailHelp.Location = new System.Drawing.Point(13, 48);
+            this.lnkEmailHelp.Name = "lnkEmailHelp";
+            this.lnkEmailHelp.Size = new System.Drawing.Size(113, 13);
+            this.lnkEmailHelp.TabIndex = 1;
+            this.lnkEmailHelp.TabStop = true;
+            this.lnkEmailHelp.Text = "About email addresses";
+            this.lnkEmailHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkEmailHelp_LinkClicked);
+            // 
             // AnalyzeEmailNetworkDialog
             // 
             this.AcceptButton = this.btnAnalyze;
@@ -679,7 +680,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.RadioButton radFilteredEmail;
         private System.Windows.Forms.RadioButton radAllEmail;
         private System.Windows.Forms.GroupBox grpFilters;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker dtpStartTime;
         private System.Windows.Forms.CheckBox cbxUseStartTime;
         private System.Windows.Forms.DateTimePicker dtpEndTime;
@@ -720,5 +720,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.CheckBox cbxUseCcForEdgeWeights;
         private System.Windows.Forms.CheckBox cbxUseBccForEdgeWeights;
         private System.Windows.Forms.LinkLabel lnkFolderHelp;
+        private System.Windows.Forms.LinkLabel lnkEmailHelp;
     }
 }

@@ -11,34 +11,32 @@ using Microsoft.Research.CommunityTechnologies.AppLib;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//  Class: PajekGraphImporter
+//  Class: GraphImporter
 //
 /// <summary>
-/// Imports edges and vertices from a graph created from a Pajek file to the
-/// edge and vertex worksheets.
+/// Imports edges and vertices from a graph to the edge and vertex worksheets.
 /// </summary>
 ///
 /// <remarks>
-/// This class is used when a Pajek file is imported into a NodeXL workbook.
-/// The caller should first read the Pajek file into a NodeXL graph using <see
-/// cref="Microsoft.NodeXL.Adapters.PajekGraphAdapter" />, then call the <see
-/// cref="ImportPajekGraph" /> method in this class to import the edges and
-/// vertices from the graph to a NodeXL workbook.
+/// This class is typically used when an external file is imported into a
+/// NodeXL workbook.  The caller should first read the file into a NodeXL graph
+/// using one of the graph adapter classes, then call the <see
+/// cref="ImportGraph" /> method in this class to import the edges and vertices
+/// from the graph to a NodeXL workbook.
 /// </remarks>
 //*****************************************************************************
 
-public class PajekGraphImporter : Object
+public class GraphImporter : Object
 {
     //*************************************************************************
-    //  Constructor: PajekGraphImporter()
+    //  Constructor: GraphImporter()
     //
     /// <summary>
-    /// Initializes a new instance of the <see cref="PajekGraphImporter" />
-    /// class.
+    /// Initializes a new instance of the <see cref="GraphImporter" /> class.
     /// </summary>
     //*************************************************************************
 
-    public PajekGraphImporter()
+    public GraphImporter()
     {
         // (Do nothing.)
 
@@ -46,15 +44,25 @@ public class PajekGraphImporter : Object
     }
 
     //*************************************************************************
-    //  Method: ImportPajekGraph()
+    //  Method: ImportGraph()
     //
     /// <summary>
-    /// Imports edges and vertices from a graph created from a Pajek file to
-    /// the edge and vertex worksheets.
+    /// Imports edges and vertices from a graph to the edge and vertex
+    /// worksheets.
     /// </summary>
     ///
     /// <param name="sourceGraph">
     /// Graph to import the edges and vertices from.
+    /// </param>
+    ///
+    /// <param name="importEdgeWeights">
+    /// If true, an Edge Weight column is added to the workbook and any edge
+    /// weights in the graph's edges are written to the column.
+    /// </param>
+    ///
+    /// <param name="clearTablesFirst">
+    /// true if the NodeXL tables in <paramref
+    /// name="destinationNodeXLWorkbook" /> should be cleared first.
     /// </param>
     ///
     /// <param name="destinationNodeXLWorkbook">
@@ -64,15 +72,18 @@ public class PajekGraphImporter : Object
     /// <remarks>
     /// This method creates a row in the edge worksheet for each edge in
     /// <paramref name="sourceGraph" />, and a row in the vertex worksheet for
-    /// each vertex.  Only the vertex names are imported; any edge and vertex
-    /// attributes in the graph are ignored.
+    /// each vertex.  Only the vertex names and (optionally) edge weights are
+    /// imported; any other edge and vertex attributes in the graph are
+    /// ignored.
     /// </remarks>
     //*************************************************************************
 
     public void
-    ImportPajekGraph
+    ImportGraph
     (
         IGraph sourceGraph,
+        Boolean importEdgeWeights,
+        Boolean clearTablesFirst,
         Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook
     )
     {
@@ -112,7 +123,7 @@ public class PajekGraphImporter : Object
         }
 
         // Get the table that contains vertex data.  This table isn't normally
-        // required, but because the Pajek file may have isolated vertices that
+        // required, but because the graph may have isolated vertices that
         // need to be written to the vertex worksheet, require it here.
 
         ListObject oVertexTable;
@@ -140,17 +151,20 @@ public class PajekGraphImporter : Object
                 ) );
         }
 
-        // Clear the required tables and other optional tables.
+        if (clearTablesFirst)
+        {
+            // Clear the required tables and other optional tables.
 
-        NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+            NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+        }
 
         // Import the edges and isolated vertices into the workbook.
 
-        ImportPajekEdges(sourceGraph, oEdgeTable, oVertex1NameColumnData,
-            oVertex2NameColumnData);
+        ImportEdges(sourceGraph, oEdgeTable, importEdgeWeights,
+            oVertex1NameColumnData, oVertex2NameColumnData, !clearTablesFirst);
 
-        ImportPajekIsolatedVertices(sourceGraph, oVertexTable,
-            oVertexNameColumnData, oVisibilityColumnData);
+        ImportIsolatedVertices(sourceGraph, oVertexTable,
+            oVertexNameColumnData, oVisibilityColumnData, !clearTablesFirst);
 
         // Populate the vertex worksheet with the name of each unique vertex in
         // the edge worksheet.
@@ -163,11 +177,10 @@ public class PajekGraphImporter : Object
     }
 
     //*************************************************************************
-    //  Method: ImportPajekEdges()
+    //  Method: ImportEdges()
     //
     /// <summary>
-    /// Imports edges from a graph created from a Pajek file to the edge
-    /// worksheet.
+    /// Imports edges from a graph to the edge worksheet.
     /// </summary>
     ///
     /// <param name="oSourceGraph">
@@ -178,6 +191,11 @@ public class PajekGraphImporter : Object
     /// Edge table the edges will be imported to.
     /// </param>
     ///
+    /// <param name="bImportEdgeWeights">
+    /// If true, an Edge Weight column is added to the workbook and any edge
+    /// weights in the graph's edges are written to the column.
+    /// </param>
+    ///
     /// <param name="oVertex1NameColumnData">
     /// Data body range of the vertex 1 name column.
     /// </param>
@@ -185,15 +203,22 @@ public class PajekGraphImporter : Object
     /// <param name="oVertex2NameColumnData">
     /// Data body range of the vertex 2 name column.
     /// </param>
+    ///
+    /// <param name="bAppendToTable">
+    /// true to append the edges to any edges already in the edge table, false
+    /// to overwrite any edges.
+    /// </param>
     //*************************************************************************
 
     protected void
-    ImportPajekEdges
+    ImportEdges
     (
         IGraph oSourceGraph,
         ListObject oEdgeTable,
+        Boolean bImportEdgeWeights,
         Range oVertex1NameColumnData,
-        Range oVertex2NameColumnData
+        Range oVertex2NameColumnData,
+        Boolean bAppendToTable
     )
     {
         Debug.Assert(oSourceGraph != null);
@@ -201,6 +226,50 @@ public class PajekGraphImporter : Object
         Debug.Assert(oVertex1NameColumnData != null);
         Debug.Assert(oVertex2NameColumnData != null);
         AssertValid();
+
+        Int32 iRowOffsetToWriteTo = 0;
+
+        if (bAppendToTable)
+        {
+            iRowOffsetToWriteTo =
+                ExcelUtil.GetOffsetOfFirstEmptyTableRow(oEdgeTable);
+
+            ExcelUtil.OffsetRange(ref oVertex1NameColumnData,
+                iRowOffsetToWriteTo, 0);
+
+            ExcelUtil.OffsetRange(ref oVertex2NameColumnData,
+                iRowOffsetToWriteTo, 0);
+        }
+
+        Range oEdgeWeightColumnData = null;
+
+        if (bImportEdgeWeights)
+        {
+            ListColumn oEdgeWeightColumn;
+
+            if (
+                !ExcelUtil.TryGetOrAddTableColumn(oEdgeTable,
+                    EdgeTableColumnNames.EdgeWeight, ExcelUtil.AutoColumnWidth,
+                    null, out oEdgeWeightColumn)
+                ||
+                !ExcelUtil.TryGetTableColumnData(oEdgeWeightColumn,
+                    out oEdgeWeightColumnData)
+                )
+            {
+                throw new WorkbookFormatException( String.Format(
+
+                    "The {0} column couldn't be added."
+                    ,
+                    EdgeTableColumnNames.EdgeWeight
+                    ) );
+            }
+
+            if (bAppendToTable)
+            {
+                ExcelUtil.OffsetRange(ref oEdgeWeightColumnData,
+                    iRowOffsetToWriteTo, 0);
+            }
+        }
 
         IEdgeCollection oEdges = oSourceGraph.Edges;
         Int32 iEdges = oEdges.Count;
@@ -213,6 +282,13 @@ public class PajekGraphImporter : Object
         Object [,] aoVertex2NameValues =
             ExcelUtil.GetSingleColumn2DArray(iEdges);
 
+        Object [,] aoEdgeWeightValues = null;
+
+        if (bImportEdgeWeights)
+        {
+            aoEdgeWeightValues = ExcelUtil.GetSingleColumn2DArray(iEdges);
+        }
+
         Int32 iEdge = 1;
 
         foreach (IEdge oEdge in oEdges)
@@ -222,6 +298,18 @@ public class PajekGraphImporter : Object
             aoVertex1NameValues[iEdge, 1] = aoVertices[0].Name;
             aoVertex2NameValues[iEdge, 1] = aoVertices[1].Name;
 
+            Object oEdgeWeight;
+
+            if (
+                bImportEdgeWeights
+                &&
+                oEdge.TryGetValue(ReservedMetadataKeys.EdgeWeight,
+                    typeof(Double), out oEdgeWeight)
+                )
+            {
+                aoEdgeWeightValues[iEdge, 1] = (Double)oEdgeWeight;
+            }
+
             iEdge++;
         }
 
@@ -230,14 +318,19 @@ public class PajekGraphImporter : Object
 
         ExcelUtil.SetRangeValues( (Range)oVertex2NameColumnData.Cells[1, 1],
             aoVertex2NameValues );
+
+        if (bImportEdgeWeights)
+        {
+            ExcelUtil.SetRangeValues( (Range)oEdgeWeightColumnData.Cells[1, 1],
+                aoEdgeWeightValues );
+        }
     }
 
     //*************************************************************************
-    //  Method: ImportPajekIsolatedVertices()
+    //  Method: ImportIsolatedVertices()
     //
     /// <summary>
-    /// Imports isolated vertices from a graph created from a Pajek file to the
-    /// vertex worksheet.
+    /// Imports isolated vertices from a graph to the vertex worksheet.
     /// </summary>
     ///
     /// <param name="oSourceGraph">
@@ -255,15 +348,21 @@ public class PajekGraphImporter : Object
     /// <param name="oVisibilityColumnData">
     /// Data body range of the vertex visibility column.
     /// </param>
+    ///
+    /// <param name="bAppendToTable">
+    /// true to append the vertices to any vertices already in the vertex
+    /// table, false to overwrite any vertices.
+    /// </param>
     //*************************************************************************
 
     protected void
-    ImportPajekIsolatedVertices
+    ImportIsolatedVertices
     (
         IGraph oSourceGraph,
         ListObject oVertexTable,
         Range oVertexNameColumnData,
-        Range oVisibilityColumnData
+        Range oVisibilityColumnData,
+        Boolean bAppendToTable
     )
     {
         Debug.Assert(oSourceGraph != null);
@@ -271,6 +370,20 @@ public class PajekGraphImporter : Object
         Debug.Assert(oVertexNameColumnData != null);
         Debug.Assert(oVisibilityColumnData != null);
         AssertValid();
+
+        Int32 iRowOffsetToWriteTo = 0;
+
+        if (bAppendToTable)
+        {
+            iRowOffsetToWriteTo =
+                ExcelUtil.GetOffsetOfFirstEmptyTableRow(oVertexTable);
+
+            ExcelUtil.OffsetRange(ref oVertexNameColumnData,
+                iRowOffsetToWriteTo, 0);
+
+            ExcelUtil.OffsetRange(ref oVisibilityColumnData,
+                iRowOffsetToWriteTo, 0);
+        }
 
         // Create a list of isolated vertices not included in the edge
         // worksheet.

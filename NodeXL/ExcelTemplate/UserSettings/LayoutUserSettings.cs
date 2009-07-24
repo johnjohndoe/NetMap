@@ -191,8 +191,8 @@ public class LayoutUserSettings : Object
 
         LayoutUserSettings oCopy = new LayoutUserSettings();
 
+        oCopy.Layout = this.Layout;
         oCopy.Margin = this.Margin;
-
         oCopy.FruchtermanReingoldC = this.FruchtermanReingoldC;
 
         oCopy.FruchtermanReingoldIterations =

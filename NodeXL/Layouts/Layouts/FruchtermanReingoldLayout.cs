@@ -51,6 +51,8 @@ namespace Microsoft.NodeXL.Layouts
 /// cref="ReservedMetadataKeys.FruchtermanReingoldLayoutSelectivelyRandomize"
 /// />, however, only those vertices whose <see cref="IVertex.Location" /> is
 /// set to  <see cref="LayoutBase.RandomizeThisLocation" /> are randomized.
+/// This allows the previous layout to be used as a starting point for the new
+/// layout.
 /// </para>
 ///
 /// <para>

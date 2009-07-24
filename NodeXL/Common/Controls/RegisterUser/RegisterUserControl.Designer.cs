@@ -1,7 +1,7 @@
 
 namespace Microsoft.NodeXL.Common
 {
-    partial class RegisterUser
+    partial class RegisterUserControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -94,7 +94,7 @@ namespace Microsoft.NodeXL.Common
             this.lnkPrivacy.Text = "Privacy Policy";
             this.lnkPrivacy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkPrivacy_LinkClicked);
             // 
-            // RegisterUser
+            // RegisterUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -104,7 +104,7 @@ namespace Microsoft.NodeXL.Common
             this.Controls.Add(this.txbEmailAddress);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "RegisterUser";
+            this.Name = "RegisterUserControl";
             this.Size = new System.Drawing.Size(266, 207);
             this.ResumeLayout(false);
             this.PerformLayout();

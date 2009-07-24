@@ -181,6 +181,16 @@ public class OpenPajekFileDialog : OpenFileDialog2
 
 
     //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+    /// Filter to use for this dialog and the SavePajekFileDialog.
+
+    public const String Filter =
+        "Pajek Files (*.net)|*.net";
+
+
+    //*************************************************************************
     //  Protected constants
     //*************************************************************************
 
@@ -188,11 +198,6 @@ public class OpenPajekFileDialog : OpenFileDialog2
 
     protected const String DialogTitle =
         "Import from Pajek File";
-
-    /// Filter to use for this dialog.
-
-    protected const String Filter =
-        "Pajek Files (*.net)|*.net";
 }
 
 }

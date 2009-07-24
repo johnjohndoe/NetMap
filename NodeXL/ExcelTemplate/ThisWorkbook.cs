@@ -148,7 +148,8 @@ public partial class ThisWorkbook
         // The ImportFromMatrixWorkbookDialog does all the work.
 
         ImportFromMatrixWorkbookDialog oImportFromMatrixWorkbookDialog =
-            new ImportFromMatrixWorkbookDialog(this.InnerObject);
+            new ImportFromMatrixWorkbookDialog(this.InnerObject,
+                this.Ribbon.ClearTablesBeforeImport);
 
         if (oImportFromMatrixWorkbookDialog.ShowDialog() == DialogResult.OK)
         {
@@ -184,9 +185,130 @@ public partial class ThisWorkbook
         // The ImportFromEdgeWorkbookDialog does all the work.
 
         ImportFromEdgeWorkbookDialog oImportFromEdgeWorkbookDialog =
-            new ImportFromEdgeWorkbookDialog(this.InnerObject);
+            new ImportFromEdgeWorkbookDialog(this.InnerObject,
+                this.Ribbon.ClearTablesBeforeImport);
 
         oImportFromEdgeWorkbookDialog.ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: ExportToUcinetFile()
+    //
+    /// <summary>
+    /// Exports the edge and vertex tables to a new UCINET full matrix DL file.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ExportToUcinetFile()
+    {
+        AssertValid();
+
+        if (
+            !this.ExcelApplicationIsReady(true)
+            ||
+            !MergeIsApproved(
+                "add an Edge Weight column, and export the edges to a new"
+                + " UCINET full matrix DL file.")
+            )
+        {
+            return;
+        }
+
+        ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
+        oReadWorkbookContext.SetEdgeWeightValues = true;
+        WorkbookReader oWorkbookReader = new WorkbookReader();
+
+        SaveUcinetFileDialog oSaveUcinetFileDialog =
+            new SaveUcinetFileDialog(String.Empty, String.Empty);
+
+        ShowWaitCursor = true;
+        this.ScreenUpdating = false;
+
+        try
+        {
+            // Merge duplicate edges and add an edge weight column.
+
+            ( new DuplicateEdgeMerger() ).MergeDuplicateEdges(
+                this.InnerObject);
+
+            this.ScreenUpdating = true;
+
+            // Read the workbook, including the edge weight column, then let
+            // the user save it.
+
+            IGraph oGraph = oWorkbookReader.ReadWorkbook(
+                this.InnerObject, oReadWorkbookContext);
+
+            oSaveUcinetFileDialog.ShowDialogAndSaveGraph(oGraph);
+        }
+        catch (Exception oException)
+        {
+            this.ScreenUpdating = true;
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            this.ScreenUpdating = true;
+            ShowWaitCursor = false;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ExportToPajekFile()
+    //
+    /// <summary>
+    /// Exports the edge and vertex tables to a new Pajek text file.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ExportToPajekFile()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
+        oReadWorkbookContext.SetEdgeWeightValues = true;
+
+        // Map any vertex coordinates stored in the workbook to an arbitrary
+        // rectangle.  PajekGraphAdapter will in turn map these to Pajek
+        // coordinates.
+
+        oReadWorkbookContext.IgnoreVertexLocations = false;
+
+        oReadWorkbookContext.GraphRectangle =
+            new System.Drawing.Rectangle(0, 0, 10000, 10000);
+
+        WorkbookReader oWorkbookReader = new WorkbookReader();
+
+        SavePajekFileDialog oSavePajekFileDialog =
+            new SavePajekFileDialog(String.Empty, String.Empty);
+
+        ShowWaitCursor = true;
+
+        try
+        {
+            // Read the workbook into a Graph object, then let the user save
+            // it.
+
+            IGraph oGraph = oWorkbookReader.ReadWorkbook(
+                this.InnerObject, oReadWorkbookContext);
+
+            oSavePajekFileDialog.ShowDialogAndSaveGraph(oGraph);
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            ShowWaitCursor = false;
+        }
     }
 
     //*************************************************************************
@@ -277,29 +399,18 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        if ( !this.ExcelApplicationIsReady(true) )
+        if (
+            !this.ExcelApplicationIsReady(true)
+            ||
+            !MergeIsApproved(
+                "add an Edge Weight column, and export the edges to a new"
+                + " workbook as an adjacency matrix.")
+            )
         {
             return;
         }
 
-        const String Message =
-            "This will remove any filters that are applied to the Edges"
-            + " worksheet, merge any duplicate edges, add an Edge Weight"
-            + " column, and export the edges to a new workbook as an adjacency"
-            + " matrix."
-            + "\r\n\r\n"
-            + "Do you want to continue?"
-            ;
-
-        if (MessageBox.Show(Message, FormUtil.ApplicationName,
-                MessageBoxButtons.YesNo, MessageBoxIcon.Information) !=
-                DialogResult.Yes)
-        {
-            return;
-        }
-
-        this.Application.Cursor =
-            Microsoft.Office.Interop.Excel.XlMousePointer.xlWait;
+        ShowWaitCursor = true;
 
         this.ScreenUpdating = false;
 
@@ -325,8 +436,7 @@ public partial class ThisWorkbook
             ErrorUtil.OnException(oException);
         }
 
-        this.Application.Cursor =
-            Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
+        ShowWaitCursor = false;
     }
 
     //*************************************************************************
@@ -388,22 +498,11 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        if ( !this.ExcelApplicationIsReady(true) )
-        {
-            return;
-        }
-
-        const String Message =
-            "This will remove any filters that are applied to the Edges"
-            + " worksheet, merge any duplicate edges, and add an Edge Weight"
-            + " column."
-            + "\r\n\r\n"
-            + "Do you want to continue?"
-            ;
-
-        if (MessageBox.Show(Message, FormUtil.ApplicationName,
-                MessageBoxButtons.YesNo, MessageBoxIcon.Information) !=
-                DialogResult.Yes)
+        if (
+            !this.ExcelApplicationIsReady(true)
+            ||
+            !MergeIsApproved("and add an Edge Weight column.")
+            )
         {
             return;
         }
@@ -412,8 +511,7 @@ public partial class ThisWorkbook
 
         DuplicateEdgeMerger oDuplicateEdgeMerger = new DuplicateEdgeMerger();
 
-        this.Application.Cursor =
-            Microsoft.Office.Interop.Excel.XlMousePointer.xlWait;
+        ShowWaitCursor = true;
 
         this.ScreenUpdating = false;
 
@@ -432,8 +530,7 @@ public partial class ThisWorkbook
             ErrorUtil.OnException(oException);
         }
 
-        this.Application.Cursor =
-            Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
+        ShowWaitCursor = false;
     }
 
     //*************************************************************************
@@ -603,7 +700,8 @@ public partial class ThisWorkbook
         }
 
         AnalyzeEmailNetworkDialog oAnalyzeEmailNetworkDialog =
-            new AnalyzeEmailNetworkDialog(this.InnerObject);
+            new AnalyzeEmailNetworkDialog(this.InnerObject,
+                this.Ribbon.ClearTablesBeforeImport);
 
         oAnalyzeEmailNetworkDialog.ShowDialog();
     }
@@ -628,7 +726,8 @@ public partial class ThisWorkbook
         }
 
         AnalyzeTwitterNetworkDialog oAnalyzeTwitterNetworkDialog =
-            new AnalyzeTwitterNetworkDialog(this.InnerObject);
+            new AnalyzeTwitterNetworkDialog(this.InnerObject,
+                this.Ribbon.ClearTablesBeforeImport);
 
         oAnalyzeTwitterNetworkDialog.ShowDialog();
     }
@@ -716,7 +815,38 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: ImportPajekFile()
+    //  Method: ImportFromUcinetFile()
+    //
+    /// <summary>
+    /// Imports the contents of a UCINET full matrix DL file into the workbook.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ImportFromUcinetFile()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        // Create a graph from a Ucinet file selected by the user.
+
+        OpenUcinetFileDialog oOpenUcinetFileDialog =
+            new OpenUcinetFileDialog();
+
+        if (oOpenUcinetFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            // Import the graph's edges and vertices into the workbook.
+
+            ImportGraph(oOpenUcinetFileDialog.Graph, true);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ImportFromPajekFile()
     //
     /// <summary>
     /// Imports the contents of a Pajek file into the workbook.
@@ -724,7 +854,7 @@ public partial class ThisWorkbook
     //*************************************************************************
 
     public void
-    ImportPajekFile()
+    ImportFromPajekFile()
     {
         AssertValid();
 
@@ -738,70 +868,12 @@ public partial class ThisWorkbook
         IGraph oGraph;
         OpenPajekFileDialog oDialog = new OpenPajekFileDialog();
 
-        if (oDialog.ShowDialogAndOpenPajekFile(out oGraph) != DialogResult.OK)
+        if (oDialog.ShowDialogAndOpenPajekFile(out oGraph) == DialogResult.OK)
         {
-            return;
+            // Import the graph's edges and vertices into the workbook.
+
+            ImportGraph(oGraph, false);
         }
-
-        // Import the graph's edges and vertices into the workbook.
-
-        PajekGraphImporter oPajekGraphImporter = new PajekGraphImporter();
-
-        this.ScreenUpdating = false;
-
-        try
-        {
-            oPajekGraphImporter.ImportPajekGraph(oGraph, this.InnerObject);
-
-            this.ScreenUpdating = true;
-        }
-        catch (Exception oException)
-        {
-            this.ScreenUpdating = true;
-
-            ErrorUtil.OnException(oException);
-
-            return;
-        }
-
-        GraphDirectedness eGraphDirectedness = GraphDirectedness.Undirected;
-
-        switch (oGraph.Directedness)
-        {
-            case GraphDirectedness.Undirected:
-
-                break;
-
-            case GraphDirectedness.Directed:
-
-                eGraphDirectedness = GraphDirectedness.Directed;
-                break;
-
-            case GraphDirectedness.Mixed:
-
-                FormUtil.ShowInformation( String.Format(
-
-                    "The Pajek file contains both undirected and directed"
-                    + " edges, which {0} does not allow.  All edges"
-                    + " are being converted to directed edges."
-                    ,
-                    FormUtil.ApplicationName
-                    ) );
-
-                eGraphDirectedness = GraphDirectedness.Directed;
-                break;
-
-            default:
-
-                Debug.Assert(false);
-                break;
-        }
-
-        this.GraphDirectedness = eGraphDirectedness;
-
-        // Pass the workbook's directedness to the Ribbon.
-
-        this.Ribbon.GraphDirectedness = eGraphDirectedness;
     }
 
     //*************************************************************************
@@ -1350,6 +1422,32 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Property: ShowWaitCursor
+    //
+    /// <summary>
+    /// Sets a flag specifying whether the wait cursor should be shown.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the wait cursor.
+    /// </value>
+    //*************************************************************************
+
+    private Boolean
+    ShowWaitCursor
+    {
+        set
+        {
+            this.Application.Cursor = value ?
+                Microsoft.Office.Interop.Excel.XlMousePointer.xlWait
+                :
+                Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: EnableSetVisualAttributes
     //
     /// <summary>
@@ -1435,6 +1533,91 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: ImportGraph()
+    //
+    /// <summary>
+    /// Imports a graph's edges and vertices into the workbook.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to import.
+    /// </param>
+    ///
+    /// <param name="bImportEdgeWeights">
+    /// If true, an Edge Weight column is added to the workbook and any edge
+    /// weights in the graph's edges are written to the column.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    ImportGraph
+    (
+        IGraph oGraph,
+        Boolean bImportEdgeWeights
+    )
+    {
+        Debug.Assert(oGraph != null);
+        AssertValid();
+
+        GraphImporter oGraphImporter = new GraphImporter();
+
+        this.ScreenUpdating = false;
+
+        try
+        {
+            oGraphImporter.ImportGraph(oGraph, bImportEdgeWeights,
+                this.Ribbon.ClearTablesBeforeImport, this.InnerObject);
+
+            this.ScreenUpdating = true;
+        }
+        catch (Exception oException)
+        {
+            this.ScreenUpdating = true;
+            ErrorUtil.OnException(oException);
+            return;
+        }
+
+        GraphDirectedness eGraphDirectedness = GraphDirectedness.Undirected;
+
+        switch (oGraph.Directedness)
+        {
+            case GraphDirectedness.Undirected:
+
+                break;
+
+            case GraphDirectedness.Directed:
+
+                eGraphDirectedness = GraphDirectedness.Directed;
+                break;
+
+            case GraphDirectedness.Mixed:
+
+                FormUtil.ShowInformation( String.Format(
+
+                    "The file contains both undirected and directed edges,"
+                    + " which {0} does not allow.  All edges are being"
+                    + " converted to directed edges."
+                    ,
+                    FormUtil.ApplicationName
+                    ) );
+
+                eGraphDirectedness = GraphDirectedness.Directed;
+                break;
+
+            default:
+
+                Debug.Assert(false);
+                break;
+        }
+
+        this.GraphDirectedness = eGraphDirectedness;
+
+        // Pass the workbook's directedness to the Ribbon.
+
+        this.Ribbon.GraphDirectedness = eGraphDirectedness;
+    }
+
+    //*************************************************************************
     //  Method: UpdateColumnNames()
     //
     /// <summary>
@@ -1449,6 +1632,44 @@ public partial class ThisWorkbook
         AssertValid();
 
         Globals.Sheet2.UpdateColumnNames();
+    }
+
+    //*************************************************************************
+    //  Method: MergeIsApproved()
+    //
+    /// <summary>
+    /// Requests approval from the user to merge duplicate edges and perform
+    /// other tasks.
+    /// </summary>
+    ///
+    /// <param name="sMessageSuffix">
+    /// Suffix to append to base approval message.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the user approved the merge.
+    /// </returns>
+    //*************************************************************************
+
+    private Boolean
+    MergeIsApproved
+    (
+        String sMessageSuffix
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sMessageSuffix) );
+        AssertValid();
+
+        String sMessage =
+            "This will remove any filters that are applied to the Edges"
+            + " worksheet, merge any duplicate edges, " + sMessageSuffix
+            + "\r\n\r\n"
+            + "Do you want to continue?"
+            ;
+
+        return (MessageBox.Show(sMessage, FormUtil.ApplicationName,
+            MessageBoxButtons.YesNo, MessageBoxIcon.Information)
+            == DialogResult.Yes);
     }
 
     //*************************************************************************
@@ -1516,25 +1737,21 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        if (this.Ribbon.AutoReadWorkbook)
-        {
-            // The TaskPane handles this event by reading the workbook, which
-            // clears the selection in the graph.  That fires the TaskPane's
-            // SelectionChangedInGraph event, which this class handles by
-            // clearing the selection in the workbook.  That can be jarring to
-            // the user, who just made a selection, set a visual attribute on
-            // the selection, and then saw the selection disappear.
-            //
-            // Fix this by temporarily igoring the SelectionChangedInGraph
-            // event, which causes the selection in the workbook to be
-            // retained.  The selection in the graph (which is empty) will then
-            // be out of sync with the selection in the workbook, but I think
-            // that is tolerable.
+        // The TaskPane handles this event by reading the workbook, which
+        // clears the selection in the graph.  That fires the TaskPane's
+        // SelectionChangedInGraph event, which this class handles by clearing
+        // the selection in the workbook.  That can be jarring to the user, who
+        // just made a selection, set a visual attribute on the selection, and
+        // then saw the selection disappear.
+        //
+        // Fix this by temporarily igoring the SelectionChangedInGraph event,
+        // which causes the selection in the workbook to be retained.  The
+        // selection in the graph (which is empty) will then be out of sync
+        // with the selection in the workbook, but I think that is tolerable.
 
-            m_bIgnoreSelectionChangedInGraph = true;
-            EventUtil.FireEvent(this, this.VisualAttributeSetInWorkbook);
-            m_bIgnoreSelectionChangedInGraph = false;
-        }
+        m_bIgnoreSelectionChangedInGraph = true;
+        EventUtil.FireEvent(this, this.VisualAttributeSetInWorkbook);
+        m_bIgnoreSelectionChangedInGraph = false;
     }
 
     //*************************************************************************
@@ -1550,10 +1767,7 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        if (this.Ribbon.AutoReadWorkbook)
-        {
-            EventUtil.FireEvent(this, this.WorkbookAutoFilled);
-        }
+        EventUtil.FireEvent(this, this.WorkbookAutoFilled);
     }
 
     //*************************************************************************

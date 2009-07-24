@@ -42,14 +42,20 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
     /// cref="ImportFromEdgeWorkbookDialog" /> class with a workbook.
     /// </summary>
     ///
-    /// <param name="workbook">
-    /// Workbook containing the graph data.
+    /// <param name="destinationNodeXLWorkbook">
+    /// Workbook to which the edge workbook will be imported.
+    /// </param>
+    ///
+    /// <param name="clearDestinationTablesFirst">
+    /// true if the NodeXL tables in <paramref
+    /// name="destinationNodeXLWorkbook" /> should be cleared first.
     /// </param>
     //*************************************************************************
 
     public ImportFromEdgeWorkbookDialog
     (
-        Microsoft.Office.Interop.Excel.Workbook workbook
+        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
+        Boolean clearDestinationTablesFirst
     )
     : this()
     {
@@ -60,9 +66,11 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
         m_oImportFromEdgeWorkbookDialogUserSettings =
             new ImportFromEdgeWorkbookDialogUserSettings(this);
 
-        m_oWorkbook = workbook;
+        m_oDestinationNodeXLWorkbook = destinationNodeXLWorkbook;
+        m_bClearDestinationTablesFirst = clearDestinationTablesFirst;
 
-        lbxSourceWorkbook.PopulateWithOtherWorkbookNames(m_oWorkbook);
+        lbxSourceWorkbook.PopulateWithOtherWorkbookNames(
+            m_oDestinationNodeXLWorkbook);
 
         DoDataExchange(false);
 
@@ -421,8 +429,9 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
 
         try
         {
-            oSourceWorksheetAsObject = m_oWorkbook.Application.Workbooks[
-                sSourceWorkbookName].ActiveSheet;
+            oSourceWorksheetAsObject =
+                m_oDestinationNodeXLWorkbook.Application.Workbooks[
+                    sSourceWorkbookName].ActiveSheet;
         }
         catch (COMException)
         {
@@ -597,7 +606,7 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
         oEdgeWorkbookImporter.ImportEdgeWorkbook(sSourceWorkbookName,
             oOneBasedColumnNumbersToImport, iColumnToUseForVertex1OneBased,
             iColumnToUseForVertex2OneBased, bSourceColumnsHaveHeaders,
-            m_oWorkbook);
+            m_bClearDestinationTablesFirst, m_oDestinationNodeXLWorkbook);
     }
 
     //*************************************************************************
@@ -979,7 +988,8 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oImportFromEdgeWorkbookDialogUserSettings != null);
-        Debug.Assert(m_oWorkbook != null);
+        Debug.Assert(m_oDestinationNodeXLWorkbook != null);
+        // m_bClearDestinationTablesFirst
     }
 
 
@@ -992,9 +1002,14 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
     protected ImportFromEdgeWorkbookDialogUserSettings
         m_oImportFromEdgeWorkbookDialogUserSettings;
 
-    /// Workbook containing the graph data.
+    /// Workbook to which the edge workbook will be imported.
 
-    protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
+    protected Microsoft.Office.Interop.Excel.Workbook
+        m_oDestinationNodeXLWorkbook;
+
+    /// true if the NodeXL tables should be cleared first.
+
+    protected Boolean m_bClearDestinationTablesFirst;
 }
 
 

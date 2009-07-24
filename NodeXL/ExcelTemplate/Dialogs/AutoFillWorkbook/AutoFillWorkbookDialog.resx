@@ -121,9 +121,9 @@
     <value>17, 17</value>
   </metadata>
   <data name="lnkHowAutoFillWorks.Tag" xml:space="preserve">
-    <value>Use the Autofill Columns feature to calculate and fill in the graph's visual attribute columns, such as edge width and vertex shape, using values from other columns.
+    <value>Use the Autofill Columns feature to calculate and fill in the graph's visual property columns, such as edge width and vertex shape, using values from other columns.
 
-There are three ways to control the graph's visual attributes.  Take edge width, for example.  If you leave the Width column on the Edges worksheet empty, the edges are drawn in the graph using the default edge width you enter in the Options dialog box, accessible from the graph pane.
+There are three ways to control the graph's visual properties.  Take edge width, for example.  If you leave the Width column on the Edges worksheet empty, the edges are drawn in the graph using the default edge width you enter in the Options dialog box, accessible from the graph pane.
 
 You can override the default edge width for one or more edges by entering numbers in the Width column.  Any edges with empty Width cells use the default edge width.
 

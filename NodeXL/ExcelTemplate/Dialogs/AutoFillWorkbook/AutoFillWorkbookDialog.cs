@@ -281,16 +281,16 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
                 oComboBox.PopulateWithSourceColumnNames(oVertexTable);
             }
 
-            // Add a few special items.
+            // Insert a few special items.
 
-            String sVertexColumnName = VertexTableColumnNames.VertexName;
-
-            cbxVertexPrimaryLabelSourceColumnName.Items.Add(sVertexColumnName);
-
-            cbxVertexSecondaryLabelSourceColumnName.Items.Add(
-                sVertexColumnName);
-
-            cbxVertexToolTipSourceColumnName.Items.Add(sVertexColumnName);
+            foreach (ComboBox oComboBox in new ComboBox [] {
+                cbxVertexPrimaryLabelSourceColumnName,
+                cbxVertexSecondaryLabelSourceColumnName,
+                cbxVertexToolTipSourceColumnName
+                } )
+            {
+                oComboBox.Items.Insert(0, VertexTableColumnNames.VertexName);
+            }
         }
 
         // Store the name of the column corresponding to the ComboBox in each
@@ -793,8 +793,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeWidthDetails,
-                "Edge Width Options",
-                "edge width",
+                "Edge Width Options", "edge width", "Widths",
                 EdgeWidthConverter.MinimumWidthWorkbook,
                 EdgeWidthConverter.MaximumWidthWorkbook
                 );
@@ -831,8 +830,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeAlphaDetails,
-                "Edge Opacity Options",
-                "edge opacity",
+                "Edge Opacity Options", "edge opacity", "Opacities",
                 AlphaConverter.MinimumAlphaWorkbook,
                 AlphaConverter.MaximumAlphaWorkbook
                 );
@@ -974,8 +972,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexRadiusDetails,
-                "Vertex Size Options",
-                "vertex size",
+                "Vertex Size Options", "vertex size", "Sizes",
                 VertexRadiusConverter.MinimumRadiusWorkbook,
                 VertexRadiusConverter.MaximumRadiusWorkbook
                 );
@@ -1012,8 +1009,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexAlphaDetails,
-                "Vertex Opacity Options",
-                "vertex opacity",
+                "Vertex Opacity Options", "vertex opacity", "Opacities",
                 AlphaConverter.MinimumAlphaWorkbook,
                 AlphaConverter.MaximumAlphaWorkbook
                 );
@@ -1125,10 +1121,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexLayoutOrderDetails,
-                "Vertex Layout Order Options",
-                "vertex layout order",
-                1,
-                99999
+                "Vertex Layout Order Options", "vertex layout order", "Orders",
+                1, 99999
                 );
 
         oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
@@ -1163,8 +1157,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexXDetails,
-                "Vertex X Options",
-                "vertex x-coordinate",
+                "Vertex X Options", "vertex x-coordinate",
+                CoordinateColumnNamePlural,
                 VertexLocationConverter.MinimumXYWorkbook,
                 VertexLocationConverter.MaximumXYWorkbook
                 );
@@ -1201,8 +1195,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexYDetails,
-                "Vertex Y Options",
-                "vertex y-coordinate",
+                "Vertex Y Options", "vertex y-coordinate",
+                CoordinateColumnNamePlural,
                 VertexLocationConverter.MinimumXYWorkbook,
                 VertexLocationConverter.MaximumXYWorkbook
                 );
@@ -1239,10 +1233,9 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexPolarRDetails,
-                "Vertex Polar R Options",
-                "vertex polar R coordinate",
-                0,
-                1
+                "Vertex Polar R Options", "vertex polar R coordinate",
+                CoordinateColumnNamePlural,
+                0, 1
                 );
 
         oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
@@ -1277,8 +1270,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             oNumericRangeColumnAutoFillUserSettingsDialog =
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexPolarAngleDetails,
-                "Vertex Polar Angle Options",
-                "vertex polar angle coordinate",
+                "Vertex Polar Angle Options", "vertex polar angle coordinate",
+                CoordinateColumnNamePlural,
                 -99999,
                 99999
                 );
@@ -1428,19 +1421,6 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
                 out oTable) )
         {
             ExcelUtil.TryClearTableColumnDataContents(oTable, sColumnName);
-
-            if (sTableName == TableNames.Vertices)
-            {
-                // If the X or Y column is cleared, the Locked column should be
-                // cleared, too.
-
-                if (sColumnName == VertexTableColumnNames.X ||
-                    sColumnName == VertexTableColumnNames.Y)
-                {
-                    ExcelUtil.TryClearTableColumnDataContents(oTable,
-                        VertexTableColumnNames.Locked);
-                }
-            }
         }
     }
 
@@ -1714,6 +1694,12 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         + " number to be ignored in the internal calculations that determine"
         + " how the numbers are mapped."
         ;
+
+    /// destinationColumnNamePlural argument to the
+    /// NumericRangeColumnAutoFillUserSettingsDialog constructor for coordinate
+    /// columns.
+
+    protected const String CoordinateColumnNamePlural = "Coordinates";
 
 
     //*************************************************************************

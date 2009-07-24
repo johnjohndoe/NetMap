@@ -577,10 +577,61 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
-    //  Method: OnLoadFormatError()
+    //  Method: TryReadLine()
     //
     /// <summary>
+    /// Attempts to read a line from a StreamReader.
+    /// </summary>
+    ///
+    /// <param name="streamReader">
+    /// StreamReader to read a line from.
+    /// </param>
+    ///
+    /// <param name="line">
+    /// Where the line gets stored if true is returned.
+    /// </param>
+    ///
+    /// <param name="lineNumber">
+    /// Line number of <paramref name="line" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if a line was read.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryReadLine
+    (
+        StreamReader streamReader,
+        out String line,
+        ref Int32 lineNumber
+    )
+    {
+        Debug.Assert(streamReader != null);
+        AssertValid();
+
+        line = streamReader.ReadLine();
+
+        if (line == null)
+        {
+            return (false);
+        }
+
+        lineNumber++;
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: OnLoadFormatError()
+    //
+    /// <overloads>
     /// Handles a formatting error detected by <see cref="LoadGraphCore" />.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Handles a line-oriented formatting error detected by <see
+    /// cref="LoadGraphCore" />.
     /// </summary>
     ///
     /// <param name="line">
@@ -627,6 +678,31 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
+    //  Method: OnLoadFormatError()
+    //
+    /// <summary>
+    /// Handles a formatting error detected by <see cref="LoadGraphCore" />
+    /// given a complete error message.
+    /// </summary>
+    ///
+    /// <param name="completeErrorMessage">
+    /// Full description of the formatting error.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnLoadFormatError
+    (
+        String completeErrorMessage
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(completeErrorMessage) );
+        AssertValid();
+
+        throw new FormatException(completeErrorMessage);
+    }
+
+    //*************************************************************************
     //  Method: OnLoadFormatError2()
     //
     /// <summary>
@@ -648,7 +724,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// <remarks>
     /// If the derived class reads from a line-oriented text file and detects
     /// a formatting error on a line, it should handle the error by calling
-    /// this method or <see cref="OnLoadFormatError" />.  A <see
+    /// this method or <see cref="OnLoadFormatError(String)" />.  A <see
     /// cref="FormatException" /> is thrown.
     /// </remarks>
     //*************************************************************************
@@ -685,7 +761,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
         // The message appears when the user attempts to open an invalid file,
         // and the user doesn't care about class names.
     
-        throw new FormatException( String.Format(
+        OnLoadFormatError( String.Format(
 
             "Line {0} is not in the expected format.  This is"
             + " line {0}: \"{1}\".  {2}"
@@ -694,6 +770,36 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
             sLineToDisplay,
             errorDetails
             ) );
+    }
+
+    //*************************************************************************
+    //  Method: OnSaveError()
+    //
+    /// <summary>
+    /// Handles an error detected by <see cref="SaveGraphCore" />.
+    /// </summary>
+    ///
+    /// <param name="errorMessage">
+    /// Error message to include in the exception.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If the derived class encounters an error when attempting to save a
+    /// graph, it should handle the error by calling this method.  A <see
+    /// cref="SaveGraphException" /> is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    OnSaveError
+    (
+        String errorMessage
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(errorMessage) );
+        AssertValid();
+
+        throw new SaveGraphException(errorMessage);
     }
 
 

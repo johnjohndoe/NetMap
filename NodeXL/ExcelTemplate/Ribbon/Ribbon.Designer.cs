@@ -38,15 +38,22 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.NodeXL = new Microsoft.Office.Tools.Ribbon.RibbonTab();
             this.grpData = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
             this.mnuImport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnImportPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.cbxClearTablesBeforeImport = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
+            this.separator10 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
+            this.btnImportFromUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnImportFromPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.separator9 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnImportFromMatrixWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnImportFromEdgeWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnConvertOldWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnAnalyzeEmailNetwork = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAnalyzeTwitterNetwork = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
+            this.btnConvertOldWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mnuExport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
+            this.btnExportToUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnExportToPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.separator8 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnExportSelectionToNewNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnExportToNewMatrixWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mniPrepareData = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
@@ -88,7 +95,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnDeleteSubgraphThumbnails = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCreateClusters = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.grpShowHide = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.cbxReadClusters = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.mnuShowColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.cbxShowVisualAttributesColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.cbxShowVertexLabelsColumnGroup = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
@@ -98,12 +104,18 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.separator1 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnShowAllColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnHideAllColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.mnuShowGraphElements = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
+            this.cbxReadClusters = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
+            this.cbxShowGraphLegend = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
+            this.cbxShowGraphAxes = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
+            this.separator7 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
+            this.btnShowAllGraphElements = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnHideAllGraphElements = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.grpHelp = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
             this.btnOpenHomePage = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnRegisterUser = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCheckForUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.cbxAutoReadWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.btnSetColor = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnSetAlpha = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnSetVertexRadius = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -138,14 +150,18 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // mnuImport
             // 
-            this.mnuImport.Items.Add(this.btnImportPajekFile);
+            this.mnuImport.Items.Add(this.cbxClearTablesBeforeImport);
+            this.mnuImport.Items.Add(this.separator10);
+            this.mnuImport.Items.Add(this.btnImportFromUcinetFile);
+            this.mnuImport.Items.Add(this.btnImportFromPajekFile);
+            this.mnuImport.Items.Add(this.separator9);
             this.mnuImport.Items.Add(this.btnImportFromMatrixWorkbook);
             this.mnuImport.Items.Add(this.btnImportFromEdgeWorkbook);
             this.mnuImport.Items.Add(this.separator3);
-            this.mnuImport.Items.Add(this.btnConvertOldWorkbook);
-            this.mnuImport.Items.Add(this.separator2);
             this.mnuImport.Items.Add(this.btnAnalyzeEmailNetwork);
             this.mnuImport.Items.Add(this.btnAnalyzeTwitterNetwork);
+            this.mnuImport.Items.Add(this.separator2);
+            this.mnuImport.Items.Add(this.btnConvertOldWorkbook);
             this.mnuImport.Label = "Import";
             this.mnuImport.Name = "mnuImport";
             this.mnuImport.OfficeImageId = "ImportSavedImports";
@@ -153,15 +169,41 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.mnuImport.ShowImage = true;
             this.mnuImport.SuperTip = "Import graph data into this workbook.";
             // 
-            // btnImportPajekFile
+            // cbxClearTablesBeforeImport
             // 
-            this.btnImportPajekFile.Label = "From Pajek File...";
-            this.btnImportPajekFile.Name = "btnImportPajekFile";
-            this.btnImportPajekFile.OfficeImageId = "ImportTextFile";
-            this.btnImportPajekFile.ScreenTip = "Import from Pajek File";
-            this.btnImportPajekFile.ShowImage = true;
-            this.btnImportPajekFile.SuperTip = resources.GetString("btnImportPajekFile.SuperTip");
-            this.btnImportPajekFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportPajekFile_Click);
+            this.cbxClearTablesBeforeImport.Label = "Clear NodeXL Workbook First";
+            this.cbxClearTablesBeforeImport.Name = "cbxClearTablesBeforeImport";
+            this.cbxClearTablesBeforeImport.ScreenTip = "Clear NodeXL Workbook First ";
+            this.cbxClearTablesBeforeImport.SuperTip = "If checked, the NodeXL workbook is cleared before anything is imported into it.  " +
+                "If unchecked, the imported contents get appended to the NodeXL workbook.";
+            // 
+            // separator10
+            // 
+            this.separator10.Name = "separator10";
+            // 
+            // btnImportFromUcinetFile
+            // 
+            this.btnImportFromUcinetFile.Label = "From UCINET Full Matrix DL File...";
+            this.btnImportFromUcinetFile.Name = "btnImportFromUcinetFile";
+            this.btnImportFromUcinetFile.OfficeImageId = "ImportTextFile";
+            this.btnImportFromUcinetFile.ScreenTip = "Import from UCINET Full Matrix DL File";
+            this.btnImportFromUcinetFile.ShowImage = true;
+            this.btnImportFromUcinetFile.SuperTip = "Optionally clear the NodeXL workbook, then import edges from a UCINET full matrix DL file.";
+            this.btnImportFromUcinetFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportFromUcinetFile_Click);
+            // 
+            // btnImportFromPajekFile
+            // 
+            this.btnImportFromPajekFile.Label = "From Pajek File...";
+            this.btnImportFromPajekFile.Name = "btnImportFromPajekFile";
+            this.btnImportFromPajekFile.OfficeImageId = "ImportTextFile";
+            this.btnImportFromPajekFile.ScreenTip = "Import from Pajek File";
+            this.btnImportFromPajekFile.ShowImage = true;
+            this.btnImportFromPajekFile.SuperTip = resources.GetString("btnImportFromPajekFile.SuperTip");
+            this.btnImportFromPajekFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportFromPajekFile_Click);
+            // 
+            // separator9
+            // 
+            this.separator9.Name = "separator9";
             // 
             // btnImportFromMatrixWorkbook
             // 
@@ -170,8 +212,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnImportFromMatrixWorkbook.OfficeImageId = "EquationMatrixGallery";
             this.btnImportFromMatrixWorkbook.ScreenTip = "Import from Open Matrix Workbook";
             this.btnImportFromMatrixWorkbook.ShowImage = true;
-            this.btnImportFromMatrixWorkbook.SuperTip = "Import edges from an open workbook that contains a graph represented as an adjace" +
-                "ncy matrix.";
+            this.btnImportFromMatrixWorkbook.SuperTip = "Optionally clear the NodeXL workbook, then import edges from an open workbook that contains a graph" +
+                " represented as an adjacency matrix.";
             this.btnImportFromMatrixWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportFromMatrixWorkbook_Click);
             // 
             // btnImportFromEdgeWorkbook
@@ -188,20 +230,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.separator3.Name = "separator3";
             // 
-            // btnConvertOldWorkbook
-            // 
-            this.btnConvertOldWorkbook.Label = "Convert Old Workbook...";
-            this.btnConvertOldWorkbook.Name = "btnConvertOldWorkbook";
-            this.btnConvertOldWorkbook.OfficeImageId = "RecoverInviteToMeeting";
-            this.btnConvertOldWorkbook.ScreenTip = "Convert Old Workbook ";
-            this.btnConvertOldWorkbook.ShowImage = true;
-            this.btnConvertOldWorkbook.SuperTip = "Convert an old workbook created with an earlier version of NodeXL.";
-            this.btnConvertOldWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnConvertOldWorkbook_Click);
-            // 
-            // separator2
-            // 
-            this.separator2.Name = "separator2";
-            // 
             // btnAnalyzeEmailNetwork
             // 
             this.btnAnalyzeEmailNetwork.Label = "From Email Network...";
@@ -217,13 +245,31 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAnalyzeTwitterNetwork.Label = "From Twitter Network...";
             this.btnAnalyzeTwitterNetwork.Name = "btnAnalyzeTwitterNetwork";
             this.btnAnalyzeTwitterNetwork.OfficeImageId = "AutoDial";
-            this.btnAnalyzeTwitterNetwork.ScreenTip = "Import from Twtitter Network";
+            this.btnAnalyzeTwitterNetwork.ScreenTip = "Import from Twitter Network";
             this.btnAnalyzeTwitterNetwork.ShowImage = true;
-            this.btnAnalyzeTwitterNetwork.SuperTip = "Show the friends of a Twitter user and their latest postings.";
+            this.btnAnalyzeTwitterNetwork.SuperTip = "Optionally clear the NodeXL workbook, then show the friends of a Twitter user and their latest post" +
+                "ings.";
             this.btnAnalyzeTwitterNetwork.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAnalyzeTwitterNetwork_Click);
+            // 
+            // separator2
+            // 
+            this.separator2.Name = "separator2";
+            // 
+            // btnConvertOldWorkbook
+            // 
+            this.btnConvertOldWorkbook.Label = "Convert Old Workbook...";
+            this.btnConvertOldWorkbook.Name = "btnConvertOldWorkbook";
+            this.btnConvertOldWorkbook.OfficeImageId = "RecoverInviteToMeeting";
+            this.btnConvertOldWorkbook.ScreenTip = "Convert Old Workbook ";
+            this.btnConvertOldWorkbook.ShowImage = true;
+            this.btnConvertOldWorkbook.SuperTip = "Convert an old workbook created with an earlier version of NodeXL.";
+            this.btnConvertOldWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnConvertOldWorkbook_Click);
             // 
             // mnuExport
             // 
+            this.mnuExport.Items.Add(this.btnExportToUcinetFile);
+            this.mnuExport.Items.Add(this.btnExportToPajekFile);
+            this.mnuExport.Items.Add(this.separator8);
             this.mnuExport.Items.Add(this.btnExportSelectionToNewNodeXLWorkbook);
             this.mnuExport.Items.Add(this.btnExportToNewMatrixWorkbook);
             this.mnuExport.Label = "Export";
@@ -232,6 +278,32 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.mnuExport.ScreenTip = "Export";
             this.mnuExport.ShowImage = true;
             this.mnuExport.SuperTip = "Export graph data from this workbook.";
+            // 
+            // btnExportToUcinetFile
+            // 
+            this.btnExportToUcinetFile.Label = "To UCINET Full Matrix DL File...";
+            this.btnExportToUcinetFile.Name = "btnExportToUcinetFile";
+            this.btnExportToUcinetFile.OfficeImageId = "ExportTextFile";
+            this.btnExportToUcinetFile.ScreenTip = "Export to UCINET Full Matrix DL File";
+            this.btnExportToUcinetFile.ShowImage = true;
+            this.btnExportToUcinetFile.SuperTip = "Export the edges to a new UCINET full matrix DL file.";
+            this.btnExportToUcinetFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportToUcinetFile_Click);
+            // 
+            // btnExportToPajekFile
+            // 
+            this.btnExportToPajekFile.Label = "To Pajek File...";
+            this.btnExportToPajekFile.Name = "btnExportToPajekFile";
+            this.btnExportToPajekFile.OfficeImageId = "ExportTextFile";
+            this.btnExportToPajekFile.ScreenTip = "Export to Pajek File";
+            this.btnExportToPajekFile.ShowImage = true;
+            this.btnExportToPajekFile.SuperTip = "Exports the edges and vertices to a new Pajek text file.  Vertex locations (the X" +
+                " and Y columns in the Vertices worksheet) are the only properties that are expor" +
+                "ted.";
+            this.btnExportToPajekFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportToPajekFile_Click);
+            // 
+            // separator8
+            // 
+            this.separator8.Name = "separator8";
             // 
             // btnExportSelectionToNewNodeXLWorkbook
             // 
@@ -335,20 +407,20 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // grpVisualAttributes
             // 
+            this.grpVisualAttributes.Items.Add(this.btnAutoFillWorkbookWithScheme);
+            this.grpVisualAttributes.Items.Add(this.btnAutoFillWorkbook);
             this.grpVisualAttributes.Items.Add(this.btnSetColor);
             this.grpVisualAttributes.Items.Add(this.btnSetAlpha);
             this.grpVisualAttributes.Items.Add(this.mnuSetVisibility);
             this.grpVisualAttributes.Items.Add(this.mnuSetVertexShape);
             this.grpVisualAttributes.Items.Add(this.btnSetVertexRadius);
             this.grpVisualAttributes.Items.Add(this.btnSetEdgeWidth);
-            this.grpVisualAttributes.Items.Add(this.btnAutoFillWorkbookWithScheme);
-            this.grpVisualAttributes.Items.Add(this.btnAutoFillWorkbook);
-            this.grpVisualAttributes.Items.Add(this.cbxAutoReadWorkbook);
             this.grpVisualAttributes.Label = "Visual Properties";
             this.grpVisualAttributes.Name = "grpVisualAttributes";
             // 
             // btnAutoFillWorkbookWithScheme
             // 
+            this.btnAutoFillWorkbookWithScheme.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnAutoFillWorkbookWithScheme.Image = ((System.Drawing.Image)(resources.GetObject("btnAutoFillWorkbookWithScheme.Image")));
             this.btnAutoFillWorkbookWithScheme.Label = "Schemes";
             this.btnAutoFillWorkbookWithScheme.Name = "btnAutoFillWorkbookWithScheme";
@@ -359,13 +431,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnAutoFillWorkbook
             // 
+            this.btnAutoFillWorkbook.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnAutoFillWorkbook.Image = ((System.Drawing.Image)(resources.GetObject("btnAutoFillWorkbook.Image")));
             this.btnAutoFillWorkbook.Label = "Autofill Columns";
             this.btnAutoFillWorkbook.Name = "btnAutoFillWorkbook";
-            this.btnAutoFillWorkbook.OfficeImageId = "TableSharePointListsRefreshList";
             this.btnAutoFillWorkbook.ScreenTip = "Autofill Columns";
             this.btnAutoFillWorkbook.ShowImage = true;
-            this.btnAutoFillWorkbook.SuperTip = "Calculate and fill in the graph\'s visual attribute columns, such as edge width an" +
-                "d vertex shape, using values from other columns.";
+            this.btnAutoFillWorkbook.SuperTip = "Calculate and fill in the graph\'s visual property columns, such as edge width and" +
+                " vertex shape, using values from other columns.";
             this.btnAutoFillWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAutoFillWorkbook_Click);
             // 
             // mnuSetVisibility
@@ -490,6 +563,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeCircle
             // 
+            this.btnSetVertexShapeCircle.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeCircle.Image")));
             this.btnSetVertexShapeCircle.Label = "Circle";
             this.btnSetVertexShapeCircle.Name = "btnSetVertexShapeCircle";
             this.btnSetVertexShapeCircle.ScreenTip = "Circle ";
@@ -500,6 +574,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeDisk
             // 
+            this.btnSetVertexShapeDisk.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeDisk.Image")));
             this.btnSetVertexShapeDisk.Label = "Disk";
             this.btnSetVertexShapeDisk.Name = "btnSetVertexShapeDisk";
             this.btnSetVertexShapeDisk.ScreenTip = "Disk ";
@@ -510,6 +585,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeSphere
             // 
+            this.btnSetVertexShapeSphere.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeSphere.Image")));
             this.btnSetVertexShapeSphere.Label = "Sphere";
             this.btnSetVertexShapeSphere.Name = "btnSetVertexShapeSphere";
             this.btnSetVertexShapeSphere.ScreenTip = "Sphere ";
@@ -524,6 +600,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeSquare
             // 
+            this.btnSetVertexShapeSquare.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeSquare.Image")));
             this.btnSetVertexShapeSquare.Label = "Square";
             this.btnSetVertexShapeSquare.Name = "btnSetVertexShapeSquare";
             this.btnSetVertexShapeSquare.ScreenTip = "Square ";
@@ -534,6 +611,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeSolidSquare
             // 
+            this.btnSetVertexShapeSolidSquare.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeSolidSquare.Image")));
             this.btnSetVertexShapeSolidSquare.Label = "Solid Square";
             this.btnSetVertexShapeSolidSquare.Name = "btnSetVertexShapeSolidSquare";
             this.btnSetVertexShapeSolidSquare.ScreenTip = "Solid Square ";
@@ -548,6 +626,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeDiamond
             // 
+            this.btnSetVertexShapeDiamond.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeDiamond.Image")));
             this.btnSetVertexShapeDiamond.Label = "Diamond";
             this.btnSetVertexShapeDiamond.Name = "btnSetVertexShapeDiamond";
             this.btnSetVertexShapeDiamond.ScreenTip = "Diamond ";
@@ -558,6 +637,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeSolidDiamond
             // 
+            this.btnSetVertexShapeSolidDiamond.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeSolidDiamond.Image")));
             this.btnSetVertexShapeSolidDiamond.Label = "Solid Diamond";
             this.btnSetVertexShapeSolidDiamond.Name = "btnSetVertexShapeSolidDiamond";
             this.btnSetVertexShapeSolidDiamond.ScreenTip = "Solid Diamond ";
@@ -572,6 +652,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeTriangle
             // 
+            this.btnSetVertexShapeTriangle.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeTriangle.Image")));
             this.btnSetVertexShapeTriangle.Label = "Triangle";
             this.btnSetVertexShapeTriangle.Name = "btnSetVertexShapeTriangle";
             this.btnSetVertexShapeTriangle.ScreenTip = "Triangle ";
@@ -582,6 +663,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnSetVertexShapeSolidTriangle
             // 
+            this.btnSetVertexShapeSolidTriangle.Image = ((System.Drawing.Image)(resources.GetObject("btnSetVertexShapeSolidTriangle.Image")));
             this.btnSetVertexShapeSolidTriangle.Label = "Solid Triangle";
             this.btnSetVertexShapeSolidTriangle.Name = "btnSetVertexShapeSolidTriangle";
             this.btnSetVertexShapeSolidTriangle.ScreenTip = "Solid Triangle ";
@@ -668,17 +750,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // grpShowHide
             // 
-            this.grpShowHide.Items.Add(this.cbxReadClusters);
             this.grpShowHide.Items.Add(this.mnuShowColumnGroups);
+            this.grpShowHide.Items.Add(this.mnuShowGraphElements);
             this.grpShowHide.Label = "Show/Hide";
             this.grpShowHide.Name = "grpShowHide";
-            // 
-            // cbxReadClusters
-            // 
-            this.cbxReadClusters.Label = "Clusters";
-            this.cbxReadClusters.Name = "cbxReadClusters";
-            this.cbxReadClusters.ScreenTip = "Show/Hide Clusters";
-            this.cbxReadClusters.SuperTip = resources.GetString("cbxReadClusters.SuperTip");
             // 
             // mnuShowColumnGroups
             // 
@@ -770,6 +845,70 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnHideAllColumnGroups.Tag = false;
             this.btnHideAllColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllColumnGroups_Click);
             // 
+            // mnuShowGraphElements
+            // 
+            this.mnuShowGraphElements.Image = ((System.Drawing.Image)(resources.GetObject("mnuShowGraphElements.Image")));
+            this.mnuShowGraphElements.Items.Add(this.cbxReadClusters);
+            this.mnuShowGraphElements.Items.Add(this.cbxShowGraphLegend);
+            this.mnuShowGraphElements.Items.Add(this.cbxShowGraphAxes);
+            this.mnuShowGraphElements.Items.Add(this.separator7);
+            this.mnuShowGraphElements.Items.Add(this.btnShowAllGraphElements);
+            this.mnuShowGraphElements.Items.Add(this.btnHideAllGraphElements);
+            this.mnuShowGraphElements.Label = "Graph Elements";
+            this.mnuShowGraphElements.Name = "mnuShowGraphElements";
+            this.mnuShowGraphElements.ScreenTip = "Show/Hide Graph Elements";
+            this.mnuShowGraphElements.ShowImage = true;
+            this.mnuShowGraphElements.SuperTip = "Show or hide elements in the graph pane.";
+            // 
+            // cbxReadClusters
+            // 
+            this.cbxReadClusters.Label = "Clusters";
+            this.cbxReadClusters.Name = "cbxReadClusters";
+            this.cbxReadClusters.ScreenTip = "Show/Hide Clusters";
+            this.cbxReadClusters.SuperTip = resources.GetString("cbxReadClusters.SuperTip");
+            // 
+            // cbxShowGraphLegend
+            // 
+            this.cbxShowGraphLegend.Label = "Legend";
+            this.cbxShowGraphLegend.Name = "cbxShowGraphLegend";
+            this.cbxShowGraphLegend.ScreenTip = "Show/Hide Graph Legend";
+            this.cbxShowGraphLegend.SuperTip = "Show or hide the legend at the bottom of the graph pane.";
+            this.cbxShowGraphLegend.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.cbxShowGraphLegend_Click);
+            // 
+            // cbxShowGraphAxes
+            // 
+            this.cbxShowGraphAxes.Label = "Axes";
+            this.cbxShowGraphAxes.Name = "cbxShowGraphAxes";
+            this.cbxShowGraphAxes.ScreenTip = "Show/Hide Graph Axes";
+            this.cbxShowGraphAxes.SuperTip = resources.GetString("cbxShowGraphAxes.SuperTip");
+            this.cbxShowGraphAxes.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.cbxShowGraphAxes_Click);
+            // 
+            // separator7
+            // 
+            this.separator7.Name = "separator7";
+            // 
+            // btnShowAllGraphElements
+            // 
+            this.btnShowAllGraphElements.Label = "Show All";
+            this.btnShowAllGraphElements.Name = "btnShowAllGraphElements";
+            this.btnShowAllGraphElements.OfficeImageId = "ViewNormalViewExcel";
+            this.btnShowAllGraphElements.ScreenTip = "Show All Graph Elements";
+            this.btnShowAllGraphElements.ShowImage = true;
+            this.btnShowAllGraphElements.SuperTip = "Show all elements in the graph pane.";
+            this.btnShowAllGraphElements.Tag = true;
+            this.btnShowAllGraphElements.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllGraphElements_Click);
+            // 
+            // btnHideAllGraphElements
+            // 
+            this.btnHideAllGraphElements.Label = "Hide All";
+            this.btnHideAllGraphElements.Name = "btnHideAllGraphElements";
+            this.btnHideAllGraphElements.OfficeImageId = "TableDeleteRowsAndColumnsMenuWord";
+            this.btnHideAllGraphElements.ScreenTip = "Hide All Graph Elements";
+            this.btnHideAllGraphElements.ShowImage = true;
+            this.btnHideAllGraphElements.SuperTip = "Hide all elements in the graph pane.";
+            this.btnHideAllGraphElements.Tag = false;
+            this.btnHideAllGraphElements.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllGraphElements_Click);
+            // 
             // grpHelp
             // 
             this.grpHelp.Items.Add(this.btnOpenHomePage);
@@ -819,13 +958,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAbout.ShowImage = true;
             this.btnAbout.SuperTip = "View information about Microsoft NodeXL.";
             this.btnAbout.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAbout_Click);
-            // 
-            // cbxAutoReadWorkbook
-            // 
-            this.cbxAutoReadWorkbook.Label = "Auto Refresh";
-            this.cbxAutoReadWorkbook.Name = "cbxAutoReadWorkbook";
-            this.cbxAutoReadWorkbook.ScreenTip = "Auto Refresh ";
-            this.cbxAutoReadWorkbook.SuperTip = resources.GetString("cbxAutoReadWorkbook.SuperTip");
             // 
             // btnSetColor
             // 
@@ -919,7 +1051,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup grpGraph;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCreateClusters;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox cbxReadClusters;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportPajekFile;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromPajekFile;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCheckForUpdate;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnOpenHomePage;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuImport;
@@ -978,7 +1110,19 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetVertexVisibilityHide;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetVertexVisibilityShow;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetColor;
-        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox cbxAutoReadWorkbook;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox cbxShowGraphLegend;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox cbxShowGraphAxes;
+        internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuShowGraphElements;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator7;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnShowAllGraphElements;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnHideAllGraphElements;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToUcinetFile;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToPajekFile;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator8;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromUcinetFile;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator9;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox cbxClearTablesBeforeImport;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator10;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

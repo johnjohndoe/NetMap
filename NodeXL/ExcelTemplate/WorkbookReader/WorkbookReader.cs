@@ -180,14 +180,6 @@ public class WorkbookReader : Object
 
         IGraph oGraph = new Graph( GetGraphDirectedness(workbook) );
 
-        // Tell the FruchtermanReingoldLayout to initialize the layout by
-        // randomizing only those vertices whose locations haven't been
-        // specified in the vertex worksheet.
-
-        oGraph.SetValue(
-            ReservedMetadataKeys.FruchtermanReingoldLayoutSelectivelyRandomize,
-            null);
-
         // Read the edge worksheet.  This adds data to oGraph, 
         // ReadWorkbookContext.VertexNameDictionary, and
         // ReadWorkbookContext.EdgeIDDictionary.

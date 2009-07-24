@@ -51,6 +51,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.txbSourceNumber1 = new System.Windows.Forms.TextBox();
             this.radUseSourceNumber1 = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSwapDestinationColors = new System.Windows.Forms.Button();
             this.usrDestinationColor1 = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -242,6 +243,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnSwapDestinationColors);
             this.groupBox1.Controls.Add(this.usrDestinationColor1);
             this.groupBox1.Controls.Add(this.txbSourceNumber1);
             this.groupBox1.Controls.Add(this.radUseMinimumSourceNumber);
@@ -253,6 +255,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1.Size = new System.Drawing.Size(230, 154);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // btnSwapDestinationColors
+            // 
+            this.btnSwapDestinationColors.Location = new System.Drawing.Point(102, 118);
+            this.btnSwapDestinationColors.Name = "btnSwapDestinationColors";
+            this.btnSwapDestinationColors.Size = new System.Drawing.Size(116, 23);
+            this.btnSwapDestinationColors.TabIndex = 6;
+            this.btnSwapDestinationColors.Text = "<- &Swap Colors ->";
+            this.btnSwapDestinationColors.UseVisualStyleBackColor = true;
+            this.btnSwapDestinationColors.Click += new System.EventHandler(this.btnSwapDestinationColors_Click);
             // 
             // usrDestinationColor1
             // 
@@ -315,5 +327,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.GroupBox groupBox1;
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrDestinationColor2;
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrDestinationColor1;
+        private System.Windows.Forms.Button btnSwapDestinationColors;
     }
 }

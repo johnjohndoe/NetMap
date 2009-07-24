@@ -709,6 +709,76 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: OffsetRange()
+    //
+    /// <summary>
+    /// Offsets a Range by a specified number of rows and columns.
+    /// </summary>
+    ///
+    /// <param name="range">
+    /// The range to offset.
+    /// </param>
+    ///
+    /// <param name="rowOffset">
+    /// Number of rows to offset the range.  Can be negative, zero, or
+    /// positive.
+    /// </param>
+    ///
+    /// <param name="columnOffset">
+    /// Number of columns to offset the range.  Can be negative, zero, or
+    /// positive.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    OffsetRange
+    (
+        ref Range range,
+        Int32 rowOffset,
+        Int32 columnOffset
+    )
+    {
+        Debug.Assert(range != null);
+
+        range = range.get_Offset(rowOffset, columnOffset);
+    }
+
+    //*************************************************************************
+    //  Method: ResizeRange()
+    //
+    /// <summary>
+    /// Resizes a Range to a specified number of rows and columns.
+    /// </summary>
+    ///
+    /// <param name="range">
+    /// The range to resize.
+    /// </param>
+    ///
+    /// <param name="rows">
+    /// Number of rows to resize the range to.  Must be positive.
+    /// </param>
+    ///
+    /// <param name="columns">
+    /// Number of columns to resize the range to.  Must be positive.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    ResizeRange
+    (
+        ref Range range,
+        Int32 rows,
+        Int32 columns
+    )
+    {
+        Debug.Assert(range != null);
+        Debug.Assert(rows > 0);
+        Debug.Assert(columns > 0);
+
+        range = range.get_Resize(rows, columns);
+    }
+
+    //*************************************************************************
     //  Method: PasteValues()
     //
     /// <summary>
@@ -963,7 +1033,7 @@ public static class ExcelUtil
     //
     /// <summary>
     /// Attempts to get the one-based row number of the last row in a range
-    /// has a non-empty cell.
+    /// that has a non-empty cell.
     /// </summary>
     ///
     /// <param name="range">
@@ -1474,6 +1544,40 @@ public static class ExcelUtil
 
             oApplication.ScreenUpdating = bOldScreenUpdating;
         }
+    }
+
+    //*************************************************************************
+    //  Method: ForceCellText()
+    //
+    /// <summary>
+    /// Forces a string to always appear as text when inserted into a cell.
+    /// </summary>
+    ///
+    /// <param name="cellText">
+    /// String that should always appear as text.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="cellText" /> with a prepended apostrophe.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// When the string "5/1", for example, is programmatically inserted into
+    /// an Excel cell, Excel will convert it to a date even if the cell is
+    /// formatted as Text.  If the string is prepended with an apostrophe,
+    /// Excel will always treat it as text, regardless of the cell format.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    ForceCellText
+    (
+        String cellText
+    )
+    {
+        Debug.Assert(cellText != null);
+
+        return ("'" + cellText);
     }
 
     //*************************************************************************
@@ -1991,6 +2095,52 @@ public static class ExcelUtil
             ||
             !TryGetNonEmptyRange(oDataBodyRange, out oUsedRange)
             );
+    }
+
+    //*************************************************************************
+    //  Method: GetOffsetOfFirstEmptyTableRow()
+    //
+    /// <summary>
+    /// Gets the offset of the first empty row in a table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// The table to get the offset for.
+    /// </param>
+    ///
+    /// <returns>
+    /// The offset of the first empty row in <paramref name="table" />,
+    /// measured from the first row in the table's data body range.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the table is empty, 0 is returned.  If the table has data in its
+    /// first N data rows, for example, N is returned.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Int32
+    GetOffsetOfFirstEmptyTableRow
+    (
+        ListObject table
+    )
+    {
+        Debug.Assert(table != null);
+
+        Int32 iLastNonEmptyRowOneBased;
+        Range oDataBodyRange = table.DataBodyRange;
+
+        if (
+            oDataBodyRange != null
+            &&
+            ExcelUtil.TryGetLastNonEmptyRow(oDataBodyRange,
+                out iLastNonEmptyRowOneBased)
+            )
+        {
+            return (iLastNonEmptyRowOneBased - oDataBodyRange.Row + 1);
+        }
+
+        return (0);
     }
 
     //*************************************************************************
@@ -3452,6 +3602,117 @@ public static class ExcelUtil
             out sColumnLetter);
 
         return (sColumnLetter);
+    }
+
+    //*************************************************************************
+    //  Method: GetColumnFormat()
+    //
+    /// <summary>
+    /// Determines the format of a table column.
+    /// </summary>
+    ///
+    /// <param name="column">
+    /// The table column to check.
+    /// </param>
+    ///
+    /// <returns>
+    /// The column format.
+    /// </returns>
+    //*************************************************************************
+
+    public static ExcelColumnFormat
+    GetColumnFormat
+    (
+        ListColumn column
+    )
+    {
+        Debug.Assert(column != null);
+
+        Range oColumnData = column.DataBodyRange;
+
+        Debug.Assert(oColumnData != null);
+        Debug.Assert(oColumnData.Rows.Count > 0);
+
+        // Look at the type of the value in the first cell.
+
+        Debug.Assert(oColumnData.Cells[1, 1] is Range);
+
+        Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
+        Object oFirstDataCellValue = oFirstDataCell.get_Value(Missing.Value);
+
+        Debug.Assert(oFirstDataCellValue != null);
+
+        if (oFirstDataCellValue is DateTime)
+        {
+            if ( CellContainsTime(oFirstDataCell) )
+            {
+                // Sample: 1/1/2008 3:40 pm.
+
+                return (ExcelColumnFormat.DateAndTime);
+            }
+            else
+            {
+                // Sample: 1/1/2008.
+
+                return (ExcelColumnFormat.Date);
+            }
+        }
+        else if (oFirstDataCellValue is Double)
+        {
+            // Cells formatted as a time are returned as Double.  Another test
+            // is required to distinguish times from real Doubles.
+
+            if ( CellContainsTime(oFirstDataCell) )
+            {
+                // Sample: 3:40 pm.
+
+                return (ExcelColumnFormat.Time);
+            }
+            else
+            {
+                // Sample: 123.
+
+                return (ExcelColumnFormat.Number);
+            }
+        }
+        else
+        {
+            return (ExcelColumnFormat.Other);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: CellContainsTime()
+    //
+    /// <summary>
+    /// Determines whether a cell contains a time.
+    /// </summary>
+    ///
+    /// <param name="cell">
+    /// The cell to check.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the cell contains a time.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    CellContainsTime
+    (
+        Range cell
+    )
+    {
+        Debug.Assert(cell != null);
+
+        // The easiest (but not perfect) test is to check the number format for
+        // hours.
+
+        Object oNumberFormat = cell.NumberFormat;
+
+        Debug.Assert(oNumberFormat is String);
+
+        return ( ( (String)cell.NumberFormat ).Contains("h") );
     }
 
     //*************************************************************************

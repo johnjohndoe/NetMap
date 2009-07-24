@@ -22,8 +22,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// All the importation work is done by this dialog.  The caller need only pass
 /// a workbook to the constructor and call <see cref="Form.ShowDialog()" />.
 /// If <see cref="Form.ShowDialog()" /> returns DialogResult.OK, the caller can
-/// read the <see cref="GraphDirectedness" /> property to determine the
-/// directedness of the imported graph.
+/// read the <see cref="SourceWorkbookDirectedness" /> property to determine
+/// the directedness of the imported graph.
 ///
 /// <para>
 /// See <see cref="MatrixWorkbookImporter" /> for details on the expected
@@ -48,14 +48,20 @@ public partial class ImportFromMatrixWorkbookDialog : ExcelTemplateForm
     /// cref="ImportFromMatrixWorkbookDialog" /> class with a workbook.
     /// </summary>
     ///
-    /// <param name="workbook">
-    /// Workbook containing the graph data.
+    /// <param name="destinationNodeXLWorkbook">
+    /// Workbook to which the matrix workbook will be imported.
+    /// </param>
+    ///
+    /// <param name="clearDestinationTablesFirst">
+    /// true if the NodeXL tables in <paramref
+    /// name="destinationNodeXLWorkbook" /> should be cleared first.
     /// </param>
     //*************************************************************************
 
     public ImportFromMatrixWorkbookDialog
     (
-        Microsoft.Office.Interop.Excel.Workbook workbook
+        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
+        Boolean clearDestinationTablesFirst
     )
     : this()
     {
@@ -66,9 +72,11 @@ public partial class ImportFromMatrixWorkbookDialog : ExcelTemplateForm
         m_oImportFromMatrixWorkbookDialogUserSettings =
             new ImportFromMatrixWorkbookDialogUserSettings(this);
 
-        m_oWorkbook = workbook;
+        m_oDestinationNodeXLWorkbook = destinationNodeXLWorkbook;
+        m_bClearDestinationTablesFirst = clearDestinationTablesFirst;
 
-        lbxSourceWorkbook.PopulateWithOtherWorkbookNames(m_oWorkbook);
+        lbxSourceWorkbook.PopulateWithOtherWorkbookNames(
+            m_oDestinationNodeXLWorkbook);
 
         DoDataExchange(false);
 
@@ -206,7 +214,9 @@ public partial class ImportFromMatrixWorkbookDialog : ExcelTemplateForm
             m_oImportFromMatrixWorkbookDialogUserSettings.
                 SourceWorkbookDirectedness,
 
-            m_oWorkbook);
+            m_bClearDestinationTablesFirst,
+
+            m_oDestinationNodeXLWorkbook);
     }
 
     //*************************************************************************
@@ -342,8 +352,9 @@ public partial class ImportFromMatrixWorkbookDialog : ExcelTemplateForm
     {
         base.AssertValid();
 
-        Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oImportFromMatrixWorkbookDialogUserSettings != null);
+        Debug.Assert(m_oDestinationNodeXLWorkbook != null);
+        // m_bClearDestinationTablesFirst
     }
 
 
@@ -356,9 +367,14 @@ public partial class ImportFromMatrixWorkbookDialog : ExcelTemplateForm
     protected ImportFromMatrixWorkbookDialogUserSettings
         m_oImportFromMatrixWorkbookDialogUserSettings;
 
-    /// Workbook containing the graph data.
+    /// Workbook to which the matrix workbook will be imported.
 
-    protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
+    protected Microsoft.Office.Interop.Excel.Workbook
+        m_oDestinationNodeXLWorkbook;
+
+    /// true if the NodeXL tables should be cleared first.
+
+    protected Boolean m_bClearDestinationTablesFirst;
 }
 
 

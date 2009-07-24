@@ -80,6 +80,12 @@ public class VertexLocationConverter : Object
     {
         AssertValid();
 
+        // The WPF y-axis increases from top to bottom, but the NodeXL y-axis
+        // increases from bottom to top.  Hide this from the user by flipping
+        // y-axis values here and in GraphToWorkbook().
+
+        workbookY = MaximumXYWorkbook - workbookY;
+
         Single fGraphX =
             m_oGraphRectangle.Left + (workbookX - MinimumXYWorkbook) *
             m_oGraphRectangle.Width / WorkbookRange
@@ -131,6 +137,11 @@ public class VertexLocationConverter : Object
     )
     {
         AssertValid();
+
+        // See the notes in WorkbookToGraph() regarding the y-axis direction.
+
+        graphLocation.Y = m_oGraphRectangle.Bottom
+            - (graphLocation.Y - m_oGraphRectangle.Top);
 
         if (m_oGraphRectangle.Width > 0)
         {

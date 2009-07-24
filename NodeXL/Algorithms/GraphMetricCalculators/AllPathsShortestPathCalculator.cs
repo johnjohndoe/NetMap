@@ -21,17 +21,18 @@ namespace Microsoft.NodeXL.Algorithms
 /// The shortest paths are provided as a two-dimensional array of UInt16s.  The
 /// [i,j] element is the length of the shortest path between vertices i and j
 /// if there is such a path, or the constant <see cref="NoPath" /> if there is
-/// no such path.  The i and j indexes assume that the graph's vertex
-/// collection is being enumerated via a forward enumerator.  (The vertex
-/// collection cannot be indexed and must be enumerated.)
+/// no such path.  The elements on the diagonal (i==j) are always zero.  The
+/// i and j indexes assume that the graph's vertex collection is being
+/// enumerated via a forward enumerator.  (The vertex collection cannot be
+/// indexed and must be enumerated.)
 ///
 /// <para>
-/// The Floyd-Warshall algorithm is used to compute the shortest path lengths.
-/// The algorithm is outlined here:
+/// A breadth-first search is used to compute the shortest path lengths.  The
+/// execution time is O(V(V + E)).  The algorithm is outlined here:
 /// </para>
 ///
 /// <para>
-/// http://en.wikipedia.org/wiki/Floyd-Warshall_algorithm
+/// http://en.wikipedia.org/wiki/Breadth-first_search
 /// </para>
 ///
 /// </remarks>
@@ -157,7 +158,6 @@ public class AllPathsShortestPathCalculator : GraphMetricCalculatorBase
     )
     {
         Debug.Assert(graph != null);
-        Debug.Assert(backgroundWorker != null);
 
         Object oGraphMetricsAsObject;
 
@@ -209,14 +209,11 @@ public class AllPathsShortestPathCalculator : GraphMetricCalculatorBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
+        // This implementation is based on code from Janez Brank's May 2009
+        // implementation of the Harel-Koren fast multiscale layout algorithm.
+
         IVertexCollection oVertices = oGraph.Vertices;
         Int32 iVertices = oVertices.Count;
-
-        // Create an object that determines whether two vertices are connected
-        // by an edge.
-
-        SimpleGraphMatrix oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
-
         UInt16 [,] aui16AllPairsPathLengths = null;
 
         try
@@ -236,59 +233,55 @@ public class AllPathsShortestPathCalculator : GraphMetricCalculatorBase
 
         oGraphMetrics = aui16AllPairsPathLengths;
 
-        Int32 i = 0;
-        Int32 j = 0;
-        Int32 k = 0;
-        UInt16 ui16IJPathLength;
+        // The key is a vertex and the value is the vertex's zero-based index
+        // when enumerating the vertex collection.
 
-        foreach (IVertex oVertexI in oVertices)
+        Dictionary<IVertex, Int32> oVertexIndexes =
+            new Dictionary<IVertex, Int32>(iVertices);
+
+        Int32 s = 0;
+
+        foreach (IVertex oVertexS in oVertices)
         {
-            j = 0;
-
-            foreach (IVertex oVertexJ in oVertices)
-            {
-                if ( i != j && oSimpleGraphMatrix.Aij(oVertexI, oVertexJ) )
-                {
-                    ui16IJPathLength = 1;
-                }
-                else
-                {
-                    ui16IJPathLength = NoPath;
-                }
-
-                aui16AllPairsPathLengths[i, j] = ui16IJPathLength;
-
-                j++;
-            }
-
-            i++;
+            oVertexIndexes.Add(oVertexS, s);
+            s++;
         }
 
-        oSimpleGraphMatrix = null;
+        Queue<IVertex> oQueue = new Queue<IVertex>();
+        s = 0;
 
-        for (k = 0; k < iVertices; k++)
+        foreach (IVertex oVertexS in oVertices)
         {
-            for (i = 0; i < iVertices; i++)
+            for (Int32 v = 0; v < iVertices; v++)
             {
-                for (j = 0; j < iVertices; j++)
+                aui16AllPairsPathLengths[s, v] = NoPath;
+            }
+
+            oQueue.Enqueue(oVertexS);
+            aui16AllPairsPathLengths[s, s] = 0;
+
+            while (oQueue.Count > 0)
+            {
+                IVertex oVertexU = oQueue.Dequeue();
+
+                UInt16 ui16SUPathLength =
+                    aui16AllPairsPathLengths[ s, oVertexIndexes[oVertexU] ];
+
+                foreach (IVertex oAdjacentVertex in oVertexU.AdjacentVertices)
                 {
-                    if (aui16AllPairsPathLengths[i, k] == NoPath ||
-                        aui16AllPairsPathLengths[k, j] == NoPath)
+                    Int32 iAdjacentVertexIndex =
+                        oVertexIndexes[oAdjacentVertex];
+
+                    if (aui16AllPairsPathLengths[s, iAdjacentVertexIndex]
+                        == NoPath)
                     {
-                        ui16IJPathLength = aui16AllPairsPathLengths[i, j];
+                        // The adjacent vertex hasn't been visited yet.
+
+                        aui16AllPairsPathLengths[s, iAdjacentVertexIndex] =
+                            (UInt16)(ui16SUPathLength + 1);
+
+                        oQueue.Enqueue(oAdjacentVertex);
                     }
-                    else
-                    {
-                        ui16IJPathLength = Math.Min(
-
-                            aui16AllPairsPathLengths[i, j],
-
-                            (UInt16)(aui16AllPairsPathLengths[i, k] +
-                                aui16AllPairsPathLengths[k, j] )
-                            );
-                    }
-
-                    aui16AllPairsPathLengths[i, j] = ui16IJPathLength;
                 }
             }
 
@@ -299,8 +292,10 @@ public class AllPathsShortestPathCalculator : GraphMetricCalculatorBase
                     return (false);
                 }
 
-                ReportProgress(k, iVertices, oBackgroundWorker);
+                ReportProgress(s, iVertices, oBackgroundWorker);
             }
+
+            s++;
         }
 
         return (true);

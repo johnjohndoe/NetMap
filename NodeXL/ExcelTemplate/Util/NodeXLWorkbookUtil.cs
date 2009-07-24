@@ -66,6 +66,8 @@ public static class NodeXLWorkbookUtil
             WorksheetNames.ClusterVertices, TableNames.ClusterVertices,
             WorksheetNames.OverallMetrics, TableNames.OverallMetrics
             );
+
+        ( new PerWorkbookSettings(workbook) ).OnWorkbookTablesCleared();
     }
 
     //*************************************************************************
@@ -81,6 +83,11 @@ public static class NodeXLWorkbookUtil
     ///
     /// <param name="participantPairs">
     /// Zero or more <see cref="ParticipantPair" /> objects.
+    /// </param>
+    ///
+    /// <param name="edgeTableRowOffset">
+    /// Offset of the first row in the edge table to write to, measured from
+    /// the first data body row.
     /// </param>
     ///
     /// <remarks>
@@ -100,11 +107,13 @@ public static class NodeXLWorkbookUtil
     PopulateEdgeTableWithParticipantPairs
     (
         ListObject edgeTable,
-        ParticipantPair [] participantPairs
+        ParticipantPair [] participantPairs,
+        Int32 edgeTableRowOffset
     )
     {
         Debug.Assert(edgeTable != null);
         Debug.Assert(participantPairs != null);
+        Debug.Assert(edgeTableRowOffset >= 0);
 
         Int32 iParticipantPairs = participantPairs.Length;
 
@@ -129,17 +138,21 @@ public static class NodeXLWorkbookUtil
         // Write the arrays to the edge table.
 
         Range oVertexColumnData;
-        
-        if ( ExcelUtil.TryGetTableColumnData(edgeTable,
-            EdgeTableColumnNames.Vertex1Name, out oVertexColumnData) )
-        {
-            ExcelUtil.SetRangeValues(oVertexColumnData, aoVertex1Names);
-        }
 
-        if ( ExcelUtil.TryGetTableColumnData(edgeTable,
-            EdgeTableColumnNames.Vertex2Name, out oVertexColumnData) )
+        foreach ( String sColumnName in new String [] {
+            EdgeTableColumnNames.Vertex1Name,
+            EdgeTableColumnNames.Vertex2Name} )
         {
-            ExcelUtil.SetRangeValues(oVertexColumnData, aoVertex2Names);
+            if ( ExcelUtil.TryGetTableColumnData(edgeTable, sColumnName,
+                out oVertexColumnData) )
+            {
+                ExcelUtil.OffsetRange(ref oVertexColumnData,
+                    edgeTableRowOffset, 0);
+
+                ExcelUtil.SetRangeValues(oVertexColumnData,
+                    sColumnName == EdgeTableColumnNames.Vertex1Name ?
+                    aoVertex1Names : aoVertex2Names);
+            }
         }
     }
 
@@ -169,18 +182,32 @@ public static class NodeXLWorkbookUtil
     {
         color = null;
 
-        ColorDialog oColorDialog = new ColorDialog();
+        if (m_oColorDialog == null)
+        {
+            m_oColorDialog = new ColorDialog();
+        }
 
-        if (oColorDialog.ShowDialog() == DialogResult.OK)
+        if (m_oColorDialog.ShowDialog() == DialogResult.OK)
         {
             color = ( new ColorConverter2() ).GraphToWorkbook(
-                oColorDialog.Color);
+                m_oColorDialog.Color);
 
             return (true);
         }
 
         return (false);
     }
+
+
+    //*************************************************************************
+    //  Private fields
+    //*************************************************************************
+
+    /// ColorDialog used by TryGetColor(), or null if TryGetColor() hasn't been
+    /// called yet.  This is static so that the dialog will retain custom
+    /// colors between invocations.
+
+    private static ColorDialog m_oColorDialog = null;
 }
 
 }

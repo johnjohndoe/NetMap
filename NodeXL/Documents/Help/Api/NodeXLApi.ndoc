@@ -13,6 +13,7 @@
         <namespace name="Microsoft.NodeXL.Algorithms">Classes that implement various graph algorithms.</namespace>
         <namespace name="Microsoft.NodeXL.ApplicationUtil">Utility classes for use in NodeXL applications.</namespace>
         <namespace name="Microsoft.SocialNetworkLib">Utility classes for analyzing social networks.</namespace>
+        <namespace name="Microsoft.WpfGraphicsLib">Utility classes for drawing WPF graphics.</namespace>
         <namespace name="Microsoft.NodeXL.Adapters">Interfaces and classes for converting NodeXL graphs to and from a variety of data formats.</namespace>
         <namespace name="Microsoft.NodeXL.Core">Core interfaces that define graphs, vertices, and edges.  Includes default graph, vertex, and edge implementations that can be used as-is or extended by your application via inheritance.  You can also create graph, vertex, and edge classes from scratch.  The only requirement is that your classes must implement the corresponding core interface.  All graph classes must implement IGraph, for example.</namespace>
         <namespace name="Microsoft.NodeXL.Layouts">Interfaces and classes for laying out NodeXL graphs.</namespace>

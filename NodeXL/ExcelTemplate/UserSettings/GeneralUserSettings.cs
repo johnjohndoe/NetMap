@@ -7,7 +7,7 @@ using System.Configuration;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
-using Microsoft.Research.CommunityTechnologies.GraphicsLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -108,6 +108,76 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: ShowGraphLegend
+    //
+    /// <summary>
+    /// Gets a flag indicating whether the graph legend should be shown in the
+    /// graph pane.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the graph legend in the graph pane.  The default value is
+    /// false.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public Boolean
+    ShowGraphLegend
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[ShowGraphLegendKey] );
+        }
+
+        set
+        {
+            this[ShowGraphLegendKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ShowGraphAxes
+    //
+    /// <summary>
+    /// Gets a flag indicating whether the graph axes should be shown in the
+    /// graph pane.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the graph axes in the graph pane.  The default value is
+    /// false.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public Boolean
+    ShowGraphAxes
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[ShowGraphAxesKey] );
+        }
+
+        set
+        {
+            this[ShowGraphAxesKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: AutoReadWorkbook
     //
     /// <summary>
@@ -143,38 +213,72 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: Font
+    //  Property: LabelFont
     //
     /// <summary>
-    /// Gets or sets the graph's font.
+    /// Gets or sets the font used for the graph's labels.
     /// </summary>
     ///
     /// <value>
-    /// The graph's font, as a Font.  The default value is
-    /// Microsoft Sans Serif, 8.25pt.
+    /// The label font, as a Font.  The default value is Microsoft Sans Serif,
+    /// 8.25pt.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt") ]
+    [ DefaultSettingValueAttribute(DefaultFont) ]
 
     public Font
-    Font
+    LabelFont
     {
         // Note that the font type is System.Drawing.Font, which is what the
         // System.Windows.Forms.FontDialog class uses.  It gets converted to
-        // WPF font types in TransferToNodeXLControl().
+        // WPF font types in TransferToGraphDrawer().
 
         get
         {
             AssertValid();
 
-            return ( (Font)this[FontKey] );
+            return ( (Font)this[LabelFontKey] );
         }
 
         set
         {
-            this[FontKey] = value;
+            this[LabelFontKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AxisFont
+    //
+    /// <summary>
+    /// Gets or sets the font used for the graph's axes.
+    /// </summary>
+    ///
+    /// <value>
+    /// The axis font, as a Font.  The default value is Microsoft Sans Serif,
+    /// 8.25pt.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(DefaultFont) ]
+
+    public Font
+    AxisFont
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Font)this[AxisFontKey] );
+        }
+
+        set
+        {
+            this[AxisFontKey] = value;
 
             AssertValid();
         }
@@ -725,6 +829,74 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: ClearTablesBeforeImport
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether NodeXL tables should be cleared
+    /// before anything is imported into the workbook.
+    /// </summary>
+    ///
+    /// <value>
+    /// If true, the NodeXL tables are cleared before anything is imported into
+    /// the workbook.  If false, the imported contents are appended to the
+    /// workbook.  The default value is true.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
+
+    public Boolean
+    ClearTablesBeforeImport
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[ClearTablesBeforeImportKey] );
+        }
+
+        set
+        {
+            this[ClearTablesBeforeImportKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TransferToNodeXLWithAxesControl()
+    //
+    /// <summary>
+    /// Transfers the settings to a <see cref="NodeXLWithAxesControl" />.
+    /// </summary>
+    ///
+    /// <param name="nodeXLWithAxesControl">
+    /// Control to transfer the settings to.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    TransferToNodeXLWithAxesControl
+    (
+        NodeXLWithAxesControl nodeXLWithAxesControl
+    )
+    {
+        Debug.Assert(nodeXLWithAxesControl != null);
+        AssertValid();
+
+        Font oAxisFont = this.AxisFont;
+
+        nodeXLWithAxesControl.SetFont(
+            WpfGraphicsUtil.FontToTypeface(oAxisFont),
+
+            WpfGraphicsUtil.WindowsFormsFontSizeToWpfFontSize(
+                oAxisFont.Size) );
+
+        TransferToNodeXLControl(nodeXLWithAxesControl.NodeXLControl);
+    }
+
+    //*************************************************************************
     //  Method: TransferToNodeXLControl()
     //
     /// <summary>
@@ -816,13 +988,13 @@ public class GeneralUserSettings : ApplicationSettingsBase
         oVertexDrawer.PrimaryLabelFillColor =
             WpfGraphicsUtil.ColorToWpfColor(this.PrimaryLabelFillColor);
 
-        Font oFont = this.Font;
+        Font oLabelFont = this.LabelFont;
 
-        // The 0.75 comes from page 571 of "Windows Presentation Foundation
-        // Unleashed," by Adam Nathan.
+        oVertexDrawer.SetFont(
+            WpfGraphicsUtil.FontToTypeface(oLabelFont),
 
-        oVertexDrawer.SetFont(new System.Windows.Media.FontFamily(oFont.Name),
-            (Double)oFont.Size / 0.75);
+            WpfGraphicsUtil.WindowsFormsFontSizeToWpfFontSize(
+                oLabelFont.Size) );
     }
 
     //*************************************************************************
@@ -868,10 +1040,24 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //  Protected constants
     //*************************************************************************
 
+    /// Default font to use for the graph's labels and axes.
+
+    protected const String DefaultFont = "Microsoft Sans Serif, 8.25pt";
+
     /// Name of the settings key for the ReadClusters property.
 
     protected const String ReadClustersKey =
         "ReadClusters";
+
+    /// Name of the settings key for the ShowGraphLegend property.
+
+    protected const String ShowGraphLegendKey =
+        "ShowGraphLegend";
+
+    /// Name of the settings key for the ShowGraphAxes property.
+
+    protected const String ShowGraphAxesKey =
+        "ShowGraphAxes";
 
     /// Name of the settings key for the AutoReadWorkbook property.
 
@@ -883,10 +1069,15 @@ public class GeneralUserSettings : ApplicationSettingsBase
     protected const String NewWorkbookGraphDirectednessKey =
         "NewWorkbookGraphDirectedness";
 
-    /// Name of the settings key for the Font property.
+    /// Name of the settings key for the LabelFont property.
 
-    protected const String FontKey =
-        "Font";
+    protected const String LabelFontKey =
+        "LabelFont";
+
+    /// Name of the settings key for the AxisFont property.
+
+    protected const String AxisFontKey =
+        "AxisFont";
 
     /// Name of the settings key for the BackColor property.
 
@@ -962,6 +1153,11 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String AutoSelectKey =
         "AutoSelect";
+
+    /// Name of the settings key for the ClearTablesBeforeImport property.
+
+    protected const String ClearTablesBeforeImportKey =
+        "ClearTablesBeforeImport";
 
 
     //*************************************************************************

@@ -487,8 +487,14 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </summary>
     ///
     /// <remarks>
+    /// Do not call this method if you are using NodeXLControl.  To clear the
+    /// graph within NodeXLControl, use NodeXLControl.ClearGraph().
+    ///
+    /// <para>
     /// This method is an O(n) operation, where n is the number of vertices in
     /// the parent graph.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 

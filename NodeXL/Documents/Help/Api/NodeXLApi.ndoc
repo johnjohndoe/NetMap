@@ -8,6 +8,7 @@
         <assembly location="..\..\..\Layouts\bin\Debug\Microsoft.NodeXL.Layouts.dll" documentation="..\..\..\Layouts\bin\Debug\Microsoft.NodeXL.Layouts.xml" />
         <assembly location="..\..\..\WpfControl\bin\Debug\Microsoft.NodeXL.Control.Wpf.dll" documentation="..\..\..\WpfControl\bin\Debug\Microsoft.NodeXL.Control.Wpf.xml" />
         <assembly location="..\..\..\WpfVisualization\bin\Debug\Microsoft.NodeXL.Visualization.Wpf.dll" documentation="..\..\..\WpfVisualization\bin\Debug\Microsoft.NodeXL.Visualization.Wpf.xml" />
+        <assembly location="..\..\..\ExcelTemplatePlugIns\bin\Debug\Microsoft.NodeXL.ExcelTemplatePlugIns.dll" documentation="..\..\..\ExcelTemplatePlugIns\bin\Debug\Microsoft.NodeXL.ExcelTemplatePlugIns.xml" />
     </assemblies>
     <namespaces>
         <namespace name="Microsoft.NodeXL.Algorithms">Classes that implement various graph algorithms.</namespace>
@@ -18,6 +19,7 @@
         <namespace name="Microsoft.NodeXL.Core">Core interfaces that define graphs, vertices, and edges.  Includes default graph, vertex, and edge implementations that can be used as-is or extended by your application via inheritance.  You can also create graph, vertex, and edge classes from scratch.  The only requirement is that your classes must implement the corresponding core interface.  All graph classes must implement IGraph, for example.</namespace>
         <namespace name="Microsoft.NodeXL.Layouts">Interfaces and classes for laying out NodeXL graphs.</namespace>
         <namespace name="Microsoft.NodeXL.Visualization.Wpf">Classes used to draw NodeXL graphs in the WPF environment.</namespace>
+        <namespace name="Microsoft.NodeXL.ExcelTemplatePlugIns">Interface definitions for NodeXL Excel Template application plug-ins.</namespace>
         <namespace name="UnfinishedTopics">Fake namespace to document topics in the spec that haven't yet been incorporated into the NodeXL object model.</namespace>
     </namespaces>
     <documenters>

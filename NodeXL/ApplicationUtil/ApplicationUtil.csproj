@@ -107,38 +107,35 @@
       <Link>Util\SaveImageFileDialog.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\EmailNetwork\EmailNetworkAnalyzer.cs">
-      <Link>Util\EmailNetworkAnalyzer.cs</Link>
+      <Link>Util\SocialNetwork\EmailNetwork\EmailNetworkAnalyzer.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\EmailNetwork\EmailParticipantCriteria.cs">
-      <Link>Util\EmailParticipantCriteria.cs</Link>
+      <Link>Util\SocialNetwork\EmailNetwork\EmailParticipantCriteria.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\EmailNetwork\EmailParticipantPair.cs">
-      <Link>Util\EmailParticipantPair.cs</Link>
+      <Link>Util\SocialNetwork\EmailNetwork\EmailParticipantPair.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\ParticipantPair.cs">
-      <Link>Util\ParticipantPair.cs</Link>
+      <Link>Util\SocialNetwork\ParticipantPair.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterNetworkAnalysisResults.cs">
-      <Link>Util\TwitterNetworkAnalysisResults.cs</Link>
+      <Link>Util\SocialNetwork\TwitterNetwork\TwitterNetworkAnalysisResults.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterNetworkAnalyzer.cs">
-      <Link>Util\TwitterNetworkAnalyzer.cs</Link>
+      <Link>Util\SocialNetwork\TwitterNetwork\TwitterNetworkAnalyzer.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterParticipant.cs">
-      <Link>Util\TwitterParticipant.cs</Link>
+      <Link>Util\SocialNetwork\TwitterNetwork\TwitterParticipant.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterParticipantPair.cs">
-      <Link>Util\TwitterParticipantPair.cs</Link>
+      <Link>Util\SocialNetwork\TwitterNetwork\TwitterParticipantPair.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\WdsConnectionFailureException.cs">
-      <Link>Util\WdsConnectionFailureException.cs</Link>
+      <Link>Util\SocialNetwork\WdsConnectionFailureException.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\ToolStripPlus.cs">
       <Link>Util\ToolStripPlus.cs</Link>
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\..\Common\XmlUtil.cs">
-      <Link>Util\XmlUtil.cs</Link>
     </Compile>
     <Compile Include="Controls\GraphZoomAndScale\GraphZoomAndScaleControl.cs">
       <SubType>UserControl</SubType>

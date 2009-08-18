@@ -671,9 +671,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             if (oVertexTableColumnIndexes.SecondaryLabel != NoSuchColumn)
             {
-                CheckForNonEmptyCell(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.SecondaryLabel,
-                    oVertex, ReservedMetadataKeys.PerVertexSecondaryLabel);
+                CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
+                    oVertexTableColumnIndexes.SecondaryLabel, oVertex,
+                    ReservedMetadataKeys.PerVertexSecondaryLabel);
             }
 
             // If there is a tooltip column and the tooltip for this row isn't
@@ -681,8 +681,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             if (oVertexTableColumnIndexes.ToolTip != NoSuchColumn)
             {
-                if ( CheckForNonEmptyCell(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.ToolTip, oVertex,
+                if ( CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
+                    oVertexTableColumnIndexes.ToolTip, oVertex,
                     ReservedMetadataKeys.VertexToolTip) )
                 {
                     oReadWorkbookContext.ToolTipsUsed = true;
@@ -694,9 +694,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             if (oVertexTableColumnIndexes.PrimaryLabel != NoSuchColumn)
             {
-                CheckForNonEmptyCell(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.PrimaryLabel,
-                    oVertex, ReservedMetadataKeys.PerVertexPrimaryLabel);
+                CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
+                    oVertexTableColumnIndexes.PrimaryLabel, oVertex,
+                    ReservedMetadataKeys.PerVertexPrimaryLabel);
             }
 
             // If there is a primary label fill color column and the color for
@@ -1091,75 +1091,6 @@ public class VertexWorksheetReader : WorksheetReaderBase
         }
 
         oVertex.SetValue( ReservedMetadataKeys.SortableLayoutOrder, fOrder);
-
-        return (true);
-    }
-
-    //*************************************************************************
-    //  Method: CheckForNonEmptyCell()
-    //
-    /// <summary>
-    /// If a cell is not empty, sets a metadata value on the vertex to the
-    /// cell contents.
-    /// </summary>
-    ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoVertexValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
-    /// </param>
-    ///
-    /// <param name="oVertex">
-    /// Vertex to set the metadata value on.
-    /// </param>
-    ///
-    /// <param name="sKeyName">
-    /// Name of the metadata key to set.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the metadata value was set on the vertex.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    CheckForNonEmptyCell
-    (
-        Range oVertexRange,
-        Object [,] aoVertexValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
-        IVertex oVertex,
-        String sKeyName
-    )
-    {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoVertexValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
-        Debug.Assert(oVertex != null);
-        Debug.Assert( !String.IsNullOrEmpty(sKeyName) );
-        AssertValid();
-
-        String sNonEmptyString;
-
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sNonEmptyString) )
-        {
-            return (false);
-        }
-
-        oVertex.SetValue(sKeyName, sNonEmptyString);
 
         return (true);
     }

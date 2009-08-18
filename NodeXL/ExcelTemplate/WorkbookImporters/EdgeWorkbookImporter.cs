@@ -2,8 +2,8 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -377,12 +377,6 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
         Debug.Assert(iLastNonEmptySourceRowOneBased >= 1);
         AssertValid();
 
-        // Get a dictionary of reserved edge table column names.  The key is
-        // the reserved column name and the value isn't used.
-
-        Dictionary<String, Char> oReservedColumnNames =
-            GetReservedColumnNames();
-
         // Number to use for the name of a destination column for which the
         // source column has no header.
 
@@ -431,15 +425,6 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
                 {
                     sDestinationColumnName = null;
                 }
-                else if ( oReservedColumnNames.ContainsKey(
-                    sDestinationColumnName) )
-                {
-                    // The source column name is one of NodeXL's reserved
-                    // column names.  Add a suffix to distinguish the new
-                    // column from the reserved column.
-
-                    sDestinationColumnName += " 2";
-                }
 
                 // Remove the header.
 
@@ -458,29 +443,22 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
 
             // Check whether the destination column already exists.
 
+            ListColumn oDestinationColumn;
             Range oDestinationColumnData = null;
 
-            if ( !ExcelUtil.TryGetTableColumnData(oDestinationEdgeTable,
-                sDestinationColumnName, out oDestinationColumnData) )
+            if (
+                !ExcelUtil.TryGetOrAddTableColumn(oDestinationEdgeTable,
+                    sDestinationColumnName, ExcelUtil.AutoColumnWidth, null,
+                    out oDestinationColumn)
+                ||
+                !ExcelUtil.TryGetTableColumnData(oDestinationColumn,
+                    out oDestinationColumnData)
+                )
             {
-                // Add a new column to the edge table.
-
-                ListColumn oDestinationColumn;
-
-                if (
-                    !ExcelUtil.TryAddTableColumn(oDestinationEdgeTable,
-                        sDestinationColumnName, ExcelUtil.AutoColumnWidth,
-                        null, out oDestinationColumn)
-                    ||
-                    !ExcelUtil.TryGetTableColumnData(oDestinationEdgeTable,
-                        oDestinationColumn.Name, out oDestinationColumnData)
-                    )
-                {
-                    OnInvalidSourceWorkbook(
-                        "One of the columns couldn't be imported.  Importation"
-                        + " was stopped."
-                        );
-                }
+                OnInvalidSourceWorkbook(
+                    "One of the columns couldn't be imported.  Importation"
+                    + " was stopped."
+                    );
             }
 
             CopyColumn(oSourceColumn, oDestinationColumnData,
@@ -533,45 +511,6 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
 
         oSourceColumn.Copy(Missing.Value);
         ExcelUtil.PasteValues(oDestinationColumnData);
-    }
-
-    //*************************************************************************
-    //  Method: GetReservedColumnNames()
-    //
-    /// <summary>
-    /// Gets a dictionary of reserved edge table column names.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A dictionary of reserved edge table column names.  The key is the
-    /// reserved column name and the value isn't used.
-    /// </returns>
-    //*************************************************************************
-
-    protected Dictionary<String, Char>
-    GetReservedColumnNames()
-    {
-        AssertValid();
-
-        Dictionary<String, Char> oReservedColumnNames =
-            new Dictionary<String, Char>();
-
-        // Use reflection to get the column names, which are declared as fields
-        // within the static EdgeTableColumnNames class.
-
-        Type oEdgeTableColumnNamesType = typeof(EdgeTableColumnNames);
-
-        foreach ( FieldInfo oFieldInfo in
-            oEdgeTableColumnNamesType.GetFields() )
-        {
-            if (oFieldInfo.DeclaringType == oEdgeTableColumnNamesType)
-            {
-                String sColumnName = oFieldInfo.GetValue(null).ToString();
-                oReservedColumnNames.Add(sColumnName, ' ');
-            }
-        }
-
-        return (oReservedColumnNames);
     }
 
     //*************************************************************************

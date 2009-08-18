@@ -972,6 +972,16 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
         oEdgeDrawer.RelativeArrowSize = this.RelativeArrowSize;
 
+        Font oLabelFont = this.LabelFont;
+
+        System.Windows.Media.Typeface oTypeface =
+            WpfGraphicsUtil.FontToTypeface(oLabelFont);
+
+        Double dFontSize = WpfGraphicsUtil.WindowsFormsFontSizeToWpfFontSize(
+            oLabelFont.Size);
+
+        oEdgeDrawer.SetFont(oTypeface, dFontSize);
+
         oVertexDrawer.Shape = this.VertexShape;
 
         oVertexDrawer.Radius = ( new VertexRadiusConverter() ).WorkbookToGraph(
@@ -988,13 +998,7 @@ public class GeneralUserSettings : ApplicationSettingsBase
         oVertexDrawer.PrimaryLabelFillColor =
             WpfGraphicsUtil.ColorToWpfColor(this.PrimaryLabelFillColor);
 
-        Font oLabelFont = this.LabelFont;
-
-        oVertexDrawer.SetFont(
-            WpfGraphicsUtil.FontToTypeface(oLabelFont),
-
-            WpfGraphicsUtil.WindowsFormsFontSizeToWpfFontSize(
-                oLabelFont.Size) );
+        oVertexDrawer.SetFont(oTypeface, dFontSize);
     }
 
     //*************************************************************************

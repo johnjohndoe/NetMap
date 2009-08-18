@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.NodeXL.Core;
@@ -55,9 +56,14 @@ public class GraphImporter : Object
     /// Graph to import the edges and vertices from.
     /// </param>
     ///
-    /// <param name="importEdgeWeights">
-    /// If true, an Edge Weight column is added to the workbook and any edge
-    /// weights in the graph's edges are written to the column.
+    /// <param name="edgeAttributes">
+    /// Array of edge attribute names that have been added to the metadata of
+    /// the graph's vertices.  Can be null.
+    /// </param>
+    ///
+    /// <param name="vertexAttributes">
+    /// Array of vertex attribute names that have been added to the metadata of
+    /// the graph's vertices.  Can be null.
     /// </param>
     ///
     /// <param name="clearTablesFirst">
@@ -72,9 +78,17 @@ public class GraphImporter : Object
     /// <remarks>
     /// This method creates a row in the edge worksheet for each edge in
     /// <paramref name="sourceGraph" />, and a row in the vertex worksheet for
-    /// each vertex.  Only the vertex names and (optionally) edge weights are
-    /// imported; any other edge and vertex attributes in the graph are
-    /// ignored.
+    /// each edge.
+    ///
+    /// <para>
+    /// For each attribute name in <paramref name="edgeAttributes" /> (if
+    /// <paramref name="edgeAttributes" /> is not null), a column is added to
+    /// the edge worksheet if the column doesn't already exist, and the
+    /// corresponding attribute values stored on the edges are use to fill the
+    /// column.  The same is done for <paramref name="vertexAttributes" /> and
+    /// the vertex worksheet.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -82,7 +96,8 @@ public class GraphImporter : Object
     ImportGraph
     (
         IGraph sourceGraph,
-        Boolean importEdgeWeights,
+        String [] edgeAttributes,
+        String [] vertexAttributes,
         Boolean clearTablesFirst,
         Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook
     )
@@ -90,6 +105,11 @@ public class GraphImporter : Object
         Debug.Assert(sourceGraph != null);
         Debug.Assert(destinationNodeXLWorkbook != null);
         AssertValid();
+
+        if (clearTablesFirst)
+        {
+            NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+        }
 
         // Get the required table that contains edge data.  GetEdgeTable()
         // throws an exception if the table is missing.
@@ -101,7 +121,8 @@ public class GraphImporter : Object
 
         // Get the required columns.
 
-        Range oVertex1NameColumnData, oVertex2NameColumnData;
+        Range oVertex1NameColumnData = null;
+        Range oVertex2NameColumnData = null;
 
         if (
             !ExcelUtil.TryGetTableColumnData(oEdgeTable,
@@ -111,23 +132,25 @@ public class GraphImporter : Object
                 EdgeTableColumnNames.Vertex2Name, out oVertex2NameColumnData)
             )
         {
-            throw new WorkbookFormatException( String.Format(
-
-                "To use this feature, the worksheet named \"{0}\" must have a"
-                + " table named \"{1}\" that contains edge data.\r\n\r\n{2}"
-                ,
-                WorksheetNames.Edges,
-                TableNames.Edges,
-                ErrorUtil.GetTemplateMessage()
-                ) );
+            ErrorUtil.OnMissingColumn();
         }
 
-        // Get the table that contains vertex data.  This table isn't normally
-        // required, but because the graph may have isolated vertices that
-        // need to be written to the vertex worksheet, require it here.
+        // Import the edges and their attributes into the workbook.
+
+        ImportEdges(sourceGraph, edgeAttributes, oEdgeTable,
+            oVertex1NameColumnData, oVertex2NameColumnData, !clearTablesFirst);
+
+        // Populate the vertex worksheet with the name of each unique vertex in
+        // the edge worksheet.
+
+        ( new VertexWorksheetPopulator() ).PopulateVertexWorksheet(
+            destinationNodeXLWorkbook, false);
+
+        // Get the table that contains vertex data.
 
         ListObject oVertexTable;
-        Range oVertexNameColumnData, oVisibilityColumnData;
+        Range oVertexNameColumnData = null;
+        Range oVisibilityColumnData = null;
 
         if (
             !ExcelUtil.TryGetTable(destinationNodeXLWorkbook,
@@ -140,60 +163,34 @@ public class GraphImporter : Object
                 VertexTableColumnNames.Visibility, out oVisibilityColumnData)
             )
         {
-            throw new WorkbookFormatException( String.Format(
-
-                "To use this feature, the worksheet named \"{0}\" must have a"
-                + " table named \"{1}\" that contains vertex data.\r\n\r\n{2}"
-                ,
-                WorksheetNames.Vertices,
-                TableNames.Vertices,
-                ErrorUtil.GetTemplateMessage()
-                ) );
+            ErrorUtil.OnMissingColumn();
         }
 
-        if (clearTablesFirst)
-        {
-            // Clear the required tables and other optional tables.
+        // Import isolated vertices and the attributes for all the graph's
+        // vertices.
 
-            NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
-        }
-
-        // Import the edges and isolated vertices into the workbook.
-
-        ImportEdges(sourceGraph, oEdgeTable, importEdgeWeights,
-            oVertex1NameColumnData, oVertex2NameColumnData, !clearTablesFirst);
-
-        ImportIsolatedVertices(sourceGraph, oVertexTable,
-            oVertexNameColumnData, oVisibilityColumnData, !clearTablesFirst);
-
-        // Populate the vertex worksheet with the name of each unique vertex in
-        // the edge worksheet.
-
-        VertexWorksheetPopulator oVertexWorksheetPopulator =
-            new VertexWorksheetPopulator();
-
-        oVertexWorksheetPopulator.PopulateVertexWorksheet(
-            destinationNodeXLWorkbook, false);
+        ImportVertices(sourceGraph, vertexAttributes, oVertexTable,
+            oVertexNameColumnData, oVisibilityColumnData);
     }
 
     //*************************************************************************
     //  Method: ImportEdges()
     //
     /// <summary>
-    /// Imports edges from a graph to the edge worksheet.
+    /// Imports edges and their attributes from a graph to the edge worksheet.
     /// </summary>
     ///
     /// <param name="oSourceGraph">
     /// Graph to import the edges from.
     /// </param>
     ///
-    /// <param name="oEdgeTable">
-    /// Edge table the edges will be imported to.
+    /// <param name="asEdgeAttributes">
+    /// Array of edge attribute names that have been added to the metadata of
+    /// the graph's edges.  Can be null.
     /// </param>
     ///
-    /// <param name="bImportEdgeWeights">
-    /// If true, an Edge Weight column is added to the workbook and any edge
-    /// weights in the graph's edges are written to the column.
+    /// <param name="oEdgeTable">
+    /// Edge table the edges will be imported to.
     /// </param>
     ///
     /// <param name="oVertex1NameColumnData">
@@ -214,8 +211,8 @@ public class GraphImporter : Object
     ImportEdges
     (
         IGraph oSourceGraph,
+        String [] asEdgeAttributes,
         ListObject oEdgeTable,
-        Boolean bImportEdgeWeights,
         Range oVertex1NameColumnData,
         Range oVertex2NameColumnData,
         Boolean bAppendToTable
@@ -241,40 +238,14 @@ public class GraphImporter : Object
                 iRowOffsetToWriteTo, 0);
         }
 
-        Range oEdgeWeightColumnData = null;
-
-        if (bImportEdgeWeights)
-        {
-            ListColumn oEdgeWeightColumn;
-
-            if (
-                !ExcelUtil.TryGetOrAddTableColumn(oEdgeTable,
-                    EdgeTableColumnNames.EdgeWeight, ExcelUtil.AutoColumnWidth,
-                    null, out oEdgeWeightColumn)
-                ||
-                !ExcelUtil.TryGetTableColumnData(oEdgeWeightColumn,
-                    out oEdgeWeightColumnData)
-                )
-            {
-                throw new WorkbookFormatException( String.Format(
-
-                    "The {0} column couldn't be added."
-                    ,
-                    EdgeTableColumnNames.EdgeWeight
-                    ) );
-            }
-
-            if (bAppendToTable)
-            {
-                ExcelUtil.OffsetRange(ref oEdgeWeightColumnData,
-                    iRowOffsetToWriteTo, 0);
-            }
-        }
-
+        Range [] aoEdgeAttributeColumnData = null;
+        Object [][,] aaoEdgeAttributeValues = null;
+        Int32 iEdgeAttributes = 0;
         IEdgeCollection oEdges = oSourceGraph.Edges;
         Int32 iEdges = oEdges.Count;
 
-        // Create arrays that will be written to the edge table.
+        // Create vertex name and edge attribute arrays that will be written to
+        // the edge table.
 
         Object [,] aoVertex1NameValues =
             ExcelUtil.GetSingleColumn2DArray(iEdges);
@@ -282,12 +253,46 @@ public class GraphImporter : Object
         Object [,] aoVertex2NameValues =
             ExcelUtil.GetSingleColumn2DArray(iEdges);
 
-        Object [,] aoEdgeWeightValues = null;
-
-        if (bImportEdgeWeights)
+        if (asEdgeAttributes != null)
         {
-            aoEdgeWeightValues = ExcelUtil.GetSingleColumn2DArray(iEdges);
+            iEdgeAttributes = asEdgeAttributes.Length;
+            aoEdgeAttributeColumnData = new Range[iEdgeAttributes];
+            aaoEdgeAttributeValues = new Object[iEdgeAttributes][,];
+            ListColumn oEdgeAttributeColumn;
+            Range oEdgeAttributeColumnData;
+
+            for (Int32 i = 0; i < iEdgeAttributes; i++)
+            {
+                String sEdgeAttribute = asEdgeAttributes[i];
+
+                if (
+                    !ExcelUtil.TryGetOrAddTableColumn(oEdgeTable,
+                        sEdgeAttribute, ExcelUtil.AutoColumnWidth, null,
+                        out oEdgeAttributeColumn)
+                    ||
+                    !ExcelUtil.TryGetTableColumnData(oEdgeAttributeColumn,
+                        out oEdgeAttributeColumnData)
+                    )
+                {
+                    throw new WorkbookFormatException(
+                        "The " + sEdgeAttribute + " column couldn't be added."
+                        );
+                }
+
+                if (bAppendToTable)
+                {
+                    ExcelUtil.OffsetRange(ref oEdgeAttributeColumnData,
+                        iRowOffsetToWriteTo, 0);
+                }
+
+                aoEdgeAttributeColumnData[i] = oEdgeAttributeColumnData;
+
+                aaoEdgeAttributeValues[i] =
+                    ExcelUtil.GetSingleColumn2DArray(iEdges);
+            }
         }
+
+        // Fill in the vertex name and edge attribute arrays.
 
         Int32 iEdge = 1;
 
@@ -298,20 +303,21 @@ public class GraphImporter : Object
             aoVertex1NameValues[iEdge, 1] = aoVertices[0].Name;
             aoVertex2NameValues[iEdge, 1] = aoVertices[1].Name;
 
-            Object oEdgeWeight;
+            Object oEdgeAttribute;
 
-            if (
-                bImportEdgeWeights
-                &&
-                oEdge.TryGetValue(ReservedMetadataKeys.EdgeWeight,
-                    typeof(Double), out oEdgeWeight)
-                )
+            for (Int32 i = 0; i < iEdgeAttributes; i++)
             {
-                aoEdgeWeightValues[iEdge, 1] = (Double)oEdgeWeight;
+                if ( oEdge.TryGetValue(asEdgeAttributes[i],
+                    out oEdgeAttribute) )
+                {
+                    aaoEdgeAttributeValues[i][iEdge, 1] = oEdgeAttribute;
+                }
             }
 
             iEdge++;
         }
+
+        // Write the vertex name and edge attribute arrays to the table.
 
         ExcelUtil.SetRangeValues( (Range)oVertex1NameColumnData.Cells[1, 1],
             aoVertex1NameValues );
@@ -319,26 +325,33 @@ public class GraphImporter : Object
         ExcelUtil.SetRangeValues( (Range)oVertex2NameColumnData.Cells[1, 1],
             aoVertex2NameValues );
 
-        if (bImportEdgeWeights)
+        for (Int32 i = 0; i < iEdgeAttributes; i++)
         {
-            ExcelUtil.SetRangeValues( (Range)oEdgeWeightColumnData.Cells[1, 1],
-                aoEdgeWeightValues );
+            ExcelUtil.SetRangeValues(
+                (Range)aoEdgeAttributeColumnData[i].Cells[1, 1],
+                aaoEdgeAttributeValues[i] );
         }
     }
 
     //*************************************************************************
-    //  Method: ImportIsolatedVertices()
+    //  Method: ImportVertices()
     //
     /// <summary>
-    /// Imports isolated vertices from a graph to the vertex worksheet.
+    /// Imports vertices and their attributes from a graph to the vertex
+    /// worksheet.
     /// </summary>
     ///
     /// <param name="oSourceGraph">
-    /// Graph to import the vertices from.
+    /// Graph to import the edges from.
+    /// </param>
+    ///
+    /// <param name="asVertexAttributes">
+    /// Array of vertex attribute names that have been added to the metadata of
+    /// the graph's vertices.  Can be null.
     /// </param>
     ///
     /// <param name="oVertexTable">
-    /// Vertex table the isolated vertices will be imported to.
+    /// Vertex table the vertices will be imported to.
     /// </param>
     ///
     /// <param name="oVertexNameColumnData">
@@ -348,21 +361,16 @@ public class GraphImporter : Object
     /// <param name="oVisibilityColumnData">
     /// Data body range of the vertex visibility column.
     /// </param>
-    ///
-    /// <param name="bAppendToTable">
-    /// true to append the vertices to any vertices already in the vertex
-    /// table, false to overwrite any vertices.
-    /// </param>
     //*************************************************************************
 
     protected void
-    ImportIsolatedVertices
+    ImportVertices
     (
         IGraph oSourceGraph,
+        String [] asVertexAttributes,
         ListObject oVertexTable,
         Range oVertexNameColumnData,
-        Range oVisibilityColumnData,
-        Boolean bAppendToTable
+        Range oVisibilityColumnData
     )
     {
         Debug.Assert(oSourceGraph != null);
@@ -371,72 +379,198 @@ public class GraphImporter : Object
         Debug.Assert(oVisibilityColumnData != null);
         AssertValid();
 
-        Int32 iRowOffsetToWriteTo = 0;
+        // Create a dictionary that maps vertex names to row numbers in the
+        // vertex worksheet.
 
-        if (bAppendToTable)
+        Dictionary<String, Int32> oVertexDictionary =
+            new Dictionary<String, Int32>();
+
+        Object [,] aoVertexNameValues =
+            ExcelUtil.GetRangeValues(oVertexNameColumnData);
+
+        Int32 iRows = oVertexNameColumnData.Rows.Count;
+
+        for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
         {
-            iRowOffsetToWriteTo =
-                ExcelUtil.GetOffsetOfFirstEmptyTableRow(oVertexTable);
+            String sVertexName;
 
-            ExcelUtil.OffsetRange(ref oVertexNameColumnData,
-                iRowOffsetToWriteTo, 0);
-
-            ExcelUtil.OffsetRange(ref oVisibilityColumnData,
-                iRowOffsetToWriteTo, 0);
+            if ( ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexNameValues,
+                iRowOneBased, 1, out sVertexName) )
+            {
+                oVertexDictionary[sVertexName] = iRowOneBased;
+            }
         }
 
-        // Create a list of isolated vertices not included in the edge
-        // worksheet.
+        // Create a list of vertices not already included in the vertex table. 
+        // This can occur when the graph has isolated vertices.
 
-        LinkedList<String> oIsolatedVertexNames = new LinkedList<String>();
+        List<String> oIsolatedVertexNames = new List<String>();
 
         foreach (IVertex oVertex in oSourceGraph.Vertices)
         {
-            if (oVertex.Degree == 0)
+            String sVertexName = oVertex.Name;
+
+            if ( !oVertexDictionary.ContainsKey(sVertexName) )
             {
-                oIsolatedVertexNames.AddLast(oVertex.Name);
+                oIsolatedVertexNames.Add(sVertexName);
             }
         }
 
         Int32 iIsolatedVertices = oIsolatedVertexNames.Count;
 
-        if (iIsolatedVertices == 0)
+        if (iIsolatedVertices > 0)
         {
-            return;
+            // Append the isolated vertices to the table.  The vertex
+            // visibilities should be set to Show to force them to be shown
+            // even though they are not included in edges.
+
+            String [,] asAddedVertexNameValues =
+                new String [iIsolatedVertices, 1];
+
+            String [,] asAddedVisibilityValues =
+                new String [iIsolatedVertices, 1];
+
+            String sShow = ( new VertexVisibilityConverter() ).GraphToWorkbook(
+                VertexWorksheetReader.Visibility.Show);
+
+            for (Int32 i = 0; i < iIsolatedVertices; i++)
+            {
+                String sIsolatedVertexName = oIsolatedVertexNames[i];
+                asAddedVertexNameValues[i, 0] = sIsolatedVertexName;
+                asAddedVisibilityValues[i, 0] = sShow;
+                oVertexDictionary[sIsolatedVertexName] = iRows + i + 1;
+            }
+
+            ExcelUtil.SetRangeValues(
+                oVertexNameColumnData.get_Offset(iRows, 0),
+                asAddedVertexNameValues);
+
+            ExcelUtil.SetRangeValues(
+                oVisibilityColumnData.get_Offset(iRows, 0),
+                asAddedVisibilityValues);
         }
 
-        // Create arrays that will be written to the vertex table.
-
-        Object [,] aoVertexNameValues =
-            ExcelUtil.GetSingleColumn2DArray(iIsolatedVertices);
-
-        Object [,] aoVisibilityValues =
-            ExcelUtil.GetSingleColumn2DArray(iIsolatedVertices);
-
-        // The vertex visibilities should be set to Show to force them to be
-        // read even though they are not included in edges.
-
-        VertexVisibilityConverter oVertexVisibilityConverter =
-            new VertexVisibilityConverter();
-
-        String sShow = oVertexVisibilityConverter.GraphToWorkbook(
-            VertexWorksheetReader.Visibility.Show);
-
-        Int32 iIsolatedVertex = 1;
-
-        foreach (String sIsolatedVertexName in oIsolatedVertexNames)
+        if (asVertexAttributes != null)
         {
-            aoVertexNameValues[iIsolatedVertex, 1] = sIsolatedVertexName;
-            aoVisibilityValues[iIsolatedVertex, 1] = sShow;
+            ImportVertexAttributes(oSourceGraph, asVertexAttributes,
+                oVertexDictionary, oVertexTable);
+        }
+    }
 
-            iIsolatedVertex++;
+    //*************************************************************************
+    //  Method: ImportVertexAttributes()
+    //
+    /// <summary>
+    /// Imports attributes from the graph's vertices to the vertex worksheet.
+    /// </summary>
+    ///
+    /// <param name="oSourceGraph">
+    /// Graph to import the edges from.
+    /// </param>
+    ///
+    /// <param name="asVertexAttributes">
+    /// Array of vertex attribute names that have been added to the metadata of
+    /// the graph's vertices.  Can't be null.
+    /// </param>
+    ///
+    /// <param name="oVertexDictionary">
+    /// The key is a vertex name and the value is the one-based row offset.
+    /// </param>
+    ///
+    /// <param name="oVertexTable">
+    /// Vertex table the vertices will be imported to.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ImportVertexAttributes
+    (
+        IGraph oSourceGraph,
+        String [] asVertexAttributes,
+        Dictionary<String, Int32> oVertexDictionary,
+        ListObject oVertexTable
+    )
+    {
+        Debug.Assert(oSourceGraph != null);
+        Debug.Assert(asVertexAttributes != null);
+        Debug.Assert(oVertexDictionary != null);
+        Debug.Assert(oVertexTable != null);
+        AssertValid();
+
+        // Create vertex attribute arrays that will be written to the vertex
+        // table.
+
+        Int32 iVertexAttributes = asVertexAttributes.Length;
+
+        Range [] aoVertexAttributeColumnData = new Range[iVertexAttributes];
+
+        Object [][,] aaoVertexAttributeValues =
+            new Object[iVertexAttributes][,];
+
+        ListColumn oVertexAttributeColumn;
+        Range oVertexAttributeColumnData;
+
+        for (Int32 i = 0; i < iVertexAttributes; i++)
+        {
+            String sVertexAttribute = asVertexAttributes[i];
+
+            if (
+                !ExcelUtil.TryGetOrAddTableColumn(oVertexTable,
+                    sVertexAttribute, ExcelUtil.AutoColumnWidth, null,
+                    out oVertexAttributeColumn)
+                ||
+                !ExcelUtil.TryGetTableColumnData(oVertexAttributeColumn,
+                    out oVertexAttributeColumnData)
+                )
+            {
+                throw new WorkbookFormatException( String.Format(
+
+                    "The {0} column couldn't be added."
+                    ,
+                    sVertexAttribute
+                    ) );
+            }
+
+            aoVertexAttributeColumnData[i] = oVertexAttributeColumnData;
+
+            aaoVertexAttributeValues[i] =
+                ExcelUtil.GetRangeValues(oVertexAttributeColumnData);
         }
 
-        ExcelUtil.SetRangeValues( (Range)oVertexNameColumnData.Cells[1, 1],
-            aoVertexNameValues );
+        foreach (IVertex oVertex in oSourceGraph.Vertices)
+        {
+            String sVertexName = oVertex.Name;
+            Object oVertexAttribute;
 
-        ExcelUtil.SetRangeValues( (Range)oVisibilityColumnData.Cells[1, 1],
-            aoVisibilityValues );
+            Int32 iOneBasedRowOffset;
+
+            if ( !oVertexDictionary.TryGetValue(sVertexName,
+                out iOneBasedRowOffset) )
+            {
+                Debug.Assert(false);
+            }
+
+            for (Int32 i = 0; i < iVertexAttributes; i++)
+            {
+                if ( oVertex.TryGetValue(asVertexAttributes[i],
+                    out oVertexAttribute) )
+                {
+                    Debug.Assert(iOneBasedRowOffset >= 1);
+
+                    Debug.Assert( iOneBasedRowOffset <=
+                        aaoVertexAttributeValues[i].GetUpperBound(0) );
+
+                    aaoVertexAttributeValues[i][iOneBasedRowOffset, 1] =
+                        oVertexAttribute;
+                }
+            }
+        }
+
+        for (Int32 i = 0; i < iVertexAttributes; i++)
+        {
+            aoVertexAttributeColumnData[i].set_Value( Missing.Value,
+                aaoVertexAttributeValues[i] );
+        }
     }
 
 

@@ -135,6 +135,7 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Printing">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -376,6 +377,7 @@
     <Compile Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.designer.cs">
       <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\OpenGraphMLFile\OpenGraphMLFileDialog.cs" />
     <Compile Include="Dialogs\OpenPajekFile\OpenPajekFileDialog.cs" />
     <Compile Include="Dialogs\OpenUcinetFile\OpenUcinetFileDialog.cs">
       <SubType>Form</SubType>
@@ -608,6 +610,7 @@
     <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
     <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
+    <Compile Include="UserSettings\UserSettingsManager.cs" />
     <Compile Include="Util\ApplicationUtil.cs" />
     <Compile Include="Util\AutoFill\Results\AutoFillColorColumnResults.cs" />
     <Compile Include="Util\AutoFill\Results\AutoFillColumnResults.cs" />
@@ -634,6 +637,7 @@
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
     <Compile Include="Util\OldWorkbookConversionException.cs" />
     <Compile Include="Util\OldWorkbookConverter.cs" />
+    <Compile Include="Util\PlugInManager.cs" />
     <Compile Include="Util\SubgraphImageCreator.cs" />
     <Compile Include="Util\TableColumnAdder.cs" />
     <Compile Include="Util\TableImagePopulator.cs" />
@@ -714,6 +718,10 @@
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExcelTemplatePlugIns\ExcelTemplatePlugIns.csproj">
+      <Project>{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}</Project>
+      <Name>ExcelTemplatePlugIns</Name>
     </ProjectReference>
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>

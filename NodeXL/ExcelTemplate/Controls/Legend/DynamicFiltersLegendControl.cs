@@ -135,7 +135,6 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
         return ( new LinkedList<IDynamicFilterRangeTrackBar>() );
     }
 
-
     //*************************************************************************
     //  Method: CalculateHeight()
     //
@@ -211,26 +210,41 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
         Debug.Assert(oDrawingObjects != null);
         AssertValid();
 
-        // Two columns are drawn: The edge track bars are in the first column,
-        // and the vertex track bars are in the second.
+        // If there are edge track bars and vertex track bars, two columns are
+        // drawn, with the edge track bars in the first column and the vertex
+        // track bars in the second.  If there are only edge or vertex track
+        // bars, one column is drawn.
 
         Rectangle oColumn1Rectangle, oColumn2Rectangle;
+        Boolean bHasTwoColumns = false;
 
-        ControlRectangleToTwoColumns(oDrawingObjects, out oColumn1Rectangle,
-            out oColumn2Rectangle);
+        if (m_oEdgeDynamicFilterRangeTrackBars.Count > 0 &&
+            m_oVertexDynamicFilterRangeTrackBars.Count > 0)
+        {
+            ControlRectangleToTwoColumns(oDrawingObjects,
+                out oColumn1Rectangle, out oColumn2Rectangle);
+
+            bHasTwoColumns = true;
+        }
+        else
+        {
+            oColumn1Rectangle = oColumn2Rectangle =
+                oDrawingObjects.ControlRectangle;
+        }
 
         Int32 iBottom = Math.Max(
 
-            DrawDynamicFilterRangeTrackBars(oDrawingObjects,
-                "Dynamic Edge Filters", m_oEdgeDynamicFilterRangeTrackBars,
-                oColumn1Rectangle),
+            DrawDynamicFilterRangeTrackBars(oDrawingObjects, "Edge Filters",
+                m_oEdgeDynamicFilterRangeTrackBars, oColumn1Rectangle),
 
-            DrawDynamicFilterRangeTrackBars(oDrawingObjects,
-                "Dynamic Vertex Filters", m_oVertexDynamicFilterRangeTrackBars,
-                oColumn2Rectangle)
+            DrawDynamicFilterRangeTrackBars(oDrawingObjects, "Vertex Filters",
+                m_oVertexDynamicFilterRangeTrackBars, oColumn2Rectangle)
             );
 
-        DrawColumnSeparator(oDrawingObjects, oColumn2Rectangle);
+        if (bHasTwoColumns)
+        {
+            DrawColumnSeparator(oDrawingObjects, oColumn2Rectangle);
+        }
 
         return (iBottom);
     }
@@ -279,46 +293,39 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
 
         Int32 iTop = oColumnRectangle.Top;
 
-        // Draw the group name at the top of the group.
-
-        DrawColumnHeader(oDrawingObjects, sGroupName, oColumnRectangle.Left,
-            oColumnRectangle.Right, ref iTop);
-
-        // Provide a margin.
-
-        Rectangle oColumnRectangleWithMargin = AddMarginToRectangle(
-            oDrawingObjects, oColumnRectangle);
-
-        Int32 iTrackBarLeft = oColumnRectangleWithMargin.Left;
-        Int32 iTrackBarRight = oColumnRectangleWithMargin.Right;
-
-        Pen oAvailableRangeLinePen = new Pen(SystemBrushes.ControlDark,
-            AvailableLineHeight);
-
-        Pen oSelectedRangeLinePen = new Pen(SystemBrushes.Highlight,
-            SelectedLineHeight);
-
-        foreach (IDynamicFilterRangeTrackBar oDynamicFilterRangeTrackBar in
-            oDynamicFilterRangeTrackBars)
+        if (oDynamicFilterRangeTrackBars.Count > 0)
         {
-            DrawDynamicFilterRangeTrackBar(oDrawingObjects,
-                oDynamicFilterRangeTrackBar, oAvailableRangeLinePen,
-                oSelectedRangeLinePen, oColumnRectangle, iTrackBarLeft,
-                iTrackBarRight, ref iTop);
+            // Draw the group name at the top of the group.
+
+            DrawColumnHeader(oDrawingObjects, sGroupName, oColumnRectangle.Left,
+                oColumnRectangle.Right, ref iTop);
+
+            // Provide a margin.
+
+            Rectangle oColumnRectangleWithMargin = AddMarginToRectangle(
+                oDrawingObjects, oColumnRectangle);
+
+            Int32 iTrackBarLeft = oColumnRectangleWithMargin.Left;
+            Int32 iTrackBarRight = oColumnRectangleWithMargin.Right;
+
+            Pen oAvailableRangeLinePen = new Pen(SystemBrushes.ControlDark,
+                AvailableLineHeight);
+
+            Pen oSelectedRangeLinePen = new Pen(SystemBrushes.Highlight,
+                SelectedLineHeight);
+
+            foreach (IDynamicFilterRangeTrackBar oDynamicFilterRangeTrackBar in
+                oDynamicFilterRangeTrackBars)
+            {
+                DrawDynamicFilterRangeTrackBar(oDrawingObjects,
+                    oDynamicFilterRangeTrackBar, oAvailableRangeLinePen,
+                    oSelectedRangeLinePen, oColumnRectangle, iTrackBarLeft,
+                    iTrackBarRight, ref iTop);
+            }
+
+            oAvailableRangeLinePen.Dispose();
+            oSelectedRangeLinePen.Dispose();
         }
-
-        if (oDynamicFilterRangeTrackBars.Count == 0)
-        {
-            iTop += (Int32)(0.3F * oDrawingObjects.FontHeight);
-
-            oDrawingObjects.Graphics.DrawString("(None)", oDrawingObjects.Font,
-                SystemBrushes.ControlText, iTrackBarLeft, iTop);
-
-            iTop += (Int32)(1.3F * oDrawingObjects.FontHeight);
-        }
-
-        oAvailableRangeLinePen.Dispose();
-        oSelectedRangeLinePen.Dispose();
 
         return (iTop);
     }
@@ -381,18 +388,21 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
         Debug.Assert(oAvailableRangeLinePen != null);
         Debug.Assert(oSelectedRangeLinePen != null);
 
-        DrawExcelColumnName(oDrawingObjects,
-            oDynamicFilterRangeTrackBar.ColumnName, iTrackBarLeft,
-            iTrackBarRight, ref iTop);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
 
         // Draw the text for the available range.
 
+        Int32 iAvailableRangeTextLeft = iTrackBarLeft;
+        Int32 iAvailableRangeTextRight = iTrackBarRight;
+        Int32 iAvailableRangeTextTop = iTop;
+
         DrawAvailableRangeText(oDrawingObjects, oDynamicFilterRangeTrackBar,
-            iTrackBarLeft, iTrackBarRight, ref iTop);
+            ref iAvailableRangeTextLeft, ref iAvailableRangeTextRight,
+            ref iTop);
 
         // Draw the line representing the available range.
 
-        Int32 iLineMargin = (Int32)(oDrawingObjects.FontHeight * 0.25F);
+        Int32 iLineMargin = oDrawingObjects.GetFontHeightMultiple(0.1F);
         Int32 iAvailableRangeLineLeft = iTrackBarLeft + iLineMargin;
         Int32 iAvailableRangeLineRight = iTrackBarRight - iLineMargin;
 
@@ -411,10 +421,15 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
         // Draw the text for the selected range.
 
         DrawSelectedRangeText(oDrawingObjects, oDynamicFilterRangeTrackBar,
-            iTrackBarLeft, iTrackBarRight, iSelectedRangeLineLeft,
-            iSelectedRangeLineRight, ref iTop);
+            iAvailableRangeTextLeft, iAvailableRangeTextRight,
+            iSelectedRangeLineLeft, iSelectedRangeLineRight,
+            iAvailableRangeTextTop);
 
-        iTop += (Int32)(oDrawingObjects.FontHeight * 0.4F);
+        DrawExcelColumnName(oDrawingObjects,
+            oDynamicFilterRangeTrackBar.ColumnName, iTrackBarLeft,
+            iTrackBarRight, ref iTop);
+
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.3F);
 
         // Draw a line separating this track bar from the next.
 
@@ -436,12 +451,14 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
     /// The track bar being drawn.
     /// </param>
     ///
-    /// <param name="iTrackBarLeft">
-    /// x-coordinate of the left edge of the track bar.
+    /// <param name="iAvailableRangeTextLeft">
+    /// x-coordinate of the left edge of the avilable range text.  Gets
+    /// updated.
     /// </param>
     ///
-    /// <param name="iTrackBarRight">
-    /// x-coordinate of the right edge of the track bar.
+    /// <param name="iAvailableRangeTextRight">
+    /// x-coordinate of the right edge of the avilable range text.  Gets
+    /// updated.
     /// </param>
     ///
     /// <param name="iTop">
@@ -454,8 +471,8 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
     (
         DrawingObjects oDrawingObjects,
         IDynamicFilterRangeTrackBar oDynamicFilterRangeTrackBar,
-        Int32 iTrackBarLeft,
-        Int32 iTrackBarRight,
+        ref Int32 iAvailableRangeTextLeft,
+        ref Int32 iAvailableRangeTextRight,
         ref Int32 iTop
     )
     {
@@ -471,8 +488,11 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
             oDynamicFilterRangeTrackBar.ValueToString(
                 oDynamicFilterRangeTrackBar.AvailableMaximum),
 
-            SystemBrushes.GrayText, iTrackBarLeft, iTrackBarRight, ref iTop
+            SystemBrushes.GrayText, ref iAvailableRangeTextLeft,
+            ref iAvailableRangeTextRight, ref iTop
             );
+
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.4F);
     }
 
     //*************************************************************************
@@ -533,8 +553,6 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
         Debug.Assert(oSelectedRangeLinePen != null);
         AssertValid();
 
-        iTop -= 1;
-
         iSelectedRangeLineLeft = GetXWithinAvailableLine(
             oDynamicFilterRangeTrackBar.SelectedMinimum,
             oDynamicFilterRangeTrackBar, iAvailableRangeLineLeft,
@@ -564,8 +582,6 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
             }
         }
 
-        iTop += 1;
-
         oDrawingObjects.Graphics.DrawLine(oSelectedRangeLinePen,
             iSelectedRangeLineLeft, iTop, iSelectedRangeLineRight, iTop);
 
@@ -587,12 +603,12 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
     /// The track bar being drawn.
     /// </param>
     ///
-    /// <param name="iTrackBarLeft">
-    /// x-coordinate of the left edge of the track bar.
+    /// <param name="iAvailableRangeTextLeft">
+    /// Minimum x-coordinate where the text can be drawn.
     /// </param>
     ///
-    /// <param name="iTrackBarRight">
-    /// x-coordinate of the right edge of the track bar.
+    /// <param name="iAvailableRangeTextRight">
+    /// Maximum x-coordinate where the text can be drawn.
     /// </param>
     ///
     /// <param name="iSelectedRangeLineLeft">
@@ -604,7 +620,7 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
     /// </param>
     ///
     /// <param name="iTop">
-    /// Top y-coordinate where the text should be drawn.  Gets updated.
+    /// Top y-coordinate where the text should be drawn.
     /// </param>
     //*************************************************************************
 
@@ -613,11 +629,11 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
     (
         DrawingObjects oDrawingObjects,
         IDynamicFilterRangeTrackBar oDynamicFilterRangeTrackBar,
-        Int32 iTrackBarLeft,
-        Int32 iTrackBarRight,
+        Int32 iAvailableRangeTextLeft,
+        Int32 iAvailableRangeTextRight,
         Int32 iSelectedRangeLineLeft,
         Int32 iSelectedRangeLineRight,
-        ref Int32 iTop
+        Int32 iTop
     )
     {
         Debug.Assert(oDrawingObjects != null);
@@ -630,54 +646,59 @@ public partial class DynamicFiltersLegendControl : LegendControlBase
             oDynamicFilterRangeTrackBar.ValueToString(
                 oDynamicFilterRangeTrackBar.SelectedMinimum);
 
-        Int32 iSelectedMinimumTextWidth = (Int32)Math.Ceiling(
-            oDrawingObjects.Graphics.MeasureString(
-                sSelectedMinimumText, oDrawingObjects.Font).Width);
+        Int32 iSelectedMinimumTextWidth = MeasureTextWidth(oDrawingObjects,
+            sSelectedMinimumText);
 
         String sSelectedMaximumText =
             oDynamicFilterRangeTrackBar.ValueToString(
                 oDynamicFilterRangeTrackBar.SelectedMaximum);
 
-        Int32 iSelectedMaximumTextWidth = (Int32)Math.Ceiling(
-            oDrawingObjects.Graphics.MeasureString(
-                sSelectedMaximumText, oDrawingObjects.Font).Width);
+        Int32 iSelectedMaximumTextWidth = MeasureTextWidth(
+            oDrawingObjects, sSelectedMaximumText);
 
         // If there is enough room, draw the selected minimum text with its
         // right edge aligned with the left edge of the selected line, and the
         // selected maximum text with its left edge aligned with the right edge
-        // of the selected line.  Don't let any text exceed the rectangle
-        // bounds, and don't let the text run into each other.
+        // of the selected line.  Don't let any text exceed the bounds
+        // specified by iAvailableRangeTextLeft and iAvailableRangeTextRight,
+        // and don't let the text run into each other.
 
         Int32 iSelectedMinimumTextRight = Math.Max(
             iSelectedRangeLineLeft,
-            iTrackBarLeft + iSelectedMinimumTextWidth
+            iAvailableRangeTextLeft + iSelectedMinimumTextWidth
             );
 
         iSelectedMinimumTextRight = Math.Min(
             iSelectedMinimumTextRight,
-            iTrackBarRight - iSelectedMaximumTextWidth
+            iAvailableRangeTextRight - iSelectedMaximumTextWidth
             );
 
         Int32 iSelectedMaximumTextLeft = Math.Min(
             iSelectedRangeLineRight,
-            iTrackBarRight - iSelectedMaximumTextWidth
+            iAvailableRangeTextRight - iSelectedMaximumTextWidth
             );
 
         iSelectedMaximumTextLeft = Math.Max(
             iSelectedMaximumTextLeft,
-            iTrackBarLeft + iSelectedMinimumTextWidth
+            iAvailableRangeTextLeft + iSelectedMinimumTextWidth
             );
 
-        oDrawingObjects.Graphics.DrawString(sSelectedMinimumText,
-            oDrawingObjects.Font, SystemBrushes.Highlight,
-            iSelectedMinimumTextRight, iTop,
-            oDrawingObjects.RightAlignStringFormat);
+        if (iSelectedMinimumTextRight - iSelectedMinimumTextWidth >=
+            iAvailableRangeTextLeft)
+        {
+            oDrawingObjects.Graphics.DrawString(sSelectedMinimumText,
+                oDrawingObjects.Font, SystemBrushes.Highlight,
+                iSelectedMinimumTextRight, iTop,
+                oDrawingObjects.RightAlignStringFormat);
+        }
 
-        oDrawingObjects.Graphics.DrawString(sSelectedMaximumText,
-            oDrawingObjects.Font, SystemBrushes.Highlight,
-            iSelectedMaximumTextLeft, iTop);
-
-        iTop += (Int32)(oDrawingObjects.FontHeight * 1.0F);
+        if (iSelectedMaximumTextLeft + iSelectedMaximumTextWidth <=
+            iAvailableRangeTextRight)
+        {
+            oDrawingObjects.Graphics.DrawString(sSelectedMaximumText,
+                oDrawingObjects.Font, SystemBrushes.Highlight,
+                iSelectedMaximumTextLeft, iTop);
+        }
     }
 
     //*************************************************************************

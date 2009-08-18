@@ -268,6 +268,9 @@ public class EdgeWorksheetReader : WorksheetReaderBase
         oEdgeTableColumnIndexes.Visibility = GetTableColumnIndex(
             edgeTable, EdgeTableColumnNames.Visibility, false);
 
+        oEdgeTableColumnIndexes.Label = GetTableColumnIndex(
+            edgeTable, EdgeTableColumnNames.Label, false);
+
         oEdgeTableColumnIndexes.EdgeWeight = GetTableColumnIndex(
             edgeTable, EdgeTableColumnNames.EdgeWeight, false);
 
@@ -531,6 +534,16 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                 CheckForWidth(oEdgeSubrange, aoEdgeValues, iRowOneBased,
                     oEdgeTableColumnIndexes.Width,
                     oReadWorkbookContext.EdgeWidthConverter, oEdge);
+            }
+
+            // If there is a label column and the label for this row isn't
+            // empty, set the edge's label.
+
+            if (oEdgeTableColumnIndexes.Label != NoSuchColumn)
+            {
+                CheckForNonEmptyCell(aoEdgeValues, iRowOneBased,
+                    oEdgeTableColumnIndexes.Label, oEdge,
+                    ReservedMetadataKeys.PerEdgeLabel);
             }
 
             // If edge weight values should be set, set the edge's weight.
@@ -846,6 +859,10 @@ public class EdgeWorksheetReader : WorksheetReaderBase
         /// The edge's optional visibility.
 
         public Int32 Visibility;
+
+        /// The edge's optional label.
+
+        public Int32 Label;
 
         /// The edge's optional edge weight.
 

@@ -82,6 +82,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\ArgumentChecker.cs">
@@ -92,6 +93,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GraphAdapters\GraphAdapterBase.cs" />
+    <Compile Include="GraphAdapters\GraphMLAttribute.cs" />
+    <Compile Include="GraphAdapters\GraphMLGraphAdapter.cs" />
     <Compile Include="GraphAdapters\PajekEdgeData.cs" />
     <Compile Include="GraphAdapters\PajekGraphAdapter.cs" />
     <Compile Include="GraphAdapters\SaveGraphException.cs" />

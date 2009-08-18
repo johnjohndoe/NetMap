@@ -29,7 +29,27 @@ public class LegendControlBase : Control
 
     public LegendControlBase()
     {
-        // (Do nothing.)
+        // If the font isn't explicitly set, the control inherits the font of
+        // its parent control.  Unfortunately, the parent's font changes within
+        // the lifetime of the control.  For example, on a Vista development
+        // machine, the font was Microsoft Sans Serif 8.25 within the
+        // constructor, but Tahoma 8.25 during all the paint calls.
+        //
+        // The changing font causes a problem within the derived controls,
+        // which size themselves before they get painted.  The font is part of
+        // the size calculation, but because the initial font differs from the
+        // font actually used for painting, the computed size ends up being
+        // wrong.
+        //
+        // Explicitly setting the font prevents it from changing, and therefore
+        // the calculated height will be correct.
+        //
+        // TODO: What font should be used?  Neither Control.Default nor any of
+        // the SystemFonts properties returns Tahoma 8.25 on the development
+        // machine, yet something is setting the font of the parent control to
+        // Tahoma 8.25.  Hard-coding a font isn't a good solution.
+
+        this.Font = new Font("Tahoma", 8.25F);
 
         // AssertValid();
     }
@@ -118,8 +138,10 @@ public class LegendControlBase : Control
         oRegion.MakeEmpty();
         oGraphics.Clip = oRegion;
 
-        Rectangle oControlRectangle =
-            new Rectangle(0, 0, this.ClientRectangle.Width, 1000);
+        // Use an arbitrary control rectangle.  Don't use this.ClientRectangle,
+        // which might have a zero width or height.
+
+        Rectangle oControlRectangle = new Rectangle(0, 0, 100, 100);
 
         return ( CreateDrawingObjects(oGraphics, oControlRectangle) );
     }
@@ -241,8 +263,9 @@ public class LegendControlBase : Control
         AssertValid();
 
         Rectangle oRectangleWithMargin = oRectangle;
-        const Int32 Margin = -3;
-        oRectangleWithMargin.Inflate(Margin, Margin);
+        const Int32 HorizontalMargin = 1;
+        const Int32 VerticalMargin = 0;
+        oRectangleWithMargin.Inflate(-HorizontalMargin, -VerticalMargin);
 
         return (oRectangleWithMargin);
     }
@@ -294,15 +317,16 @@ public class LegendControlBase : Control
         Debug.Assert( !String.IsNullOrEmpty(sHeaderText) );
         AssertValid();
 
-        Int32 iColumnHeaderHeight = (Int32)(oDrawingObjects.FontHeight * 1.3F);
+        Int32 iColumnHeaderHeight =
+            oDrawingObjects.GetFontHeightMultiple(1.3F);
 
         oDrawingObjects.Graphics.FillRectangle(SystemBrushes.ControlLight,
-            iLeft, iTop, iRight - iLeft + 1, iColumnHeaderHeight);
+            iLeft, iTop, iRight - iLeft - 1, iColumnHeaderHeight);
 
         oDrawingObjects.Graphics.DrawString(sHeaderText, oDrawingObjects.Font,
             SystemBrushes.ControlText,
-            iLeft + (Int32)(oDrawingObjects.FontHeight * 0.1F),
-            iTop + (Int32)(oDrawingObjects.FontHeight * 0.15F)
+            iLeft + oDrawingObjects.GetFontHeightMultiple(0.1F),
+            iTop + oDrawingObjects.GetFontHeightMultiple(0.15F)
             );
 
         iTop += iColumnHeaderHeight;
@@ -349,22 +373,26 @@ public class LegendControlBase : Control
         Debug.Assert(oDrawingObjects != null);
         Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
 
-        iTop += (Int32)(oDrawingObjects.FontHeight * 0.4F);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
 
-        oDrawingObjects.Graphics.DrawString(sColumnName + ':',
-            oDrawingObjects.Font, SystemBrushes.ControlText,
+        oDrawingObjects.Graphics.DrawString(sColumnName, oDrawingObjects.Font,
+            SystemBrushes.ControlText,
 
             Rectangle.FromLTRB( iLeft, iTop, iRight,
                 (Int32)(iTop + oDrawingObjects.FontHeight) ),
 
             oDrawingObjects.TrimmingStringFormat);
 
-        iTop += (Int32)(oDrawingObjects.FontHeight * 1.05F);
+        iTop += oDrawingObjects.GetFontHeightMultiple(1.05F);
     }
 
     //*************************************************************************
     //  Method: DrawRangeText()
     //
+    /// <overloads>
+    /// Draws text describing a range.
+    /// </overloads>
+    ///
     /// <summary>
     /// Draws text describing a range.
     /// </summary>
@@ -416,26 +444,74 @@ public class LegendControlBase : Control
         Debug.Assert(oBrush != null);
         AssertValid();
 
-        // Note for the DynamicFiltersLegendControl derived class:
-        //
-        // To avoid off-by-one or -two errors, use the same alignments that
-        // will be used later to draw the selected minimum and maximum text.
+        DrawRangeText(oDrawingObjects, sLeftText, sRightText, oBrush,
+            ref iLeft, ref iRight, ref iTop);
+    }
+
+    //*************************************************************************
+    //  Method: DrawRangeText()
+    //
+    /// <summary>
+    /// Draws text describing a range and updates the left and right
+    /// x-coordinates.
+    /// </summary>
+    ///
+    /// <param name="oDrawingObjects">
+    /// Objects to draw with.
+    /// </param>
+    ///
+    /// <param name="sLeftText">
+    /// The text to draw at the left edge of the control.
+    /// </param>
+    ///
+    /// <param name="sRightText">
+    /// The text to draw at the right edge of the control.
+    /// </param>
+    ///
+    /// <param name="oBrush">
+    /// The brush to use.
+    /// </param>
+    ///
+    /// <param name="iLeft">
+    /// Left x-coordinate.  Gets updated.
+    /// </param>
+    ///
+    /// <param name="iRight">
+    /// Right x-coordinate.  Gets updated.
+    /// </param>
+    ///
+    /// <param name="iTop">
+    /// Top y-coordinate.  Gets updated.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    DrawRangeText
+    (
+        DrawingObjects oDrawingObjects,
+        String sLeftText,
+        String sRightText,
+        Brush oBrush,
+        ref Int32 iLeft,
+        ref Int32 iRight,
+        ref Int32 iTop
+    )
+    {
+        Debug.Assert(oDrawingObjects != null);
+        Debug.Assert( !String.IsNullOrEmpty(sLeftText) );
+        Debug.Assert( !String.IsNullOrEmpty(sRightText) );
+        Debug.Assert(oBrush != null);
+        AssertValid();
 
         oDrawingObjects.Graphics.DrawString(sLeftText, oDrawingObjects.Font,
-            oBrush,
-
-            iLeft + oDrawingObjects.Graphics.MeasureString(
-                sLeftText, oDrawingObjects.Font).Width, iTop,
-
-            oDrawingObjects.RightAlignStringFormat);
+            oBrush, iLeft, iTop);
 
         oDrawingObjects.Graphics.DrawString(sRightText, oDrawingObjects.Font,
-            oBrush,
+            oBrush, iRight, iTop, oDrawingObjects.RightAlignStringFormat);
 
-            iRight - oDrawingObjects.Graphics.MeasureString(
-                sRightText, oDrawingObjects.Font).Width, iTop);
-
-        iTop += (Int32)(oDrawingObjects.FontHeight * 1.2F);
+        iLeft += MeasureTextWidth(oDrawingObjects, sLeftText);
+        iRight -= MeasureTextWidth(oDrawingObjects, sRightText);
+        iTop += oDrawingObjects.GetFontHeightMultiple(1.0F);
     }
 
     //*************************************************************************
@@ -469,7 +545,7 @@ public class LegendControlBase : Control
         Debug.Assert(oDrawingObjects != null);
         AssertValid();
 
-        oDrawingObjects.Graphics.DrawLine(SystemPens.ControlDark,
+        oDrawingObjects.Graphics.DrawLine(SystemPens.ControlLight,
             oColumnRectangle.Left, iTop, oColumnRectangle.Right, iTop);
 
         iTop += 1;
@@ -501,9 +577,44 @@ public class LegendControlBase : Control
         Debug.Assert(oDrawingObjects != null);
         AssertValid();
 
-        oDrawingObjects.Graphics.DrawLine(SystemPens.ControlDark,
+        oDrawingObjects.Graphics.DrawLine(SystemPens.ControlLight,
             oColumn2Rectangle.Left, oColumn2Rectangle.Top,
             oColumn2Rectangle.Left, oColumn2Rectangle.Bottom);
+    }
+
+    //*************************************************************************
+    //  Method: MeasureTextWidth()
+    //
+    /// <summary>
+    /// Gets the width of some text.
+    /// </summary>
+    ///
+    /// <param name="oDrawingObjects">
+    /// Objects to draw with.
+    /// </param>
+    ///
+    /// <param name="sText">
+    /// The text to measure.
+    /// </param>
+    ///
+    /// <returns>
+    /// The width of the text, rounded up.
+    /// </returns>
+    //*************************************************************************
+
+    protected Int32
+    MeasureTextWidth
+    (
+        DrawingObjects oDrawingObjects,
+        String sText
+    )
+    {
+        Debug.Assert(oDrawingObjects != null);
+        Debug.Assert( !String.IsNullOrEmpty(sText) );
+        AssertValid();
+
+        return ( (Int32)Math.Ceiling(oDrawingObjects.Graphics.MeasureString(
+            sText, oDrawingObjects.Font).Width) );
     }
 
 
@@ -590,6 +701,35 @@ public class LegendControlBase : Control
         /// </summary>
 
         public StringFormat CenterAlignStringFormat;
+
+
+        //*********************************************************************
+        //  Method: GetFontHeightMultiple()
+        //
+        /// <summary>
+        /// Gets a multiple of the font height.
+        /// </summary>
+        ///
+        /// <param name="multiple">
+        /// Multiple to use.
+        /// </param>
+        ///
+        /// <returns>
+        /// <paramref name="multiple" /> times the font height, truncated to
+        /// an Int32.
+        /// </returns>
+        //*********************************************************************
+
+        public Int32
+        GetFontHeightMultiple
+        (
+            Single multiple
+        )
+        {
+            Debug.Assert(multiple >= 0);
+
+            return ( (Int32)(this.FontHeight * multiple) );
+        }
     }
 }
 }

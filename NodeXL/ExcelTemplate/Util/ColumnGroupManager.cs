@@ -41,6 +41,12 @@ ColumnGroup
     EdgeVisualAttributes,
 
     /// <summary>
+    /// The label columns in the edge table.
+    /// </summary>
+
+    EdgeLabels,
+
+    /// <summary>
     /// The columns in the edge table that are used only by NodeXL and should
     /// not be edited by the user.
     /// </summary>
@@ -371,6 +377,14 @@ public static class ColumnGroupManager
                     EdgeTableColumnNames.Width,
                     EdgeTableColumnNames.Alpha,
                     EdgeTableColumnNames.Visibility,
+                    };
+
+                break;
+
+            case ColumnGroup.EdgeLabels:
+
+                asColumnNames = new String [] {
+                    EdgeTableColumnNames.Label,
                     };
 
                 break;

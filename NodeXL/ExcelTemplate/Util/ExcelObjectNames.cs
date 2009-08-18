@@ -180,6 +180,12 @@ public static class EdgeTableColumnNames
     public const String Visibility = "Visibility";
 
     /// <summary>
+    /// Name of the optional table column containing the edge's label.
+    /// </summary>
+
+    public const String Label = "Label";
+
+    /// <summary>
     /// Name of the optional table column containing the edge weight.  This
     /// gets added to the table on demand by various classes.
     /// </summary>

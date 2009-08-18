@@ -161,7 +161,7 @@ public partial class MainForm : Form
 
         // oEdge.SetValue(ReservedMetadataKeys.PerEdgeWidth, 20F);
 
-        m_oNodeXLControl.ForceLayout();
+        m_oNodeXLControl.DrawGraph(true);
 
         return;
 
@@ -195,7 +195,7 @@ public partial class MainForm : Form
 
         oEdges.Add(oVertex1, oVertex2, true);
 
-        m_oNodeXLControl.ForceLayout();
+        m_oNodeXLControl.DrawGraph(true);
 
         return;
 
@@ -209,7 +209,7 @@ public partial class MainForm : Form
 
         Int32 iShapes = aeShapes.Length;
 
-        Int32 Vertices = 500;
+        Int32 Vertices = 100;
 
         IVertex oFirstVertex = oVertices.Add();
 
@@ -340,6 +340,10 @@ public partial class MainForm : Form
 
             IEdge oEdge = oEdges.Add(oFirstVertex, oVertex, true);
 
+            oEdge.SetValue(ReservedMetadataKeys.PerEdgeLabel,
+                "This is an edge label");
+
+
             #if false  // Edge color.
 
             oEdge.SetValue( ReservedMetadataKeys.PerColor,
@@ -385,7 +389,14 @@ public partial class MainForm : Form
             #if true
             if (oRandom.Next(1) == 0)
             {
-                oEdges.Add(oPreviousVertex, oVertex, true);
+                IEdge oRandomEdge = oEdges.Add(oPreviousVertex, oVertex, true);
+
+                #if true  // Edge label.
+
+                oRandomEdge.SetValue(ReservedMetadataKeys.PerEdgeLabel,
+                    "This is a random edge label");
+
+                #endif
             }
             #endif
 

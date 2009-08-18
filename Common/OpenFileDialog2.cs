@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Xml;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -129,12 +130,16 @@ public abstract class OpenFileDialog2
             {
                 oException = oFormatException;
             }
+            catch (XmlException oXmlException)
+            {
+                oException = oXmlException;
+            }
 
             if (oException != null)
             {
                 OnOpenError( String.Format(
                 
-                    "The file could not be opened.\n\n{0}"
+                    "The file could not be opened.  Details:\n\n{0}"
                     ,
                     oException.Message
                     ) );

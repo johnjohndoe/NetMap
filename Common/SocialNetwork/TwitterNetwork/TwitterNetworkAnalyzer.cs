@@ -44,6 +44,7 @@ public class TwitterNetworkAnalyzer : Object
     public TwitterNetworkAnalyzer()
     {
         m_iHttpWebRequestTimeoutMs = 10000;
+        m_iHttpWebRequestRetries = 0;
         m_oBackgroundWorker = null;
 
         AssertValid();
@@ -58,7 +59,7 @@ public class TwitterNetworkAnalyzer : Object
     ///
     /// <value>
     /// The timeout to use for Twitter Web requests, in milliseconds.  Must be
-    /// greater than zero.
+    /// greater than zero.  The default value is 10,000.
     /// </value>
     //*************************************************************************
 
@@ -75,6 +76,38 @@ public class TwitterNetworkAnalyzer : Object
         set
         {
             m_iHttpWebRequestTimeoutMs = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: HttpWebRequestRetries
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of retries per request to the Twitter
+    /// Web service.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of retries per request to the Twitter Web service.
+    /// Must be greater than or equal to zero.  The default value is zero.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    HttpWebRequestRetries
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iHttpWebRequestRetries);
+        }
+
+        set
+        {
+            m_iHttpWebRequestRetries = value;
 
             AssertValid();
         }
@@ -118,6 +151,12 @@ public class TwitterNetworkAnalyzer : Object
     /// the analysis; if 2, the friends' friends are also included; and so on.
     /// </param>
     ///
+    /// <param name="includeParticipantDetails">
+    /// If true, an attempt is made to fill in all properties on each <see
+    /// cref="TwitterParticipant" /> object.  If false, only the <see
+    /// cref="TwitterParticipant.ScreenName" /> property is filled in.
+    /// </param>
+    ///
     /// <param name="credentialsScreenName">
     /// The screen name of the Twitter user whose credentials should be used,
     /// or null to not use credentials.
@@ -139,6 +178,7 @@ public class TwitterNetworkAnalyzer : Object
     (
         String screenNameToAnalyze,
         Int32 levels,
+        Boolean includeParticipantDetails,
         String credentialsScreenName,
         String credentialsPassword
     )
@@ -146,8 +186,8 @@ public class TwitterNetworkAnalyzer : Object
         AssertValid();
 
         return ( AnalyzeTwitterNetworkInternal(
-            screenNameToAnalyze, levels, credentialsScreenName,
-            credentialsPassword, null, null) );
+            screenNameToAnalyze, levels, includeParticipantDetails,
+            credentialsScreenName, credentialsPassword, null, null) );
     }
 
     //*************************************************************************
@@ -164,6 +204,12 @@ public class TwitterNetworkAnalyzer : Object
     /// <param name="levels">
     /// Number of levels to analyze.  If 1, the user's friends are included in
     /// the analysis; if 2, the friends' friends are also included; and so on.
+    /// </param>
+    ///
+    /// <param name="includeParticipantDetails">
+    /// If true, an attempt is made to fill in all properties on each <see
+    /// cref="TwitterParticipant" /> object.  If false, only the <see
+    /// cref="TwitterParticipant.ScreenName" /> property is filled in.
     /// </param>
     ///
     /// <param name="credentialsScreenName">
@@ -193,6 +239,7 @@ public class TwitterNetworkAnalyzer : Object
     (
         String screenNameToAnalyze,
         Int32 levels,
+        Boolean includeParticipantDetails,
         String credentialsScreenName,
         String credentialsPassword
     )
@@ -229,6 +276,9 @@ public class TwitterNetworkAnalyzer : Object
             screenNameToAnalyze;
 
         oAnalyzeTwitterNetworkAsyncArgs.Levels = levels;
+
+        oAnalyzeTwitterNetworkAsyncArgs.IncludeParticipantDetails =
+            includeParticipantDetails;
 
         oAnalyzeTwitterNetworkAsyncArgs.CredentialsScreenName =
             credentialsScreenName;
@@ -335,6 +385,12 @@ public class TwitterNetworkAnalyzer : Object
     /// See <see cref="AnalyzeTwitterNetwork" />.
     /// </param>
     ///
+    /// <param name="bIncludeParticipantDetails">
+    /// If true, an attempt is made to fill in all properties on each <see
+    /// cref="TwitterParticipant" /> object.  If false, only the <see
+    /// cref="TwitterParticipant.ScreenName" /> property is filled in.
+    /// </param>
+    ///
     /// <param name="sCredentialsScreenName">
     /// The screen name of the Twitter user whose credentials should be used,
     /// or null to not use credentials.
@@ -365,6 +421,7 @@ public class TwitterNetworkAnalyzer : Object
     (
         String sScreenNameToAnalyze,
         Int32 iLevels,
+        Boolean bIncludeParticipantDetails,
         String sCredentialsScreenName,
         String sCredentialsPassword,
         BackgroundWorker oBackgroundWorker,
@@ -384,13 +441,16 @@ public class TwitterNetworkAnalyzer : Object
         LinkedList<TwitterParticipantPair> oTwitterParticipantPairs =
             new LinkedList<TwitterParticipantPair>();
 
+        // The key is the screen name and the value is the corresponding
+        // TwitterParticipant.
+
         Dictionary<String, TwitterParticipant> oTwitterParticipants =
             new Dictionary<String, TwitterParticipant>();
 
         GetFriendsRecursive(sScreenNameToAnalyze, iLevels,
-            sCredentialsScreenName, sCredentialsPassword,
-            oTwitterParticipantPairs, oTwitterParticipants, oBackgroundWorker,
-            oDoWorkEventArgs);
+            bIncludeParticipantDetails, sCredentialsScreenName,
+            sCredentialsPassword, oTwitterParticipantPairs,
+            oTwitterParticipants, oBackgroundWorker, oDoWorkEventArgs);
 
         return ( new TwitterNetworkAnalysisResults(
 
@@ -416,6 +476,12 @@ public class TwitterNetworkAnalyzer : Object
     /// See <see cref="AnalyzeTwitterNetwork" />.
     /// </param>
     ///
+    /// <param name="bIncludeParticipantDetails">
+    /// If true, an attempt is made to fill in all properties on each <see
+    /// cref="TwitterParticipant" /> object.  If false, only the <see
+    /// cref="TwitterParticipant.ScreenName" /> property is filled in.
+    /// </param>
+    ///
     /// <param name="sCredentialsScreenName">
     /// The screen name of the Twitter user whose credentials should be used,
     /// or null to not use credentials.
@@ -431,7 +497,8 @@ public class TwitterNetworkAnalyzer : Object
     /// </param>
     ///
     /// <param name="oTwitterParticipants">
-    /// Where the participants get stored.
+    /// Where the participants get stored.  The key is the screen name and the
+    /// value is the corresponding TwitterParticipant.
     /// </param>
     ///
     /// <param name="oBackgroundWorker">
@@ -450,6 +517,7 @@ public class TwitterNetworkAnalyzer : Object
     (
         String sScreenNameToAnalyze,
         Int32 iLevels,
+        Boolean bIncludeParticipantDetails,
         String sCredentialsScreenName,
         String sCredentialsPassword,
         LinkedList<TwitterParticipantPair> oTwitterParticipantPairs,
@@ -499,7 +567,7 @@ public class TwitterNetworkAnalyzer : Object
                 );
 
             oXmlDocument = GetXmlDocumentFromUrl(sUrl, sCredentialsScreenName,
-                sCredentialsPassword);
+                sCredentialsPassword, m_iHttpWebRequestRetries);
 
             // The document consists of a single "users" node with zero or more
             // "user" child nodes.
@@ -520,7 +588,7 @@ public class TwitterNetworkAnalyzer : Object
                 // Convert the "user" node to a TwitterParticipant object.
 
                 if ( TryUserNodeToTwitterParticipant(oUserNode,
-                    out oTwitterParticipant) )
+                    bIncludeParticipantDetails, out oTwitterParticipant) )
                 {
                     String sOtherScreenName = oTwitterParticipant.ScreenName;
 
@@ -536,9 +604,10 @@ public class TwitterNetworkAnalyzer : Object
                         // Recurse;
 
                         GetFriendsRecursive(sOtherScreenName, iLevels - 1,
-                            sCredentialsScreenName, sCredentialsPassword,
-                            oTwitterParticipantPairs, oTwitterParticipants,
-                            oBackgroundWorker, oDoWorkEventArgs);
+                            bIncludeParticipantDetails, sCredentialsScreenName,
+                            sCredentialsPassword, oTwitterParticipantPairs,
+                            oTwitterParticipants, oBackgroundWorker,
+                            oDoWorkEventArgs);
                     }
                 }
 
@@ -558,31 +627,111 @@ public class TwitterNetworkAnalyzer : Object
 
         if ( !oTwitterParticipants.ContainsKey(sScreenNameToAnalyze) )
         {
-            // Get information about the sScreenNameToAnalyze user.
+            oTwitterParticipant = null;
 
-            sUrl = String.Format(
-
-                "http://twitter.com/users/show/{0}.xml"
-                ,
-                HttpUtility.UrlEncode(sScreenNameToAnalyze)
-                );
-
-            oXmlDocument = GetXmlDocumentFromUrl(sUrl, sCredentialsScreenName,
-                sCredentialsPassword);
-
-            // The document consists of a single "user" node.
-
-            XmlNode oThisUserNode = oXmlDocument.SelectSingleNode("user");
-
-            if (
-                oThisUserNode != null
-                &&
-                TryUserNodeToTwitterParticipant(oThisUserNode,
-                    out oTwitterParticipant)
-                )
+            if (bIncludeParticipantDetails)
             {
-                oTwitterParticipants[sScreenNameToAnalyze] =
-                    oTwitterParticipant;
+                // Get information about the sScreenNameToAnalyze user.
+
+                sUrl = String.Format(
+
+                    "http://twitter.com/users/show/{0}.xml"
+                    ,
+                    HttpUtility.UrlEncode(sScreenNameToAnalyze)
+                    );
+
+                oXmlDocument = GetXmlDocumentFromUrl(sUrl,
+                    sCredentialsScreenName, sCredentialsPassword,
+                    m_iHttpWebRequestRetries);
+
+                // The document consists of a single "user" node.
+
+                XmlNode oThisUserNode = oXmlDocument.SelectSingleNode("user");
+
+                if (
+                    oThisUserNode == null
+                    ||
+                    !TryUserNodeToTwitterParticipant(oThisUserNode,
+                        bIncludeParticipantDetails, out oTwitterParticipant)
+                    )
+                {
+                    oTwitterParticipant = null;
+                }
+            }
+
+            if (oTwitterParticipant == null)
+            {
+                oTwitterParticipant = new TwitterParticipant(
+                    sScreenNameToAnalyze);
+            }
+
+            Debug.Assert(oTwitterParticipant != null);
+
+            oTwitterParticipants[sScreenNameToAnalyze] = oTwitterParticipant;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetXmlDocumentFromUrl()
+    //
+    /// <overloads>
+    /// Gets an XML document from an URL.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Gets an XML document from an URL with a specified number of retries.
+    /// </summary>
+    ///
+    /// <param name="sUrl">
+    /// The URL to get the document from.
+    /// </param>
+    ///
+    /// <param name="sCredentialsScreenName">
+    /// The screen name of the Twitter user whose credentials should be used,
+    /// or null to not use credentials.
+    /// </param>
+    ///
+    /// <param name="sCredentialsPassword">
+    /// The password name of the Twitter user whose credentials should be used.
+    /// Used only if <paramref name="credentialsScreenName" /> is specified.
+    /// </param>
+    ///
+    /// <param name="iRetries">
+    /// The maximum number of retries.
+    /// </param>
+    ///
+    /// <returns>
+    /// The XmlDocument from the URL.
+    /// </returns>
+    //*************************************************************************
+
+    protected XmlDocument
+    GetXmlDocumentFromUrl
+    (
+        String sUrl,
+        String sCredentialsScreenName,
+        String sCredentialsPassword,
+        Int32 iRetries
+    )
+    {
+        Debug.Assert(iRetries >= 0);
+        AssertValid();
+
+        while (true)
+        {
+            try
+            {
+                return ( GetXmlDocumentFromUrl(sUrl, sCredentialsScreenName,
+                    sCredentialsPassword) );
+            }
+            catch (Exception oException)
+            {
+                iRetries--;
+
+                if (iRetries < 0)
+                {
+                    throw (oException);
+                }
             }
         }
     }
@@ -591,7 +740,7 @@ public class TwitterNetworkAnalyzer : Object
     //  Method: GetXmlDocumentFromUrl()
     //
     /// <summary>
-    /// Gets an XML document from an URL.
+    /// Gets an XML document from an URL with no retries.
     /// </summary>
     ///
     /// <param name="sUrl">
@@ -673,13 +822,10 @@ public class TwitterNetworkAnalyzer : Object
             }
 
             oHttpWebRequest.Timeout = m_iHttpWebRequestTimeoutMs;
-
             oHttpWebResponse = (HttpWebResponse)oHttpWebRequest.GetResponse();
-
             oStream = oHttpWebResponse.GetResponseStream();
 
             oXmlDocument = new XmlDocument();
-
             oXmlDocument.Load(oStream);
         }
         finally
@@ -710,6 +856,12 @@ public class TwitterNetworkAnalyzer : Object
     /// "user" XML node from a Twitter XML document.
     /// </param>
     ///
+    /// <param name="bIncludeParticipantDetails">
+    /// If true, an attempt is made to fill in all properties on each <see
+    /// cref="TwitterParticipant" /> object.  If false, only the <see
+    /// cref="TwitterParticipant.ScreenName" /> property is filled in.
+    /// </param>
+    ///
     /// <param name="oTwitterParticipant">
     /// Where a new TwitterParticipant object gets stored if true is returned.
     /// </param>
@@ -723,6 +875,7 @@ public class TwitterNetworkAnalyzer : Object
     TryUserNodeToTwitterParticipant
     (
         XmlNode oUserNode,
+        Boolean bIncludeParticipantDetails,
         out TwitterParticipant oTwitterParticipant
     )
     {
@@ -742,6 +895,12 @@ public class TwitterNetworkAnalyzer : Object
             // Nothing can be done without a screen name.
 
             return (false);
+        }
+
+        if (!bIncludeParticipantDetails)
+        {
+            oTwitterParticipant = new TwitterParticipant(sScreenName);
+            return (true);
         }
 
         if ( !XmlUtil.GetInt32NodeValue(oUserNode, "id", false,
@@ -907,6 +1066,7 @@ public class TwitterNetworkAnalyzer : Object
             AnalyzeTwitterNetworkInternal(
                 oAnalyzeTwitterNetworkAsyncArgs.ScreenNameToAnalyze,
                 oAnalyzeTwitterNetworkAsyncArgs.Levels,
+                oAnalyzeTwitterNetworkAsyncArgs.IncludeParticipantDetails,
                 oAnalyzeTwitterNetworkAsyncArgs.CredentialsScreenName,
                 oAnalyzeTwitterNetworkAsyncArgs.CredentialsPassword,
                 oBackgroundWorker,
@@ -969,6 +1129,7 @@ public class TwitterNetworkAnalyzer : Object
     AssertValid()
     {
         Debug.Assert(m_iHttpWebRequestTimeoutMs > 0);
+        Debug.Assert(m_iHttpWebRequestRetries >= 0);
         // m_oBackgroundWorker
     }
 
@@ -989,6 +1150,10 @@ public class TwitterNetworkAnalyzer : Object
     /// The timeout to use for Twitter Web requests, in milliseconds.
 
     protected Int32 m_iHttpWebRequestTimeoutMs;
+
+    /// The maximum number of retries per request to the Twitter Web service.
+
+    protected Int32 m_iHttpWebRequestRetries;
 
     /// Used for asynchronous analysis.  null if an asynchronous analysis is
     /// not in progress.
@@ -1011,6 +1176,8 @@ public class TwitterNetworkAnalyzer : Object
         public String ScreenNameToAnalyze;
         ///
         public Int32 Levels;
+        ///
+        public Boolean IncludeParticipantDetails;
         ///
         public String CredentialsScreenName;
         ///

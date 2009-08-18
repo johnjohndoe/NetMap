@@ -10,6 +10,7 @@ using Microsoft.Office.Tools.Ribbon;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.NodeXL.ApplicationUtil;
+using Microsoft.NodeXL.ExcelTemplatePlugIns;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -35,6 +36,10 @@ public partial class Ribbon : OfficeRibbon
     public Ribbon()
     {
         InitializeComponent();
+
+        // Initialize the application's user settings.
+
+        UserSettingsManager.Initialize();
 
         // Populate the rddLayouts RibbonDropDown.
 
@@ -575,6 +580,138 @@ public partial class Ribbon : OfficeRibbon
             this.ClearTablesBeforeImport;
 
         oGeneralUserSettings.Save();
+
+        // Close the application's user settings.
+
+        UserSettingsManager.Close();
+    }
+
+    //*************************************************************************
+    //  Method: mnuImport_ItemsLoading()
+    //
+    /// <summary>
+    /// Handles the ItemsLoading event on the mnuImport RibbonMenu.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    mnuImport_ItemsLoading
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        if (mnuImport.Tag is Boolean)
+        {
+            // This method has already been called.
+
+            return;
+        }
+
+        // Get an array of plug-in classes that implement IGraphDataProvider.
+
+        IGraphDataProvider [] oGraphDataProviders;
+        this.ThisWorkbook.ShowWaitCursor = true;
+
+        try
+        {
+            oGraphDataProviders = PlugInManager.GetGraphDataProviders();
+        }
+        finally
+        {
+            this.ThisWorkbook.ShowWaitCursor = false;
+        }
+
+        Int32 iGraphDataProviders = oGraphDataProviders.Length;
+
+        if (iGraphDataProviders == 0)
+        {
+            return;
+        }
+
+        // For each such class, add a child menu item to the Import menu.
+
+        RibbonComponentCollection<RibbonControl> oImportItems =
+            mnuImport.Items;
+
+        Int32 iInsertionIndex = oImportItems.IndexOf(btnAnalyzeTwitterNetwork)
+            + 1;
+
+        Debug.Assert(iInsertionIndex > 0);
+
+        oImportItems.Insert( iInsertionIndex, new RibbonSeparator() );
+        iInsertionIndex++;
+
+        foreach (IGraphDataProvider oGraphDataProvider in oGraphDataProviders)
+        {
+            RibbonButton oRibbonButton = new RibbonButton();
+
+            String sGraphDataProviderName = oGraphDataProvider.Name;
+            oRibbonButton.Label = "From " + sGraphDataProviderName + "...";
+            oRibbonButton.ScreenTip = "Import from " + sGraphDataProviderName;
+            oRibbonButton.Tag = oGraphDataProvider;
+
+            oRibbonButton.SuperTip =
+                "Optionally clear the NodeXL workbook, then "
+                + oGraphDataProvider.Description + "."
+                ;
+
+            oRibbonButton.Click += new EventHandler<RibbonControlEventArgs>(
+                this.btnImportFromGraphDataProvider_Click);
+
+            oImportItems.Insert(iInsertionIndex, oRibbonButton);
+            iInsertionIndex++;
+        }
+
+        // Prevent menu items from being added again by using the Tag to store
+        // a flag.
+
+        mnuImport.Tag = true;
+    }
+
+    //*************************************************************************
+    //  Method: btnImportFromGraphDataProvider_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnImportFromGraphDataProvider buttons.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnImportFromGraphDataProvider_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // The plug-in class that implements IGraphDataProvider was stored in
+        // the Tag of the RibbonButton by mnuImport_ItemsLoading().
+
+        Debug.Assert(sender is RibbonControl);
+        Debug.Assert( ( (RibbonControl)sender ).Tag is IGraphDataProvider );
+
+        this.ThisWorkbook.ImportFromGraphDataProvider(
+            (IGraphDataProvider)( (RibbonControl)sender ).Tag);
     }
 
     //*************************************************************************
@@ -1354,6 +1491,34 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: btnImportFromGraphMLFile_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnImportFromGraphMLFile button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnImportFromGraphMLFile_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ImportFromGraphMLFile();
+    }
+
+    //*************************************************************************
     //  Method: btnImportFromPajekFile_Click()
     //
     /// <summary>
@@ -1522,18 +1687,22 @@ public partial class Ribbon : OfficeRibbon
 
         PerWorkbookSettings oPerWorkbookSettings = GetPerWorkbookSettings();
 
-        // Note that the cbxShowVisualAttributesColumnGroups RibbonCheckBox
+        // Note that the cbxShowVisualAttributeColumnGroups RibbonCheckBox
         // controls the visibility of two column groups:
         // ColumnGroup.EdgeVisualAttributes and
         // ColumnGroup.VertexVisualAttributes.
 
-        cbxShowVisualAttributesColumnGroups.Checked =
+        cbxShowVisualAttributeColumnGroups.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.EdgeVisualAttributes);
 
-        cbxShowVertexLabelsColumnGroup.Checked =
+        // Note that the cbxShowLabelColumnGroups RibbonCheckBox controls the
+        // visibility of two column groups: ColumnGroup.EdgeLabels and
+        // ColumnGroup.VertexLabels.
+
+        cbxShowLabelColumnGroups.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
-                ColumnGroup.VertexLabels);
+                ColumnGroup.EdgeLabels);
 
         cbxShowVertexLayoutColumnGroup.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
@@ -1575,7 +1744,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowVisualAttributesColumnGroups_Click
+    cbxShowVisualAttributeColumnGroups_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1583,7 +1752,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        Boolean bShow = this.cbxShowVisualAttributesColumnGroups.Checked;
+        Boolean bShow = this.cbxShowVisualAttributeColumnGroups.Checked;
         ThisWorkbook oThisWorkbook = this.ThisWorkbook;
 
         oThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeVisualAttributes,
@@ -1594,11 +1763,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: cbxShowVertexLabelsColumnGroup_Click()
+    //  Method: cbxShowLabelColumnGroups_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowVertexLabelsColumnGroup
-    /// RibbonCheckBox.
+    /// Handles the Click event on the cbxShowLabelColumnGroups RibbonCheckBox.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1611,7 +1779,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowVertexLabelsColumnGroup_Click
+    cbxShowLabelColumnGroups_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1619,8 +1787,11 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexLabels,
-            this.cbxShowVertexLabelsColumnGroup.Checked, true);
+        Boolean bShow = this.cbxShowLabelColumnGroups.Checked;
+        ThisWorkbook oThisWorkbook = this.ThisWorkbook;
+
+        oThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeLabels, bShow, false);
+        oThisWorkbook.ShowColumnGroup(ColumnGroup.VertexLabels, bShow, false);
     }
 
     //*************************************************************************

@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("NodeXL Control for WPF")]
-[assembly: AssemblyDescription("WPF control that displays a NodeXL graph")]
+[assembly: AssemblyTitle("NodeXL Excel Template Plug-In Interfaces")]
+[assembly: AssemblyDescription("Interface definitions for Excel Template plug-ins")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft Research")]
 [assembly: AssemblyProduct("Microsoft NodeXL")]
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("37b24b4e-0549-4ac4-a7b6-721608fc2a2c")]
+[assembly: Guid("01a4e15f-8484-4278-805f-40c495cbb742")]
 
 // Version information for an assembly consists of the following four values:
 //

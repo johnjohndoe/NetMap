@@ -11,6 +11,8 @@ using Microsoft.Office.Core;
 using System.Reflection;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
+using Microsoft.NodeXL.Adapters;
+using Microsoft.NodeXL.ExcelTemplatePlugIns;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -78,6 +80,32 @@ public partial class ThisWorkbook
 
             oGeneralUserSettings.NewWorkbookGraphDirectedness = value;
             oGeneralUserSettings.Save();
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ShowWaitCursor
+    //
+    /// <summary>
+    /// Sets a flag specifying whether the wait cursor should be shown.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to show the wait cursor.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ShowWaitCursor
+    {
+        set
+        {
+            this.Application.Cursor = value ?
+                Microsoft.Office.Interop.Excel.XlMousePointer.xlWait
+                :
+                Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
 
             AssertValid();
         }
@@ -189,6 +217,58 @@ public partial class ThisWorkbook
                 this.Ribbon.ClearTablesBeforeImport);
 
         oImportFromEdgeWorkbookDialog.ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: ImportFromGraphDataProvider()
+    //
+    /// <summary>
+    /// Imports a graph from an IGraphDataProvider implementation.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ImportFromGraphDataProvider
+    (
+        IGraphDataProvider graphDataProvider
+    )
+    {
+        Debug.Assert(graphDataProvider != null);
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        ShowWaitCursor = true;
+
+        try
+        {
+            String sGraphData = graphDataProvider.GetGraphData();
+
+            IGraph oGraph = ( new GraphMLGraphAdapter() ).LoadGraph(
+                new GraphFactory(), sGraphData);
+
+            ImportGraph(oGraph, 
+
+                ( String[] )oGraph.GetRequiredValue(
+                    ReservedMetadataKeys.GraphMLEdgeAttributes,
+                    typeof( String[] ) ),
+
+                ( String[] )oGraph.GetRequiredValue(
+                    ReservedMetadataKeys.GraphMLVertexAttributes,
+                    typeof( String[] ) )
+                );
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            ShowWaitCursor = false;
+        }
     }
 
     //*************************************************************************
@@ -840,8 +920,27 @@ public partial class ThisWorkbook
         if (oOpenUcinetFileDialog.ShowDialog() == DialogResult.OK)
         {
             // Import the graph's edges and vertices into the workbook.
+            //
+            // To accommodate the requirements of the general-purpose
+            // ImportGraph() method, duplicate the standard
+            // ReservedMetadataKeys.EdgeWeight key, which is some arbitrary
+            // string, with the name of the Excel column name where the key's
+            // values should get written.
 
-            ImportGraph(oOpenUcinetFileDialog.Graph, true);
+            foreach (IEdge oEdge in oOpenUcinetFileDialog.Graph.Edges)
+            {
+                Object oEdgeWeight;
+
+                if ( oEdge.TryGetValue(ReservedMetadataKeys.EdgeWeight,
+                    typeof(Double), out oEdgeWeight) )
+                {
+                    oEdge.SetValue(EdgeTableColumnNames.EdgeWeight,
+                        (Double)oEdgeWeight);
+                }
+            }
+
+            ImportGraph(oOpenUcinetFileDialog.Graph,
+                new String[] {EdgeTableColumnNames.EdgeWeight}, null);
         }
     }
 
@@ -872,7 +971,48 @@ public partial class ThisWorkbook
         {
             // Import the graph's edges and vertices into the workbook.
 
-            ImportGraph(oGraph, false);
+            ImportGraph(oGraph, null, null);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ImportFromGraphMLFile()
+    //
+    /// <summary>
+    /// Imports the contents of a GraphML file into the workbook.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ImportFromGraphMLFile()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        // Create a graph from a GraphML file selected by the user.
+
+        IGraph oGraph;
+        OpenGraphMLFileDialog oDialog = new OpenGraphMLFileDialog();
+
+        if (oDialog.ShowDialogAndOpenGraphMLFile(out oGraph) ==
+            DialogResult.OK)
+        {
+            // Import the graph's edges and vertices into the workbook.
+
+            ImportGraph(oGraph,
+
+                ( String[] )oGraph.GetRequiredValue(
+                    ReservedMetadataKeys.GraphMLEdgeAttributes,
+                    typeof( String[] ) ),
+
+                ( String[] )oGraph.GetRequiredValue(
+                    ReservedMetadataKeys.GraphMLVertexAttributes,
+                    typeof( String[] ) )
+                );
         }
     }
 
@@ -1422,32 +1562,6 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Property: ShowWaitCursor
-    //
-    /// <summary>
-    /// Sets a flag specifying whether the wait cursor should be shown.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to show the wait cursor.
-    /// </value>
-    //*************************************************************************
-
-    private Boolean
-    ShowWaitCursor
-    {
-        set
-        {
-            this.Application.Cursor = value ?
-                Microsoft.Office.Interop.Excel.XlMousePointer.xlWait
-                :
-                Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Method: EnableSetVisualAttributes
     //
     /// <summary>
@@ -1543,9 +1657,14 @@ public partial class ThisWorkbook
     /// The graph to import.
     /// </param>
     ///
-    /// <param name="bImportEdgeWeights">
-    /// If true, an Edge Weight column is added to the workbook and any edge
-    /// weights in the graph's edges are written to the column.
+    /// <param name="oEdgeAttributes">
+    /// Array of edge attribute keys that have been added to the metadata of
+    /// the graph's vertices.  Can be null.
+    /// </param>
+    ///
+    /// <param name="oVertexAttributes">
+    /// Array of vertex attribute keys that have been added to the metadata of
+    /// the graph's vertices.  Can be null.
     /// </param>
     //*************************************************************************
 
@@ -1553,7 +1672,8 @@ public partial class ThisWorkbook
     ImportGraph
     (
         IGraph oGraph,
-        Boolean bImportEdgeWeights
+        String [] oEdgeAttributes,
+        String [] oVertexAttributes
     )
     {
         Debug.Assert(oGraph != null);
@@ -1565,8 +1685,9 @@ public partial class ThisWorkbook
 
         try
         {
-            oGraphImporter.ImportGraph(oGraph, bImportEdgeWeights,
-                this.Ribbon.ClearTablesBeforeImport, this.InnerObject);
+            oGraphImporter.ImportGraph(oGraph, oEdgeAttributes,
+                oVertexAttributes, this.Ribbon.ClearTablesBeforeImport,
+                this.InnerObject);
 
             this.ScreenUpdating = true;
         }

@@ -32,6 +32,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <item><see cref="ReservedMetadataKeys.PerColor" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerAlpha" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerEdgeWidth" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerEdgeLabel" /></item>
 /// <item><see cref="ReservedMetadataKeys.IsSelected" /></item>
 ///
 /// </list>
@@ -365,6 +366,19 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
 
                 oDrawingContext.DrawLine(GetPen(oColor, dWidth),
                     oEdgeEndpoint1, oEdgeEndpoint2);
+
+                // Draw the edge's label, if there is one.
+
+                Object oLabelAsObject;
+
+                if ( edge.TryGetValue(ReservedMetadataKeys.PerEdgeLabel,
+                    typeof(String), out oLabelAsObject)
+                    && oLabelAsObject != null)
+                {
+                    DrawLabel(oDrawingContext, graphDrawingContext,
+                        oEdgeEndpoint1, oEdgeEndpoint2,
+                        (String)oLabelAsObject, oColor);
+                }
             }
 
             // Retain information about the edge that was drawn.
@@ -885,6 +899,180 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
         return ( aoPoints[3] );
     }
 
+    //*************************************************************************
+    //  Method: DrawLabel()
+    //
+    /// <summary>
+    /// Draws an edge's label.
+    /// </summary>
+    ///
+    /// <param name="oDrawingContext">
+    /// The DrawingContext to use.
+    /// </param>
+    ///
+    /// <param name="oGraphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.
+    /// </param>
+    ///
+    /// <param name="oEdgeEndpoint1">
+    /// The edge's first endpoint.
+    /// </param>
+    ///
+    /// <param name="oEdgeEndpoint2">
+    /// The edge's second endpoint.
+    /// </param>
+    ///
+    /// <param name="sLabel">
+    /// The edge's label.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="oTextColor">
+    /// The color to use for the label text.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method will not properly draw a label for a self-loop.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    DrawLabel
+    (
+        DrawingContext oDrawingContext,
+        GraphDrawingContext oGraphDrawingContext,
+        Point oEdgeEndpoint1,
+        Point oEdgeEndpoint2,
+        String sLabel,
+        Color oTextColor
+    )
+    {
+        Debug.Assert(oDrawingContext != null);
+        Debug.Assert(oGraphDrawingContext != null);
+        Debug.Assert(sLabel != null);
+        AssertValid();
+
+        if (sLabel.Length == 0)
+        {
+            return;
+        }
+
+        if (oEdgeEndpoint2.X < oEdgeEndpoint1.X)
+        {
+            // Don't let text be drawn upside-down.
+
+            Point oTemp = oEdgeEndpoint2;
+            oEdgeEndpoint2 = oEdgeEndpoint1;
+            oEdgeEndpoint1 = oTemp;
+        }
+
+        Double dEdgeAngleDegrees = MathUtil.RadiansToDegrees(
+            WpfGraphicsUtil.GetAngleBetweenPoints(
+                oEdgeEndpoint1, oEdgeEndpoint2) );
+
+        Double dEdgeLength = WpfGraphicsUtil.GetDistanceBetweenPoints(
+            oEdgeEndpoint1, oEdgeEndpoint2);
+
+        // To avoid trigonometric calculations, use a RotateTransform to make
+        // the edge look as if it is horizontal, with oEdgeEndpoint2 to the
+        // right of oEdgeEndpoint1.
+
+        RotateTransform oRotateTransform = new RotateTransform(
+            dEdgeAngleDegrees, oEdgeEndpoint1.X, oEdgeEndpoint1.Y);
+
+        oEdgeEndpoint2 = oRotateTransform.Transform(oEdgeEndpoint2);
+        oRotateTransform.Angle = -dEdgeAngleDegrees;
+        oDrawingContext.PushTransform(oRotateTransform);
+
+        FormattedText oFormattedText = CreateFormattedText(sLabel, oTextColor);
+        oFormattedText.Trimming = TextTrimming.CharacterEllipsis;
+
+        if (sLabel.IndexOf('\n') == -1)
+        {
+            // Unless the label includes line breaks, don't allow the
+            // FormattedText class to break the text into multiple lines.
+
+            oFormattedText.MaxLineCount = 1;
+        }
+
+        Double dTextWidth = oFormattedText.Width;
+
+        // The ends of the label text are between one and two "buffer units"
+        // from the ends of the edge.  The buffer unit is the width of an
+        // arbitrary character.
+
+        Double dBufferUnit = CreateFormattedText("i", oTextColor).Width;
+        Double dEdgeLengthMinusBuffers = dEdgeLength - 2 * dBufferUnit;
+
+        if (dEdgeLengthMinusBuffers <= 0)
+        {
+            return;
+        }
+
+        // Determine where to draw the label text, and where to draw a
+        // translucent rectangle behind the text.  The translucent rectangle
+        // serves to obscure, but not completely hide, the underlying edge.
+
+        Point oLabelOrigin = oEdgeEndpoint1;
+        Rect oTranslucentRectangle;
+
+        if (dTextWidth > dEdgeLengthMinusBuffers)
+        {
+            // The label text should start one buffer unit from the first
+            // endpoint, and terminate with ellipses approximately one buffer
+            // length from the second endpoint.
+
+            oLabelOrigin.Offset(dBufferUnit, 0);
+            oFormattedText.MaxTextWidth = dEdgeLengthMinusBuffers;
+
+            // The translucent rectangle should be the same width as the text.
+
+            oTranslucentRectangle = new Rect( oLabelOrigin,
+                new Size(dEdgeLengthMinusBuffers, oFormattedText.Height) );
+        }
+        else
+        {
+            // The label should be centered along the edge's length.
+
+            oLabelOrigin.Offset(dEdgeLength / 2.0, 0);
+            oFormattedText.TextAlignment = TextAlignment.Center;
+
+            // The translucent rectangle should extend between zero and one
+            // buffer units beyond the ends of the text.  This provides a
+            // margin between the text and the unobscured edge, if there is
+            // enough space.
+
+            oTranslucentRectangle = new Rect( oLabelOrigin,
+
+                new Size(
+                    Math.Min(dTextWidth + 2 * dBufferUnit,
+                        dEdgeLengthMinusBuffers),
+
+                    oFormattedText.Height)
+                );
+
+            oTranslucentRectangle.Offset(
+                -oTranslucentRectangle.Width / 2.0, 0);
+        }
+
+        // The text and rectangle should be vertically centered on the edge.
+
+        oDrawingContext.PushTransform(
+            new TranslateTransform(0, -oFormattedText.Height / 2.0) );
+
+        // Draw the translucent rectangle, then the text.
+
+        oDrawingContext.DrawRectangle(GetBrush(
+            WpfGraphicsUtil.SetWpfColorAlpha(
+                oGraphDrawingContext.BackColor, LabelBackgroundAlpha)
+                ),
+            null, oTranslucentRectangle);
+
+        oDrawingContext.DrawText(oFormattedText, oLabelOrigin);
+
+        oDrawingContext.Pop();
+        oDrawingContext.Pop();
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -954,6 +1142,10 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
     /// Radius of a self-loop edge, which is drawn as a circle.
 
     protected const Double SelfLoopCircleRadius = 10;
+
+    /// Alpha value for the background of edge labels.
+
+    protected const Byte LabelBackgroundAlpha = (Byte)( (80F / 100F) * 255F );
 
 
     //*************************************************************************

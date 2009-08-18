@@ -4,6 +4,7 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Globalization;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.WpfGraphicsLib;
@@ -35,6 +36,11 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         m_oColor = SystemColors.WindowTextColor;
         m_oSelectedColor = SystemColors.HighlightColor;
         m_btFilteredAlpha = 10;
+
+        m_oTypeface = new Typeface(SystemFonts.MessageFontFamily,
+            FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+
+        m_dFontSizeEm = 10;
 
         CreateDrawingObjects();
 
@@ -238,6 +244,49 @@ public class VertexAndEdgeDrawerBase : DrawerBase
             AssertValid();
         }
     }
+
+    //*************************************************************************
+    //  Method: SetFont()
+    //
+    /// <summary>
+    /// Sets the font used to draw labels.
+    /// </summary>
+    ///
+    /// <param name="typeface">
+    /// The Typeface to use.
+    /// </param>
+    ///
+    /// <param name="emSize">
+    /// The font size to use, in ems.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The default font is the SystemFonts.MessageFontFamily at size 10.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    SetFont
+    (
+        Typeface typeface,
+        Double emSize
+    )
+    {
+        Debug.Assert(typeface != null);
+        Debug.Assert(emSize > 0);
+        AssertValid();
+
+        if (m_oTypeface == typeface && m_dFontSizeEm == emSize)
+        {
+            return;
+        }
+
+        m_oTypeface = typeface;
+        m_dFontSizeEm = emSize;
+
+        FireLayoutRequired();
+    }
+
     //*************************************************************************
     //  Method: GetVisibility()
     //
@@ -412,7 +461,7 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         Debug.Assert( !String.IsNullOrEmpty(sKey) );
         AssertValid();
 
-		Byte btDefaultAlpha = oDefaultColor.A;
+        Byte btDefaultAlpha = oDefaultColor.A;
 
         // Start with the default color.
 
@@ -425,7 +474,7 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         if ( TryGetColorValue(oVertexOrEdge, sKey, out oPerColor) )
         {
             oColor = oPerColor;
-			oColor.A = btDefaultAlpha;
+            oColor.A = btDefaultAlpha;
         }
 
         if (bApplyAlpha)
@@ -596,7 +645,6 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         return (true);
     }
 
-
     //*************************************************************************
     //  Method: CreateDrawingObjects()
     //
@@ -612,6 +660,38 @@ public class VertexAndEdgeDrawerBase : DrawerBase
 
         m_oDefaultBrush = CreateFrozenSolidColorBrush(m_oColor);
         m_oDefaultPen = CreateFrozenPen(m_oDefaultBrush, DefaultPenThickness);
+    }
+
+    //*************************************************************************
+    //  Method: CreateFormattedText()
+    //
+    /// <summary>
+    /// Creates a FormattedText object.
+    /// </summary>
+    ///
+    /// <param name="sText">
+    /// The text to draw.  Can't be null.
+    /// </param>
+    ///
+    /// <param name="oColor">
+    /// The text color.
+    /// </param>
+    //*************************************************************************
+
+    protected FormattedText
+    CreateFormattedText
+    (
+        String sText,
+        Color oColor
+    )
+    {
+        Debug.Assert(sText != null);
+
+        FormattedText oFormattedText = new FormattedText( sText,
+            CultureInfo.CurrentCulture, FlowDirection.LeftToRight, m_oTypeface,
+            m_dFontSizeEm, GetBrush(oColor) );
+
+        return (oFormattedText);
     }
 
     //*************************************************************************
@@ -710,6 +790,8 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         Debug.Assert(m_btFilteredAlpha <= 255);
         Debug.Assert(m_oDefaultBrush != null);
         Debug.Assert(m_oDefaultPen != null);
+        Debug.Assert(m_oTypeface != null);
+        Debug.Assert(m_dFontSizeEm > 0);
     }
 
 
@@ -750,6 +832,14 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     /// Default pen to use.
 
     protected Pen m_oDefaultPen;
+
+    /// The Typeface to use to draw labels.
+
+    protected Typeface m_oTypeface;
+
+    /// The font size to use to draw labels, in ems.
+
+    protected Double m_dFontSizeEm;
 }
 
 }

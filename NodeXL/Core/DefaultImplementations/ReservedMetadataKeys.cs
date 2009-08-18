@@ -42,9 +42,12 @@ public static class ReservedMetadataKeys : Object
     public static readonly Char FirstChar = '~';
 
     /// <summary>
-    /// Key added to an edge to specify an edge weight.  The key's value is a
-    /// Double.
+    /// Key added to an edge to specify an edge weight.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a Double.
+    /// </remarks>
 
     public static readonly String EdgeWeight =
         FirstChar + "EW";
@@ -56,14 +59,18 @@ public static class ReservedMetadataKeys : Object
 
     /// <summary>
     /// Key added to a vertex to set the vertex's tooltip when using
-    /// NodeXLControl.  The key's value is a String.
+    /// NodeXLControl.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a String.
     ///
     /// <para>
     /// For tooltips to be visible, you must set
     /// NodeXLControl.UseVertexToolTips to true.  The default value is false.
     /// </para>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String VertexToolTip =
         FirstChar + "CCTT";
@@ -74,8 +81,11 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
-    /// Key added to a vertex or edge to draw it as selected.  The key's value
-    /// is null.
+    /// Key added to a vertex or edge to draw it as selected.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is null.
     ///
     /// <para>
     /// <b>Important Note:</b>
@@ -87,14 +97,18 @@ public static class ReservedMetadataKeys : Object
     /// instead.
     /// </para>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String IsSelected =
         FirstChar + "S";
 
     /// <summary>
-    /// Key added to a vertex or edge to control its visibility.  The key's
-    /// value is a member of the <see cref="VisibilityKeyValue" /> enumeration.
+    /// Key added to a vertex or edge to control its visibility.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a member of the <see cref="VisibilityKeyValue" />
+    /// enumeration.
     ///
     /// <para>
     /// If this key is present and its value is <see
@@ -103,24 +117,30 @@ public static class ReservedMetadataKeys : Object
     /// ignored.
     /// </para>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String Visibility =
         FirstChar + "VEVis";
 
     /// <summary>
     /// Key added to a vertex or edge to force it to be a specified color.
+    /// </summary>
+    ///
+    /// <remarks>
     /// The key's value can be either a System.Drawing.Color or a 
     /// System.Windows.Media.Color.
-    /// </summary>
+    /// </remarks>
 
     public static readonly String PerColor =
         FirstChar + "PDColor";
 
     /// <summary>
     /// Key added to a vertex or edge to force it to be a specified
-    /// transparency.  The key's value is a Byte between 0 (transparent) and
-    /// 255 (opaque).
+    /// transparency.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a Byte between 0 (transparent) and 255 (opaque).
     ///
     /// <para>
     /// If the <see cref="Visibility" /> key is present and its value is <see
@@ -129,7 +149,7 @@ public static class ReservedMetadataKeys : Object
     /// ignored.
     /// </para>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String PerAlpha =
         FirstChar + "PDAlpha";
@@ -140,67 +160,101 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
-    /// Key added to a vertex to force it to be a specified shape.  The key's
-    /// value is a VertexShape.
+    /// Key added to a vertex to force it to be a specified shape.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a VertexShape.
+    /// </remarks>
 
     public static readonly String PerVertexShape =
-        FirstChar + "PVDShape";
+        FirstChar + "VDShape";
 
     /// <summary>
-    /// Key added to a vertex to force it to be a specified radius.  The key's
-    /// value is a Single between VertexDrawer.MinimumRadius and
-    /// VertexDrawer.MaximumRadius.
+    /// Key added to a vertex to force it to be a specified radius.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a Single between VertexDrawer.MinimumRadius and
+    /// VertexDrawer.MaximumRadius.
+    /// </remarks>
 
     public static readonly String PerVertexRadius =
-        FirstChar + "PVDRadius";
+        FirstChar + "VDRadius";
 
     /// <summary>
     /// Key added to a vertex to force it to be drawn as an image instead of a
-    /// shape.  The key's value is a System.Windows.Media.ImageSource.
+    /// shape.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a System.Windows.Media.ImageSource.
+    /// </remarks>
 
     public static readonly String PerVertexImage =
-        FirstChar + "PVIDImage";
+        FirstChar + "VDImage";
 
     /// <summary>
     /// Key added to a vertex to force it to be drawn as a primary label, which
-    /// is a rectangle containing text.  The key's value is a System.String.
+    /// is a rectangle containing text. 
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a System.String.  If null or empty, a single-space
+    /// string (" ") is used for the primary label.
+    ///
+    /// <para>
     /// <see cref="PerVertexPrimaryLabel" /> and <see
     /// cref="PerVertexSecondaryLabel" /> may be specified in any combination.
-    /// </summary>
+    /// </para>
+    ///
+    /// </remarks>
 
     public static readonly String PerVertexPrimaryLabel =
-        FirstChar + "PVLDPrimaryLabel";
+        FirstChar + "VDPrimaryLabel";
 
     /// <summary>
     /// Key added to a vertex to force a primary label to have a specified fill
-    /// color.  The key's value is a Color.  Used only if <see
-    /// cref="PerVertexPrimaryLabel" /> is specified.
+    /// color.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a Color.  Used only if <see
+    /// cref="PerVertexPrimaryLabel" /> is specified.
+    /// </remarks>
 
     public static readonly String PerVertexPrimaryLabelFillColor =
-        FirstChar + "PVLDPrimaryLabelFillColor";
+        FirstChar + "VDPrimaryLabelFillColor";
 
     /// <summary>
     /// Key added to a vertex to force a secondary label to be drawn near it.
-    /// The key's value is a System.String.  A secondary label can be added to
-    /// any vertex, regardless of whether it is drawn as a shape, primary
-    /// label, or image.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a System.String.  If null or empty, no secondary
+    /// label is drawn.
+    ///
+    /// <para>
+    /// A secondary label can be added to any vertex, regardless of whether it
+    /// is drawn as a shape, primary label, or image.
+    /// </para>
+    ///
+    /// </remarks>
 
     public static readonly String PerVertexSecondaryLabel =
-        FirstChar + "PVLDSecondaryLabel";
+        FirstChar + "VDSecondaryLabel";
 
     /// <summary>
     /// Key added to a vertex to specify whether the vertex should be drawn a
-    /// a shape, image, or primary label.  The key's value is a member of the
-    /// VertexDrawingPrecedence enumeration.
+    /// a shape, image, or primary label.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a member of the VertexDrawingPrecedence enumeration.
+    /// </remarks>
 
     public static readonly String PerVertexDrawingPrecedence =
-        FirstChar + "PVDrawingPrecedence";
+        FirstChar + "VDDrawingPrecedence";
 
 
     //*************************************************************************
@@ -208,13 +262,28 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
-    /// Key added to an edge to force it to be a specified width.  The key's
-    /// value is a Single between EdgeDrawer.MinimumWidth and
-    /// EdgeDrawer.MaximumWidth.
+    /// Key added to an edge to force it to be a specified width.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a Single between EdgeDrawer.MinimumWidth and
+    /// EdgeDrawer.MaximumWidth.
+    /// </remarks>
 
     public static readonly String PerEdgeWidth =
-        FirstChar + "PEDWidth";
+        FirstChar + "EDWidth";
+
+    /// <summary>
+    /// Key added to an edge to force a label to be drawn on top of it.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a System.String that specifies the edge's label.  If
+    /// null or empty, no label is drawn.
+    /// </remarks>
+
+    public static readonly String PerEdgeLabel =
+        FirstChar + "EDLabel";
 
 
     //*************************************************************************
@@ -222,9 +291,13 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
-    /// Key added to the graph after it has been laid out.  The key's value is
-    /// of type Rectangle and stores the graph's layout rectangle.
+    /// Key added to the graph after it has been laid out.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is of type Rectangle and stores the graph's layout
+    /// rectangle.
+    /// </remarks>
 
     public static readonly String LayoutBaseLayoutComplete =
         FirstChar + "LBLayoutComplete";
@@ -235,10 +308,13 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
-    /// To specify the order in which the vertices are laid out in the graph
-    /// when using a layout derived from SortableLayoutBase, add the <see
-    /// cref="SortableLayoutOrder" /> key to every vertex.  The key's value is
-    /// of type Single.  You must also add the <see
+    /// Key added to every vertex to specify the order in which the vertices
+    /// are laid out in the graph when using a layout derived from
+    /// SortableLayoutBase.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is of type Single.  You must also add the <see
     /// cref="SortableLayoutOrderSet" /> key to the graph.
     ///
     /// <para>
@@ -246,7 +322,7 @@ public static class ReservedMetadataKeys : Object
     /// but not others, an exception is thrown.
     /// </para>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String SortableLayoutOrder =
         FirstChar + "SLOrder";
@@ -254,12 +330,58 @@ public static class ReservedMetadataKeys : Object
     /// <summary>
     /// Key added to the graph to specify that the vertex layout order has been
     /// set on each vertex with the <see cref="SortableLayoutOrder" /> key.
+    /// </summary>
+    ///
+    /// <remarks>
     /// The value of the <see cref="SortableLayoutOrderSet" /> key is null.
     /// This key is used only by layouts derived from SortableLayoutBase.
-    /// </summary>
+    /// </remarks>
 
     public static readonly String SortableLayoutOrderSet =
         FirstChar + "SLOrderSpecified";
+
+
+    //*************************************************************************
+    //  Keys used by GraphMLGraphAdapter
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
+    /// which keys were added to each of the graph's edges.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
+    /// String[], and the array contains one string for each edge
+    /// GraphML-attribute defined in the GraphML XML.
+    ///
+    /// <para>
+    /// See the "GraphML Primer" for information on the GraphML XML format.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String GraphMLEdgeAttributes =
+        FirstChar + "GraphMLEdgeAttributes";
+
+    /// <summary>
+    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
+    /// which keys were added to each of the graph's vertices.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
+    /// String[], and the array contains one string for each vertex
+    /// GraphML-attribute defined in the GraphML XML.
+    ///
+    /// <para>
+    /// See the "GraphML Primer" for information on the GraphML XML format.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String GraphMLVertexAttributes =
+        FirstChar + "GraphMLVertexAttributes";
 
 
     //*************************************************************************
@@ -268,11 +390,14 @@ public static class ReservedMetadataKeys : Object
 
     /// <summary>
     /// Key added to a graph to tell the layout algorithm to lay out only a
-    /// specified set of vertices.  The key's value is an IVertex array
-    /// containing the vertices to lay out.  When this key is present on the
-    /// graph, the layout completely ignores the graph's vertices that are not
-    /// in the specified array.
+    /// specified set of vertices.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an IVertex array containing the vertices to lay out.
+    /// When this key is present on the graph, the layout completely ignores
+    /// the graph's vertices that are not in the specified array.
+    /// </remarks>
 
     public static readonly String LayOutTheseVerticesOnly =
 
@@ -280,10 +405,13 @@ public static class ReservedMetadataKeys : Object
 
     /// <summary>
     /// Key added to a vertex to tell the layout algorithm to leave the vertex
-    /// at its current location.  The key's value is a Boolean.  The layout may
-    /// include the vertex in its overall layout calculations, but it cannot
-    /// move the vertex.
+    /// at its current location.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is a Boolean.  The layout may include the vertex in its
+    /// overall layout calculations, but it cannot move the vertex.
+    /// </remarks>
 
     public static readonly String LockVertexLocation =
         FirstChar + "LLock";
@@ -295,6 +423,9 @@ public static class ReservedMetadataKeys : Object
 
     /// <summary>
     /// Key added to a vertex to specify its location in polar coordinates.
+    /// </summary>
+    ///
+    /// <remarks>
     /// The key's value is a SinglePolarCoordinates.
     ///
     /// <para>
@@ -313,7 +444,7 @@ public static class ReservedMetadataKeys : Object
     /// 359.0 degrees.
     /// </para>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String PolarLayoutCoordinates =
         FirstChar + "PLCoordinates";
@@ -326,9 +457,13 @@ public static class ReservedMetadataKeys : Object
     /// <summary>
     /// Key added to the graph to tell the layout to randomize the locations
     /// of only those vertices whose location is set to
-    /// LayoutBase.RandomizeThisLocation.  If this key is not present, all
-    /// locations are randomized.  The key's value is null.
+    /// LayoutBase.RandomizeThisLocation.
     /// </summary>
+    ///
+    /// <remarks>
+    /// If this key is not present, all locations are randomized.  The key's
+    /// value is null.
+    /// </remarks>
 
     public static readonly String FruchtermanReingoldLayoutSelectivelyRandomize
         = FirstChar + "FRSel";
@@ -347,18 +482,27 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
+    /// Key added to a graph to save the radius computed by SugiyamaLayout.
+    /// </summary>
+    ///
+    /// <remarks>
     /// SugiyamaLayout uses VertexDrawer.Radius as an initial radius for the
     /// vertex circles, then computes an actual radius that probably differs
     /// from the initial value.  It stores the computed radius in the IGraph's
     /// metadata in a key named SugiyamaComputedRadius  The type of the key's
     /// value is Single.
-    /// </summary>
+    /// </remarks>
 
     public static readonly String SugiyamaComputedRadius =
         FirstChar + "SgComputedRadius";
 
 
     /// <summary>
+    /// Key added to an edge to save the edge curve points computed by
+    /// SugiyamaLayout.
+    /// </summary>
+    ///
+    /// <remarks>
     /// For each edge, SugiyamaLayout computes a curve that extends from the
     /// edge's first vertex to some point near the second vertex, then computes
     /// an endpoint on the second vertex's circle.  It stores an array of curve
@@ -376,13 +520,18 @@ public static class ReservedMetadataKeys : Object
     ///
     /// </code>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String SugiyamaCurvePoints =
         FirstChar + "SgCurvePoints";
 
 
     /// <summary>
+    /// Key added to an edge to save the edge curve endpoint computed by
+    /// SugiyamaLayout.
+    /// </summary>
+    ///
+    /// <remarks>
     /// For each edge, SugiyamaLayout computes an endpoint on the second
     /// vertex's circle and stores it in the edge's metadata in a key named
     /// SugiyamaEndpoint.  The type of the key's value is PointF.  The line
@@ -398,26 +547,34 @@ public static class ReservedMetadataKeys : Object
     ///
     /// </code>
     ///
-    /// </summary>
+    /// </remarks>
 
     public static readonly String SugiyamaEndpoint =
         FirstChar + "SgEndpoint";
 
 
     /// <summary>
-    /// SugiyamaLayout uses SugiyamaGleeNode to temporarily store a NodeXL
-    /// vertex's corresponding GLEE node in the NodeXL vertex's metadata.  The
-    /// type of the key's value is Microsoft.Glee.Node.
+    /// Key added to a vertex to temporarily store a NodeXL vertex's
+    /// corresponding GLEE node.
     /// </summary>
+    ///
+    /// <remarks>
+    /// This is used by SugiyamaLayout.  The type of the key's value is
+    /// Microsoft.Glee.Node.
+    /// </remarks>
 
     public static readonly String SugiyamaGleeNode =
         FirstChar + "SgGleeNode";
 
     /// <summary>
-    /// SugiyamaLayout uses SugiyamaGleeEdge to temporarily store a NodeXL
-    /// edge's corresponding GLEE edge in the NodeXL edge's metadata.  The type
-    /// of the key's value is Microsoft.Glee.Edge.
+    /// Key added to an edge to temporarily store a NodeXL edge's corresponding
+    /// GLEE edge.
     /// </summary>
+    ///
+    /// <remarks>
+    /// This is used by SugiyamaLayout.  The type of the key's value is
+    /// Microsoft.Glee.Edge.
+    /// </remarks>
 
     public static readonly String SugiyamaGleeEdge =
         FirstChar + "SgGleeEdge";
@@ -428,11 +585,15 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
+    /// Key added to a dragged vertex to store its original location.
+    /// </summary>
+    ///
+    /// <remarks>
     /// The Visualization.Wpf.DraggedVertices class adds this key to each
     /// selected vertex before it is dragged.  The key's value is the vertex's
     /// original location, as a PointF.  The key is removed when the drag
     /// completes.
-    /// </summary>
+    /// </remarks>
 
     public static readonly String DraggedVerticesOriginalLocation =
         FirstChar + "DVOL";
@@ -443,10 +604,14 @@ public static class ReservedMetadataKeys : Object
     //*************************************************************************
 
     /// <summary>
-    /// Key added to a vertex or edge to "mark" it.  The key's value is true or
-    /// false.  The meaning of marking is up to the application.  None of the
-    /// NodeXL core or visualization components pay attention to this key.
+    /// Key added to a vertex or edge to "mark" it.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is true or false.  The meaning of marking is up to the
+    /// application.  None of the NodeXL core or visualization components pay
+    /// attention to this key.
+    /// </remarks>
 
     public static readonly String Marked =
         FirstChar + "M";
@@ -458,10 +623,14 @@ public static class ReservedMetadataKeys : Object
 
     /// <summary>
     /// Key added to a vertex to add custom menu items to the vertex's
-    /// context menu in the graph.  The key's value is an array of
-    /// KeyValue&lt;String,String&gt;.  For each element, the key is the
-    /// custom menu item text and the value is the custom menu item action.
+    /// context menu in the graph.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an array of KeyValue&lt;String,String&gt;.  For each
+    /// element, the key is the custom menu item text and the value is the
+    /// custom menu item action.
+    /// </remarks>
 
     public static readonly String CustomContextMenuItems =
         FirstChar + "CMI";

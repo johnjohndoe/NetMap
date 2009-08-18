@@ -105,6 +105,7 @@ public class AutoFillEdgeColumnComboBox : AutoFillColumnComboBox
             EdgeTableColumnNames.Width,
             EdgeTableColumnNames.Alpha,
             EdgeTableColumnNames.Visibility,
+            EdgeTableColumnNames.Label,
             CommonTableColumnNames.ID,
             CommonTableColumnNames.DynamicFilter,
             CommonTableColumnNames.AddColumnsHere,

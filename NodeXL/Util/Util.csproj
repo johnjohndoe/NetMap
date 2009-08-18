@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\BinaryHeap.cs">
@@ -68,6 +69,9 @@
     </Compile>
     <Compile Include="..\..\Common\StringUtil.cs">
       <Link>StringUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\XmlUtil.cs">
+      <Link>XmlUtil.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

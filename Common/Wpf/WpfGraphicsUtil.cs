@@ -108,6 +108,40 @@ public static class WpfGraphicsUtil
     }
 
     //*************************************************************************
+    //  Method: SetWpfColorAlpha()
+    //
+    /// <summary>
+    /// Converts a System.Windows.Media.Color to a System.Windows.Media.Color
+    /// using a new alpha value.
+    /// </summary>
+    ///
+    /// <param name="color">
+    /// The System.Windows.Media.Color to convert.
+    /// </param>
+    ///
+    /// <param name="newAlpha">
+    /// The new alpha value to use.  The alpha value of <paramref
+    /// name="color" /> is ignored.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="color" /> with an alpha value of <paramref
+    /// name="newAlpha" />.
+    /// </returns>
+    //*************************************************************************
+
+    public static System.Windows.Media.Color
+    SetWpfColorAlpha
+    (
+        System.Windows.Media.Color color,
+        Byte newAlpha
+    )
+    {
+        return ( System.Windows.Media.Color.FromArgb(newAlpha,
+            color.R, color.G, color.B) );
+    }
+
+    //*************************************************************************
     //  Method: FontToTypeface()
     //
     /// <summary>
@@ -377,6 +411,37 @@ public static class WpfGraphicsUtil
     )
     {
         return ( new System.Windows.Point(pointF.X, pointF.Y) );
+    }
+
+    //*************************************************************************
+    //  Method: GetDistanceBetweenPoints()
+    //
+    /// <summary>
+    /// Gets the distance between two points.
+    /// </summary>
+    ///
+    /// <param name="point1">
+    /// The first point.
+    /// </param>
+    ///
+    /// <param name="point2">
+    /// The second point.
+    /// </param>
+    ///
+    /// <returns>
+    /// The distance between the two points.
+    /// </returns>
+    //*************************************************************************
+
+    public static Double
+    GetDistanceBetweenPoints
+    (
+        Point point1,
+        Point point2
+    )
+    {
+        return ( Math.Sqrt(Math.Pow(point2.X - point1.X, 2) +
+            Math.Pow(point2.Y - point1.Y, 2) ) );
     }
 
     //*************************************************************************

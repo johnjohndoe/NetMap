@@ -433,6 +433,69 @@ public class WorksheetReaderBase : NodeXLBase
     }
 
     //*************************************************************************
+    //  Method: CheckForNonEmptyCell()
+    //
+    /// <summary>
+    /// If a cell is not empty, sets a metadata value on an edge or vertex to
+    /// the cell contents.
+    /// </summary>
+    ///
+    /// <param name="aoValues">
+    /// Values read from the worksheet.
+    /// </param>
+    ///
+    /// <param name="iRowOneBased">
+    /// One-based row index to check.
+    /// </param>
+    ///
+    /// <param name="iColumnOneBased">
+    /// One-based column index to check.
+    /// </param>
+    ///
+    /// <param name="oEdgeOrVertex">
+    /// Edge or vertex to set the metadata value on.
+    /// </param>
+    ///
+    /// <param name="sKeyName">
+    /// Name of the metadata key to set.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the metadata value was set on the edge or vertex.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    CheckForNonEmptyCell
+    (
+        Object [,] aoValues,
+        Int32 iRowOneBased,
+        Int32 iColumnOneBased,
+        IMetadataProvider oEdgeOrVertex,
+        String sKeyName
+    )
+    {
+        Debug.Assert(aoValues != null);
+        Debug.Assert(iRowOneBased >= 1);
+        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oEdgeOrVertex != null);
+        Debug.Assert( !String.IsNullOrEmpty(sKeyName) );
+        AssertValid();
+
+        String sNonEmptyString;
+
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues, iRowOneBased,
+            iColumnOneBased, out sNonEmptyString) )
+        {
+            return (false);
+        }
+
+        oEdgeOrVertex.SetValue(sKeyName, sNonEmptyString);
+
+        return (true);
+    }
+
+    //*************************************************************************
     //  Method: TryGetColor()
     //
     /// <summary>

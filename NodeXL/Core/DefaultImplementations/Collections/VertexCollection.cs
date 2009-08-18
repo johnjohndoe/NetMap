@@ -323,6 +323,11 @@ public partial class VertexCollection : NodeXLBase, IVertexCollection
     /// the graph that owns the collection.
     ///
     /// <para>
+    /// Do not call this method if you are using NodeXLControl.  To clear the
+    /// graph within NodeXLControl, use NodeXLControl.ClearGraph().
+    /// </para>
+    ///
+    /// <para>
     /// This method is an O(n) operation, where n is <see cref="Count" />.
     /// </para>
     ///

@@ -117,6 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnImportFromGraphMLFile.SuperTip" xml:space="preserve">
+    <value>Optionally clear the NodeXL workbook, then import edges and vertices from a GraphML XML file.
+
+This imports the "edge" and "node" elements from a GraphML file, along with any attributes specified for those elements.  If an attribute has the same name as a NodeXL worksheet column, the attribute is imported into that column.  Otherwise, a new column is added to the worksheet and the attribute is imported into the new column.</value>
+  </data>
   <data name="btnImportFromPajekFile.SuperTip" xml:space="preserve">
     <value>Optionally clear the NodeXL workbook, then import edges and vertices from a Pajek text file.
 
@@ -288,8 +293,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeCircle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALAAAA
-        CwAB5DetvwAAAYJJREFUOE+lk1tLAlEUhYugfxAE/ameew0EIah/ET0ERUREhA8VSUR0QYxIMaSLVAoJ
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAYJJREFUOE+lk1tLAlEUhYugfxAE/ameew0EIah/ET0ERUREhA8VSUR0QYxIMaSLVAoJ
         dnswiXTUuTqOOqOw2ns4ymjT0wwsGOacb611hn3GAYwFetggiP7As0trE6QwKUGyST1SirRImhwNGzKg
         DdOkzNZRArn3Etq2TXKQffvC9nEStPZCmvGaDAxEciYav0e314PT7cJ2HNek1emg2W5jP3bbNxk08RqE
         NqPXA7gjYEvADcuC0Wxi4/CKTRb6LbwG6fznN2xKZphTLUo1Wy0wrBOsNhp4yH+wQdrPoFbXjKHKDHOq
@@ -301,8 +306,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeDisk.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAbhJREFUOE+l0+srQ2EcB3BS/gOl/FNeyhuhZGvFhJrrcsmlmZkNW20yMZrLZrkczLBY
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAbhJREFUOE+l0+srQ2EcB3BS/gOl/FNeyhuhZGvFhJrrcsmlmZkNW20yMZrLZrkczLBY
         Ls1cM0Juub5QXin19X3WpoPj1Vbfdto5n+/znPV70gGkpfQRBankD84tN2UwKibAfDCfzCpTxmT+XuxH
         AR/IZrYqrBI6vSfoX32CJXAPvTsCtXEGvHfA5MhLvgsSK2/pnCE4w2+wh15gXXlAj3QDw+wF2rynUHf7
         kyXfO5EXlGgtCwn8ij6BFwW+JI6hyXOI+tEIClvHRIkmuQt5Qcjgj3Fl4uAj8S26iNuJmz1HaBjdg25o
@@ -315,8 +320,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeSphere.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAYRJREFUOE+lU11LAkEULYL+QRD0pwr6gIhUAsEIFIMofUsFobIIJR9Es3ooI0r6UKlI
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAYRJREFUOE+lU11LAkEULYL+QRD0pwr6gIhUAsEIFIMofUsFobIIJR9Es3ooI0r6UKlI
         lIpFIQiCgkihntJALAgjOM0ZzDZb6WEXDndnZ86Zc+/e2w6gTddDAT34Q+61LXUIWAROBWoCnwJpAatA
         Z/NlvwTEgW4BxRZIYf7gHqHLKvxnJTjWcjB5YhB71wI9apGGQP1mxbF6jvgdcFKEjBtXNQTSZbh2bmH8
         EWk4UQuYrf6kJN2UgMLLh4xch5U3zB0WMRVRMOQM08nEtwu1QNZ3VJA3k1ypVmXkOpp/x0LyEdPRHAye
@@ -328,8 +333,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeSquare.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAM1JREFUOE+lk2kOgjAQRvWGHsWjeEd3KEtZWyh8zhAwlTgkWpL5Q/LeyzTtHsAu6GNB
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAM1JREFUOE+lk2kOgjAQRvWGHsWjeEd3KEtZWyh8zhAwlTgkWpL5Q/LeyzTtHsAu6GNB
         yLzhw/GEX2aJfgjoJ8ZxxEDjhgG9c+j6HrbrYKxFYwzqtp1CXwUTTKAjkGFLsCG4neGK4LJpZMFWlcGi
         rqGrShZsVTXBeVkiLQpZsN7Vr2YzrLSWBetd/WpCoMpzRFkmC/iEpWpM8JPgR5rKAoal6pPAe5LgppQs
         4BP2d/WrC3yNY1nAJ+zv6lcZvEQRzjTiRQq6yv8+qKCXyNEXdqAIwUkipcgAAAAASUVORK5CYII=
@@ -338,8 +343,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeSolidSquare.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAVxJREFUOE+l01lLQkEYxvH6hn2ALoKCgooMVLJoNdssUUFLK0tD2zczSjLUFlu0JFvM
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAVxJREFUOE+l01lLQkEYxvH6hn2ALoKCgooMVLJoNdssUUFLK0tD2zczSjLUFlu0JFvM
         bKMiQ6MgKIIunt45pxMEzUWdgbn8/Z+bmXwAebIOC8i537hAYcRfrjT6IzCW+IA7/g5n9BWO7RfYNp5g
         CWZhXLmHfukGbd4LNE+nhKFfAwy7YiK2MxzKwkS4m3C79xItMynUjx/zA67Y2ze2hnIwBTIiXmD4TMA1
         7gN+YIgtbz5Dwj3Lt+ggrCXcMHECDWHl8B4/0M9wOAfzagYivoJ2VsIJKJ37qBrY4Qd6w4+EH0TsYzhN
@@ -351,8 +356,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeDiamond.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAPxJREFUOE+lk9sKgkAQhusNuw58hx6ld0qKCMQKMotOlx3U9awQTDubq6vtKqQwV+P3
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAPxJREFUOE+lk9sKgkAQhusNuw58hx6ld0qKCMQKMotOlx3U9awQTDubq6vtKqQwV+P3
         /TMyDgFg0OtBwWgyVdWY9rCkfRbeIkDwXZRU0iZg8PpwA9O+gkqiEjDYpHCa55BkGRjWRSqRCWpwTOEo
         TSFMEljtTj+SpuAL05ExNS7AII7BjyLwwhCW22NNIgpqME9FmBSwEwTw8n1YbOxSIgo0nh7RcXkqoaku
         BR0KvgiBh+eJAq25ApMY1rlMRRhTnwU8r9LxXXYCzTtgEtxVTL27LuimxUdnsEqADfY9cFccGeFZBdcO
@@ -362,8 +367,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeSolidDiamond.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAU1JREFUOE+lk9tKAlEUhusNuw686gBdZEMZU9hRGkWjccgIosREQ5PUkgw1k+gisjQs
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAU1JREFUOE+lk9tKAlEUhusNuw686gBdZEMZU9hRGkWjccgIosREQ5PUkgw1k+gisjQs
         c0o6Sud3CP7cmxmbsZkRdMO6Wnzf3mvx724AXR0dIuhhBL3qrfdIafbp5QYCAv5IpSkxElCYi4qwRcrQ
         k+gJKGyPiVjOfmIp9QproKAp0RL8wUdf4NNvcO4/YyF+D4v39J+kWUBhR1yEJyfByRdwuw+Y27mDNVTG
         8OqxSqIUSPAtVnLfcGfe4UrWwO1JcPgGbKCEUd8FBoVMQ6IUmOSlCYcfWDyowZ54xHy0iqlwBWyQwAWY
@@ -375,8 +380,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeTriangle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAThJREFUOE+lkb9Kw1AUxhWhk5Orqw/QB/ANXJz7BoJDN7eu4iBkqjiILgHFiihFLKgU
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAThJREFUOE+lkb9Kw1AUxhWhk5Orqw/QB/ANXJz7BoJDN7eu4iBkqjiILgHFiihFLKgU
         QYUOitBBUAQhVZOb3Py5baEgfJ4TTIghbW288MHlXn6/78CZBjD1r8OC5bI2KjPD/sPyMYISwSt5BbME
         GhSHMpclGTdBZee4ib3TaxC8OalgngDVERIyUCwYUBbSklET6PrZDVS/j6DXw0HjjiX1vwoW17T9GPa6
         XbhKoVI9YslSUpI1Aa/soXH7CJ9Aj0AZBHB8H1etNgueKYVIkiUobezWEbUybBMsPA+W60LTz1myOkwQ
@@ -387,8 +392,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeSolidTriangle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK/wAA
-        Cv8BNGKaggAAAWxJREFUOE+lkc1KQlEUhYugUaOmTXuAHqA3aNIwRAoiA03FoqQslZuUGEjWBYPCIk3t
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAK+wAA
+        CvsBy58dkAAAAWxJREFUOE+lkc1KQlEUhYugUaOmTXuAHqA3aNIwRAoiA03FoqQslZuUGEjWBYPCIk3t
         z+qGUSSEgVCUKBlmpUWDpo0aCcFq7wuKiD9pBxYczuH7zjrsVgAt/1os6De4aqWt2r38eB2BgmB1s4IO
         Aj8pX5TOSpJ6DSx68Ry61QsQ7GxU0EXAt13Kwn6aY0Ge0l0uqdXAb3BH4Ah/YOEkh7EVuUX4r4LeIWEH
         S2cESzkIoWfM7aahtPpY0lcqqdSAR5Y0emJYlN4IfoF5L41p/wPUYoQFWUp7QVJJoFA5QvTvd8wfvcK8

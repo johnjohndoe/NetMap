@@ -80,6 +80,9 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         m_oTwitterNetworkAnalyzer.HttpWebRequestTimeoutMs =
             HttpWebRequestTimeoutMs;
 
+        m_oTwitterNetworkAnalyzer.HttpWebRequestRetries =
+            HttpWebRequestRetries;
+
         m_oTwitterNetworkAnalyzer.AnalysisCompleted +=
             new RunWorkerCompletedEventHandler(
                 TwitterNetworkAnalyzer_AnalysisCompleted);
@@ -230,6 +233,7 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
         m_oTwitterNetworkAnalyzer.AnalyzeTwitterNetworkAsync(
             m_oAnalyzeTwitterNetworkDialogUserSettings.ScreenNameToAnalyze,
             m_oAnalyzeTwitterNetworkDialogUserSettings.Levels,
+            m_oAnalyzeTwitterNetworkDialogUserSettings.PopulatePrimaryLabels,
             m_oAnalyzeTwitterNetworkDialogUserSettings.CredentialsScreenName,
             m_sCredentialsPassword
             );
@@ -909,7 +913,11 @@ public partial class AnalyzeTwitterNetworkDialog : ExcelTemplateForm
 
     /// The timeout to use for Twitter Web requests, in milliseconds.
 
-    protected const Int32 HttpWebRequestTimeoutMs = 20000;
+    protected const Int32 HttpWebRequestTimeoutMs = 10000;
+
+    /// The maximum number of retries per request to the Twitter Web service.
+
+    protected const Int32 HttpWebRequestRetries = 2;
 
 
     //*************************************************************************

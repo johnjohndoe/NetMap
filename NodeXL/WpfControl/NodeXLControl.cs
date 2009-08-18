@@ -121,6 +121,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <item><see cref="ReservedMetadataKeys.PerColor" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerAlpha" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerEdgeWidth" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerEdgeLabel" /></item>
 /// </list>
 ///
 /// <h3>Shapes, Labels, and Images</h3>
@@ -295,8 +296,10 @@ public partial class Window1 : Window
             Color.FromArgb(255, 55, 125, 98));
 
         oEdge1.SetValue(ReservedMetadataKeys.PerEdgeWidth, 3F);
+        oEdge1.SetValue(ReservedMetadataKeys.PerEdgeLabel, "This is edge 1");
 
         oEdge2.SetValue(ReservedMetadataKeys.PerEdgeWidth, 5F);
+        oEdge2.SetValue(ReservedMetadataKeys.PerEdgeLabel, "This is edge 2");
 
         oEdge3.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 0, 255, 0));
@@ -402,8 +405,10 @@ public partial class Form1 : Form
             Color.FromArgb(255, 55, 125, 98));
 
         oEdge1.SetValue(ReservedMetadataKeys.PerEdgeWidth, 3F);
+        oEdge1.SetValue(ReservedMetadataKeys.PerEdgeLabel, "This is edge 1");
 
         oEdge2.SetValue(ReservedMetadataKeys.PerEdgeWidth, 5F);
+        oEdge2.SetValue(ReservedMetadataKeys.PerEdgeLabel, "This is edge 2");
 
         oEdge3.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 0, 255, 0));
@@ -2369,6 +2374,40 @@ public partial class NodeXLControl : FrameworkElement
             m_eLayoutState = LayoutState.LayoutCompleted;
             LayOutOrDrawGraph();
         }
+    }
+
+    //*************************************************************************
+    //  Method: ClearGraph()
+    //
+    /// <summary>
+    /// Clears the control's graph.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This method discards the control's graph, including all of its vertices
+    /// and edges, and replaces it with a new, empty graph.  Any selection is
+    /// also cleared.
+    ///
+    /// <para>
+    /// This should be used instead of clearing the current graph's vertex and
+    /// edge collections, which can cause unpredictable side effects.
+    /// </para>
+    ///
+    /// <para>
+    /// An exception is thrown if the graph is being drawn when this method is
+    /// called.  Check the <see cref="IsDrawing" /> property before calling
+    /// this.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    ClearGraph()
+    {
+        AssertValid();
+
+        this.Graph = new Graph();
     }
 
     //*************************************************************************

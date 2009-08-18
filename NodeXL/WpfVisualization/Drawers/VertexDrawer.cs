@@ -4,7 +4,6 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
-using System.Globalization;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -115,11 +114,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         m_eShape = VertexShape.Disk;
         m_dRadius = 3.0;
         m_oPrimaryLabelFillColor = SystemColors.WindowColor;
-
-        m_oTypeface = new Typeface(SystemFonts.MessageFontFamily,
-            FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-
-        m_dFontSizeEm = 10;
 
         AssertValid();
     }
@@ -369,6 +363,14 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                     typeof(String), out oPrimaryLabelAsObject)
                 )
             {
+                if (oPrimaryLabelAsObject == null ||
+                    ( (String)oPrimaryLabelAsObject ).Length == 0)
+                {
+                    // Default to something usable.
+
+                    oPrimaryLabelAsObject = " ";
+                }
+
                 // Draw the vertex as a primary label.
 
                 vertexDrawingHistory = DrawPrimaryLabel(vertex,
@@ -406,48 +408,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         }
 
         return (true);
-    }
-
-    //*************************************************************************
-    //  Method: SetFont()
-    //
-    /// <summary>
-    /// Sets the font used to draw primary and secondary labels.
-    /// </summary>
-    ///
-    /// <param name="typeface">
-    /// The Typeface to use.
-    /// </param>
-    ///
-    /// <param name="emSize">
-    /// The font size to use, in ems.
-    /// </param>
-    ///
-    /// <remarks>
-    /// The default font is the SystemFonts.MessageFontFamily at size 10.
-    /// </remarks>
-    //*************************************************************************
-
-    public void
-    SetFont
-    (
-        Typeface typeface,
-        Double emSize
-    )
-    {
-        Debug.Assert(typeface != null);
-        Debug.Assert(emSize > 0);
-        AssertValid();
-
-        if (m_oTypeface == typeface && m_dFontSizeEm == emSize)
-        {
-            return;
-        }
-
-        m_oTypeface = typeface;
-        m_dFontSizeEm = emSize;
-
-        FireLayoutRequired();
     }
 
     //*************************************************************************
@@ -1377,38 +1337,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     }
 
     //*************************************************************************
-    //  Method: CreateFormattedText()
-    //
-    /// <summary>
-    /// Creates a FormattedText object.
-    /// </summary>
-    ///
-    /// <param name="sText">
-    /// The text to draw.  Can't be null.
-    /// </param>
-    ///
-    /// <param name="oColor">
-    /// The text color.
-    /// </param>
-    //*************************************************************************
-
-    protected FormattedText
-    CreateFormattedText
-    (
-        String sText,
-        Color oColor
-    )
-    {
-        Debug.Assert(sText != null);
-
-        FormattedText oFormattedText = new FormattedText( sText,
-            CultureInfo.CurrentCulture, FlowDirection.LeftToRight, m_oTypeface,
-            m_dFontSizeEm, GetBrush(oColor) );
-
-        return (oFormattedText);
-    }
-
-    //*************************************************************************
     //  Method: CheckDrawVertexArguments()
     //
     /// <summary>
@@ -1477,8 +1405,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Debug.Assert(m_dRadius >= MinimumRadius);
         Debug.Assert(m_dRadius <= MaximumRadius);
         // m_oPrimaryLabelFillColor
-        Debug.Assert(m_oTypeface != null);
-        Debug.Assert(m_dFontSizeEm > 0);
     }
 
 
@@ -1535,14 +1461,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// Default fill color to use for primary labels.
 
     protected Color m_oPrimaryLabelFillColor;
-
-    /// The Typeface to use to draw primary and secondary labels.
-
-    protected Typeface m_oTypeface;
-
-    /// The font size to use to draw primary and secondary labels, in ems.
-
-    protected Double m_dFontSizeEm;
 }
 
 

@@ -78,6 +78,33 @@ public class TwitterParticipant : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="TwitterParticipant" />
+    /// class with a screen name.
+    /// </summary>
+    ///
+    /// <param name="screenName">
+    /// The participant's Twitter screen name, as a String.  Can't be null or
+    /// empty.
+    /// </param>
+    //*************************************************************************
+
+    public TwitterParticipant
+    (
+        String screenName
+    )
+    :
+    this(screenName, Int32.MinValue, 0, null, DateTime.MinValue)
+    {
+        // (Do nothing else.)
+
+        AssertValid();
+    }
+
+
+    //*************************************************************************
+    //  Constructor: TwitterParticipant()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TwitterParticipant" />
     /// class with default values.
     /// </summary>
     ///
@@ -88,7 +115,7 @@ public class TwitterParticipant : Object
 
     public TwitterParticipant()
     :
-    this("Participant", Int32.MinValue, 0, null, DateTime.MinValue)
+    this("Participant")
     {
         // (Do nothing else.)
 

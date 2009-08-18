@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfControl", "WpfControl\Wp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWpfNodeXLControl", "TestWpfNodeXLControl\TestWpfNodeXLControl.csproj", "{7A928209-DA65-4CB0-8DDA-29CE875787C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplatePlugIns", "ExcelTemplatePlugIns\ExcelTemplatePlugIns.csproj", "{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{7A928209-DA65-4CB0-8DDA-29CE875787C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A928209-DA65-4CB0-8DDA-29CE875787C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A928209-DA65-4CB0-8DDA-29CE875787C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -499,8 +499,7 @@ public partial class Sheet2
             return;
         }
 
-        this.Application.Cursor =
-            Microsoft.Office.Interop.Excel.XlMousePointer.xlWait;
+        Globals.ThisWorkbook.ShowWaitCursor = true;
 
         // Get the columns that might need to be updated.  These columns are
         // not required.
@@ -706,8 +705,7 @@ public partial class Sheet2
             oExcelActiveWorksheetRestorer.Restore(oExcelActiveWorksheetState);
         }
 
-        this.Application.Cursor =
-            Microsoft.Office.Interop.Excel.XlMousePointer.xlDefault;
+        Globals.ThisWorkbook.ShowWaitCursor = false;
     }
 
     //*************************************************************************

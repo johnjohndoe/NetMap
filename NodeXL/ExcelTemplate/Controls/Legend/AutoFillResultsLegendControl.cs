@@ -220,8 +220,8 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// </param>
     //*************************************************************************
 
-    protected override
-    void OnResize
+    protected override void
+    OnResize
     (
         EventArgs e
     )
@@ -311,20 +311,37 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         Debug.Assert(oDrawingObjects != null);
         AssertValid();
 
-        // Two columns are drawn: The autofilled edge results are in the first
-        // column, and the autofilled vertex results are in the second.
+        // If there are autofilled edge and vertex results, two columns are
+        // drawn, with the edge results in the first column and the vertex
+        // results in the second.  If there are only edge or vertex results,
+        // one column is drawn.
 
         Rectangle oColumn1Rectangle, oColumn2Rectangle;
+        Boolean bHasTwoColumns = false;
 
-        ControlRectangleToTwoColumns(oDrawingObjects, out oColumn1Rectangle,
-            out oColumn2Rectangle);
+        if (m_oAutoFillWorkbookResults.AutoFilledEdgeColumnCount > 0 &&
+            m_oAutoFillWorkbookResults.AutoFilledVertexNonXYColumnCount > 0)
+        {
+            ControlRectangleToTwoColumns(oDrawingObjects,
+                out oColumn1Rectangle, out oColumn2Rectangle);
+
+            bHasTwoColumns = true;
+        }
+        else
+        {
+            oColumn1Rectangle = oColumn2Rectangle =
+                oDrawingObjects.ControlRectangle;
+        }
 
         Int32 iBottom = Math.Max(
             DrawAutoFilledEdgeResults(oDrawingObjects, oColumn1Rectangle),
             DrawAutoFilledVertexResults(oDrawingObjects, oColumn2Rectangle)
             );
 
-        DrawColumnSeparator(oDrawingObjects, oColumn2Rectangle);
+        if (bHasTwoColumns)
+        {
+            DrawColumnSeparator(oDrawingObjects, oColumn2Rectangle);
+        }
 
         return (iBottom);
     }
@@ -413,7 +430,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         Int32 iTop = oColumnRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, "Autofilled Edge Properties",
+        DrawColumnHeader(oDrawingObjects, EdgePropertyHeader,
             oColumnRectangle.Left, oColumnRectangle.Right, ref iTop);
 
         // Provide a margin.
@@ -443,13 +460,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         if (oEdgeWidthResults.ColumnAutoFilled)
         {
-            DrawSteppedBarResults(oDrawingObjects,
+            DrawRampResults(oDrawingObjects,
                 oEdgeWidthResults.SourceColumnName, EdgeWidthCaption,
                 oEdgeWidthResults.SourceCalculationNumber1,
                 oEdgeWidthResults.SourceCalculationNumber2,
-                oEdgeWidthResults.DestinationNumber1,
-                oEdgeWidthResults.DestinationNumber2,
-                EdgeWidthConverter.MaximumWidthWorkbook,
                 oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
         }
 
@@ -502,7 +516,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         Int32 iTop = oColumnRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, "Autofilled Vertex Properties",
+        DrawColumnHeader(oDrawingObjects, VertexPropertyHeader,
             oColumnRectangle.Left, oColumnRectangle.Right, ref iTop);
 
         // Provide a margin.
@@ -532,14 +546,11 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         if (oVertexRadiusResults.ColumnAutoFilled)
         {
-            DrawSteppedBarResults(oDrawingObjects,
+            DrawRampResults(oDrawingObjects,
                 oVertexRadiusResults.SourceColumnName, "Size",
                 oVertexRadiusResults.SourceCalculationNumber1,
                 oVertexRadiusResults.SourceCalculationNumber2,
-                oVertexRadiusResults.DestinationNumber1,
-                oVertexRadiusResults.DestinationNumber2,
-                VertexRadiusConverter.MaximumRadiusWorkbook, oColumnRectangle,
-                iResultsLeft, iResultsRight, ref iTop);
+                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
         }
 
         AutoFillNumericRangeColumnResults oVertexAlphaResults =
@@ -678,10 +689,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         Rectangle oControlRectangle = oDrawingObjects.ControlRectangle;
         Int32 iTop = oControlRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, "Categorized Graph Scheme",
+        DrawColumnHeader(oDrawingObjects, VertexPropertyHeader,
             oControlRectangle.Left, oControlRectangle.Right, ref iTop);
 
-        iTop += (Int32)(oDrawingObjects.FontHeight * 0.4F);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
 
         // The categories are drawn from left to right.  Each category is drawn
         // as a shape followed by the category name.
@@ -735,7 +746,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
             DrawVertexCategoryShape(oDrawingObjects, eVertexShape, oPen,
                 oBrush, oVertexColor,
                 fLeft + fShapeHalfWidth + 2,
-                iTop + fShapeHalfWidth,
+                iTop + fShapeHalfWidth + 1,
                 fShapeHalfWidth);
 
             // Don't let the category name spill over into the next column.
@@ -762,9 +773,16 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oControlRectangle.Left,
                     iTop + 1.5F * oDrawingObjects.FontHeight);
 
-                iTop += (Int32)(3F * oDrawingObjects.FontHeight);
+                iTop += oDrawingObjects.GetFontHeightMultiple(3F);
                 break;
             }
+
+            oGraphics.DrawLine( SystemPens.ControlLight,
+                oNameRectangle.Right - 1,
+                iTop,
+                oNameRectangle.Right - 1,
+                iTop + oDrawingObjects.GetFontHeightMultiple(1.4F)
+                );
 
             iColumn++;
             fLeft += fColumnWidth;
@@ -783,7 +801,12 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
             if (bIncrementTop)
             {
-                iTop += (Int32)(1.6F * oDrawingObjects.FontHeight);
+                iTop += oDrawingObjects.GetFontHeightMultiple(1.6F);
+
+                DrawHorizontalSeparator(oDrawingObjects, oControlRectangle,
+                    ref iTop);
+
+                iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
             }
         }
 
@@ -826,7 +849,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         Int32 iTop = oControlRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, "Weighted Graph Scheme",
+        DrawColumnHeader(oDrawingObjects, EdgePropertyHeader,
             oControlRectangle.Left, oControlRectangle.Right, ref iTop);
 
         String sEdgeWeightColumnName;
@@ -836,13 +859,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
             out sEdgeWeightColumnName, out dSourceCalculationNumber1,
             out dSourceCalculationNumber2);
 
-        DrawSteppedBarResults(oDrawingObjects, sEdgeWeightColumnName,
-            "Edge Width", dSourceCalculationNumber1,
-            dSourceCalculationNumber2,
-            WorkbookSchemeAutoFiller.MinimumEdgeWeightWidthWorkbook,
-            WorkbookSchemeAutoFiller.MaximumEdgeWeightWidthWorkbook,
-            EdgeWidthConverter.MaximumWidthWorkbook,
-            oControlRectangle, oControlRectangleWithMargin.Left,
+        DrawRampResults(oDrawingObjects, sEdgeWeightColumnName,
+            EdgeWidthCaption, dSourceCalculationNumber1,
+            dSourceCalculationNumber2, oControlRectangle,
+            oControlRectangleWithMargin.Left,
             oControlRectangleWithMargin.Right, ref iTop);
 
         return (iTop);
@@ -880,7 +900,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         Int32 iTop = oControlRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, "Temporal Graph Scheme",
+        DrawColumnHeader(oDrawingObjects, EdgePropertyHeader,
             oControlRectangle.Left, oControlRectangle.Right, ref iTop);
 
         String sEdgeTimestampColumnName;
@@ -900,7 +920,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                 eEdgeTimestampColumnFormat);
 
         DrawColorBarResults(oDrawingObjects, sEdgeTimestampColumnName,
-            "Edge Color", sSourceCalculationMinimum, sSourceCalculationMaximum,
+            ColorCaption, sSourceCalculationMinimum, sSourceCalculationMaximum,
             WorkbookSchemeAutoFiller.MinimumEdgeTimestampColor,
 
             // If all the source numbers were the same, draw one color only.
@@ -968,16 +988,16 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
                 // The calculation numbers are actual numbers.
 
-                return ( dSourceCalculationNumber.ToString() );
+                return ( DoubleToString(dSourceCalculationNumber) );
         }
     }
 
     //*************************************************************************
     //  Method: DrawColorBarResults()
     //
-    /// <remarks>
+    /// <overloads>
     /// Draws the results for one autofilled column using a color gradient bar.
-    /// </remarks>
+    /// </overloads>
     ///
     /// <summary>
     /// Draws the results for one autofilled column using a color gradient bar
@@ -1058,19 +1078,14 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         }
 
         DrawColorBarResults(oDrawingObjects, sSourceColumnName, sCaption,
-            dSourceCalculationNumber1.ToString(),
-            dSourceCalculationNumber2.ToString(), oColor1, oColor2,
+            DoubleToString(dSourceCalculationNumber1),
+            DoubleToString(dSourceCalculationNumber2), oColor1, oColor2,
             oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
     }
 
     //*************************************************************************
     //  Method: DrawColorBarResults()
     //
-    /// <remarks>
-    /// Draws the results for one autofilled column using a color gradient bar
-    /// and source calculation strings.
-    /// </remarks>
-    ///
     /// <summary>
     /// Draws the results for one autofilled column using a color gradient bar
     /// and source calculation strings.
@@ -1144,18 +1159,22 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         Debug.Assert( !String.IsNullOrEmpty(sSourceCalculationMaximum) );
         AssertValid();
 
-        DrawExcelColumnName(oDrawingObjects, sSourceColumnName, iResultsLeft,
-            iResultsRight, ref iTop);
-
-        DrawCenteredCaption(oDrawingObjects, sCaption, iResultsLeft,
-            iResultsRight, iTop);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
 
         DrawRangeText(oDrawingObjects, sSourceCalculationMinimum,
             sSourceCalculationMaximum, SystemBrushes.WindowText, iResultsLeft,
             iResultsRight, ref iTop);
 
-        Rectangle oColorBarRectangle = new Rectangle(iResultsLeft, iTop,
-            iResultsRight - iResultsLeft, ColorBarHeight);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.35F);
+
+        Int32 iColorBarMargin = oDrawingObjects.GetFontHeightMultiple(0.1F);
+
+        Rectangle oColorBarRectangle = Rectangle.FromLTRB(
+            iResultsLeft + iColorBarMargin,
+            iTop,
+            iResultsRight - iColorBarMargin,
+            iTop + ColorBarHeight
+            );
 
         // There is a known bug in the LinearGradientBrush that sometimes
         // causes a single line of the wrong color to be drawn at the start of
@@ -1169,10 +1188,14 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
             oBrushRectangle, oColor1, oColor2, 0F);
 
         oDrawingObjects.Graphics.FillRectangle(oBrush, oColorBarRectangle);
-
         oBrush.Dispose();
 
-        iTop += (Int32)(ColorBarHeight + oDrawingObjects.FontHeight * 0.4F);
+        iTop += ColorBarHeight + oDrawingObjects.GetFontHeightMultiple(0.05F);
+
+        DrawExcelColumnNameAndCaption(oDrawingObjects, sSourceColumnName,
+            sCaption, iResultsLeft, iResultsRight, ref iTop);
+
+        iTop += ColorBarHeight + oDrawingObjects.GetFontHeightMultiple(0.05F);
 
         // Draw a line separating these results from the next.
 
@@ -1180,11 +1203,11 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     }
 
     //*************************************************************************
-    //  Method: DrawSteppedBarResults()
+    //  Method: DrawRampResults()
     //
     /// <summary>
-    /// Draws the results for one autofilled column using a stepped bar that
-    /// increases in height from left to right.
+    /// Draws the results for one autofilled column using a ramp that increases
+    /// in height from left to right.
     /// </summary>
     ///
     /// <param name="oDrawingObjects">
@@ -1207,18 +1230,6 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// The actual second source number used in the calculations.
     /// </param>
     ///
-    /// <param name="dDestinationNumber1">
-    /// The first number used in the destination column.
-    /// </param>
-    ///
-    /// <param name="dDestinationNumber2">
-    /// The second number used in the destination column.
-    /// </param>
-    ///
-    /// <param name="dMaximumDestinationNumber">
-    /// The maximum possible destination number.
-    /// </param>
-    ///
     /// <param name="oColumnRectangle">
     /// Rectangle to draw the results within.
     /// </param>
@@ -1237,16 +1248,13 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     //*************************************************************************
 
     protected void
-    DrawSteppedBarResults
+    DrawRampResults
     (
         DrawingObjects oDrawingObjects,
         String sSourceColumnName,
         String sCaption,
         Double dSourceCalculationNumber1,
         Double dSourceCalculationNumber2,
-        Double dDestinationNumber1,
-        Double dDestinationNumber2,
-        Double dMaximumDestinationNumber,
         Rectangle oColumnRectangle,
         Int32 iResultsLeft,
         Int32 iResultsRight,
@@ -1258,60 +1266,36 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         Debug.Assert( !String.IsNullOrEmpty(sCaption) );
         AssertValid();
 
-        DrawExcelColumnName(oDrawingObjects, sSourceColumnName, iResultsLeft,
-            iResultsRight, ref iTop);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
 
-        DrawCenteredCaption(oDrawingObjects, sCaption, iResultsLeft,
-            iResultsRight, iTop);
+        DrawRangeText(oDrawingObjects,
+            DoubleToString(dSourceCalculationNumber1),
+            DoubleToString(dSourceCalculationNumber2),
+            SystemBrushes.WindowText, iResultsLeft, iResultsRight, ref iTop);
 
-        DrawRangeText(oDrawingObjects, dSourceCalculationNumber1.ToString(),
-            dSourceCalculationNumber2.ToString(), SystemBrushes.WindowText,
-            iResultsLeft, iResultsRight, ref iTop);
+        iTop += oDrawingObjects.GetFontHeightMultiple(0.35F);
 
-        Single fStepWidth = (Single)( (iResultsRight - iResultsLeft) /
-            (Single)SteppedBarSegments );
+        Int32 iRampMargin = oDrawingObjects.GetFontHeightMultiple(0.1F);
 
-        Single fStepHeight1 = (Single)(SteppedBarHeight *
-            dDestinationNumber1 / dMaximumDestinationNumber);
+        Graphics oGraphics = oDrawingObjects.Graphics;
+        SmoothingMode eOldSmoothingMode = oGraphics.SmoothingMode;
+        oGraphics.SmoothingMode = SmoothingMode.HighQuality;
 
-        Single fStepHeight2 = (Single)(SteppedBarHeight *
-            dDestinationNumber2 / dMaximumDestinationNumber);
+        oGraphics.FillPolygon(SystemBrushes.ControlDarkDark, new Point[] {
+            new Point(iResultsLeft, iTop + RampHeight - 2),
+            new Point(iResultsLeft, iTop + RampHeight - 1),
+            new Point(iResultsRight - iRampMargin, iTop + RampHeight - 1),
+            new Point(iResultsRight - iRampMargin, iTop - 1)
+            } );
 
-        Single fStepHeightIncrement = (fStepHeight2 - fStepHeight1) /
-            ( (Single)SteppedBarSegments - 1F );
+        oGraphics.SmoothingMode = eOldSmoothingMode;
 
-        if (dSourceCalculationNumber2 == dSourceCalculationNumber1)
-        {
-            // All the source numbers were the same.  Don't draw steps.
+        iTop += RampHeight + oDrawingObjects.GetFontHeightMultiple(0.05F);
 
-            fStepHeightIncrement = 0;
-        }
+        DrawExcelColumnNameAndCaption(oDrawingObjects, sSourceColumnName,
+            sCaption, iResultsLeft, iResultsRight, ref iTop);
 
-        // The bottom of each segment is fixed.
-
-        Single fStepLeft = iResultsLeft;
-        Single fStepRight = fStepLeft + fStepWidth;
-        Single fStepBottom = iTop + SteppedBarHeight;
-        Single fStepTop = fStepBottom - fStepHeight1;
-
-        for (Int32 i = 0; i < SteppedBarSegments; i++)
-        {
-            // The Math.Min() call is to prevent a height less than 1, which
-            // sometimes gets drawn and sometimes doesn't.
-
-            RectangleF oSteppedBarRectangle = RectangleF.FromLTRB(
-                fStepLeft, Math.Min(fStepTop, fStepBottom - 1F), fStepRight,
-                fStepBottom);
-
-            oDrawingObjects.Graphics.FillRectangle(SystemBrushes.ControlDark,
-                oSteppedBarRectangle);
-
-            fStepLeft += fStepWidth;
-            fStepTop -= fStepHeightIncrement;
-            fStepRight += fStepWidth;
-        }
-
-        iTop += (Int32)(SteppedBarHeight + oDrawingObjects.FontHeight * 0.4F);
+        iTop += RampHeight + oDrawingObjects.GetFontHeightMultiple(0.05F);
 
         // Draw a line separating these results from the next.
 
@@ -1319,14 +1303,18 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     }
 
     //*************************************************************************
-    //  Method: DrawCenteredCaption()
+    //  Method: DrawExcelColumnNameAndCaption()
     //
     /// <summary>
-    /// Draws a centered caption for the results.
+    /// Draws the name of an Excel column and a caption.
     /// </summary>
     ///
     /// <param name="oDrawingObjects">
     /// Objects to draw with.
+    /// </param>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the Excel column.
     /// </param>
     ///
     /// <param name="sCaption">
@@ -1334,7 +1322,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// </param>
     ///
     /// <param name="iLeft">
-    /// Left x-coordinate where the caption should be drawn.
+    /// Left x-coordinate where the column name should be drawn.
     /// </param>
     ///
     /// <param name="iRight">
@@ -1342,28 +1330,33 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// </param>
     ///
     /// <param name="iTop">
-    /// Top y-coordinate where the caption should be drawn.
+    /// Top y-coordinate where the column name and caption should be drawn.
+    /// Gets updated.
     /// </param>
     //*************************************************************************
 
     protected void
-    DrawCenteredCaption
+    DrawExcelColumnNameAndCaption
     (
         DrawingObjects oDrawingObjects,
+        String sColumnName,
         String sCaption,
         Int32 iLeft,
         Int32 iRight,
-        Int32 iTop
+        ref Int32 iTop
     )
     {
         Debug.Assert(oDrawingObjects != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(sCaption) );
-        AssertValid();
 
         oDrawingObjects.Graphics.DrawString(sCaption, oDrawingObjects.Font,
-            SystemBrushes.WindowText,
-            iLeft + (iRight - iLeft) / 2F, iTop,
-            oDrawingObjects.CenterAlignStringFormat);
+            SystemBrushes.GrayText, iRight,
+            iTop + oDrawingObjects.GetFontHeightMultiple(0.2F),
+            oDrawingObjects.RightAlignStringFormat);
+
+        DrawExcelColumnName(oDrawingObjects, sColumnName, iLeft,
+            iRight - MeasureTextWidth(oDrawingObjects, sCaption), ref iTop);
     }
 
     //*************************************************************************
@@ -1527,6 +1520,50 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         return ( Draw( CreateClippedDrawingObjects() ) );
     }
 
+    //*************************************************************************
+    //  Method: DoubleToString()
+    //
+    /// <summary>
+    /// Converts a double to a string suitable for use within the control.
+    /// </summary>
+    ///
+    /// <param name="dDouble">
+    /// The number to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="dDouble" /> converted to a string.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the absolute value of <paramref name="dDouble" /> is less than
+    /// 0.0001, scientific notation is used.  Otherwise, the standard "G"
+    /// format specifier with no precision is used.
+    /// </remarks>
+    //*************************************************************************
+
+    protected String
+    DoubleToString
+    (
+        Double dDouble
+    )
+    {
+        AssertValid();
+
+        String sFormatSpecifier;
+
+        if (Math.Abs(dDouble) < 0.0001)
+        {
+            sFormatSpecifier = "G4";
+        }
+        else
+        {
+            sFormatSpecifier = "G";
+        }
+
+        return ( dDouble.ToString(sFormatSpecifier) );
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -1550,20 +1587,8 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
 
     //*************************************************************************
-    //  Protected constants
+    //  Protected string constants
     //*************************************************************************
-
-    /// Height of the color bar drawn by DrawColorBarResults().
-
-    protected const Int32 ColorBarHeight = 8;
-
-    /// Height of the stepped bar drawn by DrawSteppedBarResults().
-
-    protected const Int32 SteppedBarHeight = 8;
-
-    /// Number of horizontal segments drawn by DrawSteppedBarResults().
-
-    protected const Int32 SteppedBarSegments = 4;
 
     /// Caption for edge and vertex color results.
 
@@ -1572,6 +1597,27 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// Caption for edge width results.
 
     protected const String EdgeWidthCaption = "Width";
+
+    /// Column header for edge properties.
+
+    protected const String EdgePropertyHeader = "Edge Properties";
+
+    /// Column header for vertex properties.
+
+    protected const String VertexPropertyHeader = "Vertex Properties";
+
+
+    //*************************************************************************
+    //  Protected dimension constants
+    //*************************************************************************
+
+    /// Height of the color bar drawn by DrawColorBarResults().
+
+    protected const Int32 ColorBarHeight = 4;
+
+    /// Height of the color bar drawn by DrawRampResults().
+
+    protected const Int32 RampHeight = 4;
 
     /// Width of the shapes used to draw categories, as a multiple of the font
     /// height.

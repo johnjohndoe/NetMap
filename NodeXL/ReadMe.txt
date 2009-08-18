@@ -52,6 +52,12 @@ that displays a graph within an Excel workbook.  This replaces
 DesktopApplication.
 
 
+ExcelTemplatePlugIns
+--------------------
+Visual Studio project, contains interface definitions for plug-ins used by
+ExcelTemplate.
+
+
 ExcelTemplateRegisterUser
 -------------------------
 Visual Studio project, contains a Windows Forms application that registers a

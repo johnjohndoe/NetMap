@@ -20,7 +20,7 @@ namespace Microsoft.Research.CommunityTechnologies.XmlLib
 /// </remarks>
 //*****************************************************************************
 
-internal class XmlUtil
+public class XmlUtil
 {
     //*************************************************************************
     //  Constructor: XmlUtil()
@@ -134,9 +134,12 @@ internal class XmlUtil
     //*************************************************************************
     //  Method: SelectRequiredSingleNode()
     //
+    /// <remarks>
+    /// Selects a single node that must exist.
+    /// </remarks>
+    ///
     /// <summary>
-    /// Selects a single node that must exist.  If it doesn't exist, an
-    /// exception is thrown.
+    /// Selects a single node that must exist.
     /// </summary>
     ///
     /// <param name="oNode">
@@ -150,6 +153,10 @@ internal class XmlUtil
     /// <returns>
     /// Selected node.
     /// </returns>
+    ///
+    /// <remarks>
+    /// If the node doesn't exist, an exception is thrown.
+    /// </remarks>
     //*************************************************************************
 
     public static XmlNode
@@ -166,10 +173,62 @@ internal class XmlUtil
 
         if (oSelectedNode == null)
         {
-            throw new InvalidOperationException(
-                "XmlUtil.SelectRequiredSingleNode: A " + oNode.Name
-                + " node is missing a required descendent node.  The XPath"
-                + " is \"" + sXPath + "\".");
+            throw new XmlException(
+                "A \"" + oNode.Name + "\" node is missing a required"
+                + " descendent node.  The XPath is \"" + sXPath + "\".");
+        }
+
+        return (oSelectedNode);
+    }
+
+    //*************************************************************************
+    //  Method: SelectRequiredSingleNode()
+    //
+    /// <summary>
+    /// Selects a single node that must exist using a NamespaceManager.
+    /// </summary>
+    ///
+    /// <param name="oNode">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="sXPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="oXmlNamespaceManager">
+    /// NamespaceManager to use.
+    /// </param>
+    ///
+    /// <returns>
+    /// Selected node.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the node doesn't exist, an exception is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    public static XmlNode
+    SelectRequiredSingleNode
+    (
+        XmlNode oNode,
+        String sXPath,
+        XmlNamespaceManager oXmlNamespaceManager
+    )
+    {
+        Debug.Assert(oNode != null);
+        Debug.Assert(sXPath != "");
+        Debug.Assert(oXmlNamespaceManager != null);
+
+        XmlNode oSelectedNode = oNode.SelectSingleNode(sXPath,
+            oXmlNamespaceManager);
+
+        if (oSelectedNode == null)
+        {
+            throw new XmlException(
+                "A \"" + oNode.Name + "\" node is missing a required"
+                + " descendent node.  The XPath is \"" + sXPath + "\".");
         }
 
         return (oSelectedNode);
@@ -255,8 +314,8 @@ internal class XmlUtil
 
             if (bRequired)
             {
-                throw new InvalidOperationException("A " + oNode.Name
-                    + " node is missing required inner text.");
+                throw new XmlException("A \"" + oNode.Name + "\" node is"
+                + " missing required inner text.");
             }
 
             return (false);
@@ -451,8 +510,8 @@ internal class XmlUtil
 
             if (bRequired)
             {
-                throw new InvalidOperationException("A " + oNode.Name
-                    + " node is missing a required " + sName + " attribute.");
+                throw new XmlException("A \"" + oNode.Name + "\" node is"
+                    + " missing a required \"" + sName + "\" attribute.");
             }
 
             return (false);
@@ -531,9 +590,8 @@ internal class XmlUtil
         }
         catch (Exception oException)
         {
-            throw new InvalidOperationException(
-                "XmlUtil.GetInt32Attribute: Can't convert " + sValue
-                + " from String to Int32.",
+            throw new XmlException(
+                "Can't convert \"" + sValue + "\" from String to Int32.",
                 oException);
         }
 
@@ -610,9 +668,8 @@ internal class XmlUtil
         }
         catch (Exception oException)
         {
-            throw new InvalidOperationException(
-                "XmlUtil.GetInt64Attribute: Can't convert " + sValue
-                + " from String to Int64.",
+            throw new XmlException(
+                "Can't convert \"" + sValue + "\" from String to Int64.",
                 oException);
         }
 
@@ -689,9 +746,8 @@ internal class XmlUtil
         }
         catch (Exception oException)
         {
-            throw new InvalidOperationException(
-                "XmlUtil.GetSingleAttribute: Can't convert " + sValue
-                + " from String to Single.",
+            throw new XmlException(
+                "Can't convert \"" + sValue + "\" from String to Single.",
                 oException);
         }
 
@@ -776,10 +832,9 @@ internal class XmlUtil
 
             default:
 
-                throw new InvalidOperationException(
-                    "XmlUtil.GetBooleanAttribute: A " + oNode.Name
-                    + " node has a " + sName + " attribute that is not"
-                    + " 0 or 1.");
+                throw new XmlException(
+                    "A \"" + oNode.Name + "\" node has a \"" + sName
+                    + "\" attribute that is not 0 or 1.");
         }
 
         return (true);
@@ -855,9 +910,8 @@ internal class XmlUtil
         }
         catch (Exception oException)
         {
-            throw new InvalidOperationException(
-                "XmlUtil.GetDateTimeAttribute: Can't convert " + sValue
-                + " from String to DateTime.",
+            throw new XmlException(
+                "Can't convert \"" + sValue + "\" from String to DateTime.",
                 oException);
         }
 
@@ -898,9 +952,8 @@ internal class XmlUtil
 
         if (iNameValueStrings % 2 != 0)
         {
-            throw new System.ArgumentException("XmlUtil.SetAttributes:"
-                + " asNameValuePairs must contain an even number of"
-                + " strings.");
+            throw new System.ArgumentException("asNameValuePairs must contain"
+                + " an even number of strings.");
         }
 
         XmlElement oElement = (XmlElement)oNode;

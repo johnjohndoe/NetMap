@@ -7,6 +7,7 @@ using System.Collections;
 using System.Windows.Forms;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Diagnostics;
 
 namespace Microsoft.Research.CommunityTechnologies.AppLib
@@ -1319,7 +1320,22 @@ public class FormUtil : Object
 
     static FormUtil()
     {
-        m_sApplicationName = Application.ProductName;
+        // Don't use Application.ProductName, which sometimes works but not
+        // when FormUtil is used in an application plug-in, for example.
+        // Instead, read the product name from the AssemblyProduct attribute
+        // in the executing assembly.  This is usually specified within the
+        // project's AssemblyInfo.cs file.
+
+        AssemblyProductAttribute oAssemblyProductAttribute =
+            (AssemblyProductAttribute)Attribute.GetCustomAttribute(
+                Assembly.GetExecutingAssembly(),
+                typeof(AssemblyProductAttribute) );
+
+        Debug.Assert(oAssemblyProductAttribute != null);
+
+        m_sApplicationName = oAssemblyProductAttribute.Product;
+
+        Debug.Assert( !String.IsNullOrEmpty(m_sApplicationName) );
     }
 
     //*************************************************************************

@@ -205,7 +205,7 @@ public static class WorkbookSchemeAutoFiller : Object
                 edgeWeightColumnName, EdgeTableColumnNames.Width, false, false,
                 0, 0,
                 MinimumEdgeWeightWidthWorkbook, MaximumEdgeWeightWidthWorkbook,
-                false,
+                false, false,
                 out dSourceCalculationNumber1, out dSourceCalculationNumber2
                 ) )
             {
@@ -336,7 +336,7 @@ public static class WorkbookSchemeAutoFiller : Object
             if ( !TableColumnMapper.TryMapToColor(oEdgeTable,
                 edgeTimestampColumnName, EdgeTableColumnNames.Color, false,
                 false, 0, 0, MinimumEdgeTimestampColor,
-                MaximumEdgeTimestampColor, false,
+                MaximumEdgeTimestampColor, false, false,
                 out dSourceCalculationNumber1, out dSourceCalculationNumber2
                 ) )
             {

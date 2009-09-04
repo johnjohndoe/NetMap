@@ -644,8 +644,8 @@ public partial class Ribbon : OfficeRibbon
         RibbonComponentCollection<RibbonControl> oImportItems =
             mnuImport.Items;
 
-        Int32 iInsertionIndex = oImportItems.IndexOf(btnAnalyzeTwitterNetwork)
-            + 1;
+        Int32 iInsertionIndex =
+            oImportItems.IndexOf(btnAnalyzeEmailNetwork) + 1;
 
         Debug.Assert(iInsertionIndex > 0);
 
@@ -1225,34 +1225,6 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         this.ThisWorkbook.AnalyzeEmailNetwork();
-    }
-
-    //*************************************************************************
-    //  Method: btnAnalyzeTwitterNetwork_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnAnalyzeTwitterNetwork button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnAnalyzeTwitterNetwork_Click
-    (
-        object sender,
-        RibbonControlEventArgs e
-    )
-    {
-        AssertValid();
-
-        this.ThisWorkbook.AnalyzeTwitterNetwork();
     }
 
     //*************************************************************************

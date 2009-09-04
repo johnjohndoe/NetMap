@@ -255,35 +255,47 @@
     </Compile>
     <Compile Include="Dialogs\AnalyzeEmailNetwork\AnalyzeEmailNetworkDialogUserSettings.cs">
     </Compile>
-    <Compile Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.cs">
+    <Compile Include="Dialogs\AutoFill\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.designer.cs">
-      <DependentUpon>AnalyzeTwitterNetworkDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.designer.cs">
+    <Compile Include="Dialogs\AutoFill\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.designer.cs">
       <DependentUpon>AutoFillWorkbookWithSchemeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\AutoFillWorkbook\AutoFillWorkbookDialog.cs">
+    <Compile Include="Dialogs\AutoFill\AutoFillWorkbook\AutoFillWorkbookDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\AutoFillWorkbook\AutoFillWorkbookDialog.designer.cs">
+    <Compile Include="Dialogs\AutoFill\AutoFillWorkbook\AutoFillWorkbookDialog.designer.cs">
       <DependentUpon>AutoFillWorkbookDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.designer.cs">
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.designer.cs">
-      <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.cs">
       <SubType>Form</SubType>
@@ -365,18 +377,6 @@
     <Compile Include="Dialogs\Notification\NotificationDialog.Designer.cs">
       <DependentUpon>NotificationDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.designer.cs">
-      <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.designer.cs">
-      <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\OpenGraphMLFile\OpenGraphMLFileDialog.cs" />
     <Compile Include="Dialogs\OpenPajekFile\OpenPajekFileDialog.cs" />
     <Compile Include="Dialogs\OpenUcinetFile\OpenUcinetFileDialog.cs">
@@ -412,12 +412,6 @@
     </Compile>
     <Compile Include="Dialogs\VertexRadius\VertexRadiusDialog.designer.cs">
       <DependentUpon>VertexRadiusDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.designer.cs">
-      <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="EventArgs\DynamicFilterColumnsChangedEventArgs.cs" />
     <Compile Include="EventArgs\GraphDrawnEventArgs.cs" />
@@ -461,10 +455,6 @@
       <DependentUpon>AnalyzeEmailNetworkDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.resx">
-      <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialog.resx">
       <DependentUpon>CreateSubgraphImagesDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -473,20 +463,8 @@
       <DependentUpon>GeneralUserSettingsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.resx">
-      <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.resx">
-      <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\VertexAttributes\VertexAttributesDialog.resx">
       <DependentUpon>VertexAttributesDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.resx">
-      <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -755,14 +733,23 @@
     <EmbeddedResource Include="Dialogs\Alpha\AlphaDialog.resx">
       <DependentUpon>AlphaDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\AnalyzeTwitterNetwork\AnalyzeTwitterNetworkDialog.resx">
-      <DependentUpon>AnalyzeTwitterNetworkDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.resx">
+    <EmbeddedResource Include="Dialogs\AutoFill\AutoFillWorkbookWithScheme\AutoFillWorkbookWithSchemeDialog.resx">
       <DependentUpon>AutoFillWorkbookWithSchemeDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\AutoFillWorkbook\AutoFillWorkbookDialog.resx">
+    <EmbeddedResource Include="Dialogs\AutoFill\AutoFillWorkbook\AutoFillWorkbookDialog.resx">
       <DependentUpon>AutoFillWorkbookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFill\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFill\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFill\NumericRangeColumnAutoFillUserSettings\NumericRangeColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>NumericRangeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFill\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.resx">
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>

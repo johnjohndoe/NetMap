@@ -41,6 +41,69 @@ public class XmlUtil
     }
 
     //*************************************************************************
+    //  Method: AppendNewNodeWithNamespace()
+    //
+    /// <summary>
+    /// Creates a new XML node with an optional namespace and appends it to a
+    /// parent node.
+    /// </summary>
+    ///
+    /// <param name="oParentXmlNode">
+    /// Node to append the new node to.
+    /// </param>
+    /// 
+    /// <param name="sChildName">
+    /// Name of the new node.
+    /// </param>
+    ///
+    /// <param name="sNamespaceUri">
+    /// Optional namespace URI of the new node.  If null or empty, no namespace
+    /// is used.
+    /// </param>
+    ///
+    /// <returns>
+    /// The new node.
+    /// </returns>
+    //*************************************************************************
+
+    static public XmlNode
+    AppendNewNodeWithNamespace
+    (
+        XmlNode oParentXmlNode,
+        String sChildName,
+        String sNamespaceUri
+    )
+    {
+        Debug.Assert(oParentXmlNode != null);
+        Debug.Assert( !String.IsNullOrEmpty(sChildName) );
+
+        // Get the owner document.
+
+        XmlDocument oOwnerDocument = oParentXmlNode.OwnerDocument;
+
+        // Unfortunately, the root node's OwnerDocument property returns null,
+        // so we have to check for this special case.
+
+        if (oOwnerDocument == null)
+        {
+            oOwnerDocument = (XmlDocument)oParentXmlNode;
+        }
+
+        XmlElement oNewNode;
+
+        if ( String.IsNullOrEmpty(sNamespaceUri) )
+        {
+            oNewNode = oOwnerDocument.CreateElement(sChildName);
+        }
+        else
+        {
+            oNewNode = oOwnerDocument.CreateElement(sChildName, sNamespaceUri);
+        }
+
+        return ( oParentXmlNode.AppendChild(oNewNode) );
+    }
+
+    //*************************************************************************
     //  Method: AppendNewNode()
     //
     /// <overloads>
@@ -74,18 +137,7 @@ public class XmlUtil
         Debug.Assert(oParentNode != null);
         Debug.Assert(sChildName != "");
 
-        // Get the owner document.
-
-        XmlDocument oOwnerDocument = oParentNode.OwnerDocument;
-
-        // Unfortunately, the root node's OwnerDocument property returns null,
-        // so we have to check for this special case.
-
-        if (oOwnerDocument == null)
-            oOwnerDocument = (XmlDocument)oParentNode;
-
-        return ( oParentNode.AppendChild(
-            oOwnerDocument.CreateElement(sChildName) ) );
+        return ( AppendNewNodeWithNamespace(oParentNode, sChildName, null) );
     }
 
     //*************************************************************************

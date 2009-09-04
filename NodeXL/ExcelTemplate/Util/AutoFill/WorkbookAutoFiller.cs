@@ -504,6 +504,7 @@ public static class WorkbookAutoFiller : Object
             oDetails.DestinationColor1,
             oDetails.DestinationColor2,
             oDetails.IgnoreOutliers,
+            oDetails.UseLogs,
             out dSourceCalculationNumber1,
             out dSourceCalculationNumber2
             ) );
@@ -580,6 +581,7 @@ public static class WorkbookAutoFiller : Object
             oDetails.DestinationNumber1,
             oDetails.DestinationNumber2,
             oDetails.IgnoreOutliers,
+            oDetails.UseLogs,
             out dSourceCalculationNumber1,
             out dSourceCalculationNumber2
             ) );

@@ -118,18 +118,6 @@
     <Compile Include="..\..\Common\SocialNetwork\ParticipantPair.cs">
       <Link>Util\SocialNetwork\ParticipantPair.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterNetworkAnalysisResults.cs">
-      <Link>Util\SocialNetwork\TwitterNetwork\TwitterNetworkAnalysisResults.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterNetworkAnalyzer.cs">
-      <Link>Util\SocialNetwork\TwitterNetwork\TwitterNetworkAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterParticipant.cs">
-      <Link>Util\SocialNetwork\TwitterNetwork\TwitterParticipant.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\SocialNetwork\TwitterNetwork\TwitterParticipantPair.cs">
-      <Link>Util\SocialNetwork\TwitterNetwork\TwitterParticipantPair.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\SocialNetwork\WdsConnectionFailureException.cs">
       <Link>Util\SocialNetwork\WdsConnectionFailureException.cs</Link>
     </Compile>

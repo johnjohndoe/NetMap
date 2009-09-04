@@ -390,6 +390,15 @@ public class GraphImporter : Object
 
         Int32 iRows = oVertexNameColumnData.Rows.Count;
 
+        if (iRows == 1 && aoVertexNameValues[1, 1] == null)
+        {
+            // Range.get_Value() (and therefore ExcelUtil.GetRangeValues())
+            // returns a single null cell when the table is empty.  Work around
+            // this.
+
+            iRows = 0;
+        }
+
         for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
         {
             String sVertexName;
@@ -400,6 +409,8 @@ public class GraphImporter : Object
                 oVertexDictionary[sVertexName] = iRowOneBased;
             }
         }
+
+        aoVertexNameValues = null;
 
         // Create a list of vertices not already included in the vertex table. 
         // This can occur when the graph has isolated vertices.

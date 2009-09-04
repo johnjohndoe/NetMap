@@ -65,19 +65,31 @@ public class SampleGraphDataProvider : IGraphDataProvider
     }
 
     //*************************************************************************
-    //  Method: GetGraphData()
+    //  Method: TryGetGraphData()
     //
     /// <summary>
-    /// Gets graph data to import into the NodeXL Excel Template.
+    /// Attempts to get graph data to import into the NodeXL Excel Template.
     /// </summary>
     ///
+    /// <param name="graphDataAsGraphML">
+    /// Where the graph data gets stored as a GraphML XML string, if true is
+    /// returns.
+    /// </param>
+    ///
     /// <returns>
-    /// See the <see cref="IGraphDataProvider" /> topic for details.
+    /// true if the graph data was obtained, false if not.
     /// </returns>
+    ///
+    /// <remarks>
+    /// See the <see cref="IGraphDataProvider" /> topic for details.
+    /// </remarks>
     //*************************************************************************
 
-    public String
-    GetGraphData()
+    public Boolean
+    TryGetGraphData
+    (
+        out String graphDataAsGraphML
+    )
     {
         // See the "GraphML Primer" for details on the GraphML XML schema:
         //
@@ -190,7 +202,9 @@ public class SampleGraphDataProvider : IGraphDataProvider
         oEdgeXmlNode = AppendEdgeXmlNode(oGraphXmlNode, "V3", "V2");
         AppendGraphMLAttributeValue(oEdgeXmlNode, EdgeWidthID, "2.5");
 
-        return (oXmlDocument.OuterXml);
+        graphDataAsGraphML = oXmlDocument.OuterXml;
+
+        return (true);
     }
 
     //*************************************************************************
@@ -200,7 +214,7 @@ public class SampleGraphDataProvider : IGraphDataProvider
     /// Defines a GraphML-Attribute.
     /// </summary>
     ///
-    /// <param name="oGraphMLName">
+    /// <param name="oGraphMLXmlNode">
     /// Root graphml node.
     /// </param>
     /// 

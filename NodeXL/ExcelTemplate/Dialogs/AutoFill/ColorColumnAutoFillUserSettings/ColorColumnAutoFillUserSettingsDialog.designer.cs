@@ -39,7 +39,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkIgnoreOutliers = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.radUseSourceNumber2 = new System.Windows.Forms.RadioButton();
-            this.lnkIgnoreOutliers = new System.Windows.Forms.LinkLabel();
+            this.lnkOutliersAndLogs = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.lblMaximum = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -53,6 +53,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnSwapDestinationColors = new System.Windows.Forms.Button();
             this.usrDestinationColor1 = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
+            this.chkUseLogs = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -63,7 +64,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCancel.Location = new System.Drawing.Point(400, 255);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 7;
+            this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -72,7 +73,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(314, 255);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 6;
+            this.btnOK.TabIndex = 7;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -128,16 +129,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radUseSourceNumber2.UseVisualStyleBackColor = true;
             this.radUseSourceNumber2.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
-            // lnkIgnoreOutliers
+            // lnkOutliersAndLogs
             // 
-            this.lnkIgnoreOutliers.AutoSize = true;
-            this.lnkIgnoreOutliers.Location = new System.Drawing.Point(110, 235);
-            this.lnkIgnoreOutliers.Name = "lnkIgnoreOutliers";
-            this.lnkIgnoreOutliers.Size = new System.Drawing.Size(68, 13);
-            this.lnkIgnoreOutliers.TabIndex = 5;
-            this.lnkIgnoreOutliers.TabStop = true;
-            this.lnkIgnoreOutliers.Text = "What is this?";
-            this.lnkIgnoreOutliers.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkIgnoreOutliers_LinkClicked);
+            this.lnkOutliersAndLogs.AutoSize = true;
+            this.lnkOutliersAndLogs.Location = new System.Drawing.Point(167, 242);
+            this.lnkOutliersAndLogs.Name = "lnkOutliersAndLogs";
+            this.lnkOutliersAndLogs.Size = new System.Drawing.Size(86, 13);
+            this.lnkOutliersAndLogs.TabIndex = 6;
+            this.lnkOutliersAndLogs.TabStop = true;
+            this.lnkOutliersAndLogs.Text = "What are these?";
+            this.lnkOutliersAndLogs.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkOutliersAndLogs_LinkClicked);
             // 
             // label3
             // 
@@ -276,6 +277,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.usrDestinationColor1.TabIndex = 5;
             this.usrDestinationColor1.ColorChanged += new System.EventHandler(this.ColorPicker_ColorChanged);
             // 
+            // chkUseLogs
+            // 
+            this.chkUseLogs.AutoSize = true;
+            this.chkUseLogs.Location = new System.Drawing.Point(12, 257);
+            this.chkUseLogs.Name = "chkUseLogs";
+            this.chkUseLogs.Size = new System.Drawing.Size(150, 17);
+            this.chkUseLogs.TabIndex = 5;
+            this.chkUseLogs.Text = "&Use a logarithmic mapping";
+            this.chkUseLogs.UseVisualStyleBackColor = true;
+            // 
             // ColorColumnAutoFillUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
@@ -283,8 +294,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(492, 291);
+            this.Controls.Add(this.chkUseLogs);
             this.Controls.Add(this.chkIgnoreOutliers);
-            this.Controls.Add(this.lnkIgnoreOutliers);
+            this.Controls.Add(this.lnkOutliersAndLogs);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.pnlColorGradient);
             this.Controls.Add(this.label1);
@@ -314,7 +326,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.CheckBox chkIgnoreOutliers;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RadioButton radUseSourceNumber2;
-        private System.Windows.Forms.LinkLabel lnkIgnoreOutliers;
+        private System.Windows.Forms.LinkLabel lnkOutliersAndLogs;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblMaximum;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -328,5 +340,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrDestinationColor2;
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrDestinationColor1;
         private System.Windows.Forms.Button btnSwapDestinationColors;
+        private System.Windows.Forms.CheckBox chkUseLogs;
     }
 }

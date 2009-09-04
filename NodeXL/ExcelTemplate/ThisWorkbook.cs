@@ -245,10 +245,15 @@ public partial class ThisWorkbook
 
         try
         {
-            String sGraphData = graphDataProvider.GetGraphData();
+            String sGraphDataAsGraphML;
+
+            if (!graphDataProvider.TryGetGraphData(out sGraphDataAsGraphML) )
+            {
+                return;
+            }
 
             IGraph oGraph = ( new GraphMLGraphAdapter() ).LoadGraph(
-                new GraphFactory(), sGraphData);
+                new GraphFactory(), sGraphDataAsGraphML);
 
             ImportGraph(oGraph, 
 
@@ -784,32 +789,6 @@ public partial class ThisWorkbook
                 this.Ribbon.ClearTablesBeforeImport);
 
         oAnalyzeEmailNetworkDialog.ShowDialog();
-    }
-
-    //*************************************************************************
-    //  Method: AnalyzeTwitterNetwork()
-    //
-    /// <summary>
-    /// Shows the dialog that analyzes a Twitter network and writes the results
-    /// to the edge worksheet.
-    /// </summary>
-    //*************************************************************************
-
-    public void
-    AnalyzeTwitterNetwork()
-    {
-        AssertValid();
-
-        if ( !this.ExcelApplicationIsReady(true) )
-        {
-            return;
-        }
-
-        AnalyzeTwitterNetworkDialog oAnalyzeTwitterNetworkDialog =
-            new AnalyzeTwitterNetworkDialog(this.InnerObject,
-                this.Ribbon.ClearTablesBeforeImport);
-
-        oAnalyzeTwitterNetworkDialog.ShowDialog();
     }
 
     //*************************************************************************

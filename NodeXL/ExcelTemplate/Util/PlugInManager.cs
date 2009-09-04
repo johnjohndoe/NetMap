@@ -78,7 +78,8 @@ public static class PlugInManager
 
                 foreach (Type oType in aoTypes)
                 {
-                    if ( typeof(IGraphDataProvider).IsAssignableFrom(oType) )
+                    if ( !oType.IsAbstract &&
+                        typeof(IGraphDataProvider).IsAssignableFrom(oType) )
                     {
                         oGraphDataProviders.Add( (IGraphDataProvider)
                             Activator.CreateInstance(oType) );

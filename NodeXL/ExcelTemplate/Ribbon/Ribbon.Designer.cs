@@ -41,13 +41,13 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxClearTablesBeforeImport = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.separator10 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnImportFromUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnImportFromGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnImportFromPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator9 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnImportFromMatrixWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnImportFromEdgeWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnAnalyzeEmailNetwork = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnAnalyzeTwitterNetwork = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnConvertOldWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mnuExport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
@@ -120,7 +120,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnRegisterUser = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCheckForUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnImportFromGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -162,7 +161,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.mnuImport.Items.Add(this.btnImportFromEdgeWorkbook);
             this.mnuImport.Items.Add(this.separator3);
             this.mnuImport.Items.Add(this.btnAnalyzeEmailNetwork);
-            this.mnuImport.Items.Add(this.btnAnalyzeTwitterNetwork);
             this.mnuImport.Items.Add(this.separator2);
             this.mnuImport.Items.Add(this.btnConvertOldWorkbook);
             this.mnuImport.Label = "Import";
@@ -195,6 +193,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnImportFromUcinetFile.SuperTip = "Optionally clear the NodeXL workbook, then import edges from a UCINET full matrix" +
                 " DL file.";
             this.btnImportFromUcinetFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportFromUcinetFile_Click);
+            // 
+            // btnImportFromGraphMLFile
+            // 
+            this.btnImportFromGraphMLFile.Label = "From GraphML file...";
+            this.btnImportFromGraphMLFile.Name = "btnImportFromGraphMLFile";
+            this.btnImportFromGraphMLFile.OfficeImageId = "ImportTextFile";
+            this.btnImportFromGraphMLFile.ScreenTip = "Import from GraphML File";
+            this.btnImportFromGraphMLFile.ShowImage = true;
+            this.btnImportFromGraphMLFile.SuperTip = resources.GetString("btnImportFromGraphMLFile.SuperTip");
+            this.btnImportFromGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportFromGraphMLFile_Click);
             // 
             // btnImportFromPajekFile
             // 
@@ -244,17 +252,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAnalyzeEmailNetwork.ShowImage = true;
             this.btnAnalyzeEmailNetwork.SuperTip = resources.GetString("btnAnalyzeEmailNetwork.SuperTip");
             this.btnAnalyzeEmailNetwork.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAnalyzeEmailNetwork_Click);
-            // 
-            // btnAnalyzeTwitterNetwork
-            // 
-            this.btnAnalyzeTwitterNetwork.Label = "From Twitter Network...";
-            this.btnAnalyzeTwitterNetwork.Name = "btnAnalyzeTwitterNetwork";
-            this.btnAnalyzeTwitterNetwork.OfficeImageId = "AutoDial";
-            this.btnAnalyzeTwitterNetwork.ScreenTip = "Import from Twitter Network";
-            this.btnAnalyzeTwitterNetwork.ShowImage = true;
-            this.btnAnalyzeTwitterNetwork.SuperTip = "Optionally clear the NodeXL workbook, then show the friends of a Twitter user and" +
-                " their latest postings.";
-            this.btnAnalyzeTwitterNetwork.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAnalyzeTwitterNetwork_Click);
             // 
             // separator2
             // 
@@ -845,8 +842,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxShowLabelColumnGroups.Label = "Labels";
             this.cbxShowLabelColumnGroups.Name = "cbxShowLabelColumnGroups";
             this.cbxShowLabelColumnGroups.ScreenTip = "Show/Hide Label Columns";
-            this.cbxShowLabelColumnGroups.SuperTip = "Show or hide the columns you can use to add labels to individual edges, and labels and tooltip" +
-                "s to individual vertices.";
+            this.cbxShowLabelColumnGroups.SuperTip = "Show or hide the columns you can use to add labels to individual edges, and label" +
+                "s and tooltips to individual vertices.";
             this.cbxShowLabelColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.cbxShowLabelColumnGroups_Click);
             // 
             // cbxShowVertexLayoutColumnGroup
@@ -1016,16 +1013,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAbout.SuperTip = "View information about Microsoft NodeXL.";
             this.btnAbout.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAbout_Click);
             // 
-            // btnImportFromGraphMLFile
-            // 
-            this.btnImportFromGraphMLFile.Label = "From GraphML file...";
-            this.btnImportFromGraphMLFile.Name = "btnImportFromGraphMLFile";
-            this.btnImportFromGraphMLFile.OfficeImageId = "ImportTextFile";
-            this.btnImportFromGraphMLFile.ScreenTip = "Import from GraphML File";
-            this.btnImportFromGraphMLFile.ShowImage = true;
-            this.btnImportFromGraphMLFile.SuperTip = resources.GetString("btnImportFromGraphMLFile.SuperTip");
-            this.btnImportFromGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportFromGraphMLFile_Click);
-            // 
             // Ribbon
             // 
             this.Name = "Ribbon";
@@ -1072,7 +1059,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuImport;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuExport;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportSelectionToNewNodeXLWorkbook;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAnalyzeTwitterNetwork;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnRegisterUser;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConvertOldWorkbook;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromMatrixWorkbook;

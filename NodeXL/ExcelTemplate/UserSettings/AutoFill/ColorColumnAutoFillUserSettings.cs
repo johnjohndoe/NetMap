@@ -49,6 +49,7 @@ public class ColorColumnAutoFillUserSettings : Object
         m_eDestinationColor1 = Color.Red;
         m_eDestinationColor2 = Color.Green;
         m_bIgnoreOutliers = false;
+        m_bUseLogs = false;
 
         AssertValid();
     }
@@ -278,6 +279,37 @@ public class ColorColumnAutoFillUserSettings : Object
     }
 
     //*************************************************************************
+    //  Property: UseLogs
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether logarithms should be used.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the log of the source column numbers should be used, false if
+    /// the source column numbers should be used directly.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    UseLogs
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bUseLogs);
+        }
+
+        set
+        {
+            m_bUseLogs = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: Copy()
     //
     /// <summary>
@@ -329,6 +361,7 @@ public class ColorColumnAutoFillUserSettings : Object
         // m_eDestinationColor1
         // m_eDestinationColor2
         // m_bIgnoreOutliers
+        // m_bUseLogs
     }
 
 
@@ -365,6 +398,10 @@ public class ColorColumnAutoFillUserSettings : Object
     /// true if outliers should be ignored in the source column.
 
     protected Boolean m_bIgnoreOutliers;
+
+    /// true if the log of the source column numbers should be used.
+
+    protected Boolean m_bUseLogs;
 }
 
 
@@ -451,11 +488,16 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
 
         // Use a simple tab-delimited format.  Sample string:
         //
-        // "false\tfalse\t0\t10\tRed\tGreen\ttrue"
+        // "false\tfalse\t0\t10\tRed\tGreen\tfalse\tfalse"
+        //
+        // WARNING: If this format is changed, you must also change the
+        // DefaultSettingValueAttribute for each property in the
+        // AutoFillUserSettings class that is of type
+        // ColorColumnAutoFillUserSettings.
 
         return ( String.Format(CultureInfo.InvariantCulture,
 
-            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}"
+            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}"
             ,
             oColorColumnAutoFillUserSettings.UseSourceNumber1,
             oColorColumnAutoFillUserSettings.UseSourceNumber2,
@@ -468,7 +510,8 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
             oColorConverter.ConvertToString(
                 oColorColumnAutoFillUserSettings.DestinationColor2),
 
-            oColorColumnAutoFillUserSettings.IgnoreOutliers
+            oColorColumnAutoFillUserSettings.IgnoreOutliers,
+            oColorColumnAutoFillUserSettings.UseLogs
             ) );
     }
 
@@ -517,7 +560,7 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
 
         String [] asStrings = ( (String)value ).Split( new Char[] {'\t'} );
 
-        Debug.Assert(asStrings.Length == 7);
+        Debug.Assert(asStrings.Length >= 7);
 
         oColorColumnAutoFillUserSettings.UseSourceNumber1 =
             Boolean.Parse( asStrings[0] );
@@ -539,6 +582,11 @@ public class ColorColumnAutoFillUserSettingsTypeConverter :
 
         oColorColumnAutoFillUserSettings.IgnoreOutliers =
             Boolean.Parse( asStrings[6] );
+
+        // The UseLogs property wasn't added until NodeXL version 1.0.1.92.
+
+        oColorColumnAutoFillUserSettings.UseLogs =
+            (asStrings.Length > 7) ? Boolean.Parse( asStrings[7] ) : false;
 
         return (oColorColumnAutoFillUserSettings);
     }

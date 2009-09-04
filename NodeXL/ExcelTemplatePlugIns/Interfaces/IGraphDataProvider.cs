@@ -22,10 +22,10 @@ namespace Microsoft.NodeXL.ExcelTemplatePlugIns
 /// <para>
 /// The NodeXL Excel Template (implemented by the ExcelTemplate project) can
 /// directly import graph data from a variety of sources, including other Excel
-/// workbooks, UCINET files, Pajek files, email indexed by Windows Desktop
-/// Search, and Twitter.com.  If you have graph data in another format that you
-/// want to import into the Excel Template without having to modify the
-/// ExcelTemplate's source code, follow these steps:
+/// workbooks, UCINET files, Pajek files, and email indexed by Windows Desktop
+/// Search.  If you have graph data from another source that you want to import
+/// into the Excel Template without having to modify the ExcelTemplate's source
+/// code, follow these steps:
 /// </para>
 ///
 /// <list type="number">
@@ -55,7 +55,7 @@ namespace Microsoft.NodeXL.ExcelTemplatePlugIns
 /// that implement <see cref="IGraphDataProvider" />.  For each such class, it
 /// adds a child item to the Import menu using the strings returned by <see
 /// cref="Name" /> and <see cref="Description" />.  When the user selects one
-/// of the child menu items, the <see cref="GetGraphData" /> method on the
+/// of the child menu items, the <see cref="TryGetGraphData" /> method on the
 /// corresponding class is called, and the graph data returned by that method
 /// is used to populate the NodeXL workbook.
 /// </para>
@@ -126,14 +126,19 @@ public interface IGraphDataProvider
     }
 
     //*************************************************************************
-    //  Method: GetGraphData()
+    //  Method: TryGetGraphData()
     //
     /// <summary>
-    /// Gets graph data to import into the NodeXL Excel Template.
+    /// Attempts to get graph data to import into the NodeXL Excel Template.
     /// </summary>
     ///
+    /// <param name="graphDataAsGraphML">
+    /// Where the graph data gets stored as a GraphML XML string, if true is
+    /// returned.
+    /// </param>
+    ///
     /// <returns>
-    /// Graph data as a GraphML XML String.
+    /// true if the graph data was obtained, false if not.
     /// </returns>
     ///
     /// <remarks>
@@ -201,8 +206,11 @@ public interface IGraphDataProvider
     /// </remarks>
     //*************************************************************************
 
-    String
-    GetGraphData();
+    Boolean
+    TryGetGraphData
+    (
+        out String graphDataAsGraphML
+    );
 }
 
 }

@@ -41,16 +41,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radUseSourceNumber1 = new System.Windows.Forms.RadioButton();
             this.nudDestinationNumber2 = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.lnkIgnoreOutliers = new System.Windows.Forms.LinkLabel();
+            this.lnkOutliersAndLogs = new System.Windows.Forms.LinkLabel();
             this.lblDestinationNumber1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSwapDestinationNumbers = new System.Windows.Forms.Button();
             this.nudDestinationNumber1 = new System.Windows.Forms.NumericUpDown();
             this.chkIgnoreOutliers = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblDestinationNumber2 = new System.Windows.Forms.Label();
             this.radUseSourceNumber2 = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnSwapDestinationNumbers = new System.Windows.Forms.Button();
+            this.chkUseLogs = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudDestinationNumber2)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDestinationNumber1)).BeginInit();
@@ -63,7 +64,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCancel.Location = new System.Drawing.Point(400, 196);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 5;
+            this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -72,7 +73,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(314, 196);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 4;
+            this.btnOK.TabIndex = 5;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -149,16 +150,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label4.TabIndex = 0;
             this.label4.Text = "M&ap this source column number:";
             // 
-            // lnkIgnoreOutliers
+            // lnkOutliersAndLogs
             // 
-            this.lnkIgnoreOutliers.AutoSize = true;
-            this.lnkIgnoreOutliers.Location = new System.Drawing.Point(110, 176);
-            this.lnkIgnoreOutliers.Name = "lnkIgnoreOutliers";
-            this.lnkIgnoreOutliers.Size = new System.Drawing.Size(68, 13);
-            this.lnkIgnoreOutliers.TabIndex = 3;
-            this.lnkIgnoreOutliers.TabStop = true;
-            this.lnkIgnoreOutliers.Text = "What is this?";
-            this.lnkIgnoreOutliers.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkIgnoreOutliers_LinkClicked);
+            this.lnkOutliersAndLogs.AutoSize = true;
+            this.lnkOutliersAndLogs.Location = new System.Drawing.Point(167, 183);
+            this.lnkOutliersAndLogs.Name = "lnkOutliersAndLogs";
+            this.lnkOutliersAndLogs.Size = new System.Drawing.Size(86, 13);
+            this.lnkOutliersAndLogs.TabIndex = 4;
+            this.lnkOutliersAndLogs.TabStop = true;
+            this.lnkOutliersAndLogs.Text = "What are these?";
+            this.lnkOutliersAndLogs.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkOutliersAndLogs_LinkClicked);
             // 
             // lblDestinationNumber1
             // 
@@ -183,6 +184,18 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1.Size = new System.Drawing.Size(230, 154);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // btnSwapDestinationNumbers
+            // 
+            this.btnSwapDestinationNumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSwapDestinationNumbers.AutoSize = true;
+            this.btnSwapDestinationNumbers.Location = new System.Drawing.Point(122, 121);
+            this.btnSwapDestinationNumbers.Name = "btnSwapDestinationNumbers";
+            this.btnSwapDestinationNumbers.Size = new System.Drawing.Size(100, 23);
+            this.btnSwapDestinationNumbers.TabIndex = 6;
+            this.btnSwapDestinationNumbers.Text = "[Gets set in code]";
+            this.btnSwapDestinationNumbers.UseVisualStyleBackColor = true;
+            this.btnSwapDestinationNumbers.Click += new System.EventHandler(this.btnSwapDestinationNumbers_Click);
             // 
             // nudDestinationNumber1
             // 
@@ -245,17 +258,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
-            // btnSwapDestinationNumbers
+            // chkUseLogs
             // 
-            this.btnSwapDestinationNumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSwapDestinationNumbers.AutoSize = true;
-            this.btnSwapDestinationNumbers.Location = new System.Drawing.Point(122, 121);
-            this.btnSwapDestinationNumbers.Name = "btnSwapDestinationNumbers";
-            this.btnSwapDestinationNumbers.Size = new System.Drawing.Size(100, 23);
-            this.btnSwapDestinationNumbers.TabIndex = 6;
-            this.btnSwapDestinationNumbers.Text = "[Gets set in code]";
-            this.btnSwapDestinationNumbers.UseVisualStyleBackColor = true;
-            this.btnSwapDestinationNumbers.Click += new System.EventHandler(this.btnSwapDestinationNumbers_Click);
+            this.chkUseLogs.AutoSize = true;
+            this.chkUseLogs.Location = new System.Drawing.Point(12, 198);
+            this.chkUseLogs.Name = "chkUseLogs";
+            this.chkUseLogs.Size = new System.Drawing.Size(150, 17);
+            this.chkUseLogs.TabIndex = 3;
+            this.chkUseLogs.Text = "&Use a logarithmic mapping";
+            this.chkUseLogs.UseVisualStyleBackColor = true;
             // 
             // NumericRangeColumnAutoFillUserSettingsDialog
             // 
@@ -264,7 +275,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(492, 232);
-            this.Controls.Add(this.lnkIgnoreOutliers);
+            this.Controls.Add(this.chkUseLogs);
+            this.Controls.Add(this.lnkOutliersAndLogs);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.chkIgnoreOutliers);
             this.Controls.Add(this.groupBox2);
@@ -297,7 +309,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.RadioButton radUseSourceNumber1;
         private System.Windows.Forms.NumericUpDown nudDestinationNumber2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.LinkLabel lnkIgnoreOutliers;
+        private System.Windows.Forms.LinkLabel lnkOutliersAndLogs;
         private System.Windows.Forms.Label lblDestinationNumber1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.NumericUpDown nudDestinationNumber1;
@@ -307,5 +319,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.RadioButton radUseSourceNumber2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnSwapDestinationNumbers;
+        private System.Windows.Forms.CheckBox chkUseLogs;
     }
 }

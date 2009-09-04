@@ -48,6 +48,7 @@ public class NumericRangeColumnAutoFillUserSettings : Object
         m_dDestinationNumber1 = 0;
         m_dDestinationNumber2 = 10;
         m_bIgnoreOutliers = false;
+        m_bUseLogs = false;
 
         AssertValid();
     }
@@ -278,6 +279,37 @@ public class NumericRangeColumnAutoFillUserSettings : Object
     }
 
     //*************************************************************************
+    //  Property: UseLogs
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether logarithms should be used.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the log of the source column numbers should be used, false if
+    /// the source column numbers should be used directly.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    UseLogs
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bUseLogs);
+        }
+
+        set
+        {
+            m_bUseLogs = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: Copy()
     //
     /// <summary>
@@ -304,6 +336,7 @@ public class NumericRangeColumnAutoFillUserSettings : Object
         oCopy.DestinationNumber1 = this.DestinationNumber1;
         oCopy.DestinationNumber2 = this.DestinationNumber2;
         oCopy.IgnoreOutliers = this.IgnoreOutliers;
+        oCopy.UseLogs = this.UseLogs;
 
         return (oCopy);
     }
@@ -329,6 +362,7 @@ public class NumericRangeColumnAutoFillUserSettings : Object
         // m_dDestinationNumber1
         // m_dDestinationNumber2
         // m_bIgnoreOutliers
+        // m_bUseLogs
     }
 
 
@@ -365,6 +399,10 @@ public class NumericRangeColumnAutoFillUserSettings : Object
     /// true if outliers should be ignored in the source column.
 
     protected Boolean m_bIgnoreOutliers;
+
+    /// true if the log of the source column numbers should be used.
+
+    protected Boolean m_bUseLogs;
 }
 
 
@@ -452,11 +490,16 @@ public class NumericRangeColumnAutoFillUserSettingsTypeConverter :
 
         // Use a simple tab-delimited format.  Sample string:
         //
-        // "false\tfalse\t0\t10\t0\t10\ttrue"
+        // "false\tfalse\t0\t10\t0\t10\tfalse\tfalse"
+        //
+        // WARNING: If this format is changed, you must also change the
+        // DefaultSettingValueAttribute for each property in the
+        // AutoFillUserSettings class that is of type
+        // NumericRangeColumnAutoFillUserSettings.
 
         return ( String.Format(CultureInfo.InvariantCulture,
 
-            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}"
+            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}"
             ,
             oNumericRangeColumnAutoFillUserSettings.UseSourceNumber1,
             oNumericRangeColumnAutoFillUserSettings.UseSourceNumber2,
@@ -464,7 +507,8 @@ public class NumericRangeColumnAutoFillUserSettingsTypeConverter :
             oNumericRangeColumnAutoFillUserSettings.SourceNumber2,
             oNumericRangeColumnAutoFillUserSettings.DestinationNumber1,
             oNumericRangeColumnAutoFillUserSettings.DestinationNumber2,
-            oNumericRangeColumnAutoFillUserSettings.IgnoreOutliers
+            oNumericRangeColumnAutoFillUserSettings.IgnoreOutliers,
+            oNumericRangeColumnAutoFillUserSettings.UseLogs
             ) );
     }
 
@@ -511,7 +555,7 @@ public class NumericRangeColumnAutoFillUserSettingsTypeConverter :
 
         String [] asStrings = ( (String)value ).Split( new Char[] {'\t'} );
 
-        Debug.Assert(asStrings.Length == 7);
+        Debug.Assert(asStrings.Length >= 7);
 
         oNumericRangeColumnAutoFillUserSettings.UseSourceNumber1 =
             Boolean.Parse( asStrings[0] );
@@ -533,6 +577,11 @@ public class NumericRangeColumnAutoFillUserSettingsTypeConverter :
 
         oNumericRangeColumnAutoFillUserSettings.IgnoreOutliers =
             Boolean.Parse( asStrings[6] );
+
+        // The UseLogs property wasn't added until NodeXL version 1.0.1.92.
+
+        oNumericRangeColumnAutoFillUserSettings.UseLogs =
+            (asStrings.Length > 7) ? Boolean.Parse( asStrings[7] ) : false;
 
         return (oNumericRangeColumnAutoFillUserSettings);
     }

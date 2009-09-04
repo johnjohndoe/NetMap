@@ -334,22 +334,22 @@ public class UserRegisterer : Object
 
     /// User name and password of the SDS account.
 
-    protected const String UserName = "NodeXLUsers";
+    protected const String UserName = "NodeXL";
     ///
-    protected const String Password = "9jUhbGiiej98bHGtu6";
+    protected const String Password = "ji*%gHjhd1";
 
-    /// URL of the SDS containter.  The SDS authority is "users2" and the
-    /// container is "users".
+    /// URL of the SDS containter.  The SDS authority is "nodexl" and the
+    /// container is "customers".
 
     protected const String ContainerUrl =
-        "https://nodexlusers.data.database.windows.net/v1/nodexlusers";
+        "https://nodexl.data.database.windows.net/v1/customers";
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-    /// The timeout to use for Twitter Web requests, in milliseconds.
+    /// The timeout to use for Web requests, in milliseconds.
 
     protected Int32 m_iHttpWebRequestTimeoutMs;
 }

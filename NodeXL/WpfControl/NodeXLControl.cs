@@ -628,7 +628,7 @@ public partial class NodeXLControl : FrameworkElement
     /// The example shows how to lay out the graph as a grid:
     ///
     /// <code>
-    /// !Debug.Assert(nodeXLControl.IsDrawing);
+    /// Debug.Assert(!nodeXLControl.IsDrawing);
     /// nodeXLControl.Layout = new GridLayout();
     /// </code>
     ///

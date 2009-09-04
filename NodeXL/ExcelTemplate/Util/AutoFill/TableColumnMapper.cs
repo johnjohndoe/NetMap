@@ -85,6 +85,11 @@ public static class TableColumnMapper : Object
     /// name="useSourceNumber2" /> are false.
     /// </param>
     ///
+    /// <param name="useLogs">
+    /// true if the log of the source column numbers should be used, false if
+    /// the source column numbers should be used directly.
+    /// </param>
+    ///
     /// <param name="sourceCalculationNumber1">
     /// Where the actual first source number used in the calculations gets
     /// stored if true is returned.
@@ -124,6 +129,7 @@ public static class TableColumnMapper : Object
         Double destinationNumber1,
         Double destinationNumber2,
         Boolean ignoreOutliers,
+        Boolean useLogs,
         out Double sourceCalculationNumber1,
         out Double sourceCalculationNumber2
     )
@@ -131,6 +137,8 @@ public static class TableColumnMapper : Object
         Debug.Assert(table != null);
         Debug.Assert( !String.IsNullOrEmpty(sourceColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(destinationColumnName) );
+        Debug.Assert(!useLogs || !useSourceNumber1 || sourceNumber1 > 0);
+        Debug.Assert(!useLogs || !useSourceNumber2 || sourceNumber2 > 0);
 
         sourceCalculationNumber1 = sourceCalculationNumber2 = Double.MinValue;
 
@@ -149,11 +157,17 @@ public static class TableColumnMapper : Object
 
         if ( !TryGetSourceCalculationRange(oVisibleSourceRange,
             useSourceNumber1, useSourceNumber2, sourceNumber1, sourceNumber2,
-            ignoreOutliers, out sourceCalculationNumber1,
+            ignoreOutliers, useLogs, out sourceCalculationNumber1,
             out sourceCalculationNumber2) )
         {
             return (false);
         }
+
+        sourceCalculationNumber1 = GetLogIfRequested(sourceCalculationNumber1,
+            useLogs);
+
+        sourceCalculationNumber2 = GetLogIfRequested(sourceCalculationNumber2,
+            useLogs);
 
         // Loop through the areas.
 
@@ -183,11 +197,13 @@ public static class TableColumnMapper : Object
 
                 Double dSourceNumber;
 
-                if ( !TryGetNumber( aoSourceAreaValues[iRow, 1], 
-                        out dSourceNumber) )
+                if ( !TryGetNumber( aoSourceAreaValues[iRow, 1], useLogs,
+                    out dSourceNumber) )
                 {
                     continue;
                 }
+
+                dSourceNumber = GetLogIfRequested(dSourceNumber, useLogs);
 
                 // Map the source number to a destination number.
 
@@ -292,6 +308,11 @@ public static class TableColumnMapper : Object
     /// name="useSourceNumber2" /> are false.
     /// </param>
     ///
+    /// <param name="useLogs">
+    /// true if the log of the source column numbers should be used, false if
+    /// the source column numbers should be used directly.
+    /// </param>
+    ///
     /// <param name="sourceCalculationNumber1">
     /// Where the actual first source number used in the calculations gets
     /// stored if true is returned.
@@ -330,6 +351,7 @@ public static class TableColumnMapper : Object
         Color destinationColor1,
         Color destinationColor2,
         Boolean ignoreOutliers,
+        Boolean useLogs,
         out Double sourceCalculationNumber1,
         out Double sourceCalculationNumber2
     )
@@ -337,6 +359,8 @@ public static class TableColumnMapper : Object
         Debug.Assert(table != null);
         Debug.Assert( !String.IsNullOrEmpty(sourceColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(destinationColumnName) );
+        Debug.Assert(!useLogs || !useSourceNumber1 || sourceNumber1 > 0);
+        Debug.Assert(!useLogs || !useSourceNumber2 || sourceNumber2 > 0);
 
         sourceCalculationNumber1 = sourceCalculationNumber2 = Double.MinValue;
 
@@ -355,11 +379,17 @@ public static class TableColumnMapper : Object
 
         if ( !TryGetSourceCalculationRange(oVisibleSourceRange,
             useSourceNumber1, useSourceNumber2, sourceNumber1, sourceNumber2,
-            ignoreOutliers, out sourceCalculationNumber1,
+            ignoreOutliers, useLogs, out sourceCalculationNumber1,
             out sourceCalculationNumber2) )
         {
             return (false);
         }
+
+        sourceCalculationNumber1 = GetLogIfRequested(sourceCalculationNumber1,
+            useLogs);
+
+        sourceCalculationNumber2 = GetLogIfRequested(sourceCalculationNumber2,
+            useLogs);
 
         // Create an object that maps a range of numbers to a range of colors.
 
@@ -397,11 +427,13 @@ public static class TableColumnMapper : Object
 
                 Double dSourceNumber;
 
-                if ( !TryGetNumber( aoSourceAreaValues[iRow, 1],
+                if ( !TryGetNumber( aoSourceAreaValues[iRow, 1], useLogs,
                     out dSourceNumber) )
                 {
                     continue;
                 }
+
+                dSourceNumber = GetLogIfRequested(dSourceNumber, useLogs);
 
                 Color oDestinationColor =
                     oColorGradientMapper.ColorMetricToColor(dSourceNumber);
@@ -743,8 +775,54 @@ public static class TableColumnMapper : Object
     //*************************************************************************
     //  Method: TryGetNumber()
     //
-    /// <summary>
+    /// <overloads>
     /// Attempts to get a number from a cell value.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Attempts to get a number from a cell value and optionally restricts the
+    /// number to postive values.
+    /// </summary>
+    ///
+    /// <param name="oValue">
+    /// Cell value.  Can be null.
+    /// </param>
+    ///
+    /// <param name="bPositiveNumbersOnly">
+    /// true if non-positive numbers should be ignored.
+    /// </param>
+    ///
+    /// <param name="dNumber">
+    /// Where the number gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the cell value was a number.
+    /// </returns>
+    //*************************************************************************
+
+    private static Boolean
+    TryGetNumber
+    (
+        Object oValue,
+        Boolean bPositiveNumbersOnly,
+        out Double dNumber
+    )
+    {
+        if ( TryGetNumber(oValue, out dNumber) )
+        {
+            return (!bPositiveNumbersOnly || dNumber > 0);
+        }
+
+        return (false);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetNumber()
+    //
+    /// <summary>
+    /// Attempts to get a number from a cell value.  The number can be any
+    /// value.
     /// </summary>
     ///
     /// <param name="oValue">
@@ -842,6 +920,10 @@ public static class TableColumnMapper : Object
     /// name="bUseSourceNumber2" /> are false.
     /// </param>
     ///
+    /// <param name="bPositiveNumbersOnly">
+    /// true if non-positive numbers should be ignored.
+    /// </param>
+    ///
     /// <param name="dSourceCalculationNumber1">
     /// Where the first number in the source calculation range gets stored if
     /// true is returned.  Does not have to be less than <paramref
@@ -868,6 +950,7 @@ public static class TableColumnMapper : Object
         Double dSourceNumber1,
         Double dSourceNumber2,
         Boolean bIgnoreOutliers,
+        Boolean bPositiveNumbersOnly,
         out Double dSourceCalculationNumber1,
         out Double dSourceCalculationNumber2
     )
@@ -888,8 +971,9 @@ public static class TableColumnMapper : Object
         if (!bUseSourceNumber1 || !bUseSourceNumber2)
         {
             if ( !TryGetSourceStatistics(oVisibleSourceRange,
-                out iSourceNumbers, out dMinimumSourceNumber,
-                out dMaximumSourceNumber, out dMeanSourceNumber) )
+                bPositiveNumbersOnly, out iSourceNumbers,
+                out dMinimumSourceNumber, out dMaximumSourceNumber,
+                out dMeanSourceNumber) )
             {
                 return (false);
             }
@@ -904,7 +988,8 @@ public static class TableColumnMapper : Object
 
             GetSourceRangeWithoutOutliers(oVisibleSourceRange, iSourceNumbers,
                 dMinimumSourceNumber, dMaximumSourceNumber, dMeanSourceNumber,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2);
+                bPositiveNumbersOnly, out dSourceCalculationNumber1,
+                out dSourceCalculationNumber2);
         }
         else
         {
@@ -927,6 +1012,10 @@ public static class TableColumnMapper : Object
     ///
     /// <param name="oVisibleSourceRange">
     /// Visible source column range.  May contain multiple areas.
+    /// </param>
+    ///
+    /// <param name="bPositiveNumbersOnly">
+    /// true if non-positive numbers should be ignored.
     /// </param>
     ///
     /// <param name="iSourceNumbers">
@@ -959,6 +1048,7 @@ public static class TableColumnMapper : Object
     TryGetSourceStatistics
     (
         Range oVisibleSourceRange,
+        Boolean bPositiveNumbersOnly,
         out Int32 iSourceNumbers,
         out Double dMinimumSourceNumber,
         out Double dMaximumSourceNumber,
@@ -974,8 +1064,8 @@ public static class TableColumnMapper : Object
 
         Double dSum = 0;
 
-        foreach ( Double dSourceNumber in
-            GetVisibleNumbers(oVisibleSourceRange) )
+        foreach ( Double dSourceNumber in GetVisibleNumbers(
+            oVisibleSourceRange, bPositiveNumbersOnly) )
         {
             iSourceNumbers++;
 
@@ -1027,6 +1117,10 @@ public static class TableColumnMapper : Object
     /// name="oVisibleSourceRange" />.
     /// </param>
     ///
+    /// <param name="bPositiveNumbersOnly">
+    /// true if non-positive numbers should be ignored.
+    /// </param>
+    ///
     /// <returns>
     /// The standard deviation of the numbers in the source column.
     /// </returns>
@@ -1039,7 +1133,8 @@ public static class TableColumnMapper : Object
         Int32 iSourceNumbers,
         Double dMinimumSourceNumber,
         Double dMaximumSourceNumber,
-        Double dMeanSourceNumber
+        Double dMeanSourceNumber,
+        Boolean bPositiveNumbersOnly
     )
     {
         Debug.Assert(oVisibleSourceRange != null);
@@ -1048,8 +1143,8 @@ public static class TableColumnMapper : Object
 
         Double dSumOfSquares = 0;
 
-        foreach ( Double dSourceNumber in
-            GetVisibleNumbers(oVisibleSourceRange) )
+        foreach ( Double dSourceNumber in GetVisibleNumbers(
+            oVisibleSourceRange, bPositiveNumbersOnly) )
         {
             Double dDifferenceFromMean = dSourceNumber - dMeanSourceNumber;
 
@@ -1088,6 +1183,10 @@ public static class TableColumnMapper : Object
     /// name="oVisibleSourceRange" />.
     /// </param>
     ///
+    /// <param name="bPositiveNumbersOnly">
+    /// true if non-positive numbers should be ignored.
+    /// </param>
+    ///
     /// <param name="dSourceRangeMinimum">
     /// Where the minimum number in the computed range gets stored.
     /// </param>
@@ -1105,6 +1204,7 @@ public static class TableColumnMapper : Object
         Double dMinimumSourceNumber,
         Double dMaximumSourceNumber,
         Double dMeanSourceNumber,
+        Boolean bPositiveNumbersOnly,
         out Double dSourceRangeMinimum,
         out Double dSourceRangeMaximum
     )
@@ -1121,15 +1221,15 @@ public static class TableColumnMapper : Object
 
         Double dStandardDeviation = GetSourceStandardDeviation(
             oVisibleSourceRange, iSourceNumbers, dMinimumSourceNumber,
-                dMaximumSourceNumber, dMeanSourceNumber);
+                dMaximumSourceNumber, dMeanSourceNumber, bPositiveNumbersOnly);
 
         Double dHalfRange = 1.0 * dStandardDeviation;
 
         Double dWithinRangeMinimum = dMeanSourceNumber - dHalfRange;
         Double dWithinRangeMaximum = dMeanSourceNumber + dHalfRange;
 
-        foreach ( Double dSourceNumber in
-            GetVisibleNumbers(oVisibleSourceRange) )
+        foreach ( Double dSourceNumber in GetVisibleNumbers(
+            oVisibleSourceRange, bPositiveNumbersOnly) )
         {
             if (dSourceNumber >= dWithinRangeMinimum &&
                 dSourceNumber <= dWithinRangeMaximum)
@@ -1166,6 +1266,10 @@ public static class TableColumnMapper : Object
     /// Visible range.  May contain multiple areas.
     /// </param>
     ///
+    /// <param name="bPositiveNumbersOnly">
+    /// true if non-positive numbers should be ignored.
+    /// </param>
+    ///
     /// <returns>
     /// An enumerator for enumerating the numbers in <paramref
     /// name="oVisibleRange" />.
@@ -1175,7 +1279,8 @@ public static class TableColumnMapper : Object
     private static IEnumerable<Double>
     GetVisibleNumbers
     (
-        Range oVisibleRange
+        Range oVisibleRange,
+        Boolean bPositiveNumbersOnly
     )
     {
         Debug.Assert(oVisibleRange != null);
@@ -1192,12 +1297,52 @@ public static class TableColumnMapper : Object
             {
                 Double dNumber;
 
-                if ( TryGetNumber(aoAreaValues[iRow, 1], out dNumber) )
+                if ( TryGetNumber(aoAreaValues[iRow, 1], bPositiveNumbersOnly,
+                    out dNumber) )
                 {
                     yield return (dNumber);
                 }
             }
         }
+    }
+
+    //*************************************************************************
+    //  Method: GetLogIfRequested()
+    //
+    /// <summary>
+    /// Gets the log of a number if logs are being used.
+    /// </summary>
+    ///
+    /// <param name="dNumber">
+    /// Number to use.
+    /// </param>
+    ///
+    /// <param name="bUseLog">
+    /// true if the log of the source column numbers should be used, false if
+    /// the source column numbers should be used directly.
+    /// </param>
+    ///
+    /// <returns>
+    /// The log of <paramref name="dNumber" /> if <paramref name="bUseLog" />
+    /// is true, or <paramref name="dNumber" /> if it's false.
+    /// </returns>
+    //*************************************************************************
+
+    private static Double
+    GetLogIfRequested
+    (
+        Double dNumber,
+        Boolean bUseLog
+    )
+    {
+        if (bUseLog)
+        {
+            Debug.Assert(dNumber > 0);
+
+            dNumber = Math.Log(dNumber);
+        }
+
+        return (dNumber);
     }
 
     //*************************************************************************

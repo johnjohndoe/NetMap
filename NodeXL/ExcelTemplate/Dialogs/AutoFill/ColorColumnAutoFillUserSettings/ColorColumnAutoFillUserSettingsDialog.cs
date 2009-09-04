@@ -136,6 +136,7 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
 
             Boolean bUseSourceNumber1 = radUseSourceNumber1.Checked;
             Boolean bUseSourceNumber2 = radUseSourceNumber2.Checked;
+            Boolean bUseLogs = chkUseLogs.Checked;
 
             if (
                 (bUseSourceNumber1
@@ -151,6 +152,13 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
                     out dSourceNumber2) )
                 )
             {
+                return (false);
+            }
+
+            if ( bUseLogs && ( (bUseSourceNumber1 && dSourceNumber1 <= 0) ||
+                (bUseSourceNumber2 && dSourceNumber2 <= 0) ) )
+            {
+                ShowWarning(AutoFillWorkbookDialog.NegativeSourceRangeMessage);
                 return (false);
             }
 
@@ -171,6 +179,8 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
 
             m_oColorColumnAutoFillUserSettings.IgnoreOutliers =
                 chkIgnoreOutliers.Checked;
+
+            m_oColorColumnAutoFillUserSettings.UseLogs = bUseLogs;
         }
         else
         {
@@ -194,6 +204,9 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
 
             chkIgnoreOutliers.Checked =
                 m_oColorColumnAutoFillUserSettings.IgnoreOutliers;
+
+            chkUseLogs.Checked =
+                m_oColorColumnAutoFillUserSettings.UseLogs;
         }
 
         return (true);
@@ -338,10 +351,10 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: lnkIgnoreOutliers_LinkClicked()
+    //  Method: lnkOutliersAndLogs_LinkClicked()
     //
     /// <summary>
-    /// Handles the LinkClicked event on the lnkIgnoreOutliers LinkButton.
+    /// Handles the LinkClicked event on the lnkOutliersAndLogs LinkButton.
     /// </summary>
     ///
     /// <param name="sender">
@@ -354,7 +367,7 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    lnkIgnoreOutliers_LinkClicked
+    lnkOutliersAndLogs_LinkClicked
     (
         object sender,
         LinkLabelLinkClickedEventArgs e
@@ -362,7 +375,7 @@ public partial class ColorColumnAutoFillUserSettingsDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        this.ShowInformation(AutoFillWorkbookDialog.IgnoreOutliersMessage);
+        this.ShowInformation(AutoFillWorkbookDialog.OutliersAndLogsMessage);
     }
 
     //*************************************************************************

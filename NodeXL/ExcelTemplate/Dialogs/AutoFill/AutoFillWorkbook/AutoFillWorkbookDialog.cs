@@ -1682,18 +1682,35 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     //*************************************************************************
 
     /// Message to display when the user asks for an explanation of how
-    /// outliers are ignored.
+    /// outliers are log scales work.
 
-    protected internal const String IgnoreOutliersMessage =
+    protected internal const String OutliersAndLogsMessage =
 
         "If you map from the smallest and largest numbers in the source"
         + " column, the results may be skewed by a few unusually small or"
         + " large numbers, or \"outliers.\"  You can prevent this by checking"
         + " the \"Ignore outliers\" checkbox, which causes all source column"
         + " numbers that fall outside one standard deviation of the average"
-        + " number to be ignored in the internal calculations that determine"
-        + " how the numbers are mapped."
+        + " number to be ignored when the numbers are mapped."
+        + "\r\n\r\n"
+        + "A linear mapping is used by default, but you can use a logarithmic"
+        + " mapping instead.  This can be useful when the numbers in the"
+        + " source column span a very large range even when outliers are"
+        + " ignored."
+        + "\r\n\r\n"
+        + "When using a logarithmic mapping, any negative or zero values in"
+        + " the source column will not get mapped."
+        + "\r\n\r\n"
+        + "You can ignore outliers and use a logarithmic mapping in any"
+        + " combination."
         ;
+
+    /// Message to display when the user tries to use logs with a source range
+    /// that is not entirely positive.
+
+    protected internal const String NegativeSourceRangeMessage =
+        "When using a logarithmic mapping, the source column numbers must be"
+        + " positive.";
 
     /// destinationColumnNamePlural argument to the
     /// NumericRangeColumnAutoFillUserSettingsDialog constructor for coordinate

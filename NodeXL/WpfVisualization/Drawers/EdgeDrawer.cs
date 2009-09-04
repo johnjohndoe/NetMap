@@ -926,8 +926,8 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
     /// The edge's label.  Can be empty but not null.
     /// </param>
     ///
-    /// <param name="oTextColor">
-    /// The color to use for the label text.
+    /// <param name="oColor">
+    /// The edge color.
     /// </param>
     ///
     /// <remarks>
@@ -943,7 +943,7 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
         Point oEdgeEndpoint1,
         Point oEdgeEndpoint2,
         String sLabel,
-        Color oTextColor
+        Color oColor
     )
     {
         Debug.Assert(oDrawingContext != null);
@@ -983,7 +983,7 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
         oRotateTransform.Angle = -dEdgeAngleDegrees;
         oDrawingContext.PushTransform(oRotateTransform);
 
-        FormattedText oFormattedText = CreateFormattedText(sLabel, oTextColor);
+        FormattedText oFormattedText = CreateFormattedText(sLabel, oColor);
         oFormattedText.Trimming = TextTrimming.CharacterEllipsis;
 
         if (sLabel.IndexOf('\n') == -1)
@@ -1000,7 +1000,7 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
         // from the ends of the edge.  The buffer unit is the width of an
         // arbitrary character.
 
-        Double dBufferUnit = CreateFormattedText("i", oTextColor).Width;
+        Double dBufferUnit = CreateFormattedText("i", oColor).Width;
         Double dEdgeLengthMinusBuffers = dEdgeLength - 2 * dBufferUnit;
 
         if (dEdgeLengthMinusBuffers <= 0)
@@ -1060,10 +1060,13 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
             new TranslateTransform(0, -oFormattedText.Height / 2.0) );
 
         // Draw the translucent rectangle, then the text.
+        //
+        // Note: Don't make the rectangle any more opaque than the edge, which
+        // might be translucent itself.
 
         oDrawingContext.DrawRectangle(GetBrush(
-            WpfGraphicsUtil.SetWpfColorAlpha(
-                oGraphDrawingContext.BackColor, LabelBackgroundAlpha)
+            WpfGraphicsUtil.SetWpfColorAlpha(oGraphDrawingContext.BackColor,
+                Math.Min(LabelBackgroundAlpha, oColor.A) )
                 ),
             null, oTranslucentRectangle);
 

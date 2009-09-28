@@ -3,13 +3,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Reflection;
 using Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -424,7 +425,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Dictionary<Int32, IIdentityProvider> oEdgeIDDictionary =
             oReadWorkbookContext.EdgeIDDictionary;
 
-        Dictionary<String, BitmapImage> oImageIDDictionary =
+        Dictionary<String, ImageSource> oImageIDDictionary =
             oReadWorkbookContext.ImageIDDictionary;
 
         VertexVisibilityConverter oVertexVisibilityConverter =
@@ -710,14 +711,33 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oReadWorkbookContext.ColorConverter2);
             }
 
+            // If there is a radius column and the radius for this row isn't
+            // empty, set the vertex's radius.
+
+            Nullable<Single> oRadiusWorkbook = new Nullable<Single>();
+
+            if (oVertexTableColumnIndexes.Radius != NoSuchColumn)
+            {
+                oRadiusWorkbook = CheckForRadius(oVertexSubrange,
+                    aoVertexValues, iRowOneBased,
+                    oVertexTableColumnIndexes.Radius,
+                    oReadWorkbookContext.VertexRadiusConverter, oVertex);
+            }
+
             // If there is an image key column and the image key for this row
             // isn't empty, set the vertex's image.
 
-            if (oVertexTableColumnIndexes.ImageKey != NoSuchColumn)
+            if (oReadWorkbookContext.ReadImages &&
+                oVertexTableColumnIndexes.ImageKey != NoSuchColumn)
             {
                 CheckForImageKey(oVertexSubrange, aoVertexValues,
                     iRowOneBased, oVertexTableColumnIndexes.ImageKey,
-                    oImageIDDictionary, oVertex);
+                    oImageIDDictionary, oVertex,
+                    oReadWorkbookContext.VertexRadiusConverter,
+
+                    oRadiusWorkbook.HasValue ? oRadiusWorkbook :
+                        oReadWorkbookContext.DefaultVertexImageSize
+                    );
             }
 
             // If there is a color column and the color for this row isn't
@@ -738,16 +758,6 @@ public class VertexWorksheetReader : WorksheetReaderBase
             {
                 CheckForVertexShape(oVertexSubrange, aoVertexValues,
                     iRowOneBased, oVertexTableColumnIndexes.Shape, oVertex);
-            }
-
-            // If there is a radius column and the radius for this row isn't
-            // empty, set the vertex's radius.
-
-            if (oVertexTableColumnIndexes.Radius != NoSuchColumn)
-            {
-                CheckForRadius(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.Radius,
-                    oReadWorkbookContext.VertexRadiusConverter, oVertex);
             }
 
             // If there is a vertex drawing precedence column and the value for
@@ -796,9 +806,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// <param name="oVertex">
     /// Vertex to set the radius on.
     /// </param>
+    ///
+    /// <returns>
+    /// If a radius has been specified for the vertex, the radius in workbook
+    /// units is returned.  Otherwise, a Nullable that has no value is
+    /// returned.
+    /// </returns>
     //*************************************************************************
 
-    protected void
+    protected Nullable<Single>
     CheckForRadius
     (
         Range oVertexRange,
@@ -822,7 +838,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
         if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
             iRowOneBased, iColumnOneBased, out sRadius) )
         {
-            return;
+            return ( new Nullable<Single>() );
         }
 
         Single fRadius;
@@ -850,6 +866,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         oVertex.SetValue( ReservedMetadataKeys.PerVertexRadius,
             oVertexRadiusConverter.WorkbookToGraph(fRadius) );
+
+        return ( new Nullable<Single>(fRadius) );
     }
 
     //*************************************************************************
@@ -879,11 +897,21 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// <param name="oImageIDDictionary">
     /// Keeps track of vertex images.  The key is a unique image identifier
     /// specified in the image worksheet and the value is the corresponding
-    /// System.Windows.Media.Imaging.BitmapImage.
+    /// System.Windows.Media.Imaging.ImageSource.
     /// </param>
     ///
     /// <param name="oVertex">
     /// Vertex to set the image key on.
+    /// </param>
+    ///
+    /// <param name="oVertexRadiusConverter">
+    /// Object that converts a vertex radius between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
+    /// </param>
+    ///
+    /// <param name="oVertexImageSize">
+    /// The size to use for the image (in workbook units), or a Nullable that
+    /// has no value to use the image's actual size.
     /// </param>
     ///
     /// <returns>
@@ -898,8 +926,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Object [,] aoVertexValues,
         Int32 iRowOneBased,
         Int32 iColumnOneBased,
-        Dictionary<String, BitmapImage> oImageIDDictionary,
-        IVertex oVertex
+        Dictionary<String, ImageSource> oImageIDDictionary,
+        IVertex oVertex,
+        VertexRadiusConverter oVertexRadiusConverter,
+        Nullable<Single> oVertexImageSize
     )
     {
         Debug.Assert(oVertexRange != null);
@@ -908,6 +938,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Debug.Assert(iColumnOneBased >= 1);
         Debug.Assert(oImageIDDictionary != null);
         Debug.Assert(oVertex != null);
+        Debug.Assert(oVertexRadiusConverter != null);
         AssertValid();
 
         String sImageKey;
@@ -923,11 +954,28 @@ public class VertexWorksheetReader : WorksheetReaderBase
         // Retrieve the Image corresponding to the image key from the image
         // dictionary.
 
-        BitmapImage oVertexImage;
+        ImageSource oVertexImage;
 
         if ( !oImageIDDictionary.TryGetValue(sImageKey, out oVertexImage) )
         {
             return (false);
+        }
+
+        if (oVertexImageSize.HasValue)
+        {
+            // Resize the image.  Note that this can't be done by
+            // ImageWorksheetReader, which is what populated
+            // oImageIDDictionary, because the same image in the dictionary may
+            // be used by different vertices at different sizes.
+
+            Double dLongerDimension =
+                oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                    oVertexImageSize.Value);
+
+            Debug.Assert(dLongerDimension >= 1);
+
+            oVertexImage = ( new WpfImageUtil() ).ResizeImage(oVertexImage,
+                (Int32)dLongerDimension);
         }
 
         oVertex.SetValue(ReservedMetadataKeys.PerVertexImage, oVertexImage);

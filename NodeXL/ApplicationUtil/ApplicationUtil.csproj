@@ -71,6 +71,10 @@
     <Compile Include="..\..\Common\ExceptionUtil.cs">
       <Link>Util\ExceptionUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\FileNameLinkLabel.cs">
+      <Link>Util\FileNameLinkLabel.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="..\..\Common\FileUtil.cs">
       <Link>Util\FileUtil.cs</Link>
     </Compile>

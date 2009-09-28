@@ -60,6 +60,10 @@ public class GraphDataProviderDialogBase : FormPlus
 
         m_oHttpNetworkAnalyzer.HttpWebRequestRetries = HttpWebRequestRetries;
 
+        m_oHttpNetworkAnalyzer.ProgressChanged +=
+            new ProgressChangedEventHandler(
+                HttpNetworkAnalyzer_ProgressChanged);
+
         m_oHttpNetworkAnalyzer.AnalysisCompleted +=
             new RunWorkerCompletedEventHandler(
                 HttpNetworkAnalyzer_AnalysisCompleted);
@@ -188,6 +192,27 @@ public class GraphDataProviderDialogBase : FormPlus
     StartAnalysis()
     {
         Debug.Assert(false);
+    }
+
+    //*************************************************************************
+    //  Method: OnProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the HttpNetworkAnalyzer.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected virtual void
+    OnProgressChanged
+    (
+        ProgressChangedEventArgs e
+    )
+    {
+        // (Do nothing.  This does not have to be overridden.)
     }
 
     //*************************************************************************
@@ -375,6 +400,34 @@ public class GraphDataProviderDialogBase : FormPlus
 
             m_oHttpNetworkAnalyzer.CancelAsync();
         }
+    }
+
+    //*************************************************************************
+    //  Method: HttpNetworkAnalyzer_ProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the HttpNetworkAnalyzer object.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    HttpNetworkAnalyzer_ProgressChanged
+    (
+        object sender,
+        ProgressChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        OnProgressChanged(e);
     }
 
     //*************************************************************************

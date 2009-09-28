@@ -25,37 +25,37 @@ public class NumericValueConverterBase : Object
     /// cref="NumericValueConverterBase" /> class.
     /// </summary>
     ///
-    /// <param name="minimumWorkbookValue">
+    /// <param name="minimumValueWorkbook">
     /// Minimum value that can be specified in the workbook.
     /// </param>
     ///
-    /// <param name="maximumWorkbookValue">
+    /// <param name="maximumValueWorkbook">
     /// Maximum value that can be specified in the workbook.  Must be greater
-    /// than <paramref name="minimumWorkbookValue" />.
+    /// than <paramref name="minimumValueWorkbook" />.
     /// </param>
     ///
-    /// <param name="minimumGraphValue">
+    /// <param name="minimumValueGraph">
     /// Minimum value in the NodeXL graph.
     /// </param>
     ///
-    /// <param name="maximumGraphValue">
+    /// <param name="maximumValueGraph">
     /// Maximum value in the NodeXL graph.  Must be greater than <paramref
-    /// name="minimumGraphValue" />.
+    /// name="minimumValueGraph" />.
     /// </param>
     //*************************************************************************
 
     public NumericValueConverterBase
     (
-        Single minimumWorkbookValue,
-        Single maximumWorkbookValue,
-        Single minimumGraphValue,
-        Single maximumGraphValue
+        Single minimumValueWorkbook,
+        Single maximumValueWorkbook,
+        Single minimumValueGraph,
+        Single maximumValueGraph
     )
     {
-        m_fMinimumWorkbookValue = minimumWorkbookValue;
-        m_fMaximumWorkbookValue = maximumWorkbookValue;
-        m_fMinimumGraphValue = minimumGraphValue;
-        m_fMaximumGraphValue = maximumGraphValue;
+        m_fMinimumValueWorkbook = minimumValueWorkbook;
+        m_fMaximumValueWorkbook = maximumValueWorkbook;
+        m_fMinimumValueGraph = minimumValueGraph;
+        m_fMaximumValueGraph = maximumValueGraph;
 
         // AssertValid();
     }
@@ -68,7 +68,7 @@ public class NumericValueConverterBase : Object
     /// graph.
     /// </summary>
     ///
-    /// <param name="workbookValue">
+    /// <param name="valueWorkbook">
     /// Value read from the Excel workbook.
     /// </param>
     ///
@@ -81,24 +81,14 @@ public class NumericValueConverterBase : Object
     public Single
     WorkbookToGraph
     (
-        Single workbookValue
+        Single valueWorkbook
     )
     {
         AssertValid();
 
-        Single fGraphValue =
-
-            m_fMinimumGraphValue + (workbookValue - m_fMinimumWorkbookValue) *
-            
-            (m_fMaximumGraphValue - m_fMinimumGraphValue) /
-                (m_fMaximumWorkbookValue - m_fMinimumWorkbookValue);
-
-        // Pin the value to the graph limits.
-
-        fGraphValue = Math.Max(fGraphValue, m_fMinimumGraphValue);
-        fGraphValue = Math.Min(fGraphValue, m_fMaximumGraphValue);
-
-        return (fGraphValue);
+        return ( RangeAToRangeB(valueWorkbook, m_fMinimumValueWorkbook,
+            m_fMaximumValueWorkbook, m_fMinimumValueGraph,
+            m_fMaximumValueGraph) );
     }
 
     //*************************************************************************
@@ -109,7 +99,7 @@ public class NumericValueConverterBase : Object
     /// workbook.
     /// </summary>
     ///
-    /// <param name="graphValue">
+    /// <param name="valueGraph">
     /// Value stored in a NodeXL graph.
     /// </param>
     ///
@@ -122,26 +112,75 @@ public class NumericValueConverterBase : Object
     public Single
     GraphToWorkbook
     (
-        Single graphValue
+        Single valueGraph
     )
     {
         AssertValid();
 
-        Single fWorkbookValue =
-
-            m_fMinimumWorkbookValue + (graphValue - m_fMinimumGraphValue) *
-            
-            (m_fMaximumWorkbookValue - m_fMinimumWorkbookValue) /
-                (m_fMaximumGraphValue - m_fMinimumGraphValue);
-
-        // Pin the value to the graph limits.
-
-        fWorkbookValue = Math.Max(fWorkbookValue, m_fMinimumWorkbookValue);
-        fWorkbookValue = Math.Min(fWorkbookValue, m_fMaximumWorkbookValue);
-
-        return (fWorkbookValue);
+        return ( RangeAToRangeB(valueGraph, m_fMinimumValueGraph,
+            m_fMaximumValueGraph, m_fMinimumValueWorkbook,
+            m_fMaximumValueWorkbook) );
     }
 
+    //*************************************************************************
+    //  Method: RangeAToRangeB()
+    //
+    /// <summary>
+    /// Linearly transforms a value from one range to another.
+    /// </summary>
+    ///
+    /// <param name="fValueRangeA">
+    /// Value to transform, in range A.
+    /// </param>
+    ///
+    /// <param name="fMinimumValueRangeA">
+    /// Minimum value in range A.
+    /// </param>
+    ///
+    /// <param name="fMaximumValueRangeA">
+    /// Maximum value in range A.
+    /// </param>
+    ///
+    /// <param name="fMinimumValueRangeB">
+    /// Minimum value in range B.
+    /// </param>
+    ///
+    /// <param name="fMaximumValueRangeB">
+    /// Maximum value in range B.
+    /// </param>
+    ///
+    /// <returns>
+    /// The corresponding value in range B.
+    /// </returns>
+    //*************************************************************************
+
+    protected Single
+    RangeAToRangeB
+    (
+        Single fValueRangeA,
+        Single fMinimumValueRangeA,
+        Single fMaximumValueRangeA,
+        Single fMinimumValueRangeB,
+        Single fMaximumValueRangeB
+    )
+    {
+        Debug.Assert(fMaximumValueRangeA != fMinimumValueRangeA);
+        AssertValid();
+
+        Single fValueRangeB =
+
+            fMinimumValueRangeB + (fValueRangeA - fMinimumValueRangeA) *
+            
+            (fMaximumValueRangeB - fMinimumValueRangeB) /
+                (fMaximumValueRangeA - fMinimumValueRangeA);
+
+        // Pin the value to the range B limits.
+
+        fValueRangeB = Math.Max(fValueRangeB, fMinimumValueRangeB);
+        fValueRangeB = Math.Min(fValueRangeB, fMaximumValueRangeB);
+
+        return (fValueRangeB);
+    }
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -156,8 +195,8 @@ public class NumericValueConverterBase : Object
     public virtual void
     AssertValid()
     {
-        Debug.Assert(m_fMaximumWorkbookValue > m_fMinimumWorkbookValue);
-        Debug.Assert(m_fMaximumGraphValue > m_fMinimumGraphValue);
+        Debug.Assert(m_fMaximumValueWorkbook > m_fMinimumValueWorkbook);
+        Debug.Assert(m_fMaximumValueGraph > m_fMinimumValueGraph);
     }
 
 
@@ -167,19 +206,19 @@ public class NumericValueConverterBase : Object
 
     /// Minimum value that can be specified in the workbook.
 
-    protected Single m_fMinimumWorkbookValue;
+    protected Single m_fMinimumValueWorkbook;
 
     /// Maximum value that can be specified in the workbook.
 
-    protected Single m_fMaximumWorkbookValue;
+    protected Single m_fMaximumValueWorkbook;
 
     /// Minimum value in the NodeXL graph.
 
-    protected Single m_fMinimumGraphValue;
+    protected Single m_fMinimumValueGraph;
 
     /// Maximum value in the NodeXL graph.
 
-    protected Single m_fMaximumGraphValue;
+    protected Single m_fMaximumValueGraph;
 }
 
 }

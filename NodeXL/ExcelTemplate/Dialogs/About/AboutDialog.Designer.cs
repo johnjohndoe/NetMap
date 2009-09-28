@@ -40,7 +40,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblCopyright = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lnkDiscussionUrl = new System.Windows.Forms.LinkLabel();
+            this.lnkDiscussionUrl = new Microsoft.Research.CommunityTechnologies.AppLib.FileNameLinkLabel();
             this.btnEnableAllNotifications = new System.Windows.Forms.Button();
             this.ttToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -119,7 +119,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkDiscussionUrl.TabIndex = 5;
             this.lnkDiscussionUrl.TabStop = true;
             this.lnkDiscussionUrl.Text = "[Gets set in code]";
-            this.lnkDiscussionUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkDiscussionUrl_LinkClicked);
             // 
             // btnEnableAllNotifications
             // 
@@ -220,7 +219,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label lblCopyright;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.LinkLabel lnkDiscussionUrl;
+        private Microsoft.Research.CommunityTechnologies.AppLib.FileNameLinkLabel lnkDiscussionUrl;
         private System.Windows.Forms.Button btnEnableAllNotifications;
         private System.Windows.Forms.ToolTip ttToolTip;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;

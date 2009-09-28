@@ -334,6 +334,152 @@ public class VertexRadiusConverterTest : Object
         Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
     }
 
+    //*************************************************************************
+    //  Method: TestWorkbookToLongerImageDimension()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLongerImageDimension() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLongerImageDimension()
+    {
+        // Minimum.
+
+        Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook;
+
+        Single fExpectedLongerImageDimension =
+            VertexRadiusConverter.MinimumLongerImageDimension;
+
+        Single fLongerImageDimension =
+            m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLongerImageDimension,
+            fLongerImageDimension);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLongerImageDimension2()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLongerImageDimension() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLongerImageDimension2()
+    {
+        // Maximum.
+
+        Single fRadiusWorkbook = VertexRadiusConverter.MaximumRadiusWorkbook;
+
+        Single fExpectedLongerImageDimension =
+            VertexRadiusConverter.MaximumLongerImageDimension;
+
+        Single fLongerImageDimension =
+            m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLongerImageDimension,
+            fLongerImageDimension);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLongerImageDimension3()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLongerImageDimension() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLongerImageDimension3()
+    {
+        // Midpoint.
+
+        Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook
+            + (VertexRadiusConverter.MaximumRadiusWorkbook -
+                VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
+
+        Single fExpectedLongerImageDimension =
+            VertexRadiusConverter.MinimumLongerImageDimension
+            + (VertexRadiusConverter.MaximumLongerImageDimension -
+                VertexRadiusConverter.MinimumLongerImageDimension) / 2F;
+
+        Single fLongerImageDimension =
+            m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLongerImageDimension,
+            fLongerImageDimension);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLongerImageDimension4()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLongerImageDimension() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLongerImageDimension4()
+    {
+        // Below minimum.
+
+        Single fRadiusWorkbook =
+            VertexRadiusConverter.MinimumRadiusWorkbook - 1F;
+
+        Single fExpectedLongerImageDimension =
+            VertexRadiusConverter.MinimumLongerImageDimension;
+
+        Single fLongerImageDimension =
+            m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLongerImageDimension,
+            fLongerImageDimension);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLongerImageDimension5()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLongerImageDimension() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLongerImageDimension5()
+    {
+        // Above maximum.
+
+        Single fRadiusWorkbook =
+            VertexRadiusConverter.MaximumRadiusWorkbook + 1F;
+
+        Single fExpectedLongerImageDimension =
+            VertexRadiusConverter.MaximumLongerImageDimension;
+
+        Single fLongerImageDimension =
+            m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLongerImageDimension,
+            fLongerImageDimension);
+    }
+
 
     //*************************************************************************
     //  Protected fields

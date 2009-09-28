@@ -13,64 +13,69 @@ namespace Microsoft.NodeXL.TestGraphDataProviders
 
 public partial class MainForm : Form
 {
-	/// <summary>
-	/// </summary>
+    /// <summary>
+    /// </summary>
 
-	public MainForm()
-	{
-		InitializeComponent();
-	}
+    public MainForm()
+    {
+        InitializeComponent();
+    }
 
-	private void btnFlickrRelatedTags_Click(object sender, EventArgs e)
-	{
-		GetGraphData( new FlickrRelatedTagsGraphDataProvider() );
-	}
+    private void btnFlickrRelatedTags_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new FlickrRelatedTagsGraphDataProvider() );
+    }
 
     private void btnTwitterUsers_Click(object sender, EventArgs e)
     {
-		GetGraphData( new TwitterUserNetworkGraphDataProvider() );
+        GetGraphData( new TwitterUserNetworkGraphDataProvider() );
     }
 
-	private void GetGraphData(IGraphDataProvider oGraphDataProvider)
-	{
-		wbWebBrowser.GoHome();
+    private void btnTwitterSearch_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new TwitterSearchNetworkGraphDataProvider() );
+    }
 
-		String sGraphData;
+    private void GetGraphData(IGraphDataProvider oGraphDataProvider)
+    {
+        wbWebBrowser.GoHome();
 
-		if ( !oGraphDataProvider.TryGetGraphData(out sGraphData) )
-		{
-			return;
-		}
+        String sGraphData;
 
-		using ( StreamWriter oStreamWriter =
-			new StreamWriter(TempXmlFileName) )
-		{
-			oStreamWriter.Write(sGraphData);
-		}
+        if ( !oGraphDataProvider.TryGetGraphData(out sGraphData) )
+        {
+            return;
+        }
 
-		wbWebBrowser.Navigate(TempXmlFileName);
-	}
+        using ( StreamWriter oStreamWriter =
+            new StreamWriter(TempXmlFileName) )
+        {
+            oStreamWriter.Write(sGraphData);
+        }
 
-	private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-	{
-		File.Delete(TempXmlFileName);
-	}
+        wbWebBrowser.Navigate(TempXmlFileName);
+    }
 
-	private String
-	TempXmlFileName
-	{
-		get
-		{
-			String sAssemblyPath = Path.GetDirectoryName(
-				Assembly.GetExecutingAssembly().CodeBase);
+    private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        File.Delete(TempXmlFileName);
+    }
 
-			if ( sAssemblyPath.StartsWith("file:") )
-			{
-				sAssemblyPath = sAssemblyPath.Substring(6);
-			}
+    private String
+    TempXmlFileName
+    {
+        get
+        {
+            String sAssemblyPath = Path.GetDirectoryName(
+                Assembly.GetExecutingAssembly().CodeBase);
 
-			return ( Path.Combine(sAssemblyPath, "TempGetGraphData.xml") );
-		}
-	}
+            if ( sAssemblyPath.StartsWith("file:") )
+            {
+                sAssemblyPath = sAssemblyPath.Substring(6);
+            }
+
+            return ( Path.Combine(sAssemblyPath, "TempGetGraphData.xml") );
+        }
+    }
 }
 }

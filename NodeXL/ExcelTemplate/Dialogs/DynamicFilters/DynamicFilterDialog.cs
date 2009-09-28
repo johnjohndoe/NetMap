@@ -901,11 +901,35 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         String sColumnName = oNumericFilterParameters.ColumnName;
 
-        decAvailableMinimum =
-            (Decimal)oNumericFilterParameters.MinimumCellValue;
+        // Excel values are Doubles, but NumericRangeTrackBar values are
+        // Decimal.  (That's because NumericRangeTrackBar uses a NumericUpDown
+        // control, which can only handle Decimals.)  This can cause problems
+        // with very small and very large numbers.
+        //
+        // For example, the available minimum number 1.54768660209645E-22
+        // becomes 1.547687E-22 when converted to a Decimal, and because the
+        // Decimal is greater than the Double, using that Decimal for the
+        // available minimum would always filter out the edge or vertex row
+        // that the 1.54768660209645E-22 came from.
+        //
+        // Fix this by rounding the available minimum down and the available
+        // maximum up if necessary.
 
-        decAvailableMaximum =
-            (Decimal)oNumericFilterParameters.MaximumCellValue;
+        Double dAvailableMinimum = oNumericFilterParameters.MinimumCellValue;
+        decAvailableMinimum = (Decimal)dAvailableMinimum;
+
+        if ( (Double)decAvailableMinimum > dAvailableMinimum)
+        {
+            decAvailableMinimum = Math.Floor(decAvailableMinimum);
+        }
+
+        Double dAvailableMaximum = oNumericFilterParameters.MaximumCellValue;
+        decAvailableMaximum = (Decimal)dAvailableMaximum;
+
+        if ( (Double)decAvailableMaximum < dAvailableMaximum)
+        {
+            decAvailableMaximum = Math.Ceiling(decAvailableMaximum);
+        }
 
         // DynamicFilterUtil.GetDynamicFilterParameters() skips zero-width
         // ranges, so this should always be true.

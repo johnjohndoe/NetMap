@@ -794,11 +794,6 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
                 // Calculate a new unbounded location, limited by the current
                 // temperature.
 
-                // (Note that there is a typo in the Fruchterman-Reingold paper
-                // for limiting the maximum displacement.  Following the text
-                // in the paper, the first argument to the Math.Min() method
-                // below would be tDisplacementX.  It should be tDisplacement.)
-
                 tUnboundedLocationX += (tDisplacementX / tDisplacement) *
                     Math.Min(tDisplacement, (TMathType)fTemperature);
 
@@ -827,9 +822,9 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
         Debug.Assert(tMinLocationY != Single.MaxValue);
         Debug.Assert(tMaxLocationY != Single.MinValue);
 
-        // Get a see Matrix that will transform vertex locations from
-        // coordinates in the unbounded rectangle to cooordinates in the
-        // bounded graph rectangle.
+        // Get a Matrix that will transform vertex locations from coordinates
+        // in the unbounded rectangle to cooordinates in the bounded graph
+        // rectangle.
 
         Matrix oTransformationMatrix = LayoutUtil.GetRectangleTransformation(
 

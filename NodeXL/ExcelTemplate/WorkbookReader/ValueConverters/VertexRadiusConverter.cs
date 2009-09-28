@@ -37,6 +37,35 @@ public class VertexRadiusConverter : NumericValueConverterBase
         AssertValid();
     }
 
+    //*************************************************************************
+    //  Method: WorkbookToLongerImageDimension()
+    //
+    /// <summary>
+    /// Converts an Excel workbook value to an image dimension.
+    /// </summary>
+    ///
+    /// <param name="valueWorkbook">
+    /// Value read from the Excel workbook.
+    /// </param>
+    ///
+    /// <returns>
+    /// The maximum width or height a vertex image can have.
+    /// </returns>
+    //*************************************************************************
+
+    public Single
+    WorkbookToLongerImageDimension
+    (
+        Single valueWorkbook
+    )
+    {
+        AssertValid();
+
+        return ( RangeAToRangeB(valueWorkbook, m_fMinimumValueWorkbook,
+            m_fMaximumValueWorkbook, MinimumLongerImageDimension,
+            MaximumLongerImageDimension) );
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -88,6 +117,20 @@ public class VertexRadiusConverter : NumericValueConverterBase
 
     public static readonly Single MaximumRadiusGraph =
         (Single)VertexDrawer.MaximumRadius;
+
+    /// <summary>
+    /// The vertex image width or height (whichever is larger) that corresponds
+    /// to MinimumRadiusWorkbook, in WPF units.
+    /// </summary>
+
+    public static readonly Single MinimumLongerImageDimension = 10F;
+
+    /// <summary>
+    /// The vertex image width or height (whichever is larger) that corresponds
+    /// to MaximumRadiusWorkbook, in WPF units.
+    /// </summary>
+
+    public static readonly Single MaximumLongerImageDimension = 200F;
 
 
     //*************************************************************************

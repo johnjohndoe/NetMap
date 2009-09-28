@@ -147,7 +147,13 @@ public static class UserSettingsManager : Object
 
             String sParentFolder = Path.GetDirectoryName(sWrongFolder);
 
-            Directory.Delete(sParentFolder, true);
+            try
+            {
+                Directory.Delete(sParentFolder, true);
+            }
+            catch (IOException)
+            {
+            }
         }
     }
 

@@ -113,11 +113,11 @@
     <Compile Include="LayoutsBase.cs" />
     <Compile Include="Layouts\AsyncLayoutBase.cs" />
     <Compile Include="Layouts\CircleLayout.cs" />
-    <Compile Include="Layouts\FruchtermanReingoldLayout.cs" />
-    <Compile Include="Layouts\FruchtermanReingoldVertexInfo.cs" />
+    <Compile Include="Layouts\FruchtermanReingold\FruchtermanReingoldLayout.cs" />
+    <Compile Include="Layouts\FruchtermanReingold\FruchtermanReingoldVertexInfo.cs" />
     <Compile Include="Layouts\GridLayout.cs" />
-    <Compile Include="Layouts\HarelKorenFastMultiscaleLayout.cs" />
-    <Compile Include="Layouts\HarelKorenFastMultiscaleLayoutInternal.cs" />
+    <Compile Include="Layouts\HarelKoren\HarelKorenFastMultiscaleLayout.cs" />
+    <Compile Include="Layouts\HarelKoren\HarelKorenFastMultiscaleLayoutInternal.cs" />
     <Compile Include="Layouts\LayoutBase.cs" />
     <Compile Include="Layouts\LayOutGraphAsyncArguments.cs" />
     <Compile Include="Layouts\NullLayout.cs" />

@@ -31,6 +31,7 @@
             this.wbWebBrowser = new System.Windows.Forms.WebBrowser();
             this.btnFlickrRelatedTags = new System.Windows.Forms.Button();
             this.btnTwitterUsers = new System.Windows.Forms.Button();
+            this.btnTwitterSearch = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // wbWebBrowser
@@ -64,11 +65,22 @@
             this.btnTwitterUsers.UseVisualStyleBackColor = true;
             this.btnTwitterUsers.Click += new System.EventHandler(this.btnTwitterUsers_Click);
             // 
+            // btnTwitterSearch
+            // 
+            this.btnTwitterSearch.Location = new System.Drawing.Point(264, 12);
+            this.btnTwitterSearch.Name = "btnTwitterSearch";
+            this.btnTwitterSearch.Size = new System.Drawing.Size(120, 23);
+            this.btnTwitterSearch.TabIndex = 3;
+            this.btnTwitterSearch.Text = "Twitter Search";
+            this.btnTwitterSearch.UseVisualStyleBackColor = true;
+            this.btnTwitterSearch.Click += new System.EventHandler(this.btnTwitterSearch_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(545, 394);
+            this.Controls.Add(this.btnTwitterSearch);
             this.Controls.Add(this.btnTwitterUsers);
             this.Controls.Add(this.btnFlickrRelatedTags);
             this.Controls.Add(this.wbWebBrowser);
@@ -84,6 +96,7 @@
         private System.Windows.Forms.WebBrowser wbWebBrowser;
         private System.Windows.Forms.Button btnFlickrRelatedTags;
         private System.Windows.Forms.Button btnTwitterUsers;
+        private System.Windows.Forms.Button btnTwitterSearch;
     }
 }
 

@@ -33,8 +33,8 @@ namespace Microsoft.NodeXL.GraphDataProviders
             this.txbScreenName = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lnkRequestWhitelist = new System.Windows.Forms.LinkLabel();
+            this.lblPrompt = new System.Windows.Forms.Label();
+            this.lnkRequestWhitelist = new Microsoft.Research.CommunityTechnologies.AppLib.FileNameLinkLabel();
             this.lnkRateLimiting = new System.Windows.Forms.LinkLabel();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -45,8 +45,8 @@ namespace Microsoft.NodeXL.GraphDataProviders
             this.groupBox2.Controls.Add(this.txbScreenName);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(0, 50);
+            this.groupBox2.Controls.Add(this.lblPrompt);
+            this.groupBox2.Location = new System.Drawing.Point(0, 46);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(304, 176);
             this.groupBox2.TabIndex = 2;
@@ -77,7 +77,7 @@ namespace Microsoft.NodeXL.GraphDataProviders
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(80, 13);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Your &password:";
+            this.label3.Text = "Your p&assword:";
             // 
             // label4
             // 
@@ -88,25 +88,24 @@ namespace Microsoft.NodeXL.GraphDataProviders
             this.label4.TabIndex = 1;
             this.label4.Text = "Your screen &name:";
             // 
-            // label2
+            // lblPrompt
             // 
-            this.label2.Location = new System.Drawing.Point(11, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(282, 47);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "This is required only if you are including followers, or if Twitter rate limiting" +
-                " has been lifted for your account and you want to take advantage of that.";
+            this.lblPrompt.Location = new System.Drawing.Point(11, 21);
+            this.lblPrompt.Name = "lblPrompt";
+            this.lblPrompt.Size = new System.Drawing.Size(282, 47);
+            this.lblPrompt.TabIndex = 0;
+            this.lblPrompt.Text = "[Gets set in code]";
             // 
             // lnkRequestWhitelist
             // 
             this.lnkRequestWhitelist.AutoSize = true;
+            this.lnkRequestWhitelist.FileName = null;
             this.lnkRequestWhitelist.Location = new System.Drawing.Point(0, 22);
             this.lnkRequestWhitelist.Name = "lnkRequestWhitelist";
             this.lnkRequestWhitelist.Size = new System.Drawing.Size(176, 13);
             this.lnkRequestWhitelist.TabIndex = 1;
             this.lnkRequestWhitelist.TabStop = true;
             this.lnkRequestWhitelist.Text = "Request lifting of Twitter rate limiting";
-            this.lnkRequestWhitelist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkRequestWhitelist_LinkClicked);
             // 
             // lnkRateLimiting
             // 
@@ -127,7 +126,7 @@ namespace Microsoft.NodeXL.GraphDataProviders
             this.Controls.Add(this.lnkRequestWhitelist);
             this.Controls.Add(this.lnkRateLimiting);
             this.Name = "TwitterCredentialsControl";
-            this.Size = new System.Drawing.Size(307, 230);
+            this.Size = new System.Drawing.Size(307, 226);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -142,8 +141,8 @@ namespace Microsoft.NodeXL.GraphDataProviders
         private System.Windows.Forms.TextBox txbScreenName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.LinkLabel lnkRequestWhitelist;
+        private System.Windows.Forms.Label lblPrompt;
+        private Microsoft.Research.CommunityTechnologies.AppLib.FileNameLinkLabel lnkRequestWhitelist;
         private System.Windows.Forms.LinkLabel lnkRateLimiting;
 
     }

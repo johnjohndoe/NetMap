@@ -57,7 +57,10 @@
       <Link>Util\RectangleEdge.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Wpf\WpfGraphicsUtil.cs">
-      <Link>Util\WpfGraphicsUtil.cs</Link>
+      <Link>Util\Wpf\WpfGraphicsUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Wpf\WpfImageUtil.cs">
+      <Link>Util\Wpf\WpfImageUtil.cs</Link>
     </Compile>
     <Compile Include="Drawers\DrawerBase.cs" />
     <Compile Include="Drawers\DrawingHistories\CircleVertexDrawingHistory.cs" />

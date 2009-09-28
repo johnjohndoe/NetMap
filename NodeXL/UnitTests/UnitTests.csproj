@@ -85,6 +85,8 @@
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexRadiusConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexShapeConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexVisibilityConverterTest.cs" />
+    <Compile Include="Layouts\Layouts\FruchtermanReingold\FruchtermanReingoldLayoutTest.cs" />
+    <Compile Include="Layouts\Layouts\FruchtermanReingold\FruchtermanReingoldVertexInfoTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ExcelUtilTest.cs" />
     <Compile Include="Util\MetadataUtil.cs" />
@@ -92,8 +94,6 @@
     <Compile Include="Util\StringStream.cs" />
     <Compile Include="Util\TestGraphUtil.cs" />
     <Compile Include="Util\TestImageUtil.cs" />
-    <Compile Include="Layouts\Layouts\FruchtermanReingoldLayoutTest.cs" />
-    <Compile Include="Layouts\Layouts\FruchtermanReingoldVertexInfoTest.cs" />
     <Compile Include="Layouts\Layouts\LayOutGraphAsyncArgumentsTest.cs" />
     <Compile Include="Layouts\Util\LayoutContextTest.cs" />
   </ItemGroup>

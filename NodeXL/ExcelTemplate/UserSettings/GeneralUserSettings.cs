@@ -582,14 +582,20 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //  Property: VertexRadius
     //
     /// <summary>
-    /// Gets or sets the radius of the vertices.
+    /// Gets or sets the radius of vertices drawn as simple shapes.
     /// </summary>
     ///
     /// <value>
-    /// The radius of the vertices, as a Single.  Must be between
+    /// The radius of vertices drawn as simple shapes (Circle, Square, etc.),
+    /// as a Single.  Must be between
     /// VertexRadiusConverter.MinimumRadiusWorkbook and
     /// VertexRadiusConverter.MaximumRadiusWorkbook.  The default value is 1.5.
     /// </value>
+    ///
+    /// <remarks>
+    /// This is called vertex "Size" in the UI.  It is called "Radius" in the
+    /// code for historical reasons only.
+    /// </remarks>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
@@ -611,6 +617,65 @@ public class GeneralUserSettings : ApplicationSettingsBase
             Debug.Assert(value <= VertexRadiusConverter.MaximumRadiusWorkbook);
 
             this[VertexRadiusKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexImageSize
+    //
+    /// <summary>
+    /// Gets or sets the size of vertices drawn as images.
+    /// </summary>
+    ///
+    /// <value>
+    /// The size of vertices drawn as images, as a Nullable&lt;Single&gt;, or a
+    /// Nullable with no value to use the actual image sizes.  Must be between
+    /// VertexRadiusConverter.MinimumRadiusWorkbook and
+    /// VertexRadiusConverter.MaximumRadiusWorkbook.  The default value is 3.0.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("3.0") ]
+
+    public Nullable<Single>
+    VertexImageSize
+    {
+        get
+        {
+            AssertValid();
+
+            // A Nullable can't be stored in ApplicationSettingsBase if there
+            // is a DefaultSettingValueAttribute, because the this[] property
+            // would never return null.  To work around this, use a value of
+            // -1 to indicate "no value."
+
+            Single fVertexImageSize = (Single)this[VertexImageSizeKey];
+
+            if (fVertexImageSize == -1)
+            {
+                return ( new Nullable<Single>() );
+            }
+
+            return ( new Nullable<Single>(fVertexImageSize) );
+        }
+
+        set
+        {
+            Debug.Assert(!value.HasValue || value.Value >=
+                VertexRadiusConverter.MinimumRadiusWorkbook);
+
+            Debug.Assert(!value.HasValue || value.Value <=
+                VertexRadiusConverter.MaximumRadiusWorkbook);
+
+            if (!value.HasValue)
+            {
+                value = new Nullable<Single>(-1);
+            }
+
+            this[VertexImageSizeKey] = value.Value;
 
             AssertValid();
         }
@@ -1127,6 +1192,11 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String VertexRadiusKey =
         "VertexRadius";
+
+    /// Name of the settings key for the VertexImageSize property.
+
+    protected const String VertexImageSizeKey =
+        "VertexImageSize";
 
     /// Name of the settings key for the VertexColor property.
 

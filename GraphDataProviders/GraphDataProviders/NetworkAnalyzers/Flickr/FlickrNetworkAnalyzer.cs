@@ -2,7 +2,6 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Net;
 using System.Web;
 using System.IO;
 using System.Xml;
@@ -27,7 +26,7 @@ namespace Microsoft.NodeXL.GraphDataProviders.Flickr
 /// </remarks>
 //*****************************************************************************
 
-public class FlickrNetworkAnalyzer : HttpNetworkAnalyzerBase
+public class FlickrNetworkAnalyzer : FlickrNetworkAnalyzerBase
 {
     //*************************************************************************
     //  Constructor: FlickrNetworkAnalyzer()
@@ -78,7 +77,7 @@ public class FlickrNetworkAnalyzer : HttpNetworkAnalyzerBase
         XmlDocument oXmlDocument;
 
         Boolean bNotCancelled = TryGetRelatedTagsInternal(tag, apiKey, null,
-			null, out oXmlDocument);
+            null, out oXmlDocument);
 
         Debug.Assert(bNotCancelled);
 
@@ -450,106 +449,6 @@ public class FlickrNetworkAnalyzer : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetXmlDocument()
-    //
-    /// <overloads>
-    /// Gets an XML document from an URL.
-    /// </overloads>
-    ///
-    /// <summary>
-    /// Gets an XML document from an URL with a specified number of retries.
-    /// </summary>
-    ///
-    /// <param name="sUrl">
-    /// The URL to get the document from.
-    /// </param>
-    ///
-    /// <param name="iRetries">
-    /// The maximum number of retries.
-    /// </param>
-    ///
-    /// <returns>
-    /// The XmlDocument from the URL.
-    /// </returns>
-    //*************************************************************************
-
-    protected XmlDocument
-    GetXmlDocument
-    (
-        String sUrl,
-        Int32 iRetries
-    )
-    {
-        Debug.Assert(iRetries >= 0);
-        AssertValid();
-
-        while (true)
-        {
-            try
-            {
-                return ( GetXmlDocument(sUrl) );
-            }
-            catch (Exception oException)
-            {
-                iRetries--;
-
-                if (iRetries < 0)
-                {
-                    throw (oException);
-                }
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: GetXmlDocument()
-    //
-    /// <summary>
-    /// Gets an XML document from an URL with no retries.
-    /// </summary>
-    ///
-    /// <param name="sUrl">
-    /// The URL to get the document from.
-    /// </param>
-    ///
-    /// <returns>
-    /// The XmlDocument from the URL.
-    /// </returns>
-    //*************************************************************************
-
-    protected XmlDocument
-    GetXmlDocument
-    (
-        String sUrl
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sUrl) );
-        AssertValid();
-
-        XmlDocument oXmlDocument = GetXmlDocument(
-            (HttpWebRequest)WebRequest.Create(sUrl) );
-
-        XmlNode oRspNode = oXmlDocument.DocumentElement;
-
-        String sStatus;
-
-        XmlUtil.GetAttribute(oRspNode, "stat", true, out sStatus);
-
-        if (sStatus != "ok")
-        {
-            XmlNode oErrNode = XmlUtil.SelectRequiredSingleNode(oRspNode,
-                "err");
-
-            String sErrorMessage;
-
-            XmlUtil.GetAttribute(oErrNode, "msg", true, out sErrorMessage);
-            throw new WebException(sErrorMessage);
-        }
-
-        return (oXmlDocument);
-    }
-
-    //*************************************************************************
     //  Method: BackgroundWorker_DoWork()
     //
     /// <summary>
@@ -622,14 +521,6 @@ public class FlickrNetworkAnalyzer : HttpNetworkAnalyzerBase
         "http://api.flickr.com/services/rest/?method="
         + "flickr.tags.getRelated&api_key={0}&tag={1}"
         ;
-
-    /// GraphML-attribute IDs.
-
-    protected const String PrimaryLabelID = "Label";
-    ///
-    protected const String MenuTextID = "MenuText";
-    ///
-    protected const String MenuActionID = "MenuAction";
 
     /// Format pattern for the URL of the Flickr Web page for a tag.  The {0}
     /// argument must be replaced with the tag name.

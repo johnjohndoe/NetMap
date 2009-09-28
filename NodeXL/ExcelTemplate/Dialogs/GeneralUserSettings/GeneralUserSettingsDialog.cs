@@ -88,10 +88,10 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         nudRelativeArrowSize.Maximum =
             (Decimal)EdgeDrawer.MaximumRelativeArrowSize;
 
-        nudVertexRadius.Minimum =
+        nudVertexRadius.Minimum = nudVertexImageSize.Minimum =
             (Decimal)VertexRadiusConverter.MinimumRadiusWorkbook;
 
-        nudVertexRadius.Maximum = 
+        nudVertexRadius.Maximum = nudVertexImageSize.Maximum =
             (Decimal)VertexRadiusConverter.MaximumRadiusWorkbook;
 
         ( new VertexShapeConverter() ).PopulateComboBox(cbxVertexShape, false);
@@ -132,12 +132,21 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     {
         if (bFromControls)
         {
+            Boolean bUseSpecifiedVertexImageSize =
+                radUseSpecifiedVertexImageSize.Checked;
+
             Single fEdgeWidth, fSelectedEdgeWidth, fRelativeArrowSize,
                 fVertexRadius, fVertexAlpha, fEdgeAlpha;
 
+            Single fVertexImageSize = 0;
+
             if (
                 !ValidateNumericUpDown(nudVertexRadius,
-                    "a vertex size", out fVertexRadius)
+                    "a size for vertex shapes", out fVertexRadius)
+                ||
+                ( bUseSpecifiedVertexImageSize &&
+                    !ValidateNumericUpDown(nudVertexImageSize,
+                    "a size for vertex images", out fVertexImageSize) )
                 ||
                 !ValidateNumericUpDown(nudVertexAlpha, "a vertex opacity",
                     out fVertexAlpha)
@@ -172,6 +181,11 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
                 (VertexShape)cbxVertexShape.SelectedValue;
 
             m_oGeneralUserSettings.VertexRadius = fVertexRadius;
+
+            m_oGeneralUserSettings.VertexImageSize =
+                bUseSpecifiedVertexImageSize ? fVertexImageSize :
+                new Nullable<Single>();
+
             m_oGeneralUserSettings.VertexColor = usrVertexColor.Color;
             m_oGeneralUserSettings.VertexAlpha = fVertexAlpha;
 
@@ -211,6 +225,19 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             nudVertexRadius.Value =
                 (Decimal)m_oGeneralUserSettings.VertexRadius;
 
+            Nullable<Single> oVertexImageSize =
+                m_oGeneralUserSettings.VertexImageSize;
+
+            if (oVertexImageSize.HasValue)
+            {
+                radUseSpecifiedVertexImageSize.Checked = true;
+                nudVertexImageSize.Value = (Decimal)oVertexImageSize.Value;
+            }
+            else
+            {
+                radUseActualVertexImageSize.Checked = true;
+            }
+
             usrVertexColor.Color = m_oGeneralUserSettings.VertexColor;
             nudVertexAlpha.Value = (Decimal)m_oGeneralUserSettings.VertexAlpha;
 
@@ -230,6 +257,8 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
             chkAutoReadWorkbook.Checked =
                 m_oGeneralUserSettings.AutoReadWorkbook;
+
+            EnableControls();
         }
 
         return (true);
@@ -290,6 +319,22 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             // http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/
             // e50a3dc2-a9d9-4eea-aae6-39bc7c18b04e
         }
+    }
+
+    //*************************************************************************
+    //  Method: EnableControls()
+    //
+    /// <summary>
+    /// Enables or disables the dialog's controls.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    EnableControls()
+    {
+        AssertValid();
+
+        nudVertexImageSize.Enabled = radUseSpecifiedVertexImageSize.Checked;
     }
 
     //*************************************************************************
@@ -493,6 +538,35 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: OnEventThatRequiresControlEnabling()
+    //
+    /// <summary>
+    /// Handles any event that should changed the enabled state of the dialog's
+    /// controls.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    OnEventThatRequiresControlEnabling
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        EnableControls();
+    }
+
+    //*************************************************************************
     //  Method: btnOK_Click()
     //
     /// <summary>
@@ -592,7 +666,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GeneralUserSettingsDialog3") ]
+[ SettingsGroupNameAttribute("GeneralUserSettingsDialog4") ]
 
 public class GeneralUserSettingsDialogUserSettings : FormSettings
 {

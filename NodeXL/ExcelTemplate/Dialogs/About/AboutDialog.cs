@@ -60,6 +60,7 @@ public partial class AboutDialog : ExcelTemplateForm
             );
 
         lnkDiscussionUrl.Text = ProjectInformation.DiscussionUrl;
+        lnkDiscussionUrl.FileName = ProjectInformation.DiscussionUrl;
 
         ttToolTip.SetToolTip(lnkDiscussionUrl, String.Format(
         
@@ -102,34 +103,6 @@ public partial class AboutDialog : ExcelTemplateForm
             ,
             ProjectInformation.TeamMembers
             ) );
-    }
-
-    //*************************************************************************
-    //  Method: lnkDiscussionUrl_LinkClicked()
-    //
-    /// <summary>
-    /// Handles the LinkClicked event on the lnkDiscussionUrl LinkLabel.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    lnkDiscussionUrl_LinkClicked
-    (
-        object sender,
-        LinkLabelLinkClickedEventArgs e
-    )
-    {
-        AssertValid();
-
-        System.Diagnostics.Process.Start(ProjectInformation.DiscussionUrl);
     }
 
     //*************************************************************************

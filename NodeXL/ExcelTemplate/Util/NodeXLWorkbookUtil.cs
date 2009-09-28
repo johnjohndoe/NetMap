@@ -62,6 +62,7 @@ public static class NodeXLWorkbookUtil
         ExcelUtil.ClearTables(workbook,
             WorksheetNames.Edges, TableNames.Edges,
             WorksheetNames.Vertices, TableNames.Vertices,
+            WorksheetNames.Images, TableNames.Images,
             WorksheetNames.Clusters, TableNames.Clusters,
             WorksheetNames.ClusterVertices, TableNames.ClusterVertices,
             WorksheetNames.OverallMetrics, TableNames.OverallMetrics

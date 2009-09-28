@@ -1,4 +1,4 @@
-﻿namespace Microsoft.NodeXL.GraphDataProviders.Controls.LimitToNPeople
+﻿namespace Microsoft.NodeXL.GraphDataProviders
 {
     partial class LimitToNPeopleControl
     {
@@ -36,7 +36,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(113, 3);
+            this.label5.Location = new System.Drawing.Point(122, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(39, 13);
             this.label5.TabIndex = 2;
@@ -49,7 +49,7 @@
             this.chkLimitToNPeople.Name = "chkLimitToNPeople";
             this.chkLimitToNPeople.Size = new System.Drawing.Size(59, 17);
             this.chkLimitToNPeople.TabIndex = 0;
-            this.chkLimitToNPeople.Text = "Li&mit to";
+            this.chkLimitToNPeople.Text = "Limi&t to";
             this.chkLimitToNPeople.UseVisualStyleBackColor = true;
             this.chkLimitToNPeople.CheckedChanged += new System.EventHandler(this.chkLimitToNPeople_CheckedChanged);
             // 
@@ -60,7 +60,7 @@
             this.cbxN.FormattingEnabled = true;
             this.cbxN.Location = new System.Drawing.Point(60, 0);
             this.cbxN.Name = "cbxN";
-            this.cbxN.Size = new System.Drawing.Size(47, 21);
+            this.cbxN.Size = new System.Drawing.Size(56, 21);
             this.cbxN.TabIndex = 1;
             // 
             // LimitToNPeopleControl

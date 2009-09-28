@@ -88,6 +88,23 @@ public static class PlugInManager
             }
         }
 
+        oGraphDataProviders.Sort(
+            delegate
+            (
+                IGraphDataProvider oGraphDataProvider1,
+                IGraphDataProvider oGraphDataProvider2
+            )
+            {
+                Debug.Assert(oGraphDataProvider1 != null);
+                Debug.Assert(oGraphDataProvider2 != null);
+                Debug.Assert( !String.IsNullOrEmpty(oGraphDataProvider1.Name) );
+                Debug.Assert( !String.IsNullOrEmpty(oGraphDataProvider2.Name) );
+
+                return ( oGraphDataProvider1.Name.CompareTo(
+                    oGraphDataProvider2.Name) );
+            }
+            );
+
         return ( oGraphDataProviders.ToArray() );
     }
 

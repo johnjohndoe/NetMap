@@ -45,9 +45,13 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
         m_oBackgroundWorker = new BackgroundWorker();
         m_oBackgroundWorker.WorkerSupportsCancellation = true;
+        m_oBackgroundWorker.WorkerReportsProgress = true;
 
         m_oBackgroundWorker.DoWork += new DoWorkEventHandler(
             BackgroundWorker_DoWork);
+
+        m_oBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(
+            BackgroundWorker_ProgressChanged);
 
         m_oBackgroundWorker.RunWorkerCompleted +=
             new RunWorkerCompletedEventHandler(
@@ -174,6 +178,17 @@ public abstract class HttpNetworkAnalyzerBase : Object
     }
 
     //*************************************************************************
+    //  Event: ProgressChanged
+    //
+    /// <summary>
+    /// Occurs when progress is reported.
+    /// </summary>
+    //*************************************************************************
+
+    public event ProgressChangedEventHandler ProgressChanged;
+
+
+    //*************************************************************************
     //  Event: AnalysisCompleted
     //
     /// <summary>
@@ -254,7 +269,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
     /// </returns>
     ///
     /// <remarks>
-    /// This method sets the Timeout property on <paramref
+    /// This method sets the Timeout and UserAgent properties on <paramref
     /// name="oHttpWebRequest" /> before it is used.
     /// </remarks>
     //*************************************************************************
@@ -275,6 +290,13 @@ public abstract class HttpNetworkAnalyzerBase : Object
         try
         {
             oHttpWebRequest.Timeout = m_iHttpWebRequestTimeoutMs;
+
+            // According to the Twitter API documentation, "Consumers using the
+            // Search API but failing to include a User Agent string will
+            // receive a lower rate limit."
+
+            oHttpWebRequest.UserAgent = UserAgent;
+
             oHttpWebResponse = (HttpWebResponse)oHttpWebRequest.GetResponse();
             oStream = oHttpWebResponse.GetResponseStream();
 
@@ -295,6 +317,74 @@ public abstract class HttpNetworkAnalyzerBase : Object
         }
 
         return (oXmlDocument);
+    }
+
+    //*************************************************************************
+    //  Method: WebExceptionHasHttpStatusCode()
+    //
+    /// <summary>
+    /// Determines whether a WebException has an HttpWebResponse with a
+    /// specified HttpStatusCode.
+    /// </summary>
+    ///
+    /// <param name="oWebException">
+    /// The WebException to check.
+    /// </param>
+    ///
+    /// <param name="eHttpStatusCode">
+    /// The HttpStatus code to look for.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="oWebException" /> has an HttpWebResponse with
+    /// an HttpStatusCode of <paramref name="eHttpStatusCode" />.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    WebExceptionHasHttpStatusCode
+    (
+        WebException oWebException,
+        HttpStatusCode eHttpStatusCode
+    )
+    {
+        Debug.Assert(oWebException != null);
+        AssertValid();
+
+        return (
+            oWebException.Response is HttpWebResponse
+            &&
+            ( (HttpWebResponse)oWebException.Response ).StatusCode ==
+                eHttpStatusCode
+            );
+    }
+
+    //*************************************************************************
+    //  Method: ReportProgress()
+    //
+    /// <summary>
+    /// Reports progress.
+    /// </summary>
+    ///
+    /// <param name="sProgressMessage">
+    /// Progress message.  Can be empty but not null.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ReportProgress
+    (
+        String sProgressMessage
+    )
+    {
+        Debug.Assert(sProgressMessage != null);
+
+        // This method is meant to be called when the derived class wants to
+        // report progress.  It results in the
+        // BackgroundWorker_ProgressChanged() method being called on the main
+        // thread, which in turn fires the ProgressChanged event.
+
+        m_oBackgroundWorker.ReportProgress(0, sProgressMessage);
     }
 
     //*************************************************************************
@@ -342,6 +432,34 @@ public abstract class HttpNetworkAnalyzerBase : Object
     }
 
     //*************************************************************************
+    //  Method: FireProgressChanged()
+    //
+    /// <summary>
+    /// Fires the ProgressChanged event if appropriate.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    FireProgressChanged
+    (
+        ProgressChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        ProgressChangedEventHandler oProgressChanged = this.ProgressChanged;
+
+        if (oProgressChanged != null)
+        {
+            oProgressChanged(this, e);
+        }
+    }
+
+    //*************************************************************************
     //  Method: BackgroundWorker_DoWork()
     //
     /// <summary>
@@ -363,6 +481,34 @@ public abstract class HttpNetworkAnalyzerBase : Object
         object sender,
         DoWorkEventArgs e
     );
+
+    //*************************************************************************
+    //  Method: BackgroundWorker_ProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the BackgroundWorker.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    BackgroundWorker_ProgressChanged
+    (
+        object sender,
+        ProgressChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        FireProgressChanged(e);
+    }
 
     //*************************************************************************
     //  Method: BackgroundWorker_RunWorkerCompleted()
@@ -388,6 +534,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
     )
     {
         AssertValid();
+
+        FireProgressChanged( new ProgressChangedEventArgs(0, String.Empty) );
 
         // Forward the event.
 
@@ -418,6 +566,23 @@ public abstract class HttpNetworkAnalyzerBase : Object
         Debug.Assert(m_iHttpWebRequestRetries >= 0);
         Debug.Assert(m_oBackgroundWorker != null);
     }
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// User agent to use for all Web requests.
+
+    protected const String UserAgent = "Microsoft NodeXL Excel Template";
+
+    /// GraphML-attribute IDs.
+
+    protected const String PrimaryLabelID = "Label";
+    ///
+    protected const String MenuTextID = "MenuText";
+    ///
+    protected const String MenuActionID = "MenuAction";
 
 
     //*************************************************************************

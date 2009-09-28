@@ -4,9 +4,8 @@
 
 using System;
 using System.Windows.Forms;
-using System.Net;
+using System.ComponentModel;
 using System.Diagnostics;
-using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.SocialNetworkLib;
 
 namespace Microsoft.NodeXL.GraphDataProviders.Twitter
@@ -26,7 +25,8 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 /// </remarks>
 //*****************************************************************************
 
-public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
+public partial class TwitterGetUserNetworkDialog :
+    TwitterGraphDataProviderDialogBase
 {
     //*************************************************************************
     //  Constructor: TwitterGetUserNetworkDialog()
@@ -39,18 +39,22 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
 
     public TwitterGetUserNetworkDialog()
     :
-    base ( new TwitterNetworkAnalyzer() )
+    base ( new TwitterUserNetworkAnalyzer() )
     {
         InitializeComponent();
 
+        usrTwitterCredentials.PromptInsertion =
+            "you are including followers, or";
+
         // m_sScreenNameToAnalyze
-        // m_bIncludeFollowed
-        // m_bIncludeFollowers
+        // m_bIncludeFollowedVertices
+        // m_bIncludeFollowerVertices
+        // m_bIncludeFollowedFollowerEdges
+        // m_bIncludeRepliesToEdges
+        // m_bIncludeMentionsEdges
         // m_eNetworkLevel
-        // m_bIncludeLatestStatus
+        // m_bIncludeLatestStatuses
         // m_iMaximumPeoplePerRequest
-        // m_sCredentialsScreenName
-        // m_sCredentialsPassword
 
         DoDataExchange(false);
 
@@ -95,22 +99,22 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
                 return (false);
             }
 
-            m_bIncludeFollowed = m_bIncludeFollowers = false;
+            m_bIncludeFollowedVertices = m_bIncludeFollowerVertices = false;
 
-            if (radIncludeFollowed.Checked)
+            if (radIncludeFollowedVertices.Checked)
             {
-                m_bIncludeFollowed = true;
+                m_bIncludeFollowedVertices = true;
             }
-            else if (radIncludeFollowers.Checked)
+            else if (radIncludeFollowerVertices.Checked)
             {
-                m_bIncludeFollowers = true;
+                m_bIncludeFollowerVertices = true;
             }
             else
             {
-                m_bIncludeFollowed = m_bIncludeFollowers = true;
+                m_bIncludeFollowedVertices = m_bIncludeFollowerVertices = true;
             }
 
-            if ( m_bIncludeFollowers &&
+            if ( m_bIncludeFollowerVertices &&
                 String.IsNullOrEmpty(usrTwitterCredentials.ScreenName) )
             {
                 this.ShowWarning(
@@ -123,8 +127,13 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
                 return (false);
             }
 
+            m_bIncludeFollowedFollowerEdges =
+                chkIncludeFollowedFollowerEdges.Checked;
+
+            m_bIncludeRepliesToEdges = chkIncludeRepliesToEdges.Checked;
+            m_bIncludeMentionsEdges = chkIncludeMentionsEdges.Checked;
             m_eNetworkLevel = usrNetworkLevel.Level;
-            m_bIncludeLatestStatus = chkIncludeLatestStatus.Checked;
+            m_bIncludeLatestStatuses = chkIncludeLatestStatuses.Checked;
             m_iMaximumPeoplePerRequest = usrLimitToNPeople.N;
             m_sCredentialsScreenName = usrTwitterCredentials.ScreenName;
             m_sCredentialsPassword = usrTwitterCredentials.Password;
@@ -133,24 +142,29 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
         {
             txbScreenNameToAnalyze.Text = m_sScreenNameToAnalyze;
 
-            if (m_bIncludeFollowed)
+            if (m_bIncludeFollowedVertices)
             {
-                if (m_bIncludeFollowers)
+                if (m_bIncludeFollowerVertices)
                 {
-                    radIncludeFollowedAndFollowers.Checked = true;
+                    radIncludeFollowedAndFollower.Checked = true;
                 }
                 else
                 {
-                    radIncludeFollowed.Checked = true;
+                    radIncludeFollowedVertices.Checked = true;
                 }
             }
             else
             {
-                radIncludeFollowers.Checked = true;
+                radIncludeFollowerVertices.Checked = true;
             }
 
+            chkIncludeFollowedFollowerEdges.Checked =
+                m_bIncludeFollowedFollowerEdges;
+
+            chkIncludeRepliesToEdges.Checked = m_bIncludeRepliesToEdges;
+            chkIncludeMentionsEdges.Checked = m_bIncludeMentionsEdges;
             usrNetworkLevel.Level = m_eNetworkLevel;
-            chkIncludeLatestStatus.Checked = m_bIncludeLatestStatus;
+            chkIncludeLatestStatuses.Checked = m_bIncludeLatestStatuses;
             usrLimitToNPeople.N = m_iMaximumPeoplePerRequest;
             usrTwitterCredentials.ScreenName = m_sCredentialsScreenName;
             usrTwitterCredentials.Password = m_sCredentialsPassword;
@@ -180,17 +194,38 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
 
         m_oGraphMLXmlDocument = null;
 
-        Debug.Assert(m_oHttpNetworkAnalyzer is TwitterNetworkAnalyzer);
+        Debug.Assert(m_oHttpNetworkAnalyzer is TwitterUserNetworkAnalyzer);
 
         String sCredentialsScreenName =
             String.IsNullOrEmpty(m_sCredentialsScreenName) ? null :
             m_sCredentialsScreenName;
 
-        ( (TwitterNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
-            GetUserNetworkAsync(m_sScreenNameToAnalyze, m_bIncludeFollowed,
-                m_bIncludeFollowers, m_eNetworkLevel, m_bIncludeLatestStatus,
-                m_iMaximumPeoplePerRequest, sCredentialsScreenName,
-                m_sCredentialsPassword);
+        TwitterUserNetworkAnalyzer.WhatToInclude eWhatToInclude =
+
+            (m_bIncludeFollowedVertices ?
+                TwitterUserNetworkAnalyzer.WhatToInclude.FollowedVertices : 0)
+            |
+            (m_bIncludeFollowerVertices ?
+                TwitterUserNetworkAnalyzer.WhatToInclude.FollowerVertices : 0)
+            |
+            (m_bIncludeLatestStatuses ?
+                TwitterUserNetworkAnalyzer.WhatToInclude.LatestStatuses : 0)
+            |
+            (m_bIncludeFollowedFollowerEdges ?
+                TwitterUserNetworkAnalyzer.WhatToInclude.FollowedFollowerEdges
+                : 0)
+            |
+            (m_bIncludeRepliesToEdges ?
+                TwitterUserNetworkAnalyzer.WhatToInclude.RepliesToEdges : 0)
+            |
+            (m_bIncludeMentionsEdges ?
+                TwitterUserNetworkAnalyzer.WhatToInclude.MentionsEdges : 0)
+            ;
+
+        ( (TwitterUserNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
+            GetUserNetworkAsync(m_sScreenNameToAnalyze, eWhatToInclude,
+                m_eNetworkLevel, m_iMaximumPeoplePerRequest,
+                sCredentialsScreenName, m_sCredentialsPassword);
     }
 
     //*************************************************************************
@@ -214,6 +249,31 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
     }
 
     //*************************************************************************
+    //  Method: OnProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the HttpNetworkAnalyzer.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected override void
+    OnProgressChanged
+    (
+        ProgressChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        Debug.Assert(e.UserState is String);
+
+        this.slStatusLabel.Text = (String)e.UserState;
+    }
+
+    //*************************************************************************
     //  Method: OnEmptyGraph()
     //
     /// <summary>
@@ -228,128 +288,6 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
 
         this.ShowInformation("There are no people in that network.");
         txbScreenNameToAnalyze.Focus();
-    }
-
-    //*************************************************************************
-    //  Method: OnAnalysisException()
-    //
-    /// <summary>
-    /// Handles the AnalysisCompleted event on the TwitterNetworkAnalyzer
-    /// object when an exception occurs.
-    /// </summary>
-    ///
-    /// <param name="oException">
-    /// The exception that occurred.
-    /// </param>
-    //*************************************************************************
-
-    protected override void
-    OnAnalysisException
-    (
-        Exception oException
-    )
-    {
-        Debug.Assert(oException != null);
-        AssertValid();
-
-        String sMessage = null;
-
-        const String TimeoutMessage =
-            "The Twitter Web service didn't respond.";
-
-        if (oException is WebException)
-        {
-            WebException oWebException = (WebException)oException;
-
-            if (oWebException.Response is HttpWebResponse)
-            {
-                HttpWebResponse oHttpWebResponse =
-                    (HttpWebResponse)oWebException.Response;
-
-                switch (oHttpWebResponse.StatusCode)
-                {
-                    case HttpStatusCode.Unauthorized:  // HTTP 401.
-
-                        sMessage =
-                            "The Twitter Web service reports that you are"
-                            + " not authorized to request information.  This"
-                            + " can occur if you enter the wrong screen name"
-                            + " or password for your Twitter account."
-                            ;
-
-                        break;
-
-                    case HttpStatusCode.NotFound:  // HTTP 404.
-
-                        sMessage =
-                            "There is no Twitter user with that screen name."
-                            ;
-
-                        break;
-
-                    case HttpStatusCode.RequestTimeout:  // HTTP 408.
-
-                        sMessage = TimeoutMessage;
-                        break;
-
-                    case HttpStatusCode.BadRequest:  // HTTP 400.
-
-                        sMessage = String.Format(
-
-                            "The Twitter Web service refuses to provide any"
-                            + " more user information because you have made"
-                            + " too many requests in the last hour.  (Twitter"
-                            + " limits information requests to prevent its"
-                            + " service from being attacked.  Click the '{0}'"
-                            + " link for details.)"
-                            + "\r\n\r\n"
-                            + " Wait 60 minutes and try again."
-                            ,
-                            TwitterCredentialsControl.RateLimitingLinkText
-                            );
-
-                        break;
-
-                    case HttpStatusCode.Forbidden:  // HTTP 403.
-
-                        sMessage =
-                            "The Twitter Web service refused to provide"
-                            + " information about the user."
-                            ;
-
-                        break;
-
-                    default:
-
-                        break;
-                }
-            }
-            else
-            {
-                switch (oWebException.Status)
-                {
-                    case WebExceptionStatus.Timeout:
-
-                        sMessage = TimeoutMessage;
-                        break;
-
-                    default:
-
-                        break;
-                }
-            }
-        }
-
-        if (sMessage == null)
-        {
-            sMessage =
-                "The Twitter network information couldn't be obtained."
-                + "\r\n\r\nDetails:\r\n\r\n"
-                + ExceptionUtil.GetMessageTrace(oException)
-                ;
-        }
-
-        this.ShowWarning(sMessage);
     }
 
     //*************************************************************************
@@ -397,13 +335,14 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
         base.AssertValid();
 
         Debug.Assert(m_sScreenNameToAnalyze != null);
-        // m_bIncludeFollowed
-        // m_bIncludeFollowers
+        // m_bIncludeFollowedVertices
+        // m_bIncludeFollowerVertices
+        // m_bIncludeFollowedFollowerEdges
+        // m_bIncludeRepliesToEdges
+        // m_bIncludeMentionsEdges
         // m_eNetworkLevel
-        // m_bIncludeLatestStatus
+        // m_bIncludeLatestStatuses
         // m_iMaximumPeoplePerRequest
-        // m_sCredentialsScreenName
-        // m_sCredentialsPassword
     }
 
 
@@ -411,22 +350,36 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
     //  Protected fields
     //*************************************************************************
 
+    // These are static so that the dialog's controls will retain their values
+    // between dialog invocations.  Most NodeXL dialogs persist control values
+    // via ApplicationSettingsBase, but this plugin does not have access to
+    // that and so it resorts to static fields.
+
     /// The screen name of the Twitter user whose network should be analyzed.
-    ///
-    /// This is static so that the TextBox that displays it will retain its
-    /// text between dialog invocations.  Most NodeXL dialogs persist control
-    /// values via ApplicationSettingsBase, but this plugin does not have
-    /// access to that and so it resorts to static fields.
 
     protected static String m_sScreenNameToAnalyze = "bob";
 
-    /// true to include the people followed by the user.
+    /// true to include a vertex for each person followed by the user.
 
-    protected static Boolean m_bIncludeFollowed = true;
+    protected static Boolean m_bIncludeFollowedVertices = true;
 
-    /// true to include the people following by the user.
+    /// true to include a vertex for each person following the user.
 
-    protected static Boolean m_bIncludeFollowers = false;
+    protected static Boolean m_bIncludeFollowerVertices = false;
+
+    /// true to include an edge for each followed/following relationship.
+
+    protected static Boolean m_bIncludeFollowedFollowerEdges = true;
+
+    /// true to include an edge from person A to person B if person A's latest
+    /// tweet is a reply to person B.
+
+    protected static Boolean m_bIncludeRepliesToEdges = false;
+
+    /// true to include an edge from person A to person B if person A's latest
+    /// tweet is mentions person B.
+
+    protected static Boolean m_bIncludeMentionsEdges = false;
 
     /// Network level to include.
 
@@ -434,18 +387,11 @@ public partial class TwitterGetUserNetworkDialog : GraphDataProviderDialogBase
 
     /// true to include each user's latest status.
 
-    protected static Boolean m_bIncludeLatestStatus;
+    protected static Boolean m_bIncludeLatestStatuses;
 
     /// Maximum number of people to request for each query, or Int32.MaxValue
     /// for no limit.
 
     protected static Int32 m_iMaximumPeoplePerRequest = Int32.MaxValue;
-
-    /// The screen name and password of the Twitter user whose credentials
-    /// should be used.
-
-    protected static String m_sCredentialsScreenName = String.Empty;
-    ///
-    protected static String m_sCredentialsPassword = String.Empty;
 }
 }

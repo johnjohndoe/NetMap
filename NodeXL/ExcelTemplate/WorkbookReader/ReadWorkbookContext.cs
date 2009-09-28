@@ -3,7 +3,7 @@
 
 using System;
 using System.Drawing;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -45,6 +45,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// Set <see cref="ReadClusters" /> to true to read the cluster worksheets.
 /// </para>
 ///
+/// <para>
+/// To read the image worksheet, set <see cref="ReadImages" /> to true and set
+/// <see cref="DefaultVertexImageSize" />.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -66,6 +71,8 @@ public class ReadWorkbookContext : Object
         m_bPopulateVertexWorksheet = false;
         m_bSetEdgeWeightValues = false;
         m_bReadClusters = false;
+        m_bReadImages = false;
+        m_oDefaultVertexImageSize = new Nullable<Single>();
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
         m_bLayoutOrderSet = false;
         m_oColorConverter2 = new ColorConverter2();
@@ -78,7 +85,7 @@ public class ReadWorkbookContext : Object
         m_oVertexNameDictionary = new Dictionary<String, IVertex>();
         m_oEdgeIDDictionary = new Dictionary<Int32, IIdentityProvider>();
         m_oVertexIDDictionary = new Dictionary<Int32, IIdentityProvider>();
-        m_oImageIDDictionary = new Dictionary<String, BitmapImage>();
+        m_oImageIDDictionary = new Dictionary<String, ImageSource>();
         m_bToolTipsUsed = false;
 
         AssertValid();
@@ -255,6 +262,78 @@ public class ReadWorkbookContext : Object
         set
         {
             m_bReadClusters = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadImages
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the image worksheet should be
+    /// read.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the image worksheet.  The default is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If set to true, <see cref="DefaultVertexImageSize" /> should also be
+    /// set.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    ReadImages
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bReadImages);
+        }
+
+        set
+        {
+            m_bReadImages = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: DefaultVertexImageSize
+    //
+    /// <summary>
+    /// Gets or sets the default size of vertices drawn as images.
+    /// </summary>
+    ///
+    /// <value>
+    /// The default size of vertices drawn as images, as a
+    /// Nullable&lt;Single&gt;, or a Nullable with no value to use the actual
+    /// image sizes.  The default is a Nullable with no value.
+    /// </value>
+    ///
+    /// <remarks>
+    /// This is used only if <see cref="ReadImages" /> is true.
+    /// </remarks>
+    //*************************************************************************
+
+    public Nullable<Single>
+    DefaultVertexImageSize
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_oDefaultVertexImageSize);
+        }
+
+        set
+        {
+            m_oDefaultVertexImageSize = value;
 
             AssertValid();
         }
@@ -522,11 +601,11 @@ public class ReadWorkbookContext : Object
     /// <value>
     /// Image dictionary.  The key is a unique image identifier specified in
     /// the image worksheet and the value is the corresponding
-    /// System.Windows.Media.Imaging.BitmapImage.
+    /// System.Windows.Media.Imaging.ImageSource.
     /// </value>
     //*************************************************************************
 
-    public Dictionary<String, BitmapImage>
+    public Dictionary<String, ImageSource>
     ImageIDDictionary
     {
         get
@@ -587,6 +666,8 @@ public class ReadWorkbookContext : Object
         // m_bPopulateVertexWorksheet
         // m_bSetEdgeWeightValues
         // m_bReadClusters
+        // m_bReadImages
+        // m_oDefaultVertexImageSize
         // m_oGraphRectangle
         // m_bLayoutOrderSet
         Debug.Assert(m_oColorConverter2 != null);
@@ -625,6 +706,14 @@ public class ReadWorkbookContext : Object
     /// true to read the cluster worksheets.
 
     protected Boolean m_bReadClusters;
+
+    /// true to read the image worksheet.
+
+    protected Boolean m_bReadImages;
+
+    /// The default size of vertices drawn as images.
+
+    protected Nullable<Single> m_oDefaultVertexImageSize;
 
     /// The rectangle the graph is being drawn within.
 
@@ -670,9 +759,9 @@ public class ReadWorkbookContext : Object
 
     /// Image dictionary.  The key is a unique image identifier specified in
     /// the image worksheet and the value is the corresponding
-    /// System.Windows.Media.Imaging.BitmapImage.
+    /// System.Windows.Media.Imaging.ImageSource.
 
-    protected Dictionary<String, BitmapImage> m_oImageIDDictionary; 
+    protected Dictionary<String, ImageSource> m_oImageIDDictionary; 
 
     /// true if a tooltip was set on at least one vertex.
 

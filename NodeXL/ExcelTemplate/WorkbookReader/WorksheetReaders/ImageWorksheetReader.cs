@@ -4,10 +4,11 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -258,17 +259,16 @@ public class ImageWorksheetReader : WorksheetReaderBase
 
         Object [,] aoImageValues = ExcelUtil.GetRangeValues(oImageRangeArea);
 
-        Dictionary<String, BitmapImage> oImageIDDictionary =
+        Dictionary<String, ImageSource> oImageIDDictionary =
             oReadWorkbookContext.ImageIDDictionary;
 
-        // Loop through the rows.
-
-        String sInvalidFilePathErrorMessage = null;
+        WpfImageUtil oWpfImageUtil = new WpfImageUtil();
         Range oInvalidCell = null;
         Int32 iRows = oImageRangeArea.Rows.Count;
-        Int32 iRowOneBased;
+        String sWorkbookPath = oWorkbook.Path;
+        Boolean bAllowRelativeFilePaths = !String.IsNullOrEmpty(sWorkbookPath);
 
-        for (iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+        for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
         {
             // Get the image key.
 
@@ -307,88 +307,60 @@ public class ImageWorksheetReader : WorksheetReaderBase
                 iRowOneBased, oImageTableColumnIndexes.FilePath,
                 out sFilePath) )
             {
-                sInvalidFilePathErrorMessage = 
+                // There is no image file path.  Skip the row.
 
-                    "The cell {0} doesn't contain an image file path.  If you"
-                    + " specify an image ID, you must also specify an image"
-                    + " file path."
-                    ;
-
-                goto InvalidFilePath;
+                continue;
             }
 
-            if ( !Path.IsPathRooted(sFilePath) )
+            if ( sFilePath.ToLower().StartsWith("www.") )
             {
-                // The file path is relative to the workbook location.
+                // The Uri class thinks that "www.somewhere.com" is a relative
+                // path.  Fix that.
 
-                String sWorkbookPath = oWorkbook.Path;
+                sFilePath= "http://" + sFilePath;
+            }
 
-                if ( String.IsNullOrEmpty(sWorkbookPath) )
+            Uri oUri;
+
+            // Is the file path either an URL or a full file path?
+
+            if ( !Uri.TryCreate(sFilePath, UriKind.Absolute, out oUri) )
+            {
+                // No.  It appears to be a relative path.
+
+                if (bAllowRelativeFilePaths)
                 {
-                    sInvalidFilePathErrorMessage = 
-
-                        "The image file specified in cell {0} has a relative"
-                        + " path.  Relative paths must be relative to the"
-                        + " saved workbook file, but the workbook hasn't been"
-                        + " saved yet.  Either save the workbook or change the"
-                        + " image file to an absolute path, such as"
-                        + " \"C:\\MyImages\\Image.jpg\"."
-                        ;
-
-                    goto InvalidFilePath;
+                    sFilePath = Path.Combine(sWorkbookPath, sFilePath);
                 }
+                else
+                {
+                    oInvalidCell = (Range)oImageRangeArea.Cells[
+                        iRowOneBased, oImageTableColumnIndexes.FilePath];
 
-                sFilePath = Path.Combine(sWorkbookPath, sFilePath);
+                    OnWorkbookFormatError( String.Format(
+
+                        "The image file path specified in cell {0} is a"
+                        + " relative path.  Relative paths must be relative to"
+                        + " the saved workbook file, but the workbook hasn't"
+                        + " been saved yet.  Either save the workbook or"
+                        + " change the image file path to an absolute path,"
+                        + " such as \"C:\\MyImages\\Image.jpg\"."
+                        ,
+                        ExcelUtil.GetRangeAddress(oInvalidCell)
+                        ),
+
+                        oInvalidCell
+                        );
+                }
             }
 
-            if ( !File.Exists(sFilePath) )
-            {
-                sInvalidFilePathErrorMessage = 
+            // Note that sFilePath may or may not be a valid URI string.  If it
+            // is not, GetImageSynchronousIgnoreDpi() will return an error
+            // image.
 
-                    "The image file specified in cell {0} doesn't exist."
-                    ;
-
-                goto InvalidFilePath;
-            }
-
-            BitmapImage oBitmapImage = null;;
-
-            try
-            {
-                oBitmapImage = new BitmapImage( new Uri(sFilePath) );
-            }
-            catch (NotSupportedException)
-            {
-                sInvalidFilePathErrorMessage = 
-
-                    "The file specified in cell {0} is not a valid image."
-                    ;
-
-                goto InvalidFilePath;
-            }
-
-            oImageIDDictionary[sKey] = oBitmapImage;
+            oImageIDDictionary[sKey] =
+                oWpfImageUtil.GetImageSynchronousIgnoreDpi(sFilePath);
         }
-
-        return;
-
-        InvalidFilePath:
-
-            Debug.Assert(sInvalidFilePathErrorMessage != null);
-            Debug.Assert(sInvalidFilePathErrorMessage.IndexOf("{0}") >= 0);
-
-            oInvalidCell = (Range)oImageRangeArea.Cells[
-                iRowOneBased, oImageTableColumnIndexes.FilePath];
-
-            OnWorkbookFormatError( String.Format(
-
-                sInvalidFilePathErrorMessage
-                ,
-                ExcelUtil.GetRangeAddress(oInvalidCell)
-                ),
-
-                oInvalidCell
-                );
     }
 
 

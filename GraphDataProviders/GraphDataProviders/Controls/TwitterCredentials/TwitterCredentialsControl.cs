@@ -13,12 +13,13 @@ namespace Microsoft.NodeXL.GraphDataProviders
 /// </summary>
 ///
 /// <remarks>
-/// Use the <see cref="ScreenName" /> and <see cref="Password" /> properties to
-/// set and get the credentials.  Use <see cref="Validate" /> to validate the
-/// credentials.
+/// Set the optional <see cref="PromptInsertion" /> property after the control
+/// is constructed, then use the <see cref="ScreenName" /> and <see
+/// cref="Password" /> properties to set and get the credentials.  Use <see
+/// cref="Validate" /> to validate the credentials.
 ///
 /// <para>
-/// This control uses the following keyboard shortcuts: N, P
+/// This control uses the following keyboard shortcuts: N, A
 /// </para>
 ///
 /// </remarks>
@@ -39,8 +40,41 @@ public partial class TwitterCredentialsControl : UserControl
     {
         InitializeComponent();
         this.lnkRateLimiting.Text = RateLimitingLinkText;
+        this.lnkRequestWhitelist.FileName = TwitterRequestWhitelistUrl;
+        this.PromptInsertion = String.Empty;
 
         AssertValid();
+    }
+
+    //*************************************************************************
+    //  Property: PromptInsertion
+    //
+    /// <summary>
+    /// Sets text to insert in the credentials prompt.
+    /// </summary>
+    ///
+    /// <value>
+    /// The text to insert in the credentials prompt.  The default is
+    /// String.Empty.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    PromptInsertion
+    {
+        set
+        {
+            lblPrompt.Text = String.Format(
+
+                "This is required only if {0}Twitter rate limiting has been"
+                + " lifted for your account and you want to take advantage of"
+                + " it."
+                ,
+                value
+                );
+
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -192,46 +226,19 @@ public partial class TwitterCredentialsControl : UserControl
 
             "To protect its Web service, Twitter limits the"
             + " number of information requests that can be made within a"
-            + " one-hour period.  They call this \"rate limiting.\"  If you"
-            + " attempt to include 1.5 or 2.0 levels in the network, you can"
-            + " easily reach Twitter's limit."
+            + " one-hour period.  They call this \"rate limiting.\"  Depending"
+            + " on the types of networks you import, you can easily reach"
+            + " Twitter's limit."
             + "\r\n\r\n"
-            + "We recommend that you either include only 1.0 levels, or ask"
-            + " Twitter to lift the limit for you.  You can do this by"
+            + "If you reach the limit (and NodeXL will tell you when that"
+            + " happens), you can ask Twitter to lift the limit for you by"
             + " clicking the \"{0}\" link.  You must be a registered Twitter"
-            + " user to do this.  Once Twitter has lifted the limit for you,"
-            + " you should enter your Twitter account information when you"
-            + " import a Twitter network."
+            + " user to do this.  Once Twitter has lifted the limit, you"
+            + " should enter your Twitter account information when you import"
+            + " a Twitter network."
             ,
             lnkRequestWhitelist.Text
             ) );
-    }
-
-    //*************************************************************************
-    //  Method: lnkRequestWhitelist_LinkClicked()
-    //
-    /// <summary>
-    /// Handles the LinkClicked event on the lnkRequestWhitelist LinkLabel.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    lnkRequestWhitelist_LinkClicked
-    (
-        object sender, LinkLabelLinkClickedEventArgs e
-    )
-    {
-        AssertValid();
-
-        Process.Start(TwitterRequestWhitelistUrl);
     }
 
     

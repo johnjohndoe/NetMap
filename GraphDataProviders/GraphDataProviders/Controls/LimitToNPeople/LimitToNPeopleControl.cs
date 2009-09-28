@@ -2,14 +2,13 @@
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace Microsoft.NodeXL.GraphDataProviders.Controls.LimitToNPeople
+namespace Microsoft.NodeXL.GraphDataProviders
 {
 //*****************************************************************************
 //  Class: LimitToNPeopleControl
 //
 /// <summary>
-/// UserControl that contains a ComboBox for selecting a maximum number of
-/// people to include.
+/// UserControl for selecting a maximum number of people to include.
 /// </summary>
 ///
 /// <remarks>
@@ -17,7 +16,7 @@ namespace Microsoft.NodeXL.GraphDataProviders.Controls.LimitToNPeople
 /// people to include.
 ///
 /// <para>
-/// This control uses the following keyboard shortcuts: M
+/// This control uses the following keyboard shortcuts: T
 /// </para>
 ///
 /// </remarks>
@@ -41,7 +40,10 @@ public partial class LimitToNPeopleControl : UserControl
         cbxN.PopulateWithObjectsAndText(
             100, "100",
             200, "200",
-            300, "300"
+            300, "300",
+            400, "400",
+            500, "500",
+            1000, "1,000"
             );
 
         AssertValid();
@@ -56,8 +58,8 @@ public partial class LimitToNPeopleControl : UserControl
     ///
     /// <value>
     /// The maximum number of people to include, as an Int32.  Must be 100, 
-    /// 200, 300, or Int32.MaxValue for "no limit."  The default is
-    /// Int32.MaxValue.
+    /// 200, 300, 400, 500, 1000, or Int32.MaxValue for "no limit."  The
+    /// default is Int32.MaxValue.
     /// </value>
     //*************************************************************************
 
@@ -80,6 +82,8 @@ public partial class LimitToNPeopleControl : UserControl
         {
             Boolean bLimitToNPeople = (value < Int32.MaxValue);
 
+            chkLimitToNPeople.Checked = bLimitToNPeople;
+
             if (bLimitToNPeople)
             {
                 cbxN.SelectedValue = value;
@@ -89,8 +93,6 @@ public partial class LimitToNPeopleControl : UserControl
 
                 Debug.Assert(cbxN.SelectedValue != null);
             }
-
-            chkLimitToNPeople.Checked = bLimitToNPeople;
 
             AssertValid();
         }

@@ -4,18 +4,16 @@
 
 using System;
 using System.Windows.Forms;
-using System.Net;
+using System.ComponentModel;
 using System.Diagnostics;
-using Microsoft.Research.CommunityTechnologies.AppLib;
-using Microsoft.SocialNetworkLib;
 
-namespace Microsoft.NodeXL.GraphDataProviders.Flickr
+namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 {
 //*****************************************************************************
-//  Class: FlickrGetRelatedTagsDialog
+//  Class: TwitterGetSearchNetworkDialog
 //
 /// <summary>
-/// Gets the Flickr tags related to a tag specified by the user.
+/// Gets the the network of people who have tweeted a specified search term.
 /// </summary>
 ///
 /// <remarks>
@@ -25,25 +23,31 @@ namespace Microsoft.NodeXL.GraphDataProviders.Flickr
 /// </remarks>
 //*****************************************************************************
 
-public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
+public partial class TwitterGetSearchNetworkDialog :
+    TwitterGraphDataProviderDialogBase
 {
     //*************************************************************************
-    //  Constructor: FlickrGetRelatedTagsDialog()
+    //  Constructor: TwitterGetSearchNetworkDialog()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="FlickrGetRelatedTagsDialog" /> class.
+    /// cref="TwitterGetSearchNetworkDialog" /> class.
     /// </summary>
     //*************************************************************************
 
-    public FlickrGetRelatedTagsDialog()
+    public TwitterGetSearchNetworkDialog()
     :
-    base ( new FlickrNetworkAnalyzer() )
+    base( new TwitterSearchNetworkAnalyzer() )
     {
         InitializeComponent();
 
-        // m_sFlickrApiKey
-        // m_sTag
+        // m_sSearchTerm
+        // m_bIncludeFollowedEdges
+        // m_bIncludeRepliesToEdges
+        // m_bIncludeMentionsEdges
+        // m_iMaximumPeoplePerRequest
+        // m_bIncludeStatuses
+        // m_bIncludeStatistics
 
         DoDataExchange(false);
 
@@ -77,28 +81,37 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
         {
             // Validate the controls.
 
-            String sFlickrApiKey, sTag;
-
             if (
-                !ValidateRequiredTextBox(txbFlickrApiKey,
-                    "Enter a Flickr API key.",
-                    out sFlickrApiKey)
+                !ValidateRequiredTextBox(txbSearchTerm,
+                    "Enter one or more words to search for.",
+                    out m_sSearchTerm)
                 ||
-                !ValidateRequiredTextBox(txbTag,
-                    "Enter a Flickr tag to get related tags for.",
-                    out sTag)
+                !usrTwitterCredentials.Validate()
                 )
             {
                 return (false);
             }
 
-            m_sFlickrApiKey = sFlickrApiKey;
-            m_sTag = sTag;
+            m_bIncludeFollowedEdges = chkIncludeFollowedEdges.Checked;
+            m_bIncludeRepliesToEdges = chkIncludeRepliesToEdges.Checked;
+            m_bIncludeMentionsEdges = chkIncludeMentionsEdges.Checked;
+            m_iMaximumPeoplePerRequest = usrLimitToNPeople.N;
+            m_bIncludeStatuses = chkIncludeStatuses.Checked;
+            m_bIncludeStatistics = chkIncludeStatistics.Checked;
+            m_sCredentialsScreenName = usrTwitterCredentials.ScreenName;
+            m_sCredentialsPassword = usrTwitterCredentials.Password;
         }
         else
         {
-            txbFlickrApiKey.Text = m_sFlickrApiKey;
-            txbTag.Text = m_sTag;
+            txbSearchTerm.Text = m_sSearchTerm;
+            chkIncludeFollowedEdges.Checked = m_bIncludeFollowedEdges;
+            chkIncludeRepliesToEdges.Checked = m_bIncludeRepliesToEdges;
+            chkIncludeMentionsEdges.Checked = m_bIncludeMentionsEdges;
+            usrLimitToNPeople.N = m_iMaximumPeoplePerRequest;
+            chkIncludeStatuses.Checked = m_bIncludeStatuses;
+            chkIncludeStatistics.Checked = m_bIncludeStatistics;
+            usrTwitterCredentials.ScreenName = m_sCredentialsScreenName;
+            usrTwitterCredentials.Password = m_sCredentialsPassword;
 
             EnableControls();
         }
@@ -110,7 +123,7 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
     //  Method: StartAnalysis()
     //
     /// <summary>
-    /// Starts the Flickr analysis.
+    /// Starts the Twitter analysis.
     /// </summary>
     ///
     /// <remarks>
@@ -125,10 +138,34 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
 
         m_oGraphMLXmlDocument = null;
 
-        Debug.Assert(m_oHttpNetworkAnalyzer is FlickrNetworkAnalyzer);
+        Debug.Assert(m_oHttpNetworkAnalyzer is TwitterSearchNetworkAnalyzer);
 
-        ( (FlickrNetworkAnalyzer)m_oHttpNetworkAnalyzer ).GetRelatedTagsAsync(
-            m_sTag, m_sFlickrApiKey);
+        String sCredentialsScreenName =
+            String.IsNullOrEmpty(m_sCredentialsScreenName) ? null :
+            m_sCredentialsScreenName;
+
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude =
+
+            (m_bIncludeStatuses ?
+                TwitterSearchNetworkAnalyzer.WhatToInclude.Statuses : 0)
+            |
+            (m_bIncludeStatistics ?
+                TwitterSearchNetworkAnalyzer.WhatToInclude.Statistics : 0)
+            |
+            (m_bIncludeFollowedEdges ?
+                TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges : 0)
+            |
+            (m_bIncludeRepliesToEdges ?
+                TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges : 0)
+            |
+            (m_bIncludeMentionsEdges ?
+                TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges : 0)
+            ;
+
+        ( (TwitterSearchNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
+            GetSearchNetworkAsync(m_sSearchTerm, eWhatToInclude,
+            m_iMaximumPeoplePerRequest, sCredentialsScreenName,
+            m_sCredentialsPassword);
     }
 
     //*************************************************************************
@@ -152,6 +189,31 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
     }
 
     //*************************************************************************
+    //  Method: OnProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the HttpNetworkAnalyzer.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected override void
+    OnProgressChanged
+    (
+        ProgressChangedEventArgs e
+    )
+    {
+        AssertValid();
+
+        Debug.Assert(e.UserState is String);
+
+        this.slStatusLabel.Text = (String)e.UserState;
+    }
+
+    //*************************************************************************
     //  Method: OnEmptyGraph()
     //
     /// <summary>
@@ -164,111 +226,8 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
     {
         AssertValid();
 
-        this.ShowInformation("That tag has no related tags.");
-        txbTag.Focus();
-    }
-
-    //*************************************************************************
-    //  Method: OnAnalysisException()
-    //
-    /// <summary>
-    /// Handles the AnalysisCompleted event on the HttpNetworkAnalyzer object
-    /// when an exception occurs.
-    /// </summary>
-    ///
-    /// <param name="oException">
-    /// The exception that occurred.
-    /// </param>
-    //*************************************************************************
-
-    protected override void
-    OnAnalysisException
-    (
-        Exception oException
-    )
-    {
-        Debug.Assert(oException != null);
-        AssertValid();
-
-        String sMessage = null;
-
-        const String TimeoutMessage =
-            "The Flickr Web service didn't respond.";
-
-        if (oException is WebException)
-        {
-            WebException oWebException = (WebException)oException;
-
-            if (oWebException.Response is HttpWebResponse)
-            {
-                HttpWebResponse oHttpWebResponse =
-                    (HttpWebResponse)oWebException.Response;
-
-                switch (oHttpWebResponse.StatusCode)
-                {
-                    case HttpStatusCode.RequestTimeout:  // HTTP 408.
-
-                        sMessage = TimeoutMessage;
-                        break;
-
-                    default:
-
-                        break;
-                }
-            }
-            else
-            {
-                switch (oWebException.Status)
-                {
-                    case WebExceptionStatus.Timeout:
-
-                        sMessage = TimeoutMessage;
-                        break;
-
-                    default:
-
-                        break;
-                }
-            }
-        }
-
-        if (sMessage == null)
-        {
-            sMessage =
-                "The network of related tags couldn't be obtained."
-                + "\r\n\r\nDetails:\r\n\r\n"
-                + ExceptionUtil.GetMessageTrace(oException)
-                ;
-        }
-
-        this.ShowWarning(sMessage);
-    }
-
-    //*************************************************************************
-    //  Method: lnkRequestFlickrApiKey_LinkClicked()
-    //
-    /// <summary>
-    /// Handles the LinkClicked event on the lnkRequestFlickrApiKey LinkLabel.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    lnkRequestFlickrApiKey_LinkClicked
-    (
-        object sender, LinkLabelLinkClickedEventArgs e
-    )
-    {
-        AssertValid();
-
-        Process.Start(RequestFlickrApiKeyUrl);
+        this.ShowInformation("There are no people in that network.");
+        txbSearchTerm.Focus();
     }
 
     //*************************************************************************
@@ -315,19 +274,14 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
     {
         base.AssertValid();
 
-        Debug.Assert(m_sFlickrApiKey != null);
-        Debug.Assert(m_sTag != null);
+        Debug.Assert(m_sSearchTerm != null);
+        // m_bIncludeFollowedEdges
+        // m_bIncludeRepliesToEdges
+        // m_bIncludeMentionsEdges
+        Debug.Assert(m_iMaximumPeoplePerRequest > 0);
+        // m_bIncludeStatuses
+        // m_bIncludeStatistics
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Flickr Web page for requesting an API key.
-
-    protected const String RequestFlickrApiKeyUrl =
-        "http://www.flickr.com/services/api/misc.api_keys.html";
 
 
     //*************************************************************************
@@ -339,12 +293,35 @@ public partial class FlickrGetRelatedTagsDialog : GraphDataProviderDialogBase
     // via ApplicationSettingsBase, but this plugin does not have access to
     // that and so it resorts to static fields.
 
-    /// Flickr API key.  Can be empty but not null.
+    /// The search term to use.
 
-    protected static String m_sFlickrApiKey = String.Empty;
+    protected static String m_sSearchTerm = "NodeXL";
 
-    /// Tag to get the related tags for.  Can be empty but not null.
+    /// true to include an edge for each followed relationship.
 
-    protected static String m_sTag = "sociology";
+    protected static Boolean m_bIncludeFollowedEdges = false;
+
+    /// true to include an edge from person A to person B if person A's tweet
+    /// is a reply to person B.
+
+    protected static Boolean m_bIncludeRepliesToEdges = false;
+
+    /// true to include an edge from person A to person B if person A's tweet
+    /// is mentions person B.
+
+    protected static Boolean m_bIncludeMentionsEdges = true;
+
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+
+    protected static Int32 m_iMaximumPeoplePerRequest = 100;
+
+    /// true to include each status.
+
+    protected static Boolean m_bIncludeStatuses;
+
+    /// true to include statistics for each user.
+
+    protected static Boolean m_bIncludeStatistics = false;
 }
 }

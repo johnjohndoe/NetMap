@@ -468,12 +468,18 @@ public partial class TaskPane : UserControl
             return;
         }
 
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+
         ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
 
         oReadWorkbookContext.IgnoreVertexLocations = false;
         oReadWorkbookContext.GraphRectangle = this.GraphRectangle;
         oReadWorkbookContext.FillIDColumns = true;
         oReadWorkbookContext.ReadClusters = m_oRibbon.ReadClusters;
+        oReadWorkbookContext.ReadImages = true;
+
+        oReadWorkbookContext.DefaultVertexImageSize =
+            oGeneralUserSettings.VertexImageSize;
 
         // Populate the vertex worksheet.  This isn't strictly necessary, but
         // it does enable the vertex worksheet to be updated when the user
@@ -514,7 +520,7 @@ public partial class TaskPane : UserControl
 
             // Apply the current layout to the NodeXLControl.
 
-            ApplyLayoutAndUserSettings( new GeneralUserSettings() );
+            ApplyLayoutAndUserSettings(oGeneralUserSettings);
 
             // If the dynamic filter dialog is open, read the dynamic filter
             // columns it filled in.

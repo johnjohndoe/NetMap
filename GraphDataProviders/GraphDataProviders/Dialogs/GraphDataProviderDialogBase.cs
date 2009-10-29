@@ -485,11 +485,11 @@ public class GraphDataProviderDialogBase : FormPlus
 
     /// The timeout to use for Web requests, in milliseconds.
 
-    protected const Int32 HttpWebRequestTimeoutMs = 10000;
+    protected const Int32 HttpWebRequestTimeoutMs = 5000;
 
     /// The maximum number of retries per Web request.
 
-    protected const Int32 HttpWebRequestRetries = 2;
+    protected const Int32 HttpWebRequestRetries = 3;
 
 
     //*************************************************************************

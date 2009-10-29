@@ -69,7 +69,7 @@
     <Compile Include="Drawers\DrawingHistories\DrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\EdgeDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\ImageVertexDrawingHistory.cs" />
-    <Compile Include="Drawers\DrawingHistories\PrimaryLabelVertexDrawingHistory.cs" />
+    <Compile Include="Drawers\DrawingHistories\LabelVertexDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\RectangleVertexDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\SolidDiamondVertexDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\SolidSquareVertexDrawingHistory.cs" />
@@ -83,7 +83,7 @@
     <Compile Include="Drawers\GraphDrawingContext.cs" />
     <Compile Include="Drawers\VertexAndEdgeDrawerBase.cs" />
     <Compile Include="Drawers\VertexDrawer.cs" />
-    <Compile Include="Drawers\VertexDrawingPrecedence.cs" />
+    <Compile Include="Drawers\VertexLabelDrawer.cs" />
     <Compile Include="NodeXLVisual.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\VisualizationBase.cs" />

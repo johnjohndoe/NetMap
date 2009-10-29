@@ -57,6 +57,8 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         this.ReadClusters = oGeneralUserSettings.ReadClusters;
+        this.ReadVertexLabels = oGeneralUserSettings.ReadVertexLabels;
+        this.ReadEdgeLabels = oGeneralUserSettings.ReadEdgeLabels;
         this.ShowGraphLegend = oGeneralUserSettings.ShowGraphLegend;
         this.ShowGraphAxes = oGeneralUserSettings.ShowGraphAxes;
 
@@ -86,12 +88,74 @@ public partial class Ribbon : OfficeRibbon
         {
             AssertValid();
 
-            return (cbxReadClusters.Checked);
+            return (chkReadClusters.Checked);
         }
 
         set
         {
-            cbxReadClusters.Checked = value;
+            chkReadClusters.Checked = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadVertexLabels
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether vertex labels should be read
+    /// from the vertex worksheet.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read vertex labels.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ReadVertexLabels
+    {
+        get
+        {
+            AssertValid();
+
+            return (chkReadVertexLabels.Checked);
+        }
+
+        set
+        {
+            chkReadVertexLabels.Checked = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadEdgeLabels
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether edge labels should be read from
+    /// the edge worksheet.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read edge labels.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ReadEdgeLabels
+    {
+        get
+        {
+            AssertValid();
+
+            return (chkReadEdgeLabels.Checked);
+        }
+
+        set
+        {
+            chkReadEdgeLabels.Checked = value;
 
             AssertValid();
         }
@@ -189,12 +253,12 @@ public partial class Ribbon : OfficeRibbon
         {
             AssertValid();
 
-            return (cbxShowGraphLegend.Checked);
+            return (chkShowGraphLegend.Checked);
         }
 
         set
         {
-            cbxShowGraphLegend.Checked = value;
+            chkShowGraphLegend.Checked = value;
 
             AssertValid();
         }
@@ -220,12 +284,12 @@ public partial class Ribbon : OfficeRibbon
         {
             AssertValid();
 
-            return (cbxShowGraphAxes.Checked);
+            return (chkShowGraphAxes.Checked);
         }
 
         set
         {
-            cbxShowGraphAxes.Checked = value;
+            chkShowGraphAxes.Checked = value;
 
             AssertValid();
         }
@@ -276,12 +340,12 @@ public partial class Ribbon : OfficeRibbon
         {
             AssertValid();
 
-            return (cbxClearTablesBeforeImport.Checked);
+            return (chkClearTablesBeforeImport.Checked);
         }
 
         set
         {
-            cbxClearTablesBeforeImport.Checked = value;
+            chkClearTablesBeforeImport.Checked = value;
 
             AssertValid();
         }
@@ -573,6 +637,8 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         oGeneralUserSettings.ReadClusters = this.ReadClusters;
+        oGeneralUserSettings.ReadVertexLabels = this.ReadVertexLabels;
+        oGeneralUserSettings.ReadEdgeLabels = this.ReadEdgeLabels;
         oGeneralUserSettings.ShowGraphLegend = this.ShowGraphLegend;
         oGeneralUserSettings.ShowGraphAxes = this.ShowGraphAxes;
 
@@ -1659,36 +1725,36 @@ public partial class Ribbon : OfficeRibbon
 
         PerWorkbookSettings oPerWorkbookSettings = GetPerWorkbookSettings();
 
-        // Note that the cbxShowVisualAttributeColumnGroups RibbonCheckBox
+        // Note that the chkShowVisualAttributeColumnGroups RibbonCheckBox
         // controls the visibility of two column groups:
         // ColumnGroup.EdgeVisualAttributes and
         // ColumnGroup.VertexVisualAttributes.
 
-        cbxShowVisualAttributeColumnGroups.Checked =
+        chkShowVisualAttributeColumnGroups.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.EdgeVisualAttributes);
 
-        // Note that the cbxShowLabelColumnGroups RibbonCheckBox controls the
+        // Note that the chkShowLabelColumnGroups RibbonCheckBox controls the
         // visibility of two column groups: ColumnGroup.EdgeLabels and
         // ColumnGroup.VertexLabels.
 
-        cbxShowLabelColumnGroups.Checked =
+        chkShowLabelColumnGroups.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.EdgeLabels);
 
-        cbxShowVertexLayoutColumnGroup.Checked =
+        chkShowVertexLayoutColumnGroup.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.VertexLayout);
 
-        cbxShowVertexGraphMetricsColumnGroup.Checked =
+        chkShowVertexGraphMetricsColumnGroup.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.VertexGraphMetrics);
 
-        // Note that the cbxShowOtherColumns RibbonCheckBox controls the
+        // Note that the chkShowOtherColumns RibbonCheckBox controls the
         // visibility of two column groups: ColumnGroup.EdgeOtherColumns and
         // ColumnGroup.VertexOtherColumns.
 
-        cbxShowOtherColumns.Checked =
+        chkShowOtherColumns.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.EdgeOtherColumns);
 
@@ -1699,10 +1765,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: cbxShowVisualASttributesColumnGroup_Click()
+    //  Method: chkShowVisualASttributesColumnGroup_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowVisualASttributesColumnGroup
+    /// Handles the Click event on the chkShowVisualASttributesColumnGroup
     /// RibbonCheckBox.
     /// </summary>
     ///
@@ -1716,7 +1782,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowVisualAttributeColumnGroups_Click
+    chkShowVisualAttributeColumnGroups_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1724,7 +1790,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        Boolean bShow = this.cbxShowVisualAttributeColumnGroups.Checked;
+        Boolean bShow = this.chkShowVisualAttributeColumnGroups.Checked;
         ThisWorkbook oThisWorkbook = this.ThisWorkbook;
 
         oThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeVisualAttributes,
@@ -1735,10 +1801,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: cbxShowLabelColumnGroups_Click()
+    //  Method: chkShowLabelColumnGroups_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowLabelColumnGroups RibbonCheckBox.
+    /// Handles the Click event on the chkShowLabelColumnGroups RibbonCheckBox.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1751,7 +1817,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowLabelColumnGroups_Click
+    chkShowLabelColumnGroups_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1759,7 +1825,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        Boolean bShow = this.cbxShowLabelColumnGroups.Checked;
+        Boolean bShow = this.chkShowLabelColumnGroups.Checked;
         ThisWorkbook oThisWorkbook = this.ThisWorkbook;
 
         oThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeLabels, bShow, false);
@@ -1767,10 +1833,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: cbxShowVertexLayoutColumnGroup_Click()
+    //  Method: chkShowVertexLayoutColumnGroup_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowVertexLayoutColumnGroup
+    /// Handles the Click event on the chkShowVertexLayoutColumnGroup
     /// RibbonCheckBox.
     /// </summary>
     ///
@@ -1784,7 +1850,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowVertexLayoutColumnGroup_Click
+    chkShowVertexLayoutColumnGroup_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1793,14 +1859,14 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexLayout,
-            this.cbxShowVertexLayoutColumnGroup.Checked, true);
+            this.chkShowVertexLayoutColumnGroup.Checked, true);
     }
 
     //*************************************************************************
-    //  Method: cbxShowVertexGraphMetricsColumnGroup_Click()
+    //  Method: chkShowVertexGraphMetricsColumnGroup_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowVertexGraphMetricsColumnGroup
+    /// Handles the Click event on the chkShowVertexGraphMetricsColumnGroup
     /// RibbonCheckBox.
     /// </summary>
     ///
@@ -1814,7 +1880,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowVertexGraphMetricsColumnGroup_Click
+    chkShowVertexGraphMetricsColumnGroup_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1823,14 +1889,14 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexGraphMetrics,
-            this.cbxShowVertexGraphMetricsColumnGroup.Checked, true);
+            this.chkShowVertexGraphMetricsColumnGroup.Checked, true);
     }
 
     //*************************************************************************
-    //  Method: cbxShowOtherColumns_Click()
+    //  Method: chkShowOtherColumns_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowOtherColumns RibbonCheckBox.
+    /// Handles the Click event on the chkShowOtherColumns RibbonCheckBox.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1843,7 +1909,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowOtherColumns_Click
+    chkShowOtherColumns_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1851,7 +1917,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        Boolean bShow = this.cbxShowOtherColumns.Checked;
+        Boolean bShow = this.chkShowOtherColumns.Checked;
 
         this.ThisWorkbook.ShowColumnGroup(ColumnGroup.EdgeOtherColumns,
             bShow, false);
@@ -1898,10 +1964,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: cbxShowGraphLegend_Click()
+    //  Method: chkShowGraphLegend_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowGraphLegend CheckBox.
+    /// Handles the Click event on the chkShowGraphLegend CheckBox.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1914,7 +1980,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowGraphLegend_Click
+    chkShowGraphLegend_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1926,10 +1992,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: cbxShowGraphAxes_Click()
+    //  Method: chkShowGraphAxes_Click()
     //
     /// <summary>
-    /// Handles the Click event on the cbxShowGraphAxes CheckBox.
+    /// Handles the Click event on the chkShowGraphAxes CheckBox.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1942,7 +2008,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    cbxShowGraphAxes_Click
+    chkShowGraphAxes_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1989,8 +2055,9 @@ public partial class Ribbon : OfficeRibbon
 
         Boolean bShow = (Boolean)oButton.Tag;
 
-        cbxReadClusters.Checked = cbxShowGraphLegend.Checked
-            = cbxShowGraphAxes.Checked = bShow;
+        chkReadClusters.Checked = chkReadVertexLabels.Checked =
+            chkReadEdgeLabels.Checked = chkShowGraphLegend.Checked =
+            chkShowGraphAxes.Checked = bShow;
 
         FireRibbonControlsChangedEvent(RibbonControls.ShowGraphLegend |
             RibbonControls.ShowGraphAxes);

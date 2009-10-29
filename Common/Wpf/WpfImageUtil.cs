@@ -88,8 +88,17 @@ public class WpfImageUtil
                 }
                 catch (WebException)
                 {
-                    // (Empty catch blocks cause an error image to be
+                    // (These empty catch blocks cause an error image to be
                     // returned.)
+                }
+                catch (NotSupportedException)
+                {
+                    // Attempting to download a corrupt image raises the
+                    // following exception.  (This was discovered while
+                    // downloading images from Twitter.)
+                    //
+                    // "[NotSupportedException]: No imaging component suitable
+                    // to complete this operation was found."
                 }
             }
             else if (oUri.Scheme == Uri.UriSchemeFile)

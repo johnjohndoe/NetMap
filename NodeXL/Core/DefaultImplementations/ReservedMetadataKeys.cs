@@ -183,78 +183,104 @@ public static class ReservedMetadataKeys : Object
         FirstChar + "VDRadius";
 
     /// <summary>
-    /// Key added to a vertex to force it to be drawn as an image instead of a
-    /// shape.
+    /// Key added to a vertex to specify the vertex's image.
     /// </summary>
     ///
     /// <remarks>
+    /// If the vertex has the shape VertexShape.Image, the vertex is drawn as
+    /// the image specified by the <see cref="PerVertexImage" /> key.  If the 
+    /// vertex has the shape VertexShape.Image and the <see
+    /// cref="PerVertexImage" /> key is missing, the vertex is drawn as a 
+    /// VertexShape.Disk.
+    ///
+    /// <para>
     /// The key's value is a System.Windows.Media.ImageSource.
+    /// </para>
+    ///
     /// </remarks>
 
     public static readonly String PerVertexImage =
         FirstChar + "VDImage";
 
     /// <summary>
-    /// Key added to a vertex to force it to be drawn as a primary label, which
-    /// is a rectangle containing text. 
+    /// Key added to a vertex to specify the vertex's label text.
     /// </summary>
     ///
     /// <remarks>
-    /// The key's value is a System.String.  If null or empty, a single-space
-    /// string (" ") is used for the primary label.
+    /// The effect of this key depends on the vertex's shape.  If the shape is
+    /// VertexShape.Label, the vertex is drawn as a rectangle containing the
+    /// text specified by the <see cref="PerVertexLabel" /> key.  If the shape
+    /// is something other than VertexShape.Label, the vertex is drawn as the
+    /// specified shape and the <see cref="PerVertexLabel" /> text is drawn
+    /// next to the vertex as an annotation, at the position specified by the
+    /// optional <see cref="PerVertexLabelPosition" /> key.
     ///
     /// <para>
-    /// <see cref="PerVertexPrimaryLabel" /> and <see
-    /// cref="PerVertexSecondaryLabel" /> may be specified in any combination.
+    /// If the vertex's shape is VertexShape.Label and the <see
+    /// cref="PerVertexLabel" /> key is missing, the vertex is drawn as a
+    /// VertexShape.Disk.
+    /// </para>
+    ///
+    /// <para>
+    /// The key's value is a System.String.  A value of null or an empty string
+    /// is treated as a missing key.
     /// </para>
     ///
     /// </remarks>
 
-    public static readonly String PerVertexPrimaryLabel =
-        FirstChar + "VDPrimaryLabel";
+    public static readonly String PerVertexLabel =
+        FirstChar + "VDLabel";
 
     /// <summary>
-    /// Key added to a vertex to force a primary label to have a specified fill
-    /// color.
+    /// Key added to a vertex to specify the vertex's label position.
     /// </summary>
     ///
     /// <remarks>
-    /// The key's value is a Color.  Used only if <see
-    /// cref="PerVertexPrimaryLabel" /> is specified.
-    /// </remarks>
-
-    public static readonly String PerVertexPrimaryLabelFillColor =
-        FirstChar + "VDPrimaryLabelFillColor";
-
-    /// <summary>
-    /// Key added to a vertex to force a secondary label to be drawn near it.
-    /// </summary>
-    ///
-    /// <remarks>
-    /// The key's value is a System.String.  If null or empty, no secondary
-    /// label is drawn.
+    /// This has an effect only if a vertex label is drawn as an annotation.
+    /// See <see cref="PerVertexLabel" /> for details.
     ///
     /// <para>
-    /// A secondary label can be added to any vertex, regardless of whether it
-    /// is drawn as a shape, primary label, or image.
+    /// The key's value is a VertexLabelPosition.
     /// </para>
     ///
     /// </remarks>
 
-    public static readonly String PerVertexSecondaryLabel =
-        FirstChar + "VDSecondaryLabel";
+    public static readonly String PerVertexLabelPosition =
+        FirstChar + "VDLabelPos";
 
     /// <summary>
-    /// Key added to a vertex to specify whether the vertex should be drawn a
-    /// a shape, image, or primary label.
+    /// Key added to a vertex to force a label to have a specified fill color.
     /// </summary>
     ///
     /// <remarks>
-    /// The key's value is a member of the VertexDrawingPrecedence enumeration.
+    /// The key's value is a Color.  Used only if the vertex has the shape
+    /// VertexShape.Label and <see cref="PerVertexLabel" /> is specified.
     /// </remarks>
 
-    public static readonly String PerVertexDrawingPrecedence =
-        FirstChar + "VDDrawingPrecedence";
+    public static readonly String PerVertexLabelFillColor =
+        FirstChar + "VDLabelFillColor";
+
+    /// <summary>
+    /// Key added to a vertex to specify the vertex's label font size.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If the vertex has the shape VertexShape.Label and also has the key <see
+    /// cref="PerVertexLabelFontSize" />, the label text is drawn using the
+    /// specified font size.
+    ///
+    /// <para>
+    /// This key is not used for a label drawn as an annotation.
+    /// </para>
+    ///
+    /// <para>
+    /// The key's value is a Single and is in WPF font size units.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String PerVertexLabelFontSize =
+        FirstChar + "VDLFS";
 
 
     //*************************************************************************

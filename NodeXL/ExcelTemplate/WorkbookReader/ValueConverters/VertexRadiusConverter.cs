@@ -66,6 +66,36 @@ public class VertexRadiusConverter : NumericValueConverterBase
             MaximumLongerImageDimension) );
     }
 
+    //*************************************************************************
+    //  Method: WorkbookToLabelFontSize()
+    //
+    /// <summary>
+    /// Converts an Excel workbook value to a font size to use for a vertex
+    /// with the shape <see cref="VertexShape.Label" />.
+    /// </summary>
+    ///
+    /// <param name="valueWorkbook">
+    /// Value read from the Excel workbook.
+    /// </param>
+    ///
+    /// <returns>
+    /// The font size to use, in WPF units.
+    /// </returns>
+    //*************************************************************************
+
+    public Single
+    WorkbookToLabelFontSize
+    (
+        Single valueWorkbook
+    )
+    {
+        AssertValid();
+
+        return ( RangeAToRangeB(valueWorkbook, m_fMinimumValueWorkbook,
+            m_fMaximumValueWorkbook, MinimumLabelFontSize,
+            MaximumLabelFontSize) );
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -131,6 +161,20 @@ public class VertexRadiusConverter : NumericValueConverterBase
     /// </summary>
 
     public static readonly Single MaximumLongerImageDimension = 200F;
+
+    /// <summary>
+    /// The vertex label font size that corresponds to MinimumRadiusWorkbook,
+    /// in WPF units.
+    /// </summary>
+
+    public static readonly Single MinimumLabelFontSize = 14F;
+
+    /// <summary>
+    /// The vertex label font size that corresponds to MaximumRadiusWorkbook,
+    /// in WPF units.
+    /// </summary>
+
+    public static readonly Single MaximumLabelFontSize = 39.4F;
 
 
     //*************************************************************************

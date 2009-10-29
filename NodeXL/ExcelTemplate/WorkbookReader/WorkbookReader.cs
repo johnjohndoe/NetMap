@@ -191,17 +191,6 @@ public class WorkbookReader : Object
 
         oEdgeWorksheetReader = null;
 
-        if (readWorkbookContext.ReadImages)
-        {
-            // Read the image worksheet.  This populates
-            // ReadWorkbookContext.ImageIDDictionary.
-
-            ImageWorksheetReader oImageWorksheetReader =
-                new ImageWorksheetReader();
-
-            oImageWorksheetReader.ReadWorksheet(workbook, readWorkbookContext);
-        }
-
         // Read the vertex worksheet.  This adds metadata to the vertices in
         // oGraph; adds any isolated vertices to oGraph and
         // ReadWorkbookContext.VertexNameDictionary; and removes any skipped

@@ -49,6 +49,19 @@ public class ColorPicker : UserControl
     }
 
     //*************************************************************************
+    //  Static Constructor: ColorPicker()
+    //
+    /// <summary>
+    /// Static constructor.
+    /// </summary>
+    //*************************************************************************
+
+    static ColorPicker()
+    {
+        m_oColorDialog = new ColorDialog();
+    }
+
+    //*************************************************************************
     //  Property: Color
     //
     /// <summary>
@@ -60,7 +73,8 @@ public class ColorPicker : UserControl
     /// </value>
     //*************************************************************************
 
-    public Color Color
+    public Color
+    Color
     {
         get
         {
@@ -91,7 +105,8 @@ public class ColorPicker : UserControl
     /// </value>
     //*************************************************************************
 
-    public Boolean ShowButton
+    public Boolean
+    ShowButton
     {
         get
         {
@@ -105,6 +120,32 @@ public class ColorPicker : UserControl
             btnColor.Visible = value;
 
             AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ColorDialog
+    //
+    /// <summary>
+    /// Gets or sets the ColorDialog used by the control.
+    /// </summary>
+    ///
+    /// <value>
+    /// This is made available to the application so that all parts of the
+    /// application can use the same ColorDialog.  If different instances of
+    /// ColorDialog are used, any custom colors created in one instance will
+    /// not be available in the others.
+    /// </value>
+    //*************************************************************************
+
+    public static ColorDialog
+    ColorDialog
+    {
+        get
+        {
+            Debug.Assert(m_oColorDialog != null);
+
+            return (m_oColorDialog);
         }
     }
 
@@ -136,14 +177,13 @@ public class ColorPicker : UserControl
     {
         AssertValid();
 
-        ColorDialog oColorDialog = new ColorDialog();
-        oColorDialog.Color = this.Color;
+        m_oColorDialog.Color = this.Color;
 
-        if (oColorDialog.ShowDialog() == DialogResult.OK)
+        if (m_oColorDialog.ShowDialog() == DialogResult.OK)
         {
             Color oOldColor = this.Color;
 
-            this.Color = oColorDialog.Color;
+            this.Color = m_oColorDialog.Color;
 
             if (this.Color != oOldColor && ColorChanged != null)
             {
@@ -228,6 +268,18 @@ public class ColorPicker : UserControl
     }
 
 
+    //*************************************************************************
+    //  Private member data
+    //*************************************************************************
+
+    private System.ComponentModel.Container components = null;
+
+    /// This is static so that custom colors will be retained between
+    /// invocations.
+
+    private static ColorDialog m_oColorDialog;
+
+
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>
@@ -287,13 +339,6 @@ public class ColorPicker : UserControl
 
     private System.Windows.Forms.Button btnColor;
     private System.Windows.Forms.Panel pnlColor;
-
-
-    //*************************************************************************
-    //  Private member data
-    //*************************************************************************
-
-    private System.ComponentModel.Container components = null;
 }
 
 }

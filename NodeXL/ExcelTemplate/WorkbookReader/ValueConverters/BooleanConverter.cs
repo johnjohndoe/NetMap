@@ -47,13 +47,17 @@ public class BooleanConverter : TextValueConverterBase<Boolean>
     {
         AssertValid();
 
+        // The parenthetical entries are for backward compatibility with older
+        // NodeXL workbooks.  Parentheses are not used in newer value
+        // converters.
+
         return ( new GraphValueInfo [] {
 
             new GraphValueInfo(true,
-                new String [] {"Yes (1)", "1"} ),
+                new String [] {"Yes", "Yes (1)", "1"} ),
 
             new GraphValueInfo(false,
-                new String [] {"No (0)", "0",} ),
+                new String [] {"No", "No (0)", "0",} ),
             } );
     }
 

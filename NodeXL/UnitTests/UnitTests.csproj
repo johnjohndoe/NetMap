@@ -80,7 +80,7 @@
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\ColorConverter2Test.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\EdgeVisibilityConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\EdgeWidthConverterTest.cs" />
-    <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexDrawingPrecedenceConverterTest.cs" />
+    <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexLabelPositionConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexLocationConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexRadiusConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexShapeConverterTest.cs" />

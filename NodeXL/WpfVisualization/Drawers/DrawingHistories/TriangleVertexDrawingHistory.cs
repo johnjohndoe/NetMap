@@ -254,6 +254,88 @@ public class TriangleVertexDrawingHistory : VertexDrawingHistory
         return ( new Point(dX, dY) );
     }
 
+    //*************************************************************************
+    //  Method: GetLabelLocation()
+    //
+    /// <summary>
+    /// Gets the location at which an annotation label should be drawn.
+    /// </summary>
+    ///
+    /// <param name="labelPosition">
+    /// The position of the annotation label.
+    /// </param>
+    ///
+    /// <returns>
+    /// The point at which an annotation label should be drawn.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned point assumes that the label text height is zero and that
+    /// there is zero margin between the vertex and the label.  The caller must
+    /// adjust the point for the actual text height and any margin.
+    /// </remarks>
+    //*************************************************************************
+
+    public override Point
+    GetLabelLocation
+    (
+        VertexLabelPosition labelPosition
+    )
+    {
+        AssertValid();
+
+        Rect oVertexBounds =
+            WpfGraphicsUtil.TriangleBoundsFromCenterAndHalfWidth(
+                this.VertexLocation, m_dHalfWidth);
+
+        Double dCenterX = oVertexBounds.Left + oVertexBounds.Width / 2.0;
+
+        // These were determined experimentally to avoid trigonometry method
+        // calls and to make the labels look good.
+
+        Double dCenterY = oVertexBounds.Top +
+            0.9 * (oVertexBounds.Height / 2.0);
+
+        Double dOffsetX = m_dHalfWidth * 0.7;
+
+        switch (labelPosition)
+        {
+            case VertexLabelPosition.TopLeft:
+            case VertexLabelPosition.TopCenter:
+            case VertexLabelPosition.TopRight:
+
+                return ( new Point(dCenterX, oVertexBounds.Top) );
+
+            case VertexLabelPosition.MiddleLeft:
+
+                return ( new Point(dCenterX - dOffsetX, dCenterY) );
+
+            case VertexLabelPosition.MiddleCenter:
+
+                return ( new Point(dCenterX, dCenterY) );
+
+            case VertexLabelPosition.MiddleRight:
+
+                return ( new Point(dCenterX + dOffsetX, dCenterY) );
+
+            case VertexLabelPosition.BottomLeft:
+
+                return (oVertexBounds.BottomLeft);
+
+            case VertexLabelPosition.BottomCenter:
+
+                return ( new Point(dCenterX, oVertexBounds.Bottom) );
+
+            case VertexLabelPosition.BottomRight:
+
+                return (oVertexBounds.BottomRight);
+
+            default:
+
+                Debug.Assert(false);
+                return (this.VertexLocation);
+        }
+    }
 
     //*************************************************************************
     //  Method: AssertValid()

@@ -476,10 +476,15 @@ public partial class TaskPane : UserControl
         oReadWorkbookContext.GraphRectangle = this.GraphRectangle;
         oReadWorkbookContext.FillIDColumns = true;
         oReadWorkbookContext.ReadClusters = m_oRibbon.ReadClusters;
-        oReadWorkbookContext.ReadImages = true;
+        oReadWorkbookContext.ReadVertexLabels = m_oRibbon.ReadVertexLabels;
+        oReadWorkbookContext.ReadEdgeLabels = m_oRibbon.ReadEdgeLabels;
+        oReadWorkbookContext.ReadVertexImages = true;
 
         oReadWorkbookContext.DefaultVertexImageSize =
             oGeneralUserSettings.VertexImageSize;
+
+        oReadWorkbookContext.DefaultVertexShape =
+            oGeneralUserSettings.VertexShape;
 
         // Populate the vertex worksheet.  This isn't strictly necessary, but
         // it does enable the vertex worksheet to be updated when the user

@@ -27,17 +27,15 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <list type="bullet">
 ///
 /// <item><see cref="ReservedMetadataKeys.Visibility" /></item>
+/// <item><see cref="ReservedMetadataKeys.IsSelected" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerColor" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerAlpha" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerVertexShape" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerVertexRadius" /></item>
-/// <item><see cref="ReservedMetadataKeys.IsSelected" /></item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexPrimaryLabel" /></item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" />
-///     </item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexSecondaryLabel" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerVertexLabel" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerVertexLabelFillColor" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerVertexLabelPosition" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerVertexImage" /></item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexDrawingPrecedence" /></item>
 ///
 /// </list>
 ///
@@ -52,43 +50,37 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// </para>
 ///
 /// <para>
-/// If the <see cref="ReservedMetadataKeys.PerVertexDrawingPrecedence" /> key
-/// is not present, <see cref="VertexDrawer" /> looks for the <see
-/// cref="ReservedMetadataKeys.PerVertexPrimaryLabel" />, <see
-/// cref="ReservedMetadataKeys.PerVertexImage" />, and <see
-/// cref="ReservedMetadataKeys.PerVertexShape" /> keys, in that order.  If none
-/// of these keys are present, the vertex is drawn as the shape specified by
-/// the <see cref="Shape" /> property.
-/// </para>
-///
-/// <para>
-/// If a vertex has the <see
-/// cref="ReservedMetadataKeys.PerVertexPrimaryLabel" /> key, the vertex is
-/// drawn as a rectangle containing the text specified by the key's value.  The
-/// default color of the text and the rectangle's outline is <see
+/// If a vertex has the shape <see cref="VertexShape.Label" /> and has the
+/// <see cref="ReservedMetadataKeys.PerVertexLabel" /> key, the vertex is drawn
+/// as a rectangle containing the text specified by the <see
+/// cref="ReservedMetadataKeys.PerVertexLabel" /> key's value.  The default
+/// color of the text and the rectangle's outline is <see
 /// cref="VertexAndEdgeDrawerBase.Color" />, but can be overridden with the
 /// <see cref="ReservedMetadataKeys.PerColor" /> key.  The default fill color
-/// of the rectangle is <see cref="PrimaryLabelFillColor" />, but can be
-/// overridden with the <see
-/// cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" /> key.
+/// of the rectangle is <see cref="LabelFillColor" />, but can be overridden
+/// with the <see cref="ReservedMetadataKeys.PerVertexLabelFillColor" /> key.
 /// </para>
 ///
 /// <para>
-/// If a vertex has the <see
-/// cref="ReservedMetadataKeys.PerVertexImage" /> key, the vertex is
-/// drawn as the image specified by the key's value.
+/// If a vertex has a shape other than <see cref="VertexShape.Label" /> and
+/// has the <see cref="ReservedMetadataKeys.PerVertexLabel" /> key, the vertex
+/// is drawn as the specified shape, and the text specified by the <see
+/// cref="ReservedMetadataKeys.PerVertexLabel" /> key's value is drawn next to
+/// the vertex as an annotation at the position determined by <see
+/// cref="VertexDrawer.LabelPosition" />.
 /// </para>
 ///
 /// <para>
-/// If a vertex has the <see
-/// cref="ReservedMetadataKeys.PerVertexSecondaryLabel" /> key, the vertex is
-/// annotated with the text specified by the key's value.
+/// If a vertex has the shape <see cref="VertexShape.Image" /> and has the <see
+/// cref="ReservedMetadataKeys.PerVertexImage" /> key, the vertex is drawn as
+/// the image specified by the <see
+/// cref="ReservedMetadataKeys.PerVertexImage" /> key's value.
 /// </para>
 ///
 /// <para>
-/// The values of the <see cref="ReservedMetadataKeys.PerColor" /> and
-/// <see cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" /> keys
-/// can be of type System.Windows.Media.Color or System.Drawing.Color.
+/// The values of the <see cref="ReservedMetadataKeys.PerColor" /> and <see
+/// cref="ReservedMetadataKeys.PerVertexLabelFillColor" /> keys can be of type
+/// System.Windows.Media.Color or System.Drawing.Color.
 /// </para>
 ///
 /// <para>
@@ -113,7 +105,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     {
         m_eShape = VertexShape.Disk;
         m_dRadius = 3.0;
-        m_oPrimaryLabelFillColor = SystemColors.WindowColor;
+        m_oLabelFillColor = SystemColors.WindowColor;
+        m_eLabelPosition = VertexLabelPosition.TopRight;
 
         AssertValid();
     }
@@ -219,47 +212,92 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     }
 
     //*************************************************************************
-    //  Property: PrimaryLabelFillColor
+    //  Property: LabelFillColor
     //
     /// <summary>
-    /// Gets or sets the default fill color to use for primary labels.
+    /// Gets or sets the default fill color to use for a vertex that has the
+    /// shape Label.
     /// </summary>
     ///
     /// <value>
-    /// The default fill color to use for primary labels.  The default is
+    /// The default fill color to use for labels.  The default is
     /// SystemColors.WindowColor.
     /// </value>
     ///
     /// <remarks>
-    /// <see cref="Color" /> is used for the primary label text and outline.
+    /// <see cref="Color" /> is used for the label text and outline.
     ///
     /// <para>
     /// The default fill color of a vertex can be overridden by setting the
-    /// <see cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" /> key
-    /// on the vertex.
+    /// <see cref="ReservedMetadataKeys.PerVertexLabelFillColor" /> key on the
+    /// vertex.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
     public Color
-    PrimaryLabelFillColor
+    LabelFillColor
     {
         get
         {
             AssertValid();
 
-            return (m_oPrimaryLabelFillColor);
+            return (m_oLabelFillColor);
         }
 
         set
         {
-            if (m_oPrimaryLabelFillColor == value)
+            if (m_oLabelFillColor == value)
             {
                 return;
             }
 
-            m_oPrimaryLabelFillColor = value;
+            m_oLabelFillColor = value;
+
+            FireRedrawRequired();
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: LabelPosition
+    //
+    /// <summary>
+    /// Gets or sets the default position of a vertex label drawn as an
+    /// annotation.
+    /// </summary>
+    ///
+    /// <value>
+    /// The default position of a vertex label drawn as an annotation.  The
+    /// default is <see cref="VertexLabelPosition.TopRight" />.
+    /// </value>
+    ///
+    /// <remarks>
+    /// This property is not used when drawing vertices that have the shape
+    /// <see cref="VertexShape.Label" />.
+    /// </remarks>
+    //*************************************************************************
+
+    public VertexLabelPosition
+    LabelPosition
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_eLabelPosition);
+        }
+
+        set
+        {
+            if (m_eLabelPosition == value)
+            {
+                return;
+            }
+
+            m_eLabelPosition = value;
 
             FireRedrawRequired();
 
@@ -329,96 +367,100 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             return (false);
         }
 
-        // Determine the order in which the keys that specify primary label,
-        // image, and shape are checked.
+        // Check for a per-vertex label.
 
-        VertexDrawingPrecedence ePrecedence = GetPrecedence(vertex);
+        Object oLabelAsObject;
+        String sLabel = null;
 
-        // Check for a per-vertex secondary label.
-
-        Object oSecondaryLabelAsObject;
-        String sSecondaryLabel = null;
-
-        if ( vertex.TryGetValue(
-            ReservedMetadataKeys.PerVertexSecondaryLabel, typeof(String),
-            out oSecondaryLabelAsObject) )
+        if ( vertex.TryGetValue(ReservedMetadataKeys.PerVertexLabel,
+            typeof(String), out oLabelAsObject) )
         {
-            sSecondaryLabel = (String)oSecondaryLabelAsObject;
+            sLabel = (String)oLabelAsObject;
+
+            if ( String.IsNullOrEmpty(sLabel) )
+            {
+                sLabel = null;
+            }
+            else
+            {
+                sLabel = TruncateLabel(sLabel);
+            }
         }
 
         Boolean bDrawAsSelected = GetDrawAsSelected(vertex);
-
         Point oLocation = WpfGraphicsUtil.PointFToWpfPoint(vertex.Location);
-
         DrawingVisual oDrawingVisual = new DrawingVisual();
+        VertexShape eShape = GetShape(vertex);
+
+        VertexLabelDrawer oVertexLabelDrawer =
+            new VertexLabelDrawer(m_eLabelPosition);
 
         using ( DrawingContext oDrawingContext = oDrawingVisual.RenderOpen() )
         {
-            Object oPrimaryLabelAsObject;
-
-            if (
-                ePrecedence >= VertexDrawingPrecedence.PrimaryLabel
-                &&
-                vertex.TryGetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
-                    typeof(String), out oPrimaryLabelAsObject)
-                )
+            if (eShape == VertexShape.Label)
             {
-                if (oPrimaryLabelAsObject == null ||
-                    ( (String)oPrimaryLabelAsObject ).Length == 0)
+                if (sLabel != null)
                 {
-                    // Default to something usable.
+                    // Draw the vertex as a label.
 
-                    oPrimaryLabelAsObject = " ";
+                    vertexDrawingHistory = DrawLabelShape(vertex,
+                        graphDrawingContext, oDrawingContext, oDrawingVisual,
+                        eVisibility, bDrawAsSelected, sLabel);
+
+                    return (true);
                 }
 
-                // Draw the vertex as a primary label.
+                // Default to something usable.
 
-                vertexDrawingHistory = DrawPrimaryLabel(vertex,
-                    graphDrawingContext, oDrawingContext, oDrawingVisual,
-                    eVisibility, bDrawAsSelected, sSecondaryLabel,
-                    (String)oPrimaryLabelAsObject);
-
-                return (true);
+                eShape = VertexShape.Disk;
             }
-
-            Object oImageSourceAsObject;
-
-            if (
-                ePrecedence >= VertexDrawingPrecedence.Image
-                &&
-                vertex.TryGetValue(ReservedMetadataKeys.PerVertexImage,
-                    typeof(ImageSource), out oImageSourceAsObject)
-                )
+            else if (eShape == VertexShape.Image)
             {
-                // Draw the vertex as an image.
+                Object oImageSourceAsObject;
 
-                vertexDrawingHistory = DrawImage(vertex, graphDrawingContext,
-                    oDrawingContext, oDrawingVisual, eVisibility,
-                    bDrawAsSelected, sSecondaryLabel,
-                    (ImageSource)oImageSourceAsObject);
+                if (vertex.TryGetValue(ReservedMetadataKeys.PerVertexImage,
+                    typeof(ImageSource), out oImageSourceAsObject)
+                    )
+                {
+                    // Draw the vertex as an image.
 
-                return (true);
+                    vertexDrawingHistory = DrawImageShape(vertex,
+                        graphDrawingContext, oDrawingContext, oDrawingVisual,
+                        eVisibility, bDrawAsSelected, sLabel,
+                        (ImageSource)oImageSourceAsObject, oVertexLabelDrawer);
+
+                    return (true);
+                }
+
+                // Default to something usable.
+
+                eShape = VertexShape.Disk;
             }
 
-            // Draw the vertex as a shape.
+            // Draw the vertex as a simple shape.
 
-            vertexDrawingHistory = DrawShape(vertex, graphDrawingContext,
-                oDrawingContext, oDrawingVisual, eVisibility, bDrawAsSelected,
-                sSecondaryLabel);
+            vertexDrawingHistory = DrawSimpleShape(vertex, eShape,
+                graphDrawingContext, oDrawingContext, oDrawingVisual,
+                eVisibility, bDrawAsSelected, sLabel, oVertexLabelDrawer);
         }
 
         return (true);
     }
 
     //*************************************************************************
-    //  Method: DrawShape()
+    //  Method: DrawSimpleShape()
     //
     /// <summary>
-    /// Draws a vertex as a specified shape.
+    /// Draws a vertex as a simple shape.
     /// </summary>
     ///
     /// <param name="oVertex">
     /// The vertex to draw.
+    /// </param>
+    ///
+    /// <param name="eShape">
+    /// The vertex shape to use.  Can't be <see cref="VertexShape.Image" /> or
+    /// <see cref="VertexShape.Label" />.
     /// </param>
     ///
     /// <param name="oGraphDrawingContext">
@@ -442,35 +484,47 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// true to draw the vertex as selected.
     /// </param>
     ///
-    /// <param name="sSecondaryLabel">
-    /// The secondary label to draw, or null if there is no secondary label.
+    /// <param name="sAnnotation">
+    /// The annotation to draw next to the shape, or null if there is no
+    /// annotation.
+    /// </param>
+    ///
+    /// <param name="oVertexLabelDrawer">
+    /// Object that draws a vertex label as an annotation.
     /// </param>
     ///
     /// <returns>
     /// A VertexDrawingHistory object that retains information about how the
     /// vertex was drawn.
     /// </returns>
+    ///
+    /// <remarks>
+    /// "Simple" means "not <see cref="VertexShape.Image" /> and not <see
+    /// cref="VertexShape.Label" />."
+    /// </remarks>
     //*************************************************************************
 
     protected VertexDrawingHistory
-    DrawShape
+    DrawSimpleShape
     (
         IVertex oVertex,
+        VertexShape eShape,
         GraphDrawingContext oGraphDrawingContext,
         DrawingContext oDrawingContext,
         DrawingVisual oDrawingVisual,
         VisibilityKeyValue eVisibility,
         Boolean bDrawAsSelected,
-        String sSecondaryLabel
+        String sAnnotation,
+        VertexLabelDrawer oVertexLabelDrawer
     )
     {
         Debug.Assert(oVertex != null);
         Debug.Assert(oGraphDrawingContext != null);
         Debug.Assert(oDrawingContext != null);
         Debug.Assert(oDrawingVisual != null);
+        Debug.Assert(oVertexLabelDrawer != null);
         AssertValid();
 
-        VertexShape eShape = GetShape(oVertex);
         Double dRadius = GetRadius(oVertex);
         Color oColor = GetColor(oVertex, eVisibility, bDrawAsSelected);
         Point oVertexLocation = GetVertexLocation(oVertex);
@@ -489,10 +543,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             oVertexBounds = WpfGraphicsUtil.SquareFromCenterAndHalfWidth(
                 oVertexLocation, dRadius);
         }
-
-        // The gets used when positioning the secondary label, if there is one.
-
-        Double dSecondaryLabelYFactor = 1.0;
 
         // Move the vertex if it falls outside the graph rectangle.
 
@@ -633,8 +683,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                     new TriangleVertexDrawingHistory(
                         oVertex, oDrawingVisual, bDrawAsSelected, dRadius);
 
-                dSecondaryLabelYFactor = 1.15;
-
                 break;
 
             default:
@@ -643,19 +691,11 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                 break;
         }
 
-        if (sSecondaryLabel != null)
+        if (sAnnotation != null)
         {
-            Point oSecondaryLabelLowerLeft = oLocation;
-
-            // Provide some padding between the shape and the secondary label.
-
-            oSecondaryLabelLowerLeft.Offset(
-                -2,
-                -(dRadius * dSecondaryLabelYFactor) -1
-                );
-
-            DrawSecondaryLabel(oDrawingContext, oGraphDrawingContext,
-                sSecondaryLabel, oSecondaryLabelLowerLeft, oColor);
+            oVertexLabelDrawer.DrawLabel( oDrawingContext,
+                oGraphDrawingContext, oVertexDrawingHistory, oVertexBounds,
+                CreateFormattedText(sAnnotation, oColor) );
         }
 
         Debug.Assert(oVertexDrawingHistory != null);
@@ -664,7 +704,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     }
 
     //*************************************************************************
-    //  Method: DrawImage()
+    //  Method: DrawImageShape()
     //
     /// <summary>
     /// Draws a vertex as a specified image.
@@ -695,12 +735,17 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// true to draw the vertex as selected.
     /// </param>
     ///
-    /// <param name="sSecondaryLabel">
-    /// The secondary label to draw, or null if there is no secondary label.
+    /// <param name="sAnnotation">
+    /// The annotation to draw next to the image, or null if there is no
+    /// annotation.
     /// </param>
     ///
     /// <param name="oImageSource">
     /// The image to draw.
+    /// </param>
+    ///
+    /// <param name="oVertexLabelDrawer">
+    /// Object that draws a vertex label as an annotation.
     /// </param>
     ///
     /// <returns>
@@ -710,7 +755,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     //*************************************************************************
 
     protected VertexDrawingHistory
-    DrawImage
+    DrawImageShape
     (
         IVertex oVertex,
         GraphDrawingContext oGraphDrawingContext,
@@ -718,8 +763,9 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         DrawingVisual oDrawingVisual,
         VisibilityKeyValue eVisibility,
         Boolean bDrawAsSelected,
-        String sSecondaryLabel,
-        ImageSource oImageSource
+        String sAnnotation,
+        ImageSource oImageSource,
+        VertexLabelDrawer oVertexLabelDrawer
     )
     {
         Debug.Assert(oVertex != null);
@@ -727,6 +773,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Debug.Assert(oDrawingContext != null);
         Debug.Assert(oDrawingVisual != null);
         Debug.Assert(oImageSource != null);
+        Debug.Assert(oVertexLabelDrawer != null);
         AssertValid();
 
         // Move the vertex if it falls outside the graph rectangle.
@@ -738,8 +785,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         MoveVertexIfNecessary(oVertex, ref oVertexRectangle,
             oGraphDrawingContext);
 
-        oDrawingContext.DrawImage(oImageSource, oVertexRectangle);
-
         Byte btAlpha = 255;
 
         if (!bDrawAsSelected)
@@ -749,63 +794,56 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             btAlpha = GetAlpha(oVertex, eVisibility, btAlpha);
         }
 
-        if (btAlpha == 255)
-        {
-            // Draw an outline rectangle.
+        VertexDrawingHistory oVertexDrawingHistory =
+            new ImageVertexDrawingHistory(oVertex, oDrawingVisual,
+                bDrawAsSelected, oVertexRectangle);
 
-            Color oColor = bDrawAsSelected ? m_oSelectedColor : m_oColor;
+        if (btAlpha > 0)
+        {
+            oDrawingContext.DrawImage(oImageSource, oVertexRectangle);
+
+            Color oColor = GetColor(oVertex, eVisibility, bDrawAsSelected);
+
+            // Draw an outline rectangle.
 
             oDrawingContext.DrawRectangle(null,
                 GetPen(oColor, DefaultPenThickness), oVertexRectangle);
-        }
-        else
-        {
-            // Simulate transparency by drawing on top of the image with a
-            // transparent brush the same color as the graph's background.
-            //
-            // TODO: Can real transparency be achieved with arbitrary images?
 
-            Color oFillColor = oGraphDrawingContext.BackColor;
-            oFillColor.A = (Byte)( (Byte)255 - btAlpha );
+            if (btAlpha < 255)
+            {
+                // Real transparency can't be achieved with arbitrary images,
+                // so simulate transparency by drawing on top of the image with
+                // a translucent brush the same color as the graph's
+                // background.
+                //
+                // This really isn't a good solution.  Is there are better way
+                // to simulate transparency?
 
-            Color oOutlineColor = m_oColor;
-            oOutlineColor.A = btAlpha;
+                Color oTranslucentColor = oGraphDrawingContext.BackColor;
+                oTranslucentColor.A = (Byte)( (Byte)255 - btAlpha );
 
-            SolidColorBrush oFillBrush =
-                CreateFrozenSolidColorBrush(oFillColor);
+                oDrawingContext.DrawRectangle(
+                    CreateFrozenSolidColorBrush(oTranslucentColor), null,
+                        oVertexRectangle);
+            }
 
-            SolidColorBrush oOutlineBrush =
-                CreateFrozenSolidColorBrush(oOutlineColor);
-
-            Pen oOutlinePen =
-                CreateFrozenPen(oOutlineBrush, DefaultPenThickness);
-
-            oDrawingContext.DrawRectangle(oFillBrush, oOutlinePen,
-                oVertexRectangle);
-        }
-
-        if (sSecondaryLabel != null)
-        {
-            Point oSecondaryLabelLowerLeft = oVertexRectangle.Location;
-
-            oSecondaryLabelLowerLeft.Offset(0, -2);
-
-            DrawSecondaryLabel(oDrawingContext, oGraphDrawingContext,
-                sSecondaryLabel, oSecondaryLabelLowerLeft,
-                GetColor(oVertex, eVisibility, bDrawAsSelected) );
+            if (sAnnotation != null)
+            {
+                oVertexLabelDrawer.DrawLabel(oDrawingContext,
+                    oGraphDrawingContext, oVertexDrawingHistory,
+                    oVertexRectangle, CreateFormattedText(sAnnotation, oColor)
+                    );
+            }
         }
 
-        // Return information about how the vertex was drawn.
-
-        return ( new ImageVertexDrawingHistory(oVertex, oDrawingVisual,
-            bDrawAsSelected, oVertexRectangle) );
+        return (oVertexDrawingHistory);
     }
 
     //*************************************************************************
-    //  Method: DrawPrimaryLabel()
+    //  Method: DrawLabelShape()
     //
     /// <summary>
-    /// Draws a vertex as a specified primary label.
+    /// Draws a vertex as a label.
     /// </summary>
     ///
     /// <param name="oVertex">
@@ -833,12 +871,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// true to draw the vertex as selected.
     /// </param>
     ///
-    /// <param name="sSecondaryLabel">
-    /// The secondary label to draw, or null if there is no secondary label.
-    /// </param>
-    ///
-    /// <param name="sPrimaryLabel">
-    /// The primary label to draw.
+    /// <param name="sLabel">
+    /// The label to draw.  Can't be null or empty.
     /// </param>
     ///
     /// <returns>
@@ -848,7 +882,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     //*************************************************************************
 
     protected VertexDrawingHistory
-    DrawPrimaryLabel
+    DrawLabelShape
     (
         IVertex oVertex,
         GraphDrawingContext oGraphDrawingContext,
@@ -856,15 +890,14 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         DrawingVisual oDrawingVisual,
         VisibilityKeyValue eVisibility,
         Boolean bDrawAsSelected,
-        String sSecondaryLabel,
-        String sPrimaryLabel
+        String sLabel
     )
     {
         Debug.Assert(oVertex != null);
         Debug.Assert(oGraphDrawingContext != null);
         Debug.Assert(oDrawingContext != null);
         Debug.Assert(oDrawingVisual != null);
-        Debug.Assert( !String.IsNullOrEmpty(sPrimaryLabel) );
+        Debug.Assert( !String.IsNullOrEmpty(sLabel) );
         AssertValid();
 
         // Figure out what colors to use.
@@ -874,8 +907,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Color oTextColor = GetColor(oVertex, eVisibility, false);
 
         Color oFillColor = GetColor(oVertex, eVisibility,
-            ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
-            m_oPrimaryLabelFillColor, true);
+            ReservedMetadataKeys.PerVertexLabelFillColor, m_oLabelFillColor,
+            true);
 
         if (bDrawAsSelected)
         {
@@ -904,13 +937,15 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             // alpha.
         }
 
+        Double dLabelFontSize = GetLabelFontSize(oVertex);
+
         // Format the text, subject to a maximum label size.
 
-        FormattedText oFormattedText = CreateFormattedText(sPrimaryLabel,
-            oTextColor);
+        FormattedText oFormattedText = CreateFormattedText(sLabel, oTextColor,
+            dLabelFontSize);
 
-        oFormattedText.MaxTextWidth = MaximumPrimaryLabelWidth;
-        oFormattedText.MaxTextHeight = MaximumPrimaryLabelHeight;
+        oFormattedText.MaxTextWidth = MaximumLabelWidth;
+        oFormattedText.MaxTextHeight = MaximumLabelHeight;
 
         Rect oVertexRectangle = GetVertexRectangle(
             GetVertexLocation(oVertex), oFormattedText.Width,
@@ -919,9 +954,10 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         // Pad the text.
 
         Rect oVertexRectangleWithPadding = oVertexRectangle;
+        Double dLabelPadding = GetLabelPadding(dLabelFontSize);
 
-        oVertexRectangleWithPadding.Inflate(PrimaryLabelPadding,
-            PrimaryLabelPadding * 0.8);
+        oVertexRectangleWithPadding.Inflate(dLabelPadding,
+            dLabelPadding * 0.7);
 
         if (m_oTypeface.Style != FontStyles.Normal)
         {
@@ -932,7 +968,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             // properties, but I'll be darned if I can understand how those
             // properties work.
 
-            Double dItalicCompensation = m_dFontSizeEm / 7.0;
+            Double dItalicCompensation = dLabelFontSize / 7.0;
             oVertexRectangleWithPadding.Inflate(dItalicCompensation, 0);
             oVertexRectangleWithPadding.Offset(dItalicCompensation, 0);
         }
@@ -965,95 +1001,10 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
         oDrawingContext.DrawText(oFormattedText, oVertexRectangle.Location);
 
-        if (sSecondaryLabel != null)
-        {
-            Point oSecondaryLabelLowerLeft =
-                oVertexRectangleWithPadding.Location;
-
-            oSecondaryLabelLowerLeft.Offset(0, -2);
-
-            DrawSecondaryLabel(oDrawingContext, oGraphDrawingContext,
-                sSecondaryLabel, oSecondaryLabelLowerLeft, oTextColor);
-        }
-
         // Return information about how the vertex was drawn.
 
-        return ( new PrimaryLabelVertexDrawingHistory(oVertex, oDrawingVisual,
+        return ( new LabelVertexDrawingHistory(oVertex, oDrawingVisual,
             bDrawAsSelected, oVertexRectangleWithPadding) );
-    }
-
-    //*************************************************************************
-    //  Method: DrawSecondaryLabel()
-    //
-    /// <summary>
-    /// Draws a secondary label.
-    /// </summary>
-    ///
-    /// <param name="oDrawingContext">
-    /// The DrawingContext to use.
-    /// </param>
-    ///
-    /// <param name="oGraphDrawingContext">
-    /// Provides access to objects needed for graph-drawing operations.
-    /// </param>
-    ///
-    /// <param name="sSecondaryLabel">
-    /// The secondary label to draw.  Can be empty but not null.
-    /// </param>
-    ///
-    /// <param name="oLowerLeft">
-    /// The location of the lower-left corner of the secondary label.
-    /// </param>
-    ///
-    /// <param name="oColor">
-    /// The color of the secondary label.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DrawSecondaryLabel
-    (
-        DrawingContext oDrawingContext,
-        GraphDrawingContext oGraphDrawingContext,
-        String sSecondaryLabel,
-        Point oLowerLeft,
-        Color oColor
-    )
-    {
-        Debug.Assert(oDrawingContext != null);
-        Debug.Assert(oGraphDrawingContext != null);
-        Debug.Assert(sSecondaryLabel != null);
-        AssertValid();
-
-        FormattedText oFormattedText = CreateFormattedText(sSecondaryLabel,
-            oColor);
-
-        oFormattedText.MaxLineCount = 1;
-
-        Rect oGraphRectangleMinusMargin =
-            oGraphDrawingContext.GraphRectangleMinusMargin;
-
-        // Don't let the label overflow the right edge of the graph rectangle.
-
-        Double dOverflowX = Math.Max(0,
-            oLowerLeft.X + oFormattedText.Width
-            - oGraphRectangleMinusMargin.Right
-            );
-
-        Double dHeight = oFormattedText.Height;
-
-        // Don't let the label overflow the top edge of the graph rectangle.
-
-        Double dOverflowY = Math.Min(0,
-            oLowerLeft.Y - dHeight - oGraphRectangleMinusMargin.Top
-            );
-
-        // (dHeight is subtracted below because the point passed to DrawText()
-        // is the upper-left corner of the text.)
-
-        oLowerLeft.Offset(-dOverflowX, -dHeight - dOverflowY);
-
-        oDrawingContext.DrawText(oFormattedText, oLowerLeft);
     }
 
     //*************************************************************************
@@ -1112,55 +1063,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                 ) );
 
         oVertexBounds = oMovedVertexBounds;
-    }
-
-    //*************************************************************************
-    //  Method: GetPrecedence()
-    //
-    /// <summary>
-    /// Gets the precedence with which to draw a vertex.
-    /// </summary>
-    ///
-    /// <param name="oVertex">
-    /// The vertex to get the precedence for.
-    /// </param>
-    ///
-    /// <returns>
-    /// The precedence with which to draw a vertex.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The precedence determines the order in which the keys that specify
-    /// primary label, image, and shape are checked.
-    /// </remarks>
-    //*************************************************************************
-
-    protected VertexDrawingPrecedence
-    GetPrecedence
-    (
-        IVertex oVertex
-    )
-    {
-        Debug.Assert(oVertex != null);
-        AssertValid();
-
-        // Start with the default precedence.
-
-        VertexDrawingPrecedence ePrecedence =
-            VertexDrawingPrecedence.PrimaryLabel;
-
-        Object oPrecedenceAsObject;
-
-        // Check for a per-vertex precedence.
-
-        if ( oVertex.TryGetValue(
-            ReservedMetadataKeys.PerVertexDrawingPrecedence,
-            typeof(VertexDrawingPrecedence), out oPrecedenceAsObject) )
-        {
-            ePrecedence = (VertexDrawingPrecedence)oPrecedenceAsObject;
-        }
-
-        return (ePrecedence);
     }
 
     //*************************************************************************
@@ -1249,11 +1151,11 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                 throw new FormatException( String.Format(
 
                     "{0}: The vertex with the ID {1} has an out-of-range"
-                    + " {2} value.  Valid values are between {3} and {4}."
+                    + " ReservedMetadataKeys.PerVertexRadius value.  Valid"
+                    + " values are between {2} and {3}."
                     ,
                     this.ClassName,
                     oVertex.ID,
-                    "ReservedMetadataKeys.PerVertexRadius",
                     MinimumRadius,
                     MaximumRadius
                     ) );
@@ -1261,6 +1163,104 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         }
 
         return (dRadius);
+    }
+
+    //*************************************************************************
+    //  Method: GetLabelFontSize()
+    //
+    /// <summary>
+    /// Gets the font size to use for a vertex with the shape Label.
+    /// </summary>
+    ///
+    /// <param name="oVertex">
+    /// The vertex to get the label font size for.
+    /// </param>
+    ///
+    /// <returns>
+    /// The label font size to use, in WPF units.
+    /// </returns>
+    //*************************************************************************
+
+    protected Double
+    GetLabelFontSize
+    (
+        IVertex oVertex
+    )
+    {
+        Debug.Assert(oVertex != null);
+        AssertValid();
+
+        // Start with the default font size.
+
+        Double dLabelFontSize = m_dFontSize;
+
+        Object oPerVertexLabelFontSizeAsObject;
+
+        // Check for a per-vertex font size.  Note that the font size is stored
+        // as a Single in the vertex's metadata to reduce memory usage.
+
+        if ( oVertex.TryGetValue(ReservedMetadataKeys.PerVertexLabelFontSize,
+            typeof(Single), out oPerVertexLabelFontSizeAsObject) )
+        {
+            dLabelFontSize = (Double)(Single)oPerVertexLabelFontSizeAsObject;
+
+            if (dLabelFontSize <= 0)
+            {
+                throw new FormatException( String.Format(
+
+                    "{0}: The vertex with the ID {1} has a non-positive"
+                    + " ReservedMetadataKeys.PerVertexLabelFontSize value."
+                    ,
+                    this.ClassName,
+                    oVertex.ID
+                    ) );
+            }
+        }
+
+        return (dLabelFontSize);
+    }
+
+    //*************************************************************************
+    //  Method: GetLabelPadding()
+    //
+    /// <summary>
+    /// Gets the text padding to use for a vertex with the shape Label.
+    /// </summary>
+    ///
+    /// <param name="dLabelFontSize">
+    /// The label font size being used, in WPF units.
+    /// </param>
+    ///
+    /// <returns>
+    /// The text padding to use, in WPF units.
+    /// </returns>
+    //*************************************************************************
+
+    protected Double
+    GetLabelPadding
+    (
+        Double dLabelFontSize
+    )
+    {
+        Debug.Assert(dLabelFontSize >= 0);
+        AssertValid();
+
+        // Make the padding larger for smaller fonts than for larger fonts.
+        // These linear-interpolation points were selected to satisfy some
+        // padding specifications in a NodeXL design document.
+
+        const Double FontSizeA = 14.0;
+        const Double FontSizeB = 39.4;
+        const Double LabelPaddingA = 3.0;
+        const Double LabelPaddingB = 5.0;
+
+        Double dLabelPadding =
+            LabelPaddingA + (dLabelFontSize - FontSizeA) *
+            (LabelPaddingB - LabelPaddingA) / (FontSizeB - FontSizeA);
+
+        dLabelPadding = Math.Max(0, dLabelPadding);
+
+        return (dLabelPadding);
     }
 
     //*************************************************************************
@@ -1404,7 +1404,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         // m_eShape
         Debug.Assert(m_dRadius >= MinimumRadius);
         Debug.Assert(m_dRadius <= MaximumRadius);
-        // m_oPrimaryLabelFillColor
+        // m_oLabelFillColor
+        // m_eLabelPosition
     }
 
 
@@ -1430,20 +1431,15 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     //  Protected constants
     //*************************************************************************
 
-    /// Maximum width of a primary label, not including the label padding, in
+    /// Maximum width of a label shape, not including the label padding, in
     /// device-independent units.
 
-    protected const Double MaximumPrimaryLabelWidth = 300;
+    protected const Double MaximumLabelWidth = 300;
 
-    /// Maximum height of a primary label, not including the label padding, in
+    /// Maximum height of a label shape, not including the label padding, in
     /// device-independent units.
 
-    protected const Double MaximumPrimaryLabelHeight = 200;
-
-    /// Padding between the primary label text and label outline, in
-    /// device-independent units.
-
-    protected const Double PrimaryLabelPadding = 4;
+    protected const Double MaximumLabelHeight = 200;
 
 
     //*************************************************************************
@@ -1458,9 +1454,13 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
     protected Double m_dRadius;
 
-    /// Default fill color to use for primary labels.
+    /// Default fill color to use for labels.
 
-    protected Color m_oPrimaryLabelFillColor;
+    protected Color m_oLabelFillColor;
+
+    /// Default position of vertex labels drawn as annotations.
+
+    protected VertexLabelPosition m_eLabelPosition;
 }
 
 
@@ -1533,6 +1533,141 @@ VertexShape
     /// </summary>
 
     SolidTriangle = 8,
+
+    /// <summary>
+    /// The vertex is drawn as an image.
+    ///
+    /// <para>
+    /// The image is obtained from the <see
+    /// cref="ReservedMetadataKeys.PerVertexImage" /> metadata key.  If the
+    /// <see cref="ReservedMetadataKeys.PerVertexImage" /> key is missing, the
+    /// vertex is drawn as a <see cref="Disk" />.
+    /// </para>
+    ///
+    /// </summary>
+
+    Image = 9,
+
+    /// <summary>
+    /// The vertex is drawn as a label.
+    ///
+    /// <para>
+    /// The label text is obtained from the <see
+    /// cref="ReservedMetadataKeys.PerVertexLabel" /> metadata key.  If the
+    /// <see cref="ReservedMetadataKeys.PerVertexLabel" /> key is missing, the
+    /// vertex is drawn as a <see cref="Disk" />.
+    /// </para>
+    ///
+    /// </summary>
+
+    Label = 10,
+
+    // If a new shape is added, the following must be done:
+    //
+    // 1. Update the drawing code in this class.
+    //
+    // 2. Add new entries to the Valid Vertex Shapes column on the Misc table
+    //    of the NodeXLGraph.xltx Excel template.
+    //
+    // 3. Add a button to the Vertex Shape menu in the Excel ribbon, which is
+    //    implemented in the Ribbon.cs file.
 }
 
+
+//*****************************************************************************
+//  Enum: VertexLabelPosition
+//
+/// <summary>
+/// Specifies the position of a vertex label drawn as an annotation.
+/// </summary>
+///
+/// <remarks>
+/// The positions are used only for vertex labels drawn as an annotation.  They
+/// are not used when a vertex has the shape <see cref="VertexShape.Label" />.
+///
+/// <para>
+/// The horizontal positions are called Left, Center, and Right.  The vertical
+/// positions are called Top, Middle, and Bottom.  The label positions with
+/// respect to the vertex's rectangle are shown above.
+/// </para>
+///
+/// </remarks>
+///
+/// <example>
+/// <code>
+///                 TopCenter
+///      TopLeft  --------------  TopRight
+///              |              |
+///              |              |
+///   MiddleLeft | MiddleCenter | MiddleRight
+///              |              |
+///              |              |
+///   BottomLeft  --------------  BottomRight
+///                BottomCenter
+/// </code>
+/// </example>
+//*****************************************************************************
+
+public enum
+VertexLabelPosition
+{
+    // Note:
+    //
+    // These values get stored in user setting files and their numerical
+    // values should not be modified.
+
+    /// <summary>
+    /// The label is right-justified.  See the position in the above drawing.
+    /// </summary>
+
+    TopLeft = 0,
+
+    /// <summary>
+    /// The label is center-justified.  See the position in the above drawing.
+    /// </summary>
+
+    TopCenter = 1,
+
+    /// <summary>
+    /// The label is left-justified.  See the position in the above drawing.
+    /// </summary>
+
+    TopRight = 2,
+
+    /// <summary>
+    /// The label is right-justified.  See the position in the above drawing.
+    /// </summary>
+
+    MiddleLeft = 3,
+
+    /// <summary>
+    /// The label is center-justified.  See the position in the above drawing.
+    /// </summary>
+
+    MiddleCenter = 4,
+
+    /// <summary>
+    /// The label is left-justified.  See the position in the above drawing.
+    /// </summary>
+
+    MiddleRight = 5,
+
+    /// <summary>
+    /// The label is right-justified.  See the position in the above drawing.
+    /// </summary>
+
+    BottomLeft = 6,
+
+    /// <summary>
+    /// The label is center-justified.  See the position in the above drawing.
+    /// </summary>
+
+    BottomCenter = 7,
+
+    /// <summary>
+    /// The label is left-justified.  See the position in the above drawing.
+    /// </summary>
+
+    BottomRight = 8,
+}
 }

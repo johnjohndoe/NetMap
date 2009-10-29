@@ -92,6 +92,29 @@ public partial class TwitterGetSearchNetworkDialog :
                 return (false);
             }
 
+            String sSearchTermLower = m_sSearchTerm.ToLower();
+
+            foreach (String sProhibitedTerm in new String [] {
+                "near:",
+                "within:"
+                } )
+            {
+                if (sSearchTermLower.IndexOf(sProhibitedTerm) >= 0)
+                {
+                    OnInvalidTextBox(txbSearchTerm, String.Format(
+                    
+                        "Although you can use \"{0}\" on Twitter's own search"
+                        + " page, Twitter doesn't allow it to be used when"
+                        + " searching from another program, such as NodeXL."
+                        + "  Remove the \"{0}\" and try again."
+                        ,
+                        sProhibitedTerm
+                        ) );
+
+                    return (false);
+                }
+            }
+
             m_bIncludeFollowedEdges = chkIncludeFollowedEdges.Checked;
             m_bIncludeRepliesToEdges = chkIncludeRepliesToEdges.Checked;
             m_bIncludeMentionsEdges = chkIncludeMentionsEdges.Checked;

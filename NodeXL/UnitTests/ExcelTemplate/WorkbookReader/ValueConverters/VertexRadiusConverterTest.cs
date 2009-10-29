@@ -480,6 +480,142 @@ public class VertexRadiusConverterTest : Object
             fLongerImageDimension);
     }
 
+    //*************************************************************************
+    //  Method: TestWorkbookToLabelFontSize()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLabelFontSize() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLabelFontSize()
+    {
+        // Minimum.
+
+        Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook;
+
+        Single fExpectedLabelFontSize =
+            VertexRadiusConverter.MinimumLabelFontSize;
+
+        Single fLabelFontSize =
+            m_oVertexRadiusConverter.WorkbookToLabelFontSize(fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLabelFontSize, fLabelFontSize);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLabelFontSize2()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLabelFontSize() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLabelFontSize2()
+    {
+        // Maximum.
+
+        Single fRadiusWorkbook = VertexRadiusConverter.MaximumRadiusWorkbook;
+
+        Single fExpectedLabelFontSize =
+            VertexRadiusConverter.MaximumLabelFontSize;
+
+        Single fLabelFontSize =
+            m_oVertexRadiusConverter.WorkbookToLabelFontSize(fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLabelFontSize, fLabelFontSize);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLabelFontSize3()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLabelFontSize() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLabelFontSize3()
+    {
+        // Midpoint.
+
+        Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook
+            + (VertexRadiusConverter.MaximumRadiusWorkbook -
+                VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
+
+        Single fExpectedLabelFontSize =
+            VertexRadiusConverter.MinimumLabelFontSize
+            + (VertexRadiusConverter.MaximumLabelFontSize -
+                VertexRadiusConverter.MinimumLabelFontSize) / 2F;
+
+        Single fLabelFontSize =
+            m_oVertexRadiusConverter.WorkbookToLabelFontSize(fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLabelFontSize, fLabelFontSize);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLabelFontSize4()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLabelFontSize() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLabelFontSize4()
+    {
+        // Below minimum.
+
+        Single fRadiusWorkbook =
+            VertexRadiusConverter.MinimumRadiusWorkbook - 1F;
+
+        Single fExpectedLabelFontSize =
+            VertexRadiusConverter.MinimumLabelFontSize;
+
+        Single fLabelFontSize =
+            m_oVertexRadiusConverter.WorkbookToLabelFontSize(fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLabelFontSize, fLabelFontSize);
+    }
+
+    //*************************************************************************
+    //  Method: TestWorkbookToLabelFontSize5()
+    //
+    /// <summary>
+    /// Tests the WorkbookToLabelFontSize() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestWorkbookToLabelFontSize5()
+    {
+        // Above maximum.
+
+        Single fRadiusWorkbook =
+            VertexRadiusConverter.MaximumRadiusWorkbook + 1F;
+
+        Single fExpectedLabelFontSize =
+            VertexRadiusConverter.MaximumLabelFontSize;
+
+        Single fLabelFontSize =
+            m_oVertexRadiusConverter.WorkbookToLabelFontSize(fRadiusWorkbook);
+
+        Assert.AreEqual(fExpectedLabelFontSize, fLabelFontSize);
+    }
+
 
     //*************************************************************************
     //  Protected fields

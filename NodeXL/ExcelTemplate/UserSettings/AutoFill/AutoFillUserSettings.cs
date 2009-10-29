@@ -599,16 +599,16 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: VertexPrimaryLabelSourceColumnName
+    //  Property: VertexLabelSourceColumnName
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-    /// vertex primary label column.
+    /// vertex label column.
     /// </summary>
     ///
     /// <value>
-    /// The name of the column to use as a data source for the vertex primary
-    /// label column.  The default is String.Empty.
+    /// The name of the column to use as a data source for the vertex label
+    /// column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
@@ -616,34 +616,34 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     [ DefaultSettingValueAttribute("") ]
 
     public String
-    VertexPrimaryLabelSourceColumnName
+    VertexLabelSourceColumnName
     {
         get
         {
             AssertValid();
 
-            return ( (String)this[VertexPrimaryLabelSourceColumnNameKey] );
+            return ( (String)this[VertexLabelSourceColumnNameKey] );
         }
 
         set
         {
-            this[VertexPrimaryLabelSourceColumnNameKey] = value;
+            this[VertexLabelSourceColumnNameKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: VertexPrimaryLabelFillColorSourceColumnName
+    //  Property: VertexLabelFillColorSourceColumnName
     //
     /// <summary>
     /// Gets or sets the name of the column to use as a data source for the
-    /// vertex primary label fill color column.
+    /// vertex label fill color column.
     /// </summary>
     ///
     /// <value>
-    /// The name of the column to use as a data source for the vertex primary
-    /// label fill color column.  The default is String.Empty.
+    /// The name of the column to use as a data source for the vertex label
+    /// fill color column.  The default is String.Empty.
     /// </value>
     //*************************************************************************
 
@@ -651,34 +651,33 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     [ DefaultSettingValueAttribute("") ]
 
     public String
-    VertexPrimaryLabelFillColorSourceColumnName
+    VertexLabelFillColorSourceColumnName
     {
         get
         {
             AssertValid();
 
-            return ( (String)this[
-                VertexPrimaryLabelFillColorSourceColumnNameKey] );
+            return ( (String)this[VertexLabelFillColorSourceColumnNameKey] );
         }
 
         set
         {
-            this[VertexPrimaryLabelFillColorSourceColumnNameKey] = value;
+            this[VertexLabelFillColorSourceColumnNameKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: VertexPrimaryLabelFillColorDetails
+    //  Property: VertexLabelFillColorDetails
     //
     /// <summary>
-    /// Gets or sets the details for auto-filling the vertex primary label fill
-    /// color column.
+    /// Gets or sets the details for auto-filling the vertex label fill color
+    /// column.
     /// </summary>
     ///
     /// <value>
-    /// The details for auto-filling the vertex primary label fill color
+    /// The details for auto-filling the vertex label fill color
     /// column.
     /// </value>
     //*************************************************************************
@@ -688,54 +687,19 @@ public class AutoFillUserSettings : ApplicationSettingsBase
         "false\tfalse\t0\t10\tRed\tGreen\tfalse\tfalse") ]
 
     public ColorColumnAutoFillUserSettings
-    VertexPrimaryLabelFillColorDetails
+    VertexLabelFillColorDetails
     {
         get
         {
             AssertValid();
 
             return ( (ColorColumnAutoFillUserSettings)
-                this[VertexPrimaryLabelFillColorDetailsKey] );
+                this[VertexLabelFillColorDetailsKey] );
         }
 
         set
         {
-            this[VertexPrimaryLabelFillColorDetailsKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: VertexSecondaryLabelSourceColumnName
-    //
-    /// <summary>
-    /// Gets or sets the name of the column to use as a data source for the
-    /// vertex secondary label column.
-    /// </summary>
-    ///
-    /// <value>
-    /// The name of the column to use as a data source for the vertex secondary
-    /// label column.  The default is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    VertexSecondaryLabelSourceColumnName
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[VertexSecondaryLabelSourceColumnNameKey] );
-        }
-
-        set
-        {
-            this[VertexSecondaryLabelSourceColumnNameKey] = value;
+            this[VertexLabelFillColorDetailsKey] = value;
 
             AssertValid();
         }
@@ -1259,11 +1223,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
         oCopy.VertexAlphaDetails = this.VertexAlphaDetails.Copy();
 
-        oCopy.VertexPrimaryLabelSourceColumnName = String.Copy(
-            this.VertexPrimaryLabelSourceColumnName);
-
-        oCopy.VertexSecondaryLabelSourceColumnName = String.Copy(
-            this.VertexSecondaryLabelSourceColumnName);
+        oCopy.VertexLabelSourceColumnName = String.Copy(
+            this.VertexLabelSourceColumnName);
 
         oCopy.VertexToolTipSourceColumnName = String.Copy(
             this.VertexToolTipSourceColumnName);
@@ -1405,29 +1366,22 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     protected const String VertexAlphaDetailsKey =
         "VertexAlphaDetails";
 
-    /// Name of the settings key for the VertexPrimaryLabelSourceColumnName
-    /// property.
+    /// Name of the settings key for the VertexLabelSourceColumnName property.
 
-    protected const String VertexPrimaryLabelSourceColumnNameKey =
-        "VertexPrimaryLabelSourceColumnName";
+    protected const String VertexLabelSourceColumnNameKey =
+        "VertexLabelSourceColumnName";
 
     /// Name of the settings key for the
-    /// VertexPrimaryLabelFillColorSourceColumnName property.
+    /// VertexLabelFillColorSourceColumnName property.
 
-    protected const String VertexPrimaryLabelFillColorSourceColumnNameKey =
-        "VertexPrimaryLabelFillColorSourceColumnName";
+    protected const String VertexLabelFillColorSourceColumnNameKey =
+        "VertexLabelFillColorSourceColumnName";
 
-    /// Name of the settings key for the VertexPrimaryLabelFillColorDetailsKey
+    /// Name of the settings key for the VertexLabelFillColorDetailsKey
     /// property.
 
-    protected const String VertexPrimaryLabelFillColorDetailsKey =
-        "VertexPrimaryLabelFillColorDetails";
-
-    /// Name of the settings key for the VertexSecondaryLabelSourceColumnName
-    /// property.
-
-    protected const String VertexSecondaryLabelSourceColumnNameKey =
-        "VertexSecondaryLabelSourceColumnName";
+    protected const String VertexLabelFillColorDetailsKey =
+        "VertexLabelFillColorDetails";
 
     /// Name of the settings key for the VertexToolTipSourceColumnName
     /// property.

@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.Research.CommunityTechnologies.XmlLib;
 
 namespace Microsoft.NodeXL.GraphDataProviders.Twitter
@@ -88,7 +89,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             <key id="Statuses" for="node" attr.name="Tweets" attr.type="int" />
             <key id="LatestStatus" for="node" attr.name="Latest Tweet"
                 attr.type="string" />
-            <key id="ImageUrl" for="node" attr.name="Image URL"
+            <key id="ImageUrl" for="node" attr.name="Image File"
                 attr.type="string" />
             <key id="MenuText" for="node" attr.name="Custom Menu Item Text"
                 attr.type="string" />
@@ -103,7 +104,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     <data key="Followers">10</data>
                     <data key="Statuses">3</data>
                     <data key="LatestStatus">Hello...</data> 
-                    <data key="ImageUrl">"http://..."</data> 
+                    <data key="ImageUrl">http://...</data> 
                     <data key="MenuText">Open Twitter Page for This Person
                         </data>
                     <data key="MenuAction">http://twitter.com/ScreenName1</data>
@@ -113,7 +114,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     <data key="Followers">248</data>
                     <data key="Statuses">469</data>
                     <data key="LatestStatus">Goodbye...</data> 
-                    <data key="ImageUrl">"http://..."</data> 
+                    <data key="ImageUrl">http://...</data> 
                     <data key="MenuText">Open Twitter Page for This Person
                         </data>
                     <data key="MenuAction">http://twitter.com/ScreenName2</data>
@@ -148,7 +149,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         }
 
         oGraphMLXmlDocument.DefineGraphMLAttribute(false, ImageUrlID,
-            "Image URL", "string", null);
+            "Image File", "string", null);
 
         oGraphMLXmlDocument.DefineGraphMLAttribute(false, MenuTextID,
             "Custom Menu Item Text", "string", null);
@@ -199,7 +200,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             "http://twitter.com/statuses/{0}/{1}.xml"
             ,
             bFollowed ? "friends" : "followers",
-            HttpUtility.UrlEncode(sScreenName)
+            UrlUtil.EncodeUrlParameter(sScreenName)
             ) );
     }
 
@@ -339,6 +340,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         String sCredentialsPassword
     )
     {
+        // Debug.WriteLine("sUrl=" + sUrl);
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
 
         Debug.Assert( sCredentialsScreenName == null ||
@@ -414,17 +416,20 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// namespace is used.  Sample: "http://www.w3.org/2005/Atom".
     /// </param>
     ///
-    /// <param name="iMaximumNodesPerPage">
-    /// Maximum number of child nodes returned by Twitter in a single page.
-    /// </param>
-    ///
     /// <param name="iMaximumPages">
     /// Maximum number of pages to request, or Int32.MaxValue for no limit.
+    /// (This is required for the Twitter search API, which returns an error
+    /// instead of an empty list if you request more than 15 pages.)
     /// </param>
     ///
     /// <param name="iMaximumXmlNodes">
     /// Maximum number of child nodes to return, or Int32.MaxValue for no
     /// limit.
+    /// </param>
+    ///
+    /// <param name="bUsePageParameter">
+    /// If true, a "page" URL parameter is used for pagination.  If false, a
+    /// "cursor" URL parameter is used.
     /// </param>
     ///
     /// <param name="bSkipUnauthorizedAndNotFoundErrors">
@@ -450,9 +455,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         String sXPath,
         String sNamespacePrefix,
         String sNamespaceUri,
-        Int32 iMaximumNodesPerPage,
         Int32 iMaximumPages,
         Int32 iMaximumXmlNodes,
+        Boolean bUsePageParameter,
         Boolean bSkipUnauthorizedAndNotFoundErrors,
         String sCredentialsScreenName,
         String sCredentialsPassword
@@ -460,7 +465,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     {
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
         Debug.Assert( !String.IsNullOrEmpty(sXPath) );
-        Debug.Assert(iMaximumNodesPerPage > 0);
         Debug.Assert(iMaximumPages > 0);
         Debug.Assert(iMaximumXmlNodes > 0);
 
@@ -470,29 +474,33 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         AssertValid();
 
-        // Twitter uses a paging scheme, where each page contains up to
-        // iMaximumNodesPerPage child nodes and a particular one-based page is
-        // specified via an URL parameter.  Loop through the pages.
+        // Twitter uses two different paging schemes, and the one to use is
+        // specified by bUsePageParameter.  If true, a one-based "page"
+        // parameter is used.  If false, a "cursor" parameter is used, and the
+        // cursor for the next page is obtained from a "next_cursor" XML node
+        // in the results for the current page.
 
         Int32 iPage = 1;
-        Int32 iXmlNodes = 0;
+        String sCursor = "-1";
+        Int32 iXmlNodesEnumerated = 0;
 
         while (true)
         {
-            String sUrlWithPage = String.Format(
+            String sUrlWithPagination = String.Format(
             
-                "{0}{1}page={2}"
+                "{0}{1}{2}={3}"
                 ,
                 sUrl,
                 sUrl.IndexOf('?') == -1 ? '?' : '&',
-                iPage
+                bUsePageParameter ? "page" : "cursor",
+                bUsePageParameter ? iPage.ToString() : sCursor
                 );
 
             XmlDocument oXmlDocument;
 
             try
             {
-                oXmlDocument = GetXmlDocument(sUrlWithPage,
+                oXmlDocument = GetXmlDocument(sUrlWithPagination,
                     sCredentialsScreenName, sCredentialsPassword,
                     this.HttpWebRequestRetries);
             }
@@ -538,31 +546,26 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     sNamespaceUri);
             }
 
-            Int32 iXmlNodesOnThisPage = 0;
+            XmlNodeList oXmlNodesThisPage = oXmlDocument.SelectNodes(sXPath,
+                oXmlNamespaceManager);
 
-            foreach ( XmlNode oXmlNode in oXmlDocument.SelectNodes(
-                sXPath, oXmlNamespaceManager) )
+            Int32 iXmlNodesThisPage = oXmlNodesThisPage.Count;
+
+            if (iXmlNodesThisPage == 0)
             {
-                if (iXmlNodes == iMaximumXmlNodes)
+                yield break;
+            }
+
+            for (Int32 i = 0; i < iXmlNodesThisPage; i++)
+            {
+                yield return ( oXmlNodesThisPage[i] );
+
+                iXmlNodesEnumerated++;
+
+                if (iXmlNodesEnumerated == iMaximumXmlNodes)
                 {
                     yield break;
                 }
-
-                iXmlNodesOnThisPage++;
-                iXmlNodes++;
-                yield return (oXmlNode);
-            }
-
-            if (iXmlNodes == iMaximumXmlNodes ||
-                iXmlNodesOnThisPage < iMaximumNodesPerPage)
-            {
-                // First condition: The maximum number of child nodes to return
-                // was reached with the last node on the current page.
-                //
-                // Second condition: There is no need to request another page,
-                // which would be empty.
-
-                yield break;
             }
 
             iPage++;
@@ -570,6 +573,27 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             if (iMaximumPages != Int32.MaxValue && iPage == iMaximumPages + 1)
             {
                 yield break;
+            }
+
+            if (!bUsePageParameter)
+            {
+                XmlNode oNextCursorXmlNode =
+                    oXmlDocument.DocumentElement.SelectSingleNode(
+                        "next_cursor", oXmlNamespaceManager);
+
+                if (oNextCursorXmlNode == null)
+                {
+                    yield break;
+                }
+
+                sCursor = oNextCursorXmlNode.InnerText;
+
+                // A next_cursor value of 0 means "end of data."
+
+                if (String.IsNullOrEmpty(sCursor) || sCursor == "0")
+                {
+                    yield break;
+                }
             }
 
             // Get the next page...
@@ -1162,7 +1186,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
                 "http://twitter.com/users/show/{0}.xml"
                 ,
-                HttpUtility.UrlEncode(sScreenName)
+                UrlUtil.EncodeUrlParameter(sScreenName)
                 );
 
             ReportProgress( String.Format(

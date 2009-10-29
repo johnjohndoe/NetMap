@@ -185,9 +185,6 @@ public partial class ThisWorkbook
                 oImportFromMatrixWorkbookDialog.SourceWorkbookDirectedness;
 
             this.GraphDirectedness = eGraphDirectedness;
-
-            // Pass the workbook's directedness to the Ribbon.
-
             this.Ribbon.GraphDirectedness = eGraphDirectedness;
         }
     }
@@ -787,6 +784,17 @@ public partial class ThisWorkbook
         AnalyzeEmailNetworkDialog oAnalyzeEmailNetworkDialog =
             new AnalyzeEmailNetworkDialog(this.InnerObject,
                 this.Ribbon.ClearTablesBeforeImport);
+
+        oAnalyzeEmailNetworkDialog.AnalysisSuccessful +=
+            delegate(Object sender, EventArgs e)
+            {
+                // Note that the ribbon won't actually update until the modal
+                // dialog closes.  I haven't found a way to work around this
+                // odd Excel behavior.
+
+                this.Ribbon.GraphDirectedness = this.GraphDirectedness =
+                    GraphDirectedness.Directed;
+            };
 
         oAnalyzeEmailNetworkDialog.ShowDialog();
     }
@@ -1711,9 +1719,6 @@ public partial class ThisWorkbook
         }
 
         this.GraphDirectedness = eGraphDirectedness;
-
-        // Pass the workbook's directedness to the Ribbon.
-
         this.Ribbon.GraphDirectedness = eGraphDirectedness;
     }
 

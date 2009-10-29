@@ -48,34 +48,44 @@ public class VertexShapeConverter : TextValueConverterBase<VertexShape>
     {
         AssertValid();
 
+        // The parenthetical entries are for backward compatibility with older
+        // NodeXL workbooks.  Parentheses are not used in newer value
+        // converters.
+
         return ( new GraphValueInfo [] {
 
             new GraphValueInfo( VertexShape.Circle,
-                new String [] {"Circle (1)", "Circle", "1"} ),
+                new String [] {"Circle", "Circle (1)", "1"} ),
 
             new GraphValueInfo( VertexShape.Disk,
-                new String [] {"Disk (2)", "Disk", "2"} ),
+                new String [] {"Disk", "Disk (2)", "2"} ),
 
             new GraphValueInfo( VertexShape.Sphere,
-                new String [] {"Sphere (3)", "Sphere", "3"} ),
+                new String [] {"Sphere", "Sphere (3)", "3"} ),
 
             new GraphValueInfo( VertexShape.Square,
-                new String [] {"Square (4)", "Square", "4"} ),
+                new String [] {"Square", "Square (4)", "4"} ),
 
             new GraphValueInfo( VertexShape.SolidSquare,
-                new String [] {"Solid Square (5)", "Solid Square", "5"} ),
+                new String [] {"Solid Square", "Solid Square (5)", "5"} ),
 
             new GraphValueInfo( VertexShape.Diamond,
-                new String [] {"Diamond (6)", "Diamond", "6"} ),
+                new String [] {"Diamond", "Diamond (6)", "6"} ),
 
             new GraphValueInfo( VertexShape.SolidDiamond,
-                new String [] {"Solid Diamond (7)", "Solid Diamond", "7"} ),
+                new String [] {"Solid Diamond", "Solid Diamond (7)", "7"} ),
 
             new GraphValueInfo( VertexShape.Triangle,
-                new String [] {"Triangle (8)", "Triangle", "8"} ),
+                new String [] {"Triangle", "Triangle (8)", "8"} ),
 
             new GraphValueInfo( VertexShape.SolidTriangle,
-                new String [] {"Solid Triangle (9)", "Solid Triangle", "9"} ),
+                new String [] {"Solid Triangle", "Solid Triangle (9)", "9"} ),
+
+            new GraphValueInfo( VertexShape.Label,
+                new String [] {"Label", "Label (10)", "10"} ),
+
+            new GraphValueInfo( VertexShape.Image,
+                new String [] {"Image", "Image (11)", "11"} ),
             } );
     }
 

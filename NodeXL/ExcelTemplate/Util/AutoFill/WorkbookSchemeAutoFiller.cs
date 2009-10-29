@@ -66,7 +66,7 @@ public static class WorkbookSchemeAutoFiller : Object
     /// color, and radius attributes to each category (red circles with a
     /// radius of 2.0, for example) and fills in the vertex shape, color, and
     /// radius columns.  It also fills in other attribute columns with constant
-    /// values, and fills in the vertex primary label column if <paramref
+    /// values, and fills in the vertex label column if <paramref
     /// name="showVertexLabels" /> is true.
     ///
     /// <para>
@@ -149,8 +149,7 @@ public static class WorkbookSchemeAutoFiller : Object
     /// <remarks>
     /// This method maps an edge weight column to the edge width column,
     /// fills in other attribute columns with constant values, and fills in the
-    /// vertex primary label column if <paramref name="showVertexLabels" /> is
-    /// true.
+    /// vertex label column if <paramref name="showVertexLabels" /> is true.
     ///
     /// <para>
     /// In addition to autofilling columns, this method stores the results of
@@ -281,8 +280,7 @@ public static class WorkbookSchemeAutoFiller : Object
     /// <remarks>
     /// This method maps an edge timestamp column to the edge color column,
     /// fills in other attribute columns with constant values, and fills in the
-    /// vertex primary label column if <paramref name="showVertexLabels" /> is
-    /// true.
+    /// vertex label column if <paramref name="showVertexLabels" /> is true.
     ///
     /// <para>
     /// In addition to autofilling columns, this method stores the results of
@@ -862,7 +860,7 @@ public static class WorkbookSchemeAutoFiller : Object
         if (bShowVertexLabels)
         {
             TableColumnMapper.MapViaCopy(oVertexTable, sVertexLabelColumnName,
-                VertexTableColumnNames.SecondaryLabel);
+                VertexTableColumnNames.Label);
         }
 
         return (true);

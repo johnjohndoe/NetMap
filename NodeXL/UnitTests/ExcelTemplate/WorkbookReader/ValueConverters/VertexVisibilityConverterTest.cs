@@ -82,6 +82,7 @@ public class VertexVisibilityConverterTest : Object
         VertexWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Show if in an Edge",
             "show if in an edge (1)",
             "show If in aN eDge (1)",
             "1",
@@ -111,6 +112,7 @@ public class VertexVisibilityConverterTest : Object
         VertexWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Skip",
             "skip (0)",
             "sKip (0)",
             "0",
@@ -139,6 +141,7 @@ public class VertexVisibilityConverterTest : Object
         VertexWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Hide",
             "hide (2)",
             "hidE (2)",
             "2",
@@ -167,6 +170,7 @@ public class VertexVisibilityConverterTest : Object
         VertexWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Show",
             "show (4)",
             "sHoW (4)",
             "4",
@@ -219,21 +223,38 @@ public class VertexVisibilityConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-        Assert.AreEqual( "Show if in an Edge (1)",
+        Assert.AreEqual( "Show if in an Edge",
             m_oVertexVisibilityConverter.GraphToWorkbook(
                 VertexWorksheetReader.Visibility.ShowIfInAnEdge) );
 
-        Assert.AreEqual( "Skip (0)",
+        Assert.AreEqual( "Skip",
             m_oVertexVisibilityConverter.GraphToWorkbook(
                 VertexWorksheetReader.Visibility.Skip) );
 
-        Assert.AreEqual( "Hide (2)",
+        Assert.AreEqual( "Hide",
             m_oVertexVisibilityConverter.GraphToWorkbook(
                 VertexWorksheetReader.Visibility.Hide) );
 
-        Assert.AreEqual( "Show (4)",
+        Assert.AreEqual( "Show",
             m_oVertexVisibilityConverter.GraphToWorkbook(
                 VertexWorksheetReader.Visibility.Show) );
+    }
+
+    //*************************************************************************
+    //  Method: VerifyUpToDate()
+    //
+    /// <summary>
+    /// Makes sure that these tests are up to date.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    VerifyUpToDate()
+    {
+        Assert.AreEqual(4, Enum.GetValues(
+            typeof(VertexWorksheetReader.Visibility) ).Length);
     }
 
 

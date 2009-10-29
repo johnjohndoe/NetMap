@@ -82,6 +82,7 @@ public class BooleanConverterTest : Object
         Boolean bValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "yes",
             "yes (1)",
             "YeS (1)",
             "1",
@@ -110,6 +111,7 @@ public class BooleanConverterTest : Object
         Boolean bValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "no",
             "no (0)",
             "nO (0)",
             "0",
@@ -165,11 +167,8 @@ public class BooleanConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-        Assert.AreEqual( "Yes (1)",
-            m_oBooleanConverter.GraphToWorkbook(true) );
-
-        Assert.AreEqual( "No (0)",
-            m_oBooleanConverter.GraphToWorkbook(false) );
+        Assert.AreEqual( "Yes", m_oBooleanConverter.GraphToWorkbook(true) );
+        Assert.AreEqual( "No", m_oBooleanConverter.GraphToWorkbook(false) );
     }
 
 

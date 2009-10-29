@@ -33,12 +33,6 @@ public static class WorksheetNames
     public const String Vertices = "Vertices";
 
     /// <summary>
-    /// Name of the optional worksheet that contains image data.
-    /// </summary>
-
-    public const String Images = "Images";
-
-    /// <summary>
     /// Name of the optional worksheet that contains cluster data.
     /// </summary>
 
@@ -89,12 +83,6 @@ public static class TableNames
     /// </summary>
 
     public const String Vertices = "Vertices";
-
-    /// <summary>
-    /// Name of the optional table that contains image data.
-    /// </summary>
-
-    public const String Images = "Images";
 
     /// <summary>
     /// Name of the optional table that contains cluster data.
@@ -253,31 +241,31 @@ public static class VertexTableColumnNames
     public const String RadiusOld = "Radius";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex's image key.
+    /// Name of the optional table column containing the path to the image
+    /// file.
     /// </summary>
 
-    public const String ImageKey = "Image ID";
+    public const String ImageFilePath = "Image File";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex's primary
-    /// label.
+    /// Name of the optional table column containing the vertex's label.
     /// </summary>
 
-    public const String PrimaryLabel = "Primary Label";
+    public const String Label = "Label";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex's primary
-    /// label fill color.
+    /// Name of the optional table column containing the vertex's label fill
+    /// color.
     /// </summary>
 
-    public const String PrimaryLabelFillColor = "Primary Label Fill Color";
+    public const String LabelFillColor = "Label Fill Color";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex's secondary
-    /// label.
+    /// Name of the optional table column containing the vertex's label
+    /// position.
     /// </summary>
 
-    public const String SecondaryLabel = "Secondary Label";
+    public const String LabelPosition = "Label Position";
 
     /// <summary>
     /// Name of the optional table column containing the vertex's alpha, from
@@ -291,13 +279,6 @@ public static class VertexTableColumnNames
     /// </summary>
 
     public const String ToolTip = "Tooltip";
-
-    /// <summary>
-    /// Name of the optional table column that specifies how the vertex should
-    /// be drawn.
-    /// </summary>
-
-    public const String VertexDrawingPrecedence = "What to Show";
 
     /// <summary>
     /// Name of the optional table column containing the vertex's visibility.
@@ -448,36 +429,6 @@ public static class VertexTableColumnNames
     //
     // 2. If the new column is part of a column group, ColumnGroupManager must
     //    be modified.
-}
-
-
-//*****************************************************************************
-//  Class: ImageTableColumnNames
-//
-/// <summary>
-/// Provides the names of the columns in the image table.
-/// </summary>
-///
-/// <remarks>
-/// All column names are available as public constants.
-/// </remarks>
-//*****************************************************************************
-
-public static class ImageTableColumnNames
-{
-    /// <summary>
-    /// Name of the optional table column containing the unique key for the
-    /// image.
-    /// </summary>
-
-    public const String Key = "Image ID";
-
-    /// <summary>
-    /// Name of the optional table column containing the full path to the
-    /// image file.
-    /// </summary>
-
-    public const String FilePath = "Image File Path";
 }
 
 

@@ -130,12 +130,12 @@ public partial class TwitterGraphDataProviderDialogBase :
 
                         sMessage = String.Format(
 
-                            "The Twitter Web service refuses to provide any"
-                            + " more information because you have made"
-                            + " too many requests in the last hour.  (Twitter"
-                            + " limits information requests to prevent its"
-                            + " service from being attacked.  Click the '{0}'"
-                            + " link for details.)"
+                            "The Twitter Web service refuses to provide the"
+                            + " information you requested.  A likely cause is"
+                            + " that you have made too many requests in the"
+                            + " last hour.  (Twitter limits information"
+                            + " requests to prevent its service from being"
+                            + " attacked.  Click the '{0}' link for details.)"
                             + "\r\n\r\n"
                             + " Wait 60 minutes and try again."
                             ,

@@ -36,11 +36,12 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         m_oColor = SystemColors.WindowTextColor;
         m_oSelectedColor = SystemColors.HighlightColor;
         m_btFilteredAlpha = 10;
+        m_iMaximumLabelLength = Int32.MaxValue;
 
         m_oTypeface = new Typeface(SystemFonts.MessageFontFamily,
             FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
-        m_dFontSizeEm = 10;
+        m_dFontSize = 10;
 
         CreateDrawingObjects();
 
@@ -246,6 +247,38 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     }
 
     //*************************************************************************
+    //  Property: MaximumLabelLength
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of characters to show in a label.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of characters to show, or Int32.MaxValue for no
+    /// maximum.  Must be greater than or equal to zero.  The default is
+    /// Int32.MaxValue.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    MaximumLabelLength
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iMaximumLabelLength);
+        }
+
+        set
+        {
+            m_iMaximumLabelLength = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: SetFont()
     //
     /// <summary>
@@ -256,8 +289,8 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     /// The Typeface to use.
     /// </param>
     ///
-    /// <param name="emSize">
-    /// The font size to use, in ems.
+    /// <param name="size">
+    /// The font size to use, in WPF units.
     /// </param>
     ///
     /// <remarks>
@@ -269,20 +302,20 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     SetFont
     (
         Typeface typeface,
-        Double emSize
+        Double size
     )
     {
         Debug.Assert(typeface != null);
-        Debug.Assert(emSize > 0);
+        Debug.Assert(size > 0);
         AssertValid();
 
-        if (m_oTypeface == typeface && m_dFontSizeEm == emSize)
+        if (m_oTypeface == typeface && m_dFontSize == size)
         {
             return;
         }
 
         m_oTypeface = typeface;
-        m_dFontSizeEm = emSize;
+        m_dFontSize = size;
 
         FireLayoutRequired();
     }
@@ -663,10 +696,53 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     }
 
     //*************************************************************************
-    //  Method: CreateFormattedText()
+    //  Method: TruncateLabel()
     //
     /// <summary>
+    /// Truncates a label if it exceeds a maximum length.
+    /// </summary>
+    ///
+    /// <param name="sLabel">
+    /// The label to truncate.  Can't be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// The original or truncated label.
+    /// </returns>
+    ///
+    /// <returns>
+    /// If <see cref="MaximumLabelLength" /> is not Int32.MaxValue, this
+    /// method returns <paramref name="sLabel" /> truncated to the maximum
+    /// number of characters.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    TruncateLabel
+    (
+        String sLabel
+    )
+    {
+        Debug.Assert(sLabel != null);
+        AssertValid();
+
+        return (
+            (m_iMaximumLabelLength == Int32.MaxValue ||
+                sLabel.Length <= m_iMaximumLabelLength) ?
+
+            sLabel : sLabel.Substring(0, m_iMaximumLabelLength)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: CreateFormattedText()
+    //
+    /// <overloads>
     /// Creates a FormattedText object.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Creates a FormattedText object using the default font size.
     /// </summary>
     ///
     /// <param name="sText">
@@ -687,9 +763,43 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     {
         Debug.Assert(sText != null);
 
+        return ( CreateFormattedText(sText, oColor, m_dFontSize) );
+    }
+
+    //*************************************************************************
+    //  Method: CreateFormattedText()
+    //
+    /// <summary>
+    /// Creates a FormattedText object using a specified font size.
+    /// </summary>
+    ///
+    /// <param name="sText">
+    /// The text to draw.  Can't be null.
+    /// </param>
+    ///
+    /// <param name="oColor">
+    /// The text color.
+    /// </param>
+    ///
+    /// <param name="dFontSize">
+    /// The font size to use, in WPF units.
+    /// </param>
+    //*************************************************************************
+
+    protected FormattedText
+    CreateFormattedText
+    (
+        String sText,
+        Color oColor,
+        Double dFontSize
+    )
+    {
+        Debug.Assert(sText != null);
+        Debug.Assert(dFontSize >= 0);
+
         FormattedText oFormattedText = new FormattedText( sText,
             CultureInfo.CurrentCulture, FlowDirection.LeftToRight, m_oTypeface,
-            m_dFontSizeEm, GetBrush(oColor) );
+            dFontSize, GetBrush(oColor) );
 
         return (oFormattedText);
     }
@@ -788,10 +898,11 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         // m_oSelectedColor
         Debug.Assert(m_btFilteredAlpha >= 0);
         Debug.Assert(m_btFilteredAlpha <= 255);
+        Debug.Assert(m_iMaximumLabelLength >= 0);
         Debug.Assert(m_oDefaultBrush != null);
         Debug.Assert(m_oDefaultPen != null);
         Debug.Assert(m_oTypeface != null);
-        Debug.Assert(m_dFontSizeEm > 0);
+        Debug.Assert(m_dFontSize > 0);
     }
 
 
@@ -825,6 +936,11 @@ public class VertexAndEdgeDrawerBase : DrawerBase
 
     protected Byte m_btFilteredAlpha;
 
+    /// The maximum number of characters to show in a label, or Int32.MaxValue
+    /// for no maximum.
+
+    protected Int32 m_iMaximumLabelLength;
+
     /// Default brush to use.
 
     protected SolidColorBrush m_oDefaultBrush;
@@ -837,9 +953,9 @@ public class VertexAndEdgeDrawerBase : DrawerBase
 
     protected Typeface m_oTypeface;
 
-    /// The font size to use to draw labels, in ems.
+    /// The font size to use to draw labels, in WPF units.
 
-    protected Double m_dFontSizeEm;
+    protected Double m_dFontSize;
 }
 
 }

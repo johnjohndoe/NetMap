@@ -586,8 +586,8 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         foreach ( XmlNode oUserXmlNode in EnumerateXmlNodes(
             GetFollowedOrFollowingUrl(sScreenName, bIncludeFollowedThisCall),
-            "users/user", null, null, 100, Int32.MaxValue,
-            iMaximumPeoplePerRequest, iRecursionLevel != 1,
+            "users_list/users/user", null, null, Int32.MaxValue,
+            iMaximumPeoplePerRequest, false, iRecursionLevel != 1,
             sCredentialsScreenName, sCredentialsPassword) )
         {
             if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )

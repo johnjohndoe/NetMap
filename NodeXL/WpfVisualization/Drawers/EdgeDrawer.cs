@@ -956,6 +956,8 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
             return;
         }
 
+        sLabel = TruncateLabel(sLabel);
+
         if (oEdgeEndpoint2.X < oEdgeEndpoint1.X)
         {
             // Don't let text be drawn upside-down.

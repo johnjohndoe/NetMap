@@ -108,6 +108,74 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: ReadVertexLabels
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether vertex labels should be read
+    /// from the vertex worksheet.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read vertex labels.  The default value is true.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
+
+    public Boolean
+    ReadVertexLabels
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[ReadVertexLabelsKey] );
+        }
+
+        set
+        {
+            this[ReadVertexLabelsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadEdgeLabels
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether edge labels should be read from
+    /// the edge worksheet.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read edge labels.  The default value is true.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("true") ]
+
+    public Boolean
+    ReadEdgeLabels
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[ReadEdgeLabelsKey] );
+        }
+
+        set
+        {
+            this[ReadEdgeLabelsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: ShowGraphLegend
     //
     /// <summary>
@@ -207,44 +275,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
         set
         {
             this[AutoReadWorkbookKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: LabelFont
-    //
-    /// <summary>
-    /// Gets or sets the font used for the graph's labels.
-    /// </summary>
-    ///
-    /// <value>
-    /// The label font, as a Font.  The default value is Microsoft Sans Serif,
-    /// 8.25pt.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute(DefaultFont) ]
-
-    public Font
-    LabelFont
-    {
-        // Note that the font type is System.Drawing.Font, which is what the
-        // System.Windows.Forms.FontDialog class uses.  It gets converted to
-        // WPF font types in TransferToGraphDrawer().
-
-        get
-        {
-            AssertValid();
-
-            return ( (Font)this[LabelFontKey] );
-        }
-
-        set
-        {
-            this[LabelFontKey] = value;
 
             AssertValid();
         }
@@ -716,45 +746,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: PrimaryLabelFillColor
-    //
-    /// <summary>
-    /// Gets or sets the fill color of vertices that are drawn as primary
-    /// labels.
-    /// </summary>
-    ///
-    /// <value>
-    /// The fill color of vertices that are drawn as primary labels, as a
-    /// Color.  The default value is Color.White.
-    /// </value>
-    ///
-    /// <remarks>
-    /// <see cref="VertexColor" /> is used as the primary label's text color.
-    /// </remarks>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("White") ]
-
-    public Color
-    PrimaryLabelFillColor
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Color)this[PrimaryLabelFillColorKey] );
-        }
-
-        set
-        {
-            this[PrimaryLabelFillColorKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: VertexAlpha
     //
     /// <summary>
@@ -853,6 +844,42 @@ public class GeneralUserSettings : ApplicationSettingsBase
         set
         {
             this[LayoutUserSettingsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: LabelUserSettings
+    //
+    /// <summary>
+    /// Gets or sets the user's settings for graph labels.
+    /// </summary>
+    ///
+    /// <value>
+    /// The user's settings for graph labels, as a LabelUserSettings.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+
+    [ DefaultSettingValueAttribute(
+        "Microsoft Sans Serif, 8.25pt\tWhite\tTopRight\t2147483647\t2147483647"
+        ) ]
+
+    public LabelUserSettings
+    LabelUserSettings
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (LabelUserSettings)this[LabelUserSettingsKey] );
+        }
+
+        set
+        {
+            this[LabelUserSettingsKey] = value;
 
             AssertValid();
         }
@@ -1012,6 +1039,8 @@ public class GeneralUserSettings : ApplicationSettingsBase
         Debug.Assert(graphDrawer != null);
         AssertValid();
 
+        this.LabelUserSettings.TransferToGraphDrawer(graphDrawer);
+
         graphDrawer.BackColor =
             WpfGraphicsUtil.ColorToWpfColor(this.BackColor);
 
@@ -1037,16 +1066,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
         oEdgeDrawer.RelativeArrowSize = this.RelativeArrowSize;
 
-        Font oLabelFont = this.LabelFont;
-
-        System.Windows.Media.Typeface oTypeface =
-            WpfGraphicsUtil.FontToTypeface(oLabelFont);
-
-        Double dFontSize = WpfGraphicsUtil.WindowsFormsFontSizeToWpfFontSize(
-            oLabelFont.Size);
-
-        oEdgeDrawer.SetFont(oTypeface, dFontSize);
-
         oVertexDrawer.Shape = this.VertexShape;
 
         oVertexDrawer.Radius = ( new VertexRadiusConverter() ).WorkbookToGraph(
@@ -1059,11 +1078,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
         oVertexDrawer.SelectedColor = WpfGraphicsUtil.ColorToWpfColor(
             this.SelectedVertexColor);
-
-        oVertexDrawer.PrimaryLabelFillColor =
-            WpfGraphicsUtil.ColorToWpfColor(this.PrimaryLabelFillColor);
-
-        oVertexDrawer.SetFont(oTypeface, dFontSize);
     }
 
     //*************************************************************************
@@ -1106,17 +1120,32 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
 
     //*************************************************************************
-    //  Protected constants
+    //  Public constants
     //*************************************************************************
 
     /// Default font to use for the graph's labels and axes.
 
-    protected const String DefaultFont = "Microsoft Sans Serif, 8.25pt";
+    public const String DefaultFont = "Microsoft Sans Serif, 8.25pt";
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
 
     /// Name of the settings key for the ReadClusters property.
 
     protected const String ReadClustersKey =
         "ReadClusters";
+
+    /// Name of the settings key for the ReadVertexLabels property.
+
+    protected const String ReadVertexLabelsKey =
+        "ReadVertexLabels";
+
+    /// Name of the settings key for the ReadEdgeLabels property.
+
+    protected const String ReadEdgeLabelsKey =
+        "ReadEdgeLabels";
 
     /// Name of the settings key for the ShowGraphLegend property.
 
@@ -1137,11 +1166,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String NewWorkbookGraphDirectednessKey =
         "NewWorkbookGraphDirectedness";
-
-    /// Name of the settings key for the LabelFont property.
-
-    protected const String LabelFontKey =
-        "LabelFont";
 
     /// Name of the settings key for the AxisFont property.
 
@@ -1203,11 +1227,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
     protected const String VertexColorKey =
         "VertexColor";
 
-    /// Name of the settings key for the PrimaryLabelFillColor property.
-
-    protected const String PrimaryLabelFillColorKey =
-        "PrimaryLabelFillColor";
-
     /// Name of the settings key for the VertexAlpha property.
 
     protected const String VertexAlphaKey =
@@ -1222,6 +1241,11 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String LayoutUserSettingsKey =
         "LayoutUserSettings";
+
+    /// Name of the settings key for the LabelUserSettings property.
+
+    protected const String LabelUserSettingsKey =
+        "LabelUserSettings";
 
     /// Name of the settings key for the AutoSelect property.
 

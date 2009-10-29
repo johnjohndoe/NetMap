@@ -77,6 +77,9 @@
     <Compile Include="..\..\Common\SocialNetwork\NetworkLevel.cs">
       <Link>Util\SocialNetwork\NetworkLevel.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\UrlUtil.cs">
+      <Link>Util\UrlUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\XmlUtil.cs">
       <Link>Util\XmlUtil.cs</Link>
     </Compile>

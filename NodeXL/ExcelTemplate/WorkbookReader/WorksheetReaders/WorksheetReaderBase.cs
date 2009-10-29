@@ -379,60 +379,6 @@ public class WorksheetReaderBase : NodeXLBase
     }
 
     //*************************************************************************
-    //  Method: CheckForVertexShape()
-    //
-    /// <summary>
-    /// If a shape has been specified for a vertex, sets the vertex's shape.
-    /// </summary>
-    ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
-    /// </param>
-    ///
-    /// <param name="oVertex">
-    /// Vertex to set the shape on.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    CheckForVertexShape
-    (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
-        IVertex oVertex
-    )
-    {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
-        Debug.Assert(oVertex != null);
-        AssertValid();
-
-        VertexShape eShape;
-
-        if ( TryGetVertexShape(oVertexRange, aoValues, iRowOneBased,
-            iColumnOneBased, out eShape) )
-        {
-            oVertex.SetValue(ReservedMetadataKeys.PerVertexShape, eShape);
-        }
-    }
-
-    //*************************************************************************
     //  Method: CheckForNonEmptyCell()
     //
     /// <summary>

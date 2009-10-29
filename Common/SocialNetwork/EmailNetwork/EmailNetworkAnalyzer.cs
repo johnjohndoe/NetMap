@@ -757,38 +757,6 @@ public class EmailNetworkAnalyzer : Object
             oDataReader.Close();
         }
 
-        String participant1 = null;
-
-        if (participantsCriteria != null && participantsCriteria.Length > 0)
-        {
-            participant1 = participantsCriteria[0].Participant;
-        }
-
-        if ( !String.IsNullOrEmpty(participant1) )
-        {
-            // The first participant should be in the
-            // EmailParticipantPair.Participant1 slot for each element in the
-            // returned array that includes the first participant.
-
-            String sParticipant1Lower = participant1.ToLower();
-
-            foreach (EmailParticipantPair oEmailParticipantPair in
-                aoEmailParticipantPairs)
-            {
-                if (oEmailParticipantPair.Participant2 == sParticipant1Lower)
-                {
-                    // Swap the participants.
-
-                    String sTemp = oEmailParticipantPair.Participant1;
-
-                    oEmailParticipantPair.Participant1 =
-                        oEmailParticipantPair.Participant2;
-
-                    oEmailParticipantPair.Participant2 = sTemp;
-                }
-            }
-        }
-
         return (aoEmailParticipantPairs);
     }
 
@@ -1096,7 +1064,7 @@ public class EmailNetworkAnalyzer : Object
             if ( oPerEmailDictionary.ContainsKey(sParticipantLower) )
             {
                 // A participant pair for this participant has already been
-                // added to the aggregated dictionary.
+                // added to the per-email dictionary.
 
                 continue;
             }
@@ -1158,12 +1126,7 @@ public class EmailNetworkAnalyzer : Object
         Debug.Assert( !String.IsNullOrEmpty(sParticipant2) );
         AssertValid();
 
-        if (sParticipant1.CompareTo(sParticipant2) < 0)
-        {
-            return (sParticipant1 + KeySeparator + sParticipant2);
-        }
-
-        return (sParticipant2 + KeySeparator + sParticipant1);
+        return (sParticipant1 + KeySeparator + sParticipant2);
     }
 
     //*************************************************************************

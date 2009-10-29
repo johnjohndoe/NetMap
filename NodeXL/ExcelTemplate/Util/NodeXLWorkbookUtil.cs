@@ -62,7 +62,6 @@ public static class NodeXLWorkbookUtil
         ExcelUtil.ClearTables(workbook,
             WorksheetNames.Edges, TableNames.Edges,
             WorksheetNames.Vertices, TableNames.Vertices,
-            WorksheetNames.Images, TableNames.Images,
             WorksheetNames.Clusters, TableNames.Clusters,
             WorksheetNames.ClusterVertices, TableNames.ClusterVertices,
             WorksheetNames.OverallMetrics, TableNames.OverallMetrics
@@ -183,32 +182,22 @@ public static class NodeXLWorkbookUtil
     {
         color = null;
 
-        if (m_oColorDialog == null)
-        {
-            m_oColorDialog = new ColorDialog();
-        }
+        // A single ColorDialog instance is used throughout the application to
+        // allow any custom colors the user creates to be retained across
+        // invocations.
 
-        if (m_oColorDialog.ShowDialog() == DialogResult.OK)
+        ColorDialog oColorDialog = ColorPicker.ColorDialog;
+
+        if (oColorDialog.ShowDialog() == DialogResult.OK)
         {
             color = ( new ColorConverter2() ).GraphToWorkbook(
-                m_oColorDialog.Color);
+                oColorDialog.Color);
 
             return (true);
         }
 
         return (false);
     }
-
-
-    //*************************************************************************
-    //  Private fields
-    //*************************************************************************
-
-    /// ColorDialog used by TryGetColor(), or null if TryGetColor() hasn't been
-    /// called yet.  This is static so that the dialog will retain custom
-    /// colors between invocations.
-
-    private static ColorDialog m_oColorDialog = null;
 }
 
 }

@@ -152,6 +152,84 @@ public class RectangleVertexDrawingHistory : VertexDrawingHistory
             farthestGraphRectangleEdge) );
     }
 
+    //*************************************************************************
+    //  Method: GetLabelLocation()
+    //
+    /// <summary>
+    /// Gets the location at which an annotation label should be drawn.
+    /// </summary>
+    ///
+    /// <param name="labelPosition">
+    /// The position of the annotation label.
+    /// </param>
+    ///
+    /// <returns>
+    /// The point at which an annotation label should be drawn.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned point assumes that the label text height is zero and that
+    /// there is zero margin between the vertex and the label.  The caller must
+    /// adjust the point for the actual text height and any margin.
+    /// </remarks>
+    //*************************************************************************
+
+    public override Point
+    GetLabelLocation
+    (
+        VertexLabelPosition labelPosition
+    )
+    {
+        AssertValid();
+
+        Double dCenterX = m_oRectangle.Left + m_oRectangle.Width / 2.0;
+        Double dMiddleY = m_oRectangle.Top + m_oRectangle.Height / 2.0;
+
+        switch (labelPosition)
+        {
+            case VertexLabelPosition.TopLeft:
+
+                return (m_oRectangle.TopLeft);
+
+            case VertexLabelPosition.TopCenter:
+
+                return ( new Point(dCenterX, m_oRectangle.Top) );
+
+            case VertexLabelPosition.TopRight:
+
+                return (m_oRectangle.TopRight);
+
+            case VertexLabelPosition.MiddleLeft:
+
+                return ( new Point(m_oRectangle.Left, dMiddleY) );
+
+            case VertexLabelPosition.MiddleCenter:
+
+                return ( new Point(dCenterX, dMiddleY) );
+
+            case VertexLabelPosition.MiddleRight:
+
+                return ( new Point(m_oRectangle.Right, dMiddleY) );
+
+            case VertexLabelPosition.BottomLeft:
+
+                return (m_oRectangle.BottomLeft);
+
+            case VertexLabelPosition.BottomCenter:
+
+                return ( new Point(dCenterX, m_oRectangle.Bottom) );
+
+            case VertexLabelPosition.BottomRight:
+
+                return (m_oRectangle.BottomRight);
+
+            default:
+
+                Debug.Assert(false);
+                return ( new Point() );
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()

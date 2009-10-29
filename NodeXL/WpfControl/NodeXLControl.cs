@@ -74,7 +74,8 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <item><see cref="VertexSelectedColor" /></item>
 /// <item><see cref="VertexShape" /></item>
 /// <item><see cref="VertexRadius" /></item>
-/// <item><see cref="VertexPrimaryLabelFillColor" /></item>
+/// <item><see cref="VertexLabelFillColor" /></item>
+/// <item><see cref="VertexLabelPosition" /></item>
 /// </list>
 ///
 /// <para>
@@ -103,12 +104,10 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <item><see cref="ReservedMetadataKeys.PerVertexShape" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerVertexRadius" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerAlpha" /></item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexPrimaryLabel" /></item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" />
-///     </item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexSecondaryLabel" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerVertexLabel" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerVertexLabelFillColor" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerVertexLabelPosition" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerVertexImage" /></item>
-/// <item><see cref="ReservedMetadataKeys.PerVertexDrawingPrecedence" /></item>
 /// </list>
 ///
 /// <para>
@@ -134,28 +133,31 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// </para>
 ///
 /// <para>
-/// To draw an individual vertex as a rectangle-enclosed label instead of a
-/// shape, use the <see cref="ReservedMetadataKeys.PerVertexPrimaryLabel" />
-/// key.  The rectangle's fill color can be controlled with the <see
-/// cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" /> key.
+/// To draw an individual vertex as a rectangle containing text, set the <see
+/// cref="ReservedMetadataKeys.PerVertexShape" /> key to <see
+/// cref="Wpf.VertexShape.Label" /> and set the <see
+/// cref="ReservedMetadataKeys.PerVertexLabel" /> key to the label text.  The
+/// rectangle's fill color can be controlled with the <see
+/// cref="ReservedMetadataKeys.PerVertexLabelFillColor" /> key.
 /// </para>
 ///
 /// <para>
-/// To draw an individual vertex as an image instead of a shape, use the <see
-/// cref="ReservedMetadataKeys.PerVertexImage" /> key.
+/// To annotate other vertex shapes with text, set the <see
+/// cref="ReservedMetadataKeys.PerVertexLabel" /> key to the annotation text.
+/// The text gets drawn next to the vertex at the position specified by <see
+/// cref="VertexLabelPosition" />.  (The <see
+/// cref="ReservedMetadataKeys.PerVertexLabel" /> key serves two purposes: it
+/// is the text inside the rectangle when the vertex has the shape <see
+/// cref="Wpf.VertexShape.Label" />, and it is the annotation text next to the
+/// vertex when the vertex has one of the other shapes.  You cannot annotate a
+/// vertex whose shape is <see cref="Wpf.VertexShape.Label" />.)
 /// </para>
 ///
 /// <para>
-/// To control the precedence of the shape, primary label, and image keys, use
-/// the <see cref="ReservedMetadataKeys.PerVertexDrawingPrecedence" /> key.
-/// </para>
-///
-/// <para>
-/// To add a secondary label to a vertex, use the the <see
-/// cref="ReservedMetadataKeys.PerVertexSecondaryLabel" /> key.  Secondary
-/// labels can be added to any vertex, regardless of whether it is drawn as a
-/// shape, primary label, or image.  The secondary label is drawn above the
-/// vertex.
+/// To draw an individual vertex as an image, set the <see
+/// cref="ReservedMetadataKeys.PerVertexShape" /> to <see
+/// cref="Wpf.VertexShape.Image" /> and set the <see
+/// cref="ReservedMetadataKeys.PerVertexImage" /> key to the image.
 /// </para>
 ///
 /// <h3>Selecting Vertices and Edges</h3>
@@ -251,34 +253,33 @@ public partial class Window1 : Window
 
         // Change the color, radius, and shape of vertex A.
 
-        oVertexB.SetValue(ReservedMetadataKeys.PerColor,
+        oVertexA.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 255, 0, 255));
 
-        oVertexB.SetValue(ReservedMetadataKeys.PerVertexRadius, 20F);
+        oVertexA.SetValue(ReservedMetadataKeys.PerVertexRadius, 20F);
 
-        oVertexB.SetValue(ReservedMetadataKeys.PerVertexShape,
+        oVertexA.SetValue(ReservedMetadataKeys.PerVertexShape,
             VertexShape.Sphere);
 
-        // Draw vertex B as a primary label instead of a shape.  A primary
-        // label is a rectangle containing text.
+        // Draw vertex B as a Label, which is a rectangle containing text.
 
-        oVertexA.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
-            "Primary Label");
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexShape,
+            VertexShape.Label);
 
-        // Set the primary label's text and fill colors.
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexLabel, "Label");
 
-        oVertexA.SetValue(ReservedMetadataKeys.PerColor,
+        // Set the label's text and fill colors.
+
+        oVertexB.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 220, 220, 220));
 
-        oVertexA.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexLabelFillColor,
             Color.FromArgb(255, 0, 0, 0));
 
-        // Add a secondary label to vertex C.  A secondary label is text that
-        // is drawn outside the vertex.  It can be added to a shape, image, or
-        // primary label.
+        // Annotate vertex C with text that is drawn outside the vertex.  All
+        // shapes except Label can be annotated.
 
-        oVertexC.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
-            "Secondary Label");
+        oVertexC.SetValue(ReservedMetadataKeys.PerVertexLabel, "Annotation");
 
         // Get the graph's edge collection.
 
@@ -360,34 +361,33 @@ public partial class Form1 : Form
 
         // Change the color, radius, and shape of vertex A.
 
-        oVertexB.SetValue(ReservedMetadataKeys.PerColor,
+        oVertexA.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 255, 0, 255));
 
-        oVertexB.SetValue(ReservedMetadataKeys.PerVertexRadius, 20F);
+        oVertexA.SetValue(ReservedMetadataKeys.PerVertexRadius, 20F);
 
-        oVertexB.SetValue(ReservedMetadataKeys.PerVertexShape,
+        oVertexA.SetValue(ReservedMetadataKeys.PerVertexShape,
             VertexShape.Sphere);
 
-        // Draw vertex B as a primary label instead of a shape.  A primary
-        // label is a rectangle containing text.
+        // Draw vertex B as a Label, which is a rectangle containing text.
 
-        oVertexA.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
-            "Primary Label");
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexShape,
+            VertexShape.Label);
 
-        // Set the primary label's text and fill colors.
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexLabel, "Label");
 
-        oVertexA.SetValue(ReservedMetadataKeys.PerColor,
+        // Set the label's text and fill colors.
+
+        oVertexB.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 220, 220, 220));
 
-        oVertexA.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+        oVertexB.SetValue(ReservedMetadataKeys.PerVertexLabelFillColor,
             Color.FromArgb(255, 0, 0, 0));
 
-        // Add a secondary label to vertex C.  A secondary label is text that
-        // is drawn outside the vertex.  It can be added to a shape, image, or
-        // primary label.
+        // Annotate vertex C with text that is drawn outside the vertex.  All
+        // shapes except Label can be annotated.
 
-        oVertexC.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
-            "Secondary Label");
+        oVertexC.SetValue(ReservedMetadataKeys.PerVertexLabel, "Annotation");
 
         // Get the graph's edge collection.
 
@@ -866,38 +866,38 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Property: VertexPrimaryLabelFillColor
+    //  Property: VertexLabelFillColor
     //
     /// <summary>
-    /// Gets or sets the default fill color to use for vertices drawn as
-    /// primary labels.
+    /// Gets or sets the default fill color to use for vertices that have the
+    /// Label shape.
     /// </summary>
     ///
     /// <value>
-    /// The default fill color to use for primary labels.  The default is
+    /// The default fill color to use.  The default is
     /// SystemColors.WindowColor.
     /// </value>
     ///
     /// <remarks>
-    /// <see cref="Color" /> is used for the primary label text and outline.
+    /// <see cref="Color" /> is used for the label text and outline.
     ///
     /// <para>
     /// The default fill color of a vertex can be overridden by setting the
-    /// <see cref="ReservedMetadataKeys.PerVertexPrimaryLabelFillColor" /> key
-    /// on the vertex.
+    /// <see cref="ReservedMetadataKeys.PerVertexLabelFillColor" /> key on the
+    /// vertex.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
     public Color
-    VertexPrimaryLabelFillColor
+    VertexLabelFillColor
     {
         get
         {
             AssertValid();
 
-            return (this.VertexDrawer.PrimaryLabelFillColor);
+            return (this.VertexDrawer.LabelFillColor);
         }
 
         set
@@ -906,7 +906,55 @@ public partial class NodeXLControl : FrameworkElement
             // out, because the property is not used until OnRender() is
             // called.
 
-            this.VertexDrawer.PrimaryLabelFillColor = value;
+            this.VertexDrawer.LabelFillColor = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexLabelPosition
+    //
+    /// <summary>
+    /// Gets or sets the default position of a vertex label drawn as an
+    /// annotation.
+    /// </summary>
+    ///
+    /// <value>
+    /// The default position of a vertex label drawn as an annotation.  The
+    /// default is <see cref="Wpf.VertexLabelPosition.TopRight" />.
+    /// </value>
+    ///
+    /// <remarks>
+    /// This property is not used when drawing vertices that have the shape
+    /// <see cref="Wpf.VertexShape.Label" />.
+    ///
+    /// <para>
+    /// The default vertex label position can be overridden by setting the <see
+    /// cref="ReservedMetadataKeys.PerVertexLabelPosition" /> key on the
+    /// vertex.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public VertexLabelPosition
+    VertexLabelPosition
+    {
+        get
+        {
+            AssertValid();
+
+            return (this.VertexDrawer.LabelPosition);
+        }
+
+        set
+        {
+            // It is okay to change this property while the graph is being laid
+            // out, because the property is not used until OnRender() is
+            // called.
+
+            this.VertexDrawer.LabelPosition = value;
 
             AssertValid();
         }
@@ -1733,15 +1781,15 @@ public partial class NodeXLControl : FrameworkElement
     //  Method: SetFont()
     //
     /// <summary>
-    /// Sets the font used to draw primary and secondary labels.
+    /// Sets the font used to draw labels.
     /// </summary>
     ///
     /// <param name="typeface">
     /// The Typeface to use.
     /// </param>
     ///
-    /// <param name="emSize">
-    /// The font size to use, in ems.
+    /// <param name="size">
+    /// The font size to use, in WPF units.
     /// </param>
     ///
     /// <remarks>
@@ -1753,7 +1801,7 @@ public partial class NodeXLControl : FrameworkElement
     SetFont
     (
         Typeface typeface,
-        Double emSize
+        Double size
     )
     {
         AssertValid();
@@ -1761,7 +1809,7 @@ public partial class NodeXLControl : FrameworkElement
         // It is okay to change the font while the graph is being laid out,
         // because the font is not used until OnRender() is called.
 
-        this.VertexDrawer.SetFont(typeface, emSize);
+        this.VertexDrawer.SetFont(typeface, size);
     }
 
     //*************************************************************************

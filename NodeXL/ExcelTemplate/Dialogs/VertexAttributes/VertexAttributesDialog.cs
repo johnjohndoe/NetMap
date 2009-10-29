@@ -90,9 +90,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
         nudAlpha.Minimum = (Decimal)AlphaConverter.MinimumAlphaWorkbook;
         nudAlpha.Maximum = (Decimal)AlphaConverter.MaximumAlphaWorkbook;
 
-        ( new VertexDrawingPrecedenceConverter() ).PopulateComboBox(
-            cbxVertexDrawingPrecedence, true);
-
         VertexVisibilityConverter oVertexVisibilityConverter = 
             new VertexVisibilityConverter();
 
@@ -108,6 +105,9 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 oVertexVisibilityConverter.GraphToWorkbook(
                     VertexWorksheetReader.Visibility.Hide)
             );
+
+        ( new VertexLabelPositionConverter() ).PopulateComboBox(
+            cbxLabelPosition, true);
 
         BooleanConverter oBooleanConverter = new BooleanConverter();
 
@@ -232,6 +232,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
             // The controls are valid.
 
+            // Selected color.
+
             Color oSelectedColor = usrColor.Color;
 
             if (oSelectedColor == ColorNotEditedMarker)
@@ -243,6 +245,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 m_oEditedVertexAttributes.Color = oSelectedColor;
             }
 
+            // Shape.
+
             Object oSelectedShape = cbxShape.SelectedValue;
 
             m_oEditedVertexAttributes.Shape = (oSelectedShape is String) ?
@@ -251,14 +255,7 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             m_oEditedVertexAttributes.Radius = fRadius;
             m_oEditedVertexAttributes.Alpha = fAlpha;
 
-            Object oSelectedVertexDrawingPrecedence =
-                cbxVertexDrawingPrecedence.SelectedValue;
-
-            m_oEditedVertexAttributes.VertexDrawingPrecedence =
-                (oSelectedVertexDrawingPrecedence is String) ?
-                null :
-                ( Nullable<VertexDrawingPrecedence> )
-                    oSelectedVertexDrawingPrecedence;
+            // Visibility.
 
             Object oSelectedVisibility = cbxVisibility.SelectedValue;
 
@@ -283,10 +280,23 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 }
             }
 
+            // Label position.
+
+            Object oSelectedLabelPosition = cbxLabelPosition.SelectedValue;
+
+            m_oEditedVertexAttributes.LabelPosition =
+                (oSelectedLabelPosition is String) ?
+                null :
+                ( Nullable<VertexLabelPosition> )oSelectedLabelPosition;
+
+            // Locked.
+
             Object oSelectedLocked = cbxLocked.SelectedValue;
 
             m_oEditedVertexAttributes.Locked = (oSelectedLocked is String) ?
                 null : ( Nullable<Boolean> )oSelectedLocked;
+
+            // Marked.
 
             Object oSelectedMarked = cbxMarked.SelectedValue;
 
@@ -295,6 +305,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
         }
         else
         {
+            // Color.
+
             if (m_oEditedVertexAttributes.Color.HasValue)
             {
                 usrColor.Color = m_oEditedVertexAttributes.Color.Value;
@@ -303,6 +315,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             {
                 usrColor.Color = ColorNotEditedMarker;
             }
+
+            // Shape.
 
             if (m_oEditedVertexAttributes.Shape.HasValue)
             {
@@ -314,6 +328,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 cbxShape.SelectedValue = NotEditedMarker;
             }
 
+            // Radius.
+
             if (m_oEditedVertexAttributes.Radius.HasValue)
             {
                 nudRadius.Value =
@@ -323,6 +339,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             {
                 nudRadius.Text = NotEditedMarker;
             }
+
+            // Alpha.
 
             if (m_oEditedVertexAttributes.Alpha.HasValue)
             {
@@ -334,15 +352,7 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 nudAlpha.Text = NotEditedMarker;
             }
 
-            if (m_oEditedVertexAttributes.VertexDrawingPrecedence.HasValue)
-            {
-                cbxVertexDrawingPrecedence.SelectedValue =
-                    m_oEditedVertexAttributes.VertexDrawingPrecedence.Value;
-            }
-            else
-            {
-                cbxVertexDrawingPrecedence.SelectedValue = NotEditedMarker;
-            }
+            // Visibility.
 
             if (m_oEditedVertexAttributes.Visibility.HasValue)
             {
@@ -354,6 +364,19 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 cbxVisibility.SelectedValue = NotEditedMarker;
             }
 
+            // Label position.
+
+            if (m_oEditedVertexAttributes.LabelPosition.HasValue)
+            {
+                cbxLabelPosition.SelectedValue =
+                    m_oEditedVertexAttributes.LabelPosition.Value;
+            }
+            else
+            {
+                cbxLabelPosition.SelectedValue = NotEditedMarker;
+            }
+
+            // Locked.
 
             if (m_oEditedVertexAttributes.Locked.HasValue)
             {
@@ -364,6 +387,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             {
                 cbxLocked.SelectedValue = NotEditedMarker;
             }
+
+            // Marked.
 
             if (m_oEditedVertexAttributes.Marked.HasValue)
             {
@@ -400,7 +425,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
         EditedVertexAttributes oInitialVertexAttributes =
             new EditedVertexAttributes();
 
-
         // Color.
 
         oInitialVertexAttributes.Color =
@@ -411,7 +435,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
         oInitialVertexAttributes.Shape =
             GetInitialAttributeValue<VertexShape>(
                 ReservedMetadataKeys.PerVertexShape);
-
 
         // Radius.
 
@@ -434,7 +457,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             oInitialVertexAttributes.Radius = null;
         }
 
-
         // Alpha.
 
         Nullable<Byte> btInitialAlpha = GetInitialAttributeValue<Byte>(
@@ -452,18 +474,15 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             oInitialVertexAttributes.Alpha = null;
         }
 
-
-        // Vertex drawing precedence.
-
-        oInitialVertexAttributes.VertexDrawingPrecedence =
-            GetInitialAttributeValue<VertexDrawingPrecedence>(
-                ReservedMetadataKeys.PerVertexDrawingPrecedence);
-
-
         // Visibility.
 
         oInitialVertexAttributes.Visibility = null;
 
+        // Label position..
+
+        oInitialVertexAttributes.LabelPosition =
+            GetInitialAttributeValue<VertexLabelPosition>(
+                ReservedMetadataKeys.PerVertexLabelPosition);
 
         // Locked.
 
@@ -471,12 +490,10 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             GetInitialAttributeValue<Boolean>(
                 ReservedMetadataKeys.LockVertexLocation);
 
-
         // Marked.
 
         oInitialVertexAttributes.Marked =
             GetInitialAttributeValue<Boolean>(ReservedMetadataKeys.Marked);
-
 
         return (oInitialVertexAttributes);
     }
@@ -657,11 +674,11 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             Boolean bApplyRadius = m_oEditedVertexAttributes.Radius.HasValue;
             Boolean bApplyAlpha = m_oEditedVertexAttributes.Alpha.HasValue;
 
-            Boolean bApplyVertexDrawingPrecedence =
-                m_oEditedVertexAttributes.VertexDrawingPrecedence.HasValue;
-
             Boolean bApplyVisibility =
                 m_oEditedVertexAttributes.Visibility.HasValue;
+
+            Boolean bApplyLabelPosition =
+                m_oEditedVertexAttributes.LabelPosition.HasValue;
 
             Boolean bApplyLocked = m_oEditedVertexAttributes.Locked.HasValue;
             Boolean bApplyMarked = m_oEditedVertexAttributes.Marked.HasValue;
@@ -699,14 +716,6 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                             m_oEditedVertexAttributes.Alpha.Value) );
                 }
 
-                if (bApplyVertexDrawingPrecedence)
-                {
-                    oVertex.SetValue(
-                        ReservedMetadataKeys.PerVertexDrawingPrecedence,
-                        m_oEditedVertexAttributes.VertexDrawingPrecedence.Value
-                        );
-                }
-
                 if (bApplyVisibility)
                 {
                     Debug.Assert(m_oEditedVertexAttributes.Visibility.Value ==
@@ -722,6 +731,13 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                         oIncidentEdge.SetValue(ReservedMetadataKeys.Visibility, 
                             VisibilityKeyValue.Hidden);
                     }
+                }
+
+                if (bApplyLabelPosition)
+                {
+                    oVertex.SetValue(
+                        ReservedMetadataKeys.PerVertexLabelPosition,
+                        m_oEditedVertexAttributes.LabelPosition.Value);
                 }
 
                 if (bApplyLocked)
@@ -816,7 +832,7 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("VertexAttributesDialog3") ]
+[ SettingsGroupNameAttribute("VertexAttributesDialog5") ]
 
 public class VertexAttributesDialogUserSettings : FormSettings
 {

@@ -348,21 +348,16 @@ public static class WorkbookAutoFiller : Object
         }
 
         AutoFillColumnViaCopy(oVertexTable,
-            oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName,
-            VertexTableColumnNames.PrimaryLabel
+            oAutoFillUserSettings.VertexLabelSourceColumnName,
+            VertexTableColumnNames.Label
             );
 
         TryAutoFillColorColumn(oVertexTable,
-            oAutoFillUserSettings.VertexPrimaryLabelFillColorSourceColumnName,
-            VertexTableColumnNames.PrimaryLabelFillColor,
-            oAutoFillUserSettings.VertexPrimaryLabelFillColorDetails,
+            oAutoFillUserSettings.VertexLabelFillColorSourceColumnName,
+            VertexTableColumnNames.LabelFillColor,
+            oAutoFillUserSettings.VertexLabelFillColorDetails,
             out dSourceCalculationNumber1,
             out dSourceCalculationNumber2
-            );
-
-        AutoFillColumnViaCopy(oVertexTable,
-            oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName,
-            VertexTableColumnNames.SecondaryLabel
             );
 
         AutoFillColumnViaCopy(oVertexTable,

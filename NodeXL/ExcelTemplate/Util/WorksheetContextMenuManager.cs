@@ -407,7 +407,7 @@ public class WorksheetContextMenuManager : Object
 
         AddSetColorContextMenuItem(m_oVertexTable, oClickedRange,
             VertexTableColumnNames.Color,
-            VertexTableColumnNames.PrimaryLabelFillColor);
+            VertexTableColumnNames.LabelFillColor);
     }
 
     //*************************************************************************

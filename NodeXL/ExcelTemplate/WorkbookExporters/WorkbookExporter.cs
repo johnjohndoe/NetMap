@@ -154,26 +154,6 @@ public class WorkbookExporter
                 + " workbook."
                 );
         }
-        else
-        {
-            // Copy the image table.  To keep things simple, copy the entire
-            // table, even though some or none of the rows may be referenced
-            // by the copied vertices.
-
-            Range oVisibleTableRange;
-
-            if (
-                ExcelUtil.TryGetTable(m_oWorkbookToExport,
-                    WorksheetNames.Images, TableNames.Images, out oTable)
-                &&
-                ExcelUtil.TryGetVisibleTableRange(oTable,
-                    out oVisibleTableRange)
-                )
-            {
-                CopyRowsToNewNodeXLWorkbook(oTable, oVisibleTableRange,
-                    oNewNodeXLWorkbook);
-            }
-        }
 
         return (oNewNodeXLWorkbook);
     }

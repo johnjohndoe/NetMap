@@ -91,9 +91,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             cbxVertexShapeSourceColumnName,
             cbxVertexRadiusSourceColumnName,
             cbxVertexAlphaSourceColumnName,
-            cbxVertexPrimaryLabelSourceColumnName,
-            cbxVertexPrimaryLabelFillColorSourceColumnName,
-            cbxVertexSecondaryLabelSourceColumnName,
+            cbxVertexLabelSourceColumnName,
+            cbxVertexLabelFillColorSourceColumnName,
             cbxVertexToolTipSourceColumnName,
             cbxVertexVisibilitySourceColumnName,
             cbxVertexLayoutOrderSourceColumnName,
@@ -173,15 +172,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         lblVertexShape.Tag = sVertexPrefix + VertexTableColumnNames.Shape;
         lblVertexRadius.Tag = sVertexPrefix + VertexTableColumnNames.Radius;
         lblVertexAlpha.Tag = sVertexPrefix + VertexTableColumnNames.Alpha;
+        lblVertexLabel.Tag = sVertexPrefix + VertexTableColumnNames.Label;
 
-        lblVertexPrimaryLabel.Tag =
-            sVertexPrefix + VertexTableColumnNames.PrimaryLabel;
-
-        lblVertexPrimaryLabelFillColor.Tag =
-            sVertexPrefix + VertexTableColumnNames.PrimaryLabelFillColor;
-
-        lblVertexSecondaryLabel.Tag =
-            sVertexPrefix + VertexTableColumnNames.SecondaryLabel;
+        lblVertexLabelFillColor.Tag =
+            sVertexPrefix + VertexTableColumnNames.LabelFillColor;
 
         lblVertexToolTip.Tag = sVertexPrefix + VertexTableColumnNames.ToolTip;
 
@@ -284,8 +278,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             // Insert a few special items.
 
             foreach (ComboBox oComboBox in new ComboBox [] {
-                cbxVertexPrimaryLabelSourceColumnName,
-                cbxVertexSecondaryLabelSourceColumnName,
+                cbxVertexLabelSourceColumnName,
                 cbxVertexToolTipSourceColumnName
                 } )
             {
@@ -301,15 +294,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         cbxVertexShapeSourceColumnName.Tag = VertexTableColumnNames.Shape;
         cbxVertexRadiusSourceColumnName.Tag = VertexTableColumnNames.Radius;
         cbxVertexAlphaSourceColumnName.Tag = VertexTableColumnNames.Alpha;
+        cbxVertexLabelSourceColumnName.Tag = VertexTableColumnNames.Label;
 
-        cbxVertexPrimaryLabelSourceColumnName.Tag =
-            VertexTableColumnNames.PrimaryLabel;
-
-        cbxVertexPrimaryLabelFillColorSourceColumnName.Tag =
-            VertexTableColumnNames.PrimaryLabelFillColor;
-
-        cbxVertexSecondaryLabelSourceColumnName.Tag =
-            VertexTableColumnNames.SecondaryLabel;
+        cbxVertexLabelFillColorSourceColumnName.Tag =
+            VertexTableColumnNames.LabelFillColor;
 
         cbxVertexToolTipSourceColumnName.Tag = VertexTableColumnNames.ToolTip;
 
@@ -411,17 +399,13 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
                 GetSourceColumnNameFromComboBox(
                     cbxVertexAlphaSourceColumnName);
 
-            m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName =
+            m_oAutoFillUserSettings.VertexLabelSourceColumnName =
                 GetSourceColumnNameFromComboBox(
-                    cbxVertexPrimaryLabelSourceColumnName);
+                    cbxVertexLabelSourceColumnName);
 
-            m_oAutoFillUserSettings.VertexPrimaryLabelFillColorSourceColumnName
+            m_oAutoFillUserSettings.VertexLabelFillColorSourceColumnName
                 = GetSourceColumnNameFromComboBox(
-                    cbxVertexPrimaryLabelFillColorSourceColumnName);
-
-            m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName =
-                GetSourceColumnNameFromComboBox(
-                    cbxVertexSecondaryLabelSourceColumnName);
+                    cbxVertexLabelFillColorSourceColumnName);
 
             m_oAutoFillUserSettings.VertexToolTipSourceColumnName =
                 GetSourceColumnNameFromComboBox(
@@ -475,15 +459,12 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             cbxVertexAlphaSourceColumnName.Text =
                 m_oAutoFillUserSettings.VertexAlphaSourceColumnName;
 
-            cbxVertexPrimaryLabelSourceColumnName.Text =
-                m_oAutoFillUserSettings.VertexPrimaryLabelSourceColumnName;
+            cbxVertexLabelSourceColumnName.Text =
+                m_oAutoFillUserSettings.VertexLabelSourceColumnName;
 
-            cbxVertexPrimaryLabelFillColorSourceColumnName.Text =
+            cbxVertexLabelFillColorSourceColumnName.Text =
                 m_oAutoFillUserSettings.
-                    VertexPrimaryLabelFillColorSourceColumnName;
-
-            cbxVertexSecondaryLabelSourceColumnName.Text =
-                m_oAutoFillUserSettings.VertexSecondaryLabelSourceColumnName;
+                    VertexLabelFillColorSourceColumnName;
 
             cbxVertexToolTipSourceColumnName.Text =
                 m_oAutoFillUserSettings.VertexToolTipSourceColumnName;
@@ -1018,11 +999,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: btnVertexPrimaryLabelFillColorDetails_Click()
+    //  Method: btnVertexLabelFillColorDetails_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnVertexPrimaryLabelFillColorDetails
-    /// button.
+    /// Handles the Click event on the btnVertexLabelFillColorDetails button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1035,7 +1015,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    btnVertexPrimaryLabelFillColorDetails_Click
+    btnVertexLabelFillColorDetails_Click
     (
         object sender,
         EventArgs e
@@ -1046,8 +1026,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         ColorColumnAutoFillUserSettingsDialog
             oColorColumnAutoFillUserSettingsDialog =
             new ColorColumnAutoFillUserSettingsDialog(
-                m_oAutoFillUserSettings.VertexPrimaryLabelFillColorDetails,
-                "Vertex Primary Label Fill Color Options");
+                m_oAutoFillUserSettings.VertexLabelFillColorDetails,
+                "Vertex Label Fill Color Options");
 
         oColorColumnAutoFillUserSettingsDialog.ShowDialog();
     }
@@ -1350,7 +1330,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         if ( sWorksheetColumnName.Contains("Fill Color") )
         {
-            sWorksheetColumnName = "Vertex Primary Label Fill Color";
+            sWorksheetColumnName = "Vertex Label Fill Color";
         }
 
         this.tsmClearColumn.Text =
@@ -1759,7 +1739,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AutoFillWorkbookDialog") ]
+[ SettingsGroupNameAttribute("AutoFillWorkbookDialog2") ]
 
 public class AutoFillWorkbookDialogUserSettings : FormSettings
 {

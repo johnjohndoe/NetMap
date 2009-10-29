@@ -8,27 +8,27 @@ using Microsoft.NodeXL.Visualization.Wpf;
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//  Class: VertexDrawingPrecedenceConverter
+//  Class: VertexLabelPositionConverter
 //
 /// <summary>
-/// Class that converts a vertex drawing precedence between values used in the
+/// Class that converts a vertex label position between values used in the
 /// Excel workbook and values used in the NodeXL graph.
 /// </summary>
 //*****************************************************************************
 
-public class VertexDrawingPrecedenceConverter :
-    TextValueConverterBase<VertexDrawingPrecedence>
+public class VertexLabelPositionConverter :
+    TextValueConverterBase<VertexLabelPosition>
 {
     //*************************************************************************
-    //  Constructor: VertexDrawingPrecedenceConverter()
+    //  Constructor: VertexLabelPositionConverter()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="VertexDrawingPrecedenceConverter" /> class.
+    /// cref="VertexLabelPositionConverter" /> class.
     /// </summary>
     //*************************************************************************
 
-    public VertexDrawingPrecedenceConverter()
+    public VertexLabelPositionConverter()
     {
         // (Do nothing.)
 
@@ -51,14 +51,32 @@ public class VertexDrawingPrecedenceConverter :
 
         return ( new GraphValueInfo [] {
 
-            new GraphValueInfo( VertexDrawingPrecedence.Shape,
-                new String [] {"Shape (1)", "1",} ),
+            new GraphValueInfo( VertexLabelPosition.TopLeft,
+                new String [] {"Top Left", "1"} ),
 
-            new GraphValueInfo( VertexDrawingPrecedence.Image,
-                new String [] {"Image (2)", "2",} ),
+            new GraphValueInfo( VertexLabelPosition.TopCenter,
+                new String [] {"Top Center", "2"} ),
 
-            new GraphValueInfo( VertexDrawingPrecedence.PrimaryLabel,
-                new String [] {"Primary Label (3)", "3",} ),
+            new GraphValueInfo( VertexLabelPosition.TopRight,
+                new String [] {"Top Right", "3"} ),
+
+            new GraphValueInfo( VertexLabelPosition.MiddleLeft,
+                new String [] {"Middle Left", "4"} ),
+
+            new GraphValueInfo( VertexLabelPosition.MiddleCenter,
+                new String [] {"Middle Center", "5"} ),
+
+            new GraphValueInfo( VertexLabelPosition.MiddleRight,
+                new String [] {"Middle Right", "6"} ),
+
+            new GraphValueInfo( VertexLabelPosition.BottomLeft,
+                new String [] {"Bottom Left", "7"} ),
+
+            new GraphValueInfo( VertexLabelPosition.BottomCenter,
+                new String [] {"Bottom Center", "8"} ),
+
+            new GraphValueInfo( VertexLabelPosition.BottomRight,
+                new String [] {"Bottom Right", "9"} ),
             } );
     }
 

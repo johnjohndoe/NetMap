@@ -500,8 +500,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                 continue;
             }
 
-            // If there is an alpha column and the alpha for this row isn't
-            // empty, set the edge's alpha.
+            // Alpha.
 
             if (oEdgeTableColumnIndexes.Alpha != NoSuchColumn)
             {
@@ -515,8 +514,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                 }
             }
 
-            // If there is a color column and the color for this row isn't
-            // empty, set the edge's color.
+            // Color.
 
             if (oEdgeTableColumnIndexes.Color != NoSuchColumn)
             {
@@ -526,8 +524,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                     oReadWorkbookContext.ColorConverter2);
             }
 
-            // If there is a width column and the width for this row isn't
-            // empty, set the edge's width.
+            // Width.
 
             if (oEdgeTableColumnIndexes.Width != NoSuchColumn)
             {
@@ -536,17 +533,17 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                     oReadWorkbookContext.EdgeWidthConverter, oEdge);
             }
 
-            // If there is a label column and the label for this row isn't
-            // empty, set the edge's label.
+            // Label.
 
-            if (oEdgeTableColumnIndexes.Label != NoSuchColumn)
+            if (oReadWorkbookContext.ReadEdgeLabels &&
+                oEdgeTableColumnIndexes.Label != NoSuchColumn)
             {
                 CheckForNonEmptyCell(aoEdgeValues, iRowOneBased,
                     oEdgeTableColumnIndexes.Label, oEdge,
                     ReservedMetadataKeys.PerEdgeLabel);
             }
 
-            // If edge weight values should be set, set the edge's weight.
+            // Weight.
 
             if (oReadWorkbookContext.SetEdgeWeightValues)
             {

@@ -7,6 +7,7 @@ using System.Web;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.Research.CommunityTechnologies.XmlLib;
 using Microsoft.SocialNetworkLib;
 
@@ -485,7 +486,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             "http://search.twitter.com/search.atom?q={0}&rpp=100"
             ,
-            HttpUtility.UrlEncode(sSearchTerm).Replace("%20", "+")
+            UrlUtil.EncodeUrlParameter(sSearchTerm).Replace("%20", "+")
             );
 
         ReportProgress("Getting a list of tweets");
@@ -503,7 +504,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         foreach ( XmlNode oAuthorNameXmlNode in EnumerateXmlNodes(
             sUrl, "a:feed/a:entry/a:author/a:name", "a", AtomNamespaceUri,
-            100, 15, Int32.MaxValue, false, sCredentialsScreenName,
+            15, Int32.MaxValue, true, false, sCredentialsScreenName,
             sCredentialsPassword) )
         {
             if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
@@ -679,8 +680,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             foreach ( XmlNode oOtherUserXmlNode in EnumerateXmlNodes(
                 GetFollowedOrFollowingUrl(sScreenName, true),
-                "users/user", null, null, 100, Int32.MaxValue,
-                iMaximumPeoplePerRequest, true, sCredentialsScreenName,
+                "users_list/users/user", null, null, Int32.MaxValue,
+                iMaximumPeoplePerRequest, false, true, sCredentialsScreenName,
                 sCredentialsPassword) )
             {
                 if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )

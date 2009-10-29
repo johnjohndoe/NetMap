@@ -57,9 +57,9 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
         m_oGeneralUserSettings = generalUserSettings;
         m_oWorkbook = workbook;
-        m_oLabelFont = m_oGeneralUserSettings.LabelFont;
         m_oAxisFont = m_oGeneralUserSettings.AxisFont;
         m_oLayoutUserSettings = m_oGeneralUserSettings.LayoutUserSettings;
+        m_oLabelUserSettings = m_oGeneralUserSettings.LabelUserSettings;
 
         // Instantiate an object that saves and retrieves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -142,7 +142,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
             if (
                 !ValidateNumericUpDown(nudVertexRadius,
-                    "a size for vertex shapes", out fVertexRadius)
+                    "a size for simple vertex shapes", out fVertexRadius)
                 ||
                 ( bUseSpecifiedVertexImageSize &&
                     !ValidateNumericUpDown(nudVertexImageSize,
@@ -189,16 +189,13 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             m_oGeneralUserSettings.VertexColor = usrVertexColor.Color;
             m_oGeneralUserSettings.VertexAlpha = fVertexAlpha;
 
-            m_oGeneralUserSettings.PrimaryLabelFillColor =
-                usrPrimaryLabelFillColor.Color;
-
             m_oGeneralUserSettings.SelectedVertexColor =
                 usrSelectedVertexColor.Color;
 
             m_oGeneralUserSettings.AutoSelect = chkAutoSelect.Checked;
-            m_oGeneralUserSettings.LabelFont = m_oLabelFont;
             m_oGeneralUserSettings.AxisFont = m_oAxisFont;
             m_oGeneralUserSettings.LayoutUserSettings = m_oLayoutUserSettings;
+            m_oGeneralUserSettings.LabelUserSettings = m_oLabelUserSettings;
 
             m_oGeneralUserSettings.AutoReadWorkbook =
                 chkAutoReadWorkbook.Checked;
@@ -241,19 +238,18 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             usrVertexColor.Color = m_oGeneralUserSettings.VertexColor;
             nudVertexAlpha.Value = (Decimal)m_oGeneralUserSettings.VertexAlpha;
 
-            usrPrimaryLabelFillColor.Color =
-                m_oGeneralUserSettings.PrimaryLabelFillColor;
-
             usrSelectedVertexColor.Color =
                 m_oGeneralUserSettings.SelectedVertexColor;
 
             chkAutoSelect.Checked = m_oGeneralUserSettings.AutoSelect;
 
-            m_oLabelFont = m_oGeneralUserSettings.LabelFont;
             m_oAxisFont = m_oGeneralUserSettings.AxisFont;
 
             m_oLayoutUserSettings =
                 m_oGeneralUserSettings.LayoutUserSettings.Copy();
+
+            m_oLabelUserSettings =
+                m_oGeneralUserSettings.LabelUserSettings.Copy();
 
             chkAutoReadWorkbook.Checked =
                 m_oGeneralUserSettings.AutoReadWorkbook;
@@ -262,63 +258,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         }
 
         return (true);
-    }
-
-    //*************************************************************************
-    //  Method: EditFont()
-    //
-    /// <summary>
-    /// Edits a Font object.
-    /// </summary>
-    ///
-    /// <param name="oFont">
-    /// The Font object to edit.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    EditFont
-    (
-        ref Font oFont
-    )
-    {
-        AssertValid();
-
-        FontDialog oFontDialog = new FontDialog();
-
-        // Note that the FontDialog makes a copy of oFont, so if the user edits
-        // the font within FontDialog but then cancels this
-        // GeneralUserSettingsDialog, the m_oGeneralUserSettings.Font object
-        // doesn't get modified.  This is the correct behavior.
-
-        oFontDialog.Font = oFont;
-        oFontDialog.FontMustExist = true;
-        oFontDialog.ScriptsOnly = true;
-        oFontDialog.ShowEffects = false;
-
-        // The FontConverter class implicity used by ApplicationsSettingsBase
-        // to persist GeneralUserSettings's Font objects does not persist the
-        // script, so don't allow the user to change the script from the
-        // default.
-
-        oFontDialog.AllowScriptChange = false;
-
-        try
-        {
-            if (oFontDialog.ShowDialog() == DialogResult.OK)
-            {
-                oFont = oFontDialog.Font;
-            }
-        }
-        catch (ArgumentException)
-        {
-            // Known bug: Selecting the Visual UI font in the dialog throws an
-            // ArgumentException of "Only TrueType fonts are supported. This is
-            // not a TrueType font."  See the following post:
-            //
-            // http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/
-            // e50a3dc2-a9d9-4eea-aae6-39bc7c18b04e
-        }
     }
 
     //*************************************************************************
@@ -421,34 +360,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: btnLabelFont_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnLabelFont button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnLabelFont_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        EditFont(ref m_oLabelFont);
-    }
-
-    //*************************************************************************
     //  Method: btnAxisFont_Click()
     //
     /// <summary>
@@ -505,6 +416,37 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             new LayoutUserSettingsDialog(m_oLayoutUserSettings);
 
         oLayoutUserSettingsDialog.ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: btnLabels_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnLabels button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnLabels_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        LabelUserSettingsDialog oLabelUserSettingsDialog =
+            new LabelUserSettingsDialog(m_oLabelUserSettings);
+
+        oLabelUserSettingsDialog.ShowDialog();
     }
 
     //*************************************************************************
@@ -614,9 +556,9 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
         Debug.Assert(m_oGeneralUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
-        Debug.Assert(m_oLabelFont != null);
         Debug.Assert(m_oAxisFont != null);
         Debug.Assert(m_oLayoutUserSettings != null);
+        Debug.Assert(m_oLabelUserSettings != null);
         Debug.Assert(m_oGeneralUserSettingsDialogUserSettings != null);
     }
 
@@ -639,11 +581,14 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
     protected LayoutUserSettings m_oLayoutUserSettings;
 
-    /// Font properties of m_oGeneralUserSettings.  These get edited by a
+    /// A copy of the LabelUserSettings object owned by m_oGeneralUserSettings.
+    /// This gets edited by a LabelUserSettingsDialog.
+
+    protected LabelUserSettings m_oLabelUserSettings;
+
+    /// AxisFont property of m_oGeneralUserSettings.  This gets edited by a
     /// FontDialog.
 
-    protected Font m_oLabelFont;
-    ///
     protected Font m_oAxisFont;
 
     /// User settings for this dialog.
@@ -666,7 +611,7 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GeneralUserSettingsDialog4") ]
+[ SettingsGroupNameAttribute("GeneralUserSettingsDialog5") ]
 
 public class GeneralUserSettingsDialogUserSettings : FormSettings
 {

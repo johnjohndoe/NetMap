@@ -402,6 +402,33 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
         A75oJNGigDfNpmmw8OAvUUgTM1UG9fQAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="btnSetVertexShapeLabel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALEAAA
+        CxABrSO9dQAAAYpJREFUOE+lk7tLw1AUh/Wfc3BSoS6itpuvQVBwEUUnBZHq0IJ08AE6dFBQ6FDQURQU
+        VxXa9JE2bdNH2iZ99+c5F2+wXKc2cLhLvu93zrnJOICxkR4WTK37MUyJcCmgE/1+Hz2uXg9dqk63i3an
+        g1a7jSZVo9WC02zCbjRE4IBAwi5I8PFJEAu+1QGwTnDNcVTBf6kzs15MTHrw/PoGCVZtG1a9rgrcdqll
+        bvfuPgIpCJ6di1SL4ArB5VpNFbiz0pw865E/gKvrsOhg3rciUhksVasoWpYq+LukmJYQ8HdMEwKuSPQR
+        RYJNgguViipwKNWmDfOsl78wt7uxtSsEO/uHMAnMl8vIlUqqgK+G5+QlccsyWZ7TnkXE07qAjWJRFUg4
+        En1C+PbBnVXTM2CYRaGLG2QJzpimKuAl6YaBpbVNJDNZd1ZueXvvQAjmvMv4SiSRLhRUAW9YJvHLL+8f
+        ot3TQEgZ5zOuqQK+Gl4Sb5hTDYJluzolcmoqn0cql0OSSvmUR/qZ+KcYtn4AmLHi7nXGRt8AAAAASUVO
+        RK5CYII=
+</value>
+  </data>
+  <data name="btnSetVertexShapeImage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALEAAA
+        CxABrSO9dQAAAXJJREFUOE+lk69uwzAYxLc36CPkEQILAwcDBwMLDQsDBw0HDQsNCw0LDQMDAw3Hbndf
+        mjbpNKnaLJ2SSr3f98eXVwAv/zoC+FPGVgk+JPSflE9wHxGuj+iOwdQ66hBoZfEFoF+/nfIFlAKM0gTk
+        Eajf+ucAZcjIXT3rwneaw3lE9QxAlWXElIDkkNsKaSAg/gDwDw9nadsAMvsGSYAsQEbVrEfgwtZnPbO1
+        LSMVaYwX2MI3AG17OSM35fpgykOxmdW2KstsABbcAnhVOot5nGikuWk7a1fP+X2EmvUsWO1XI+ie12YD
+        5IJ4zmjfHSLLSwwcb6AwHxG7DYAhUcuFl637zhxD1SKvS/MKEk4KVzRI7x8ASheuYTHz1egDE8qeBa+b
+        lk8Pd/QG2dWrEQRQdc0d01xVZi13jjGj2/UGUTfax6529yQq23Pl2XTPP7PvPLqDN4CM9b41bQH8MJRt
+        xdPEkNzEZWlhJrYt46Lbx6SXv+obNRfIBVMEy/gAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="btnCreateClusters.SuperTip" xml:space="preserve">
     <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
 	
@@ -427,7 +454,7 @@ Find Clusters uses the algorithm outlined in "Finding Community Structure in Meg
         kA0gXKGCwioAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="cbxReadClusters.SuperTip" xml:space="preserve">
+  <data name="chkReadClusters.SuperTip" xml:space="preserve">
     <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
 	
 When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
@@ -436,7 +463,7 @@ You can fill in these worksheets manually, or click the Find Clusters button to 
 
 Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>
-  <data name="cbxShowGraphAxes.SuperTip" xml:space="preserve">
+  <data name="chkShowGraphAxes.SuperTip" xml:space="preserve">
     <value>Show or hide the x- and y-axes in the graph pane.
 
 The axes initially show the numbers in the X and Y columns in the Vertices worksheet.  If you use Autofill Columns to autofill the X and Y columns using source columns, the axes will show the values in those source columns.

@@ -48,19 +48,24 @@ public class VertexVisibilityConverter :
     {
         AssertValid();
 
+        // The parenthetical entries are for backward compatibility with older
+        // NodeXL workbooks.  Parentheses are not used in newer value
+        // converters.
+
         return ( new GraphValueInfo [] {
 
             new GraphValueInfo( VertexWorksheetReader.Visibility.ShowIfInAnEdge,
-                new String [] {"Show if in an Edge (1)", "1",} ),
+                new String [] {"Show if in an Edge", "Show if in an Edge (1)",
+                "1",} ),
 
             new GraphValueInfo( VertexWorksheetReader.Visibility.Skip,
-                new String [] {"Skip (0)", "0",} ),
+                new String [] {"Skip", "Skip (0)", "0",} ),
 
             new GraphValueInfo( VertexWorksheetReader.Visibility.Hide,
-                new String [] {"Hide (2)", "2",} ),
+                new String [] {"Hide", "Hide (2)", "2",} ),
 
             new GraphValueInfo( VertexWorksheetReader.Visibility.Show,
-                new String [] {"Show (4)", "4",} ),
+                new String [] {"Show", "Show (4)", "4",} ),
             } );
     }
 

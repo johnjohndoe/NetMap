@@ -136,25 +136,25 @@ public partial class MainForm : Form
         IVertex oVertex1 = oVertices.Add();
 
         oVertex1.SetValue( ReservedMetadataKeys.PerVertexShape,
-            VertexDrawer.VertexShape.Circle);
+            VertexShape.Circle);
 
         oVertex1.SetValue(ReservedMetadataKeys.PerVertexRadius, 50.0F);
         oVertex1.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
         oVertex1.Location = new System.Drawing.PointF(300, 300);
 
-        oVertex1.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
+        oVertex1.SetValue(ReservedMetadataKeys.PerVertexLabel,
             "This is A: " + oVertex1.Location);
 
         IVertex oVertex2 = oVertices.Add();
 
         oVertex2.SetValue( ReservedMetadataKeys.PerVertexShape,
-            VertexDrawer.VertexShape.Circle);
+            VertexShape.Circle);
 
         oVertex2.SetValue(ReservedMetadataKeys.PerVertexRadius, 50.0F);
         oVertex2.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
         oVertex2.Location = new System.Drawing.PointF(500, 300);
 
-        oVertex2.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
+        oVertex2.SetValue(ReservedMetadataKeys.PerVertexLabel,
             "This is B: " + oVertex2.Location);
 
         IEdge oEdge = oEdges.Add(oVertex1, oVertex2, true);
@@ -169,29 +169,29 @@ public partial class MainForm : Form
         }
 
         {
-        #if false  // Two primary labels only.
+        #if false  // Two labels only.
 
         IVertex oVertex1 = oVertices.Add();
 
-        oVertex1.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
-            "This is a primary label.");
+        oVertex1.SetValue(ReservedMetadataKeys.PerVertexShape,
+            VertexShape.Label);
+
+        oVertex1.SetValue(ReservedMetadataKeys.PerVertexLabel,
+            "This is a label.");
 
         oVertex1.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
         oVertex1.Location = new System.Drawing.PointF(300, 300);
 
-        oVertex1.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
-            "This is A: " + oVertex1.Location);
-
         IVertex oVertex2 = oVertices.Add();
 
-        oVertex2.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
-            "This is another primary label.");
+        oVertex2.SetValue(ReservedMetadataKeys.PerVertexShape,
+            VertexShape.Label);
+
+        oVertex2.SetValue(ReservedMetadataKeys.PerVertexLabel,
+            "This is another label.");
 
         oVertex2.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
         oVertex2.Location = new System.Drawing.PointF(500, 100);
-
-        oVertex2.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
-            "This is B: " + oVertex2.Location);
 
         oEdges.Add(oVertex1, oVertex2, true);
 
@@ -220,9 +220,8 @@ public partial class MainForm : Form
         for (Int32 i = 1; i < Vertices; i++)
         {
             IVertex oVertex = oVertices.Add();
-
-            oVertex.SetValue( ReservedMetadataKeys.PerVertexShape,
-                aeShapes[ oRandom.Next(iShapes) ] );
+            VertexShape eShape = aeShapes[ oRandom.Next(iShapes) ];
+            oVertex.SetValue(ReservedMetadataKeys.PerVertexShape, eShape);
 
             #if false  // Hard-coded vertex shape.
 
@@ -254,10 +253,11 @@ public partial class MainForm : Form
 
             #endif
 
-            #if true
-
             if (true && oRandom.Next(50) == 0)  // Image
             {
+                oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+                    VertexShape.Image);
+
                 oVertex.SetValue( ReservedMetadataKeys.PerVertexImage,
                     new System.Windows.Media.Imaging.BitmapImage(
                         new Uri( oRandom.Next(2) == 1 ?
@@ -265,30 +265,17 @@ public partial class MainForm : Form
                             "..\\..\\Images\\TestImage2.jpg",
                             UriKind.Relative)));
             }
-            #endif
 
+            if (eShape == VertexShape.Label)
             {
-            #if true  // Secondary label.
-
-            String sSecondaryLabel = "This is a secondary label";
-
-            oVertex.SetValue(ReservedMetadataKeys.PerVertexSecondaryLabel,
-                sSecondaryLabel);
-
-            #endif
-            }
-
-            if (true && oRandom.Next(50) == 0)  // Primary label
-            {
-                String sPrimaryLabel = "This is a primary label";
+                String sLabel = "This is a label";
 
                 if (oRandom.Next(2) == 0)
                 {
-                    sPrimaryLabel = LongPrimaryLabel;
+                    sLabel = LongLabel;
                 }
 
-                oVertex.SetValue(ReservedMetadataKeys.PerVertexPrimaryLabel,
-                    sPrimaryLabel);
+                oVertex.SetValue(ReservedMetadataKeys.PerVertexLabel, sLabel);
 
                 /*
                 oVertex.SetValue( ReservedMetadataKeys.PerColor,
@@ -296,12 +283,19 @@ public partial class MainForm : Form
 
                 oVertex.SetValue(
 
-                    ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+                    ReservedMetadataKeys.PerVertexLabelFillColor,
                         System.Windows.Media.Color.FromArgb(255, 200, 200,
                             200) );
 
                 oVertex.SetValue(ReservedMetadataKeys.PerAlpha, (Byte)128);
                 */
+            }
+            else
+            {
+                String sAnnotation = "This is an annotation.";
+
+                oVertex.SetValue(ReservedMetadataKeys.PerVertexLabel,
+                    sAnnotation);
             }
 
             if (true && oRandom.Next(1) == 1)  // Vertex visibility.
@@ -317,14 +311,6 @@ public partial class MainForm : Form
 
             #endif
 
-            #if true  // VertexDrawingPrecedence.
-
-            oVertex.SetValue(
-                ReservedMetadataKeys.PerVertexDrawingPrecedence,
-                VertexDrawingPrecedence.PrimaryLabel);
-
-            #endif
-
             #if false  // Vertex IsSelected.
 
             oVertex.SetValue(ReservedMetadataKeys.IsSelected, null);
@@ -335,7 +321,6 @@ public partial class MainForm : Form
                 (Single)( dWidth * oRandom.NextDouble() ),
                 (Single)( dHeight * oRandom.NextDouble() )
                 );
-
 
 
             IEdge oEdge = oEdges.Add(oFirstVertex, oVertex, true);
@@ -819,7 +804,7 @@ public partial class MainForm : Form
         m_oNodeXLControl.GraphScale = tbGraphScale.Value / 100.0;
     }
 
-    protected const String LongPrimaryLabel =
+    protected const String LongLabel =
         "The Width of the resulting rectangle is increased or decreased by"
         + " twice the specified width offset, because it is applied to both"
         + " the left and right sides of the rectangle. Likewise, the Height of"

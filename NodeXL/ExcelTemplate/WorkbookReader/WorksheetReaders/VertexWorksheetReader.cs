@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Reflection;
@@ -221,27 +222,23 @@ public class VertexWorksheetReader : WorksheetReaderBase
         oVertexTableColumnIndexes.Radius = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Radius, false);
 
-        oVertexTableColumnIndexes.ImageKey = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.ImageKey, false);
+        oVertexTableColumnIndexes.ImageFilePath = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.ImageFilePath, false);
 
-        oVertexTableColumnIndexes.PrimaryLabel = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.PrimaryLabel, false);
+        oVertexTableColumnIndexes.Label = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.Label, false);
 
-        oVertexTableColumnIndexes.PrimaryLabelFillColor = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.PrimaryLabelFillColor, false);
+        oVertexTableColumnIndexes.LabelFillColor = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.LabelFillColor, false);
 
-        oVertexTableColumnIndexes.SecondaryLabel = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.SecondaryLabel, false);
+        oVertexTableColumnIndexes.LabelPosition = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.LabelPosition, false);
 
         oVertexTableColumnIndexes.Alpha = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Alpha, false);
 
         oVertexTableColumnIndexes.ToolTip = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.ToolTip, false);
-
-        oVertexTableColumnIndexes.VertexDrawingPrecedence =
-            GetTableColumnIndex(oVertexTable,
-                VertexTableColumnNames.VertexDrawingPrecedence, false);
 
         oVertexTableColumnIndexes.Visibility = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Visibility, false);
@@ -425,13 +422,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Dictionary<Int32, IIdentityProvider> oEdgeIDDictionary =
             oReadWorkbookContext.EdgeIDDictionary;
 
-        Dictionary<String, ImageSource> oImageIDDictionary =
-            oReadWorkbookContext.ImageIDDictionary;
-
         VertexVisibilityConverter oVertexVisibilityConverter =
             new VertexVisibilityConverter();
 
-        // Loop through the rows.
+        VertexLabelPositionConverter oVertexLabelPositionConverter =
+            new VertexLabelPositionConverter();
 
         Int32 iRows = oVertexSubrange.Rows.Count;
 
@@ -582,8 +577,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oReadWorkbookContext.VertexIDDictionary);
             }
 
-            // If there is an order column and the order for this row isn't
-            // empty, set the vertex's order.
+            // Vertex order.
 
             if (oVertexTableColumnIndexes.Order != NoSuchColumn)
             {
@@ -624,9 +618,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 }
             }
 
-            // If there are polar coordinate columns and polar coordinates have
-            // been specified for the vertex, set the vertex's polar
-            // coordinates.
+            // Polar coordinates.
 
             if (oVertexTableColumnIndexes.PolarR != NoSuchColumn &&
                 oVertexTableColumnIndexes.PolarAngle != NoSuchColumn)
@@ -636,10 +628,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oVertexTableColumnIndexes.PolarAngle, oVertex);
             }
 
-            // If there is a mark column and a mark flag has been specified for
-            // the vertex, set the vertex's mark flag.  ("Marking" is something
-            // the user does for himself.  A marked vertex doesn't behave
-            // differently from an unmarked vertex.)
+            // Marked.  ("Marking" is something the user does for himself.  A
+            // marked vertex doesn't behave differently from an unmarked
+            // vertex.)
 
             if (oVertexTableColumnIndexes.Marked != NoSuchColumn)
             {
@@ -658,8 +649,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     iRowOneBased, aoCustomMenuItemPairIndexes, oVertex);
             }
 
-            // If there is an alpha column and the alpha for this row isn't
-            // empty, set the vertex's alpha.
+            // Alpha.
 
             if (oVertexTableColumnIndexes.Alpha != NoSuchColumn)
             {
@@ -667,18 +657,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oVertexTableColumnIndexes.Alpha, oVertex);
             }
 
-            // If there is a secondary label column and the secondary label for
-            // this row isn't empty, set the vertex's secondary label.
-
-            if (oVertexTableColumnIndexes.SecondaryLabel != NoSuchColumn)
-            {
-                CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.SecondaryLabel, oVertex,
-                    ReservedMetadataKeys.PerVertexSecondaryLabel);
-            }
-
-            // If there is a tooltip column and the tooltip for this row isn't
-            // empty, set the vertex's tooltip.
+            // Tooltip.
 
             if (oVertexTableColumnIndexes.ToolTip != NoSuchColumn)
             {
@@ -690,29 +669,36 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 }
             }
 
-            // If there is a primary label column and the primary label for
-            // this row isn't empty, set the vertex's primary label.
+            // Label.
 
-            if (oVertexTableColumnIndexes.PrimaryLabel != NoSuchColumn)
+            if (oReadWorkbookContext.ReadVertexLabels &&
+                oVertexTableColumnIndexes.Label != NoSuchColumn)
             {
                 CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.PrimaryLabel, oVertex,
-                    ReservedMetadataKeys.PerVertexPrimaryLabel);
+                    oVertexTableColumnIndexes.Label, oVertex,
+                    ReservedMetadataKeys.PerVertexLabel);
             }
 
-            // If there is a primary label fill color column and the color for
-            // this row isn't empty, set the vertex's primary label fill color.
+            // Label fill color.
 
-            if (oVertexTableColumnIndexes.PrimaryLabelFillColor != NoSuchColumn)
+            if (oVertexTableColumnIndexes.LabelFillColor != NoSuchColumn)
             {
                 CheckForColor(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.PrimaryLabelFillColor, oVertex,
-                    ReservedMetadataKeys.PerVertexPrimaryLabelFillColor,
+                    oVertexTableColumnIndexes.LabelFillColor, oVertex,
+                    ReservedMetadataKeys.PerVertexLabelFillColor,
                     oReadWorkbookContext.ColorConverter2);
             }
 
-            // If there is a radius column and the radius for this row isn't
-            // empty, set the vertex's radius.
+            // Label position.
+
+            if (oVertexTableColumnIndexes.LabelPosition != NoSuchColumn)
+            {
+                CheckForLabelPosition(oVertexSubrange, aoVertexValues,
+                    iRowOneBased, oVertexTableColumnIndexes.LabelPosition,
+                    oVertexLabelPositionConverter, oVertex);
+            }
+
+            // Radius.
 
             Nullable<Single> oRadiusWorkbook = new Nullable<Single>();
 
@@ -724,24 +710,50 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oReadWorkbookContext.VertexRadiusConverter, oVertex);
             }
 
-            // If there is an image key column and the image key for this row
-            // isn't empty, set the vertex's image.
+            // Shape.
 
-            if (oReadWorkbookContext.ReadImages &&
-                oVertexTableColumnIndexes.ImageKey != NoSuchColumn)
+            VertexShape eVertexShape = oReadWorkbookContext.DefaultVertexShape;
+
+            if (oVertexTableColumnIndexes.Shape != NoSuchColumn)
             {
-                CheckForImageKey(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.ImageKey,
-                    oImageIDDictionary, oVertex,
-                    oReadWorkbookContext.VertexRadiusConverter,
+                VertexShape ePerVertexShape;
+
+                if ( CheckForShape(oVertexSubrange, aoVertexValues,
+                    iRowOneBased, oVertexTableColumnIndexes.Shape, oVertex,
+                    out ePerVertexShape) )
+                {
+                    eVertexShape = ePerVertexShape;
+                }
+            }
+
+            // Label font size.
+
+            if (eVertexShape == VertexShape.Label && oRadiusWorkbook.HasValue)
+            {
+                // The vertex radius is used to specify font size when the
+                // shape is Label.
+
+                oVertex.SetValue( ReservedMetadataKeys.PerVertexLabelFontSize,
+                    oReadWorkbookContext.VertexRadiusConverter.
+                        WorkbookToLabelFontSize(oRadiusWorkbook.Value) );
+            }
+
+            // Image file path.
+
+            if (eVertexShape == VertexShape.Image &&
+                oReadWorkbookContext.ReadVertexImages &&
+                oVertexTableColumnIndexes.ImageFilePath != NoSuchColumn)
+            {
+                CheckForImageFilePath(oVertexSubrange, aoVertexValues,
+                    iRowOneBased, oVertexTableColumnIndexes.ImageFilePath,
+                    oVertex, oReadWorkbookContext.VertexRadiusConverter,
 
                     oRadiusWorkbook.HasValue ? oRadiusWorkbook :
                         oReadWorkbookContext.DefaultVertexImageSize
                     );
             }
 
-            // If there is a color column and the color for this row isn't
-            // empty, set the vertex's color.
+            // Color
 
             if (oVertexTableColumnIndexes.Color != NoSuchColumn)
             {
@@ -750,29 +762,92 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     ReservedMetadataKeys.PerColor,
                     oReadWorkbookContext.ColorConverter2);
             }
-
-            // If there is a shape column and the shape for this row isn't
-            // empty, set the vertex's shape.
-
-            if (oVertexTableColumnIndexes.Shape != NoSuchColumn)
-            {
-                CheckForVertexShape(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.Shape, oVertex);
-            }
-
-            // If there is a vertex drawing precedence column and the value for
-            // this row isn't empty, set the vertex's drawing precedence.
-
-            if (oVertexTableColumnIndexes.VertexDrawingPrecedence !=
-                NoSuchColumn)
-            {
-                CheckForVertexDrawingPrecedence(oVertexSubrange,
-                    aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.VertexDrawingPrecedence,
-                    oVertex);
-            }
-
         }
+    }
+
+    //*************************************************************************
+    //  Method: CheckForLabelPosition()
+    //
+    /// <summary>
+    /// If a label position has been specified for a vertex, sets the vertex's
+    /// label position.
+    /// </summary>
+    ///
+    /// <param name="oVertexRange">
+    /// Range containing the vertex data.
+    /// </param>
+    ///
+    /// <param name="aoVertexValues">
+    /// Values from <paramref name="oVertexRange" />.
+    /// </param>
+    ///
+    /// <param name="iRowOneBased">
+    /// One-based row index to check.
+    /// </param>
+    ///
+    /// <param name="iColumnOneBased">
+    /// One-based column index to check.
+    /// </param>
+    ///
+    /// <param name="oVertexLabelPositionConverter">
+    /// Object that converts a vertex label position between values used in the
+    /// Excel workbook and values used in the NodeXL graph.
+    /// </param>
+    ///
+    /// <param name="oVertex">
+    /// Vertex to set the label position on.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    CheckForLabelPosition
+    (
+        Range oVertexRange,
+        Object [,] aoVertexValues,
+        Int32 iRowOneBased,
+        Int32 iColumnOneBased,
+        VertexLabelPositionConverter oVertexLabelPositionConverter,
+        IVertex oVertex
+    )
+    {
+        Debug.Assert(oVertexRange != null);
+        Debug.Assert(aoVertexValues != null);
+        Debug.Assert(iRowOneBased >= 1);
+        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oVertex != null);
+        Debug.Assert(oVertexLabelPositionConverter != null);
+        AssertValid();
+
+        String sLabelPosition;
+
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
+            iRowOneBased, iColumnOneBased, out sLabelPosition) )
+        {
+            return;
+        }
+
+        VertexLabelPosition eLabelPosition;
+
+        if ( !oVertexLabelPositionConverter.TryWorkbookToGraph(sLabelPosition,
+            out eLabelPosition) )
+        {
+            Range oInvalidCell =
+                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
+
+            OnWorkbookFormatError( String.Format(
+
+                "The cell {0} contains an invalid label position.  Try"
+                + " selecting from the cell's drop-down list instead."
+                ,
+                ExcelUtil.GetRangeAddress(oInvalidCell)
+                ),
+
+                oInvalidCell
+            );
+        }
+
+        oVertex.SetValue( ReservedMetadataKeys.PerVertexLabelPosition,
+            eLabelPosition);
     }
 
     //*************************************************************************
@@ -871,124 +946,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForImageKey()
+    //  Method: CheckForShape()
     //
     /// <summary>
-    /// If an image key has been specified for a vertex, sets the vertex's
-    /// image key.
-    /// </summary>
-    ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoVertexValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
-    /// </param>
-    ///
-    /// <param name="oImageIDDictionary">
-    /// Keeps track of vertex images.  The key is a unique image identifier
-    /// specified in the image worksheet and the value is the corresponding
-    /// System.Windows.Media.Imaging.ImageSource.
-    /// </param>
-    ///
-    /// <param name="oVertex">
-    /// Vertex to set the image key on.
-    /// </param>
-    ///
-    /// <param name="oVertexRadiusConverter">
-    /// Object that converts a vertex radius between values used in the Excel
-    /// workbook and values used in the NodeXL graph.
-    /// </param>
-    ///
-    /// <param name="oVertexImageSize">
-    /// The size to use for the image (in workbook units), or a Nullable that
-    /// has no value to use the image's actual size.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if an image key was specified.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    CheckForImageKey
-    (
-        Range oVertexRange,
-        Object [,] aoVertexValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
-        Dictionary<String, ImageSource> oImageIDDictionary,
-        IVertex oVertex,
-        VertexRadiusConverter oVertexRadiusConverter,
-        Nullable<Single> oVertexImageSize
-    )
-    {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoVertexValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
-        Debug.Assert(oImageIDDictionary != null);
-        Debug.Assert(oVertex != null);
-        Debug.Assert(oVertexRadiusConverter != null);
-        AssertValid();
-
-        String sImageKey;
-
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sImageKey) )
-        {
-            return (false);
-        }
-
-        sImageKey = sImageKey.ToLower();
-
-        // Retrieve the Image corresponding to the image key from the image
-        // dictionary.
-
-        ImageSource oVertexImage;
-
-        if ( !oImageIDDictionary.TryGetValue(sImageKey, out oVertexImage) )
-        {
-            return (false);
-        }
-
-        if (oVertexImageSize.HasValue)
-        {
-            // Resize the image.  Note that this can't be done by
-            // ImageWorksheetReader, which is what populated
-            // oImageIDDictionary, because the same image in the dictionary may
-            // be used by different vertices at different sizes.
-
-            Double dLongerDimension =
-                oVertexRadiusConverter.WorkbookToLongerImageDimension(
-                    oVertexImageSize.Value);
-
-            Debug.Assert(dLongerDimension >= 1);
-
-            oVertexImage = ( new WpfImageUtil() ).ResizeImage(oVertexImage,
-                (Int32)dLongerDimension);
-        }
-
-        oVertex.SetValue(ReservedMetadataKeys.PerVertexImage, oVertexImage);
-
-        return (true);
-    }
-
-    //*************************************************************************
-    //  Method: CheckForVertexDrawingPrecedence()
-    //
-    /// <summary>
-    /// If a vertex drawing precedence value has been specified for a vertex,
-    /// sets the vertex's drawing precedence.
+    /// If a shape has been specified for a vertex, sets the vertex's shape.
     /// </summary>
     ///
     /// <param name="oVertexRange">
@@ -1008,18 +969,27 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// </param>
     ///
     /// <param name="oVertex">
-    /// Vertex to set the vertex drawer precedence on.
+    /// Vertex to set the shape on.
     /// </param>
+    ///
+    /// <param name="eShape">
+    /// Where the shape gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if a shape has been specified for the vertex.
+    /// </returns>
     //*************************************************************************
 
-    protected void
-    CheckForVertexDrawingPrecedence
+    protected Boolean
+    CheckForShape
     (
         Range oVertexRange,
         Object [,] aoValues,
         Int32 iRowOneBased,
         Int32 iColumnOneBased,
-        IVertex oVertex
+        IVertex oVertex,
+        out VertexShape eShape
     )
     {
         Debug.Assert(oVertexRange != null);
@@ -1029,36 +999,156 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Debug.Assert(oVertex != null);
         AssertValid();
 
-        String sVertexDrawingPrecedence;
-
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iColumnOneBased, out sVertexDrawingPrecedence) )
+        if ( TryGetVertexShape(oVertexRange, aoValues, iRowOneBased,
+            iColumnOneBased, out eShape) )
         {
-            return;
+            oVertex.SetValue(ReservedMetadataKeys.PerVertexShape, eShape);
+            return (true);
         }
 
-        VertexDrawingPrecedence eVertexDrawingPrecedence;
+        return (false);
+    }
 
-        if ( !( new VertexDrawingPrecedenceConverter() ).TryWorkbookToGraph(
-            sVertexDrawingPrecedence, out eVertexDrawingPrecedence) )
+    //*************************************************************************
+    //  Method: CheckForImageFilePath()
+    //
+    /// <summary>
+    /// If an image file path has been specified for a vertex, sets the
+    /// vertex's image.
+    /// </summary>
+    ///
+    /// <param name="oVertexRange">
+    /// Range containing the vertex data.
+    /// </param>
+    ///
+    /// <param name="aoVertexValues">
+    /// Values from <paramref name="oVertexRange" />.
+    /// </param>
+    ///
+    /// <param name="iRowOneBased">
+    /// One-based row index to check.
+    /// </param>
+    ///
+    /// <param name="iColumnOneBased">
+    /// One-based column index to check.
+    /// </param>
+    ///
+    /// <param name="oVertex">
+    /// Vertex to set the image on.
+    /// </param>
+    ///
+    /// <param name="oVertexRadiusConverter">
+    /// Object that converts a vertex radius between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
+    /// </param>
+    ///
+    /// <param name="oVertexImageSize">
+    /// The size to use for the image (in workbook units), or a Nullable that
+    /// has no value to use the image's actual size.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if an image key was specified.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    CheckForImageFilePath
+    (
+        Range oVertexRange,
+        Object [,] aoVertexValues,
+        Int32 iRowOneBased,
+        Int32 iColumnOneBased,
+        IVertex oVertex,
+        VertexRadiusConverter oVertexRadiusConverter,
+        Nullable<Single> oVertexImageSize
+    )
+    {
+        Debug.Assert(oVertexRange != null);
+        Debug.Assert(aoVertexValues != null);
+        Debug.Assert(iRowOneBased >= 1);
+        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oVertex != null);
+        Debug.Assert(oVertexRadiusConverter != null);
+        AssertValid();
+
+        String sImageFilePath;
+
+        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
+            iRowOneBased, iColumnOneBased, out sImageFilePath) )
         {
-            Range oInvalidCell =
-                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
-
-            OnWorkbookFormatError( String.Format(
-
-                "The cell {0} contains an invalid value.  Try selecting from"
-                + " the cell's drop-down list instead."
-                ,
-                ExcelUtil.GetRangeAddress(oInvalidCell)
-                ),
-
-                oInvalidCell
-            );
+            return (false);
         }
 
-        oVertex.SetValue(ReservedMetadataKeys.PerVertexDrawingPrecedence,
-            eVertexDrawingPrecedence);
+        if ( sImageFilePath.ToLower().StartsWith("www.") )
+        {
+            // The Uri class thinks that "www.somewhere.com" is a relative
+            // path.  Fix that.
+
+            sImageFilePath= "http://" + sImageFilePath;
+        }
+
+        Uri oUri;
+
+        // Is the file path either an URL or a full file path?
+
+        if ( !Uri.TryCreate(sImageFilePath, UriKind.Absolute, out oUri) )
+        {
+            // No.  It appears to be a relative path.
+
+            String sWorkbookPath =
+                ( (Workbook)(oVertexRange.Worksheet.Parent) ).Path;
+
+            if ( !String.IsNullOrEmpty(sWorkbookPath) )
+            {
+                sImageFilePath = Path.Combine(sWorkbookPath, sImageFilePath);
+            }
+            else
+            {
+                Range oInvalidCell = (Range)oVertexRange.Cells[
+                    iRowOneBased, iColumnOneBased];
+
+                OnWorkbookFormatError( String.Format(
+
+                    "The image file path specified in cell {0} is a relative"
+                    + " path.  Relative paths must be relative to the saved"
+                    + " workbook file, but the workbook hasn't been saved yet."
+                    + "  Either save the workbook or change the image file to"
+                    + " an absolute path, such as \"C:\\MyImages\\Image.jpg\"."
+                    ,
+                    ExcelUtil.GetRangeAddress(oInvalidCell)
+                    ),
+
+                    oInvalidCell
+                    );
+            }
+        }
+
+        // Note that sImageFilePath may or may not be a valid URI string.  If
+        // it is not, GetImageSynchronousIgnoreDpi() will return an error
+        // image.
+
+        ImageSource oImage =
+            ( new WpfImageUtil() ).GetImageSynchronousIgnoreDpi(
+                sImageFilePath);
+
+        if (oVertexImageSize.HasValue)
+        {
+            // Resize the image.
+
+            Double dLongerDimension =
+                oVertexRadiusConverter.WorkbookToLongerImageDimension(
+                    oVertexImageSize.Value);
+
+            Debug.Assert(dLongerDimension >= 1);
+
+            oImage = ( new WpfImageUtil() ).ResizeImage(oImage,
+                (Int32)dLongerDimension);
+        }
+
+        oVertex.SetValue(ReservedMetadataKeys.PerVertexImage, oImage);
+
+        return (true);
     }
 
     //*************************************************************************
@@ -1793,36 +1883,29 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         public Int32 Radius;
 
-        /// The vertex's optional image key.  If specified, the image is drawn
-        /// instead of a shape.
+        /// The vertex's optional image file path.
 
-        public Int32 ImageKey;
+        public Int32 ImageFilePath;
 
-        /// The vertex's optional primary label.  If specified, the primary
-        /// label is drawn instead of a shape or image.
+        /// The vertex's optional label.
 
-        public Int32 PrimaryLabel;
+        public Int32 Label;
 
-        /// The vertex's optional primary label fill color.
+        /// The vertex's optional label fill color.
 
-        public Int32 PrimaryLabelFillColor;
+        public Int32 LabelFillColor;
 
-        /// The vertex's optional secondary label.  If specified, the secondary
-        /// label is drawn in addition to a shape, image, or primary label.
+        /// The vertex's optional label position.
 
-        public Int32 SecondaryLabel;
+        public Int32 LabelPosition;
 
-        /// The vertex's optional alpha, from 0 (transparent) to 10 (opaque).
+        /// The vertex's optional alpha.
 
         public Int32 Alpha;
 
         /// The vertex's optional tooltip.
 
         public Int32 ToolTip;
-
-        /// The optional value specifying how the vertex should be drawn.
-
-        public Int32 VertexDrawingPrecedence;
 
         /// The vertex's optional visibility.
 

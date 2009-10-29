@@ -83,14 +83,14 @@ public class EditedVertexAttributes : Object
     /// cref="AlphaConverter.MaximumAlphaWorkbook" />.
     /// </param>
     ///
-    /// <param name="vertexDrawingPrecedence">
-    /// The vertex drawing precedence that was applied to the selected
-    /// vertices, or null if a vertex drawing precedence wasn't applied.
-    /// </param>
-    ///
     /// <param name="visibility">
     /// The visibility that was applied to the selected vertices, or null if a
     /// visibility wasn't applied.
+    /// </param>
+    ///
+    /// <param name="labelPosition">
+    /// The label position that was applied to the selected vertices, or null
+    /// if a label position wasn't applied.
     /// </param>
     ///
     /// <param name="locked">
@@ -114,8 +114,8 @@ public class EditedVertexAttributes : Object
         Nullable<VertexShape> shape,
         Nullable<Single> radius,
         Nullable<Single> alpha,
-        Nullable<VertexDrawingPrecedence> vertexDrawingPrecedence,
         Nullable<VertexWorksheetReader.Visibility> visibility,
+        Nullable<VertexLabelPosition> labelPosition,
         Nullable<Boolean> locked,
         Nullable<Boolean> marked,
         Boolean workbookMustBeReread
@@ -125,8 +125,8 @@ public class EditedVertexAttributes : Object
         m_eShape = shape;
         m_fRadius = radius;
         m_fAlpha = alpha;
-        m_eVertexDrawingPrecedence = vertexDrawingPrecedence;
         m_eVisibility = visibility;
+        m_eLabelPosition = labelPosition;
         m_bLocked = locked;
         m_bMarked = marked;
         m_bWorkbookMustBeReread = workbookMustBeReread;
@@ -275,39 +275,6 @@ public class EditedVertexAttributes : Object
     }
 
     //*************************************************************************
-    //  Property: VertexDrawingPrecedence
-    //
-    /// <summary>
-    /// Gets or sets the vertex drawer precedence that was applied to the
-    /// selected vertices, or null if a vertex drawer precedence wasn't
-    /// applied.
-    /// </summary>
-    ///
-    /// <value>
-    /// The vertex drawer precedence that was applied to the selected vertices,
-    /// or null if a vertex drawer precedence wasn't applied.
-    /// </value>
-    //*************************************************************************
-
-    public Nullable<VertexDrawingPrecedence>
-    VertexDrawingPrecedence
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_eVertexDrawingPrecedence);
-        }
-
-        set
-        {
-            m_eVertexDrawingPrecedence = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: Visibility
     //
     /// <summary>
@@ -334,6 +301,38 @@ public class EditedVertexAttributes : Object
         set
         {
             m_eVisibility = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: LabelPosition
+    //
+    /// <summary>
+    /// Gets or sets the label position that was applied to the selected
+    /// vertices, or null if a label position wasn't applied.
+    /// </summary>
+    ///
+    /// <value>
+    /// The label position that was applied to the selected vertices, or null
+    /// if a label position wasn't applied.
+    /// </value>
+    //*************************************************************************
+
+    public Nullable<VertexLabelPosition>
+    LabelPosition
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_eLabelPosition);
+        }
+
+        set
+        {
+            m_eLabelPosition = value;
 
             AssertValid();
         }
@@ -463,8 +462,8 @@ public class EditedVertexAttributes : Object
         Debug.Assert(!m_fAlpha.HasValue ||
             m_fAlpha.Value <= AlphaConverter.MaximumAlphaWorkbook);
 
-        // m_eVertexDrawingPrecedence
         // m_eVisibility
+        // m_eLabelPosition
         // m_bLocked
         // m_bMarked
         // m_bWorkbookMustBeReread
@@ -495,15 +494,15 @@ public class EditedVertexAttributes : Object
 
     protected Nullable<Single> m_fAlpha;
 
-    /// Vertex drawer precedence that was applied to the selected vertices, or
-    /// null if a vertex drawer precedence wasn't applied.
-
-    protected Nullable<VertexDrawingPrecedence> m_eVertexDrawingPrecedence;
-
     /// Visibility that was applied to the selected vertices, or null if a
     /// visibility wasn't applied.
 
     protected Nullable<VertexWorksheetReader.Visibility> m_eVisibility;
+
+    /// Label position that was applied to the selected vertices, or null if a
+    /// label position wasn't applied.
+
+    protected Nullable<VertexLabelPosition> m_eLabelPosition;
 
     /// Locked flag that was applied to the selected vertices, or null if a
     /// locked flag wasn't applied.

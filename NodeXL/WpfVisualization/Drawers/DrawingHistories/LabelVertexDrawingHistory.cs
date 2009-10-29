@@ -10,22 +10,21 @@ using Microsoft.NodeXL.Core;
 namespace Microsoft.NodeXL.Visualization.Wpf
 {
 //*****************************************************************************
-//  Class: PrimaryLabelVertexDrawingHistory
+//  Class: LabelVertexDrawingHistory
 //
 /// <summary>
-/// Retains information about how one vertex was drawn as a primary label.
+/// Retains information about how one vertex was drawn as a label shape.
 /// </summary>
 //*****************************************************************************
 
-public class PrimaryLabelVertexDrawingHistory : RectangleVertexDrawingHistory
+public class LabelVertexDrawingHistory : RectangleVertexDrawingHistory
 {
     //*************************************************************************
-    //  Constructor: PrimaryLabelVertexDrawingHistory()
+    //  Constructor: LabelVertexDrawingHistory()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="PrimaryLabelVertexDrawingHistory" />
-    /// class.
+    /// cref="LabelVertexDrawingHistory" /> class.
     /// </summary>
     ///
     /// <param name="vertex">
@@ -45,7 +44,7 @@ public class PrimaryLabelVertexDrawingHistory : RectangleVertexDrawingHistory
     /// </param>
     //*************************************************************************
 
-    public PrimaryLabelVertexDrawingHistory
+    public LabelVertexDrawingHistory
     (
         IVertex vertex,
         DrawingVisual drawingVisual,

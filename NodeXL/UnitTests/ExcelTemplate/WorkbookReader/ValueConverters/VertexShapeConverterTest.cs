@@ -83,7 +83,7 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
-            "circle",
+            "Circle",
             "CIRCLE",
             "Circle (1)",
             "1",
@@ -112,8 +112,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Disk",
             "Disk (2)",
-            "disk",
             "DiSk",
             "2",
             } )
@@ -141,8 +141,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Sphere",
             "Sphere (3)",
-            "sphere",
             "SPHEre",
             "3",
             } )
@@ -170,8 +170,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Square",
             "Square (4)",
-            "square",
             "sQUARe",
             "4",
             } )
@@ -199,8 +199,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Solid Square",
             "Solid Square (5)",
-            "solid square",
             "SoLiD sQUARe",
             "5",
             } )
@@ -228,8 +228,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
-            "Diamond (6)",
             "Diamond",
+            "Diamond (6)",
             "dIaMond",
             "6",
             } )
@@ -257,8 +257,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
-            "Solid Diamond (7)",
             "Solid Diamond",
+            "Solid Diamond (7)",
             "SoLID dIaMond",
             "7",
             } )
@@ -286,8 +286,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
-            "Triangle (8)",
             "Triangle",
+            "Triangle (8)",
             "tRiangle",
             "8",
             } )
@@ -315,8 +315,8 @@ public class VertexShapeConverterTest : Object
         VertexShape eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
-            "Solid Triangle (9)",
             "Solid Triangle",
+            "Solid Triangle (9)",
             "SOlid tRiangle",
             "9",
             } )
@@ -340,6 +340,64 @@ public class VertexShapeConverterTest : Object
 
     public void
     TestTryWorkbookToGraph10()
+    {
+        VertexShape eValueGraph;
+
+        foreach (String sValueWorkbook in new String [] {
+            "Label",
+            "Label (10)",
+            "LABEL",
+            "10",
+            } )
+        {
+            Assert.IsTrue( m_oVertexShapeConverter.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
+
+            Assert.AreEqual(VertexShape.Label, eValueGraph);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestTryWorkbookToGraph11()
+    //
+    /// <summary>
+    /// Tests the TryWorkbookToGraph() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestTryWorkbookToGraph11()
+    {
+        VertexShape eValueGraph;
+
+        foreach (String sValueWorkbook in new String [] {
+            "Image",
+            "Image (11)",
+            "ImAgE",
+            "11",
+            } )
+        {
+            Assert.IsTrue( m_oVertexShapeConverter.TryWorkbookToGraph(
+                sValueWorkbook, out eValueGraph) );
+
+            Assert.AreEqual(VertexShape.Image, eValueGraph);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestTryWorkbookToGraph12()
+    //
+    /// <summary>
+    /// Tests the TryWorkbookToGraph() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestTryWorkbookToGraph12()
     {
         VertexShape eValueGraph;
 
@@ -368,34 +426,56 @@ public class VertexShapeConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-        Assert.AreEqual( "Circle (1)",
+        Assert.AreEqual( "Circle",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Circle) );
 
-        Assert.AreEqual( "Disk (2)",
+        Assert.AreEqual( "Disk",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Disk) );
 
-        Assert.AreEqual( "Sphere (3)",
+        Assert.AreEqual( "Sphere",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Sphere) );
 
-        Assert.AreEqual( "Square (4)",
+        Assert.AreEqual( "Square",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Square) );
 
-        Assert.AreEqual( "Solid Square (5)",
+        Assert.AreEqual( "Solid Square",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.SolidSquare) );
 
-        Assert.AreEqual( "Diamond (6)",
+        Assert.AreEqual( "Diamond",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Diamond) );
 
-        Assert.AreEqual( "Solid Diamond (7)",
+        Assert.AreEqual( "Solid Diamond",
             m_oVertexShapeConverter.GraphToWorkbook(
                 VertexShape.SolidDiamond) );
 
-        Assert.AreEqual( "Triangle (8)",
+        Assert.AreEqual( "Triangle",
             m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Triangle) );
 
-        Assert.AreEqual( "Solid Triangle (9)",
+        Assert.AreEqual( "Solid Triangle",
             m_oVertexShapeConverter.GraphToWorkbook(
                 VertexShape.SolidTriangle) );
+
+        Assert.AreEqual( "Label",
+            m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Label) );
+
+        Assert.AreEqual( "Image",
+            m_oVertexShapeConverter.GraphToWorkbook(VertexShape.Image) );
+    }
+
+    //*************************************************************************
+    //  Method: VerifyUpToDate()
+    //
+    /// <summary>
+    /// Makes sure that these tests are up to date.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    VerifyUpToDate()
+    {
+        Assert.AreEqual(11, Enum.GetValues( typeof(VertexShape) ).Length);
     }
 
 

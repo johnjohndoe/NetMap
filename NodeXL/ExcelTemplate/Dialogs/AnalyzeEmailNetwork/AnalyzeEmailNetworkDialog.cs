@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
+using Microsoft.NodeXL.Core;
 using Microsoft.SocialNetworkLib;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -25,9 +26,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
+/// Call <see cref="Form.ShowDialog()" /> to show the dialog.  When the user
+/// clicks the Analyze button, the workbook is automatically updated and an
+/// <see cref="AnalysisSuccessful" /> event is fired.
+///
+/// <para>
 /// An <see cref="EmailNetworkAnalyzer" /> object does most of the work.  The
 /// analysis is done asynchronously, so it doesn't hang the UI and can be
 /// cancelled by the user.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -109,6 +117,22 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
 
         // AssertValid();
     }
+
+    //*************************************************************************
+    //  Event: AnalysisSuccessful
+    //
+    /// <summary>
+    /// Occurs when an email network analysis completes successfully.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The event handler does not have to modify the workbook, which is done
+    /// directly by this dialog.
+    /// </remarks>
+    //*************************************************************************
+
+    public event EventHandler AnalysisSuccessful;
+
 
     //*************************************************************************
     //  Method: DoDataExchange()
@@ -1458,6 +1482,8 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
                 // Note: PopulateEdgesTable modifies the participant pairs.
 
                 PopulateEdgesTable(aoEmailParticipantPairs);
+
+                EventUtil.FireEvent(this, this.AnalysisSuccessful);
             }
             else
             {
@@ -1740,14 +1766,6 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         + "This is repeated for each email, and the edge weights for"
         + " repeated pairs are added together.  The results are then written"
         + " to the Edges worksheet."
-        + "\r\n\r\n"
-        + "Note that \"john@msn.com, mary@msn.com\" and \"mary@msn.com,"
-        + " john@msn.com\" are considered to be repeated pairs and get added"
-        + " together.  If John writes to Mary once and Mary writes to John"
-        + " once, the \"john@msn.com, mary@msn.com\" pair will have an edge"
-        + " weight of 2.  In the Edges worksheet, the email addresses within"
-        + " each pair are ordered alphabetically -- John in the first column,"
-        + " in this case."
         + "\r\n\r\n"
         + "If you read the workbook into the NodeXL graph, you'll see a"
         + " vertex representing you, a vertex representing each person you"

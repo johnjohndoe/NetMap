@@ -149,10 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\ColorGradientMapper.cs">
-      <Link>UIComponents\ColorGradientMapper.cs</Link>
+      <Link>Controls\ColorGradientMapper.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\ColorGradientPanel.cs">
-      <Link>UIComponents\ColorGradientPanel.cs</Link>
+      <Link>Controls\ColorGradientPanel.cs</Link>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="..\..\Common\Excel\ExcelActiveWorksheetRestorer.cs">
@@ -219,6 +219,18 @@
     <Compile Include="..\Common\RegisterUser\UserRegisterer.cs">
       <Link>Util\RegisterUser\UserRegisterer.cs</Link>
     </Compile>
+    <Compile Include="Controls\AutoFill\AutoFillColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\AutoFill\AutoFillEdgeColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\AutoFill\AutoFillVertexColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ExcelTemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls\ExcelTemplateNodeXLControl.cs" />
     <Compile Include="Controls\Legend\AutoFillResultsLegendControl.cs">
       <SubType>Component</SubType>
@@ -229,11 +241,20 @@
     <Compile Include="Controls\Legend\LegendControlBase.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\MaximumLabelLength\MaximumLabelLengthControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MaximumLabelLength\MaximumLabelLengthControl.designer.cs">
+      <DependentUpon>MaximumLabelLengthControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SubgraphLevels\SubgraphLevelsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\SubgraphLevels\SubgraphLevelsControl.designer.cs">
       <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SubgraphLinkLabel.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Dialogs\About\AboutDialog.cs">
       <SubType>Form</SubType>
@@ -358,6 +379,12 @@
     </Compile>
     <Compile Include="Dialogs\ImportFromMatrixWorkbook\ImportFromMatrixWorkbookDialog.designer.cs">
       <DependentUpon>ImportFromMatrixWorkbookDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\LabelUserSettings\LabelUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\LabelUserSettings\LabelUserSettingsDialog.designer.cs">
+      <DependentUpon>LabelUserSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.cs">
       <SubType>Form</SubType>
@@ -563,21 +590,6 @@
     <Compile Include="ThisWorkbook.Designer.cs">
       <DependentUpon>ThisWorkbook.Designer.xml</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\AutoFillColumnComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UIComponents\AutoFillEdgeColumnComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UIComponents\AutoFillVertexColumnComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UIComponents\ExcelTemplateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UIComponents\SubgraphLinkLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="UserSettings\AutoFill\AutoFillUserSettings.cs" />
     <Compile Include="UserSettings\AutoFill\AutoFillUserSettingsTypeConverterBase.cs" />
     <Compile Include="UserSettings\AutoFill\ColorColumnAutoFillUserSettings.cs" />
@@ -586,6 +598,7 @@
     <Compile Include="UserSettings\GeneralUserSettings.cs" />
     <Compile Include="UserSettings\GraphImageUserSettings.cs" />
     <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
+    <Compile Include="UserSettings\LabelUserSettings.cs" />
     <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
     <Compile Include="UserSettings\UserSettingsManager.cs" />
@@ -639,7 +652,7 @@
     <Compile Include="WorkbookReader\ValueConverters\EdgeWidthConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\NumericValueConverterBase.cs" />
     <Compile Include="WorkbookReader\ValueConverters\TextValueConverterBase.cs" />
-    <Compile Include="WorkbookReader\ValueConverters\VertexDrawingPrecedenceConverter.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\VertexLabelPositionConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\VertexLocationConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\VertexRadiusConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\VertexShapeConverter.cs" />
@@ -649,7 +662,6 @@
     <Compile Include="WorkbookReader\WorksheetReaders\ClusterWorksheetReader.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\DynamicFilterSettings.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\EdgeWorksheetReader.cs" />
-    <Compile Include="WorkbookReader\WorksheetReaders\ImageWorksheetReader.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\PerWorkbookSettings.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\VertexWorksheetReader.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\WorksheetReaderBase.cs" />
@@ -726,6 +738,9 @@
       <Link>Controls\RegisterUser\RegisterUserControl.resx</Link>
       <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MaximumLabelLength\MaximumLabelLengthControl.resx">
+      <DependentUpon>MaximumLabelLengthControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SubgraphLevels\SubgraphLevelsControl.resx">
       <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -775,6 +790,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ImportFromMatrixWorkbook\ImportFromMatrixWorkbookDialog.resx">
       <DependentUpon>ImportFromMatrixWorkbookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\LabelUserSettings\LabelUserSettingsDialog.resx">
+      <DependentUpon>LabelUserSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\LayoutUserSettings\LayoutUserSettingsDialog.resx">
       <DependentUpon>LayoutUserSettingsDialog.cs</DependentUpon>
@@ -835,7 +853,7 @@
         <Host Name="Excel Document" Path=".\NodeXLGraph.xltx" GeneratedCodeNamespace="Microsoft.NodeXL.ExcelTemplate" PublishedHash="4D8E879928CBA270A29ED7FD412557FCA49DBAF9">
           <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="245DB3698AC9C0D8DC43523F505F15A7AE65DDCD" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
           <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
-          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="929EB06E3232D25BBFB6DA207F133759A5E75F10" DisplayName="Images" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
+          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="929EB06E3232D25BBFB6DA207F133759A5E75F10" CanActivate="false" DisplayName="Do Not Delete" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
           <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="16CC5CE95B1FFE7AAB3A1C0BED926CB7BF5B766E" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
           <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="651F0F18F0DA9DEEF21F2887996E77B7C73F9326" DisplayName="Clusters" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
           <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="1641ABE04217FBFF4F1B81D6385356B84C00F914" DisplayName="Cluster Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />

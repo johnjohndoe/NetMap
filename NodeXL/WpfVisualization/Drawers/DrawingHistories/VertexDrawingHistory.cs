@@ -21,8 +21,8 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <remarks>
 /// This is an abstract base class.  There is one concrete derived class for
 /// each type of vertex that can be drawn.  The derived classes must implement
-/// the <see cref="GetEdgeEndpoint" /> and <see
-/// cref="GetSelfLoopEndpoint" /> methods.
+/// the <see cref="GetEdgeEndpoint" />, <see cref="GetSelfLoopEndpoint" />, and
+/// <see cref="GetLabelLocation" /> methods.
 /// </remarks>
 //*****************************************************************************
 
@@ -165,6 +165,33 @@ public abstract class VertexDrawingHistory : DrawingHistory
         RectangleEdge farthestGraphRectangleEdge
     );
 
+    //*************************************************************************
+    //  Method: GetLabelLocation()
+    //
+    /// <summary>
+    /// Gets the location at which an annotation label should be drawn.
+    /// </summary>
+    ///
+    /// <param name="labelPosition">
+    /// The position of the annotation label.
+    /// </param>
+    ///
+    /// <returns>
+    /// The point at which an annotation label should be drawn.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned point assumes that the label text height is zero and that
+    /// there is zero margin between the vertex and the label.  The caller must
+    /// adjust the point for the actual text height and any margin.
+    /// </remarks>
+    //*************************************************************************
+
+    public abstract Point
+    GetLabelLocation
+    (
+        VertexLabelPosition labelPosition
+    );
 
     //*************************************************************************
     //  Method: GetEdgeEndpointOnCircle()
@@ -408,6 +435,87 @@ public abstract class VertexDrawingHistory : DrawingHistory
         }
 
         return ( new Point(dX, dY) );
+    }
+
+    //*************************************************************************
+    //  Method: GetLabelLocationOnDiamond()
+    //
+    /// <summary>
+    /// Gets the location at which an annotation label should be drawn on a
+    /// diamond.
+    /// </summary>
+    ///
+    /// <param name="eLabelPosition">
+    /// The position of the annotation label.
+    /// </param>
+    ///
+    /// <param name="dHalfWidth">
+    /// The half-width of the diamond.
+    /// </param>
+    ///
+    /// <returns>
+    /// The point at which an annotation label should be drawn.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned point assumes that the label text height is zero and that
+    /// there is zero margin between the vertex and the label.  The caller must
+    /// adjust the point for the actual text height and any margin.
+    ///
+    /// <para>
+    /// This is in the base class instead of the DiamondVertexDrawingHistory
+    /// class because the diamond pattern for label locations is also used for
+    /// circles.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    protected Point
+    GetLabelLocationOnDiamond
+    (
+        VertexLabelPosition eLabelPosition,
+        Double dHalfWidth
+    )
+    {
+        Debug.Assert(dHalfWidth >= 0);
+        AssertValid();
+
+        Point oVertexLocation = this.VertexLocation;
+        Double dVertexX = oVertexLocation.X;
+        Double dVertexY = oVertexLocation.Y;
+
+        switch (eLabelPosition)
+        {
+            case VertexLabelPosition.TopLeft:
+            case VertexLabelPosition.TopCenter:
+            case VertexLabelPosition.TopRight:
+
+                return ( new Point(dVertexX, dVertexY - dHalfWidth) );
+
+            case VertexLabelPosition.MiddleLeft:
+
+                return ( new Point(dVertexX - dHalfWidth, dVertexY) );
+
+            case VertexLabelPosition.MiddleCenter:
+
+                return (oVertexLocation);
+
+            case VertexLabelPosition.MiddleRight:
+
+                return ( new Point(dVertexX + dHalfWidth, dVertexY) );
+
+            case VertexLabelPosition.BottomLeft:
+            case VertexLabelPosition.BottomCenter:
+            case VertexLabelPosition.BottomRight:
+
+                return ( new Point(dVertexX, dVertexY + dHalfWidth) );
+
+            default:
+
+                Debug.Assert(false);
+                return (oVertexLocation);
+        }
     }
 
     //*************************************************************************

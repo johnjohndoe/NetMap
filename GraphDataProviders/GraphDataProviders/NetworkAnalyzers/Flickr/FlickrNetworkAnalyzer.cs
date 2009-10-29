@@ -8,6 +8,7 @@ using System.Xml;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.Research.CommunityTechnologies.XmlLib;
 
 namespace Microsoft.NodeXL.GraphDataProviders.Flickr
@@ -332,7 +333,7 @@ public class FlickrNetworkAnalyzer : FlickrNetworkAnalyzerBase
             GetRelatedTagsUrlPattern
             ,
             HttpUtility.UrlEncode(sApiKey),
-            HttpUtility.UrlEncode(sTag)
+            UrlUtil.EncodeUrlParameter(sTag)
             );
 
         XmlDocument oFlickrXmlDocument = GetXmlDocument(sUrl,

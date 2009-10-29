@@ -50,16 +50,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label4 = new System.Windows.Forms.Label();
             this.cbxVisibility = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.lnkVisibility = new System.Windows.Forms.LinkLabel();
-            this.label8 = new System.Windows.Forms.Label();
-            this.cbxVertexDrawingPrecedence = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.usrColor = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cbxLabelPosition = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             ((System.ComponentModel.ISupportInitialize)(this.nudRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAlpha)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(175, 297);
+            this.btnOK.Location = new System.Drawing.Point(175, 289);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 19;
@@ -70,7 +70,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(256, 297);
+            this.btnCancel.Location = new System.Drawing.Point(256, 289);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 20;
@@ -197,49 +197,31 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 184);
+            this.label4.Location = new System.Drawing.Point(12, 151);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(46, 13);
-            this.label4.TabIndex = 11;
+            this.label4.TabIndex = 9;
             this.label4.Text = "&Visibility:";
             // 
             // cbxVisibility
             // 
             this.cbxVisibility.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxVisibility.FormattingEnabled = true;
-            this.cbxVisibility.Location = new System.Drawing.Point(94, 181);
+            this.cbxVisibility.Location = new System.Drawing.Point(94, 148);
             this.cbxVisibility.Name = "cbxVisibility";
             this.cbxVisibility.Size = new System.Drawing.Size(94, 21);
-            this.cbxVisibility.TabIndex = 12;
+            this.cbxVisibility.TabIndex = 10;
             // 
             // lnkVisibility
             // 
             this.lnkVisibility.AutoSize = true;
-            this.lnkVisibility.Location = new System.Drawing.Point(201, 184);
+            this.lnkVisibility.Location = new System.Drawing.Point(201, 151);
             this.lnkVisibility.Name = "lnkVisibility";
             this.lnkVisibility.Size = new System.Drawing.Size(127, 13);
-            this.lnkVisibility.TabIndex = 13;
+            this.lnkVisibility.TabIndex = 11;
             this.lnkVisibility.TabStop = true;
             this.lnkVisibility.Text = "Workbook may be reread";
             this.lnkVisibility.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkVisibility_LinkClicked);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 151);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(76, 13);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "&What to show:";
-            // 
-            // cbxVertexDrawingPrecedence
-            // 
-            this.cbxVertexDrawingPrecedence.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxVertexDrawingPrecedence.FormattingEnabled = true;
-            this.cbxVertexDrawingPrecedence.Location = new System.Drawing.Point(94, 148);
-            this.cbxVertexDrawingPrecedence.Name = "cbxVertexDrawingPrecedence";
-            this.cbxVertexDrawingPrecedence.Size = new System.Drawing.Size(118, 21);
-            this.cbxVertexDrawingPrecedence.TabIndex = 10;
             // 
             // usrColor
             // 
@@ -250,16 +232,34 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.usrColor.Size = new System.Drawing.Size(64, 32);
             this.usrColor.TabIndex = 1;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(12, 184);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(75, 13);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "La&bel position:";
+            // 
+            // cbxLabelPosition
+            // 
+            this.cbxLabelPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxLabelPosition.FormattingEnabled = true;
+            this.cbxLabelPosition.Location = new System.Drawing.Point(94, 181);
+            this.cbxLabelPosition.Name = "cbxLabelPosition";
+            this.cbxLabelPosition.Size = new System.Drawing.Size(118, 21);
+            this.cbxLabelPosition.TabIndex = 13;
+            // 
             // VertexAttributesDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(343, 332);
-            this.Controls.Add(this.usrColor);
-            this.Controls.Add(this.cbxVertexDrawingPrecedence);
+            this.ClientSize = new System.Drawing.Size(343, 327);
+            this.Controls.Add(this.cbxLabelPosition);
             this.Controls.Add(this.label8);
+            this.Controls.Add(this.usrColor);
             this.Controls.Add(this.lnkVisibility);
             this.Controls.Add(this.cbxVisibility);
             this.Controls.Add(this.label4);
@@ -310,8 +310,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label4;
         private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVisibility;
         private System.Windows.Forms.LinkLabel lnkVisibility;
-        private System.Windows.Forms.Label label8;
-        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxVertexDrawingPrecedence;
         private Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker usrColor;
+        private System.Windows.Forms.Label label8;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxLabelPosition;
     }
 }

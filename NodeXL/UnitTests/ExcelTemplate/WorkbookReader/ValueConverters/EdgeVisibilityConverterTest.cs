@@ -82,6 +82,7 @@ public class EdgeVisibilityConverterTest : Object
         EdgeWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Show",
             "show (1)",
             "ShoW (1)",
             "1",
@@ -110,6 +111,7 @@ public class EdgeVisibilityConverterTest : Object
         EdgeWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Skip",
             "skip (0)",
             "sKip (0)",
             "0",
@@ -138,6 +140,7 @@ public class EdgeVisibilityConverterTest : Object
         EdgeWorksheetReader.Visibility eValueGraph;
 
         foreach (String sValueWorkbook in new String [] {
+            "Hide",
             "hide (2)",
             "hidE (2)",
             "2",
@@ -190,17 +193,34 @@ public class EdgeVisibilityConverterTest : Object
     public void
     TestGraphToWorkbook()
     {
-        Assert.AreEqual( "Show (1)",
+        Assert.AreEqual( "Show",
             m_oEdgeVisibilityConverter.GraphToWorkbook(
                 EdgeWorksheetReader.Visibility.Show) );
 
-        Assert.AreEqual( "Skip (0)",
+        Assert.AreEqual( "Skip",
             m_oEdgeVisibilityConverter.GraphToWorkbook(
                 EdgeWorksheetReader.Visibility.Skip) );
 
-        Assert.AreEqual( "Hide (2)",
+        Assert.AreEqual( "Hide",
             m_oEdgeVisibilityConverter.GraphToWorkbook(
                 EdgeWorksheetReader.Visibility.Hide) );
+    }
+
+    //*************************************************************************
+    //  Method: VerifyUpToDate()
+    //
+    /// <summary>
+    /// Makes sure that these tests are up to date.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    VerifyUpToDate()
+    {
+        Assert.AreEqual(3,
+            Enum.GetValues( typeof(EdgeWorksheetReader.Visibility) ).Length);
     }
 
 

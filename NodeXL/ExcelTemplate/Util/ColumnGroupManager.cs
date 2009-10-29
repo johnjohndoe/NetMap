@@ -404,8 +404,7 @@ public static class ColumnGroupManager
                     VertexTableColumnNames.Shape,
                     VertexTableColumnNames.Radius,
                     VertexTableColumnNames.Alpha,
-                    VertexTableColumnNames.ImageKey,
-                    VertexTableColumnNames.VertexDrawingPrecedence,
+                    VertexTableColumnNames.ImageFilePath,
                     VertexTableColumnNames.Visibility,
                     };
 
@@ -428,9 +427,9 @@ public static class ColumnGroupManager
             case ColumnGroup.VertexLabels:
 
                 asColumnNames = new String [] {
-                    VertexTableColumnNames.PrimaryLabel,
-                    VertexTableColumnNames.PrimaryLabelFillColor,
-                    VertexTableColumnNames.SecondaryLabel,
+                    VertexTableColumnNames.Label,
+                    VertexTableColumnNames.LabelFillColor,
+                    VertexTableColumnNames.LabelPosition,
                     VertexTableColumnNames.ToolTip,
                     };
 

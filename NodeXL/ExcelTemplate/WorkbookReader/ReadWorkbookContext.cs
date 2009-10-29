@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Visualization.Wpf;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -46,8 +47,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </para>
 ///
 /// <para>
-/// To read the image worksheet, set <see cref="ReadImages" /> to true and set
-/// <see cref="DefaultVertexImageSize" />.
+/// To read labels specified on the vertex or edge worksheet, set <see
+/// cref="ReadVertexLabels" /> or <see cref="ReadEdgeLabels" /> to true.
+/// </para>
+///
+/// <para>
+/// To read images specified on the vertex worksheet, set <see
+/// cref="ReadVertexImages" /> to true, then set <see
+/// cref="DefaultVertexImageSize" /> and <see cref="DefaultVertexShape" />.
 /// </para>
 ///
 /// </remarks>
@@ -71,8 +78,11 @@ public class ReadWorkbookContext : Object
         m_bPopulateVertexWorksheet = false;
         m_bSetEdgeWeightValues = false;
         m_bReadClusters = false;
-        m_bReadImages = false;
+        m_bReadVertexLabels = false;
+        m_bReadEdgeLabels = false;
+        m_bReadVertexImages = false;
         m_oDefaultVertexImageSize = new Nullable<Single>();
+        m_eDefaultVertexShape = VertexShape.Disk;
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
         m_bLayoutOrderSet = false;
         m_oColorConverter2 = new ColorConverter2();
@@ -85,7 +95,6 @@ public class ReadWorkbookContext : Object
         m_oVertexNameDictionary = new Dictionary<String, IVertex>();
         m_oEdgeIDDictionary = new Dictionary<Int32, IIdentityProvider>();
         m_oVertexIDDictionary = new Dictionary<Int32, IIdentityProvider>();
-        m_oImageIDDictionary = new Dictionary<String, ImageSource>();
         m_bToolTipsUsed = false;
 
         AssertValid();
@@ -268,36 +277,98 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
-    //  Property: ReadImages
+    //  Property: ReadVertexLabels
     //
     /// <summary>
-    /// Gets or sets a flag indicating whether the image worksheet should be
-    /// read.
+    /// Gets or sets a flag indicating whether labels should be read from the
+    /// vertex worksheet.
     /// </summary>
     ///
     /// <value>
-    /// true to read the image worksheet.  The default is false.
+    /// true to read labels from the vertex worksheet.  The default is false.
     /// </value>
-    ///
-    /// <remarks>
-    /// If set to true, <see cref="DefaultVertexImageSize" /> should also be
-    /// set.
-    /// </remarks>
     //*************************************************************************
 
     public Boolean
-    ReadImages
+    ReadVertexLabels
     {
         get
         {
             AssertValid();
 
-            return (m_bReadImages);
+            return (m_bReadVertexLabels);
         }
 
         set
         {
-            m_bReadImages = value;
+            m_bReadVertexLabels = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadEdgeLabels
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether labels should be read from the
+    /// edge worksheet.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read labels from the edge worksheet.  The default is false.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    ReadEdgeLabels
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bReadEdgeLabels);
+        }
+
+        set
+        {
+            m_bReadEdgeLabels = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ReadVertexImages
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether images on the vertex worksheet
+    /// should be read.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read the images.  The default is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If set to true, <see cref="DefaultVertexImageSize" /> and <see
+    /// cref="DefaultVertexShape" /> should also be set.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    ReadVertexImages
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bReadVertexImages);
+        }
+
+        set
+        {
+            m_bReadVertexImages = value;
 
             AssertValid();
         }
@@ -317,7 +388,7 @@ public class ReadWorkbookContext : Object
     /// </value>
     ///
     /// <remarks>
-    /// This is used only if <see cref="ReadImages" /> is true.
+    /// This is used only if <see cref="ReadVertexImages" /> is true.
     /// </remarks>
     //*************************************************************************
 
@@ -334,6 +405,41 @@ public class ReadWorkbookContext : Object
         set
         {
             m_oDefaultVertexImageSize = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: DefaultVertexShape
+    //
+    /// <summary>
+    /// Gets or sets the default vertex shape.
+    /// </summary>
+    ///
+    /// <value>
+    /// The default vertex shape.  The default is a <see
+    /// cref="VertexShape.Disk" />.
+    /// </value>
+    ///
+    /// <remarks>
+    /// This is used only if <see cref="ReadVertexImages" /> is true.
+    /// </remarks>
+    //*************************************************************************
+
+    public VertexShape
+    DefaultVertexShape
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_eDefaultVertexShape);
+        }
+
+        set
+        {
+            m_eDefaultVertexShape = value;
 
             AssertValid();
         }
@@ -591,32 +697,6 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
-    //  Property: ImageIDDictionary
-    //
-    /// <summary>
-    /// Gets a dictionary that maps vertex IDs from the vertex worksheet to
-    /// image objects in the graph.
-    /// </summary>
-    ///
-    /// <value>
-    /// Image dictionary.  The key is a unique image identifier specified in
-    /// the image worksheet and the value is the corresponding
-    /// System.Windows.Media.Imaging.ImageSource.
-    /// </value>
-    //*************************************************************************
-
-    public Dictionary<String, ImageSource>
-    ImageIDDictionary
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_oImageIDDictionary);
-        }
-    }
-
-    //*************************************************************************
     //  Property: ToolTipsUsed
     //
     /// <summary>
@@ -666,8 +746,11 @@ public class ReadWorkbookContext : Object
         // m_bPopulateVertexWorksheet
         // m_bSetEdgeWeightValues
         // m_bReadClusters
-        // m_bReadImages
+        // m_bReadVertexLabels
+        // m_bReadEdgeLabels
+        // m_bReadVertexImages
         // m_oDefaultVertexImageSize
+        // m_eDefaultVertexShape
         // m_oGraphRectangle
         // m_bLayoutOrderSet
         Debug.Assert(m_oColorConverter2 != null);
@@ -677,7 +760,6 @@ public class ReadWorkbookContext : Object
         Debug.Assert(m_oVertexNameDictionary != null);
         Debug.Assert(m_oEdgeIDDictionary != null);
         Debug.Assert(m_oVertexIDDictionary != null);
-        Debug.Assert(m_oImageIDDictionary != null);
         // m_bToolTipsUsed
     }
 
@@ -707,13 +789,25 @@ public class ReadWorkbookContext : Object
 
     protected Boolean m_bReadClusters;
 
-    /// true to read the image worksheet.
+    /// true to read the labels on the vertex worksheet.
 
-    protected Boolean m_bReadImages;
+    protected Boolean m_bReadVertexLabels;
+
+    /// true to read the labels on the edge worksheet.
+
+    protected Boolean m_bReadEdgeLabels;
+
+    /// true to read the images on the vertex worksheet.
+
+    protected Boolean m_bReadVertexImages;
 
     /// The default size of vertices drawn as images.
 
     protected Nullable<Single> m_oDefaultVertexImageSize;
+
+    /// The default vertex shape.
+
+    protected VertexShape m_eDefaultVertexShape;
 
     /// The rectangle the graph is being drawn within.
 
@@ -756,12 +850,6 @@ public class ReadWorkbookContext : Object
     /// and the value is the IVertex object.
 
     protected Dictionary<Int32, IIdentityProvider> m_oVertexIDDictionary;
-
-    /// Image dictionary.  The key is a unique image identifier specified in
-    /// the image worksheet and the value is the corresponding
-    /// System.Windows.Media.Imaging.ImageSource.
-
-    protected Dictionary<String, ImageSource> m_oImageIDDictionary; 
 
     /// true if a tooltip was set on at least one vertex.
 

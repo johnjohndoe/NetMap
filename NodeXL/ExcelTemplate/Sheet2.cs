@@ -506,15 +506,15 @@ public partial class Sheet2
 
         Microsoft.Office.Interop.Excel.Range oColorColumnData,
             oShapeColumnData, oRadiusColumnData, oAlphaColumnData,
-            oVertexDrawingPrecedenceColumnData, oVisibilityColumnData,
-            oLockedColumnData, oMarkedColumnData;
+            oVisibilityColumnData, oLabelPositionColumnData, oLockedColumnData,
+            oMarkedColumnData;
 
         Object [,] aoColorValues = null;
         Object [,] aoShapeValues = null;
         Object [,] aoRadiusValues = null;
         Object [,] aoAlphaValues = null;
-        Object [,] aoVertexDrawingPrecedenceValues = null;
         Object [,] aoVisibilityValues = null;
+        Object [,] aoLabelPositionValues = null;
         Object [,] aoLockedValues = null;
         Object [,] aoMarkedValues = null;
 
@@ -535,13 +535,12 @@ public partial class Sheet2
             out aoAlphaValues);
 
         ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
-            VertexTableColumnNames.VertexDrawingPrecedence,
-            out oVertexDrawingPrecedenceColumnData,
-            out aoVertexDrawingPrecedenceValues);
-
-        ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
             VertexTableColumnNames.Visibility, out oVisibilityColumnData,
             out aoVisibilityValues);
+
+        ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
+            VertexTableColumnNames.LabelPosition, out oLabelPositionColumnData,
+            out aoLabelPositionValues);
 
         ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
             VertexTableColumnNames.Locked, out oLockedColumnData,
@@ -557,11 +556,11 @@ public partial class Sheet2
         VertexShapeConverter oVertexShapeConverter =
             new VertexShapeConverter();
 
-        VertexDrawingPrecedenceConverter oVertexDrawingPrecedenceConverter =
-            new VertexDrawingPrecedenceConverter();
-
         VertexVisibilityConverter oVertexVisibilityConverter =
             new VertexVisibilityConverter();
+
+        VertexLabelPositionConverter oVertexLabelPositionConverter =
+            new VertexLabelPositionConverter();
 
         BooleanConverter oBooleanConverter = new BooleanConverter();
 
@@ -614,20 +613,20 @@ public partial class Sheet2
                     oEditedVertexAttributes.Alpha.Value.ToString();
             }
 
-            if (oEditedVertexAttributes.VertexDrawingPrecedence.HasValue &&
-                aoVertexDrawingPrecedenceValues != null)
-            {
-                aoVertexDrawingPrecedenceValues[iRowOneBased, 1] =
-                    oVertexDrawingPrecedenceConverter.GraphToWorkbook(
-                        oEditedVertexAttributes.VertexDrawingPrecedence.Value);
-            }
-
             if (oEditedVertexAttributes.Visibility.HasValue &&
                 aoVisibilityValues != null)
             {
                 aoVisibilityValues[iRowOneBased, 1] =
                     oVertexVisibilityConverter.GraphToWorkbook(
                         oEditedVertexAttributes.Visibility.Value);
+            }
+
+            if (oEditedVertexAttributes.LabelPosition.HasValue &&
+                aoLabelPositionValues != null)
+            {
+                aoLabelPositionValues[iRowOneBased, 1] =
+                    oVertexLabelPositionConverter.GraphToWorkbook(
+                        oEditedVertexAttributes.LabelPosition.Value);
             }
 
             if (oEditedVertexAttributes.Locked.HasValue &&
@@ -678,16 +677,16 @@ public partial class Sheet2
                 oAlphaColumnData.set_Value(Missing.Value, aoAlphaValues);
             }
 
-            if (aoVertexDrawingPrecedenceValues != null)
-            {
-                oVertexDrawingPrecedenceColumnData.set_Value(Missing.Value,
-                    aoVertexDrawingPrecedenceValues);
-            }
-
             if (aoVisibilityValues != null)
             {
                 oVisibilityColumnData.set_Value(Missing.Value,
                     aoVisibilityValues);
+            }
+
+            if (aoLabelPositionValues != null)
+            {
+                oLabelPositionColumnData.set_Value(Missing.Value,
+                    aoLabelPositionValues);
             }
 
             if (aoLockedValues != null)

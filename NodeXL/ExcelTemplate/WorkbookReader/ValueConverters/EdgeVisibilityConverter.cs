@@ -48,16 +48,20 @@ public class EdgeVisibilityConverter :
     {
         AssertValid();
 
+        // The parenthetical entries are for backward compatibility with older
+        // NodeXL workbooks.  Parentheses are not used in newer value
+        // converters.
+
         return ( new GraphValueInfo [] {
 
             new GraphValueInfo( EdgeWorksheetReader.Visibility.Show,
-                new String [] {"Show (1)", "1",} ),
+                new String [] {"Show", "Show (1)", "1",} ),
 
             new GraphValueInfo( EdgeWorksheetReader.Visibility.Skip,
-                new String [] {"Skip (0)", "0",} ),
+                new String [] {"Skip", "Skip (0)", "0",} ),
 
             new GraphValueInfo( EdgeWorksheetReader.Visibility.Hide,
-                new String [] {"Hide (2)", "2",} ),
+                new String [] {"Hide", "Hide (2)", "2",} ),
             } );
     }
 

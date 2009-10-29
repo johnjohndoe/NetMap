@@ -173,9 +173,9 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
             this.chkIncludeFollowedEdges.AutoSize = true;
             this.chkIncludeFollowedEdges.Location = new System.Drawing.Point(15, 20);
             this.chkIncludeFollowedEdges.Name = "chkIncludeFollowedEdges";
-            this.chkIncludeFollowedEdges.Size = new System.Drawing.Size(163, 17);
+            this.chkIncludeFollowedEdges.Size = new System.Drawing.Size(156, 17);
             this.chkIncludeFollowedEdges.TabIndex = 0;
-            this.chkIncludeFollowedEdges.Text = "&Followed relationship (slower)";
+            this.chkIncludeFollowedEdges.Text = "&Follows relationship (slower)";
             this.chkIncludeFollowedEdges.UseVisualStyleBackColor = true;
             // 
             // txbSearchTerm

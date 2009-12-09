@@ -29,8 +29,8 @@ namespace Microsoft.NodeXL.GraphDataProviders
         private void InitializeComponent()
         {
             this.picLevel = new System.Windows.Forms.PictureBox();
-            this.cbxLevel = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbxLevel = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             ((System.ComponentModel.ISupportInitialize)(this.picLevel)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -38,22 +38,12 @@ namespace Microsoft.NodeXL.GraphDataProviders
             // picLevel
             // 
             this.picLevel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picLevel.Location = new System.Drawing.Point(66, 18);
+            this.picLevel.Location = new System.Drawing.Point(63, 18);
             this.picLevel.Name = "picLevel";
             this.picLevel.Size = new System.Drawing.Size(39, 48);
             this.picLevel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.picLevel.TabIndex = 14;
             this.picLevel.TabStop = false;
-            // 
-            // cbxLevel
-            // 
-            this.cbxLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxLevel.FormattingEnabled = true;
-            this.cbxLevel.Location = new System.Drawing.Point(14, 29);
-            this.cbxLevel.Name = "cbxLevel";
-            this.cbxLevel.Size = new System.Drawing.Size(44, 21);
-            this.cbxLevel.TabIndex = 0;
-            this.cbxLevel.SelectedIndexChanged += new System.EventHandler(this.cbxLevel_SelectedIndexChanged);
             // 
             // groupBox3
             // 
@@ -65,6 +55,16 @@ namespace Microsoft.NodeXL.GraphDataProviders
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "&Levels to include";
+            // 
+            // cbxLevel
+            // 
+            this.cbxLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxLevel.FormattingEnabled = true;
+            this.cbxLevel.Location = new System.Drawing.Point(11, 29);
+            this.cbxLevel.Name = "cbxLevel";
+            this.cbxLevel.Size = new System.Drawing.Size(44, 21);
+            this.cbxLevel.TabIndex = 0;
+            this.cbxLevel.SelectedIndexChanged += new System.EventHandler(this.cbxLevel_SelectedIndexChanged);
             // 
             // NetworkLevelControl
             // 

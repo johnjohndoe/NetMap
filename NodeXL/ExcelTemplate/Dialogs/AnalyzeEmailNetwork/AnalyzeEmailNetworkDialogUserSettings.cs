@@ -364,6 +364,40 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     }
 
     //*************************************************************************
+    //  Property: SubjectText
+    //
+    /// <summary>
+    /// Gets or sets the subject text.
+    /// </summary>
+    ///
+    /// <value>
+    /// The subject text, or null to not filter on subject text.  The default
+    /// is null.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute(null) ]
+
+    public String
+    SubjectText
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (String)this[SubjectTextKey] );
+        }
+
+        set
+        {
+            this[SubjectTextKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: BodyText
     //
     /// <summary>
@@ -559,6 +593,10 @@ public class AnalyzeEmailNetworkDialogUserSettings : FormSettings
     /// Name of the settings key for the HasBcc property.
 
     protected const String HasBccKey = "HasBcc";
+
+    /// Name of the settings key for the SubjectText property.
+
+    protected const String SubjectTextKey = "SubjectText";
 
     /// Name of the settings key for the BodyText property.
 

@@ -11,12 +11,18 @@ namespace Microsoft.Research.CommunityTechnologies.XmlLib
 //  Class: XmlUtil
 //
 /// <summary>
-/// XML utility methods.
+/// Legacy XML utility methods.
 /// </summary>
 ///
 /// <remarks>
 /// This class contains utility methods for dealing with XML.  All methods are
 /// static.
+///
+/// <para>
+/// This is an old class that should not be used in new projects.  Use XmlUtil2
+/// instead.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -186,9 +192,9 @@ public class XmlUtil
     //*************************************************************************
     //  Method: SelectRequiredSingleNode()
     //
-    /// <remarks>
+    /// <overloads>
     /// Selects a single node that must exist.
-    /// </remarks>
+    /// </overloads>
     ///
     /// <summary>
     /// Selects a single node that must exist.
@@ -221,16 +227,7 @@ public class XmlUtil
         Debug.Assert(oNode != null);
         Debug.Assert(sXPath != "");
 
-        XmlNode oSelectedNode = oNode.SelectSingleNode(sXPath);
-
-        if (oSelectedNode == null)
-        {
-            throw new XmlException(
-                "A \"" + oNode.Name + "\" node is missing a required"
-                + " descendent node.  The XPath is \"" + sXPath + "\".");
-        }
-
-        return (oSelectedNode);
+        return ( SelectRequiredSingleNodeInternal(oNode, sXPath, null) );
     }
 
     //*************************************************************************
@@ -273,17 +270,8 @@ public class XmlUtil
         Debug.Assert(sXPath != "");
         Debug.Assert(oXmlNamespaceManager != null);
 
-        XmlNode oSelectedNode = oNode.SelectSingleNode(sXPath,
-            oXmlNamespaceManager);
-
-        if (oSelectedNode == null)
-        {
-            throw new XmlException(
-                "A \"" + oNode.Name + "\" node is missing a required"
-                + " descendent node.  The XPath is \"" + sXPath + "\".");
-        }
-
-        return (oSelectedNode);
+        return ( SelectRequiredSingleNodeInternal(oNode, sXPath,
+            oXmlNamespaceManager) );
     }
 
     //*************************************************************************
@@ -383,6 +371,10 @@ public class XmlUtil
     /// Reads an XML node's text.
     /// </summary>
     ///
+    /// <summary>
+    /// Reads an XML node's text.
+    /// </summary>
+    ///
     /// <param name="oNode">
     /// Node to select from.
     /// </param>
@@ -424,17 +416,77 @@ public class XmlUtil
         Debug.Assert(sXPath != null);
         Debug.Assert(sXPath != "");
 
+        return ( GetStringNodeValueInternal(oNode, sXPath, null, bRequired,
+            out sValue) );
+    }
+
+    //*************************************************************************
+    //  Method: GetStringNodeValue()
+    //
+    /// <summary>
+    /// Reads an XML node's text using an XmlNamespaceManager.
+    /// </summary>
+    ///
+    /// <param name="oNode">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="sXPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="oXmlNamespaceManager">
+    /// NamespaceManager to use.
+    /// </param>
+    ///
+    /// <param name="bRequired">
+    /// true if the specified node and non-empty text are required.
+    /// </param>
+    ///
+    /// <param name="sValue">
+    /// Where the text gets stored.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified node was found and its text stored in iValue.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="bRequired" /> is true and the specified node is
+    /// missing, an exception is thrown.  If <paramref name="bRequired" /> is
+    /// false and the specified node is missing, String.Empty is stored in
+    /// sValue and false is returned.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    GetStringNodeValue
+    (
+        XmlNode oNode,
+        String sXPath,
+        XmlNamespaceManager oXmlNamespaceManager,
+        Boolean bRequired,
+        out String sValue
+    )
+    {
+        Debug.Assert(oNode != null);
+        Debug.Assert(sXPath != null);
+        Debug.Assert(sXPath != "");
+        Debug.Assert(oXmlNamespaceManager != null);
+
         sValue = String.Empty;
 
         XmlNode oSelectedNode;
 
         if (bRequired)
         {
-            oSelectedNode = SelectRequiredSingleNode(oNode, sXPath);
+            oSelectedNode = SelectRequiredSingleNodeInternal(oNode, sXPath,
+                oXmlNamespaceManager);
         }
         else
         {
-            oSelectedNode = oNode.SelectSingleNode(sXPath);
+            oSelectedNode = SelectSingleNodeInternal(oNode, sXPath,
+                oXmlNamespaceManager);
 
             if (oSelectedNode == null)
             {
@@ -1018,6 +1070,177 @@ public class XmlUtil
         }
     }
 
+    //*************************************************************************
+    //  Method: SelectRequiredSingleNodeInternal()
+    //
+    /// <summary>
+    /// Selects a single node that must exist using an optional
+    /// NamespaceManager.
+    /// </summary>
+    ///
+    /// <param name="oNode">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="sXPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="oXmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use a NamespaceManager.
+    /// </param>
+    ///
+    /// <returns>
+    /// Selected node.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the node doesn't exist, an exception is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    private static XmlNode
+    SelectRequiredSingleNodeInternal
+    (
+        XmlNode oNode,
+        String sXPath,
+        XmlNamespaceManager oXmlNamespaceManager
+    )
+    {
+        Debug.Assert(oNode != null);
+        Debug.Assert(sXPath != "");
+
+        XmlNode oSelectedNode = SelectSingleNodeInternal(oNode, sXPath,
+            oXmlNamespaceManager);
+        
+        if (oSelectedNode == null)
+        {
+            throw new XmlException(
+                "A \"" + oNode.Name + "\" node is missing a required"
+                + " descendent node.  The XPath is \"" + sXPath + "\".");
+        }
+
+        return (oSelectedNode);
+    }
+
+    //*************************************************************************
+    //  Method: GetStringNodeValueInternal()
+    //
+    /// <summary>
+    /// Reads an XML node's text.
+    /// </summary>
+    ///
+    /// <param name="oNode">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="sXPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="oXmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use a NamespaceManager.
+    /// </param>
+    ///
+    /// <param name="bRequired">
+    /// true if the specified node and non-empty text are required.
+    /// </param>
+    ///
+    /// <param name="sValue">
+    /// Where the text gets stored.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified node was found and its text stored in iValue.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="bRequired" /> is true and the specified node is
+    /// missing, an exception is thrown.  If <paramref name="bRequired" /> is
+    /// false and the specified node is missing, String.Empty is stored in
+    /// sValue and false is returned.
+    /// </remarks>
+    //*************************************************************************
+
+    private static Boolean
+    GetStringNodeValueInternal
+    (
+        XmlNode oNode,
+        String sXPath,
+        XmlNamespaceManager oXmlNamespaceManager,
+        Boolean bRequired,
+        out String sValue
+    )
+    {
+        Debug.Assert(oNode != null);
+        Debug.Assert(sXPath != null);
+        Debug.Assert(sXPath != "");
+
+        sValue = String.Empty;
+
+        XmlNode oSelectedNode;
+
+        if (bRequired)
+        {
+            oSelectedNode = SelectRequiredSingleNode(oNode, sXPath,
+                oXmlNamespaceManager);
+        }
+        else
+        {
+            oSelectedNode = SelectSingleNodeInternal(oNode, sXPath,
+                oXmlNamespaceManager);
+
+            if (oSelectedNode == null)
+            {
+                return (false);
+            }
+        }
+
+        return ( GetInnerText(oSelectedNode, bRequired, out sValue) );
+    }
+
+    //*************************************************************************
+    //  Method: SelectSingleNodeInternal()
+    //
+    /// <summary>
+    /// Selects a single node using an optional NamespaceManager.
+    /// </summary>
+    ///
+    /// <param name="oNode">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="sXPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="oXmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use a NamespaceManager.
+    /// </param>
+    ///
+    /// <returns>
+    /// Selected node, or null if the node doesn't exist.
+    /// </returns>
+    //*************************************************************************
+
+    private static XmlNode
+    SelectSingleNodeInternal
+    (
+        XmlNode oNode,
+        String sXPath,
+        XmlNamespaceManager oXmlNamespaceManager
+    )
+    {
+        Debug.Assert(oNode != null);
+        Debug.Assert(sXPath != "");
+
+        if (oXmlNamespaceManager != null)
+        {
+            return ( oNode.SelectSingleNode(sXPath, oXmlNamespaceManager) );
+        }
+
+        return ( oNode.SelectSingleNode(sXPath) );
+    }
 }
 
 }

@@ -253,7 +253,7 @@ public partial class MainForm : Form
 
             #endif
 
-            if (true && oRandom.Next(50) == 0)  // Image
+            if (true && oRandom.Next(20) == 0)  // Image
             {
                 oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
                     VertexShape.Image);

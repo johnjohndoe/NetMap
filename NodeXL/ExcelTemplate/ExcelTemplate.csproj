@@ -455,8 +455,7 @@
     <Compile Include="EventArgs\VerticesMovedEventArgs2.cs" />
     <Compile Include="GraphMetrics\CalculateGraphMetricsContext.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculationManager.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\BetweennessCentralityCalculator2.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\ClosenessCentralityCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\BrandesFastCentralityCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusterCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\EigenvectorCentralityCalculator2.cs" />

@@ -49,7 +49,6 @@
     <Compile Include="Adapters\GraphAdapters\GraphMLGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\PajekGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\SimpleGraphAdapterTest.cs" />
-    <Compile Include="Algorithms\GraphMetricCalculators\AllPathsShortestPathCalculatorTest.cs" />
     <Compile Include="Algorithms\Miscellaneous\DuplicateEdgeDetectorTest.cs" />
     <Compile Include="Core\DefaultImplementations\NodeXLBaseTest.cs" />
     <Compile Include="Core\DefaultImplementations\Collections\EdgeCollectionEnumeratorTest.cs" />

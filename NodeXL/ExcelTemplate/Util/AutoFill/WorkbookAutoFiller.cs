@@ -254,6 +254,11 @@ public static class WorkbookAutoFiller : Object
             EdgeTableColumnNames.Visibility,
             oAutoFillUserSettings.EdgeVisibilityDetails
             );
+
+        AutoFillColumnViaCopy(oEdgeTable,
+            oAutoFillUserSettings.EdgeLabelSourceColumnName,
+            EdgeTableColumnNames.Label
+            );
     }
 
     //*************************************************************************

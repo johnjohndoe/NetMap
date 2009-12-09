@@ -56,9 +56,8 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
 
             return(this.CalculateInDegree || this.CalculateOutDegree ||
                 this.CalculateDegree || this.CalculateClusteringCoefficient ||
-                this.CalculateBetweennessCentrality ||
+                this.CalculateBrandesFastCentralities ||
                 this.CalculateEigenvectorCentrality ||
-                this.CalculateClosenessCentrality ||
                 this.CalculateOverallMetrics
                 );
         }
@@ -201,15 +200,15 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: CalculateBetweennessCentrality
+    //  Property: CalculateBrandesFastCentralities
     //
     /// <summary>
-    /// Gets or sets a flag specifying whether betweenness centralities should
-    /// be calculated.
+    /// Gets or sets a flag specifying whether the Brandes fast centralities
+    /// should be calculated.
     /// </summary>
     ///
     /// <value>
-    /// true to calculate betweenness centralities.  The default is false.
+    /// true to calculate the Brandes fast centralities.  The default is false.
     /// </value>
     //*************************************************************************
 
@@ -217,18 +216,18 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-    CalculateBetweennessCentrality
+    CalculateBrandesFastCentralities
     {
         get
         {
             AssertValid();
 
-            return ( (Boolean)this[CalculateBetweennessCentralityKey] );
+            return ( (Boolean)this[CalculateBrandesFastCentralitiesKey] );
         }
 
         set
         {
-            this[CalculateBetweennessCentralityKey] = value;
+            this[CalculateBrandesFastCentralitiesKey] = value;
 
             AssertValid();
         }
@@ -263,40 +262,6 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
         set
         {
             this[CalculateEigenvectorCentralityKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateClosenessCentrality
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether closeness centralities should be
-    /// calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate closeness centralities.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculateClosenessCentrality
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculateClosenessCentralityKey] );
-        }
-
-        set
-        {
-            this[CalculateClosenessCentralityKey] = value;
 
             AssertValid();
         }
@@ -379,23 +344,17 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     protected const String CalculateClusteringCoefficientKey =
         "CalculateClusteringCoefficient";
 
-    /// Name of the settings key for the CalculateBetweennessCentrality
+    /// Name of the settings key for the CalculateBrandesFastCentralities
     /// property.
 
-    protected const String CalculateBetweennessCentralityKey =
-        "CalculateBetweennessCentrality";
+    protected const String CalculateBrandesFastCentralitiesKey =
+        "CalculateBrandesFastCentralities";
 
     /// Name of the settings key for the CalculateEigenvectorCentrality
     /// property.
 
     protected const String CalculateEigenvectorCentralityKey =
         "CalculateEigenvectorCentrality";
-
-    /// Name of the settings key for the CalculateClosenessCentrality
-    /// property.
-
-    protected const String CalculateClosenessCentralityKey =
-        "CalculateClosenessCentrality";
 
     /// Name of the settings key for the CalculateOverallMetrics property.
 

@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lnkClosenessCentrality.Tag" xml:space="preserve">
-    <value>The closeness centrality of a vertex is the average distance (along the shortest path) between the vertex and all other vertices reachable from it.  It is defined in this article:
-
-http://en.wikipedia.org/wiki/Centrality#Closeness_centrality
-
-NodeXL uses a breadth-first search to compute the shortest paths.  Self-loops, duplicate edges, and isolated vertices are ignored.
-
-(You can press Ctrl-C to copy these details to the clipboard.)</value>
-  </data>
-  <data name="lnkBetweennessCentrality.Tag" xml:space="preserve">
+  <data name="lnkBrandesFastCentralities.Tag" xml:space="preserve">
     <value>A vertex that occurs on many shortest paths between other vertices has a larger betweenness centrality than vertices that do not.  Betweenness centrality is defined in this article:
 	
 http://en.wikipedia.org/wiki/Centrality#Betweenness_centrality
@@ -136,6 +127,12 @@ NodeXL uses the algorithm described in the paper "A Faster Algorithm for Between
 http://www.inf.uni-konstanz.de/algo/publications/b-fabc-01.pdf
 
 The algorithm successfully handles self-loops and duplicate edges.
+
+The closeness centrality of a vertex is the average distance (along the shortest path) between the vertex and all other vertices reachable from it.  It is defined in this article:
+
+http://en.wikipedia.org/wiki/Centrality#Closeness_centrality
+
+The betweenness and closeness centralities are computed simultaneously within the Brandes algorithm mentioned above.
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>

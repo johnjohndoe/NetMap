@@ -320,6 +320,41 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: EdgeLabelSourceColumnName
+    //
+    /// <summary>
+    /// Gets or sets the name of the column to use as a data source for the
+    /// edge label column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The name of the column to use as a data source for the edge label
+    /// column.  The default is String.Empty.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("") ]
+
+    public String
+    EdgeLabelSourceColumnName
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (String)this[EdgeLabelSourceColumnNameKey] );
+        }
+
+        set
+        {
+            this[EdgeLabelSourceColumnNameKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: VertexColorSourceColumnName
     //
     /// <summary>
@@ -1203,6 +1238,9 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
         oCopy.EdgeVisibilityDetails = this.EdgeVisibilityDetails.Copy();
 
+        oCopy.EdgeLabelSourceColumnName = String.Copy(
+            this.EdgeLabelSourceColumnName);
+
         oCopy.VertexColorSourceColumnName = String.Copy(
             this.VertexColorSourceColumnName);
 
@@ -1324,6 +1362,11 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
     protected const String EdgeVisibilityDetailsKey =
         "EdgeVisibilityDetails";
+
+    /// Name of the settings key for the EdgeLabelSourceColumnName property.
+
+    protected const String EdgeLabelSourceColumnNameKey =
+        "EdgeLabelSourceColumnName";
 
     /// Name of the settings key for the VertexColorSourceColumnName property.
 

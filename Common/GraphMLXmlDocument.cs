@@ -70,6 +70,31 @@ public class GraphMLXmlDocument : XmlDocument
     }
 
     //*************************************************************************
+    //  Property: HasVertexXmlNode
+    //
+    /// <summary>
+    /// Gets a flag indicating whether the document has at least one XML node
+    /// that represents a vertex.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the document has at least one XML node that represents a
+    /// vertex, false if there are no such XML nodes.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    HasVertexXmlNode
+    {
+        get
+        {
+            AssertValid();
+
+            return ( GetHasVertexXmlNode(this) );
+        }
+    }
+
+    //*************************************************************************
     //  Method: DefineGraphMLAttribute()
     //
     /// <summary>
@@ -249,6 +274,37 @@ public class GraphMLXmlDocument : XmlDocument
     }
 
     //*************************************************************************
+    //  Method: GetHasVertexXmlNode()
+    //
+    /// <summary>
+    /// Gets a flag indicating whether a document has at least one XML node
+    /// that represents a vertex.
+    /// </summary>
+    ///
+    /// <param name="graphMLXmlDocument">
+    /// XML document containing GraphML that represents a graph.  This does not
+    /// have to be a GraphMLXmlDocument.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the document has at least one XML node that represents a
+    /// vertex, false if there are no such XML nodes.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    GetHasVertexXmlNode
+    (
+        XmlDocument graphMLXmlDocument
+    )
+    {
+        Debug.Assert(graphMLXmlDocument != null);
+
+        return (graphMLXmlDocument.SelectSingleNode("g:graphml/g:graph/g:node",
+            CreateXmlNamespaceManager(graphMLXmlDocument, "g") ) != null);
+    }
+
+    //*************************************************************************
     //  Method: AppendXmlNode()
     //
     /// <overloads>
@@ -371,8 +427,12 @@ public class GraphMLXmlDocument : XmlDocument
     //*************************************************************************
     //  Method: CreateXmlNamespaceManager()
     //
-    /// <summary>
+    /// <overloads>
     /// Creates an XmlNamespaceManager object to use with the document.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Creates an XmlNamespaceManager object to use with this document.
     /// </summary>
     ///
     /// <param name="prefix">
@@ -410,8 +470,46 @@ public class GraphMLXmlDocument : XmlDocument
     {
         Debug.Assert( !String.IsNullOrEmpty(prefix) );
 
+        return ( CreateXmlNamespaceManager(this, prefix) ); 
+    }
+
+    //*************************************************************************
+    //  Method: CreateXmlNamespaceManager()
+    //
+    /// <summary>
+    /// Creates an XmlNamespaceManager object to use with a specified document.
+    /// </summary>
+    ///
+    /// <param name="graphMLXmlDocument">
+    /// XML document containing GraphML that represents a graph.  This does not
+    /// have to be a GraphMLXmlDocument.
+    /// </param>
+    ///
+    /// <param name="prefix">
+    /// The prefix to use for the default GraphML namespace.
+    /// </param>
+    ///
+    /// <returns>
+    /// An XmlNamespaceManager object to use with the document.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// See the other overload for details on using this method.
+    /// </remarks>
+    //*************************************************************************
+
+    public static XmlNamespaceManager
+    CreateXmlNamespaceManager
+    (
+        XmlDocument graphMLXmlDocument,
+        String prefix
+    )
+    {
+        Debug.Assert(graphMLXmlDocument != null);
+        Debug.Assert( !String.IsNullOrEmpty(prefix) );
+
         XmlNamespaceManager oXmlNamespaceManager = new XmlNamespaceManager(
-            this.NameTable);
+            graphMLXmlDocument.NameTable);
 
         oXmlNamespaceManager.AddNamespace(prefix, GraphMLNamespaceUri);
 

@@ -1,4 +1,4 @@
-namespace Microsoft.NodeXL.GraphDataProviders
+namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 {
     partial class TwitterCredentialsControl
     {

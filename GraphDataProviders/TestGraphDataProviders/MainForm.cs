@@ -3,8 +3,9 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.NodeXL.ExcelTemplatePlugIns;
-using Microsoft.NodeXL.GraphDataProviders.Flickr;
 using Microsoft.NodeXL.GraphDataProviders.Twitter;
+using Microsoft.NodeXL.GraphDataProviders.Flickr;
+using Microsoft.NodeXL.GraphDataProviders.YouTube;
 
 namespace Microsoft.NodeXL.TestGraphDataProviders
 {
@@ -21,11 +22,6 @@ public partial class MainForm : Form
         InitializeComponent();
     }
 
-    private void btnFlickrRelatedTags_Click(object sender, EventArgs e)
-    {
-        GetGraphData( new FlickrRelatedTagsGraphDataProvider() );
-    }
-
     private void btnTwitterUsers_Click(object sender, EventArgs e)
     {
         GetGraphData( new TwitterUserNetworkGraphDataProvider() );
@@ -34,6 +30,26 @@ public partial class MainForm : Form
     private void btnTwitterSearch_Click(object sender, EventArgs e)
     {
         GetGraphData( new TwitterSearchNetworkGraphDataProvider() );
+    }
+
+    private void btnYouTubeUsers_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new YouTubeUserNetworkGraphDataProvider() );
+    }
+
+    private void btnYouTubeVideos_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new YouTubeVideoNetworkGraphDataProvider() );
+    }
+
+    private void btnFlickrUsers_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new FlickrUserNetworkGraphDataProvider() );
+    }
+
+    private void btnFlickrRelatedTags_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new FlickrRelatedTagNetworkGraphDataProvider() );
     }
 
     private void GetGraphData(IGraphDataProvider oGraphDataProvider)

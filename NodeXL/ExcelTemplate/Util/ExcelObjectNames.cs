@@ -389,7 +389,7 @@ public static class VertexTableColumnNames
     /// <summary>
     /// Name of the optional table column containing the vertex's betweenness
     /// centrality.  This gets added to the table on demand by <see
-    /// cref="BetweennessCentralityCalculator2" />.
+    /// cref="BrandesFastCentralityCalculator2" />.
     /// </summary>
 
     public const String BetweennessCentrality =
@@ -398,7 +398,7 @@ public static class VertexTableColumnNames
     /// <summary>
     /// Name of the optional table column containing the vertex's closeness
     /// centrality.  This gets added to the table on demand by <see
-    /// cref="ClosenessCentralityCalculator2" />.
+    /// cref="BrandesFastCentralityCalculator2" />.
     /// </summary>
 
     public const String ClosenessCentrality =

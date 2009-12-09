@@ -82,6 +82,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             cbxEdgeWidthSourceColumnName,
             cbxEdgeAlphaSourceColumnName,
             cbxEdgeVisibilitySourceColumnName,
+            cbxEdgeLabelSourceColumnName,
             };
 
         m_aoVertexSourceColumnNameComboBoxes =
@@ -164,6 +165,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         lblEdgeWidth.Tag = sEdgePrefix + EdgeTableColumnNames.Width;
         lblEdgeAlpha.Tag = sEdgePrefix + EdgeTableColumnNames.Alpha;
         lblEdgeVisibility.Tag = sEdgePrefix + EdgeTableColumnNames.Visibility;
+        lblEdgeLabel.Tag = sEdgePrefix + EdgeTableColumnNames.Label;
 
         String sVertexPrefix =
             WorksheetNames.Vertices + "\t" + TableNames.Vertices + "\t";
@@ -238,6 +240,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         cbxEdgeWidthSourceColumnName.Tag = EdgeTableColumnNames.Width;
         cbxEdgeAlphaSourceColumnName.Tag = EdgeTableColumnNames.Alpha;
         cbxEdgeVisibilitySourceColumnName.Tag = EdgeTableColumnNames.Visibility;
+        cbxEdgeLabelSourceColumnName.Tag = EdgeTableColumnNames.Label;
     }
 
     //*************************************************************************
@@ -384,6 +387,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
                 GetSourceColumnNameFromComboBox(
                     cbxEdgeVisibilitySourceColumnName);
 
+            m_oAutoFillUserSettings.EdgeLabelSourceColumnName =
+                GetSourceColumnNameFromComboBox(
+                    cbxEdgeLabelSourceColumnName);
+
             m_oAutoFillUserSettings.VertexColorSourceColumnName =
                 GetSourceColumnNameFromComboBox(
                     cbxVertexColorSourceColumnName);
@@ -446,6 +453,9 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
             cbxEdgeVisibilitySourceColumnName.Text =
                 m_oAutoFillUserSettings.EdgeVisibilitySourceColumnName;
+
+            cbxEdgeLabelSourceColumnName.Text =
+                m_oAutoFillUserSettings.EdgeLabelSourceColumnName;
 
             cbxVertexColorSourceColumnName.Text =
                 m_oAutoFillUserSettings.VertexColorSourceColumnName;
@@ -1739,7 +1749,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AutoFillWorkbookDialog2") ]
+[ SettingsGroupNameAttribute("AutoFillWorkbookDialog3") ]
 
 public class AutoFillWorkbookDialogUserSettings : FormSettings
 {

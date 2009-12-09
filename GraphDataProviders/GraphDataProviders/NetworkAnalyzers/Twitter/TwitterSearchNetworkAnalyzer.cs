@@ -17,13 +17,12 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 //  Class: TwitterSearchNetworkAnalyzer
 //
 /// <summary>
-/// Gets the network of people who have tweeted a specified search term.
+/// Gets a network of people who have tweeted a specified search term.
 /// </summary>
 ///
 /// <remarks>
-/// Use <see cref="GetSearchNetwork" /> to synchronously get the network of
-/// people who have tweeted a specified search term, or use <see
-/// cref="GetSearchNetworkAsync" /> to do it asynchronously.
+/// Use <see cref="GetNetworkAsync" /> to asynchronously get a directed network
+/// of people who have tweeted a specified search term.
 /// </remarks>
 //*****************************************************************************
 
@@ -103,77 +102,11 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetSearchNetwork()
+    //  Method: GetNetworkAsync()
     //
     /// <summary>
-    /// Synchronously gets the network of people who have tweeted a specified
-    /// search term.
-    /// </summary>
-    ///
-    /// <param name="searchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="whatToInclude">
-    /// Specifies what should be included in the network.
-    /// </param>
-    ///
-    /// <param name="maximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
-    /// </param>
-    ///
-    /// <param name="credentialsScreenName">
-    /// The screen name of the Twitter user whose credentials should be used,
-    /// or null to not use credentials.
-    /// </param>
-    ///
-    /// <param name="credentialsPassword">
-    /// The password of the Twitter user whose credentials should be used.
-    /// Used only if <paramref name="credentialsScreenName" /> is specified.
-    /// </param>
-    ///
-    /// <returns>
-    /// An XmlDocument containing the network as GraphML.
-    /// </returns>
-    //*************************************************************************
-
-    public XmlDocument
-    GetSearchNetwork
-    (
-        String searchTerm,
-        WhatToInclude whatToInclude,
-        Int32 maximumPeoplePerRequest,
-        String credentialsScreenName,
-        String credentialsPassword
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
-        Debug.Assert(maximumPeoplePerRequest > 0);
-
-        Debug.Assert( credentialsScreenName == null ||
-            ( credentialsScreenName.Length > 0 &&
-                !String.IsNullOrEmpty(credentialsPassword) ) );
-
-        AssertValid();
-
-        XmlDocument oXmlDocument;
-
-        Boolean bNotCancelled = TryGetSearchNetworkInternal(searchTerm,
-            whatToInclude, maximumPeoplePerRequest, credentialsScreenName,
-            credentialsPassword, null, null, out oXmlDocument);
-
-        Debug.Assert(bNotCancelled);
-
-        return (oXmlDocument);
-    }
-
-    //*************************************************************************
-    //  Method: GetSearchNetworkAsync()
-    //
-    /// <summary>
-    /// Asynchronously gets the network of people who have tweeted a specified
-    /// search term.
+    /// Asynchronously gets a directed network of people who have tweeted a
+    /// specified search term.
     /// </summary>
     ///
     /// <param name="searchTerm">
@@ -214,7 +147,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     public void
-    GetSearchNetworkAsync
+    GetNetworkAsync
     (
         String searchTerm,
         WhatToInclude whatToInclude,
@@ -232,32 +165,31 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AssertValid();
 
-        const String MethodName = "GetSearchNetworkAsync";
+        const String MethodName = "GetNetworkAsync";
         CheckIsBusy(MethodName);
 
         // Wrap the arguments in an object that can be passed to
         // BackgroundWorker.RunWorkerAsync().
 
-        GetSearchNetworkAsyncArgs oGetSearchNetworkAsyncArgs =
-            new GetSearchNetworkAsyncArgs();
+        GetNetworkAsyncArgs oGetNetworkAsyncArgs = new GetNetworkAsyncArgs();
 
-        oGetSearchNetworkAsyncArgs.SearchTerm = searchTerm;
-        oGetSearchNetworkAsyncArgs.WhatToInclude = whatToInclude;
+        oGetNetworkAsyncArgs.SearchTerm = searchTerm;
+        oGetNetworkAsyncArgs.WhatToInclude = whatToInclude;
+        oGetNetworkAsyncArgs.MaximumPeoplePerRequest = maximumPeoplePerRequest;
+        oGetNetworkAsyncArgs.CredentialsScreenName = credentialsScreenName;
+        oGetNetworkAsyncArgs.CredentialsPassword = credentialsPassword;
 
-        oGetSearchNetworkAsyncArgs.MaximumPeoplePerRequest =
-            maximumPeoplePerRequest;
-
-        oGetSearchNetworkAsyncArgs.CredentialsScreenName =
-            credentialsScreenName;
-
-        oGetSearchNetworkAsyncArgs.CredentialsPassword = credentialsPassword;
-
-        m_oBackgroundWorker.RunWorkerAsync(oGetSearchNetworkAsyncArgs);
+        m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
     }
 
     //*************************************************************************
     //  Method: TryGetSearchNetworkInternal()
     //
+    /// <overloads>
+    /// Attempts to get the network of people who have tweeted a specified
+    /// search term.
+    /// </overloads>
+    ///
     /// <summary>
     /// Attempts to get the network of people who have tweeted a specified
     /// search term.
@@ -337,10 +269,117 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         GraphMLXmlDocument oGraphMLXmlDocument = CreateGraphMLXmlDocument(
             bIncludeStatistics, false);
 
+        RequestStatistics oRequestStatistics = new RequestStatistics();
+
+        try
+        {
+            if ( !TryGetSearchNetworkInternal(sSearchTerm, eWhatToInclude,
+                iMaximumPeoplePerRequest, sCredentialsScreenName,
+                sCredentialsPassword, oRequestStatistics, oBackgroundWorker,
+                oDoWorkEventArgs, oGraphMLXmlDocument) )
+            {
+                // The user cancelled.
+
+                return (false);
+            }
+        }
+        catch (Exception oException)
+        {
+            OnTerminatingException(oException);
+        }
+
+        return ( OnNetworkObtainedWithoutTerminatingException(
+            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetSearchNetworkInternal()
+    //
+    /// <summary>
+    /// Attempts to get the network of people who have tweeted a specified
+    /// search term, given a GraphMLXmlDocument.
+    /// </summary>
+    ///
+    /// <param name="sSearchTerm">
+    /// The term to search for.
+    /// </param>
+    ///
+    /// <param name="eWhatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="iMaximumPeoplePerRequest">
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+    /// </param>
+    ///
+    /// <param name="sCredentialsScreenName">
+    /// The screen name of the Twitter user whose credentials should be used,
+    /// or null to not use credentials.
+    /// </param>
+    ///
+    /// <param name="sCredentialsPassword">
+    /// The password of the Twitter user whose credentials should be used.
+    /// Used only if <paramref name="sCredentialsScreenName" /> is specified.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// A BackgroundWorker object if this method is being called
+    /// asynchronously, or null if it is being called synchronously.
+    /// </param>
+    ///
+    /// <param name="oDoWorkEventArgs">
+    /// A DoWorkEventArgs object if this method is being called
+    /// asynchronously, or null if it is being called synchronously.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument to populate with the requested network.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the network was obtained, or false if the user cancelled.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetSearchNetworkInternal
+    (
+        String sSearchTerm,
+        WhatToInclude eWhatToInclude,
+        Int32 iMaximumPeoplePerRequest,
+        String sCredentialsScreenName,
+        String sCredentialsPassword,
+        RequestStatistics oRequestStatistics,
+        BackgroundWorker oBackgroundWorker,
+        DoWorkEventArgs oDoWorkEventArgs,
+        GraphMLXmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
+        Debug.Assert(iMaximumPeoplePerRequest > 0);
+
+        Debug.Assert( sCredentialsScreenName == null ||
+            ( sCredentialsScreenName.Length > 0 &&
+                !String.IsNullOrEmpty(sCredentialsPassword) ) );
+
+        Debug.Assert(oRequestStatistics != null);
+        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
         if ( WhatToIncludeFlagIsSet(eWhatToInclude, WhatToInclude.Statuses) )
         {
             oGraphMLXmlDocument.DefineGraphMLAttribute(false, StatusID,
                 "Tweet", "string", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false, StatusDateID,
+                "Tweet Date", "string", null);
         }
 
         // The key is the screen name and the value is the corresponding
@@ -355,7 +394,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         if ( !TryAppendVertexXmlNodes(sSearchTerm, eWhatToInclude,
             iMaximumPeoplePerRequest, sCredentialsScreenName,
             sCredentialsPassword, oGraphMLXmlDocument, oScreenNameDictionary,
-            oBackgroundWorker, oDoWorkEventArgs) )
+            oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs) )
         {
             return (false);
         }
@@ -370,16 +409,20 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             if ( !TryAppendFollowedEdgeXmlNodes(eWhatToInclude,
                 iMaximumPeoplePerRequest, sCredentialsScreenName,
                 sCredentialsPassword, oGraphMLXmlDocument,
-                oScreenNameDictionary, oBackgroundWorker, oDoWorkEventArgs) )
+                oScreenNameDictionary, oRequestStatistics, oBackgroundWorker,
+                oDoWorkEventArgs) )
             {
                 return (false);
             }
         }
 
+        Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
+            eWhatToInclude, WhatToInclude.Statistics);
+
         AppendMissingGraphMLAttributeValues(oGraphMLXmlDocument,
             oScreenNameDictionary, bIncludeStatistics, false,
-            sCredentialsScreenName, sCredentialsPassword, oBackgroundWorker,
-            oDoWorkEventArgs);
+            oRequestStatistics, sCredentialsScreenName, sCredentialsPassword,
+            oBackgroundWorker, oDoWorkEventArgs);
 
         AppendRepliesToAndMentionsXmlNodes(oGraphMLXmlDocument,
             oScreenNameDictionary,
@@ -391,7 +434,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 WhatToInclude.MentionsEdges)
             );
 
-        oXmlDocument = oGraphMLXmlDocument;
         return (true);
     }
 
@@ -427,12 +469,17 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
+    /// The GraphMLXmlDocument being populated.
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
     /// The key is the screen name and the value is the corresponding
     /// TwitterVertex.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
     /// </param>
     ///
     /// <param name="oBackgroundWorker">
@@ -460,6 +507,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sCredentialsPassword,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
+        RequestStatistics oRequestStatistics,
         BackgroundWorker oBackgroundWorker,
         DoWorkEventArgs oDoWorkEventArgs
     )
@@ -473,6 +521,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
+        Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
@@ -504,8 +553,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         foreach ( XmlNode oAuthorNameXmlNode in EnumerateXmlNodes(
             sUrl, "a:feed/a:entry/a:author/a:name", "a", AtomNamespaceUri,
-            15, Int32.MaxValue, true, false, sCredentialsScreenName,
-            sCredentialsPassword) )
+            15, Int32.MaxValue, true, false, oRequestStatistics,
+            sCredentialsScreenName, sCredentialsPassword) )
         {
             if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
             {
@@ -556,35 +605,27 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             oXmlNamespaceManager.AddNamespace("a", AtomNamespaceUri);
 
-            // Tet the image URL and status for the tweet's author.
+            // Get the image URL and status for the tweet's author.
 
-            XmlNode oLinkXmlNode = oEntryXmlNode.SelectSingleNode(
-                "a:link[@rel='image']", oXmlNamespaceManager);
+            AppendStringGraphMLAttributeValue(oEntryXmlNode,
+                "a:link[@rel='image']/@href", oXmlNamespaceManager,
+                oGraphMLXmlDocument, oVertexXmlNode, ImageFileID);
 
-            if (oLinkXmlNode != null)
+            String sStatus;
+
+            if ( XmlUtil2.SelectSingleNode(oEntryXmlNode, "a:title/text()",
+                oXmlNamespaceManager, false, out sStatus) )
             {
-                String sImageUrl;
-
-                if ( XmlUtil.GetAttribute(oLinkXmlNode, "href", false,
-                    out sImageUrl) )
-                {
-                    oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                        oVertexXmlNode, ImageUrlID, sImageUrl);
-                }
-            }
-
-            XmlNode oTitleXmlNode = oEntryXmlNode.SelectSingleNode(
-                "a:title", oXmlNamespaceManager);
-
-            if (oTitleXmlNode != null)
-            {
-                String sStatus = oTitleXmlNode.InnerText;
                 oTwitterVertex.StatusForAnalysis = sStatus;
 
                 if (bIncludeStatuses)
                 {
                     oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                         oVertexXmlNode, StatusID, sStatus);
+
+                    AppendStringGraphMLAttributeValue(oEntryXmlNode,
+                        "a:published/text()", oXmlNamespaceManager,
+                        oGraphMLXmlDocument, oVertexXmlNode, StatusDateID);
                 }
             }
         }
@@ -628,6 +669,11 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// TwitterVertex.
     /// </param>
     ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
     /// <param name="oBackgroundWorker">
     /// A BackgroundWorker object if this method is being called
     /// asynchronously, or null if it is being called synchronously.
@@ -652,6 +698,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sCredentialsPassword,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
+        RequestStatistics oRequestStatistics,
         BackgroundWorker oBackgroundWorker,
         DoWorkEventArgs oDoWorkEventArgs
     )
@@ -664,6 +711,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
+        Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
@@ -681,8 +729,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             foreach ( XmlNode oOtherUserXmlNode in EnumerateXmlNodes(
                 GetFollowedOrFollowingUrl(sScreenName, true),
                 "users_list/users/user", null, null, Int32.MaxValue,
-                iMaximumPeoplePerRequest, false, true, sCredentialsScreenName,
-                sCredentialsPassword) )
+                iMaximumPeoplePerRequest, false, true, oRequestStatistics,
+                sCredentialsScreenName, sCredentialsPassword) )
             {
                 if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
                 {
@@ -784,19 +832,19 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         BackgroundWorker oBackgroundWorker = (BackgroundWorker)sender;
 
-        Debug.Assert(e.Argument is GetSearchNetworkAsyncArgs);
+        Debug.Assert(e.Argument is GetNetworkAsyncArgs);
 
-        GetSearchNetworkAsyncArgs oGetSearchNetworkAsyncArgs =
-            (GetSearchNetworkAsyncArgs)e.Argument;
+        GetNetworkAsyncArgs oGetNetworkAsyncArgs =
+            (GetNetworkAsyncArgs)e.Argument;
 
         XmlDocument oGraphMLDocument;
         
         if ( TryGetSearchNetworkInternal(
-            oGetSearchNetworkAsyncArgs.SearchTerm,
-            oGetSearchNetworkAsyncArgs.WhatToInclude,
-            oGetSearchNetworkAsyncArgs.MaximumPeoplePerRequest,
-            oGetSearchNetworkAsyncArgs.CredentialsScreenName,
-            oGetSearchNetworkAsyncArgs.CredentialsPassword,
+            oGetNetworkAsyncArgs.SearchTerm,
+            oGetNetworkAsyncArgs.WhatToInclude,
+            oGetNetworkAsyncArgs.MaximumPeoplePerRequest,
+            oGetNetworkAsyncArgs.CredentialsScreenName,
+            oGetNetworkAsyncArgs.CredentialsPassword,
             oBackgroundWorker, e, out oGraphMLDocument) )
         {
             e.Result = oGraphMLDocument;
@@ -830,6 +878,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// GraphML-attribute IDs.
 
     protected const String StatusID = "Status";
+    ///
+    protected const String StatusDateID = "StatusDate";
 
 
     //*************************************************************************
@@ -840,7 +890,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
 
     //*************************************************************************
-    //  Embedded class: GetSearchNetworkAsyncArguments()
+    //  Embedded class: GetNetworkAsyncArgs()
     //
     /// <summary>
     /// Contains the arguments needed to asynchronously get the network of
@@ -848,7 +898,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </summary>
     //*************************************************************************
 
-    protected class GetSearchNetworkAsyncArgs : GetNetworkAsyncArgs
+    protected class GetNetworkAsyncArgs : GetNetworkAsyncArgsBase
     {
         ///
         public String SearchTerm;

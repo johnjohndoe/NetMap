@@ -39,23 +39,21 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCheckAll = new System.Windows.Forms.Button();
             this.btnUncheckAll = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lnkClosenessCentrality = new System.Windows.Forms.LinkLabel();
-            this.cbxBetweennessCentrality = new System.Windows.Forms.CheckBox();
-            this.lnkBetweennessCentrality = new System.Windows.Forms.LinkLabel();
-            this.cbxClosenessCentrality = new System.Windows.Forms.CheckBox();
+            this.chkBrandesFastCentralities = new System.Windows.Forms.CheckBox();
+            this.lnkBrandesFastCentralities = new System.Windows.Forms.LinkLabel();
             this.lnkEigenvectorCentrality = new System.Windows.Forms.LinkLabel();
-            this.cbxEigenvectorCentrality = new System.Windows.Forms.CheckBox();
+            this.chkEigenvectorCentrality = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lnkDegree = new System.Windows.Forms.LinkLabel();
-            this.cbxDegree = new System.Windows.Forms.CheckBox();
+            this.chkDegree = new System.Windows.Forms.CheckBox();
             this.lnkOutDegree = new System.Windows.Forms.LinkLabel();
-            this.cbxOutDegree = new System.Windows.Forms.CheckBox();
+            this.chkOutDegree = new System.Windows.Forms.CheckBox();
             this.lnkInDegree = new System.Windows.Forms.LinkLabel();
-            this.cbxInDegree = new System.Windows.Forms.CheckBox();
+            this.chkInDegree = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.cbxOverallMetrics = new System.Windows.Forms.CheckBox();
+            this.chkOverallMetrics = new System.Windows.Forms.CheckBox();
             this.lnkOverallMetrics = new System.Windows.Forms.LinkLabel();
-            this.cbxClusteringCoefficient = new System.Windows.Forms.CheckBox();
+            this.chkClusteringCoefficient = new System.Windows.Forms.CheckBox();
             this.lnkClusteringCoefficient = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -65,7 +63,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(183, 382);
+            this.btnCancel.Location = new System.Drawing.Point(183, 375);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 7;
@@ -74,7 +72,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(71, 382);
+            this.btnOK.Location = new System.Drawing.Point(71, 375);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(106, 23);
             this.btnOK.TabIndex = 6;
@@ -92,7 +90,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnCheckAll
             // 
-            this.btnCheckAll.Location = new System.Drawing.Point(15, 340);
+            this.btnCheckAll.Location = new System.Drawing.Point(15, 333);
             this.btnCheckAll.Name = "btnCheckAll";
             this.btnCheckAll.Size = new System.Drawing.Size(75, 23);
             this.btnCheckAll.TabIndex = 4;
@@ -102,7 +100,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnUncheckAll
             // 
-            this.btnUncheckAll.Location = new System.Drawing.Point(96, 340);
+            this.btnUncheckAll.Location = new System.Drawing.Point(96, 333);
             this.btnUncheckAll.Name = "btnUncheckAll";
             this.btnUncheckAll.Size = new System.Drawing.Size(75, 23);
             this.btnUncheckAll.TabIndex = 5;
@@ -112,97 +110,72 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.lnkClosenessCentrality);
-            this.groupBox1.Controls.Add(this.cbxBetweennessCentrality);
-            this.groupBox1.Controls.Add(this.lnkBetweennessCentrality);
-            this.groupBox1.Controls.Add(this.cbxClosenessCentrality);
+            this.groupBox1.Controls.Add(this.chkBrandesFastCentralities);
+            this.groupBox1.Controls.Add(this.lnkBrandesFastCentralities);
             this.groupBox1.Controls.Add(this.lnkEigenvectorCentrality);
-            this.groupBox1.Controls.Add(this.cbxEigenvectorCentrality);
+            this.groupBox1.Controls.Add(this.chkEigenvectorCentrality);
             this.groupBox1.Location = new System.Drawing.Point(15, 150);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(248, 96);
+            this.groupBox1.Size = new System.Drawing.Size(248, 88);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Centrality";
             // 
-            // lnkClosenessCentrality
+            // chkBrandesFastCentralities
             // 
-            this.lnkClosenessCentrality.AutoSize = true;
-            this.lnkClosenessCentrality.Location = new System.Drawing.Point(193, 45);
-            this.lnkClosenessCentrality.Name = "lnkClosenessCentrality";
-            this.lnkClosenessCentrality.Size = new System.Drawing.Size(39, 13);
-            this.lnkClosenessCentrality.TabIndex = 3;
-            this.lnkClosenessCentrality.TabStop = true;
-            this.lnkClosenessCentrality.Tag = resources.GetString("lnkClosenessCentrality.Tag");
-            this.lnkClosenessCentrality.Text = "Details";
-            this.lnkClosenessCentrality.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
+            this.chkBrandesFastCentralities.Location = new System.Drawing.Point(13, 14);
+            this.chkBrandesFastCentralities.Name = "chkBrandesFastCentralities";
+            this.chkBrandesFastCentralities.Size = new System.Drawing.Size(174, 39);
+            this.chkBrandesFastCentralities.TabIndex = 0;
+            this.chkBrandesFastCentralities.Text = "&Betweenness and closeness centralities";
+            this.chkBrandesFastCentralities.UseVisualStyleBackColor = true;
             // 
-            // cbxBetweennessCentrality
+            // lnkBrandesFastCentralities
             // 
-            this.cbxBetweennessCentrality.AutoSize = true;
-            this.cbxBetweennessCentrality.Location = new System.Drawing.Point(13, 21);
-            this.cbxBetweennessCentrality.Name = "cbxBetweennessCentrality";
-            this.cbxBetweennessCentrality.Size = new System.Drawing.Size(168, 17);
-            this.cbxBetweennessCentrality.TabIndex = 0;
-            this.cbxBetweennessCentrality.Text = "&Betweenness centrality  (slow)";
-            this.cbxBetweennessCentrality.UseVisualStyleBackColor = true;
-            // 
-            // lnkBetweennessCentrality
-            // 
-            this.lnkBetweennessCentrality.AutoSize = true;
-            this.lnkBetweennessCentrality.Location = new System.Drawing.Point(193, 22);
-            this.lnkBetweennessCentrality.Name = "lnkBetweennessCentrality";
-            this.lnkBetweennessCentrality.Size = new System.Drawing.Size(39, 13);
-            this.lnkBetweennessCentrality.TabIndex = 1;
-            this.lnkBetweennessCentrality.TabStop = true;
-            this.lnkBetweennessCentrality.Tag = resources.GetString("lnkBetweennessCentrality.Tag");
-            this.lnkBetweennessCentrality.Text = "Details";
-            this.lnkBetweennessCentrality.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
-            // 
-            // cbxClosenessCentrality
-            // 
-            this.cbxClosenessCentrality.AutoSize = true;
-            this.cbxClosenessCentrality.Location = new System.Drawing.Point(13, 44);
-            this.cbxClosenessCentrality.Name = "cbxClosenessCentrality";
-            this.cbxClosenessCentrality.Size = new System.Drawing.Size(152, 17);
-            this.cbxClosenessCentrality.TabIndex = 2;
-            this.cbxClosenessCentrality.Text = "&Closeness centrality";
-            this.cbxClosenessCentrality.UseVisualStyleBackColor = true;
+            this.lnkBrandesFastCentralities.AutoSize = true;
+            this.lnkBrandesFastCentralities.Location = new System.Drawing.Point(193, 18);
+            this.lnkBrandesFastCentralities.Name = "lnkBrandesFastCentralities";
+            this.lnkBrandesFastCentralities.Size = new System.Drawing.Size(39, 13);
+            this.lnkBrandesFastCentralities.TabIndex = 1;
+            this.lnkBrandesFastCentralities.TabStop = true;
+            this.lnkBrandesFastCentralities.Tag = resources.GetString("lnkBrandesFastCentralities.Tag");
+            this.lnkBrandesFastCentralities.Text = "Details";
+            this.lnkBrandesFastCentralities.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
             // lnkEigenvectorCentrality
             // 
             this.lnkEigenvectorCentrality.AutoSize = true;
-            this.lnkEigenvectorCentrality.Location = new System.Drawing.Point(193, 68);
+            this.lnkEigenvectorCentrality.Location = new System.Drawing.Point(193, 60);
             this.lnkEigenvectorCentrality.Name = "lnkEigenvectorCentrality";
             this.lnkEigenvectorCentrality.Size = new System.Drawing.Size(39, 13);
-            this.lnkEigenvectorCentrality.TabIndex = 5;
+            this.lnkEigenvectorCentrality.TabIndex = 3;
             this.lnkEigenvectorCentrality.TabStop = true;
             this.lnkEigenvectorCentrality.Tag = resources.GetString("lnkEigenvectorCentrality.Tag");
             this.lnkEigenvectorCentrality.Text = "Details";
             this.lnkEigenvectorCentrality.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
-            // cbxEigenvectorCentrality
+            // chkEigenvectorCentrality
             // 
-            this.cbxEigenvectorCentrality.AutoSize = true;
-            this.cbxEigenvectorCentrality.Location = new System.Drawing.Point(13, 67);
-            this.cbxEigenvectorCentrality.Name = "cbxEigenvectorCentrality";
-            this.cbxEigenvectorCentrality.Size = new System.Drawing.Size(128, 17);
-            this.cbxEigenvectorCentrality.TabIndex = 4;
-            this.cbxEigenvectorCentrality.Text = "&Eigenvector centrality";
-            this.cbxEigenvectorCentrality.UseVisualStyleBackColor = true;
+            this.chkEigenvectorCentrality.AutoSize = true;
+            this.chkEigenvectorCentrality.Location = new System.Drawing.Point(13, 59);
+            this.chkEigenvectorCentrality.Name = "chkEigenvectorCentrality";
+            this.chkEigenvectorCentrality.Size = new System.Drawing.Size(128, 17);
+            this.chkEigenvectorCentrality.TabIndex = 2;
+            this.chkEigenvectorCentrality.Text = "&Eigenvector centrality";
+            this.chkEigenvectorCentrality.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.lnkDegree);
-            this.groupBox2.Controls.Add(this.cbxDegree);
+            this.groupBox2.Controls.Add(this.chkDegree);
             this.groupBox2.Controls.Add(this.lnkOutDegree);
-            this.groupBox2.Controls.Add(this.cbxOutDegree);
+            this.groupBox2.Controls.Add(this.chkOutDegree);
             this.groupBox2.Controls.Add(this.lnkInDegree);
-            this.groupBox2.Controls.Add(this.cbxInDegree);
+            this.groupBox2.Controls.Add(this.chkInDegree);
             this.groupBox2.Location = new System.Drawing.Point(15, 47);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(248, 96);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Degree";
             // 
@@ -218,15 +191,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkDegree.Text = "Details";
             this.lnkDegree.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
-            // cbxDegree
+            // chkDegree
             // 
-            this.cbxDegree.AutoSize = true;
-            this.cbxDegree.Location = new System.Drawing.Point(13, 21);
-            this.cbxDegree.Name = "cbxDegree";
-            this.cbxDegree.Size = new System.Drawing.Size(61, 17);
-            this.cbxDegree.TabIndex = 0;
-            this.cbxDegree.Text = "De&gree";
-            this.cbxDegree.UseVisualStyleBackColor = true;
+            this.chkDegree.AutoSize = true;
+            this.chkDegree.Location = new System.Drawing.Point(13, 21);
+            this.chkDegree.Name = "chkDegree";
+            this.chkDegree.Size = new System.Drawing.Size(61, 17);
+            this.chkDegree.TabIndex = 0;
+            this.chkDegree.Text = "De&gree";
+            this.chkDegree.UseVisualStyleBackColor = true;
             // 
             // lnkOutDegree
             // 
@@ -240,15 +213,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkOutDegree.Text = "Details";
             this.lnkOutDegree.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
-            // cbxOutDegree
+            // chkOutDegree
             // 
-            this.cbxOutDegree.AutoSize = true;
-            this.cbxOutDegree.Location = new System.Drawing.Point(13, 67);
-            this.cbxOutDegree.Name = "cbxOutDegree";
-            this.cbxOutDegree.Size = new System.Drawing.Size(81, 17);
-            this.cbxOutDegree.TabIndex = 4;
-            this.cbxOutDegree.Text = "&Out-Degree";
-            this.cbxOutDegree.UseVisualStyleBackColor = true;
+            this.chkOutDegree.AutoSize = true;
+            this.chkOutDegree.Location = new System.Drawing.Point(13, 67);
+            this.chkOutDegree.Name = "chkOutDegree";
+            this.chkOutDegree.Size = new System.Drawing.Size(81, 17);
+            this.chkOutDegree.TabIndex = 4;
+            this.chkOutDegree.Text = "&Out-Degree";
+            this.chkOutDegree.UseVisualStyleBackColor = true;
             // 
             // lnkInDegree
             // 
@@ -262,38 +235,38 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkInDegree.Text = "Details";
             this.lnkInDegree.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
-            // cbxInDegree
+            // chkInDegree
             // 
-            this.cbxInDegree.AutoSize = true;
-            this.cbxInDegree.Location = new System.Drawing.Point(13, 44);
-            this.cbxInDegree.Name = "cbxInDegree";
-            this.cbxInDegree.Size = new System.Drawing.Size(73, 17);
-            this.cbxInDegree.TabIndex = 2;
-            this.cbxInDegree.Text = "&In-Degree";
-            this.cbxInDegree.UseVisualStyleBackColor = true;
+            this.chkInDegree.AutoSize = true;
+            this.chkInDegree.Location = new System.Drawing.Point(13, 44);
+            this.chkInDegree.Name = "chkInDegree";
+            this.chkInDegree.Size = new System.Drawing.Size(73, 17);
+            this.chkInDegree.TabIndex = 2;
+            this.chkInDegree.Text = "&In-Degree";
+            this.chkInDegree.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.cbxOverallMetrics);
+            this.groupBox3.Controls.Add(this.chkOverallMetrics);
             this.groupBox3.Controls.Add(this.lnkOverallMetrics);
-            this.groupBox3.Controls.Add(this.cbxClusteringCoefficient);
+            this.groupBox3.Controls.Add(this.chkClusteringCoefficient);
             this.groupBox3.Controls.Add(this.lnkClusteringCoefficient);
-            this.groupBox3.Location = new System.Drawing.Point(15, 252);
+            this.groupBox3.Location = new System.Drawing.Point(15, 245);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(248, 73);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Miscellaneous";
             // 
-            // cbxOverallMetrics
+            // chkOverallMetrics
             // 
-            this.cbxOverallMetrics.AutoSize = true;
-            this.cbxOverallMetrics.Location = new System.Drawing.Point(13, 44);
-            this.cbxOverallMetrics.Name = "cbxOverallMetrics";
-            this.cbxOverallMetrics.Size = new System.Drawing.Size(95, 17);
-            this.cbxOverallMetrics.TabIndex = 2;
-            this.cbxOverallMetrics.Text = "Overall &metrics";
-            this.cbxOverallMetrics.UseVisualStyleBackColor = true;
+            this.chkOverallMetrics.AutoSize = true;
+            this.chkOverallMetrics.Location = new System.Drawing.Point(13, 44);
+            this.chkOverallMetrics.Name = "chkOverallMetrics";
+            this.chkOverallMetrics.Size = new System.Drawing.Size(95, 17);
+            this.chkOverallMetrics.TabIndex = 2;
+            this.chkOverallMetrics.Text = "Overall &metrics";
+            this.chkOverallMetrics.UseVisualStyleBackColor = true;
             // 
             // lnkOverallMetrics
             // 
@@ -308,15 +281,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkOverallMetrics.Text = "Details";
             this.lnkOverallMetrics.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
-            // cbxClusteringCoefficient
+            // chkClusteringCoefficient
             // 
-            this.cbxClusteringCoefficient.AutoSize = true;
-            this.cbxClusteringCoefficient.Location = new System.Drawing.Point(13, 21);
-            this.cbxClusteringCoefficient.Name = "cbxClusteringCoefficient";
-            this.cbxClusteringCoefficient.Size = new System.Drawing.Size(124, 17);
-            this.cbxClusteringCoefficient.TabIndex = 0;
-            this.cbxClusteringCoefficient.Text = "Cl&ustering coefficient";
-            this.cbxClusteringCoefficient.UseVisualStyleBackColor = true;
+            this.chkClusteringCoefficient.AutoSize = true;
+            this.chkClusteringCoefficient.Location = new System.Drawing.Point(13, 21);
+            this.chkClusteringCoefficient.Name = "chkClusteringCoefficient";
+            this.chkClusteringCoefficient.Size = new System.Drawing.Size(124, 17);
+            this.chkClusteringCoefficient.TabIndex = 0;
+            this.chkClusteringCoefficient.Text = "Cl&ustering coefficient";
+            this.chkClusteringCoefficient.UseVisualStyleBackColor = true;
             // 
             // lnkClusteringCoefficient
             // 
@@ -336,7 +309,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(282, 424);
+            this.ClientSize = new System.Drawing.Size(280, 417);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -368,23 +341,21 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.Button btnCheckAll;
         private System.Windows.Forms.Button btnUncheckAll;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.LinkLabel lnkBetweennessCentrality;
-        private System.Windows.Forms.CheckBox cbxClosenessCentrality;
+        private System.Windows.Forms.LinkLabel lnkBrandesFastCentralities;
         private System.Windows.Forms.LinkLabel lnkEigenvectorCentrality;
-        private System.Windows.Forms.CheckBox cbxEigenvectorCentrality;
+        private System.Windows.Forms.CheckBox chkEigenvectorCentrality;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.LinkLabel lnkOutDegree;
-        private System.Windows.Forms.CheckBox cbxOutDegree;
+        private System.Windows.Forms.CheckBox chkOutDegree;
         private System.Windows.Forms.LinkLabel lnkInDegree;
-        private System.Windows.Forms.CheckBox cbxInDegree;
-        private System.Windows.Forms.LinkLabel lnkClosenessCentrality;
-        private System.Windows.Forms.CheckBox cbxBetweennessCentrality;
+        private System.Windows.Forms.CheckBox chkInDegree;
         private System.Windows.Forms.LinkLabel lnkDegree;
-        private System.Windows.Forms.CheckBox cbxDegree;
+        private System.Windows.Forms.CheckBox chkDegree;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.CheckBox cbxOverallMetrics;
+        private System.Windows.Forms.CheckBox chkOverallMetrics;
         private System.Windows.Forms.LinkLabel lnkOverallMetrics;
-        private System.Windows.Forms.CheckBox cbxClusteringCoefficient;
+        private System.Windows.Forms.CheckBox chkClusteringCoefficient;
         private System.Windows.Forms.LinkLabel lnkClusteringCoefficient;
+        private System.Windows.Forms.CheckBox chkBrandesFastCentralities;
     }
 }

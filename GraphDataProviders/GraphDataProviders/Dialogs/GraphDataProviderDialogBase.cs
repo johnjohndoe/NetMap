@@ -55,11 +55,6 @@ public class GraphDataProviderDialogBase : FormPlus
 
         m_oHttpNetworkAnalyzer = httpNetworkAnalyzer;
 
-        m_oHttpNetworkAnalyzer.HttpWebRequestTimeoutMs =
-            HttpWebRequestTimeoutMs;
-
-        m_oHttpNetworkAnalyzer.HttpWebRequestRetries = HttpWebRequestRetries;
-
         m_oHttpNetworkAnalyzer.ProgressChanged +=
             new ProgressChangedEventHandler(
                 HttpNetworkAnalyzer_ProgressChanged);
@@ -136,6 +131,36 @@ public class GraphDataProviderDialogBase : FormPlus
     }
 
     //*************************************************************************
+    //  Property: ToolStripStatusLabel
+    //
+    /// <summary>
+    /// Gets the dialog's ToolStripStatusLabel control.
+    /// </summary>
+    ///
+    /// <value>
+    /// The dialog's ToolStripStatusLabel control, or null if the dialog
+    /// doesn't have one.  The default is null.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If the derived dialog overrides this property and returns a non-null
+    /// ToolStripStatusLabel control, the control's text will automatically get
+    /// updated when the HttpNetworkAnalyzer fires a ProgressChanged event.
+    /// </remarks>
+    //*************************************************************************
+
+    protected virtual ToolStripStatusLabel
+    ToolStripStatusLabel
+    {
+        get
+        {
+            AssertValid();
+
+            return (null);
+        }
+    }
+
+    //*************************************************************************
     //  Method: DoDataExchange()
     //
     /// <summary>
@@ -180,7 +205,7 @@ public class GraphDataProviderDialogBase : FormPlus
     //  Method: StartAnalysis()
     //
     /// <summary>
-    /// Starts the Twitter analysis.
+    /// Starts the analysis.
     /// </summary>
     ///
     /// <remarks>
@@ -206,13 +231,22 @@ public class GraphDataProviderDialogBase : FormPlus
     /// </param>
     //*************************************************************************
 
-    protected virtual void
+    protected void
     OnProgressChanged
     (
         ProgressChangedEventArgs e
     )
     {
-        // (Do nothing.  This does not have to be overridden.)
+        AssertValid();
+
+        ToolStripStatusLabel oToolStripStatusLabel = this.ToolStripStatusLabel;
+
+        if (oToolStripStatusLabel != null)
+        {
+            Debug.Assert(e.UserState is String);
+
+            oToolStripStatusLabel.Text = (String)e.UserState;
+        }
     }
 
     //*************************************************************************
@@ -261,15 +295,9 @@ public class GraphDataProviderDialogBase : FormPlus
         }
         else
         {
-            if ( OnAnalysisSuccess(e) )
-            {
-                this.DialogResult = DialogResult.OK;
-                Close();
-            }
-            else
-            {
-                OnEmptyGraph();
-            }
+            Debug.Assert(e.Result is XmlDocument);
+
+            OnAnalysisSuccess( (XmlDocument)e.Result );
         }
     }
 
@@ -281,55 +309,40 @@ public class GraphDataProviderDialogBase : FormPlus
     /// when the analysis is successful.
     /// </summary>
     ///
-    /// <param name="e">
-    /// Standard event argument.
+    /// <param name="oGraphMLXmlDocument">
+    /// XML document containing GraphML that represents a graph.
     /// </param>
-    ///
-    /// <returns>
-    /// true if at least one vertex was returned.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
+    protected void
     OnAnalysisSuccess
     (
-        RunWorkerCompletedEventArgs e
+        XmlDocument oGraphMLXmlDocument
     )
     {
-        Debug.Assert(e != null);
+        Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        Debug.Assert(e.Result is XmlDocument);
-
-        XmlDocument oGraphMLXmlDocument = (XmlDocument)e.Result;
-
         // Check whether at least one vertex was returned.
-        //
-        // Note that any prefix will do, so long as it is also included in
-        // every XPath expression.
 
-        XmlNamespaceManager oXmlNamespaceManager = new XmlNamespaceManager(
-            oGraphMLXmlDocument.NameTable);
-
-        oXmlNamespaceManager.AddNamespace("g",
-            GraphMLXmlDocument.GraphMLNamespaceUri);
-
-        if (oGraphMLXmlDocument.SelectSingleNode("g:graphml/g:graph/g:node",
-            oXmlNamespaceManager) != null)
+        if ( GraphMLXmlDocument.GetHasVertexXmlNode(oGraphMLXmlDocument) )
         {
             m_oGraphMLXmlDocument = oGraphMLXmlDocument;
-            return (true);
+            this.DialogResult = DialogResult.OK;
+            Close();
         }
-
-        return (false);
+        else
+        {
+            OnEmptyGraph();
+        }
     }
 
     //*************************************************************************
     //  Method: OnAnalysisException()
     //
     /// <summary>
-    /// Handles the AnalysisCompleted event on the HttpNetworkAnalyzer object
-    /// when an exception occurs.
+    /// Handles the AnalysisCompleted event on the NetworkAnalyzer object when
+    /// an exception occurs.
     /// </summary>
     ///
     /// <param name="oException">
@@ -337,13 +350,71 @@ public class GraphDataProviderDialogBase : FormPlus
     /// </param>
     //*************************************************************************
 
-    protected virtual void
+    protected void
     OnAnalysisException
     (
         Exception oException
     )
     {
-        Debug.Assert(false);
+        Debug.Assert(oException != null);
+        AssertValid();
+
+        if (oException is PartialNetworkException)
+        {
+            // Ask the user whether he wants to import the partial network.
+
+            PartialNetworkException oPartialNetworkException =
+                (PartialNetworkException)oException;
+
+            PartialNetworkDialog oPartialNetworkDialog =
+
+                new PartialNetworkDialog(oPartialNetworkException,
+
+                    ExceptionToMessage(oPartialNetworkException.
+                        RequestStatistics.LastUnexpectedException)
+                );
+
+            if (oPartialNetworkDialog.ShowDialog() == DialogResult.Yes)
+            {
+                OnAnalysisSuccess(oPartialNetworkException.PartialNetwork);
+            }
+        }
+        else
+        {
+            this.ShowWarning(
+                "The network couldn't be obtained.  Details:"
+                + "\r\n\r\n"
+                + ExceptionToMessage(oException)
+                );
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ExceptionToMessage()
+    //
+    /// <summary>
+    /// Converts an exception to an error message appropriate for the UI.
+    /// </summary>
+    ///
+    /// <param name="oException">
+    /// The exception that occurred.
+    /// </param>
+    ///
+    /// <returns>
+    /// An error message appropriate for the UI.
+    /// </returns>
+    //*************************************************************************
+
+    protected virtual String
+    ExceptionToMessage
+    (
+        Exception oException
+    )
+    {
+        Debug.Assert(oException != null);
+        AssertValid();
+
+        return (oException.Message);
     }
 
     //*************************************************************************
@@ -477,19 +548,6 @@ public class GraphDataProviderDialogBase : FormPlus
         // m_oGraphMLXmlDocument
         Debug.Assert(m_oHttpNetworkAnalyzer != null);
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// The timeout to use for Web requests, in milliseconds.
-
-    protected const Int32 HttpWebRequestTimeoutMs = 5000;
-
-    /// The maximum number of retries per Web request.
-
-    protected const Int32 HttpWebRequestRetries = 3;
 
 
     //*************************************************************************

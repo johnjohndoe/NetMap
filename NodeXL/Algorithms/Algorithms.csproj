@@ -86,11 +86,8 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GraphMetricCalculators\AllPathsShortestPathCalculator.cs" />
-    <Compile Include="GraphMetricCalculators\BetweennessCentralityCalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GraphMetricCalculators\ClosenessCentralityCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Brandes\BrandesFastCentralities.cs" />
+    <Compile Include="GraphMetricCalculators\Brandes\BrandesFastCentralityCalculator.cs" />
     <Compile Include="GraphMetricCalculators\ClusteringCoefficientCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\ClusterCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\Community.cs" />

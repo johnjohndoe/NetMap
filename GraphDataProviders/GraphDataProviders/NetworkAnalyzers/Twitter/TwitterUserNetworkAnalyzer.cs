@@ -16,13 +16,12 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 //  Class: TwitterUserNetworkAnalyzer
 //
 /// <summary>
-/// Analyzes a network of Twitter users.
+/// Gets a network of Twitter users.
 /// </summary>
 ///
 /// <remarks>
-/// Use <see cref="GetUserNetwork" /> to synchronously get the network of
-/// people followed by a Twitter user or people whom a Twitter user follows, or
-/// use <see cref="GetUserNetworkAsync" /> to do it asynchronously.
+/// Use <see cref="GetNetworkAsync" /> to asynchronously get a directed network
+/// of Twitter users.
 /// </remarks>
 //*****************************************************************************
 
@@ -110,89 +109,10 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetUserNetwork()
+    //  Method: GetNetworkAsync()
     //
     /// <summary>
-    /// Synchronously gets the network of people followed by a Twitter user or
-    /// people whom a Twitter user follows.
-    /// </summary>
-    ///
-    /// <param name="screenNameToAnalyze">
-    /// The screen name of the Twitter user whose network should be analyzed.
-    /// </param>
-    ///
-    /// <param name="whatToInclude">
-    /// Specifies what should be included in the network.
-    /// </param>
-    ///
-    /// <param name="networkLevel">
-    /// Network level to include.  Must be NetworkLevel.One, OnePointFive, or
-    /// Two.
-    /// </param>
-    ///
-    /// <param name="maximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
-    /// </param>
-    ///
-    /// <param name="credentialsScreenName">
-    /// The screen name of the Twitter user whose credentials should be used,
-    /// or null to not use credentials.
-    /// </param>
-    ///
-    /// <param name="credentialsPassword">
-    /// The password of the Twitter user whose credentials should be used.
-    /// Used only if <paramref name="credentialsScreenName" /> is specified.
-    /// </param>
-    ///
-    /// <returns>
-    /// An XmlDocument containing the network as GraphML.
-    /// </returns>
-    //*************************************************************************
-
-    public XmlDocument
-    GetUserNetwork
-    (
-        String screenNameToAnalyze,
-        WhatToInclude whatToInclude,
-        NetworkLevel networkLevel,
-        Int32 maximumPeoplePerRequest,
-        String credentialsScreenName,
-        String credentialsPassword
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(screenNameToAnalyze) );
-
-        Debug.Assert(networkLevel == NetworkLevel.One ||
-            networkLevel == NetworkLevel.OnePointFive ||
-            networkLevel == NetworkLevel.Two);
-
-        Debug.Assert(maximumPeoplePerRequest > 0);
-
-        Debug.Assert( credentialsScreenName == null ||
-            ( credentialsScreenName.Length > 0 &&
-                !String.IsNullOrEmpty(credentialsPassword) ) );
-
-        AssertValid();
-
-        XmlDocument oXmlDocument;
-
-        Boolean bNotCancelled = TryGetUserNetworkInternal(screenNameToAnalyze,
-            whatToInclude, networkLevel, maximumPeoplePerRequest,
-            credentialsScreenName, credentialsPassword, null, null,
-            out oXmlDocument);
-
-        Debug.Assert(bNotCancelled);
-
-        return (oXmlDocument);
-    }
-
-    //*************************************************************************
-    //  Method: GetUserNetworkAsync()
-    //
-    /// <summary>
-    /// Asynchronously gets the network of people followed by a Twitter user or
-    /// people whom a Twitter user follows.
+    /// Asynchronously gets a directed network of Twitter users.
     /// </summary>
     ///
     /// <param name="screenNameToAnalyze">
@@ -237,7 +157,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     public void
-    GetUserNetworkAsync
+    GetNetworkAsync
     (
         String screenNameToAnalyze,
         WhatToInclude whatToInclude,
@@ -261,34 +181,33 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AssertValid();
 
-        const String MethodName = "GetUserNetworkAsync";
+        const String MethodName = "GetNetworkAsync";
         CheckIsBusy(MethodName);
 
         // Wrap the arguments in an object that can be passed to
         // BackgroundWorker.RunWorkerAsync().
 
-        GetUserNetworkAsyncArgs oGetUserNetworkAsyncArgs =
-            new GetUserNetworkAsyncArgs();
+        GetNetworkAsyncArgs oGetNetworkAsyncArgs = new GetNetworkAsyncArgs();
 
-        oGetUserNetworkAsyncArgs.ScreenNameToAnalyze = screenNameToAnalyze;
-        oGetUserNetworkAsyncArgs.WhatToInclude = whatToInclude;
-        oGetUserNetworkAsyncArgs.NetworkLevel = networkLevel;
+        oGetNetworkAsyncArgs.ScreenNameToAnalyze = screenNameToAnalyze;
+        oGetNetworkAsyncArgs.WhatToInclude = whatToInclude;
+        oGetNetworkAsyncArgs.NetworkLevel = networkLevel;
+        oGetNetworkAsyncArgs.MaximumPeoplePerRequest = maximumPeoplePerRequest;
+        oGetNetworkAsyncArgs.CredentialsScreenName = credentialsScreenName;
+        oGetNetworkAsyncArgs.CredentialsPassword = credentialsPassword;
 
-        oGetUserNetworkAsyncArgs.MaximumPeoplePerRequest =
-            maximumPeoplePerRequest;
-
-        oGetUserNetworkAsyncArgs.CredentialsScreenName = credentialsScreenName;
-        oGetUserNetworkAsyncArgs.CredentialsPassword = credentialsPassword;
-
-        m_oBackgroundWorker.RunWorkerAsync(oGetUserNetworkAsyncArgs);
+        m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
     }
 
     //*************************************************************************
     //  Method: TryGetUserNetworkInternal()
     //
+    /// <overloads>
+    /// Attempts to get a network of Twitter users.
+    /// </overloads>
+    ///
     /// <summary>
-    /// Attempts to get the network of people followed by a Twitter user or
-    /// people whom a Twitter user follows.
+    /// Attempts to get a network of Twitter users.
     /// </summary>
     ///
     /// <param name="sScreenNameToAnalyze">
@@ -376,6 +295,121 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         GraphMLXmlDocument oGraphMLXmlDocument =
             CreateGraphMLXmlDocument(true, bIncludeLatestStatus);
 
+        RequestStatistics oRequestStatistics = new RequestStatistics();
+
+        try
+        {
+            if ( !TryGetUserNetworkInternal(sScreenNameToAnalyze,
+                eWhatToInclude, eNetworkLevel, iMaximumPeoplePerRequest,
+                sCredentialsScreenName, sCredentialsPassword,
+                oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs,
+                oGraphMLXmlDocument) )
+            {
+                // The user cancelled.
+
+                return (false);
+            }
+        }
+        catch (Exception oException)
+        {
+            OnTerminatingException(oException);
+        }
+
+        return ( OnNetworkObtainedWithoutTerminatingException(
+            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetUserNetworkInternal()
+    //
+    /// <summary>
+    /// Attempts to get a network of Twitter users, given a GraphMLXmlDocument.
+    /// </summary>
+    ///
+    /// <param name="sScreenNameToAnalyze">
+    /// The screen name of the Twitter user whose network should be analyzed.
+    /// </param>
+    ///
+    /// <param name="eWhatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="eNetworkLevel">
+    /// Network level to include.  Must be NetworkLevel.One, OnePointFive, or
+    /// Two.
+    /// </param>
+    ///
+    /// <param name="iMaximumPeoplePerRequest">
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+    /// </param>
+    ///
+    /// <param name="sCredentialsScreenName">
+    /// The screen name of the Twitter user whose credentials should be used,
+    /// or null to not use credentials.
+    /// </param>
+    ///
+    /// <param name="sCredentialsPassword">
+    /// The password of the Twitter user whose credentials should be used.
+    /// Used only if <paramref name="sCredentialsScreenName" /> is specified.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// A BackgroundWorker object if this method is being called
+    /// asynchronously, or null if it is being called synchronously.
+    /// </param>
+    ///
+    /// <param name="oDoWorkEventArgs">
+    /// A DoWorkEventArgs object if this method is being called
+    /// asynchronously, or null if it is being called synchronously.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument to populate with the requested network.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the network was obtained, or false if the user cancelled.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetUserNetworkInternal
+    (
+        String sScreenNameToAnalyze,
+        WhatToInclude eWhatToInclude,
+        NetworkLevel eNetworkLevel,
+        Int32 iMaximumPeoplePerRequest,
+        String sCredentialsScreenName,
+        String sCredentialsPassword,
+        RequestStatistics oRequestStatistics,
+        BackgroundWorker oBackgroundWorker,
+        DoWorkEventArgs oDoWorkEventArgs,
+        GraphMLXmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sScreenNameToAnalyze) );
+
+        Debug.Assert(eNetworkLevel == NetworkLevel.One ||
+            eNetworkLevel == NetworkLevel.OnePointFive ||
+            eNetworkLevel == NetworkLevel.Two);
+
+        Debug.Assert(iMaximumPeoplePerRequest > 0);
+
+        Debug.Assert( sCredentialsScreenName == null ||
+            ( sCredentialsScreenName.Length > 0 &&
+                !String.IsNullOrEmpty(sCredentialsPassword) ) );
+
+        Debug.Assert(oRequestStatistics != null);
+        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
         // The key is the screen name and the value is the corresponding
         // TwitterVertex.  This is used to prevent the same screen name from
         // being added to the XmlDocument twice.
@@ -402,18 +436,21 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
                     eWhatToInclude, (i == 0), eNetworkLevel,
                     iMaximumPeoplePerRequest, sCredentialsScreenName,
                     sCredentialsPassword, 1, oGraphMLXmlDocument,
-                    oScreenNameDictionary, oBackgroundWorker,
-                    oDoWorkEventArgs) )
+                    oScreenNameDictionary, oRequestStatistics,
+                    oBackgroundWorker, oDoWorkEventArgs) )
                 {
                     return (false);
                 }
             }
         }
 
+        Boolean bIncludeLatestStatus = WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.LatestStatuses);
+
         AppendMissingGraphMLAttributeValues(oGraphMLXmlDocument,
             oScreenNameDictionary, true, bIncludeLatestStatus,
-            sCredentialsScreenName, sCredentialsPassword, oBackgroundWorker,
-            oDoWorkEventArgs);
+            oRequestStatistics, sCredentialsScreenName, sCredentialsPassword,
+            oBackgroundWorker, oDoWorkEventArgs);
 
         AppendRepliesToAndMentionsXmlNodes(oGraphMLXmlDocument,
             oScreenNameDictionary,
@@ -425,7 +462,6 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 WhatToInclude.MentionsEdges)
             );
 
-        oXmlDocument = oGraphMLXmlDocument;
         return (true);
     }
 
@@ -433,8 +469,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //  Method: TryGetUserNetworkRecursive()
     //
     /// <summary>
-    /// Attempts to recursively get the network of people followed by a Twitter
-    /// user or people whom a Twitter user follows.
+    /// Attempts to recursively get a network of Twitter users.
     /// </summary>
     ///
     /// <param name="sScreenName">
@@ -484,6 +519,11 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// TwitterVertex.
     /// </param>
     ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
     /// <param name="oBackgroundWorker">
     /// A BackgroundWorker object if this method is being called
     /// asynchronously, or null if it is being called synchronously.
@@ -512,6 +552,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Int32 iRecursionLevel,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
+        RequestStatistics oRequestStatistics,
         BackgroundWorker oBackgroundWorker,
         DoWorkEventArgs oDoWorkEventArgs
     )
@@ -531,6 +572,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(iRecursionLevel == 1 || iRecursionLevel == 2);
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
+        Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
@@ -562,17 +604,9 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
             ---|------------------|-------------------|------------------
         */
 
-        Boolean bNeedToRecurse = (
-            iRecursionLevel == 1
-            &&
-            (eNetworkLevel == NetworkLevel.OnePointFive ||
-            eNetworkLevel == NetworkLevel.Two)
-            );
+        Boolean bNeedToRecurse = GetNeedToRecurse(eNetworkLevel,
+            iRecursionLevel);
 
-        // The document consists of a single "users" node with zero or more
-        // "user" child nodes.
-
-        Boolean bUserNodeExists = false;
         List<String> oScreenNamesToRecurse = new List<String>();
 
         Boolean bIncludeLatestStatuses = WhatToIncludeFlagIsSet(
@@ -581,14 +615,24 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         ReportProgressForFollowedOrFollowing(sScreenName,
             bIncludeFollowedThisCall);
 
-        // Note that "unauthorized" and "not found" errors are skipped when
-        // iRecursionLevel == 2.
+        Boolean bThisUserAppended = false;
+
+        // If the GraphMLXmlDocument already contains at least one vertex node,
+        // then this is the second time that this method has been called, a
+        // partial network has already been obtained, and most errors should
+        // now be skipped.  However, if none of the network has been obtained
+        // yet, errors on page 1 should throw an immediate exception.
+
+        Boolean bSkipMostPage1Errors = oGraphMLXmlDocument.HasVertexXmlNode;
+
+        // The document consists of a single "users" node with zero or more
+        // "user" child nodes.
 
         foreach ( XmlNode oUserXmlNode in EnumerateXmlNodes(
             GetFollowedOrFollowingUrl(sScreenName, bIncludeFollowedThisCall),
             "users_list/users/user", null, null, Int32.MaxValue,
-            iMaximumPeoplePerRequest, false, iRecursionLevel != 1,
-            sCredentialsScreenName, sCredentialsPassword) )
+            iMaximumPeoplePerRequest, false, bSkipMostPage1Errors,
+            oRequestStatistics, sCredentialsScreenName, sCredentialsPassword) )
         {
             if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
             {
@@ -604,26 +648,47 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 continue;
             }
 
-            bUserNodeExists = true;
-
-            if (eNetworkLevel != NetworkLevel.OnePointFive ||
-                iRecursionLevel == 1)
+            if (!bThisUserAppended)
             {
-                TryAppendVertexXmlNode(sOtherScreenName, oUserXmlNode,
-                    oGraphMLXmlDocument, oScreenNameDictionary,
-                    true, bIncludeLatestStatuses);
+                // Append a vertex node for this request's user.
+                //
+                // This used to be done after the foreach loop, which avoided
+                // the need for a "bThisUserAppended" flag.  That caused the
+                // following bug: If a Twitter error occurred within
+                // EnumerateXmlNodes() after some edges had been added, and the
+                // user decided to import the resulting partial network, the
+                // GraphML might contain edges that referenced "this user"
+                // without containing a vertex for "this user."  That is an
+                // illegal state for GraphML, which the ExcelTemplate project
+                // caught and reported as an error.
+
+                TryAppendVertexXmlNode(sScreenName, null, oGraphMLXmlDocument,
+                    oScreenNameDictionary, true, bIncludeLatestStatuses);
+
+                bThisUserAppended = true;
             }
 
-            if (bNeedToRecurse)
+            Boolean bNeedToAppendVertices = GetNeedToAppendVertices(
+                eNetworkLevel, iRecursionLevel);
+
+            if (bNeedToAppendVertices)
             {
-                oScreenNamesToRecurse.Add(sOtherScreenName);
+                if (
+                    TryAppendVertexXmlNode(sOtherScreenName, oUserXmlNode,
+                        oGraphMLXmlDocument, oScreenNameDictionary, true,
+                        bIncludeLatestStatuses)
+                    &&
+                    bNeedToRecurse
+                    )
+                {
+                    oScreenNamesToRecurse.Add(sOtherScreenName);
+                }
             }
 
             if ( WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.FollowedFollowerEdges) )
             {
-                if ( eNetworkLevel != NetworkLevel.OnePointFive ||
-                    iRecursionLevel == 1 ||
+                if ( bNeedToAppendVertices ||
                     oScreenNameDictionary.ContainsKey(sOtherScreenName) )
                 {
                     XmlNode oEdgeXmlNode;
@@ -642,12 +707,6 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
             }
         }
 
-        if (bUserNodeExists)
-        {
-            TryAppendVertexXmlNode(sScreenName, null, oGraphMLXmlDocument,
-                oScreenNameDictionary, true, bIncludeLatestStatuses);
-        }
-
         if (bNeedToRecurse)
         {
             foreach (String sScreenNameToRecurse in oScreenNamesToRecurse)
@@ -656,8 +715,8 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
                     eWhatToInclude, bIncludeFollowedThisCall, eNetworkLevel,
                     iMaximumPeoplePerRequest, sCredentialsScreenName,
                     sCredentialsPassword, 2, oGraphMLXmlDocument,
-                    oScreenNameDictionary, oBackgroundWorker,
-                    oDoWorkEventArgs) )
+                    oScreenNameDictionary, oRequestStatistics,
+                    oBackgroundWorker, oDoWorkEventArgs) )
                 {
                     return (false);
                 }
@@ -726,20 +785,20 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         BackgroundWorker oBackgroundWorker = (BackgroundWorker)sender;
 
-        Debug.Assert(e.Argument is GetUserNetworkAsyncArgs);
+        Debug.Assert(e.Argument is GetNetworkAsyncArgs);
 
-        GetUserNetworkAsyncArgs oGetUserNetworkAsyncArgs =
-            (GetUserNetworkAsyncArgs)e.Argument;
+        GetNetworkAsyncArgs oGetNetworkAsyncArgs =
+            (GetNetworkAsyncArgs)e.Argument;
 
         XmlDocument oGraphMLDocument;
         
         if ( TryGetUserNetworkInternal(
-            oGetUserNetworkAsyncArgs.ScreenNameToAnalyze,
-            oGetUserNetworkAsyncArgs.WhatToInclude,
-            oGetUserNetworkAsyncArgs.NetworkLevel,
-            oGetUserNetworkAsyncArgs.MaximumPeoplePerRequest,
-            oGetUserNetworkAsyncArgs.CredentialsScreenName,
-            oGetUserNetworkAsyncArgs.CredentialsPassword,
+            oGetNetworkAsyncArgs.ScreenNameToAnalyze,
+            oGetNetworkAsyncArgs.WhatToInclude,
+            oGetNetworkAsyncArgs.NetworkLevel,
+            oGetNetworkAsyncArgs.MaximumPeoplePerRequest,
+            oGetNetworkAsyncArgs.CredentialsScreenName,
+            oGetNetworkAsyncArgs.CredentialsPassword,
             oBackgroundWorker, e, out oGraphMLDocument) )
         {
             e.Result = oGraphMLDocument;
@@ -774,7 +833,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
 
     //*************************************************************************
-    //  Embedded class: GetUserNetworkAsyncArguments()
+    //  Embedded class: GetNetworkAsyncArgs()
     //
     /// <summary>
     /// Contains the arguments needed to asynchronously get the network of
@@ -783,7 +842,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </summary>
     //*************************************************************************
 
-    protected class GetUserNetworkAsyncArgs : GetNetworkAsyncArgs
+    protected class GetNetworkAsyncArgs : GetNetworkAsyncArgsBase
     {
         ///
         public String ScreenNameToAnalyze;

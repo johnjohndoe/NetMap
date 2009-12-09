@@ -51,6 +51,9 @@
       <Link>Util\ComboBoxPlus.cs</Link>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="..\..\Common\DateTimeUtil2.cs">
+      <Link>Util\DateTimeUtil2.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\EnumUtil.cs">
       <Link>Util\EnumUtil.cs</Link>
     </Compile>
@@ -71,11 +74,17 @@
     <Compile Include="..\..\Common\ListControlPlus.cs">
       <Link>Util\ListControlPlus.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\MathUtil.cs">
+      <Link>Util\MathUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\ObjectWithText.cs">
       <Link>Util\ObjectWithText.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\NetworkLevel.cs">
       <Link>Util\SocialNetwork\NetworkLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\StringUtil.cs">
+      <Link>Util\StringUtil.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\UrlUtil.cs">
       <Link>Util\UrlUtil.cs</Link>
@@ -83,11 +92,20 @@
     <Compile Include="..\..\Common\XmlUtil.cs">
       <Link>Util\XmlUtil.cs</Link>
     </Compile>
-    <Compile Include="Controls\LimitToNPeople\LimitToNPeopleControl.cs">
+    <Compile Include="..\..\Common\XmlUtil2.cs">
+      <Link>Util\XmlUtil2.cs</Link>
+    </Compile>
+    <Compile Include="Controls\FlickrApiKey\FlickrApiKeyControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\LimitToNPeople\LimitToNPeopleControl.Designer.cs">
-      <DependentUpon>LimitToNPeopleControl.cs</DependentUpon>
+    <Compile Include="Controls\FlickrApiKey\FlickrApiKeyControl.designer.cs">
+      <DependentUpon>FlickrApiKeyControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LimitToN\LimitToNControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LimitToN\LimitToNControl.designer.cs">
+      <DependentUpon>LimitToNControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\NetworkLevel\NetworkLevelControl.cs">
       <SubType>UserControl</SubType>
@@ -101,55 +119,95 @@
     <Compile Include="Controls\TwitterCredentials\TwitterCredentialsControl.designer.cs">
       <DependentUpon>TwitterCredentialsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\FlickrGetRelatedTags\FlickrGetRelatedTagsDialog.cs">
+    <Compile Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\FlickrGetRelatedTags\FlickrGetRelatedTagsDialog.designer.cs">
-      <DependentUpon>FlickrGetRelatedTagsDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.designer.cs">
+      <DependentUpon>FlickrGetRelatedTagNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Flickr\FlickrGetUserNetwork\FlickrGetUserNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Flickr\FlickrGetUserNetwork\FlickrGetUserNetworkDialog.designer.cs">
+      <DependentUpon>FlickrGetUserNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Flickr\FlickrGraphDataProviderDialogBase.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\GraphDataProviderDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.cs">
+    <Compile Include="Dialogs\PartialNetwork\PartialNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.designer.cs">
+    <Compile Include="Dialogs\PartialNetwork\PartialNetworkDialog.designer.cs">
+      <DependentUpon>PartialNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Twitter\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Twitter\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.designer.cs">
       <DependentUpon>TwitterGetSearchNetworkDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.cs">
+    <Compile Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.designer.cs">
+    <Compile Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.designer.cs">
       <DependentUpon>TwitterGetUserNetworkDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\TwitterGraphDataProviderDialogBase.cs">
+    <Compile Include="Dialogs\Twitter\TwitterGraphDataProviderDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FlickrRelatedTagsGraphDataProvider.cs" />
-    <Compile Include="GraphDataProviderBase.cs" />
-    <Compile Include="NetworkAnalyzers\Flickr\FlickrNetworkAnalyzer.cs" />
+    <Compile Include="Dialogs\YouTube\YouTubeGetUserNetwork\YouTubeGetUserNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\YouTube\YouTubeGetUserNetwork\YouTubeGetUserNetworkDialog.designer.cs">
+      <DependentUpon>YouTubeGetUserNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\YouTube\YouTubeGetVideoNetwork\YouTubeGetVideoNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\YouTube\YouTubeGetVideoNetwork\YouTubeGetVideoNetworkDialog.designer.cs">
+      <DependentUpon>YouTubeGetVideoNetworkDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\YouTube\YouTubeGraphDataProviderDialogBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraphDataProviders\Flickr\FlickrRelatedTagNetworkGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\Flickr\FlickrUserNetworkGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\GraphDataProviderBase.cs" />
+    <Compile Include="GraphDataProviders\Twitter\TwitterSearchNetworkGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\Twitter\TwitterUserNetworkGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\YouTube\YouTubeUserNetworkGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\YouTube\YouTubeVideoNetworkGraphDataProvider.cs" />
+    <Compile Include="NetworkAnalyzers\Flickr\FlickrException.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrNetworkAnalyzerBase.cs" />
+    <Compile Include="NetworkAnalyzers\Flickr\FlickrRelatedTagNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\Flickr\FlickrUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
+    <Compile Include="NetworkAnalyzers\PartialNetworkException.cs" />
+    <Compile Include="NetworkAnalyzers\RequestStatistics.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterSearchNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterVertex.cs" />
+    <Compile Include="NetworkAnalyzers\YouTube\YouTubeNetworkAnalyzerBase.cs" />
+    <Compile Include="NetworkAnalyzers\YouTube\YouTubeUserNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\YouTube\YouTubeVideoNetworkAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TwitterSearchNetworkGraphDataProvider.cs" />
-    <Compile Include="TwitterUserNetworkGraphDataProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\Common\FormPlus.resx">
       <Link>Util\FormPlus.resx</Link>
       <DependentUpon>FormPlus.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\FlickrGetRelatedTags\FlickrGetRelatedTagsDialog.resx">
-      <DependentUpon>FlickrGetRelatedTagsDialog.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\LimitToNPeople\LimitToNPeopleControl.resx">
-      <DependentUpon>LimitToNPeopleControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\FlickrApiKey\FlickrApiKeyControl.resx">
+      <DependentUpon>FlickrApiKeyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LimitToN\LimitToNControl.resx">
+      <DependentUpon>LimitToNControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\NetworkLevel\NetworkLevelControl.resx">
       <DependentUpon>NetworkLevelControl.cs</DependentUpon>
@@ -157,11 +215,26 @@
     <EmbeddedResource Include="Controls\TwitterCredentials\TwitterCredentialsControl.resx">
       <DependentUpon>TwitterCredentialsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.resx">
+    <EmbeddedResource Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.resx">
+      <DependentUpon>FlickrGetRelatedTagNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Flickr\FlickrGetUserNetwork\FlickrGetUserNetworkDialog.resx">
+      <DependentUpon>FlickrGetUserNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\PartialNetwork\PartialNetworkDialog.resx">
+      <DependentUpon>PartialNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Twitter\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.resx">
       <DependentUpon>TwitterGetSearchNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.resx">
+    <EmbeddedResource Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.resx">
       <DependentUpon>TwitterGetUserNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\YouTube\YouTubeGetUserNetwork\YouTubeGetUserNetworkDialog.resx">
+      <DependentUpon>YouTubeGetUserNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\YouTube\YouTubeGetVideoNetwork\YouTubeGetVideoNetworkDialog.resx">
+      <DependentUpon>YouTubeGetVideoNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\NetworkLevels\1.0.jpg" />
     <EmbeddedResource Include="Images\NetworkLevels\1.5.jpg" />

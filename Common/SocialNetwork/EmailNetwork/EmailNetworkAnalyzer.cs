@@ -187,7 +187,7 @@ public class EmailNetworkAnalyzer : Object
         AssertValid();
 
         return ( AnalyzeEmailNetwork(null, null, null, null, null, null, null,
-            null, null, null, null, true, false) );
+            null, null, null, null, null, true, false) );
     }
 
     //*************************************************************************
@@ -216,6 +216,12 @@ public class EmailNetworkAnalyzer : Object
     /// <param name="endTime">
     /// If specified, only emails sent on or before the specified time are
     /// included in the aggregated results.  Use null to specify "no end time."
+    /// </param>
+    ///
+    /// <param name="subjectText">
+    /// Subject text to filter on, or null to not filter on subject text.
+    /// Can't be an empty string.  If specified, only emails that include the
+    /// specified subject text are included in the aggregated results.
     /// </param>
     ///
     /// <param name="bodyText">
@@ -302,6 +308,7 @@ public class EmailNetworkAnalyzer : Object
         EmailParticipantCriteria [] participantsCriteria,
         Nullable<DateTime> startTime,
         Nullable<DateTime> endTime,
+        String subjectText,
         String bodyText,
         String folder,
         Nullable<Int64> minimumSize,
@@ -317,7 +324,7 @@ public class EmailNetworkAnalyzer : Object
         AssertValid();
 
         return ( AnalyzeEmailNetworkInternal(participantsCriteria, startTime,
-            endTime, bodyText, folder, minimumSize, maximumSize,
+            endTime, subjectText, bodyText, folder, minimumSize, maximumSize,
             attachmentFilter, hasCc, hasBcc, isReplyFromParticipant1,
             useCcForEdgeWeights, useBccForEdgeWeights, null, null) );
     }
@@ -339,6 +346,10 @@ public class EmailNetworkAnalyzer : Object
     /// </param>
     ///
     /// <param name="endTime">
+    /// See the synchronous method.
+    /// </param>
+    ///
+    /// <param name="subjectText">
     /// See the synchronous method.
     /// </param>
     ///
@@ -403,6 +414,7 @@ public class EmailNetworkAnalyzer : Object
         EmailParticipantCriteria [] participantsCriteria,
         Nullable<DateTime> startTime,
         Nullable<DateTime> endTime,
+        String subjectText,
         String bodyText,
         String folder,
         Nullable<Int64> minimumSize,
@@ -441,6 +453,7 @@ public class EmailNetworkAnalyzer : Object
 
         oAnalyzeEmailNetworkAsyncArgs.StartTime = startTime;
         oAnalyzeEmailNetworkAsyncArgs.EndTime = endTime;
+        oAnalyzeEmailNetworkAsyncArgs.SubjectText = subjectText;
         oAnalyzeEmailNetworkAsyncArgs.BodyText = bodyText;
         oAnalyzeEmailNetworkAsyncArgs.Folder = folder;
         oAnalyzeEmailNetworkAsyncArgs.MinimumSize = minimumSize;
@@ -655,6 +668,10 @@ public class EmailNetworkAnalyzer : Object
     /// See AnalyzeEmailNetwork().
     /// </param>
     ///
+    /// <param name="subjectText">
+    /// See AnalyzeEmailNetwork().
+    /// </param>
+    ///
     /// <param name="bodyText">
     /// See AnalyzeEmailNetwork().
     /// </param>
@@ -716,6 +733,7 @@ public class EmailNetworkAnalyzer : Object
         EmailParticipantCriteria [] participantsCriteria,
         Nullable<DateTime> startTime,
         Nullable<DateTime> endTime,
+        String subjectText,
         String bodyText,
         String folder,
         Nullable<Int64> minimumSize,
@@ -731,16 +749,16 @@ public class EmailNetworkAnalyzer : Object
     )
     {
         CheckAnalyzeMethodArguments(participantsCriteria, startTime, endTime,
-            bodyText, folder, minimumSize, maximumSize, attachmentFilter,
-            isReplyFromParticipant1);
+            subjectText, bodyText, folder, minimumSize, maximumSize,
+            attachmentFilter, isReplyFromParticipant1);
 
         Debug.Assert(backgroundWorker == null || doWorkEventArgs != null);
 
         AssertValid();
 
         String sQuery = CreateQuery(participantsCriteria, startTime, endTime,
-            bodyText, folder, minimumSize, maximumSize, attachmentFilter,
-            hasCc, hasBcc, isReplyFromParticipant1);
+            subjectText, bodyText, folder, minimumSize, maximumSize,
+            attachmentFilter, hasCc, hasBcc, isReplyFromParticipant1);
 
         OleDbDataReader oDataReader = GetDataReader(sQuery);
 
@@ -1197,6 +1215,10 @@ public class EmailNetworkAnalyzer : Object
     /// See AnalyzeEmailNetwork().
     /// </param>
     ///
+    /// <param name="subjectText">
+    /// See AnalyzeEmailNetwork().
+    /// </param>
+    ///
     /// <param name="bodyText">
     /// See AnalyzeEmailNetwork().
     /// </param>
@@ -1232,6 +1254,7 @@ public class EmailNetworkAnalyzer : Object
         EmailParticipantCriteria [] participantsCriteria,
         Nullable<DateTime> startTime,
         Nullable<DateTime> endTime,
+        String subjectText,
         String bodyText,
         String folder,
         Nullable<Int64> minimumSize,
@@ -1277,6 +1300,7 @@ public class EmailNetworkAnalyzer : Object
                 );
         }
 
+        CheckAnalyzeMethodArgument(subjectText, "subjectText");
         CheckAnalyzeMethodArgument(bodyText, "bodyText");
         CheckAnalyzeMethodArgument(folder, "folder");
 
@@ -1391,6 +1415,10 @@ public class EmailNetworkAnalyzer : Object
     /// See AnalyzeEmailNetwork().
     /// </param>
     ///
+    /// <param name="subjectText">
+    /// See AnalyzeEmailNetwork().
+    /// </param>
+    ///
     /// <param name="bodyText">
     /// See AnalyzeEmailNetwork().
     /// </param>
@@ -1434,6 +1462,7 @@ public class EmailNetworkAnalyzer : Object
         EmailParticipantCriteria [] participantsCriteria,
         Nullable<DateTime> startTime,
         Nullable<DateTime> endTime,
+        String subjectText,
         String bodyText,
         String folder,
         Nullable<Int64> minimumSize,
@@ -1564,11 +1593,21 @@ public class EmailNetworkAnalyzer : Object
                 );
         }
 
+        if ( !String.IsNullOrEmpty(subjectText) )
+        {
+            oStringBuilder.AppendFormat(
+
+                " AND Contains(System.Subject, '\"{0}\"')"
+                ,
+                EscapeStringForContains(subjectText)
+                );
+        }
+
         if ( !String.IsNullOrEmpty(bodyText) )
         {
             oStringBuilder.AppendFormat(
 
-                " AND CONTAINS ('\"{0}\"')"
+                " AND Contains ('\"{0}\"')"
                 ,
                 EscapeStringForContains(bodyText)
                 );
@@ -1877,6 +1916,7 @@ public class EmailNetworkAnalyzer : Object
             oAnalyzeEmailNetworkAsyncArgs.ParticipantsCriteria,
             oAnalyzeEmailNetworkAsyncArgs.StartTime,
             oAnalyzeEmailNetworkAsyncArgs.EndTime,
+            oAnalyzeEmailNetworkAsyncArgs.SubjectText,
             oAnalyzeEmailNetworkAsyncArgs.BodyText,
             oAnalyzeEmailNetworkAsyncArgs.Folder,
             oAnalyzeEmailNetworkAsyncArgs.MinimumSize,
@@ -2018,6 +2058,8 @@ public class EmailNetworkAnalyzer : Object
         public Nullable<DateTime> StartTime;
         ///
         public Nullable<DateTime> EndTime;
+        ///
+        public String SubjectText;
         ///
         public String BodyText;
         ///

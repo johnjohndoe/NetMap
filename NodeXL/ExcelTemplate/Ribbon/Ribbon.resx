@@ -436,7 +436,7 @@ The clusters are indicated by vertex color and shape when the workbook is read i
 
 The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Find Clusters will clear any manually-entered clusters.
 
-The Clusters checkbox in the Show/Hide ribbon group must be checked if you want the clusters to be read when the workbook is read into the graph.
+The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be read when the workbook is read into the graph.
 
 Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
   </data>

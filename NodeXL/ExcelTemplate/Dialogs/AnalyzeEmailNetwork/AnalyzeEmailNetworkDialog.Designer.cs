@@ -39,7 +39,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.radFilteredEmail = new System.Windows.Forms.RadioButton();
             this.radAllEmail = new System.Windows.Forms.RadioButton();
             this.grpFilters = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txbSubjectText = new System.Windows.Forms.TextBox();
+            this.cbxUseSubjectText = new System.Windows.Forms.CheckBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.lnkEmailHelp = new System.Windows.Forms.LinkLabel();
             this.dgvParticipants = new System.Windows.Forms.DataGridView();
             this.colParticipant = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFrom = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -79,9 +83,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.dtpEndTime = new System.Windows.Forms.DateTimePicker();
             this.cbxUseCcForEdgeWeights = new System.Windows.Forms.CheckBox();
             this.cbxUseBccForEdgeWeights = new System.Windows.Forms.CheckBox();
-            this.lnkEmailHelp = new System.Windows.Forms.LinkLabel();
             this.pnlWhichEmails.SuspendLayout();
             this.grpFilters.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParticipants)).BeginInit();
             this.groupBox8.SuspendLayout();
@@ -161,7 +165,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // grpFilters
             // 
-            this.grpFilters.AutoSize = true;
+            this.grpFilters.Controls.Add(this.groupBox2);
             this.grpFilters.Controls.Add(this.groupBox9);
             this.grpFilters.Controls.Add(this.groupBox8);
             this.grpFilters.Controls.Add(this.groupBox7);
@@ -173,21 +177,62 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.grpFilters.Enabled = false;
             this.grpFilters.Location = new System.Drawing.Point(11, 58);
             this.grpFilters.Name = "grpFilters";
-            this.grpFilters.Size = new System.Drawing.Size(758, 334);
+            this.grpFilters.Size = new System.Drawing.Size(758, 335);
             this.grpFilters.TabIndex = 1;
             this.grpFilters.TabStop = false;
             this.grpFilters.Text = "Filters";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.txbSubjectText);
+            this.groupBox2.Controls.Add(this.cbxUseSubjectText);
+            this.groupBox2.Location = new System.Drawing.Point(11, 176);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(284, 71);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Subject";
+            // 
+            // txbSubjectText
+            // 
+            this.txbSubjectText.Location = new System.Drawing.Point(16, 40);
+            this.txbSubjectText.MaxLength = 500;
+            this.txbSubjectText.Name = "txbSubjectText";
+            this.txbSubjectText.Size = new System.Drawing.Size(252, 20);
+            this.txbSubjectText.TabIndex = 1;
+            // 
+            // cbxUseSubjectText
+            // 
+            this.cbxUseSubjectText.AutoSize = true;
+            this.cbxUseSubjectText.Location = new System.Drawing.Point(16, 17);
+            this.cbxUseSubjectText.Name = "cbxUseSubjectText";
+            this.cbxUseSubjectText.Size = new System.Drawing.Size(89, 17);
+            this.cbxUseSubjectText.TabIndex = 0;
+            this.cbxUseSubjectText.Text = "Inc&ludes text:";
+            this.cbxUseSubjectText.UseVisualStyleBackColor = true;
+            this.cbxUseSubjectText.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.lnkEmailHelp);
             this.groupBox9.Controls.Add(this.dgvParticipants);
             this.groupBox9.Controls.Add(this.cbxUseParticipants);
-            this.groupBox9.Location = new System.Drawing.Point(14, 19);
+            this.groupBox9.Location = new System.Drawing.Point(11, 13);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(284, 205);
+            this.groupBox9.Size = new System.Drawing.Size(284, 158);
             this.groupBox9.TabIndex = 0;
             this.groupBox9.TabStop = false;
+            // 
+            // lnkEmailHelp
+            // 
+            this.lnkEmailHelp.AutoSize = true;
+            this.lnkEmailHelp.Location = new System.Drawing.Point(13, 48);
+            this.lnkEmailHelp.Name = "lnkEmailHelp";
+            this.lnkEmailHelp.Size = new System.Drawing.Size(113, 13);
+            this.lnkEmailHelp.TabIndex = 1;
+            this.lnkEmailHelp.TabStop = true;
+            this.lnkEmailHelp.Text = "About email addresses";
+            this.lnkEmailHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkEmailHelp_LinkClicked);
             // 
             // dgvParticipants
             // 
@@ -202,7 +247,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.dgvParticipants.Name = "dgvParticipants";
             this.dgvParticipants.RowHeadersWidth = 25;
             this.dgvParticipants.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvParticipants.Size = new System.Drawing.Size(251, 120);
+            this.dgvParticipants.Size = new System.Drawing.Size(251, 76);
             this.dgvParticipants.TabIndex = 2;
             // 
             // colParticipant
@@ -255,16 +300,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox8.Controls.Add(this.radNoAttachment);
             this.groupBox8.Controls.Add(this.radHasAttachment);
             this.groupBox8.Controls.Add(this.cbxUseAttachmentFilter);
-            this.groupBox8.Location = new System.Drawing.Point(304, 190);
+            this.groupBox8.Location = new System.Drawing.Point(303, 207);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(269, 123);
-            this.groupBox8.TabIndex = 4;
+            this.groupBox8.Size = new System.Drawing.Size(269, 116);
+            this.groupBox8.TabIndex = 5;
             this.groupBox8.TabStop = false;
             // 
             // radHasAttachmentFromParticipant1
             // 
             this.radHasAttachmentFromParticipant1.AutoSize = true;
-            this.radHasAttachmentFromParticipant1.Location = new System.Drawing.Point(16, 91);
+            this.radHasAttachmentFromParticipant1.Location = new System.Drawing.Point(16, 86);
             this.radHasAttachmentFromParticipant1.Name = "radHasAttachmentFromParticipant1";
             this.radHasAttachmentFromParticipant1.Size = new System.Drawing.Size(236, 17);
             this.radHasAttachmentFromParticipant1.TabIndex = 3;
@@ -274,7 +319,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // radNoAttachment
             // 
             this.radNoAttachment.AutoSize = true;
-            this.radNoAttachment.Location = new System.Drawing.Point(16, 68);
+            this.radNoAttachment.Location = new System.Drawing.Point(16, 63);
             this.radNoAttachment.Name = "radNoAttachment";
             this.radNoAttachment.Size = new System.Drawing.Size(149, 17);
             this.radNoAttachment.TabIndex = 2;
@@ -285,7 +330,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.radHasAttachment.AutoSize = true;
             this.radHasAttachment.Checked = true;
-            this.radHasAttachment.Location = new System.Drawing.Point(16, 45);
+            this.radHasAttachment.Location = new System.Drawing.Point(16, 40);
             this.radHasAttachment.Name = "radHasAttachment";
             this.radHasAttachment.Size = new System.Drawing.Size(105, 17);
             this.radHasAttachment.TabIndex = 1;
@@ -296,7 +341,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // cbxUseAttachmentFilter
             // 
             this.cbxUseAttachmentFilter.AutoSize = true;
-            this.cbxUseAttachmentFilter.Location = new System.Drawing.Point(16, 22);
+            this.cbxUseAttachmentFilter.Location = new System.Drawing.Point(16, 17);
             this.cbxUseAttachmentFilter.Name = "cbxUseAttachmentFilter";
             this.cbxUseAttachmentFilter.Size = new System.Drawing.Size(85, 17);
             this.cbxUseAttachmentFilter.TabIndex = 0;
@@ -309,10 +354,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox7.Controls.Add(this.lnkFolderHelp);
             this.groupBox7.Controls.Add(this.txbFolder);
             this.groupBox7.Controls.Add(this.cbxUseFolder);
-            this.groupBox7.Location = new System.Drawing.Point(579, 19);
+            this.groupBox7.Location = new System.Drawing.Point(580, 13);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(166, 92);
-            this.groupBox7.TabIndex = 5;
+            this.groupBox7.TabIndex = 6;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Folder";
             // 
@@ -350,16 +395,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.groupBox6.Controls.Add(this.txbBodyText);
             this.groupBox6.Controls.Add(this.cbxUseBodyText);
-            this.groupBox6.Location = new System.Drawing.Point(14, 230);
+            this.groupBox6.Location = new System.Drawing.Point(11, 252);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(284, 83);
-            this.groupBox6.TabIndex = 1;
+            this.groupBox6.Size = new System.Drawing.Size(284, 71);
+            this.groupBox6.TabIndex = 2;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Message body";
             // 
             // txbBodyText
             // 
-            this.txbBodyText.Location = new System.Drawing.Point(16, 45);
+            this.txbBodyText.Location = new System.Drawing.Point(16, 40);
             this.txbBodyText.MaxLength = 500;
             this.txbBodyText.Name = "txbBodyText";
             this.txbBodyText.Size = new System.Drawing.Size(252, 20);
@@ -368,7 +413,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // cbxUseBodyText
             // 
             this.cbxUseBodyText.AutoSize = true;
-            this.cbxUseBodyText.Location = new System.Drawing.Point(16, 22);
+            this.cbxUseBodyText.Location = new System.Drawing.Point(16, 17);
             this.cbxUseBodyText.Name = "cbxUseBodyText";
             this.cbxUseBodyText.Size = new System.Drawing.Size(89, 17);
             this.cbxUseBodyText.TabIndex = 0;
@@ -381,10 +426,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox5.Controls.Add(this.radNoBcc);
             this.groupBox5.Controls.Add(this.radHasBcc);
             this.groupBox5.Controls.Add(this.cbxUseBcc);
-            this.groupBox5.Location = new System.Drawing.Point(579, 218);
+            this.groupBox5.Location = new System.Drawing.Point(580, 207);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(166, 95);
-            this.groupBox5.TabIndex = 7;
+            this.groupBox5.Size = new System.Drawing.Size(166, 116);
+            this.groupBox5.TabIndex = 8;
             this.groupBox5.TabStop = false;
             // 
             // radNoBcc
@@ -425,10 +470,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox4.Controls.Add(this.radNoCc);
             this.groupBox4.Controls.Add(this.radHasCc);
             this.groupBox4.Controls.Add(this.cbxUseCc);
-            this.groupBox4.Location = new System.Drawing.Point(579, 117);
+            this.groupBox4.Location = new System.Drawing.Point(580, 111);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(166, 95);
-            this.groupBox4.TabIndex = 6;
+            this.groupBox4.Size = new System.Drawing.Size(166, 92);
+            this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             // 
             // radNoCc
@@ -470,10 +515,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox3.Controls.Add(this.nudMinimumSize);
             this.groupBox3.Controls.Add(this.cbxUseMaximumSize);
             this.groupBox3.Controls.Add(this.nudMaximumSize);
-            this.groupBox3.Location = new System.Drawing.Point(304, 103);
+            this.groupBox3.Location = new System.Drawing.Point(303, 110);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(269, 81);
-            this.groupBox3.TabIndex = 3;
+            this.groupBox3.Size = new System.Drawing.Size(269, 92);
+            this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Size range (bytes)";
             // 
@@ -549,10 +594,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1.Controls.Add(this.cbxUseStartTime);
             this.groupBox1.Controls.Add(this.dtpStartTime);
             this.groupBox1.Controls.Add(this.dtpEndTime);
-            this.groupBox1.Location = new System.Drawing.Point(304, 19);
+            this.groupBox1.Location = new System.Drawing.Point(303, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(269, 78);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.Size = new System.Drawing.Size(269, 92);
+            this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Date range";
             // 
@@ -611,19 +656,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxUseBccForEdgeWeights.Name = "cbxUseBccForEdgeWeights";
             this.cbxUseBccForEdgeWeights.Size = new System.Drawing.Size(235, 17);
             this.cbxUseBccForEdgeWeights.TabIndex = 3;
-            this.cbxUseBccForEdgeWeights.Text = "Use Bcc &line when calculating edge weights";
+            this.cbxUseBccForEdgeWeights.Text = "Use Bcc line when calculatin&g edge weights";
             this.cbxUseBccForEdgeWeights.UseVisualStyleBackColor = true;
-            // 
-            // lnkEmailHelp
-            // 
-            this.lnkEmailHelp.AutoSize = true;
-            this.lnkEmailHelp.Location = new System.Drawing.Point(13, 48);
-            this.lnkEmailHelp.Name = "lnkEmailHelp";
-            this.lnkEmailHelp.Size = new System.Drawing.Size(113, 13);
-            this.lnkEmailHelp.TabIndex = 1;
-            this.lnkEmailHelp.TabStop = true;
-            this.lnkEmailHelp.Text = "About email addresses";
-            this.lnkEmailHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkEmailHelp_LinkClicked);
             // 
             // AnalyzeEmailNetworkDialog
             // 
@@ -647,6 +681,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.pnlWhichEmails.ResumeLayout(false);
             this.pnlWhichEmails.PerformLayout();
             this.grpFilters.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParticipants)).EndInit();
@@ -721,5 +757,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.CheckBox cbxUseBccForEdgeWeights;
         private System.Windows.Forms.LinkLabel lnkFolderHelp;
         private System.Windows.Forms.LinkLabel lnkEmailHelp;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox txbSubjectText;
+        private System.Windows.Forms.CheckBox cbxUseSubjectText;
     }
 }

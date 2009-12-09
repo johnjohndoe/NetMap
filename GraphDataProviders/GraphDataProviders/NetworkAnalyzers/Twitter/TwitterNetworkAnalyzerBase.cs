@@ -72,62 +72,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     {
         AssertValid();
 
-        // Here is the XML created by this method, assuming that
-        // bIncludeStatistics and bIncludeLatestStatuses are true, and that
-        // this.AppendVertexXmlNode() and
-        // GraphMLXmlDocument.AppendEdgeXmlNode() are called after this method
-        // returns.
-        //
-        /*
-        <?xml version="1.0" encoding="UTF-8"?>
-        <graphml xmlns="http://graphml.graphdrawing.org/xmlns">
-
-            <key id="Followed" for="node" attr.name="Followed"
-                attr.type="int" />
-            <key id="Followers" for="node" attr.name="Followers"
-                attr.type="int" />
-            <key id="Statuses" for="node" attr.name="Tweets" attr.type="int" />
-            <key id="LatestStatus" for="node" attr.name="Latest Tweet"
-                attr.type="string" />
-            <key id="ImageUrl" for="node" attr.name="Image File"
-                attr.type="string" />
-            <key id="MenuText" for="node" attr.name="Custom Menu Item Text"
-                attr.type="string" />
-            <key id="MenuAction" for="node" attr.name="Custom Menu Item Action"
-                attr.type="string" />
-            <key id="Relationship" for="edge" attr.name="Relationship"
-                attr.type="string" />
-
-            <graph edgedefault="directed">
-                <node id="ScreenName1">
-                    <data key="Followed">9</data>
-                    <data key="Followers">10</data>
-                    <data key="Statuses">3</data>
-                    <data key="LatestStatus">Hello...</data> 
-                    <data key="ImageUrl">http://...</data> 
-                    <data key="MenuText">Open Twitter Page for This Person
-                        </data>
-                    <data key="MenuAction">http://twitter.com/ScreenName1</data>
-                </node>
-                <node id="ScreenName2">
-                    <data key="Followed">98</data>
-                    <data key="Followers">248</data>
-                    <data key="Statuses">469</data>
-                    <data key="LatestStatus">Goodbye...</data> 
-                    <data key="ImageUrl">http://...</data> 
-                    <data key="MenuText">Open Twitter Page for This Person
-                        </data>
-                    <data key="MenuAction">http://twitter.com/ScreenName2</data>
-                </node>
-                ...
-                <edge source="ScreenName1" target="ScreenName2">
-                    <data key="Relationship">Followed</data>
-                </edge>
-                ...
-            </graph>
-        </graphml>
-        */
-
         GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(true);
 
         if (bIncludeStatistics)
@@ -140,25 +84,35 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             oGraphMLXmlDocument.DefineGraphMLAttribute(false, StatusesID,
                 "Tweets", "int", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false, FavoritesID,
+                "Favorites", "int", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false, DescriptionID,
+                "Description", "string", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false, TimeZoneID,
+                "Time Zone", "string", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false, UtcOffsetID,
+                "Time Zone UTC Offset (Seconds)", "int", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false, JoinedDateID,
+                "Joined Twitter Date", "string", null);
         }
 
         if (bIncludeLatestStatuses)
         {
             oGraphMLXmlDocument.DefineGraphMLAttribute(false, LatestStatusID,
                 "Latest Tweet", "string", null);
+
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
+                LatestStatusDateID, "Latest Tweet Date", "string", null);
         }
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, ImageUrlID,
-            "Image File", "string", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, MenuTextID,
-            "Custom Menu Item Text", "string", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, MenuActionID,
-            "Custom Menu Item Action", "string", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(true, RelationshipID,
-            "Relationship", "string", null);
+        DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
+        DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
+        DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
 
         return (oGraphMLXmlDocument);
     }
@@ -244,77 +198,17 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //*************************************************************************
     //  Method: GetXmlDocument()
     //
-    /// <overloads>
+    /// <summary>
     /// Gets an XML document from an URL.
-    /// </overloads>
-    ///
-    /// <summary>
-    /// Gets an XML document from an URL with a specified number of retries.
     /// </summary>
     ///
     /// <param name="sUrl">
     /// The URL to get the document from.
     /// </param>
     ///
-    /// <param name="sCredentialsScreenName">
-    /// The screen name of the Twitter user whose credentials should be used,
-    /// or null to not use credentials.
-    /// </param>
-    ///
-    /// <param name="sCredentialsPassword">
-    /// The password name of the Twitter user whose credentials should be used.
-    /// Used only if <paramref name="sCredentialsScreenName" /> is specified.
-    /// </param>
-    ///
-    /// <param name="iRetries">
-    /// The maximum number of retries.
-    /// </param>
-    ///
-    /// <returns>
-    /// The XmlDocument from the URL.
-    /// </returns>
-    //*************************************************************************
-
-    protected XmlDocument
-    GetXmlDocument
-    (
-        String sUrl,
-        String sCredentialsScreenName,
-        String sCredentialsPassword,
-        Int32 iRetries
-    )
-    {
-        Debug.Assert(iRetries >= 0);
-        AssertValid();
-
-        while (true)
-        {
-            try
-            {
-                return ( GetXmlDocument(sUrl, sCredentialsScreenName,
-                    sCredentialsPassword) );
-            }
-            catch (Exception oException)
-            {
-                iRetries--;
-
-                if (iRetries < 0)
-                {
-                    throw (oException);
-                }
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: GetXmlDocument()
-    //
-    /// <summary>
-    /// Gets an XML document from an URL with no retries.
-    /// </summary>
-    ///
-    /// <param name="sUrl">
-    /// The URL to get the document from.
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
     /// </param>
     ///
     /// <param name="sCredentialsScreenName">
@@ -330,18 +224,23 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// <returns>
     /// The XmlDocument from the URL.
     /// </returns>
+    ///
+    /// <remarks>
+    /// If an error occurs, an exception is thrown.
+    /// </remarks>
     //*************************************************************************
 
     protected XmlDocument
     GetXmlDocument
     (
         String sUrl,
+        RequestStatistics oRequestStatistics,
         String sCredentialsScreenName,
         String sCredentialsPassword
     )
     {
-        // Debug.WriteLine("sUrl=" + sUrl);
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
+        Debug.Assert(oRequestStatistics != null);
 
         Debug.Assert( sCredentialsScreenName == null ||
             ( sCredentialsScreenName.Length > 0 &&
@@ -349,8 +248,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         AssertValid();
 
-        HttpWebRequest oHttpWebRequest =
-            (HttpWebRequest)WebRequest.Create(sUrl);
+        String[] asOptionalHeaderNameValuePairs = new String [0];
 
         if (sCredentialsScreenName != null)
         {
@@ -382,11 +280,14 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             Byte [] abtHeaderValue = Encoding.UTF8.GetBytes(
                 sHeaderValue.ToCharArray() );
 
-            oHttpWebRequest.Headers["Authorization"] =
-                "Basic " + Convert.ToBase64String(abtHeaderValue);
+            asOptionalHeaderNameValuePairs = new String [] {
+                "Authorization",
+                "Basic " + Convert.ToBase64String(abtHeaderValue)
+                };
         }
 
-        return ( GetXmlDocument(oHttpWebRequest) );
+        return ( GetXmlDocumentWithRetries(sUrl, SpecialHttpStatusCodes,
+            oRequestStatistics, asOptionalHeaderNameValuePairs) );
     }
 
     //*************************************************************************
@@ -432,9 +333,14 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// "cursor" URL parameter is used.
     /// </param>
     ///
-    /// <param name="bSkipUnauthorizedAndNotFoundErrors">
-    /// If true, HTTP "unauthorized" (401) and "not found" (404) errors are
-    /// skipped over.  If false, they are rethrown.
+    /// <param name="bSkipMostPage1Errors">
+    /// If true, most page-1 errors are skipped over.  If false, they are
+    /// rethrown.  (Errors that occur on page 2 and above are always skipped.)
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
     /// </param>
     ///
     /// <param name="sCredentialsScreenName">
@@ -458,7 +364,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Int32 iMaximumPages,
         Int32 iMaximumXmlNodes,
         Boolean bUsePageParameter,
-        Boolean bSkipUnauthorizedAndNotFoundErrors,
+        Boolean bSkipMostPage1Errors,
+        RequestStatistics oRequestStatistics,
         String sCredentialsScreenName,
         String sCredentialsPassword
     )
@@ -467,6 +374,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert( !String.IsNullOrEmpty(sXPath) );
         Debug.Assert(iMaximumPages > 0);
         Debug.Assert(iMaximumXmlNodes > 0);
+        Debug.Assert(oRequestStatistics != null);
 
         Debug.Assert( sCredentialsScreenName == null ||
             ( sCredentialsScreenName.Length > 0 &&
@@ -486,6 +394,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         while (true)
         {
+            if (iPage > 1)
+            {
+                ReportProgress("Getting page " + iPage);
+            }
+
             String sUrlWithPagination = String.Format(
             
                 "{0}{1}{2}={3}"
@@ -501,37 +414,39 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             try
             {
                 oXmlDocument = GetXmlDocument(sUrlWithPagination,
-                    sCredentialsScreenName, sCredentialsPassword,
-                    this.HttpWebRequestRetries);
+                    oRequestStatistics, sCredentialsScreenName,
+                    sCredentialsPassword);
             }
-            catch (WebException oWebException)
+            catch (Exception oException)
             {
-                if (bSkipUnauthorizedAndNotFoundErrors)
+                if ( !ExceptionIsWebOrXml(oException) )
                 {
-                    // An "unauthorized" error occurs when information about a
-                    // user who has "protected" status is requested, for
-                    // example.
-                    //
-                    // "Not found" errors can occur when the Twitter search API
-                    // returns a tweet from a user, but then refuses to provide
-                    // a list of the people followed by the user, probably
-                    // because the user has protected her account.  (But if she
-                    // has protected her account, why is the search API
-                    // returning one of her tweets?)
-
-                    if (
-                        WebExceptionHasHttpStatusCode(oWebException,
-                            HttpStatusCode.Unauthorized)
-                        ||
-                        WebExceptionHasHttpStatusCode(oWebException,
-                            HttpStatusCode.NotFound)
-                        )
-                    {
-                        yield break;
-                    }
+                    throw oException;
                 }
 
-                throw (oWebException);
+                if (iPage > 1)
+                {
+                    // Always skip errors on page 2 and above.
+
+                    yield break;
+                }
+
+                // Don't skip BadRequest on page 1, which indicates that
+                // Twitter rate limiting has kicked in.
+
+                if (
+                    bSkipMostPage1Errors
+                    &&
+                    oException is WebException
+                    &&
+                    !WebExceptionHasHttpStatusCode(
+                        (WebException)oException, HttpStatusCode.BadRequest)
+                    )
+                {
+                    yield break;
+                }
+
+                throw (oException);
             }
 
             XmlNamespaceManager oXmlNamespaceManager =
@@ -796,58 +711,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendEdgeXmlNode()
-    //
-    /// <summary>
-    /// Appends an edge XML node to the GraphML document.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="sScreenName1">
-    /// The edge's first screen name.
-    /// </param>
-    ///
-    /// <param name="sScreenName2">
-    /// The edge's second screen name.
-    /// </param>
-    ///
-    /// <param name="sRelationship">
-    /// The value of the edge's RelationshipID GraphML-attribute.
-    /// </param>
-    ///
-    /// <returns>
-    /// The new edge XML node.
-    /// </returns>
-    //*************************************************************************
-
-    protected XmlNode
-    AppendEdgeXmlNode
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        String sScreenName1,
-        String sScreenName2,
-        String sRelationship
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName1) );
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName2) );
-        Debug.Assert( !String.IsNullOrEmpty(sRelationship) );
-        AssertValid();
-
-        XmlNode oEdgeXmlNode = oGraphMLXmlDocument.AppendEdgeXmlNode(
-            sScreenName1, sScreenName2);
-
-        oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-            RelationshipID, sRelationship);
-
-        return (oEdgeXmlNode);
-    }
-
-    //*************************************************************************
     //  Method: AppendFromUserXmlNode()
     //
     /// <summary>
@@ -908,20 +771,43 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         if (bIncludeStatistics)
         {
-            AppendInt32GraphMLAttributeValue(oUserXmlNode, "friends_count",
-                oGraphMLXmlDocument, oVertexXmlNode, FollowedID);
+            AppendInt32GraphMLAttributeValue(oUserXmlNode,
+                "friends_count/text()", null, oGraphMLXmlDocument,
+                oVertexXmlNode, FollowedID);
 
-            AppendInt32GraphMLAttributeValue(oUserXmlNode, "followers_count",
-                oGraphMLXmlDocument, oVertexXmlNode, FollowersID);
+            AppendInt32GraphMLAttributeValue(oUserXmlNode,
+                "followers_count/text()", null, oGraphMLXmlDocument,
+                oVertexXmlNode, FollowersID);
 
-            AppendInt32GraphMLAttributeValue(oUserXmlNode, "statuses_count",
-                oGraphMLXmlDocument, oVertexXmlNode, StatusesID);
+            AppendInt32GraphMLAttributeValue(oUserXmlNode,
+                "statuses_count/text()", null, oGraphMLXmlDocument,
+                oVertexXmlNode, StatusesID);
+
+            AppendInt32GraphMLAttributeValue(oUserXmlNode,
+                "favourites_count/text()", null, oGraphMLXmlDocument,
+                oVertexXmlNode, FavoritesID);
+
+            AppendStringGraphMLAttributeValue(oUserXmlNode,
+                "description/text()", null, oGraphMLXmlDocument,
+                oVertexXmlNode, DescriptionID);
+
+            AppendStringGraphMLAttributeValue(oUserXmlNode,
+                "time_zone/text()", null, oGraphMLXmlDocument, oVertexXmlNode,
+                TimeZoneID);
+
+            AppendStringGraphMLAttributeValue(oUserXmlNode,
+                "utc_offset/text()", null, oGraphMLXmlDocument, oVertexXmlNode,
+                UtcOffsetID);
+
+            AppendStringGraphMLAttributeValue(oUserXmlNode,
+                "created_at/text()", null, oGraphMLXmlDocument, oVertexXmlNode,
+                JoinedDateID);
         }
 
         String sLatestStatus;
 
-        if ( XmlUtil.GetStringNodeValue(oUserXmlNode, "status/text", false,
-            out sLatestStatus) )
+        if ( XmlUtil2.SelectSingleNode(oUserXmlNode, "status/text/text()",
+            null, false, out sLatestStatus) )
         {
             // Don't overwrite any status the derived class may have already
             // stored on the TwitterVertex object.
@@ -935,6 +821,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
                     LatestStatusID, sLatestStatus);
+
+                AppendStringGraphMLAttributeValue(oUserXmlNode,
+                    "status/created_at/text()", null, oGraphMLXmlDocument,
+                    oVertexXmlNode, LatestStatusDateID);
             }
         }
 
@@ -943,79 +833,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         // TwitterSearchNetworkAnalyzer.)
 
         if (oVertexXmlNode.SelectSingleNode(
-            "a:data[@key='" + ImageUrlID + "']", 
+            "a:data[@key='" + ImageFileID + "']", 
             oGraphMLXmlDocument.CreateXmlNamespaceManager("a") ) == null)
         {
-            String sImageUrl;
-
-            if ( XmlUtil.GetStringNodeValue(oUserXmlNode, "profile_image_url",
-                false, out sImageUrl) )
-            {
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-                    ImageUrlID, sImageUrl);
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendInt32GraphMLAttributeValue()
-    //
-    /// <summary>
-    /// Appends an Int32 GraphML-Attribute value to a vertex XML node. 
-    /// </summary>
-    ///
-    /// <param name="oUserXmlNode">
-    /// The "user" XML node returned by Twitter.
-    /// </param>
-    /// 
-    /// <param name="sUserAttributeName">
-    /// Name of the attribute on <paramref name="oUserXmlNode" /> to read.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oVertexXmlNode">
-    /// The vertex XML node from <paramref name="oGraphMLXmlDocument" /> to add
-    /// the GraphML attribute value to.
-    /// </param>
-    ///
-    /// <param name="sGraphMLAttributeID">
-    /// GraphML ID of the attribute.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This method reads an Int32 attribute from a "user" XML node returned by
-    /// Twitter and stores the attribute value on a vertex XML node in the
-    /// GraphML document.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    AppendInt32GraphMLAttributeValue
-    (
-        XmlNode oUserXmlNode,
-        String sUserAttributeName,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        XmlNode oVertexXmlNode,
-        String sGraphMLAttributeID
-    )
-    {
-        Debug.Assert(oUserXmlNode != null);
-        Debug.Assert( !String.IsNullOrEmpty(sUserAttributeName) );
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oVertexXmlNode != null);
-        Debug.Assert( !String.IsNullOrEmpty(sGraphMLAttributeID) );
-        AssertValid();
-
-        Int32 iAttributeValue;
-
-        if ( XmlUtil.GetInt32NodeValue(oUserXmlNode, sUserAttributeName, false,
-            out iAttributeValue) )
-        {
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue( oVertexXmlNode,
-                sGraphMLAttributeID, iAttributeValue.ToString() );
+            AppendStringGraphMLAttributeValue(oUserXmlNode,
+                "profile_image_url/text()", null, oGraphMLXmlDocument,
+                oVertexXmlNode, ImageFileID);
         }
     }
 
@@ -1094,6 +917,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// true to include each user's latest status.
     /// </param>
     ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
     /// <param name="sCredentialsScreenName">
     /// The screen name of the Twitter user whose credentials should be used,
     /// or null to not use credentials.
@@ -1141,6 +969,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
         Boolean bIncludeStatistics,
         Boolean bIncludeLatestStatuses,
+        RequestStatistics oRequestStatistics,
         String sCredentialsScreenName,
         String sCredentialsPassword,
         BackgroundWorker oBackgroundWorker,
@@ -1149,6 +978,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
+        Debug.Assert(oRequestStatistics != null);
 
         Debug.Assert( sCredentialsScreenName == null ||
             ( sCredentialsScreenName.Length > 0 &&
@@ -1200,23 +1030,20 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             
             try
             {
-                oXmlDocument = GetXmlDocument(sUrl, sCredentialsScreenName,
-                    sCredentialsPassword, this.HttpWebRequestRetries);
+                oXmlDocument = GetXmlDocument(sUrl, oRequestStatistics,
+                    sCredentialsScreenName, sCredentialsPassword);
             }
-            catch (WebException oWebException)
+            catch (Exception oException)
             {
-                if (
-                    WebExceptionHasHttpStatusCode(oWebException,
-                        HttpStatusCode.Unauthorized)
-                    ||
-                    WebExceptionHasHttpStatusCode(oWebException,
-                        HttpStatusCode.NotFound)
-                    )
+                if ( !ExceptionIsWebOrXml(oException) )
                 {
-                    continue;
+                    throw oException;
                 }
 
-                throw (oWebException);
+                // Skip WebExceptions and XmlExceptions. The missing attributes
+                // aren't critical.
+
+                continue;
             }
 
             // The document consists of a single "user" node.
@@ -1298,33 +1125,32 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 }
 
                 String sScreenName2WithAt = "@" + sScreenName2;
-                const String WhitespaceOrEndOfStatus = "(\\s|$)";
+                const String EndMarker = "(\\s|:|$)";
 
                 // Does the status start with screen name 2, meaning it's a
                 // reply-to?  The Regex here is "starts with @ScreenName2
-                // followed by whitespace or the end of the status."
+                // followed by whitespace or a colon or the end of the status."
 
                 if (
                     bIncludeRepliesToEdges
                     &&
                     Regex.IsMatch(sStatusForAnalysis1,
-                        "^" + sScreenName2WithAt + WhitespaceOrEndOfStatus)
+                        "^" + sScreenName2WithAt + EndMarker)
                     )
                 {
                     AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName1,
-                        sScreenName2, "Replies To");
+                        sScreenName2, "Replies to");
                 }
 
                 // Does the status include screen name B, meaning it's a
-                // "mentions"?  The Regex here is "whitespace followed by
-                // @ScreenName2 followed by whitespace or the end of the
-                // status."
+                // "mentions"?  The Regex here is "@ScreenName2 followed by
+                // whitespace or a colon or the end of the status."
 
                 if (
                     bIncludeMentionsEdges
                     &&
                     Regex.IsMatch(sStatusForAnalysis1,
-                        "\\s" + sScreenName2WithAt + WhitespaceOrEndOfStatus)
+                        sScreenName2WithAt + EndMarker)
                     )
                 {
                     AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName1,
@@ -1358,9 +1184,40 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //  Protected constants
     //*************************************************************************
 
+    /// HTTP status codes that have special meaning with Twitter.  When they
+    /// occur, the requests are not retried.
+
+    protected static readonly HttpStatusCode [] SpecialHttpStatusCodes =
+        new HttpStatusCode[] {
+
+            // Occurs when information about a user who has "protected" status
+            // is requested, for example.
+
+            HttpStatusCode.Unauthorized,
+
+            // Occurs when the Twitter search API returns a tweet from a user,
+            // but then refuses to provide a list of the people followed by the
+            // user, probably because the user has protected her account.
+            // (But if she has protected her account, why is the search API
+            // returning one of her tweets?)
+
+            HttpStatusCode.NotFound,
+
+            // Occurs when Twitter rate limiting kicks in.
+
+            HttpStatusCode.BadRequest,
+
+            // Not sure about this one.
+
+            HttpStatusCode.Forbidden,
+        };
+
+
     /// GraphML-attribute IDs.
 
     protected const String StatusesID = "Statuses";
+    ///
+    protected const String FavoritesID = "Favorites";
     ///
     protected const String FollowedID = "Followed";
     ///
@@ -1368,20 +1225,21 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     ///
     protected const String LatestStatusID = "LatestStatus";
     ///
-    protected const String ImageUrlID = "ImageUrlID";
+    protected const String LatestStatusDateID = "LatestStatusDate";
     ///
-    protected const String RelationshipID = "Relationship";
+    protected const String DescriptionID = "Description";
+    ///
+    protected const String TimeZoneID = "TimeZone";
+    ///
+    protected const String UtcOffsetID = "UtcOffset";
+    ///
+    protected const String JoinedDateID = "JoinedDate";
 
     /// Format pattern for the URL of the Twitter Web page for a person.  The
     /// {0} argument must be replaced with a Twitter screen name.
 
     protected const String WebPageUrlPattern =
         "http://twitter.com/{0}";
-
-    /// URI of the Atom namespace that Twitter uses in some of its responses.
-
-    protected const String AtomNamespaceUri =
-        "http://www.w3.org/2005/Atom";
 
 
     //*************************************************************************
@@ -1392,14 +1250,15 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
 
     //*************************************************************************
-    //  Embedded class: GetNetworkAsyncArguments()
+    //  Embedded class: GetNetworkAsyncArgsBase()
     //
     /// <summary>
-    /// Contains the arguments needed to asynchronously get a network.
+    /// Base class for classes that contain the arguments needed to
+    /// asynchronously get a Twitter network.
     /// </summary>
     //*************************************************************************
 
-    protected class GetNetworkAsyncArgs
+    protected class GetNetworkAsyncArgsBase
     {
         ///
         public Int32 MaximumPeoplePerRequest;

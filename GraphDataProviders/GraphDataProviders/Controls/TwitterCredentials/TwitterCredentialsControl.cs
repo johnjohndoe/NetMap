@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
-namespace Microsoft.NodeXL.GraphDataProviders
+namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 {
 //*****************************************************************************
 //  Class: TwitterCredentialsControl

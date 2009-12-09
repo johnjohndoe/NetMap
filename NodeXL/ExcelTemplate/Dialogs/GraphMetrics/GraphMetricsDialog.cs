@@ -121,50 +121,44 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 
         if (bFromControls)
         {
-            m_oGraphMetricUserSettings.CalculateInDegree = cbxInDegree.Checked;
+            m_oGraphMetricUserSettings.CalculateInDegree = chkInDegree.Checked;
 
             m_oGraphMetricUserSettings.CalculateOutDegree =
-                cbxOutDegree.Checked;
+                chkOutDegree.Checked;
 
-            m_oGraphMetricUserSettings.CalculateDegree = cbxDegree.Checked;
+            m_oGraphMetricUserSettings.CalculateDegree = chkDegree.Checked;
 
-            m_oGraphMetricUserSettings.CalculateBetweennessCentrality =
-                cbxBetweennessCentrality.Checked;
-
-            m_oGraphMetricUserSettings.CalculateClosenessCentrality =
-                cbxClosenessCentrality.Checked;
+            m_oGraphMetricUserSettings.CalculateBrandesFastCentralities =
+                chkBrandesFastCentralities.Checked;
 
             m_oGraphMetricUserSettings.CalculateEigenvectorCentrality =
-                cbxEigenvectorCentrality.Checked;
+                chkEigenvectorCentrality.Checked;
 
             m_oGraphMetricUserSettings.CalculateClusteringCoefficient =
-                cbxClusteringCoefficient.Checked;
+                chkClusteringCoefficient.Checked;
 
             m_oGraphMetricUserSettings.CalculateOverallMetrics =
-                cbxOverallMetrics.Checked;
+                chkOverallMetrics.Checked;
         }
         else
         {
-            cbxInDegree.Checked = m_oGraphMetricUserSettings.CalculateInDegree;
+            chkInDegree.Checked = m_oGraphMetricUserSettings.CalculateInDegree;
 
-            cbxOutDegree.Checked =
+            chkOutDegree.Checked =
                 m_oGraphMetricUserSettings.CalculateOutDegree;
 
-            cbxDegree.Checked = m_oGraphMetricUserSettings.CalculateDegree;
+            chkDegree.Checked = m_oGraphMetricUserSettings.CalculateDegree;
 
-            cbxBetweennessCentrality.Checked =
-                m_oGraphMetricUserSettings.CalculateBetweennessCentrality;
+            chkBrandesFastCentralities.Checked =
+                m_oGraphMetricUserSettings.CalculateBrandesFastCentralities;
 
-            cbxClosenessCentrality.Checked =
-                m_oGraphMetricUserSettings.CalculateClosenessCentrality;
-
-            cbxEigenvectorCentrality.Checked =
+            chkEigenvectorCentrality.Checked =
                 m_oGraphMetricUserSettings.CalculateEigenvectorCentrality;
 
-            cbxClusteringCoefficient.Checked =
+            chkClusteringCoefficient.Checked =
                 m_oGraphMetricUserSettings.CalculateClusteringCoefficient;
 
-            cbxOverallMetrics.Checked =
+            chkOverallMetrics.Checked =
                 m_oGraphMetricUserSettings.CalculateOverallMetrics;
         }
 
@@ -402,7 +396,7 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GraphMetricsDialog") ]
+[ SettingsGroupNameAttribute("GraphMetricsDialog2") ]
 
 public class GraphMetricsDialogUserSettings : FormSettings
 {

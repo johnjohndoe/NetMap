@@ -189,12 +189,14 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         Boolean bUseFolder = !bAllEmail && cbxUseFolder.Checked;
         Boolean bUseMinimumSize = !bAllEmail && cbxUseMinimumSize.Checked;
         Boolean bUseMaximumSize = !bAllEmail && cbxUseMaximumSize.Checked;
+        Boolean bUseSubjectText = !bAllEmail && cbxUseSubjectText.Checked;
         Boolean bUseBodyText = !bAllEmail && cbxUseBodyText.Checked;
 
         Boolean bUseAttachmentFilter = !bAllEmail &&
             cbxUseAttachmentFilter.Checked;
 
         String sFolder = null;
+        String sSubjectText = null;
         String sBodyText = null;
 
         if (!bAllEmail)
@@ -204,8 +206,11 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             if (
                 ( bUseParticipants && !ValidateParticipants() )
                 ||
+                !ValidateFilterTextBox(bUseSubjectText, txbSubjectText,
+                    "the subject text", out sSubjectText)
+                ||
                 !ValidateFilterTextBox(bUseBodyText, txbBodyText,
-                    "message body text", out sBodyText)
+                    "the message body text", out sBodyText)
                 )
             {
                 return (false);
@@ -307,6 +312,8 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         m_oAnalyzeEmailNetworkDialogUserSettings.HasBcc =
             cbxUseBcc.Checked ? radHasBcc.Checked :
                 ( Nullable<Boolean> )null;
+
+        m_oAnalyzeEmailNetworkDialogUserSettings.SubjectText = sSubjectText;
 
         m_oAnalyzeEmailNetworkDialogUserSettings.BodyText = sBodyText;
 
@@ -451,6 +458,12 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         {
             cbxUseBcc.Checked = false;
         }
+
+        cbxUseSubjectText.Checked = !String.IsNullOrEmpty(
+            m_oAnalyzeEmailNetworkDialogUserSettings.SubjectText);
+
+        txbSubjectText.Text =
+            m_oAnalyzeEmailNetworkDialogUserSettings.SubjectText;
 
         cbxUseBodyText.Checked = !String.IsNullOrEmpty(
             m_oAnalyzeEmailNetworkDialogUserSettings.BodyText);
@@ -843,6 +856,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         EmailParticipantCriteria [] aoParticipantsCriteria = null;
         Nullable<DateTime> oStartTime = null;
         Nullable<DateTime> oEndTime = null;
+        String sSubjectText = null;
         String sBodyText = null;
         String sFolder = null;
         Nullable<Int64> lMinimumSize = null;
@@ -872,6 +886,9 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
                     EndTime.Value.AddDays(1);
             }
 
+            sSubjectText =
+                m_oAnalyzeEmailNetworkDialogUserSettings.SubjectText;
+
             sBodyText = m_oAnalyzeEmailNetworkDialogUserSettings.BodyText;
 
             sFolder = m_oAnalyzeEmailNetworkDialogUserSettings.Folder;
@@ -892,9 +909,9 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         // Start the analysis.
 
         m_oEmailNetworkAnalyzer.AnalyzeEmailNetworkAsync(
-            aoParticipantsCriteria, oStartTime, oEndTime, sBodyText, sFolder,
-            lMinimumSize, lMaximumSize, eAttachmentFilter, bHasCc, bHasBcc,
-            bIsReplyFromParticipant1,
+            aoParticipantsCriteria, oStartTime, oEndTime, sSubjectText,
+            sBodyText, sFolder, lMinimumSize, lMaximumSize, eAttachmentFilter,
+            bHasCc, bHasBcc, bIsReplyFromParticipant1,
             m_oAnalyzeEmailNetworkDialogUserSettings.UseCcForEdgeWeights,
             m_oAnalyzeEmailNetworkDialogUserSettings.UseBccForEdgeWeights
             );
@@ -1075,6 +1092,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
             EnableControls(cbxUseCc.Checked, radHasCc, radNoCc);
             EnableControls(cbxUseBcc.Checked, radHasBcc, radNoBcc);
 
+            txbSubjectText.Enabled = cbxUseSubjectText.Checked;
             txbBodyText.Enabled = cbxUseBodyText.Checked;
             txbFolder.Enabled = cbxUseFolder.Checked;
 

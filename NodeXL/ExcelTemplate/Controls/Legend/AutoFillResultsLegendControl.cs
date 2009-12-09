@@ -430,55 +430,58 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         Int32 iTop = oColumnRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, EdgePropertyHeader,
-            oColumnRectangle.Left, oColumnRectangle.Right, ref iTop);
-
-        // Provide a margin.
-
-        Rectangle oColumnRectangleWithMargin = AddMarginToRectangle(
-            oDrawingObjects, oColumnRectangle);
-
-        Int32 iResultsLeft = oColumnRectangleWithMargin.Left;
-        Int32 iResultsRight = oColumnRectangleWithMargin.Right;
-
-        AutoFillColorColumnResults oEdgeColorResults =
-            m_oAutoFillWorkbookResults.EdgeColorResults;
-
-        if (oEdgeColorResults.ColumnAutoFilled)
+        if (m_oAutoFillWorkbookResults.AutoFilledEdgeColumnCount > 0)
         {
-            DrawColorBarResults(oDrawingObjects,
-                oEdgeColorResults.SourceColumnName, ColorCaption,
-                oEdgeColorResults.SourceCalculationNumber1,
-                oEdgeColorResults.SourceCalculationNumber2,
-                oEdgeColorResults.DestinationColor1,
-                oEdgeColorResults.DestinationColor2,
-                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
-        }
+            DrawColumnHeader(oDrawingObjects, EdgePropertyHeader,
+                oColumnRectangle.Left, oColumnRectangle.Right, ref iTop);
 
-        AutoFillNumericRangeColumnResults oEdgeWidthResults =
-            m_oAutoFillWorkbookResults.EdgeWidthResults;
+            // Provide a margin.
 
-        if (oEdgeWidthResults.ColumnAutoFilled)
-        {
-            DrawRampResults(oDrawingObjects,
-                oEdgeWidthResults.SourceColumnName, EdgeWidthCaption,
-                oEdgeWidthResults.SourceCalculationNumber1,
-                oEdgeWidthResults.SourceCalculationNumber2,
-                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
-        }
+            Rectangle oColumnRectangleWithMargin = AddMarginToRectangle(
+                oDrawingObjects, oColumnRectangle);
 
-        AutoFillNumericRangeColumnResults oEdgeAlphaResults =
-            m_oAutoFillWorkbookResults.EdgeAlphaResults;
+            Int32 iResultsLeft = oColumnRectangleWithMargin.Left;
+            Int32 iResultsRight = oColumnRectangleWithMargin.Right;
 
-        if (oEdgeAlphaResults.ColumnAutoFilled)
-        {
-            DrawAutoFilledAlphaResults(oDrawingObjects,
-                oEdgeAlphaResults.SourceColumnName,
-                oEdgeAlphaResults.SourceCalculationNumber1,
-                oEdgeAlphaResults.SourceCalculationNumber2,
-                oEdgeAlphaResults.DestinationNumber1,
-                oEdgeAlphaResults.DestinationNumber2,
-                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            AutoFillColorColumnResults oEdgeColorResults =
+                m_oAutoFillWorkbookResults.EdgeColorResults;
+
+            if (oEdgeColorResults.ColumnAutoFilled)
+            {
+                DrawColorBarResults(oDrawingObjects,
+                    oEdgeColorResults.SourceColumnName, ColorCaption,
+                    oEdgeColorResults.SourceCalculationNumber1,
+                    oEdgeColorResults.SourceCalculationNumber2,
+                    oEdgeColorResults.DestinationColor1,
+                    oEdgeColorResults.DestinationColor2,
+                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            }
+
+            AutoFillNumericRangeColumnResults oEdgeWidthResults =
+                m_oAutoFillWorkbookResults.EdgeWidthResults;
+
+            if (oEdgeWidthResults.ColumnAutoFilled)
+            {
+                DrawRampResults(oDrawingObjects,
+                    oEdgeWidthResults.SourceColumnName, EdgeWidthCaption,
+                    oEdgeWidthResults.SourceCalculationNumber1,
+                    oEdgeWidthResults.SourceCalculationNumber2,
+                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            }
+
+            AutoFillNumericRangeColumnResults oEdgeAlphaResults =
+                m_oAutoFillWorkbookResults.EdgeAlphaResults;
+
+            if (oEdgeAlphaResults.ColumnAutoFilled)
+            {
+                DrawAutoFilledAlphaResults(oDrawingObjects,
+                    oEdgeAlphaResults.SourceColumnName,
+                    oEdgeAlphaResults.SourceCalculationNumber1,
+                    oEdgeAlphaResults.SourceCalculationNumber2,
+                    oEdgeAlphaResults.DestinationNumber1,
+                    oEdgeAlphaResults.DestinationNumber2,
+                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            }
         }
 
         return (iTop);
@@ -516,55 +519,58 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         Int32 iTop = oColumnRectangle.Top;
 
-        DrawColumnHeader(oDrawingObjects, VertexPropertyHeader,
-            oColumnRectangle.Left, oColumnRectangle.Right, ref iTop);
-
-        // Provide a margin.
-
-        Rectangle oColumnRectangleWithMargin = AddMarginToRectangle(
-            oDrawingObjects, oColumnRectangle);
-
-        Int32 iResultsLeft = oColumnRectangleWithMargin.Left;
-        Int32 iResultsRight = oColumnRectangleWithMargin.Right;
-
-        AutoFillColorColumnResults oVertexColorResults =
-            m_oAutoFillWorkbookResults.VertexColorResults;
-
-        if (oVertexColorResults.ColumnAutoFilled)
+        if (m_oAutoFillWorkbookResults.AutoFilledVertexNonXYColumnCount > 0)
         {
-            DrawColorBarResults(oDrawingObjects,
-                oVertexColorResults.SourceColumnName, ColorCaption,
-                oVertexColorResults.SourceCalculationNumber1,
-                oVertexColorResults.SourceCalculationNumber2,
-                oVertexColorResults.DestinationColor1,
-                oVertexColorResults.DestinationColor2,
-                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
-        }
+            DrawColumnHeader(oDrawingObjects, VertexPropertyHeader,
+                oColumnRectangle.Left, oColumnRectangle.Right, ref iTop);
 
-        AutoFillNumericRangeColumnResults oVertexRadiusResults =
-            m_oAutoFillWorkbookResults.VertexRadiusResults;
+            // Provide a margin.
 
-        if (oVertexRadiusResults.ColumnAutoFilled)
-        {
-            DrawRampResults(oDrawingObjects,
-                oVertexRadiusResults.SourceColumnName, "Size",
-                oVertexRadiusResults.SourceCalculationNumber1,
-                oVertexRadiusResults.SourceCalculationNumber2,
-                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
-        }
+            Rectangle oColumnRectangleWithMargin = AddMarginToRectangle(
+                oDrawingObjects, oColumnRectangle);
 
-        AutoFillNumericRangeColumnResults oVertexAlphaResults =
-            m_oAutoFillWorkbookResults.VertexAlphaResults;
+            Int32 iResultsLeft = oColumnRectangleWithMargin.Left;
+            Int32 iResultsRight = oColumnRectangleWithMargin.Right;
 
-        if (oVertexAlphaResults.ColumnAutoFilled)
-        {
-            DrawAutoFilledAlphaResults(oDrawingObjects,
-                oVertexAlphaResults.SourceColumnName,
-                oVertexAlphaResults.SourceCalculationNumber1,
-                oVertexAlphaResults.SourceCalculationNumber2,
-                oVertexAlphaResults.DestinationNumber1,
-                oVertexAlphaResults.DestinationNumber2,
-                oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            AutoFillColorColumnResults oVertexColorResults =
+                m_oAutoFillWorkbookResults.VertexColorResults;
+
+            if (oVertexColorResults.ColumnAutoFilled)
+            {
+                DrawColorBarResults(oDrawingObjects,
+                    oVertexColorResults.SourceColumnName, ColorCaption,
+                    oVertexColorResults.SourceCalculationNumber1,
+                    oVertexColorResults.SourceCalculationNumber2,
+                    oVertexColorResults.DestinationColor1,
+                    oVertexColorResults.DestinationColor2,
+                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            }
+
+            AutoFillNumericRangeColumnResults oVertexRadiusResults =
+                m_oAutoFillWorkbookResults.VertexRadiusResults;
+
+            if (oVertexRadiusResults.ColumnAutoFilled)
+            {
+                DrawRampResults(oDrawingObjects,
+                    oVertexRadiusResults.SourceColumnName, "Size",
+                    oVertexRadiusResults.SourceCalculationNumber1,
+                    oVertexRadiusResults.SourceCalculationNumber2,
+                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            }
+
+            AutoFillNumericRangeColumnResults oVertexAlphaResults =
+                m_oAutoFillWorkbookResults.VertexAlphaResults;
+
+            if (oVertexAlphaResults.ColumnAutoFilled)
+            {
+                DrawAutoFilledAlphaResults(oDrawingObjects,
+                    oVertexAlphaResults.SourceColumnName,
+                    oVertexAlphaResults.SourceCalculationNumber1,
+                    oVertexAlphaResults.SourceCalculationNumber2,
+                    oVertexAlphaResults.DestinationNumber1,
+                    oVertexAlphaResults.DestinationNumber2,
+                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            }
         }
 
         return (iTop);

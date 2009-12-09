@@ -113,8 +113,7 @@ public class GraphMetricCalculationManager : Object
             new IGraphMetricCalculator2[] {
 
                 new VertexDegreeCalculator2(),
-                new BetweennessCentralityCalculator2(),
-                new ClosenessCentralityCalculator2(),
+                new BrandesFastCentralityCalculator2(),
                 new EigenvectorCentralityCalculator2(),
                 new ClusteringCoefficientCalculator2(),
                 new OverallMetricCalculator2(),

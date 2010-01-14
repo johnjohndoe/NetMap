@@ -541,8 +541,9 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
             String sOtherUserName;
 
-            if ( !XmlUtil2.SelectSingleNode(oEntryXmlNode, "yt:username/text()",
-                oXmlNamespaceManager, false, out sOtherUserName) )
+            if ( !XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
+                "yt:username/text()", oXmlNamespaceManager,
+                out sOtherUserName) )
             {
                 continue;
             }
@@ -597,12 +598,12 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                     sRelationship = "Subscribes to";
                     String sSubscriptionType = null;
 
-                    if ( XmlUtil2.SelectSingleNode(oEntryXmlNode,
+                    if ( XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
 
                         "a:category[@scheme='http://gdata.youtube.com/schemas/"
                         + "2007/subscriptiontypes.cat']/@term",
 
-                        oXmlNamespaceManager, false, out sSubscriptionType) )
+                        oXmlNamespaceManager, out sSubscriptionType) )
                     {
                         sRelationship += " " + sSubscriptionType;
                     }
@@ -677,7 +678,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                 "Videos Watched", "int", null);
 
             oGraphMLXmlDocument.DefineGraphMLAttribute(false,
-                JoinedDateID, "Joined YouTube Date", "string", null);
+                JoinedDateUtcID, "Joined YouTube Date (UTC)", "string", null);
 
             oGraphMLXmlDocument.DefineGraphMLAttribute(false, VideosUploadedID,
                 "Videos Uploaded", "int", null);
@@ -996,7 +997,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         {
             AppendYouTubeDateGraphMLAttributeValue(oXmlDocument,
                 "a:entry/a:published/text()", oXmlNamespaceManager,
-                oGraphMLXmlDocument, oVertexXmlNode, JoinedDateID);
+                oGraphMLXmlDocument, oVertexXmlNode, JoinedDateUtcID);
 
             AppendStringGraphMLAttributeValue(oXmlDocument,
                 "a:entry/media:thumbnail/@url", oXmlNamespaceManager,
@@ -1004,8 +1005,8 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
             XmlNode oStatisticsXmlNode;
 
-            if ( XmlUtil2.SelectSingleNode(oXmlDocument,
-                "a:entry/yt:statistics", oXmlNamespaceManager, false,
+            if ( XmlUtil2.TrySelectSingleNode(oXmlDocument,
+                "a:entry/yt:statistics", oXmlNamespaceManager,
                 out oStatisticsXmlNode) )
             {
                 AppendInt32GraphMLAttributeValue(oStatisticsXmlNode,
@@ -1195,7 +1196,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     ///
     protected const String VideosWatchedID = "VideosWatched";
     ///
-    protected const String JoinedDateID = "JoinedDate";
+    protected const String JoinedDateUtcID = "JoinedDateUtc";
     ///
     protected const String FriendsID = "Friends";
     ///

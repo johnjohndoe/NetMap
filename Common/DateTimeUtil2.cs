@@ -14,8 +14,8 @@ namespace Microsoft.Research.CommunityTechnologies.DateTimeLib
 /// </summary>
 ///
 /// <remarks>
-/// This class can't be used in .NET 1.1 applications.  See the DateTimeUtil
-/// class for methods that can be used in either .NET 1.1 or 2.0 applications.
+/// This is a replacement for DateTimeUtil, which should not be used in new
+/// projects.
 /// </remarks>
 //*****************************************************************************
 

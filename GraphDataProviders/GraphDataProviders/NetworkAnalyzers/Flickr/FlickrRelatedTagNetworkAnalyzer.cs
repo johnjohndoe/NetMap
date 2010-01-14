@@ -516,8 +516,8 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         foreach (XmlNode oTagNode in oTagNodes)
         {
-            XmlUtil2.SelectSingleNode(oTagNode, "text()", null, true,
-                out sOtherTag);
+            sOtherTag = XmlUtil2.SelectRequiredSingleNodeAsString(oTagNode,
+                "text()", null);
 
             if (bNeedToAppendVertices)
             {
@@ -536,8 +536,8 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         {
             foreach (XmlNode oTagNode in oTagNodes)
             {
-                XmlUtil2.SelectSingleNode(oTagNode, "text()", null, true,
-                    out sOtherTag);
+                sOtherTag = XmlUtil2.SelectRequiredSingleNodeAsString(oTagNode,
+                    "text()", null);
 
                 if ( !TryGetRelatedTagsRecursive(sOtherTag, eWhatToInclude,
                     eNetworkLevel, sApiKey, 2, oGraphMLXmlDocument,
@@ -690,8 +690,8 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         if (
             !TryGetXmlDocument(sUrl, oRequestStatistics, out oXmlDocument)
             ||
-            ! XmlUtil2.SelectSingleNode(oXmlDocument, "rsp/photos/photo/@id",
-                null, false, out sPhotoID)
+            ! XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument,
+                "rsp/photos/photo/@id", null, out sPhotoID)
             )
         {
             return (false);
@@ -703,8 +703,8 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         if (
             !TryGetXmlDocument(sUrl, oRequestStatistics, out oXmlDocument)
             ||
-            ! XmlUtil2.SelectSingleNode(oXmlDocument,
-                "rsp/sizes/size[@label='Thumbnail']/@source", null, false,
+            ! XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument,
+                "rsp/sizes/size[@label='Thumbnail']/@source", null,
                 out sSampleImageUrl)
             )
         {

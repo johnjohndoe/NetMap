@@ -213,14 +213,34 @@ public class GraphDrawer : DrawerBase
     //  Property: BackColor
     //
     /// <summary>
-    /// Gets or sets the graph's background color.
+    /// Gets or sets the graph's default background color.
     /// </summary>
     ///
     /// <value>
-    /// The graph's background color, as a <see
+    /// The graph's default background color, as a <see
     /// cref="System.Windows.Media.Color" />.  The default value is
     /// SystemColors.<see cref="SystemColors.WindowColor" />.
     /// </value>
+    ///
+    /// <remarks>
+    /// The default background color can be overridden by setting the <see
+    /// cref="ReservedMetadataKeys.GraphBackColor" /> key on the graph.
+    ///
+    /// <para>
+    /// When the graph is drawn, the background color specified by <see
+    /// cref="BackColor" /> or <see
+    /// cref="ReservedMetadataKeys.GraphBackColor" /> is drawn first, followed
+    /// by any background image specified by the <see
+    /// cref="ReservedMetadataKeys.GraphBackgroundImage" /> key, followed by
+    /// the graph itself.
+    /// </para>
+    ///
+    /// <para>
+    /// This is called BackColor instead of BackgroundColor for consistency
+    /// with the rest of the .NET Framework.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     public Color
@@ -313,7 +333,7 @@ public class GraphDrawer : DrawerBase
 
         m_oVisualCollection.Clear();
 
-        DrawBackground(graphDrawingContext);
+        DrawBackground(graph, graphDrawingContext);
 
         m_oAllVertexDrawingVisuals = new DrawingVisual();
         m_oUnselectedEdgeDrawingVisuals = new DrawingVisual();
@@ -619,7 +639,7 @@ public class GraphDrawer : DrawerBase
     //  Method: AddVisualOnTopOfGraph()
     //
     /// <summary>
-    /// Adds a caller-supplied Visual on top of the graph.
+    /// Temporarily adds a caller-supplied Visual on top of the drawn graph.
     /// </summary>
     ///
     /// <param name="visual">
@@ -628,10 +648,14 @@ public class GraphDrawer : DrawerBase
     ///
     /// <remarks>
     /// Call this method after calling <see cref="DrawGraph" /> to add a Visual
-    /// on top of the graph.  The added Visual gets removed when <see
-    /// cref="DrawGraph" /> is called again.  You can also remove the Visual
-    /// without redrawing the graph by calling <see
-    /// cref="RemoveVisualFromTopOfGraph" />.
+    /// on top of the graph.  This is useful for adding a temporary tooltip,
+    /// dragging marquee, or other Visual object to the graph.
+    ///
+    /// <para>
+    /// The added Visual gets removed when <see cref="DrawGraph" /> is called
+    /// again.  You can also remove the Visual without redrawing the graph by
+    /// calling <see cref="RemoveVisualFromTopOfGraph" />.
+    /// </para>
     ///
     /// <para>
     /// An InvalidOperationException is thrown if the Visual has already been
@@ -718,6 +742,10 @@ public class GraphDrawer : DrawerBase
     /// Draws the graph's background.
     /// </summary>
     ///
+    /// <param name="oGraph">
+    /// The graph being drawn.
+    /// </param>
+    ///
     /// <param name="oGraphDrawingContext">
     /// Provides access to objects needed for graph-drawing operations.
     /// </param>
@@ -726,11 +754,24 @@ public class GraphDrawer : DrawerBase
     protected void
     DrawBackground
     (
+        IGraph oGraph,
         GraphDrawingContext oGraphDrawingContext
     )
     {
+        Debug.Assert(oGraph != null);
         Debug.Assert(oGraphDrawingContext != null);
         AssertValid();
+
+        // Draw the background color, followed by the background image if one
+        // was specified.
+
+        Color oBackColor;
+
+        if ( !TryGetColorValue(oGraph, ReservedMetadataKeys.GraphBackColor,
+            out oBackColor) )
+        {
+            oBackColor = m_oBackColor;
+        }
 
         DrawingVisual oBackgroundDrawingVisual = new DrawingVisual();
 
@@ -738,8 +779,20 @@ public class GraphDrawer : DrawerBase
             oBackgroundDrawingVisual.RenderOpen() )
         {
             oDrawingContext.DrawRectangle(
-                CreateFrozenSolidColorBrush(m_oBackColor), null,
+                CreateFrozenSolidColorBrush(oBackColor), null,
                 oGraphDrawingContext.GraphRectangle);
+
+            Object oImageSourceAsObject;
+
+            if ( oGraph.TryGetValue(ReservedMetadataKeys.GraphBackgroundImage,
+                typeof(ImageSource), out oImageSourceAsObject) )
+            {
+                ImageSource oImageSource = (ImageSource)oImageSourceAsObject;
+
+                oDrawingContext.DrawImage( oImageSource,
+                    new Rect( new Size(oImageSource.Width,
+                        oImageSource.Height) ) );
+            }
         }
 
         m_oVisualCollection.Add(oBackgroundDrawingVisual);

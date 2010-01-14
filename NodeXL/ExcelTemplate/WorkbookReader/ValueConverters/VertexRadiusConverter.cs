@@ -132,7 +132,7 @@ public class VertexRadiusConverter : NumericValueConverterBase
     /// radius.
     /// </summary>
 
-    public static readonly Single MaximumRadiusWorkbook = 10F;
+    public static readonly Single MaximumRadiusWorkbook = 100F;
 
     /// <summary>
     /// Minimum radius in the NodeXL graph.
@@ -160,7 +160,7 @@ public class VertexRadiusConverter : NumericValueConverterBase
     /// to MaximumRadiusWorkbook, in WPF units.
     /// </summary>
 
-    public static readonly Single MaximumLongerImageDimension = 200F;
+    public static readonly Single MaximumLongerImageDimension = 2100F;
 
     /// <summary>
     /// The vertex label font size that corresponds to MinimumRadiusWorkbook,
@@ -174,7 +174,7 @@ public class VertexRadiusConverter : NumericValueConverterBase
     /// in WPF units.
     /// </summary>
 
-    public static readonly Single MaximumLabelFontSize = 39.4F;
+    public static readonly Single MaximumLabelFontSize = 293.4F;
 
 
     //*************************************************************************

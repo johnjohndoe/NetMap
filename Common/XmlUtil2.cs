@@ -29,14 +29,10 @@ namespace Microsoft.Research.CommunityTechnologies.XmlLib
 public static class XmlUtil2
 {
     //*************************************************************************
-    //  Method: SelectSingleNode()
+    //  Method: SelectRequiredSingleNode()
     //
-    /// <overloads>
-    /// Selects a single XML node.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Selects a single XML node.
+    /// Selects a required XML node.
     /// </summary>
     ///
     /// <param name="node">
@@ -51,8 +47,238 @@ public static class XmlUtil2
     /// NamespaceManager to use, or null to not use one.
     /// </param>
     ///
-    /// <param name="required">
-    /// true if the specified node must exist.
+    /// <returns>
+    /// The selected node.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified node is missing, an XmlException is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    public static XmlNode
+    SelectRequiredSingleNode
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        XmlNode oSelectedNode;
+
+        if ( !TrySelectSingleNode(node, xPath, xmlNamespaceManager,
+            out oSelectedNode) )
+        {
+            throw new XmlException( String.Format(
+
+                "An XML node with the name \"{0}\" is missing a required"
+                + " descendent node.  The XPath is \"{1}\"."
+                ,
+                node.Name,
+                xPath
+                ) );
+        }
+
+        return (oSelectedNode);
+    }
+
+    //*************************************************************************
+    //  Method: SelectRequiredSingleNodeAsString()
+    //
+    /// <summary>
+    /// Selects a required XML node and gets its String value.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
+    /// </param>
+    ///
+    /// <returns>
+    /// The selected node's String value.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified node is missing or its value is an empty string, an
+    /// XmlException is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    SelectRequiredSingleNodeAsString
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        String sValue;
+
+        if ( !TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
+            out sValue) )
+        {
+            throw new XmlException( String.Format(
+
+                "An XML node with the name \"{0}\" is missing a required"
+                + " descendent node whose value must be a non-empty String."
+                + "  The XPath is \"{1}\"."
+                ,
+                node.Name,
+                xPath
+                ) );
+        }
+
+        return (sValue);
+    }
+
+    //*************************************************************************
+    //  Method: SelectRequiredSingleNodeAsInt32()
+    //
+    /// <summary>
+    /// Selects a required XML node and gets its Int32 value.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
+    /// </param>
+    ///
+    /// <returns>
+    /// The selected node's Int32 value.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified node is missing or its value isn't an Int32, an
+    /// XmlException is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Int32
+    SelectRequiredSingleNodeAsInt32
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        Int32 iValue;
+
+        if ( !TrySelectSingleNodeAsInt32(node, xPath, xmlNamespaceManager,
+            out iValue) )
+        {
+            throw new XmlException( String.Format(
+
+                "An XML node with the name \"{0}\" is missing a required"
+                + " descendent node whose value must be an Int32.  The XPath"
+                + " is \"{1}\"."
+                ,
+                node.Name,
+                xPath
+                ) );
+        }
+
+        return (iValue);
+    }
+
+    //*************************************************************************
+    //  Method: SelectRequiredSingleNodeAsDouble()
+    //
+    /// <summary>
+    /// Selects a required XML node and gets its Double value.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
+    /// </param>
+    ///
+    /// <returns>
+    /// The selected node's Double value.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified node is missing or its value isn't a Double, an
+    /// XmlException is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Double
+    SelectRequiredSingleNodeAsDouble
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        Double dValue;
+
+        if ( !TrySelectSingleNodeAsDouble(node, xPath, xmlNamespaceManager,
+            out dValue) )
+        {
+            throw new XmlException( String.Format(
+
+                "An XML node with the name \"{0}\" is missing a required"
+                + " descendent node whose value must be a Double.  The XPath"
+                + " is \"{1}\"."
+                ,
+                node.Name,
+                xPath
+                ) );
+        }
+
+        return (dValue);
+    }
+
+    //*************************************************************************
+    //  Method: TrySelectSingleNode()
+    //
+    /// <summary>
+    /// Attempts to select an XML node.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
     /// </param>
     ///
     /// <param name="selectedNode">
@@ -62,22 +288,14 @@ public static class XmlUtil2
     /// <returns>
     /// true if the specified node was found.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If <paramref name="required" /> is true and the specified node is
-    /// missing, an exception is thrown.  If <paramref name="required" /> is
-    /// false and the specified node is missing, null is stored in <paramref
-    /// name="selectedNode" /> and false is returned.
-    /// </remarks>
     //*************************************************************************
 
     public static Boolean
-    SelectSingleNode
+    TrySelectSingleNode
     (
         XmlNode node,
         String xPath,
         XmlNamespaceManager xmlNamespaceManager,
-        Boolean required,
         out XmlNode selectedNode
     )
     {
@@ -95,31 +313,14 @@ public static class XmlUtil2
             selectedNode = node.SelectSingleNode(xPath);
         }
 
-        if (selectedNode != null)
-        {
-            return (true);
-        }
-
-        if (required)
-        {
-            throw new XmlException( String.Format(
-
-                "An XML node with the name {0} is missing a required"
-                + " descendent node.  The XPath is \"{1}\"."
-                ,
-                node.Name,
-                xPath
-                ) );
-        }
-
-        return (false);
+        return (selectedNode != null);
     }
 
     //*************************************************************************
-    //  Method: SelectSingleNode()
+    //  Method: TrySelectSingleNodeAsString()
     //
     /// <summary>
-    /// Selects a single XML node and gets its String value.
+    /// Attempts to select an XML node and get its String value.
     /// </summary>
     ///
     /// <param name="node">
@@ -132,11 +333,6 @@ public static class XmlUtil2
     ///
     /// <param name="xmlNamespaceManager">
     /// NamespaceManager to use, or null to not use one.
-    /// </param>
-    ///
-    /// <param name="required">
-    /// true if the specified node must exist and its value must be a non-empty
-    /// string.
     /// </param>
     ///
     /// <param name="value">
@@ -147,23 +343,14 @@ public static class XmlUtil2
     /// true if the specified node was found and its value was a non-empty
     /// string.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If <paramref name="required" /> is true and the specified node is
-    /// missing or its value is null or empty, an exception is thrown.  If
-    /// <paramref name="required" /> is false and the specified node is missing
-    /// or its value is null or empty, null is stored in <paramref
-    /// name="value" /> and false is returned.
-    /// </remarks>
     //*************************************************************************
 
     public static Boolean
-    SelectSingleNode
+    TrySelectSingleNodeAsString
     (
         XmlNode node,
         String xPath,
         XmlNamespaceManager xmlNamespaceManager,
-        Boolean required,
         out String value
     )
     {
@@ -173,7 +360,7 @@ public static class XmlUtil2
         value = null;
         XmlNode oSelectedNode;
 
-        if ( !SelectSingleNode(node, xPath, xmlNamespaceManager, required,
+        if ( !TrySelectSingleNode(node, xPath, xmlNamespaceManager,
             out oSelectedNode) )
         {
             return (false);
@@ -181,32 +368,14 @@ public static class XmlUtil2
 
         value = oSelectedNode.Value;
 
-        if ( !String.IsNullOrEmpty(value) )
-        {
-            return (true);
-        }
-
-        if (required)
-        {
-            throw new XmlException( String.Format(
-
-                "An XML node with the name {0} is missing a required"
-                + " descendent node whose value must be a non-empty String."
-                + "  The XPath is \"{1}\"."
-                ,
-                node.Name,
-                xPath
-                ) );
-        }
-
-        return (false);
+        return ( !String.IsNullOrEmpty(value) );
     }
 
     //*************************************************************************
-    //  Method: SelectSingleNode()
+    //  Method: TrySelectSingleNodeAsInt32()
     //
     /// <summary>
-    /// Selects a single XML node and gets its Int32 value.
+    /// Attempts to select an XML node and get its Int32 value.
     /// </summary>
     ///
     /// <param name="node">
@@ -219,10 +388,6 @@ public static class XmlUtil2
     ///
     /// <param name="xmlNamespaceManager">
     /// NamespaceManager to use, or null to not use one.
-    /// </param>
-    ///
-    /// <param name="required">
-    /// true if the specified node must exist and its value must be an Int32.
     /// </param>
     ///
     /// <param name="value">
@@ -232,23 +397,14 @@ public static class XmlUtil2
     /// <returns>
     /// true if the specified node was found and its value was an Int32.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If <paramref name="required" /> is true and the specified node is
-    /// missing or its value is not an Int32, an exception is thrown.  If
-    /// <paramref name="required" /> is false and the specified node is missing
-    /// or its value is not an Int32, Int32.MinValue is stored in <paramref
-    /// name="value" /> and false is returned.
-    /// </remarks>
     //*************************************************************************
 
     public static Boolean
-    SelectSingleNode
+    TrySelectSingleNodeAsInt32
     (
         XmlNode node,
         String xPath,
         XmlNamespaceManager xmlNamespaceManager,
-        Boolean required,
         out Int32 value
     )
     {
@@ -258,40 +414,19 @@ public static class XmlUtil2
         value = Int32.MinValue;
         String sValue;
 
-        if ( !SelectSingleNode(node, xPath, xmlNamespaceManager, required,
-            out sValue) )
-        {
-            return (false);
-        }
-
-        if ( Int32.TryParse(sValue, out value) )
-        {
-            return (true);
-        }
-
-        if (required)
-        {
-            throw new XmlException( String.Format(
-
-                "An XML node with the name {0} is missing a required"
-                + " descendent node whose value must be an Int32.  The XPath"
-                + " is \"{1}\"."
-                ,
-                node.Name,
-                xPath
-                ) );
-        }
-
-        value = Int32.MinValue;
-
-        return (false);
+        return (
+            TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
+                out sValue)
+            &&
+            Int32.TryParse(sValue, out value)
+            );
     }
 
     //*************************************************************************
-    //  Method: SelectSingleNode()
+    //  Method: TrySelectSingleNodeAsDouble()
     //
     /// <summary>
-    /// Selects a single XML node and gets its Double value.
+    /// Attempts to select an XML node and get its Double value.
     /// </summary>
     ///
     /// <param name="node">
@@ -306,10 +441,6 @@ public static class XmlUtil2
     /// NamespaceManager to use, or null to not use one.
     /// </param>
     ///
-    /// <param name="required">
-    /// true if the specified node must exist and its value must be a Double.
-    /// </param>
-    ///
     /// <param name="value">
     /// Where the selected node's Double value gets stored if true is returned.
     /// </param>
@@ -317,23 +448,14 @@ public static class XmlUtil2
     /// <returns>
     /// true if the specified node was found and its value was a Double.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If <paramref name="required" /> is true and the specified node is
-    /// missing or its value is not a Double, an exception is thrown.  If
-    /// <paramref name="required" /> is false and the specified node is missing
-    /// or its value is not a Double, Double.MinValue is stored in <paramref
-    /// name="value" /> and false is returned.
-    /// </remarks>
     //*************************************************************************
 
     public static Boolean
-    SelectSingleNode
+    TrySelectSingleNodeAsDouble
     (
         XmlNode node,
         String xPath,
         XmlNamespaceManager xmlNamespaceManager,
-        Boolean required,
         out Double value
     )
     {
@@ -343,33 +465,123 @@ public static class XmlUtil2
         value = Double.MinValue;
         String sValue;
 
-        if ( !SelectSingleNode(node, xPath, xmlNamespaceManager, required,
-            out sValue) )
+        return (
+            TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
+                out sValue)
+            &&
+            Double.TryParse(sValue, out value)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: AppendNewNode()
+    //
+    /// <summary>
+    /// Creates a new XML node with an optional namespace and appends it to a
+    /// parent node.
+    /// </summary>
+    ///
+    /// <param name="parentNode">
+    /// Node to append the new node to.
+    /// </param>
+    /// 
+    /// <param name="childName">
+    /// Name of the new node.
+    /// </param>
+    ///
+    /// <param name="namespaceUri">
+    /// Optional namespace URI of the new node.  If null or empty, no namespace
+    /// is used.
+    /// </param>
+    ///
+    /// <returns>
+    /// The new node.
+    /// </returns>
+    //*************************************************************************
+
+    static public XmlNode
+    AppendNewNode
+    (
+        XmlNode parentNode,
+        String childName,
+        String namespaceUri
+    )
+    {
+        Debug.Assert(parentNode != null);
+        Debug.Assert( !String.IsNullOrEmpty(childName) );
+
+        // Get the owner document.
+
+        XmlDocument oOwnerDocument = parentNode.OwnerDocument;
+
+        // Unfortunately, the root node's OwnerDocument property returns null,
+        // so we have to check for this special case.
+
+        if (oOwnerDocument == null)
         {
-            return (false);
+            oOwnerDocument = (XmlDocument)parentNode;
         }
 
-        if ( Double.TryParse(sValue, out value) )
+        XmlElement oNewNode;
+
+        if ( String.IsNullOrEmpty(namespaceUri) )
         {
-            return (true);
+            oNewNode = oOwnerDocument.CreateElement(childName);
+        }
+        else
+        {
+            oNewNode = oOwnerDocument.CreateElement(childName, namespaceUri);
         }
 
-        if (required)
-        {
-            throw new XmlException( String.Format(
+        return ( parentNode.AppendChild(oNewNode) );
+    }
 
-                "An XML node with the name {0} is missing a required"
-                + " descendent node whose value must be a Double.  The XPath"
-                + " is \"{1}\"."
-                ,
-                node.Name,
-                xPath
-                ) );
+    //*************************************************************************
+    //  Method: SetAttributes()
+    //
+    /// <summary>
+    /// Sets multiple attributes on an XML node.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// XmlNode.  Node to set attributes on.
+    /// </param>
+    ///
+    /// <param name="nameValuePairs">
+    /// String[].  One or more pairs of strings.  The first string in each pair
+    /// is an attribute name and the second is the attribute value.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This sets multiple attributes on an XML node in one call.  It's an
+    /// alternative to calling <see
+    /// cref="XmlElement.SetAttribute(String, String)" /> repeatedly.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    SetAttributes
+    (
+        XmlNode node,
+        params String[] nameValuePairs
+    )
+    {
+        Int32 iNameValueStrings = nameValuePairs.Length;
+
+        if (iNameValueStrings % 2 != 0)
+        {
+            throw new System.ArgumentException("nameValuePairs must contain"
+                + " an even number of strings.");
         }
 
-        value = Double.MinValue;
+        XmlElement oElement = (XmlElement)node;
 
-        return (false);
+        for (Int32 i = 0; i < iNameValueStrings; i+= 2)
+        {
+            String sName = nameValuePairs[i + 0];
+            String sValue = nameValuePairs[i + 1];
+            oElement.SetAttribute(sName, sValue);
+        }
     }
 }
 

@@ -104,60 +104,6 @@ public static class LayoutUtil
     //*************************************************************************
     //  Method: TransformVertexLocations()
     //
-    /// <overloads>
-    /// Transforms a graph's vertex locations from their original rectangle to
-    /// a new rectangle.
-    /// </overloads>
-    ///
-    /// <summary>
-    /// Transforms a graph's vertex locations from their original rectangle to
-    /// a new rectangle.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// Graph whose vertex locations should be transformed.
-    /// </param>
-    ///
-    /// <param name="originalGraphRectangle">
-    /// Graph rectangle in which <paramref name="graph" /> was laid out.
-    /// </param>
-    ///
-    /// <param name="newGraphRectangle">
-    /// Graph rectangle into which <paramref name="graph" />'s vertices should
-    /// be transformed.
-    /// </param>
-    ///
-    /// <remarks>
-    /// After a graph is laid out, this method can be used to transform the
-    /// vertex locations from the original graph rectangle to a new graph
-    /// rectangle.  The transformation can involve both a translation and a
-    /// scaling.
-    /// </remarks>
-    //*************************************************************************
-
-    public static void
-    TransformVertexLocations
-    (
-        IGraph graph,
-        RectangleF originalGraphRectangle,
-        RectangleF newGraphRectangle
-    )
-    {
-        Debug.Assert(graph != null);
-        Debug.Assert(originalGraphRectangle.Width >= 0);
-        Debug.Assert(originalGraphRectangle.Height >= 0);
-        Debug.Assert(newGraphRectangle.Width >= 0);
-        Debug.Assert(newGraphRectangle.Height >= 0);
-
-        Matrix oTransformationMatrix = GetRectangleTransformation(
-            originalGraphRectangle, newGraphRectangle);
-
-        TransformVertexLocations(graph, oTransformationMatrix);
-    }
-
-    //*************************************************************************
-    //  Method: TransformVertexLocations()
-    //
     /// <summary>
     /// Transforms a graph's vertex locations from their original rectangle to
     /// a new rectangle using a specified transformation matrix.

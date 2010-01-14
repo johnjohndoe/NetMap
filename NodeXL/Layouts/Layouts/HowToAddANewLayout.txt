@@ -1,0 +1,11 @@
+
+NodeXL's layout scheme is extensible.  To add a layout that implements a new
+layout algorithm, follow these steps:
+
+1. Create a class that implements IAsyncLayout.  The easiest way to do this is
+   to derive the new class from AsyncLayoutBase.
+
+2. Add it to the Layouts project.
+
+3. Search for the LayoutType enumeration, which is in a different NodeXL
+   project, and read the comments at the end of the enumeration.

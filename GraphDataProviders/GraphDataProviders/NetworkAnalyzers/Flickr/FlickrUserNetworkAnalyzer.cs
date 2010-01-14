@@ -571,13 +571,13 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
             String sOtherScreenName, sOtherUserID;
 
             if (
-                !XmlUtil2.SelectSingleNode(oChildXmlNode,
+                !XmlUtil2.TrySelectSingleNodeAsString(oChildXmlNode,
                     bIncludeContactsThisCall ? "@username" : "@authorname",
-                    null, false, out sOtherScreenName)
+                    null, out sOtherScreenName)
                 ||
-                !XmlUtil2.SelectSingleNode(oChildXmlNode,
+                !XmlUtil2.TrySelectSingleNodeAsString(oChildXmlNode,
                     bIncludeContactsThisCall ? "@nsid" : "@author",
-                    null, false, out sOtherUserID)
+                    null, out sOtherUserID)
                 )
             {
                 continue;
@@ -621,20 +621,27 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
             {
                 // Append an edge node and optional attributes.
 
-                String sRelationship = bIncludeContactsThisCall ?
-                    "Contact" : "Commenter";
+                XmlNode oEdgeXmlNode;
 
-                XmlNode oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
-                    sScreenName, sOtherScreenName, sRelationship);
-
-                if (!bIncludeContactsThisCall)
+                if (bIncludeContactsThisCall)
                 {
+                    oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
+                        sScreenName, sOtherScreenName, "Contact");
+                }
+                else
+                {
+                    // (Note the swapping of screen names in the commenter
+                    // case.)
+
+                    oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
+                        sOtherScreenName, sScreenName, "Commenter");
+
                     String sCommentDateUtc;
                     UInt32 uCommentDateUtc;
 
                     if (
-                        XmlUtil2.SelectSingleNode(oChildXmlNode,
-                            "@datecreate", null, false, out sCommentDateUtc)
+                        XmlUtil2.TrySelectSingleNodeAsString(oChildXmlNode,
+                            "@datecreate", null, out sCommentDateUtc)
                         &&
                         UInt32.TryParse(sCommentDateUtc, out uCommentDateUtc)
                         )
@@ -646,8 +653,8 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
                         oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                             oEdgeXmlNode, CommentDateUtcID,
 
-                            oCommentDateUtc.ToShortDateString() + " " +
-                            oCommentDateUtc.ToShortTimeString()
+                            ExcelDateTimeUtil.DateTimeToStringLocale1033(
+                                oCommentDateUtc, ExcelColumnFormat.DateAndTime)
                             );
                     }
 
@@ -916,8 +923,8 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         {
             String sPhotoID;
 
-            if ( !XmlUtil2.SelectSingleNode(oPhotoXmlNode, "@id", null, false,
-                out sPhotoID) )
+            if ( !XmlUtil2.TrySelectSingleNodeAsString(oPhotoXmlNode, "@id",
+                null, out sPhotoID) )
             {
                 continue;
             }
@@ -1068,12 +1075,8 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Debug.Assert(oVertexXmlNode != null);
         AssertValid();
 
-        String sScreenName;
-
-        XmlUtil2.SelectSingleNode(oVertexXmlNode, "@id", null, true,
-            out sScreenName);
-
-        return (sScreenName);
+        return ( XmlUtil2.SelectRequiredSingleNodeAsString(oVertexXmlNode,
+            "@id", null) );
     }
 
     //*************************************************************************
@@ -1237,8 +1240,8 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         String sIsProfessional;
 
-        if ( XmlUtil2.SelectSingleNode(oXmlDocument, XPathRoot + "@ispro", null,
-            false, out sIsProfessional) )
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument,
+            XPathRoot + "@ispro", null, out sIsProfessional) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
                 IsProfessionalID,
@@ -1254,11 +1257,11 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         String sBuddyIconUrl;
 
         if (
-            XmlUtil2.SelectSingleNode(oXmlDocument, XPathRoot + "@iconserver",
-                null, false, out iIconServer)
+            XmlUtil2.TrySelectSingleNodeAsInt32(oXmlDocument,
+                XPathRoot + "@iconserver", null, out iIconServer)
             &&
-            XmlUtil2.SelectSingleNode(oXmlDocument, XPathRoot + "@iconfarm",
-                null, false, out iIconFarm)
+            XmlUtil2.TrySelectSingleNodeAsInt32(oXmlDocument,
+                XPathRoot + "@iconfarm", null, out iIconFarm)
             &&
             iIconServer > 0
             )

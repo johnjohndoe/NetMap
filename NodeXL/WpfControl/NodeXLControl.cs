@@ -468,7 +468,7 @@ public partial class NodeXLControl : FrameworkElement
         m_oGraphDrawer = new GraphDrawer(this);
 
         m_oAsyncLayout = new FruchtermanReingoldLayout();
-        ConnectAsyncLayoutEvents(m_oAsyncLayout);
+        OnNewLayout(m_oAsyncLayout);
 
         m_oLastLayoutContext =
             new LayoutContext(System.Drawing.Rectangle.Empty);
@@ -656,7 +656,8 @@ public partial class NodeXLControl : FrameworkElement
             CheckIfDrawing(PropertyName);
 
             m_oAsyncLayout = value;
-            ConnectAsyncLayoutEvents(m_oAsyncLayout);
+
+            OnNewLayout(m_oAsyncLayout);
 
             AssertValid();
         }
@@ -674,6 +675,20 @@ public partial class NodeXLControl : FrameworkElement
     /// cref="System.Windows.Media.Color" />.  The default value is
     /// SystemColors.<see cref="SystemColors.WindowColor" />.
     /// </value>
+    ///
+    /// <remarks>
+    /// When the graph is drawn, the background color specified by <see
+    /// cref="BackColor" /> is drawn first, followed by any background image
+    /// specified with the <see
+    /// cref="ReservedMetadataKeys.GraphBackgroundImage" /> key, followed by
+    /// the graph itself.
+    ///
+    /// <para>
+    /// This is called BackColor instead of BackgroundColor for consistency
+    /// with the rest of the .NET Framework.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     public Color
@@ -2820,7 +2835,7 @@ public partial class NodeXLControl : FrameworkElement
     {
         get
         {
-            AssertValid();
+            // AssertValid();
 
             return (m_oGraphDrawer.VertexDrawer);
         }
@@ -3036,31 +3051,33 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: ConnectAsyncLayoutEvents()
+    //  Method: OnNewLayout()
     //
     /// <summary>
-    /// Connects event handlers to an <see cref="IAsyncLayout" /> object's
-    /// events.
+    /// Performs required tasks when a new layout is used.
     /// </summary>
     ///
-    /// <param name="oAsyncLayout">
-    /// Object whose events need to be handled.
+    /// <param name="oNewAsyncLayout">
+    /// The new layout object.
     /// </param>
     //*************************************************************************
 
     protected void
-    ConnectAsyncLayoutEvents
+    OnNewLayout
     (
-        IAsyncLayout oAsyncLayout
+        IAsyncLayout oNewAsyncLayout
     )
     {
         // AssertValid();
-        Debug.Assert(oAsyncLayout != null);
+        Debug.Assert(oNewAsyncLayout != null);
 
-        oAsyncLayout.LayOutGraphIterationCompleted +=
+        this.VertexDrawer.LimitVerticesToBounds =
+            !oNewAsyncLayout.SupportsOutOfBoundsVertices;
+
+        oNewAsyncLayout.LayOutGraphIterationCompleted +=
             new EventHandler(this.AsyncLayout_LayOutGraphIterationCompleted);
 
-        oAsyncLayout.LayOutGraphCompleted +=
+        oNewAsyncLayout.LayOutGraphCompleted +=
             new AsyncCompletedEventHandler(
                 this.AsyncLayout_LayOutGraphCompleted);
     }

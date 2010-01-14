@@ -222,8 +222,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
         oVertexTableColumnIndexes.Radius = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Radius, false);
 
-        oVertexTableColumnIndexes.ImageFilePath = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.ImageFilePath, false);
+        oVertexTableColumnIndexes.ImageUri = GetTableColumnIndex(
+            oVertexTable, VertexTableColumnNames.ImageUri, false);
 
         oVertexTableColumnIndexes.Label = GetTableColumnIndex(
             oVertexTable, VertexTableColumnNames.Label, false);
@@ -738,15 +738,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
                         WorkbookToLabelFontSize(oRadiusWorkbook.Value) );
             }
 
-            // Image file path.
+            // Image URI.
 
             if (eVertexShape == VertexShape.Image &&
                 oReadWorkbookContext.ReadVertexImages &&
-                oVertexTableColumnIndexes.ImageFilePath != NoSuchColumn)
+                oVertexTableColumnIndexes.ImageUri != NoSuchColumn)
             {
-                CheckForImageFilePath(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.ImageFilePath,
-                    oVertex, oReadWorkbookContext.VertexRadiusConverter,
+                CheckForImageUri(oVertexSubrange, aoVertexValues, iRowOneBased,
+                    oVertexTableColumnIndexes.ImageUri, oVertex,
+                    oReadWorkbookContext.VertexRadiusConverter,
 
                     oRadiusWorkbook.HasValue ? oRadiusWorkbook :
                         oReadWorkbookContext.DefaultVertexImageSize
@@ -1010,11 +1010,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForImageFilePath()
+    //  Method: CheckForImageUri()
     //
     /// <summary>
-    /// If an image file path has been specified for a vertex, sets the
-    /// vertex's image.
+    /// If an image URI has been specified for a vertex, sets the vertex's
+    /// image.
     /// </summary>
     ///
     /// <param name="oVertexRange">
@@ -1053,7 +1053,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Boolean
-    CheckForImageFilePath
+    CheckForImageUri
     (
         Range oVertexRange,
         Object [,] aoVertexValues,
@@ -1072,27 +1072,27 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Debug.Assert(oVertexRadiusConverter != null);
         AssertValid();
 
-        String sImageFilePath;
+        String sImageUri;
 
         if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sImageFilePath) )
+            iRowOneBased, iColumnOneBased, out sImageUri) )
         {
             return (false);
         }
 
-        if ( sImageFilePath.ToLower().StartsWith("www.") )
+        if ( sImageUri.ToLower().StartsWith("www.") )
         {
             // The Uri class thinks that "www.somewhere.com" is a relative
             // path.  Fix that.
 
-            sImageFilePath= "http://" + sImageFilePath;
+            sImageUri= "http://" + sImageUri;
         }
 
         Uri oUri;
 
-        // Is the file path either an URL or a full file path?
+        // Is the URI either an URL or a full file path?
 
-        if ( !Uri.TryCreate(sImageFilePath, UriKind.Absolute, out oUri) )
+        if ( !Uri.TryCreate(sImageUri, UriKind.Absolute, out oUri) )
         {
             // No.  It appears to be a relative path.
 
@@ -1101,7 +1101,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             if ( !String.IsNullOrEmpty(sWorkbookPath) )
             {
-                sImageFilePath = Path.Combine(sWorkbookPath, sImageFilePath);
+                sImageUri = Path.Combine(sWorkbookPath, sImageUri);
             }
             else
             {
@@ -1124,13 +1124,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
             }
         }
 
-        // Note that sImageFilePath may or may not be a valid URI string.  If
-        // it is not, GetImageSynchronousIgnoreDpi() will return an error
-        // image.
+        // Note that sImageUri may or may not be a valid URI string.  If it is
+        // not, GetImageSynchronousIgnoreDpi() will return an error image.
 
         ImageSource oImage =
-            ( new WpfImageUtil() ).GetImageSynchronousIgnoreDpi(
-                sImageFilePath);
+            ( new WpfImageUtil() ).GetImageSynchronousIgnoreDpi(sImageUri);
 
         if (oVertexImageSize.HasValue)
         {
@@ -1465,7 +1463,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 + " {1} and {2} numbers.  Any numbers are acceptable."
                 + "\r\n\r\n"
                 + "Polar coordinates are used only when a Layout Type of Polar"
-                + " is selected in the graph pane."
+                + " or Polar Absolute is selected in the graph pane."
                 ,
                 ExcelUtil.GetRangeAddress(oInvalidCell),
                 VertexTableColumnNames.PolarR,
@@ -1883,9 +1881,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         public Int32 Radius;
 
-        /// The vertex's optional image file path.
+        /// The vertex's optional image URI.
 
-        public Int32 ImageFilePath;
+        public Int32 ImageUri;
 
         /// The vertex's optional label.
 

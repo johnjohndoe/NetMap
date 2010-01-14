@@ -70,6 +70,84 @@ public class DrawerBase : VisualizationBase
 
 
     //*************************************************************************
+    //  Method: TryGetColorValue()
+    //
+    /// <summary>
+    /// Attempts to get a color from a graph, vertex, or edge's metadata.
+    /// </summary>
+    ///
+    /// <param name="oMetadataProvider">
+    /// The graph, vertex, or edge to get the color for.
+    /// </param>
+    ///
+    /// <param name="sKey">
+    /// The color's key.
+    /// </param>
+    ///
+    /// <param name="oColor">
+    /// Where the color gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph, vertex, or edge contains the specified color key.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The value of the specified key can be of type
+    /// System.Windows.Media.Color or System.Drawing.Color.  If it is of type
+    /// System.Drawing.Color, it gets converted to type
+    /// System.Windows.Media.Color.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetColorValue
+    (
+        IMetadataProvider oMetadataProvider,
+        String sKey,
+        out Color oColor
+    )
+    {
+        Debug.Assert(oMetadataProvider != null);
+        AssertValid();
+
+        oColor = Color.FromRgb(0, 0, 0);
+
+        Object oColorAsObject;
+
+        if ( !oMetadataProvider.TryGetValue(sKey, out oColorAsObject) )
+        {
+            return (false);
+        }
+
+        if ( typeof(System.Windows.Media.Color).IsInstanceOfType(
+            oColorAsObject) )
+        {
+            oColor = (System.Windows.Media.Color)oColorAsObject;
+        }
+        else if ( typeof(System.Drawing.Color).IsInstanceOfType(
+            oColorAsObject) )
+        {
+            oColor = WpfGraphicsUtil.ColorToWpfColor(
+                (System.Drawing.Color)oColorAsObject );
+        }
+        else
+        {
+            throw new InvalidOperationException( String.Format(
+
+                "The graph, vertex, or edge value with the key \"{0}\" is of"
+                + " type {1}.  The expected type is either"
+                + " System.Windows.Media.Color or System.Drawing.Color."
+                ,
+                sKey,
+                oColorAsObject.GetType().FullName
+                ) );
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
     //  Method: CreateFrozenSolidColorBrush()
     //
     /// <summary>

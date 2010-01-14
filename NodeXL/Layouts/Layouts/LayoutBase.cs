@@ -94,6 +94,35 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     }
 
     //*************************************************************************
+    //  Property: SupportsOutOfBoundsVertices
+    //
+    /// <summary>
+    /// Gets a flag indicating whether vertices laid out by the class can fall
+    /// outside the graph bounds.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the vertices call fall outside the graph bounds.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If true, the <see cref="IVertex.Location" /> of the laid-out vertices
+    /// may be within the graph rectangle's margin or outside the graph
+    /// rectangle.  If false, the vertex locations are always within the
+    /// margin.
+    /// </remarks>
+    //*************************************************************************
+
+    public virtual Boolean
+    SupportsOutOfBoundsVertices
+    {
+        get
+        {
+            return (false);
+        }
+    }
+
+    //*************************************************************************
     //  Method: LayOutGraph()
     //
     /// <summary>
@@ -210,13 +239,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
             return;
         }
 
-        Matrix oTransformationMatrix = LayoutUtil.GetRectangleTransformation(
-            originalLayoutContext.GraphRectangle,
-            newLayoutContext.GraphRectangle
-            );
-
-        TransformLayoutCore(graph, originalLayoutContext, newLayoutContext,
-            oTransformationMatrix);
+        TransformLayoutCore(graph, originalLayoutContext, newLayoutContext);
     }
 
     //*************************************************************************
@@ -332,11 +355,6 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// Provides access to objects needed to transform the graph's layout.
     /// </param>
     ///
-    /// <param name="transformationMatrix">
-    /// Matrix that can be used to transform points from the original graph
-    /// rectangle to the new graph rectangle.
-    /// </param>
-    ///
     /// <remarks>
     /// After a graph has been laid out by <see cref="LayOutGraph" />, this
     /// method may get called to transform the graph's layout from one rectangle
@@ -362,17 +380,20 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     (
         IGraph graph,
         LayoutContext originalLayoutContext,
-        LayoutContext newLayoutContext,
-        Matrix transformationMatrix
+        LayoutContext newLayoutContext
     )
     {
         Debug.Assert(graph != null);
         Debug.Assert(originalLayoutContext != null);
         Debug.Assert(newLayoutContext != null);
-        Debug.Assert(transformationMatrix != null);
         AssertValid();
 
-        LayoutUtil.TransformVertexLocations(graph, transformationMatrix);
+        Matrix oTransformationMatrix = LayoutUtil.GetRectangleTransformation(
+            originalLayoutContext.GraphRectangle,
+            newLayoutContext.GraphRectangle
+            );
+
+        LayoutUtil.TransformVertexLocations(graph, oTransformationMatrix);
     }
 
     //*************************************************************************
@@ -704,6 +725,58 @@ public abstract class LayoutBase : LayoutsBase, ILayout
 
         graph.SetValue(ReservedMetadataKeys.LayoutBaseLayoutComplete,
             layoutContext.GraphRectangle);
+    }
+
+    //*************************************************************************
+    //  Method: MarkGraphAsNotLaidOut()
+    //
+    /// <summary>
+    /// Removes the metadata that indicates a graph has been laid out.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// The graph to remove the metadata from.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    MarkGraphAsNotLaidOut
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        graph.RemoveKey(ReservedMetadataKeys.LayoutBaseLayoutComplete);
+    }
+
+    //*************************************************************************
+    //  Method: GraphHasBeenLaidOut()
+    //
+    /// <summary>
+    /// Gets a flag indicating whether a graph has been laid out.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// The graph to check.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph has been laid out.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    GraphHasBeenLaidOut
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+
+        return ( graph.ContainsKey(
+            ReservedMetadataKeys.LayoutBaseLayoutComplete) );
     }
 
     //*************************************************************************

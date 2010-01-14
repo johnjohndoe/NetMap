@@ -228,8 +228,8 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         String sStatus;
 
         if (
-            XmlUtil2.SelectSingleNode(oXmlDocument, "rsp/@stat", null, false,
-                out sStatus)
+            XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument, "rsp/@stat",
+                null, out sStatus)
             &&
             sStatus == "ok"
             )
@@ -243,8 +243,8 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         String sErrorMessage;
 
-        if ( XmlUtil2.SelectSingleNode(oXmlDocument, "rsp/err/@msg", null,
-            false, out sErrorMessage) )
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument, "rsp/err/@msg",
+            null, out sErrorMessage) )
         {
             if (sErrorMessage.ToLower().IndexOf("user not found") >= 0)
             {
@@ -451,11 +451,11 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             oRequestStatistics
             );
 
-        XmlUtil2.SelectSingleNode(oXmlDocument, "rsp/user/@nsid", null, true,
-            out sUserID);
+        sUserID = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oXmlDocument, "rsp/user/@nsid", null);
 
-        XmlUtil2.SelectSingleNode(oXmlDocument, "rsp/user/username/text()",
-            null, true, out sScreenNameCorrectCase);
+        sScreenNameCorrectCase = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oXmlDocument, "rsp/user/username/text()", null);
     }
 
 

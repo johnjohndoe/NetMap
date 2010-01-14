@@ -79,10 +79,23 @@ LayoutType
     Polar,
 
     /// <summary>
+    /// Use a <see cref="PolarAbsoluteLayout" />.
+    /// </summary>
+
+    PolarAbsolute,
+
+    /// <summary>
     /// Use a <see cref="HarelKorenFastMultiscaleLayout" />.
     /// </summary>
 
     HarelKorenFastMultiscale,
+
+    /// <summary>
+    /// Use a <see cref="BinnedLayout" />.
+    /// </summary>
+
+    Binned,
+
 
     // To add support for an additional layout, do the following:
     //
@@ -373,9 +386,17 @@ public static class AllLayouts
 
                 return ( new PolarLayout() );
 
+            case LayoutType.PolarAbsolute:
+
+                return ( new PolarAbsoluteLayout() );
+
             case LayoutType.HarelKorenFastMultiscale:
 
                 return ( new HarelKorenFastMultiscaleLayout() );
+
+            case LayoutType.Binned:
+
+                return ( new BinnedLayout() );
 
             default:
 
@@ -419,6 +440,12 @@ public static class AllLayouts
             "Use a Harel-Koren fast multiscale layout"
             ),
 
+        new LayoutInfo(
+            LayoutType.Binned,
+            "&Binned",
+            "Isolate the graph's disconnected components"
+            ),
+
         LayoutGroupSeparator,
 
         new LayoutInfo(
@@ -456,7 +483,17 @@ public static class AllLayouts
             "&Polar",
 
             "Place the vertices in a polar coordinate space using the"
-            + " Polar R and Polar Angle columns on the Vertices worksheet"
+            + " Polar R and Polar Angle columns on the Vertices worksheet,"
+            + " where Polar R ranges from 0 to 1"
+            ),
+
+        new LayoutInfo(
+            LayoutType.PolarAbsolute,
+            "Polar &Absolute",
+
+            "Place the vertices in a polar coordinate space using the"
+            + " Polar R and Polar Angle columns on the Vertices worksheet,"
+            + " where Polar R is in absolute units of 1/96 inch"
             ),
 
         LayoutGroupSeparator,

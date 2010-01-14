@@ -631,8 +631,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
         String sAttributeValue;
 
-        if ( XmlUtil2.SelectSingleNode(oXmlNodeToSelectFrom, sXPath,
-            oXmlNamespaceManager, false, out sAttributeValue) )
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oXmlNodeToSelectFrom, sXPath,
+            oXmlNamespaceManager, out sAttributeValue) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                 oEdgeOrVertexXmlNode, sGraphMLAttributeID, sAttributeValue);
@@ -708,8 +708,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
         Int32 iAttributeValue;
 
-        if ( XmlUtil2.SelectSingleNode(oXmlNodeToSelectFrom, sXPath,
-            oXmlNamespaceManager, false, out iAttributeValue) )
+        if ( XmlUtil2.TrySelectSingleNodeAsInt32(oXmlNodeToSelectFrom, sXPath,
+            oXmlNamespaceManager, out iAttributeValue) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                 oEdgeOrVertexXmlNode, sGraphMLAttributeID,
@@ -786,8 +786,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
         Double dAttributeValue;
 
-        if ( XmlUtil2.SelectSingleNode(oXmlNodeToSelectFrom, sXPath,
-            oXmlNamespaceManager, false, out dAttributeValue) )
+        if ( XmlUtil2.TrySelectSingleNodeAsDouble(oXmlNodeToSelectFrom, sXPath,
+            oXmlNamespaceManager, out dAttributeValue) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                 oEdgeOrVertexXmlNode, sGraphMLAttributeID,

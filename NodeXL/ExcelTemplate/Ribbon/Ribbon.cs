@@ -598,13 +598,37 @@ public partial class Ribbon : OfficeRibbon
         // PerWorkbookSettings object can't be created until this.ThisWorkbook
         // is available, which doesn't happen until the Ribbon is fully loaded.
 
-        Int32 iTemplateVersion = GetPerWorkbookSettings().TemplateVersion;
+        PerWorkbookSettings oPerWorkbookSettings = GetPerWorkbookSettings();
+
+        Int32 iTemplateVersion = oPerWorkbookSettings.TemplateVersion;
 
         rddGraphDirectedness.Enabled = (iTemplateVersion >= 51);
 
         // The ability to create clusters depends on the template version.
 
         btnCreateClusters.Enabled = (iTemplateVersion >= 54);
+
+        // Should the layout automatically be set and the workbook read?  (This
+        // feature was added in January 2010 for the Microsoft Biology
+        // Foundation project, which "drives" the NodeXL template
+        // programatically and needs to be able to set the layout and read the
+        // workbook by writing to workbook cells.  It may be useful for other
+        // purposes as well.)
+
+        Nullable<LayoutType> oAutoLayoutOnOpen =
+            oPerWorkbookSettings.AutoLayoutOnOpen;
+
+        if (oAutoLayoutOnOpen.HasValue)
+        {
+            // Yes.
+
+            this.Layout = oAutoLayoutOnOpen.Value;
+
+            // Unfortunately, there is no way to programatically click a
+            // RibbonButton.  Simulate a click.
+
+            OnReadWorkbookClick();
+        }
     }
 
     //*************************************************************************
@@ -650,6 +674,27 @@ public partial class Ribbon : OfficeRibbon
         // Close the application's user settings.
 
         UserSettingsManager.Close();
+    }
+
+    //*************************************************************************
+    //  Method: OnReadWorkbookClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnReadWorkbook button.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    OnReadWorkbookClick()
+    {
+        AssertValid();
+
+        // Make sure the graph is showing, then tell the TaskPane to read the
+        // workbook.
+
+        this.ThisWorkbook.ShowGraph();
+
+        FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
     }
 
     //*************************************************************************
@@ -1047,12 +1092,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        // Make sure the graph is showing, then tell the TaskPane to read the
-        // workbook.
-
-        this.ThisWorkbook.ShowGraph();
-
-        FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
+        OnReadWorkbookClick();
     }
 
     //*************************************************************************

@@ -77,6 +77,41 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
+    //  Keys used by GraphDrawer
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to a graph to specify the graph's background color.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value can be either a System.Drawing.Color or a 
+    /// System.Windows.Media.Color.
+    /// </remarks>
+
+    public static readonly String GraphBackColor =
+        FirstChar + "GDBackColor";
+
+    /// <summary>
+    /// Key added to a graph to specify the graph's background image.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If this key is specified, the graph is drawn by first drawing a
+    /// background color, then the specified background image (which may or may
+    /// not fill the entire graph rectangle), then the graph itself.
+    ///
+    /// <para>
+    /// The key's value is a System.Windows.Media.ImageSource.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String GraphBackgroundImage =
+        FirstChar + "GDBackgroundImage";
+
+
+    //*************************************************************************
     //  Keys used by VertexDrawer and EdgeDrawer
     //*************************************************************************
 
@@ -368,49 +403,6 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
-    //  Keys used by GraphMLGraphAdapter
-    //*************************************************************************
-
-    /// <summary>
-    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
-    /// which keys were added to each of the graph's edges.
-    /// </summary>
-    ///
-    /// <remarks>
-    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
-    /// String[], and the array contains one string for each edge
-    /// GraphML-attribute defined in the GraphML XML.
-    ///
-    /// <para>
-    /// See the "GraphML Primer" for information on the GraphML XML format.
-    /// </para>
-    ///
-    /// </remarks>
-
-    public static readonly String GraphMLEdgeAttributes =
-        FirstChar + "GraphMLEdgeAttributes";
-
-    /// <summary>
-    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
-    /// which keys were added to each of the graph's vertices.
-    /// </summary>
-    ///
-    /// <remarks>
-    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
-    /// String[], and the array contains one string for each vertex
-    /// GraphML-attribute defined in the GraphML XML.
-    ///
-    /// <para>
-    /// See the "GraphML Primer" for information on the GraphML XML format.
-    /// </para>
-    ///
-    /// </remarks>
-
-    public static readonly String GraphMLVertexAttributes =
-        FirstChar + "GraphMLVertexAttributes";
-
-
-    //*************************************************************************
     //  Keys used by several layouts
     //*************************************************************************
 
@@ -444,7 +436,7 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
-    //  Keys used by PolarLayout
+    //  Keys used by PolarLayout and PolarAbsoluteLayout
     //*************************************************************************
 
     /// <summary>
@@ -455,11 +447,17 @@ public static class ReservedMetadataKeys : Object
     /// The key's value is a SinglePolarCoordinates.
     ///
     /// <para>
-    /// The SinglePolarCoordinates.R value should be between 0.0 and 1.0.  0.0
-    /// represents the origin and 1.0 represents the maximum distance from the
-    /// origin, which is the smaller of half the graph rectangle's width or
-    /// height.  R values less than 0.0 are the same as 0.0, and R values
-    /// greater than 1.0 are the same as 1.0.
+    /// When using the PolarLayout, the SinglePolarCoordinates.R value should
+    /// be between 0.0 and 1.0.  0.0 represents the origin and 1.0 represents
+    /// the maximum distance from the origin, which is the smaller of half the
+    /// graph rectangle's width or height.  R values less than 0.0 are the same
+    /// as 0.0, and R values greater than 1.0 are the same as 1.0.
+    /// </para>
+    ///
+    /// <para>
+    /// When using the PolarAbsoluteLayout, the SinglePolarCoordinates.R value
+    /// is unrestricted. 0.0 represents the origin, 1 represents one WPF unit
+    /// (1/96 inch), and -1 represents one WPF unit in the opposite direction.
     /// </para>
     ///
     /// <para>
@@ -604,6 +602,78 @@ public static class ReservedMetadataKeys : Object
 
     public static readonly String SugiyamaGleeEdge =
         FirstChar + "SgGleeEdge";
+
+
+    //*************************************************************************
+    //  Keys used by ConnectedComponentCalculator
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to each vertex in the graph while computing the graph's
+    /// strongly connected components.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is of type Int32.
+    /// </remarks>
+
+    public static readonly String ConnectedComponentCalculatorIndex
+        = FirstChar + "CCCI";
+
+    /// <summary>
+    /// Key added to each vertex in the graph while computing the graph's
+    /// strongly connected components.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is of type Int32.
+    /// </remarks>
+
+    public static readonly String ConnectedComponentCalculatorLowLink
+        = FirstChar + "CCCLL";
+
+
+    //*************************************************************************
+    //  Keys used by GraphMLGraphAdapter
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
+    /// which keys were added to each of the graph's edges.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
+    /// String[], and the array contains one string for each edge
+    /// GraphML-attribute defined in the GraphML XML.
+    ///
+    /// <para>
+    /// See the "GraphML Primer" for information on the GraphML XML format.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String GraphMLEdgeAttributes =
+        FirstChar + "GraphMLEdgeAttributes";
+
+    /// <summary>
+    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
+    /// which keys were added to each of the graph's vertices.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
+    /// String[], and the array contains one string for each vertex
+    /// GraphML-attribute defined in the GraphML XML.
+    ///
+    /// <para>
+    /// See the "GraphML Primer" for information on the GraphML XML format.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String GraphMLVertexAttributes =
+        FirstChar + "GraphMLVertexAttributes";
 
 
     //*************************************************************************

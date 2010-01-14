@@ -404,7 +404,7 @@ public static class ColumnGroupManager
                     VertexTableColumnNames.Shape,
                     VertexTableColumnNames.Radius,
                     VertexTableColumnNames.Alpha,
-                    VertexTableColumnNames.ImageFilePath,
+                    VertexTableColumnNames.ImageUri,
                     VertexTableColumnNames.Visibility,
                     };
 

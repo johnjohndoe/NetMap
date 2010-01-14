@@ -22,10 +22,10 @@ namespace Microsoft.NodeXL.ExcelTemplatePlugIns
 /// <para>
 /// The NodeXL Excel Template (implemented by the ExcelTemplate project) can
 /// directly import graph data from a variety of sources, including other Excel
-/// workbooks, UCINET files, Pajek files, and email indexed by Windows Desktop
-/// Search.  If you have graph data from another source that you want to import
-/// into the Excel Template without having to modify the ExcelTemplate's source
-/// code, follow these steps:
+/// workbooks, UCINET files, Pajek files, and GraphML files.  If you have graph
+/// data from another source that you want to import into the Excel Template
+/// without having to modify the ExcelTemplate's source code, follow these
+/// steps:
 /// </para>
 ///
 /// <list type="number">
@@ -85,7 +85,7 @@ public interface IGraphDataProvider
     ///
     /// <remarks>
     /// The NodeXL Excel Template adds a child item to its Import menu using
-    /// the menu text "From [Name]...".  If the propety value is "Facebook
+    /// the menu text "From [Name]...".  If the property value is "Facebook
     /// Network", for example, then the menu text will be "From Facebook
     /// Network...".
     /// </remarks>

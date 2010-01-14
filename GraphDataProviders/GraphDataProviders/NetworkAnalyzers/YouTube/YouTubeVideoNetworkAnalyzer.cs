@@ -388,8 +388,8 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         oGraphMLXmlDocument.DefineGraphMLAttribute(false, CommentsID,
             "Comments", "int", null);
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, CreatedDateID,
-            "Created Date", "string", null);
+        oGraphMLXmlDocument.DefineGraphMLAttribute(false, CreatedDateUtcID,
+            "Created Date (UTC)", "string", null);
 
         DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
         DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
@@ -521,9 +521,9 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             String sVideoID;
 
             if (
-                !XmlUtil2.SelectSingleNode(oEntryXmlNode,
+                !XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
                     "media:group/yt:videoid/text()", oXmlNamespaceManager,
-                    false, out sVideoID)
+                    out sVideoID)
                 ||
                 oVideoIDs.Contains(sVideoID)
                 )
@@ -558,7 +558,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
             AppendYouTubeDateGraphMLAttributeValue(oEntryXmlNode,
                 "a:published/text()", oXmlNamespaceManager,
-                oGraphMLXmlDocument, oVertexXmlNode, CreatedDateID);
+                oGraphMLXmlDocument, oVertexXmlNode, CreatedDateUtcID);
 
             AppendStringGraphMLAttributeValue(oEntryXmlNode,
                 "media:group/media:thumbnail/@url", oXmlNamespaceManager,
@@ -695,8 +695,8 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                 String sAuthorUserName;
 
                 if (
-                    XmlUtil2.SelectSingleNode(oEntryXmlNode,
-                        "a:author/a:name/text()", oXmlNamespaceManager, false,
+                    XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
+                        "a:author/a:name/text()", oXmlNamespaceManager,
                         out sAuthorUserName)
                     &&
                     !oAuthorUserNames.Contains(sAuthorUserName)
@@ -1008,7 +1008,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     ///
     protected const String CommentsID = "Comments";
     ///
-    protected const String CreatedDateID = "CreatedDate";
+    protected const String CreatedDateUtcID = "CreatedDateUtc";
 
 
     /// Maximum number of comments to get for each video when

@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Globalization;
 using System.Diagnostics;
 
 namespace Microsoft.Research.CommunityTechnologies.AppLib
@@ -143,6 +144,54 @@ public static class ExcelDateTimeUtil : Object
     }
 
     //*************************************************************************
+    //  Method: DateTimeToStringLocale1033()
+    //
+    /// <summary>
+    /// Converts a DateTime to a string using the locale with the ID 1033.
+    /// </summary>
+    ///
+    /// <param name="dateTime">
+    /// The DateTime to convert.
+    /// </param>
+    ///
+    /// <param name="format">
+    /// The format to use.  Must be <see cref="ExcelColumnFormat.Date" />,
+    /// <see cref="ExcelColumnFormat.Time" />, or <see
+    /// cref="ExcelColumnFormat.DateAndTime" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="dateTime" /> converted to a string in the <paramref
+    /// name="format" /> format.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method can be used to convert DateTimes in Excel applications to a
+    /// String using consistent string formats.
+    ///
+    /// <para>
+    /// Locale ID 1033 must be used when writing to the Excel object model.
+    /// See "Formatting Data in Excel with Various Regional Settings" at
+    /// http://msdn.microsoft.com/en-us/library/ms268748.aspx.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    DateTimeToStringLocale1033
+    (
+        DateTime dateTime,
+        ExcelColumnFormat format
+    )
+    {
+        AssertValid();
+
+        return ( DateTimeToString(dateTime, format,
+            CultureInfo.GetCultureInfo(1033) ) );
+    }
+
+    //*************************************************************************
     //  Method: DateTimeToString()
     //
     /// <overloads>
@@ -150,7 +199,7 @@ public static class ExcelDateTimeUtil : Object
     /// </overloads>
     ///
     /// <summary>
-    /// Converts a DateTime to a string.
+    /// Converts a DateTime to a string using the current culture.
     /// </summary>
     ///
     /// <param name="dateTime">
@@ -183,33 +232,15 @@ public static class ExcelDateTimeUtil : Object
     {
         AssertValid();
 
-        switch (format)
-        {
-            case ExcelColumnFormat.Date:
-
-                return ( dateTime.ToShortDateString() );
-
-            case ExcelColumnFormat.Time:
-
-                return ( dateTime.ToLongTimeString() );
-
-            case ExcelColumnFormat.DateAndTime:
-
-                return ( dateTime.ToShortDateString() + " " + 
-                    dateTime.ToShortTimeString() );
-
-            default:
-
-                Debug.Assert(false);
-                return (null);
-        }
+        return ( DateTimeToString( dateTime, format,
+            CultureInfo.CurrentCulture) );
     }
 
     //*************************************************************************
     //  Method: DateTimeToString()
     //
     /// <summary>
-    /// Converts a DateTime in ticks to a string.
+    /// Converts a DateTime in ticks to a string using the current culture.
     /// </summary>
     ///
     /// <param name="ticks">
@@ -243,6 +274,77 @@ public static class ExcelDateTimeUtil : Object
         AssertValid();
 
         return ( DateTimeToString(new DateTime(ticks), format) );
+    }
+
+    //*************************************************************************
+    //  Method: DateTimeToString()
+    //
+    /// <summary>
+    /// Converts a DateTime to a string using a specified format provider.
+    /// </summary>
+    ///
+    /// <param name="dateTime">
+    /// The DateTime to convert.
+    /// </param>
+    ///
+    /// <param name="format">
+    /// The format to use.  Must be <see cref="ExcelColumnFormat.Date" />,
+    /// <see cref="ExcelColumnFormat.Time" />, or <see
+    /// cref="ExcelColumnFormat.DateAndTime" />.
+    /// </param>
+    ///
+    /// <param name="formatProvider">
+    /// The IFormatProvider to use.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="dateTime" /> converted to a string in the <paramref
+    /// name="format" /> format.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method can be used to convert DateTimes in Excel applications to a
+    /// String using consistent string formats.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    DateTimeToString
+    (
+        DateTime dateTime,
+        ExcelColumnFormat format,
+        IFormatProvider formatProvider
+    )
+    {
+        Debug.Assert(formatProvider != null);
+        AssertValid();
+
+        String sToStringFormat = null;
+
+        switch (format)
+        {
+            case ExcelColumnFormat.Date:
+
+                sToStringFormat = "d";
+                break;
+
+            case ExcelColumnFormat.Time:
+
+                sToStringFormat = "T";
+                break;
+
+            case ExcelColumnFormat.DateAndTime:
+
+                sToStringFormat = "g";
+                break;
+
+            default:
+
+                Debug.Assert(false);
+                return (null);
+        }
+
+        return ( dateTime.ToString( sToStringFormat, formatProvider) );
     }
 
 

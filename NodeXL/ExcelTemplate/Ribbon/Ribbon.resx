@@ -212,49 +212,6 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
         YEjD5lgzAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="btnAutoFillWorkbookWithScheme.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAACHVJREFUWEetl2tQ
-        k2cWx9Hd7s7u5+10tl/6YWf2Y60zdbQWUFHrCosCooLWqkWxeEEUoZa1giuuoigQQS5yCwIKyv0iAYEA
-        AZIQEgJJCAQSEi4h3EFQqMh/n+cpySIQt3th5j9Pkje853fO+Z/zwhoANst/OntnAqZfvTk+/Xr+k6mZ
-        n37/5s1bm99+sObV2rVrBn7z67Vchw1/DF3xS//tBxTArO7+me3i9vHxCvEQnjcaUVTXj9xqA7IqdEh/
-        3oXUog4k5KqQVtwxVVjTs31qZMjmP9HSWObXluCavpnTdfLRBRq8QmxCS+c4OvRTMAzOQDcwDal6FC/E
-        /XhIACIzWnDvkXQho7TT9/8C0NU3s90cvFExiuHxWQxPzGJw9DUqW+eZuvteMiC5ZpxUQI0biWKEPhQt
-        JOYp//JLIaxWwFx2oXIUIxNzGBqbxcDIaxhMMygQTjO190yirWsC0o5xiFWjiHvahiBOHa4nCCf/JwCV
-        7qX/z2UfhJFkTLPuG3oFvXGGZZ1aZmSimUvUYxAqRiCQD+NF0yCuRAsQ80QKRddIJckumChk8bxEzi0+
-        XsdsrMniAbFqTEENJyM9N2dNe67pfcmyDs9QM9GsG9pGUCsbQqXEBBGpVq10ANW1YqQlPURY6DX4nzvN
-        Tm5SwoJELBKRIN8SfboahAWgqnlojrq90zBlyZr2WqmdZFl/zxEy0ayrm3+uFA2u7plAVsYjnPX2Agmw
-        QmdPnUAGN2V2bm42nATbuBzCAlBaP8BGrbv/X1l/G8zDctGseUIjyogUBC4lIY4FvRLoj+8vnl8Vgl5/
-        +CB6ngQ7S/SrpRAWgPya3gU65yrdpCVrV78cLBdtUyGpVG3LMGpr6y0BHyUlID/7sVUAClHLr1KRgPar
-        A/ANc3TJiJQjFocv7TXNuoRUKb+2D8+qeplXIu+EsYAXznyHXq0G46YBhN8MtQoRcfvWAgHwtwKg76Qb
-        rlhgsDjc3Gtz1rn8PmRXGpDJ07MFFeB3jpVeo2oDGUGm4YFeZKYm4/xp7xUg9Pt0OlYFKKzRB9H1SlXd
-        bGIOX571kwo90st6kFqiIxtxDJncFGg72y3BzRD0HOztQUFONh5ERSDkb5dx2d+PGZWO6KoA1AzJBepJ
-        ul4T81TsGUB7vTRrbqkOSUVaxOd3s1FUK9vQqVJgcsS0KkSXWgm1otWiDmUbbUGAVYD0Uo3TXbLb6XqN
-        ypQj+4WetGQAdcRw0o4xNJOsm8ge4EuH2Di2SKVok0pgNPSsABgjfqDXlkoll00RgINWAWgV4nNUF67F
-        N7L1mpyvYEumIK8A/ufPwd3Fmcnv3Blk5VZAIu9Cs7Ae7XLZCgBDdye7tlR6bRePxPjTewEc7G1tIjPl
-        Lol5ba/KBF3g3LuDHVvt4fTVDpBrFu3YagdOdCTkbc2zwtpq9JEpMHtgfMiI5kYB6Odm1dSVT6RJuVkE
-        wInoQzPEiscxBaAiF/yepKe9pUFPHv8Gt8hqXQpAX1OIuNwYpJYmzAqqKqBulUHboUJTfS0EVeUWxeVF
-        zX5++3OsD1sPpyTHwYGpgTBy/48oxKoA5MPfzczMhPn6nGLZ8yt4bM493d1WQJz18caNFzdwMNZ9LquI
-        +1Mlr3iBzysFPel7j7gDcw4xDjj8+DA8MjxgG2ULx8TdpsVqfGQN4NMWmTT32NeeaKiptpTWaNDhPmkJ
-        9YG5Gvv2OoOn5eFC6QW4JLvgi4gvsOneJmy8uxG74r6CZ4Ynjj89jiNPjjAA9zR3bI3eyiAWK/EhhbCU
-        YrH8H0+/nIpvbRZjdLD/HYNNDA+iVSKCSFCDkvwcFBPxe/lIbE1EMD8YQZVBCOAFwK/UD2cKz8A7z3sF
-        gGuqKwOl7Vj0xAqAD+bn50OlooYFrVr1DgCtAjWYWS0yEZRTSkgmJIiXx/9iAOckZ6y7tQ5Xy3/kE4g/
-        swr0Py02G/Bj8n6PQipRUEONm4wWCKVMQpxdtahqaE0atE61MoBsTbZVANc0V+xK3IV9aftAK7AneQ+2
-        RW+DfbTdNIl1yAJAS2JslMU3/XhPJ/QLQf2znDmZqAEmslp1xOF1leUWlV4JxTPnr1EfFw/NtAYl+hKr
-        AJ6ZnrB9YItt8dvgkuLCAJwSnbDu5jokS5Kemj3g1J1f8bjR9xpar4ajPZQDaeAN1Fy7jeqsLPBLilBd
-        XIhKbhpKvC9C4HEaNftOInOTE0rOBKBpqOm9LaAV+PLBlwyCtoACUC/sS3PTU4A/jKm1kUK/v6P9Bgdd
-        4QnQ3k+FPjkLiit3IDkfDMHJAAiOX0QDkcSLBDx6AaJD51DvfgqPNzqiyDcQ3BauVRO6pbkxAKqdCTsZ
-        AJ2IzZzNryiAk/zmg271zRhoI5OgI8H7s4tBfIHOsFgofwhD26VQyH2DIfMJQvMJM8BZCA/4oM7FC6nr
-        HFCQxkFgeeCqU3Aw46AFwC7WDo4PHbEjdgfW3/7src2oUsNRXI+ClpMMXVQyejPyWHCq7shEqwDle46h
-        3Pko6t1OgrfTE1zH/YgQRMC30Benck7haNZReKR7MOPRjO1j7WEXY4fNUZux4d4GrL+zHl8/Ptxp03on
-        QdV1NwE9MVz0xKZbglMAbTTXKkCV6wkU7z6M505HINjrhUefbUdGxl2rADvjdmJL9BYGsCly08K18pAq
-        Un1HG3lwxGstJ4UBGFKy3wHQxT6yCiAg5acAVGUEotDOBc99Ao3kpv+gf3z8G7H/G9gm5J8Mgib0PjpC
-        IqBfBqAhbWnwuoS6I76oPuiDF24nUPbXb1Cy6xAKt++3AORvc8eTDbvRzEkuoo9dshtsqIjp3isGIA6N
-        EQnOhzCA9ivhUFy+Cbn/dTT7XoXY5wfrAA77UeDgjhzbvcgmk1C8/zsTueEBc3B6mh847zv/CQ/693hY
-        XZ+MAAAAAElFTkSuQmCC
-</value>
-  </data>
   <data name="btnAutoFillWorkbook.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -405,8 +362,8 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeLabel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALEAAA
-        CxABrSO9dQAAAYpJREFUOE+lk7tLw1AUh/Wfc3BSoS6itpuvQVBwEUUnBZHq0IJ08AE6dFBQ6FDQURQU
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALDAAA
+        CwwBP0AiyAAAAYpJREFUOE+lk7tLw1AUh/Wfc3BSoS6itpuvQVBwEUUnBZHq0IJ08AE6dFBQ6FDQURQU
         VxXa9JE2bdNH2iZ99+c5F2+wXKc2cLhLvu93zrnJOICxkR4WTK37MUyJcCmgE/1+Hz2uXg9dqk63i3an
         g1a7jSZVo9WC02zCbjRE4IBAwi5I8PFJEAu+1QGwTnDNcVTBf6kzs15MTHrw/PoGCVZtG1a9rgrcdqll
         bvfuPgIpCJ6di1SL4ArB5VpNFbiz0pw865E/gKvrsOhg3rciUhksVasoWpYq+LukmJYQ8HdMEwKuSPQR
@@ -419,14 +376,57 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
   <data name="btnSetVertexShapeImage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALEAAA
-        CxABrSO9dQAAAXJJREFUOE+lk69uwzAYxLc36CPkEQILAwcDBwMLDQsDBw0HDQsNCw0LDQMDAw3Hbndf
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALDAAA
+        CwwBP0AiyAAAAXJJREFUOE+lk69uwzAYxLc36CPkEQILAwcDBwMLDQsDBw0HDQsNCw0LDQMDAw3Hbndf
         mjbpNKnaLJ2SSr3f98eXVwAv/zoC+FPGVgk+JPSflE9wHxGuj+iOwdQ66hBoZfEFoF+/nfIFlAKM0gTk
         Eajf+ucAZcjIXT3rwneaw3lE9QxAlWXElIDkkNsKaSAg/gDwDw9nadsAMvsGSYAsQEbVrEfgwtZnPbO1
         LSMVaYwX2MI3AG17OSM35fpgykOxmdW2KstsABbcAnhVOot5nGikuWk7a1fP+X2EmvUsWO1XI+ie12YD
         5IJ4zmjfHSLLSwwcb6AwHxG7DYAhUcuFl637zhxD1SKvS/MKEk4KVzRI7x8ASheuYTHz1egDE8qeBa+b
         lk8Pd/QG2dWrEQRQdc0d01xVZi13jjGj2/UGUTfax6529yQq23Pl2XTPP7PvPLqDN4CM9b41bQH8MJRt
         xdPEkNzEZWlhJrYt46Lbx6SXv+obNRfIBVMEy/gAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="btnAutoFillWorkbookWithScheme.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        XZ+MAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="btnCreateClusters.SuperTip" xml:space="preserve">

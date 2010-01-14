@@ -64,6 +64,12 @@ public partial class TaskPane : UserControl
         m_oWorkbook = thisWorkbook.InnerObject;
         m_oRibbon = ribbon;
 
+        // The WpfImageUtil uses the screen DPI in its image handling.
+
+        Graphics oGraphics = this.CreateGraphics();
+        WpfImageUtil.ScreenDpi = oGraphics.DpiX;
+        oGraphics.Dispose();
+
         // Get the template version from the per-workbook settings.
 
         PerWorkbookSettings oPerWorkbookSettings =

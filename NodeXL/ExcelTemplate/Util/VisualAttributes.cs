@@ -69,6 +69,12 @@ VisualAttributes
     /// </summary>
 
     VertexVisibility = 64,
+
+    /// <summary>
+    /// Graph background.
+    /// </summary>
+
+    GraphBackground = 128,
 }
 
 }

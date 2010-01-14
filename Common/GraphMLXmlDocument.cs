@@ -339,7 +339,7 @@ public class GraphMLXmlDocument : XmlDocument
         Debug.Assert( !String.IsNullOrEmpty(sChildName) );
         // AssertValid();
 
-        return ( XmlUtil.AppendNewNodeWithNamespace(oParentXmlNode, sChildName,
+        return ( XmlUtil2.AppendNewNode(oParentXmlNode, sChildName,
             GraphMLNamespaceUri) );
     }
 
@@ -421,7 +421,7 @@ public class GraphMLXmlDocument : XmlDocument
         Debug.Assert(asNameValuePairs != null);
         AssertValid();
 
-        XmlUtil.SetAttributes(oXmlNode, asNameValuePairs);
+        XmlUtil2.SetAttributes(oXmlNode, asNameValuePairs);
     }
 
     //*************************************************************************

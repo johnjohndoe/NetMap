@@ -4,6 +4,7 @@
 using System;
 using System.Xml;
 using System.Net;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -205,9 +206,9 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             String sHRef;
 
-            if ( !XmlUtil2.SelectSingleNode(oXmlDocument,
+            if ( !XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument,
                 "a:feed/a:link[@rel='next']/@href", oXmlNamespaceManager,
-                false, out sHRef) )
+                out sHRef) )
             {
                 yield break;
             }
@@ -471,8 +472,8 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         String sYouTubeDate;
 
-        if ( XmlUtil2.SelectSingleNode(oXmlNodeToSelectFrom, sXPath,
-            oXmlNamespaceManager, false, out sYouTubeDate) )
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oXmlNodeToSelectFrom,
+            sXPath, oXmlNamespaceManager, out sYouTubeDate) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
                 sGraphMLAttributeID, FormatYouTubeDate(sYouTubeDate) );
@@ -491,12 +492,13 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </summary>
     ///
     /// <param name="sYouTubeDate">
-    /// The date received from YouTube.  Sample:
-    /// "2008-04-29T21:42:41.000-07:00".
+    /// The date received from YouTube.  Samples:
+    /// "2008-04-29T21:42:41.000-07:00", "2006-05-14T07:54:03.000Z".
     /// </param>
     ///
     /// <returns>
-    /// The formatted date.  Sample: "2008-04-29".
+    /// The formatted date, in UTC.  Sample, in the English-US locale:
+    /// "04-29-2008".
     /// </returns>
     //*************************************************************************
 
@@ -508,9 +510,28 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     {
         Debug.Assert(sYouTubeDate != null);
 
-        if (sYouTubeDate.Length >= 10)
+        DateTime oYouTubeDate;
+
+        // For some odd reason, YouTube returns dates in the format
+        // "2008-04-29T21:42:41.000-07:00" for the "published" date of a
+        // contact (which is the contact's join date), but uses the format
+        // "2006-05-14T07:54:03.000Z" for the "published" date of a video.
+        // Cover both cases.
+
+        foreach ( String sTimeZoneSuffix in new String [] {"zzz", "Z"} )
         {
-            return ( sYouTubeDate.Substring(0, 10) );
+            if ( DateTime.TryParseExact(sYouTubeDate,
+                "yyyy-MM-ddTHH:mm:ss.fff" + sTimeZoneSuffix,
+                CultureInfo.InvariantCulture,
+
+                DateTimeStyles.AssumeUniversal |
+                    DateTimeStyles.AdjustToUniversal,
+
+                out oYouTubeDate) )
+            {
+                return ( ExcelDateTimeUtil.DateTimeToStringLocale1033(
+                    oYouTubeDate, ExcelColumnFormat.Date) );
+            }
         }
 
         return (sYouTubeDate);

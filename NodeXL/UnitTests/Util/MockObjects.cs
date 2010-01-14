@@ -930,6 +930,16 @@ internal class MockLayout : Object, ILayout
         }
     }
 
+    public Boolean
+    SupportsOutOfBoundsVertices
+    {
+        get
+        {
+            return (false);
+        }
+    }
+
+
     public void
     LayOutGraph
     (

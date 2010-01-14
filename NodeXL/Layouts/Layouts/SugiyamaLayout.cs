@@ -333,11 +333,6 @@ public class SugiyamaLayout : AsyncLayoutBase
     /// Provides access to objects needed to transform the graph's layout.
     /// </param>
     ///
-    /// <param name="transformationMatrix">
-    /// Matrix that can be used to transform points from the original graph
-    /// rectangle to the new graph rectangle.
-    /// </param>
-    ///
     /// <remarks>
     /// After a graph has been laid out by <see cref="ILayout.LayOutGraph" />,
     /// this method may get called to transform the graph's layout from one
@@ -363,21 +358,23 @@ public class SugiyamaLayout : AsyncLayoutBase
     (
         IGraph graph,
         LayoutContext originalLayoutContext,
-        LayoutContext newLayoutContext,
-        Matrix transformationMatrix
+        LayoutContext newLayoutContext
     )
     {
         Debug.Assert(graph != null);
         Debug.Assert(originalLayoutContext != null);
         Debug.Assert(newLayoutContext != null);
-        Debug.Assert(transformationMatrix != null);
         AssertValid();
 
         // Transform the graph's vertex locations.
 
-        base.TransformLayoutCore(graph, originalLayoutContext,
-            newLayoutContext, transformationMatrix
+        Matrix oTransformationMatrix = LayoutUtil.GetRectangleTransformation(
+            originalLayoutContext.GraphRectangle,
+            newLayoutContext.GraphRectangle
             );
+
+        base.TransformLayoutCore(graph, originalLayoutContext,
+            newLayoutContext);
 
         // Tranform the geometry metadata added by LayOutGraphCore().
 
@@ -392,7 +389,7 @@ public class SugiyamaLayout : AsyncLayoutBase
             // an ellipse.
 
             PointF oTransformedRadius = LayoutUtil.TransformPointF(
-                new PointF( (Single)oValue, 0 ), transformationMatrix
+                new PointF( (Single)oValue, 0 ), oTransformationMatrix
                 );
 
             graph.SetValue(
@@ -413,7 +410,7 @@ public class SugiyamaLayout : AsyncLayoutBase
 
             PointF [] aoCurvePoints = ( PointF [] )oValue;
 
-            transformationMatrix.TransformPoints(aoCurvePoints);
+            oTransformationMatrix.TransformPoints(aoCurvePoints);
 
             oEdge.SetValue(ReservedMetadataKeys.SugiyamaCurvePoints,
                 aoCurvePoints);
@@ -424,7 +421,7 @@ public class SugiyamaLayout : AsyncLayoutBase
 
             oEdge.SetValue(
                 ReservedMetadataKeys.SugiyamaEndpoint,
-                LayoutUtil.TransformPointF(oEndpoint, transformationMatrix)
+                LayoutUtil.TransformPointF(oEndpoint, oTransformationMatrix)
                 );
         }
     }

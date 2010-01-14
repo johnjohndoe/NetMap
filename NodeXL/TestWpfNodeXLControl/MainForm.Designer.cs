@@ -58,6 +58,7 @@ namespace TestWpfNodeXLControl
             this.tbGraphScale = new System.Windows.Forms.TrackBar();
             this.label5 = new System.Windows.Forms.Label();
             this.chkShowAxes = new System.Windows.Forms.CheckBox();
+            this.chkSetBackgroundImage = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphScale)).BeginInit();
@@ -72,7 +73,7 @@ namespace TestWpfNodeXLControl
             this.txbStatus.Name = "txbStatus";
             this.txbStatus.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txbStatus.Size = new System.Drawing.Size(521, 102);
-            this.txbStatus.TabIndex = 15;
+            this.txbStatus.TabIndex = 16;
             // 
             // label1
             // 
@@ -81,7 +82,7 @@ namespace TestWpfNodeXLControl
             this.label1.Location = new System.Drawing.Point(9, 450);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 14;
+            this.label1.TabIndex = 15;
             this.label1.Text = "Status:";
             // 
             // btnClearStatus
@@ -90,7 +91,7 @@ namespace TestWpfNodeXLControl
             this.btnClearStatus.Location = new System.Drawing.Point(545, 482);
             this.btnClearStatus.Name = "btnClearStatus";
             this.btnClearStatus.Size = new System.Drawing.Size(104, 23);
-            this.btnClearStatus.TabIndex = 16;
+            this.btnClearStatus.TabIndex = 17;
             this.btnClearStatus.Text = "Clear Status";
             this.btnClearStatus.UseVisualStyleBackColor = true;
             this.btnClearStatus.Click += new System.EventHandler(this.btnClearStatus_Click);
@@ -256,9 +257,9 @@ namespace TestWpfNodeXLControl
             this.chkShowVertexToolTips.AutoSize = true;
             this.chkShowVertexToolTips.Location = new System.Drawing.Point(669, 211);
             this.chkShowVertexToolTips.Name = "chkShowVertexToolTips";
-            this.chkShowVertexToolTips.Size = new System.Drawing.Size(124, 17);
+            this.chkShowVertexToolTips.Size = new System.Drawing.Size(121, 17);
             this.chkShowVertexToolTips.TabIndex = 10;
-            this.chkShowVertexToolTips.Text = "ShowVertexToolTips";
+            this.chkShowVertexToolTips.Text = "Show vertex tooltips";
             this.chkShowVertexToolTips.UseVisualStyleBackColor = true;
             this.chkShowVertexToolTips.CheckedChanged += new System.EventHandler(this.chkShowVertexToolTips_CheckedChanged);
             // 
@@ -322,13 +323,13 @@ namespace TestWpfNodeXLControl
             // 
             this.tbGraphScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbGraphScale.LargeChange = 100;
-            this.tbGraphScale.Location = new System.Drawing.Point(669, 280);
+            this.tbGraphScale.Location = new System.Drawing.Point(669, 314);
             this.tbGraphScale.Maximum = 1000;
             this.tbGraphScale.Minimum = 100;
             this.tbGraphScale.Name = "tbGraphScale";
             this.tbGraphScale.Size = new System.Drawing.Size(202, 42);
             this.tbGraphScale.SmallChange = 10;
-            this.tbGraphScale.TabIndex = 13;
+            this.tbGraphScale.TabIndex = 14;
             this.tbGraphScale.Value = 100;
             this.tbGraphScale.Scroll += new System.EventHandler(this.tbGraphScale_Scroll);
             // 
@@ -336,29 +337,42 @@ namespace TestWpfNodeXLControl
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(666, 261);
+            this.label5.Location = new System.Drawing.Point(666, 295);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(66, 13);
-            this.label5.TabIndex = 12;
+            this.label5.TabIndex = 13;
             this.label5.Text = "GraphScale:";
             // 
             // chkShowAxes
             // 
             this.chkShowAxes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowAxes.AutoSize = true;
-            this.chkShowAxes.Location = new System.Drawing.Point(669, 236);
+            this.chkShowAxes.Location = new System.Drawing.Point(669, 234);
             this.chkShowAxes.Name = "chkShowAxes";
-            this.chkShowAxes.Size = new System.Drawing.Size(79, 17);
+            this.chkShowAxes.Size = new System.Drawing.Size(78, 17);
             this.chkShowAxes.TabIndex = 11;
-            this.chkShowAxes.Text = "Show Axes";
+            this.chkShowAxes.Text = "Show axes";
             this.chkShowAxes.UseVisualStyleBackColor = true;
             this.chkShowAxes.CheckedChanged += new System.EventHandler(this.chkShowAxes_CheckedChanged);
+            // 
+            // chkSetBackgroundImage
+            // 
+            this.chkSetBackgroundImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkSetBackgroundImage.AutoSize = true;
+            this.chkSetBackgroundImage.Location = new System.Drawing.Point(669, 257);
+            this.chkSetBackgroundImage.Name = "chkSetBackgroundImage";
+            this.chkSetBackgroundImage.Size = new System.Drawing.Size(144, 17);
+            this.chkSetBackgroundImage.TabIndex = 12;
+            this.chkSetBackgroundImage.Text = "Show background image";
+            this.chkSetBackgroundImage.UseVisualStyleBackColor = true;
+            this.chkSetBackgroundImage.CheckedChanged += new System.EventHandler(this.chkSetBackgroundImage_CheckedChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(887, 586);
+            this.Controls.Add(this.chkSetBackgroundImage);
             this.Controls.Add(this.chkShowAxes);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.tbGraphScale);
@@ -417,6 +431,7 @@ namespace TestWpfNodeXLControl
         private System.Windows.Forms.TrackBar tbGraphScale;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox chkShowAxes;
+        private System.Windows.Forms.CheckBox chkSetBackgroundImage;
     }
 }
 

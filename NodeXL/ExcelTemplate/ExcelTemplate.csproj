@@ -312,6 +312,12 @@
     <Compile Include="Dialogs\AutoFill\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.designer.cs">
       <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\Background\BackgroundDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Background\BackgroundDialog.designer.cs">
+      <DependentUpon>BackgroundDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -764,6 +770,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AutoFill\VertexShapeColumnAutoFillUserSettings\VertexShapeColumnAutoFillUserSettingsDialog.resx">
       <DependentUpon>VertexShapeColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Background\BackgroundDialog.resx">
+      <DependentUpon>BackgroundDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.resx">
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>

@@ -39,6 +39,37 @@ public class WpfImageUtil
     }
 
     //*************************************************************************
+    //  Property: ScreenDpi
+    //
+    /// <summary>
+    /// Gets or sets the DPI of the screen.
+    /// </summary>
+    ///
+    /// <value>
+    /// The DPI of the screen.  The default is 96 DPI.
+    /// </value>
+    ///
+    /// <remarks>
+    /// <see cref="GetImageSynchronousIgnoreDpi" /> uses this value to set the
+    /// DPI of the image it returns.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Double
+    ScreenDpi
+    {
+        get
+        {
+            return (m_dScreenDpi);
+        }
+
+        set
+        {
+            m_dScreenDpi = value;
+        }
+    }
+
+    //*************************************************************************
     //  Method: GetImageSynchronous()
     //
     /// <summary>
@@ -58,10 +89,21 @@ public class WpfImageUtil
     ///
     /// <remarks>
     /// There are two differences between using this method and using
-    /// BitmapImage(URI): 1) If the URI is an URL, the image is downloaded
-    /// synchronously instead of asynchronously; and 2) If the image isn't
-    /// available, an error image is returned instead of an exception being
-    /// thrown.
+    /// BitmapImage(URI):
+    ///
+    /// <list type="number">
+    ///
+    /// <item><description>
+    /// If the URI is an URL, the image is downloaded synchronously instead of
+    /// asynchronously.
+    /// </description></item>
+    ///
+    /// <item><description>
+    /// If the image isn't available, an error image is returned instead of an
+    /// exception being thrown.
+    /// </description></item>
+    ///
+    /// </list>
     /// </remarks>
     //*************************************************************************
 
@@ -152,17 +194,31 @@ public class WpfImageUtil
     ///
     /// <remarks>
     /// There are three differences between using this method and using
-    /// BitmapImage(URI): 1) If the URI is an URL, the image is downloaded
-    /// synchronously instead of asynchronously; 2) If the image isn't
-    /// available, an error image is returned instead of an exception being
-    /// thrown; and 3) If the image is marked with a DPI of something other
-    /// than 96, the DPI is ignored and the returned image will have a DPI of
-    /// 96 with the same dimensions as the original image.  For example, a 
+    /// BitmapImage(URI):
+    ///
+    /// <list type="number">
+    ///
+    /// <item><description>
+    /// If the URI is an URL, the image is downloaded synchronously instead of
+    /// asynchronously.
+    /// </description></item>
+    ///
+    /// <item><description>
+    /// If the image isn't available, an error image is returned instead of an
+    /// exception being thrown.
+    /// </description></item>
+    ///
+    /// <item><description>
+    /// If the image is marked with a DPI of something other than the screen
+    /// resolution specified by <see cref="ScreenDpi" />, the marked DPI is
+    /// ignored and the returned image will have a DPI of <see
+    /// cref="ScreenDpi" />.  For example, with a 96 DPI screen, a
     /// 100x100-pixel image with a DPI of 72 will be returned as a
-    /// 100x100-WPF-unit image with a DPI of 96, and on a 96 DPI machine the
-    /// returned image will display at the same physical size that the original
-    /// image would have in a Web browser or other application that ignores
-    /// DPI.
+    /// 100x100-WPF-unit image with a DPI of 96.  This will cause the returned
+    /// image to be displayed as 100x100 pixels.
+    /// </description></item>
+    ///
+    /// </list>
     /// </remarks>
     //*************************************************************************
 
@@ -177,13 +233,37 @@ public class WpfImageUtil
 
         BitmapSource oBitmapSource = GetImageSynchronous(uriString);
 
-        if (oBitmapSource.DpiX != 96)
+        if (oBitmapSource.DpiX != m_dScreenDpi)
         {
-            // This is a poor solution.  Is there a way to tell WPF to ignore
-            // an image's DPI tags?  I can't find one.
+            // The DPI properties of BitmapSource are read-only.  To work
+            // around this, copy the BitmapSource to a new BitmapSource,
+            // changing the DPI in the process.  Wasteful, but there doesn't
+            // seem to be a better way.
 
-            oBitmapSource = ResizeImage(oBitmapSource,
-                oBitmapSource.PixelWidth, oBitmapSource.PixelHeight);
+            // The formula for stride, which isn't documented in MSDN, was
+            // taken from here:
+            //
+            // http://social.msdn.microsoft.com/Forums/en/windowswic/thread/
+            // 8e2d2dbe-6819-488b-ac49-bf5235d87bc4
+
+            Int32 iStride = ( (oBitmapSource.PixelWidth *
+                oBitmapSource.Format.BitsPerPixel) + 7 ) / 8;
+
+            // Also, see this:
+            //
+            // http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/
+            // 56364b28-1277-4be8-8d45-78788cc4f2d7/
+
+            Byte [] abtPixels = new Byte[oBitmapSource.PixelHeight * iStride];
+
+            oBitmapSource.CopyPixels(abtPixels, iStride, 0);
+
+            oBitmapSource = BitmapSource.Create(oBitmapSource.PixelWidth,
+                oBitmapSource.PixelHeight, m_dScreenDpi, m_dScreenDpi,
+                oBitmapSource.Format, oBitmapSource.Palette, abtPixels, iStride
+                );
+
+            WpfGraphicsUtil.FreezeIfFreezable(oBitmapSource);
         }
 
         return (oBitmapSource);
@@ -494,7 +574,7 @@ public class WpfImageUtil
         AssertValid();
 
         RenderTargetBitmap oRenderTargetBitmap = new RenderTargetBitmap(
-            iWidth, iHeight, 96, 96, PixelFormats.Pbgra32);
+            iWidth, iHeight, 96.0, 96.0, PixelFormats.Pbgra32);
 
         oRenderTargetBitmap.Render(oDrawingVisual);
         WpfGraphicsUtil.FreezeIfFreezable(oRenderTargetBitmap);
@@ -519,6 +599,7 @@ public class WpfImageUtil
         // m_oCachedErrorImage
     }
 
+
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
@@ -535,6 +616,10 @@ public class WpfImageUtil
     /// Cached error image returned by GetImageSynchronous(), or null.
 
     protected BitmapSource m_oCachedErrorImage;
+
+    /// The DPI of the screen.
+
+    protected static Double m_dScreenDpi = 96.0;
 }
 
 }

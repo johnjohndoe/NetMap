@@ -107,6 +107,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         m_dRadius = 3.0;
         m_oLabelFillColor = SystemColors.WindowColor;
         m_eLabelPosition = VertexLabelPosition.TopRight;
+        m_bLimitVerticesToBounds = true;
 
         AssertValid();
     }
@@ -298,6 +299,52 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             }
 
             m_eLabelPosition = value;
+
+            FireRedrawRequired();
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: LimitVerticesToBounds
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether vertices can be drawn outside
+    /// the graph bounds.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if vertices shouldn't be drawn outside the graph bounds.  The
+    /// default is true.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If true, any vertex whose location is within the graph rectangle margin
+    /// or outside the graph rectangle is moved within the margin before it is
+    /// drawn.  If true, the vertex is not moved and is drawn in the specified
+    /// location.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    LimitVerticesToBounds
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bLimitVerticesToBounds);
+        }
+
+        set
+        {
+            if (m_bLimitVerticesToBounds == value)
+            {
+                return;
+            }
+
+            m_bLimitVerticesToBounds = value;
 
             FireRedrawRequired();
 
@@ -939,7 +986,14 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
         Double dLabelFontSize = GetLabelFontSize(oVertex);
 
-        // Format the text, subject to a maximum label size.
+        // Format the text, subject to a maximum label size.  If a maximum
+        // label size isn't specified, the label would be as wide as necessary
+        // to accommodate the text length.  Specifying a maximum size forces
+        // the text to wrap at word breaks.
+        //
+        // Side effect: If the font size is large enough, not a single
+        // character of the text will fit within the specified width and no
+        // text will be drawn.
 
         FormattedText oFormattedText = CreateFormattedText(sLabel, oTextColor,
             dLabelFontSize);
@@ -1011,7 +1065,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     //  Method: MoveVertexIfNecessary()
     //
     /// <summary>
-    /// Moves a vertex if it falls outside the graph rectangle.
+    /// Moves a vertex if it falls within the graph rectangle's margin or
+    /// outside the graph rectangle.
     /// </summary>
     ///
     /// <param name="oVertex">
@@ -1028,8 +1083,9 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// </param>
     ///
     /// <remarks>
-    /// If the vertex falls outside the graph rectangle, the IVertex.Location
-    /// property and <paramref name="oVertexBounds" /> get updated.
+    /// If the vertex falls within the margin or outside the graph rectangle,
+    /// the IVertex.Location property and <paramref name="oVertexBounds" /> get
+    /// updated.
     /// </remarks>
     //*************************************************************************
 
@@ -1044,6 +1100,13 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Debug.Assert(oVertex != null);
         Debug.Assert(oGraphDrawingContext != null);
         AssertValid();
+
+        if (!m_bLimitVerticesToBounds)
+        {
+            // The vertex shouldn't be moved.
+
+            return;
+        }
 
         Rect oGraphRectangleMinusMargin =
             oGraphDrawingContext.GraphRectangleMinusMargin;
@@ -1406,6 +1469,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         Debug.Assert(m_dRadius <= MaximumRadius);
         // m_oLabelFillColor
         // m_eLabelPosition
+        // m_bLimitVerticesToBounds
     }
 
 
@@ -1421,10 +1485,21 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
     /// <summary>
     /// Maximum value of the <see cref="Radius" /> property.  The value is
-    /// 50.0.
+    /// 549.0.
     /// </summary>
+    //
+    // Note on where the value of 549.0 came from:
+    //
+    // Until NodeXL version 1.0.1.105, vertex sizes in the Excel template
+    // ranged from 1 to 10, which corresponded to MinimumRadius=0.1 and
+    // MaximumRadius=50.0.  In version 1.0.1.105, larger vertices were
+    // requested.  The vertex size range in the Excel template was changed to
+    // 1 to 100, and MaximumRadius was changed from 50.0 to 549.0.  With these
+    // new numbers, a vertex size of 10 in the Excel template still corresponds
+    // to 50.0 in this class, thus preserving compatibility with older
+    // workbooks.
 
-    public static Double MaximumRadius = 50.0;
+    public static Double MaximumRadius = 549.0;
 
 
     //*************************************************************************
@@ -1461,6 +1536,10 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
     /// Default position of vertex labels drawn as annotations.
 
     protected VertexLabelPosition m_eLabelPosition;
+
+    /// true if vertices shouldn't be drawn outside the graph bounds.
+
+    protected Boolean m_bLimitVerticesToBounds;
 }
 
 

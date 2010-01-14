@@ -1206,7 +1206,7 @@ public partial class ThisWorkbook
     //  Method: SetVisualAttribute()
     //
     /// <summary>
-    /// Sets a visual attribute in the selected rows of the active worksheet.
+    /// Sets one visual attribute that gets stored in the workbook.
     /// </summary>
     ///
     /// <param name="visualAttribute">
@@ -1219,6 +1219,14 @@ public partial class ThisWorkbook
     /// The visual attribute value, or null if the value isn't known yet and
     /// must be obtained from the user.
     /// </param>
+    ///
+    /// <remarks>
+    /// If the specified visual attribute is a graph-level attribute (such as
+    /// VisualAttribute.GraphBackground), the visual attribute value gets
+    /// stored in the workbook's per-workbook settings.  Otherwise, the visual
+    /// attribute value gets stored in the selected rows of the active
+    /// worksheet.
+    /// </remarks>
     //*************************************************************************
 
     public void
@@ -1235,21 +1243,34 @@ public partial class ThisWorkbook
             return;
         }
 
-        SetVisualAttributeEventHandler oSetVisualAttributeEventHandler =
-            this.SetVisualAttribute2;
-
-        if (oSetVisualAttributeEventHandler != null)
+        if (visualAttribute == VisualAttributes.GraphBackground)
         {
-            SetVisualAttributeEventArgs oSetVisualAttributeEventArgs =
-                new SetVisualAttributeEventArgs(visualAttribute,
-                    attributeValue);
+            BackgroundDialog oBackgroundDialog = new BackgroundDialog(
+                this.PerWorkbookSettings);
 
-            oSetVisualAttributeEventHandler(this,
-                oSetVisualAttributeEventArgs);
-
-            if (oSetVisualAttributeEventArgs.VisualAttributeSet)
+            if (oBackgroundDialog.ShowDialog() == DialogResult.OK)
             {
                 FireVisualAttributeSetInWorkbook();
+            }
+        }
+        else
+        {
+            SetVisualAttributeEventHandler oSetVisualAttributeEventHandler =
+                this.SetVisualAttribute2;
+
+            if (oSetVisualAttributeEventHandler != null)
+            {
+                SetVisualAttributeEventArgs oSetVisualAttributeEventArgs =
+                    new SetVisualAttributeEventArgs(visualAttribute,
+                        attributeValue);
+
+                oSetVisualAttributeEventHandler(this,
+                    oSetVisualAttributeEventArgs);
+
+                if (oSetVisualAttributeEventArgs.VisualAttributeSet)
+                {
+                    FireVisualAttributeSetInWorkbook();
+                }
             }
         }
     }
@@ -1376,12 +1397,12 @@ public partial class ThisWorkbook
     //
     /// <summary>
     /// Occurs when one of the visual attribute buttons in the Ribbon is
-    /// clicked.
+    /// clicked and the click isn't handled directly by ThisWorkbook.
     /// </summary>
     ///
     /// <remarks>
-    /// This is named SetVisualAttribute2 to avoid a conflict with the method
-    /// of the same name.
+    /// This is named SetVisualAttribute2 instead of SetVisualAttribute to
+    /// avoid a conflict with the SetVisualAttribute() method.
     /// </remarks>
     //*************************************************************************
 

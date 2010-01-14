@@ -559,6 +559,26 @@ public class SheetHelper : Object
         {
             OnSelectionChangedInTable(Target);
         }
+        catch (COMException)
+        {
+            // A user reported a bug in which Application.Intersect() throws a
+            // COMException with an HRESULT of 0x800AC472.
+            // (Application.Intersect() gets called indirectly by
+            // OnSelectionChangedInTable().)  The bug occurred while switching
+            // windows.  I couldn't reproduce the bug, but the following post
+            // suggests that the HRESULT, which is VBA_E_IGNORE, occurs when an
+            // object model call is made while the object model is "suspended."
+            //
+            // http://social.msdn.microsoft.com/forums/en-US/vsto/thread/
+            // 9168f9f2-e5bc-4535-8d7d-4e374ab8ff09/
+            //
+            // Other posts also mention that it can occur during window
+            // switches.
+            //
+            // I can't reproduce the bug and I'm not sure of the root cause,
+            // but catching and ignoring the error should lead to nothing worse
+            // than a mouse click being ignored.
+        }
         catch (Exception oException)
         {
             // If exceptions aren't caught here, Excel consumes them without

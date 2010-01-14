@@ -181,12 +181,13 @@ public class GraphMLAttribute : Object
         Debug.Assert(dataXmlNode.Name == "data");
         AssertValid();
 
-        String sKey, sAttributeValue;
+        String sKey = XmlUtil2.SelectRequiredSingleNodeAsString(dataXmlNode,
+            "@key", null);
 
-        XmlUtil.GetAttribute(dataXmlNode, "key", true, out sKey);
         Debug.Assert(sKey == m_sID);
-            
-        XmlUtil.GetInnerText(dataXmlNode, true, out sAttributeValue);
+
+        String sAttributeValue = XmlUtil2.SelectRequiredSingleNodeAsString(
+            dataXmlNode, "text()", null);
 
         try
         {
@@ -265,12 +266,17 @@ public class GraphMLAttribute : Object
         Debug.Assert(oXmlNamespaceManager != null);
         Debug.Assert( !String.IsNullOrEmpty(sGraphMLPrefix) );
 
-        String sFor, sType;
+        m_sID = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
+            "@id", null);
 
-        XmlUtil.GetAttribute(oKeyXmlNode, "id", true, out m_sID);
-        XmlUtil.GetAttribute(oKeyXmlNode, "for", true, out sFor);
-        XmlUtil.GetAttribute(oKeyXmlNode, "attr.name", true, out m_sName);
-        XmlUtil.GetAttribute(oKeyXmlNode, "attr.type", true, out sType);
+        String sFor = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
+            "@for", null);
+
+        m_sName = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
+            "@attr.name", null);
+
+        String sType = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
+            "@attr.type", null);
 
         switch (sFor)
         {
@@ -340,10 +346,9 @@ public class GraphMLAttribute : Object
 
         if (oDefaultXmlNode != null)
         {
-            String sDefaultAttributeValue;
-            
-            XmlUtil.GetInnerText(oDefaultXmlNode, true,
-                out sDefaultAttributeValue);
+            String sDefaultAttributeValue =
+               XmlUtil2.SelectRequiredSingleNodeAsString(oDefaultXmlNode,
+                "text()", null);
 
             try
             {

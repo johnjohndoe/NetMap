@@ -225,8 +225,8 @@ public class YouTubeGraphDataProviderDialogBase : GraphDataProviderDialogBase
         // Although the document may contain multiple error nodes, just look at
         // the first one for now.
 
-        if ( XmlUtil2.SelectSingleNode(oXmlDocument,
-            "gd:errors/gd:error/gd:code/text()", oXmlNamespaceManager, false,
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument,
+            "gd:errors/gd:error/gd:code/text()", oXmlNamespaceManager,
             out sMessage) )
         {
             if (sMessage.IndexOf("too_many_recent_calls") >= 0)

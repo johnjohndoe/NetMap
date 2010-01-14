@@ -10,7 +10,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: WorksheetNames
 //
 /// <summary>
-/// Provides the names of the Excel worksheets used by the add-in.
+/// Provides the names of the Excel worksheets used by the template.
 /// </summary>
 ///
 /// <remarks>
@@ -62,7 +62,7 @@ public static class WorksheetNames
 //  Class: TableNames
 //
 /// <summary>
-/// Provides the names of the Excel tables (ListObjects) used by the add-in.
+/// Provides the names of the Excel tables (ListObjects) used by the template.
 /// </summary>
 ///
 /// <remarks>
@@ -241,11 +241,10 @@ public static class VertexTableColumnNames
     public const String RadiusOld = "Radius";
 
     /// <summary>
-    /// Name of the optional table column containing the path to the image
-    /// file.
+    /// Name of the optional table column containing the URI of the image file.
     /// </summary>
 
-    public const String ImageFilePath = "Image File";
+    public const String ImageUri = "Image File";
 
     /// <summary>
     /// Name of the optional table column containing the vertex's label.

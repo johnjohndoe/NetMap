@@ -492,20 +492,15 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             if (!bUsePageParameter)
             {
-                XmlNode oNextCursorXmlNode =
-                    oXmlDocument.DocumentElement.SelectSingleNode(
-                        "next_cursor", oXmlNamespaceManager);
-
-                if (oNextCursorXmlNode == null)
-                {
-                    yield break;
-                }
-
-                sCursor = oNextCursorXmlNode.InnerText;
-
                 // A next_cursor value of 0 means "end of data."
 
-                if (String.IsNullOrEmpty(sCursor) || sCursor == "0")
+                if (
+                    !XmlUtil2.TrySelectSingleNodeAsString(oXmlDocument,
+                        "users_list/next_cursor/text()", oXmlNamespaceManager,
+                        out sCursor)
+                    ||
+                    sCursor == "0"
+                    )
                 {
                     yield break;
                 }
@@ -545,8 +540,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oUserXmlNode != null);
         AssertValid();
 
-        return ( XmlUtil.GetStringNodeValue(oUserXmlNode, "screen_name", false,
-            out sScreenName) );
+        return ( XmlUtil2.TrySelectSingleNodeAsString(oUserXmlNode,
+            "screen_name/text()", null, out sScreenName) );
     }
 
     //*************************************************************************
@@ -806,8 +801,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         String sLatestStatus;
 
-        if ( XmlUtil2.SelectSingleNode(oUserXmlNode, "status/text/text()",
-            null, false, out sLatestStatus) )
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oUserXmlNode,
+            "status/text/text()", null, out sLatestStatus) )
         {
             // Don't overwrite any status the derived class may have already
             // stored on the TwitterVertex object.
@@ -1007,10 +1002,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 return;
             }
 
-            String sScreenName;
-
-            XmlUtil.GetAttribute(oVertexXmlNode, "id", true,
-                out sScreenName);
+            String sScreenName = XmlUtil2.SelectRequiredSingleNodeAsString(
+                oVertexXmlNode, "@id", null);
 
             String sUrl = String.Format(
 
@@ -1048,9 +1041,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             // The document consists of a single "user" node.
 
-            XmlNode oUserXmlNode = oXmlDocument.SelectSingleNode("user");
+            XmlNode oUserXmlNode;
 
-            if (oUserXmlNode != null)
+            if ( XmlUtil2.TrySelectSingleNode(oXmlDocument, "user", null,
+                out oUserXmlNode) )
             {
                 AppendFromUserXmlNode(sScreenName, oUserXmlNode,
                     oGraphMLXmlDocument, oTwitterVertex, bIncludeStatistics,

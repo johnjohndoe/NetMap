@@ -199,7 +199,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
 
         XmlNode oGraphMLXmlNode = oXmlDocument.DocumentElement;
 
-        XmlNode oGraphXmlNode = XmlUtil.SelectRequiredSingleNode(
+        XmlNode oGraphXmlNode = XmlUtil2.SelectRequiredSingleNode(
             oGraphMLXmlNode, GraphMLPrefix + ":graph", oXmlNamespaceManager);
 
         // Parse the vertex and edge attribute definitions.
@@ -256,10 +256,8 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         Debug.Assert(oGraphXmlNode != null);
         AssertValid();
 
-        String sEdgeDefault;
-
-        XmlUtil.GetAttribute(oGraphXmlNode, "edgedefault", true,
-            out sEdgeDefault);
+        String sEdgeDefault = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oGraphXmlNode, "@edgedefault", null);
 
         switch (sEdgeDefault)
         {
@@ -408,9 +406,8 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         foreach ( XmlNode oNodeXmlNode in oGraphXmlNode.SelectNodes(
             GraphMLPrefix + ":node", oXmlNamespaceManager) )
         {
-            String sID;
-
-            XmlUtil.GetAttribute(oNodeXmlNode, "id", true, out sID);
+            String sID = XmlUtil2.SelectRequiredSingleNodeAsString(
+                oNodeXmlNode, "@id", null);
 
             IVertex oVertex = oVertices.Add();
             oVertex.Name = sID;
@@ -506,7 +503,8 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
 
             String sID;
 
-            if ( XmlUtil.GetAttribute(oEdgeXmlNode, "id", false, out sID) )
+            if ( XmlUtil2.TrySelectSingleNodeAsString(oEdgeXmlNode, "@id",
+                null, out sID) )
             {
                 oEdge.Name = sID;
             }
@@ -587,11 +585,11 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         foreach (XmlNode oDataXmlNode in oNodeOrEdgeXmlNode.SelectNodes(
             GraphMLPrefix + ":data", oXmlNamespaceManager) )
         {
-            String sGraphMLAttributeID;
+            String sGraphMLAttributeID =
+                XmlUtil2.SelectRequiredSingleNodeAsString(oDataXmlNode, "@key",
+                null);
+
             GraphMLAttribute oGraphMLAttribute;
-            
-            XmlUtil.GetAttribute(oDataXmlNode, "key", true,
-                out sGraphMLAttributeID);
 
             if ( !oGraphMLAttributeDictionary.TryGetValue(sGraphMLAttributeID,
                 out oGraphMLAttribute) )
@@ -647,9 +645,8 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         Debug.Assert(oVertexDictionary != null);
         AssertValid();
 
-        String sID;
-
-        XmlUtil.GetAttribute(oEdgeXmlNode, sSourceOrTarget, true, out sID);
+        String sID = XmlUtil2.SelectRequiredSingleNodeAsString(oEdgeXmlNode,
+            "@" + sSourceOrTarget, null);
 
         try
         {

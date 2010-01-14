@@ -102,7 +102,7 @@ public class AutoFillVertexColumnComboBox : AutoFillColumnComboBox
             VertexTableColumnNames.Color,
             VertexTableColumnNames.Shape,
             VertexTableColumnNames.Radius,
-            VertexTableColumnNames.ImageFilePath,
+            VertexTableColumnNames.ImageUri,
             VertexTableColumnNames.Label,
             VertexTableColumnNames.LabelFillColor,
             VertexTableColumnNames.LabelPosition,

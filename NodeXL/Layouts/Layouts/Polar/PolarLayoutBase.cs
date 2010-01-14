@@ -12,57 +12,39 @@ using Microsoft.Research.CommunityTechnologies.AppLib;
 namespace Microsoft.NodeXL.Layouts
 {
 //*****************************************************************************
-//  Class: PolarLayout
+//  Class: PolarLayoutBase
 //
 /// <summary>
-/// Lays out a graph by placing the vertices within a polar coordinate space.
+/// Base class for classes that lay out a graph by placing the vertices within
+/// a polar coordinate space.
 /// </summary>
-///
-/// <remarks>
-/// This layout defines a polar coordinate space that uses (R, Angle) to
-/// specify a point.  R represents the distance of the point from the origin,
-/// which is the center of the graph rectangle, and can vary from 0.0 to 1.0.
-/// 1.0 represents half of either the graph rectangle height or width,
-/// whichever is smaller.  Angle is the counterclockwise angle of the point
-/// from the positive x-axis and can vary from 0.0 to 360.0 degrees.
-///
-/// <para>
-/// To specify the polar coordinates of a vertex, add the <see
-/// cref="ReservedMetadataKeys.PolarLayoutCoordinates" /> key to the vertex.
-/// If a vertex is missing this key, the vertex is placed at the origin.
-/// </para>
-///
-/// <para>
-/// If the graph has a metadata key of <see
-/// cref="ReservedMetadataKeys.LayOutTheseVerticesOnly" />, only the vertices
-/// specified in the value's IVertex array are laid out and all other vertices
-/// are completely ignored.
-/// </para>
-///
-/// <para>
-/// If a vertex has a metadata key of <see
-/// cref="ReservedMetadataKeys.LockVertexLocation" /> with a value of true, its
-/// location is left unmodified.
-/// </para>
-///
-/// </remarks>
 //*****************************************************************************
 
-public class PolarLayout : AsyncLayoutBase
+public class PolarLayoutBase : AsyncLayoutBase
 {
     //*************************************************************************
-    //  Constructor: PolarLayout()
+    //  Constructor: PolarLayoutBase()
     //
     /// <summary>
-    /// Initializes a new instance of the PolarLayout class.
+    /// Initializes a new instance of the PolarLayoutBase class.
     /// </summary>
+    ///
+    /// <param name="polarRIsAbsolute">
+    /// If true, the polar R coordinates are in WPF units and have no upper
+    /// limit.  If false, the polar R coordinates can vary from 0.0 to 1.0, and
+    /// 1.0 represents half of either the graph rectangle height or width,
+    /// whichever is smaller.
+    /// </param>
     //*************************************************************************
 
-    public PolarLayout()
+    public PolarLayoutBase
+    (
+        Boolean polarRIsAbsolute
+    )
     {
-        // (Do nothing.)
+        m_bPolarRIsAbsolute = polarRIsAbsolute;
 
-        AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -164,10 +146,13 @@ public class PolarLayout : AsyncLayoutBase
                 SinglePolarCoordinates oSinglePolarCoordinates =
                     (SinglePolarCoordinates)oSinglePolarCoordinatesAsObject;
 
-                // Pin the R coordinate to the range (0, 1).
+                Double dR = oSinglePolarCoordinates.R;
 
-                Double dR = Math.Min(oSinglePolarCoordinates.R, 1.0);
-                dR = Math.Max(dR, 0.0) * dHalfSize;
+                if (!m_bPolarRIsAbsolute)
+                {
+                    dR = Math.Max(dR, 0.0);
+                    dR = Math.Min(dR, 1.0) * dHalfSize;
+                }
 
                 Double dAngleRadians = -MathUtil.DegreesToRadians(
                     oSinglePolarCoordinates.Angle);
@@ -198,7 +183,7 @@ public class PolarLayout : AsyncLayoutBase
     {
         base.AssertValid();
 
-        // (Do nothing.)
+        // m_bPolarRIsAbsolute
     }
 
 
@@ -206,7 +191,12 @@ public class PolarLayout : AsyncLayoutBase
     //  Protected fields
     //*************************************************************************
 
-    // (None.)
+    /// If true, the polar R coordinates are in WPF units and have no upper
+    /// limit.  If false, the polar R coordinates can vary from 0.0 to 1.0, and
+    /// 1.0 represents half of either the graph rectangle height or width,
+    /// whichever is smaller.
+
+    protected Boolean m_bPolarRIsAbsolute;
 }
 
 }

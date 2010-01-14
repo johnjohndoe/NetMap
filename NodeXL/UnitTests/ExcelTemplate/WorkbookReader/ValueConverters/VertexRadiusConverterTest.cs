@@ -277,7 +277,9 @@ public class VertexRadiusConverterTest : Object
         Single fRadiusWorkbook =
             m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
-        Assert.AreEqual(fExpectedRadiusWorkbook, fRadiusWorkbook);
+        Assert.IsTrue(100 *
+			Math.Abs(fExpectedRadiusWorkbook - fRadiusWorkbook) /
+			fExpectedRadiusWorkbook < 0.1);
     }
 
     //*************************************************************************

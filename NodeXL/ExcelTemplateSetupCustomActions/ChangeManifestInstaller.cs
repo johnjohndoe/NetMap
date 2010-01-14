@@ -18,7 +18,14 @@ parameter is copied to the MyDocuments folder, and the custom properties of the
 copied document are set to point to the deployment manifest and customization
 DLL.  This is refered to as "attaching the customization" in the article.
 
-Here is what the modified version does:
+The original version doesn't work properly.  You can't just attach a
+customization to the final source document.  If you do this, the file's
+Modified date will be later than the file's Created date.  Windows Installer
+will never overwrite such files, so the document won't get updated in the next
+release.
+
+This modified version fixes the problem in the original.  Here is what the
+modified version does:
 
 1. The customization is attached to the source document specified by the
    documentLocation parameter.
@@ -30,17 +37,16 @@ Here is what the modified version does:
 3. The source document specified by the documentLocation parameter is renamed
    to the name specified by the newDocumentName parameter.
 
-You can't just attach a customization to the final source document.  If you do
-this, the file's Modified date will be later than the file's Created date.
-Windows Installer will never overwrite such files, so the document won't get
-updated in the next release.
-
 Here is a sample set of parameters:
 
 /assemblyLocation="[TARGETDIR]Microsoft.NodeXL.ExcelTemplate.dll"
 /deploymentManifestLocation="[TARGETDIR]Microsoft.NodeXL.ExcelTemplate.vsto"
 /documentLocation="[AppDataFolder]Microsoft\Templates\TempNodeXLGraph.xltx"
 /newDocumentName="NodeXLGraph.xltx"
+
+With these sample parameters, the customization gets attached to
+TempNodeXLGraph.xltx, NodeXLGraph.xltx gets deleted if it exists, and
+TempNodeXLGraph.xltx gets renamed to NodeXLGraph.xltx.
 
 Original code is marked with OriginalCode.  New code is marked with NewCode.
 */

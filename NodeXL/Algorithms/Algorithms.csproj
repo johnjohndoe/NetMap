@@ -99,6 +99,7 @@
     <Compile Include="GraphMetricCalculators\IGraphMetricCalculator.cs" />
     <Compile Include="GraphMetricCalculators\OverallMetricCalculator.cs" />
     <Compile Include="GraphMetricCalculators\VertexDegreeCalculator.cs" />
+    <Compile Include="Miscellaneous\ConnectedComponentCalculator.cs" />
     <Compile Include="Miscellaneous\DuplicateEdgeDetector.cs" />
     <Compile Include="Miscellaneous\SubgraphCalculator.cs" />
   </ItemGroup>

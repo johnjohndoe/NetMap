@@ -572,8 +572,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             String sAuthorName;
 
-            if ( !XmlUtil.GetInnerText(oAuthorNameXmlNode, false,
-                out sAuthorName) )
+            if ( !XmlUtil2.TrySelectSingleNodeAsString(oAuthorNameXmlNode,
+                "text()", null, out sAuthorName) )
             {
                 continue;
             }
@@ -613,8 +613,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             String sStatus;
 
-            if ( XmlUtil2.SelectSingleNode(oEntryXmlNode, "a:title/text()",
-                oXmlNamespaceManager, false, out sStatus) )
+            if ( XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
+                "a:title/text()", oXmlNamespaceManager, out sStatus) )
             {
                 oTwitterVertex.StatusForAnalysis = sStatus;
 

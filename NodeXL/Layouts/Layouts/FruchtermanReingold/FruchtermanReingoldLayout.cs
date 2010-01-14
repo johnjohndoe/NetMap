@@ -323,8 +323,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
         // If the graph has already been laid out, use the current vertex
         // locations as initial values.
 
-        if ( !graph.ContainsKey(
-            ReservedMetadataKeys.LayoutBaseLayoutComplete) )
+        if ( !GraphHasBeenLaidOut(graph) )
         {
             // The graph has not been laid out.  By default, randomize the
             // locations of those vertices that are not locked.  If the graph

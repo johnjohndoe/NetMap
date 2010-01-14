@@ -178,7 +178,10 @@ public class WorkbookReader : Object
 
         // Create a graph with the appropriate directedness.
 
-        IGraph oGraph = new Graph( GetGraphDirectedness(workbook) );
+        PerWorkbookSettings oPerWorkbookSettings =
+            new PerWorkbookSettings(workbook);
+
+        IGraph oGraph = new Graph(oPerWorkbookSettings.GraphDirectedness);
 
         // Read the edge worksheet.  This adds data to oGraph, 
         // ReadWorkbookContext.VertexNameDictionary, and
@@ -220,37 +223,13 @@ public class WorkbookReader : Object
             oClusterWorksheetReader = null;
         }
 
+        // Read the per-workbook settings that are stored directly on the
+        // graph.
+
+        oPerWorkbookSettings.ReadWorksheet(workbook, readWorkbookContext,
+            oGraph);
+
         return (oGraph);
-    }
-
-    //*************************************************************************
-    //  Method: GetGraphDirectedness()
-    //
-    /// <summary>
-    /// Gets the directedness that should be used for the new graph.
-    /// </summary>
-    ///
-    /// <param name="oWorkbook">
-    /// Workbook containing the graph data.
-    /// </param>
-    ///
-    /// <returns>
-    /// The GraphDirectedness that should be used for the new graph.
-    /// </returns>
-    //*************************************************************************
-
-    protected GraphDirectedness
-    GetGraphDirectedness
-    (
-        Microsoft.Office.Interop.Excel.Workbook oWorkbook
-    )
-    {
-        Debug.Assert(oWorkbook != null);
-        AssertValid();
-
-        // Retrive the directedness from the per-workbook settings.
-
-        return ( (new PerWorkbookSettings(oWorkbook) ).GraphDirectedness );
     }
 
 

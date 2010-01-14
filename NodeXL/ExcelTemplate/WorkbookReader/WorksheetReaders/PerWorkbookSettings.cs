@@ -2,11 +2,14 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.ApplicationUtil;
+using Microsoft.WpfGraphicsLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -19,6 +22,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <remarks>
 /// The settings are stored in a table in a hidden worksheet.
+///
+/// <para>
+/// Call <see cref="ReadWorksheet" /> to read those settings that get stored
+/// directly on an <see cref="IGraph" /> object.  Use other properties to get
+/// and set other settings that are not stored on an <see cref="IGraph" />
+/// object.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -83,6 +94,110 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
+    //  Property: BackColor
+    //
+    /// <summary>
+    /// Gets or sets the graph's background color.
+    /// </summary>
+    ///
+    /// <value>
+    /// The graph's background color, as a Nullable&lt;Color&gt;, or a Nullable
+    /// with no value if a background color hasn't been specified.  The default
+    /// value is a Nullable with no value.
+    /// </value>
+    //*************************************************************************
+
+    public Nullable<Color>
+    BackColor
+    {
+        get
+        {
+            AssertValid();
+
+            // The color is stored in the workbook as a String created by
+            // ColorConverter2.  Samples: "White", "100,100,100".
+
+            Object oBackColorAsObject;
+
+            if ( TryGetValue(BackColorSettingName, typeof(String),
+                out oBackColorAsObject) )
+            {
+                Color oBackColor;
+
+                if ( ( new ColorConverter2() ).TryWorkbookToGraph(
+                    (String)oBackColorAsObject, out oBackColor) )
+                {
+                    return ( new Nullable<Color>(oBackColor) );
+                }
+            }
+
+            return ( new Nullable<Color>() );
+        }
+
+        set
+        {
+            String sBackColor;
+
+            if (value.HasValue)
+            {
+                // Preceed the color with an apostrophe to force Excel to treat
+                // "100,100,100", for example, as text and not a number.
+
+                sBackColor = "'" +
+                    ( new ColorConverter2() ).GraphToWorkbook(value.Value);
+            }
+            else
+            {
+                sBackColor = String.Empty;
+            }
+
+            SetValue(BackColorSettingName, sBackColor);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BackgroundImageUri
+    //
+    /// <summary>
+    /// Gets or sets the URI string for the graph's background image.
+    /// </summary>
+    ///
+    /// <value>
+    /// An URI string for the graph's background image, as a String, or null if
+    /// no background image has been specified.  The default value is null.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    BackgroundImageUri
+    {
+        get
+        {
+            AssertValid();
+
+            Object oBackgroundImageUri;
+
+            if ( TryGetValue(BackgroundImageUriSettingName, typeof(String),
+                out oBackgroundImageUri) )
+            {
+                return ( (String)oBackgroundImageUri );
+            }
+
+            return (null);
+        }
+
+        set
+        {
+            SetValue(BackgroundImageUriSettingName,
+                (value == null) ? String.Empty : value);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: GraphDirectedness
     //
     /// <summary>
@@ -128,6 +243,56 @@ public class PerWorkbookSettings : WorksheetReaderBase
             SetValue( GraphDirectednessSettingName, value.ToString() );
 
             AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AutoLayoutOnOpen
+    //
+    /// <summary>
+    /// Gets the layout to use when the workbook is opened to automatically lay
+    /// out and show the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The <see cref="LayoutType" /> to use when the workbook is opened, or
+    /// null to not automatically lay out and show the graph.
+    /// </value>
+    ///
+    /// <value>
+    /// If this returns null, no special action should be taken when the
+    /// workbook is opened.  If it is non-null, the layout should be set to the
+    /// returned value and the workbook should be automatically read.
+    /// </value>
+    //*************************************************************************
+
+    public Nullable<LayoutType>
+    AutoLayoutOnOpen
+    {
+        get
+        {
+            AssertValid();
+
+            // The LayoutType is stored in the workbook as a String.  Sample:
+            // "Grid".
+
+            Object oLayoutType;
+
+            if ( TryGetValue(AutoLayoutOnOpenSettingName, typeof(String),
+                out oLayoutType) )
+            {
+                try
+                {
+                    return ( new Nullable<LayoutType>(
+                        (LayoutType)Enum.Parse(typeof(LayoutType),
+                            (String)oLayoutType) ) );
+                }
+                catch (ArgumentException)
+                {
+                }
+            }
+
+            return ( new Nullable<LayoutType>() );
         }
     }
 
@@ -317,6 +482,66 @@ public class PerWorkbookSettings : WorksheetReaderBase
             }
 
             AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ReadWorksheet()
+    //
+    /// <summary>
+    /// Reads per-workbook settings that are stored directly on an <see
+    /// cref="IGraph" /> object.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook containing the graph data.
+    /// </param>
+    ///
+    /// <param name="readWorkbookContext">
+    /// Provides access to objects needed for converting an Excel workbook to a
+    /// NodeXL graph.
+    /// </param>
+    ///
+    /// <param name="graph">
+    /// Graph to add data to.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    ReadWorksheet
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        ReadWorkbookContext readWorkbookContext,
+        IGraph graph
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert(readWorkbookContext != null);
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        Nullable<Color> oBackColor = this.BackColor;
+
+        if (oBackColor.HasValue)
+        {
+            graph.SetValue(ReservedMetadataKeys.GraphBackColor,
+                oBackColor.Value);
+
+            // (Note that if there is no per-workbook background color, the
+            // GraphDrawer.BackColor property will be used instead.)
+        }
+
+        String sBackgroundImageUri = this.BackgroundImageUri;
+
+        if ( !String.IsNullOrEmpty(sBackgroundImageUri) )
+        {
+            System.Windows.Media.ImageSource oImage = ( new WpfImageUtil() ).
+                GetImageSynchronousIgnoreDpi(sBackgroundImageUri);
+
+            graph.SetValue(ReservedMetadataKeys.GraphBackgroundImage, oImage);
+
+            // (Note that if there is no per-workbook background image, no
+            // background image will be drawn.)
         }
     }
 
@@ -543,7 +768,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
         // user may have unhidden it and edited the settings.  Therefore, don't
         // throw an exception if the value type is incorrect.
 
-        if (oSettings.TryGetValue(settingName, out value) &&
+        if (oSettings.TryGetValue(settingName, out value) && value != null &&
             value.GetType() == valueType)
         {
             return (true);
@@ -748,9 +973,23 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
     protected const String TemplateVersionSettingName = "Template Version";
 
+    /// Name of the BackColor setting.
+
+    protected const String BackColorSettingName = "Background Color";
+
+    /// Name of the BackgroundImageUri setting.
+
+    protected const String BackgroundImageUriSettingName =
+        "Background Image";
+
     /// Name of the GraphDirectedness setting.
 
     protected const String GraphDirectednessSettingName = "Graph Directedness";
+
+    /// Name of the AutoLayoutOnOpen setting.
+
+    protected const String AutoLayoutOnOpenSettingName =
+        "Auto Layout on Open";
 
     /// Name of the FilteredAlpha setting.
 

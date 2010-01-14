@@ -57,6 +57,12 @@
     <Compile Include="..\..\Common\EnumUtil.cs">
       <Link>Util\EnumUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelColumnFormat.cs">
+      <Link>Util\Excel\ExcelColumnFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
+      <Link>Util\Excel\ExcelDateTimeUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\ExceptionUtil.cs">
       <Link>Util\ExceptionUtil.cs</Link>
     </Compile>
@@ -88,9 +94,6 @@
     </Compile>
     <Compile Include="..\..\Common\UrlUtil.cs">
       <Link>Util\UrlUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\XmlUtil.cs">
-      <Link>Util\XmlUtil.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\XmlUtil2.cs">
       <Link>Util\XmlUtil2.cs</Link>

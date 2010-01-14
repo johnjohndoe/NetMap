@@ -2,13 +2,17 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.IO;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Adapters;
 using Microsoft.NodeXL.Visualization.Wpf;
+using Microsoft.WpfGraphicsLib;
 
 namespace TestWpfNodeXLControl
 {
@@ -122,8 +126,9 @@ public partial class MainForm : Form
     protected void
     PopulateGraph()
     {
-        IVertexCollection oVertices = m_oNodeXLControl.Graph.Vertices;
-        IEdgeCollection oEdges = m_oNodeXLControl.Graph.Edges;
+        IGraph oGraph = m_oNodeXLControl.Graph;
+        IVertexCollection oVertices = oGraph.Vertices;
+        IEdgeCollection oEdges = oGraph.Edges;
         Double dWidth = this.Width;
         Double dHeight = this.Height;
         Random oRandom = new Random();
@@ -138,7 +143,7 @@ public partial class MainForm : Form
         oVertex1.SetValue( ReservedMetadataKeys.PerVertexShape,
             VertexShape.Circle);
 
-        oVertex1.SetValue(ReservedMetadataKeys.PerVertexRadius, 50.0F);
+        oVertex1.SetValue(ReservedMetadataKeys.PerVertexRadius, 5.0F);
         oVertex1.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
         oVertex1.Location = new System.Drawing.PointF(300, 300);
 
@@ -150,7 +155,7 @@ public partial class MainForm : Form
         oVertex2.SetValue( ReservedMetadataKeys.PerVertexShape,
             VertexShape.Circle);
 
-        oVertex2.SetValue(ReservedMetadataKeys.PerVertexRadius, 50.0F);
+        oVertex2.SetValue(ReservedMetadataKeys.PerVertexRadius, 5.0F);
         oVertex2.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
         oVertex2.Location = new System.Drawing.PointF(500, 300);
 
@@ -213,7 +218,7 @@ public partial class MainForm : Form
 
         IVertex oFirstVertex = oVertices.Add();
 
-        oFirstVertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 15.0F);
+        oFirstVertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 4.0F);
 
         IVertex oPreviousVertex = oFirstVertex;
 
@@ -245,7 +250,8 @@ public partial class MainForm : Form
 
             Single fRadius = (Single)(
                 Microsoft.NodeXL.Visualization.Wpf.VertexDrawer.MinimumRadius +
-                (Microsoft.NodeXL.Visualization.Wpf.VertexDrawer.MaximumRadius
+                (0.1 * 
+                Microsoft.NodeXL.Visualization.Wpf.VertexDrawer.MaximumRadius
                 - Microsoft.NodeXL.Visualization.Wpf.VertexDrawer.MinimumRadius)
                     * oRandom.NextDouble() );
 
@@ -389,6 +395,7 @@ public partial class MainForm : Form
         }
 
         AddToolTipsToVertices();
+        SetBackgroundImage();
 
         m_oNodeXLControl.DrawGraph(true);
     }
@@ -426,6 +433,31 @@ public partial class MainForm : Form
         foreach (IEdge oEdge in m_oNodeXLControl.SelectedEdges)
         {
             AddToStatus( oEdge.ID.ToString() );
+        }
+    }
+
+    protected void
+    SetBackgroundImage()
+    {
+        if (this.chkSetBackgroundImage.Checked)
+        {
+            String sAssemblyPath = Path.GetDirectoryName(
+                Assembly.GetExecutingAssembly().Location);
+
+            WpfImageUtil oWpfImageUtil = new WpfImageUtil();
+
+            BitmapSource oBitmapSource =
+                oWpfImageUtil.GetImageSynchronousIgnoreDpi(
+                    Path.Combine(sAssemblyPath,
+                    "..\\..\\Images\\TestBackground.jpg") );
+
+            m_oNodeXLControl.Graph.SetValue(
+                ReservedMetadataKeys.GraphBackgroundImage, oBitmapSource);
+        }
+        else
+        {
+            m_oNodeXLControl.Graph.RemoveKey(
+                ReservedMetadataKeys.GraphBackgroundImage);
         }
     }
 
@@ -663,6 +695,17 @@ public partial class MainForm : Form
     )
     {
         m_oNodeXLWithAxesControl.ShowAxes = chkShowAxes.Checked;
+    }
+
+    private void
+    chkSetBackgroundImage_CheckedChanged
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        SetBackgroundImage();
+        m_oNodeXLControl.DrawGraph(false);
     }
 
     private void

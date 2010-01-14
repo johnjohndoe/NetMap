@@ -61,6 +61,32 @@ public interface ILayout
     }
 
     //*************************************************************************
+    //  Property: SupportsOutOfBoundsVertices
+    //
+    /// <summary>
+    /// Gets a flag indicating whether vertices laid out by the class can fall
+    /// outside the graph bounds.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the vertices call fall outside the graph bounds.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If true, the <see cref="IVertex.Location" /> of the laid-out vertices
+    /// may be within the graph rectangle's margin or outside the graph
+    /// rectangle.  If false, the vertex locations are always within the
+    /// margin.
+    /// </remarks>
+    //*************************************************************************
+
+    Boolean
+    SupportsOutOfBoundsVertices
+    {
+        get;
+    }
+
+    //*************************************************************************
     //  Method: LayOutGraph()
     //
     /// <summary>

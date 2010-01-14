@@ -70,8 +70,8 @@
     <Compile Include="..\..\Common\StringUtil.cs">
       <Link>StringUtil.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\XmlUtil.cs">
-      <Link>XmlUtil.cs</Link>
+    <Compile Include="..\..\Common\XmlUtil2.cs">
+      <Link>XmlUtil2.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -193,6 +193,10 @@
       <Link>Util\ListBoxPlus.cs</Link>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="..\..\Common\PictureBoxPlus.cs">
+      <Link>Util\PictureBoxPlus.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="..\..\Common\Win32Functions.cs">
       <Link>Util\Win32Functions.cs</Link>
     </Compile>
@@ -212,9 +216,6 @@
     </Compile>
     <Compile Include="..\Common\ProjectInformation.cs">
       <Link>Util\ProjectInformation.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\RegisterUser\RegisterUserException.cs">
-      <Link>Util\RegisterUser\RegisterUserException.cs</Link>
     </Compile>
     <Compile Include="..\Common\RegisterUser\UserRegisterer.cs">
       <Link>Util\RegisterUser\UserRegisterer.cs</Link>
@@ -324,11 +325,11 @@
     <Compile Include="Dialogs\CalculateGraphMetrics\CalculateGraphMetricsDialog.designer.cs">
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.cs">
+    <Compile Include="Dialogs\ConvertNodeXLWorkbook\ConvertNodeXLWorkbookDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.designer.cs">
-      <DependentUpon>ConvertOldWorkbookDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\ConvertNodeXLWorkbook\ConvertNodeXLWorkbookDialog.designer.cs">
+      <DependentUpon>ConvertNodeXLWorkbookDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CreateSubgraphImages\CreateSubgraphImagesDialog.cs">
       <SubType>Form</SubType>
@@ -630,9 +631,9 @@
     <Compile Include="Util\ExcelObjectNames.cs" />
     <Compile Include="Util\GraphImporter.cs" />
     <Compile Include="Util\NodeXLControlUtil.cs" />
+    <Compile Include="Util\NodeXLWorkbookConversionException.cs" />
+    <Compile Include="Util\NodeXLWorkbookConverter.cs" />
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
-    <Compile Include="Util\OldWorkbookConversionException.cs" />
-    <Compile Include="Util\OldWorkbookConverter.cs" />
     <Compile Include="Util\PlugInManager.cs" />
     <Compile Include="Util\SubgraphImageCreator.cs" />
     <Compile Include="Util\TableColumnAdder.cs" />
@@ -778,8 +779,8 @@
       <DependentUpon>CalculateGraphMetricsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ConvertOldWorkbook\ConvertOldWorkbookDialog.resx">
-      <DependentUpon>ConvertOldWorkbookDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\ConvertNodeXLWorkbook\ConvertNodeXLWorkbookDialog.resx">
+      <DependentUpon>ConvertNodeXLWorkbookDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DynamicFilters\DynamicFilterDialog.resx">
       <DependentUpon>DynamicFilterDialog.cs</DependentUpon>
@@ -857,7 +858,7 @@
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
-        <ProjectProperties HostName="NodeXLGraph.xltx" HostPackage="{B284B16A-C42C-4438-BDCD-B72F4AC43CFB}" OfficeVersion="12.0" VstxVersion="3.0" ApplicationType="XLT" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files\Microsoft Office\Office12\Excel.exe" DebugInfoCommandLine="/t &quot;[$OUTPUT]NodeXLGraph.xltx&quot;" />
+        <ProjectProperties HostName="NodeXLGraph.xltx" HostPackage="{B284B16A-C42C-4438-BDCD-B72F4AC43CFB}" OfficeVersion="12.0" VstxVersion="3.0" ApplicationType="XLT" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files (x86)\Microsoft Office\Office12\Excel.exe" DebugInfoCommandLine="/t &quot;[$OUTPUT]NodeXLGraph.xltx&quot;" />
         <Host Name="Excel Document" Path=".\NodeXLGraph.xltx" GeneratedCodeNamespace="Microsoft.NodeXL.ExcelTemplate" PublishedHash="4D8E879928CBA270A29ED7FD412557FCA49DBAF9">
           <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="245DB3698AC9C0D8DC43523F505F15A7AE65DDCD" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
           <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />

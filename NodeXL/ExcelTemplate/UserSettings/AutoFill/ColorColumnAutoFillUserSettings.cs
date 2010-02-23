@@ -309,37 +309,6 @@ public class ColorColumnAutoFillUserSettings : Object
         }
     }
 
-    //*************************************************************************
-    //  Method: Copy()
-    //
-    /// <summary>
-    /// Creates a deep copy of the object.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A deep copy of the object.
-    /// </returns>
-    //*************************************************************************
-
-    public ColorColumnAutoFillUserSettings
-    Copy()
-    {
-        AssertValid();
-
-        ColorColumnAutoFillUserSettings oCopy =
-            new ColorColumnAutoFillUserSettings();
-
-        oCopy.UseSourceNumber1 = this.UseSourceNumber1;
-        oCopy.UseSourceNumber2 = this.UseSourceNumber2;
-        oCopy.SourceNumber1 = this.SourceNumber1;
-        oCopy.SourceNumber2 = this.SourceNumber2;
-        oCopy.DestinationColor1 = this.DestinationColor1;
-        oCopy.DestinationColor2 = this.DestinationColor2;
-        oCopy.IgnoreOutliers = this.IgnoreOutliers;
-
-        return (oCopy);
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()

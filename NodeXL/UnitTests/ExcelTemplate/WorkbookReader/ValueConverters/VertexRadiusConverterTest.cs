@@ -278,8 +278,8 @@ public class VertexRadiusConverterTest : Object
             m_oVertexRadiusConverter.GraphToWorkbook(fRadiusGraph);
 
         Assert.IsTrue(100 *
-			Math.Abs(fExpectedRadiusWorkbook - fRadiusWorkbook) /
-			fExpectedRadiusWorkbook < 0.1);
+            Math.Abs(fExpectedRadiusWorkbook - fRadiusWorkbook) /
+            fExpectedRadiusWorkbook < 0.1);
     }
 
     //*************************************************************************

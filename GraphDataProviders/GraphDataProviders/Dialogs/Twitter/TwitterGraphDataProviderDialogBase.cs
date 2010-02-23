@@ -133,6 +133,10 @@ public class TwitterGraphDataProviderDialogBase : GraphDataProviderDialogBase
                         break;
 
                     case HttpStatusCode.BadRequest:  // HTTP 400.
+                    case (HttpStatusCode)420:
+
+                        // See TwitterNetworkAnalyzerBase for an explanation of
+                        // why there are two status codes for this case.
 
                         sMessage = String.Format(
 

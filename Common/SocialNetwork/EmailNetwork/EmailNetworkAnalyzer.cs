@@ -1595,9 +1595,17 @@ public class EmailNetworkAnalyzer : Object
 
         if ( !String.IsNullOrEmpty(subjectText) )
         {
+            // Important note:
+            //
+            // System.Subject works for the subject on Vista with its original
+            // search engine, and with Windows Desktop Search 4.0.  On XP with
+            // Windows.Desktop.Search, however, System.Subject does not work.
+            // System.Title works in Vista/WDS4.0 and XP/WDS4.0.  (It has not
+            // yet been tested on Vista with its original search engine).
+
             oStringBuilder.AppendFormat(
 
-                " AND Contains(System.Subject, '\"{0}\"')"
+                " AND Contains(System.Title, '\"{0}\"')"
                 ,
                 EscapeStringForContains(subjectText)
                 );

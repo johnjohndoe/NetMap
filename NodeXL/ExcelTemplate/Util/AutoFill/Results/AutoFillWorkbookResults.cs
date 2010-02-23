@@ -418,7 +418,7 @@ public class AutoFillWorkbookResults : Object
 
         // Use string concatenation.
 
-        return ( String.Join(AutoFillWorkbookResults.FieldSeparatorString,
+        return ( String.Join(PerWorkbookSettings.FieldSeparatorString,
 
             new String [] {
 
@@ -491,27 +491,35 @@ public class AutoFillWorkbookResults : Object
         ColorConverter oColorConverter = new ColorConverter();
 
         String [] asFields = theString.Split(
-            AutoFillWorkbookResults.FieldSeparator);
+            PerWorkbookSettings.FieldSeparator);
 
-        if (asFields.Length >= 30)
+        Int32 iStartIndex = 0;
+
+        if (asFields.Length == 48)
         {
-            m_oEdgeColorResults.ConvertFromString(asFields, 0);
-            m_oEdgeWidthResults.ConvertFromString(asFields, 5);
-            m_oEdgeAlphaResults.ConvertFromString(asFields, 10);
+            iStartIndex = m_oEdgeColorResults.ConvertFromString(
+                asFields, iStartIndex);
 
-            m_oVertexColorResults.ConvertFromString(asFields, 15);
-            m_oVertexRadiusResults.ConvertFromString(asFields, 20);
-            m_oVertexAlphaResults.ConvertFromString(asFields, 25);
+            iStartIndex = m_oEdgeWidthResults.ConvertFromString(
+                asFields, iStartIndex);
 
-            // An earlier version of this class did not keep track of whether
-            // the X and Y columns were autofilled, so earlier workbooks have
-            // only 30 fields.
+            iStartIndex = m_oEdgeAlphaResults.ConvertFromString(
+                asFields, iStartIndex);
 
-            if (asFields.Length >= 40)
-            {
-                m_oVertexXResults.ConvertFromString(asFields, 30);
-                m_oVertexYResults.ConvertFromString(asFields, 35);
-            }
+            iStartIndex = m_oVertexColorResults.ConvertFromString(
+                asFields, iStartIndex);
+
+            iStartIndex = m_oVertexRadiusResults.ConvertFromString(
+                asFields, iStartIndex);
+
+            iStartIndex = m_oVertexAlphaResults.ConvertFromString(
+                asFields, iStartIndex);
+
+            iStartIndex = m_oVertexXResults.ConvertFromString(
+                asFields, iStartIndex);
+
+            iStartIndex = m_oVertexYResults.ConvertFromString(
+                asFields, iStartIndex);
         }
     }
 
@@ -539,20 +547,6 @@ public class AutoFillWorkbookResults : Object
         Debug.Assert(m_oVertexXResults != null);
         Debug.Assert(m_oVertexYResults != null);
     }
-
-
-    //*************************************************************************
-    //  Public constants
-    //*************************************************************************
-
-    /// Field separator used by ConvertToString() and ConvertFromString().
-    /// This is the Unicode "dark shade" character, which is unlikely to be
-    /// used in column names.  This is defined in both character array and
-    /// string versions to accommodate String.Split() and String.Join().
-
-    public static readonly Char [] FieldSeparator = new Char[] {'\u2593'};
-    ///
-    public const String FieldSeparatorString = "\u2593";
 
 
     //*************************************************************************

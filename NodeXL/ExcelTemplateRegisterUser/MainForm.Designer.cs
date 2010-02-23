@@ -40,7 +40,7 @@ namespace Microsoft.NodeXL.ExcelTemplateRegisterUser
             this.usrRegisterUser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.usrRegisterUser.Location = new System.Drawing.Point(0, 0);
             this.usrRegisterUser.Name = "usrRegisterUser";
-            this.usrRegisterUser.Size = new System.Drawing.Size(262, 204);
+            this.usrRegisterUser.Size = new System.Drawing.Size(426, 210);
             this.usrRegisterUser.TabIndex = 0;
             this.usrRegisterUser.Done += new System.EventHandler(this.usrRegisterUser_Done);
             // 
@@ -48,7 +48,7 @@ namespace Microsoft.NodeXL.ExcelTemplateRegisterUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(262, 204);
+            this.ClientSize = new System.Drawing.Size(426, 210);
             this.Controls.Add(this.usrRegisterUser);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;

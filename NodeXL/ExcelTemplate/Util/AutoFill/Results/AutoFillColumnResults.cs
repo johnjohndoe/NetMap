@@ -41,7 +41,7 @@ public class AutoFillColumnResults : Object
     //*************************************************************************
 
     public AutoFillColumnResults()
-    : this(null, 0, 0)
+    : this(null, 0, 0, 0)
     {
         // (Do nothing else.)
 
@@ -67,18 +67,24 @@ public class AutoFillColumnResults : Object
     /// <param name="sourceCalculationNumber2">
     /// The actual second source number used in the calculations.
     /// </param>
+    ///
+    /// <param name="decimalPlaces">
+    /// The number of decimal places displayed in the column.
+    /// </param>
     //*************************************************************************
 
     public AutoFillColumnResults
     (
         String sourceColumnName,
         Double sourceCalculationNumber1,
-        Double sourceCalculationNumber2
+        Double sourceCalculationNumber2,
+        Int32 decimalPlaces
     )
     {
         m_sSourceColumnName = sourceColumnName;
         m_dSourceCalculationNumber1 = sourceCalculationNumber1;
         m_dSourceCalculationNumber2 = sourceCalculationNumber2;
+        m_iDecimalPlaces = decimalPlaces;
 
         // AssertValid();
     }
@@ -206,6 +212,29 @@ public class AutoFillColumnResults : Object
     }
 
     //*************************************************************************
+    //  Property: DecimalPlaces
+    //
+    /// <summary>
+    /// Gets the number of decimal places displayed in the column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The number of decimal places displayed in the column, as an Int32.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    DecimalPlaces
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iDecimalPlaces);
+        }
+    }
+
+    //*************************************************************************
     //  Method: ConvertToString()
     //
     /// <summary>
@@ -230,13 +259,14 @@ public class AutoFillColumnResults : Object
 
         IFormatProvider oInvariantCulture = CultureInfo.InvariantCulture;
 
-        return (String.Join(AutoFillWorkbookResults.FieldSeparatorString,
+        return (String.Join(PerWorkbookSettings.FieldSeparatorString,
 
             new String [] {
 
             m_sSourceColumnName,
             m_dSourceCalculationNumber1.ToString(oInvariantCulture),
             m_dSourceCalculationNumber2.ToString(oInvariantCulture),
+            m_iDecimalPlaces.ToString(oInvariantCulture),
             } ) );
     }
 
@@ -268,8 +298,8 @@ public class AutoFillColumnResults : Object
     )
     {
         Debug.Assert(asFields != null);
-        Debug.Assert(asFields.Length >= 3);
         Debug.Assert(iStartIndex >= 0);
+        Debug.Assert(iStartIndex + 3 < asFields.Length);
 
         m_sSourceColumnName = asFields[iStartIndex + 0];
 
@@ -284,7 +314,15 @@ public class AutoFillColumnResults : Object
         m_dSourceCalculationNumber2 = MathUtil.ParseCultureInvariantDouble(
             asFields[iStartIndex + 2] );
 
-        return (iStartIndex + 3);
+        m_iDecimalPlaces = MathUtil.ParseCultureInvariantInt32(
+            asFields[iStartIndex + 3] );
+
+        // Note:
+        //
+        // If another field is added here, the total expected field count in 
+        // AutoFillWorkbookResults.ConvertFromString() must be increased.
+
+        return (iStartIndex + 4);
     }
 
 
@@ -304,6 +342,7 @@ public class AutoFillColumnResults : Object
         // m_sSourceColumnName
         // m_dSourceCalculationNumber1
         // m_dSourceCalculationNumber2
+        Debug.Assert(m_iDecimalPlaces >= 0);
     }
 
 
@@ -322,6 +361,10 @@ public class AutoFillColumnResults : Object
     /// The actual second source number used in the calculations.
 
     protected Double m_dSourceCalculationNumber2;
+
+    /// The number of decimal places displayed in the column.
+
+    protected Int32 m_iDecimalPlaces;
 }
 
 }

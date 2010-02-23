@@ -2,7 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.Core
@@ -18,120 +18,19 @@ namespace Microsoft.NodeXL.Core
 /// This is a collection of objects that implement the <see cref="IEdge" />
 /// interface.  You can add edges to the collection, remove them, access an
 /// edge, and enumerate all edges.
-///
-/// <para>
-/// The NodeXL system includes an <see cref="EdgeCollection" /> implementation
-/// that can be used as-is in many graphing applications.  You can also derive
-/// a class from <see cref="EdgeCollection" /> or implement your own custom
-/// edge collection class from scratch.  The only requirement is that your
-/// custom class must implement IEdgeCollection.
-/// </para>
-///
 /// </remarks>
 ///
 /// <seealso cref="EdgeCollection" />
 /// <seealso cref="IEdge" />
 //*****************************************************************************
 
-public interface IEdgeCollection : ICollection, IEnumerable, IFormattableNodeXL
+public interface IEdgeCollection : ICollection<IEdge>
 {
     //*************************************************************************
     //  Method: Add()
     //
-    /// <overloads>
-    /// Adds an edge to the collection.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Adds an existing edge to the collection.
-    /// </summary>
-    ///
-    /// <param name="edge">
-    /// The edge to add to the collection.
-    /// </param>
-    ///
-    /// <returns>
-    /// The added edge.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// An exception is thrown if <paramref name="edge" /> is already in this
-    /// collection or in another edge collection.
-    ///
-    /// <para>
-    /// An exception is thrown if the directedness of <paramref name="edge" />
-    /// is incompatible with the <see cref="IGraph.Directedness" /> property on
-    /// the graph that owns this edge collection.
-    /// </para>
-    /// 
-    /// </remarks>
-    //*************************************************************************
-
-    IEdge
-    Add
-    (
-        IEdge edge
-    );
-
-    //*************************************************************************
-    //  Method: Add()
-    //
-    /// <summary>
-    /// Creates an edge of a specified type and adds it to the collection.
-    /// </summary>
-    ///
-    /// <param name="edgeFactory">
-    /// Object that can create an edge.
-    /// </param>
-    ///
-    /// <param name="vertex1">
-    /// The edge's first vertex.  The vertex must be contained in the graph
-    /// that owns this edge collection.
-    /// </param>
-    ///
-    /// <param name="vertex2">
-    /// The edge's second vertex.  The vertex must be contained in the graph
-    /// that owns this edge collection.
-    /// </param>
-    ///
-    /// <param name="isDirected">
-    /// If true, <paramref name="vertex1" /> is the edge's back vertex and
-    /// <paramref name="vertex2" /> is the edge's front vertex.  If false, the
-    /// edge is undirected.
-    /// </param>
-    ///
-    /// <returns>
-    /// The new edge, as an <see cref="IEdge" />.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// This method creates an edge using <paramref name="edgeFactory" />,
-    /// connects it to the specified vertices, and adds the edge to the
-    /// collection.
-    ///
-    /// <para>
-    /// An exception is thrown if <paramref name="isDirected" /> is
-    /// incompatible with the <see cref="IGraph.Directedness" /> property on
-    /// the graph that owns this edge collection.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    IEdge
-    Add
-    (
-        IEdgeFactory edgeFactory,
-        IVertex vertex1,
-        IVertex vertex2,
-        Boolean isDirected
-    );
-
-    //*************************************************************************
-    //  Method: Add()
-    //
-    /// <summary>
-    /// Creates an edge of a default type and adds it to the collection.
+    /// Creates an edge and adds it to the collection.
     /// </summary>
     ///
     /// <param name="vertex1">
@@ -155,9 +54,8 @@ public interface IEdgeCollection : ICollection, IEnumerable, IFormattableNodeXL
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates an edge of an implementation-specific default type,
-    /// connects it to the specified vertices, and adds the edge to the
-    /// collection.
+    /// This method creates an edge, connects it to the specified vertices, and
+    /// adds the edge to the collection.
     ///
     /// <para>
     /// An exception is thrown if <paramref name="isDirected" /> is
@@ -180,8 +78,7 @@ public interface IEdgeCollection : ICollection, IEnumerable, IFormattableNodeXL
     //  Method: Add()
     //
     /// <summary>
-    /// Creates an undirected edge of a default type and adds it to the
-    /// collection.
+    /// Creates an undirected edge and adds it to the collection.
     /// </summary>
     ///
     /// <param name="vertex1">
@@ -199,9 +96,8 @@ public interface IEdgeCollection : ICollection, IEnumerable, IFormattableNodeXL
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates an undirected edge of an implementation-specific
-    /// default type, connects it to the specified vertices, and adds the edge
-    /// to the collection.
+    /// This method creates an undirected edge, connects it to the specified
+    /// vertices, and adds the edge to the collection.
     ///
     /// <para>
     /// An exception is thrown if the graph that owns this edge collection has
@@ -217,44 +113,6 @@ public interface IEdgeCollection : ICollection, IEnumerable, IFormattableNodeXL
     (
         IVertex vertex1,
         IVertex vertex2
-    );
-
-    //*************************************************************************
-    //  Method: Clear()
-    //
-    /// <summary>
-    /// Removes all edges from the collection.
-    /// </summary>
-    //*************************************************************************
-
-    void
-    Clear();
-
-    //*************************************************************************
-    //  Method: Contains()
-    //
-    /// <overloads>
-    /// Determines whether the collection contains a specified edge.
-    /// </overloads>
-    ///
-    /// <summary>
-    /// Determines whether the collection contains an edge specified by
-    /// reference.
-    /// </summary>
-    ///
-    /// <param name="edge">
-    /// The edge to search for.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the collection contains <paramref name="edge" />.
-    /// </returns>
-    //*************************************************************************
-
-    Boolean
-    Contains
-    (
-        IEdge edge
     );
 
     //*************************************************************************
@@ -459,46 +317,6 @@ public interface IEdgeCollection : ICollection, IEnumerable, IFormattableNodeXL
     (
         IVertex vertex1,
         IVertex vertex2
-    );
-
-    //*************************************************************************
-    //  Method: Remove()
-    //
-    /// <overloads>
-    /// Removes an edge from the collection.
-    /// </overloads>
-    ///
-    /// <summary>
-    /// Removes an edge specified by reference from the collection.
-    /// </summary>
-    ///
-    /// <param name="edge">
-    /// The edge to remove from the collection.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the edge was removed, false if the edge wasn't found in the
-    /// collection.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// This method searches the collection for <paramref name="edge" />.  If
-    /// found, it is removed from the collection and true is returned.  false
-    /// is returned otherwise.
-    ///
-    /// <para>
-    /// The edge is unusable once it is removed from the collection.
-    /// Attempting to access the edge's properties or methods will lead to
-    /// unpredictable results.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    Boolean
-    Remove
-    (
-        IEdge edge
     );
 
     //*************************************************************************

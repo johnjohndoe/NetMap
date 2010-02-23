@@ -271,7 +271,7 @@ public static class NodeXLControlUtil
     /// </param>
     ///
     /// <returns>
-    /// An array of vertices.
+    /// An array of vertices.  The array may be empty.
     /// </returns>
     //*************************************************************************
 
@@ -282,6 +282,10 @@ public static class NodeXLControlUtil
     )
     {
         Debug.Assert(nodeXLControl != null);
+
+        // Note: This method is inefficient.  A future refactoring should
+        // replace most IVertex[] parameters with ICollection<IVertex>,
+        // eliminating the need to convert collections to arrays.
 
         IVertexCollection oVertices = nodeXLControl.Graph.Vertices;
         Int32 iVertices = oVertices.Count;
@@ -296,6 +300,55 @@ public static class NodeXLControlUtil
         }
 
         return (aoVertices);
+    }
+
+    //*************************************************************************
+    //  Method: GetVisibleVerticesAsArray()
+    //
+    /// <summary>
+    /// Gets the collection of visible vertices as an array.
+    /// </summary>
+    ///
+    /// <param name="nodeXLControl">
+    /// Control to get the vertices from.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of visible vertices.  The array may be empty.
+    /// </returns>
+    //*************************************************************************
+
+    public static IVertex []
+    GetVisibleVerticesAsArray
+    (
+        NodeXLControl nodeXLControl
+    )
+    {
+        Debug.Assert(nodeXLControl != null);
+
+        // Note: This method is inefficient.  A future refactoring should
+        // replace most IVertex[] parameters with ICollection<IVertex>,
+        // eliminating the need to convert collections to arrays.
+
+        List<IVertex> oVisibleVertices = new List<IVertex>();
+
+        foreach (IVertex oVertex in nodeXLControl.Graph.Vertices)
+        {
+            Object oVisibilityKeyValue;
+
+            if (
+                !oVertex.TryGetValue(ReservedMetadataKeys.Visibility,
+                    typeof(VisibilityKeyValue), out oVisibilityKeyValue)
+                ||
+                (VisibilityKeyValue)oVisibilityKeyValue ==
+                    VisibilityKeyValue.Visible
+                )
+            {
+                oVisibleVertices.Add(oVertex);
+            }
+        }
+
+        return ( oVisibleVertices.ToArray() );
     }
 
     //*************************************************************************

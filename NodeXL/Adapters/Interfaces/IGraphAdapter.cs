@@ -28,15 +28,10 @@ namespace Microsoft.NodeXL.Adapters
 public interface IGraphAdapter
 {
     //*************************************************************************
-    //  Method: LoadGraph()
+    //  Method: LoadGraphFromFile()
     //
-    /// <overloads>
-    /// Creates a graph and loads it with graph data.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Creates a graph of type <see cref="Graph" /> and loads it with graph
-    /// data read from a file.
+    /// Creates a graph and loads it with graph data read from a file.
     /// </summary>
     ///
     /// <param name="filename">
@@ -44,88 +39,78 @@ public interface IGraphAdapter
     /// </param>
     ///
     /// <returns>
-    /// A new <see cref="Graph" /> loaded with graph data read from <paramref
+    /// A new graph loaded with graph data read from <paramref
     /// name="filename" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a <see cref="Graph" /> and loads it with the graph
-    /// data read from <paramref name="filename" />.
+    /// This method creates a graph and loads it with the graph data read from
+    /// <paramref name="filename" />.
     /// </remarks>
     //*************************************************************************
 
     IGraph
-    LoadGraph
+    LoadGraphFromFile
     (
         String filename
     );
 
     //*************************************************************************
-    //  Method: LoadGraph()
+    //  Method: LoadGraphFromStream()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="Stream" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="Stream" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that knows how to create a graph.
-    /// </param>
     ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="stream" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="stream" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="stream" />.  It
-    /// does not close <paramref name="stream" />.
+    /// This method creates a graph and loads it with the graph data read from
+    /// <paramref name="stream" />.  It does not close <paramref
+    /// name="stream" />.
     /// </remarks>
     //*************************************************************************
 
     IGraph
-    LoadGraph
+    LoadGraphFromStream
     (
-        IGraphFactory graphFactory,
         Stream stream
     );
 
     //*************************************************************************
-    //  Method: LoadGraph()
+    //  Method: LoadGraphFromString()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="String" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="String" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that knows how to create a graph.
-    /// </param>
     ///
     /// <param name="theString">
     /// <see cref="String" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="theString" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="theString" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="theString" />.
+    /// This method creates a graph and loads it with the graph data read from
+    /// <paramref name="theString" />.
     /// </remarks>
     //*************************************************************************
 
     IGraph
-    LoadGraph
+    LoadGraphFromString
     (
-        IGraphFactory graphFactory,
         String theString
     );
 

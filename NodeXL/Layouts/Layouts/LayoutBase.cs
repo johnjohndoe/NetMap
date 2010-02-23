@@ -2,7 +2,6 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -53,8 +52,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     ///
     /// <value>
     /// The margin to subtract from each edge.  Must be greater than or equal
-    /// to zero.  The units are determined by the <see cref="Graphics" />
-    /// object used to draw the graph.  The default value is 6.
+    /// to zero.  The default value is 6.
     /// </value>
     ///
     /// <remarks>
@@ -161,13 +159,6 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         this.ArgumentChecker.CheckArgumentNotNull(MethodName, "layoutContext",
             layoutContext);
 
-        if (graph.Vertices.Count == 0)
-        {
-            return;
-        }
-
-        // Subtract the margin from the graph rectangle.
-
         LayoutContext oLayoutContext2;
 
         if ( !SubtractMarginFromRectangle(layoutContext, out oLayoutContext2) )
@@ -175,11 +166,15 @@ public abstract class LayoutBase : LayoutsBase, ILayout
             return;
         }
 
-        LayOutGraphCore(graph, oLayoutContext2);
+        // Honor the optional LayOutTheseVerticesOnly key on the graph.
 
-        // Mark the graph as having been laid out.
+        ICollection<IVertex> oVerticesToLayOut = GetVerticesToLayOut(graph);
 
-        MarkGraphAsLaidOut(graph, layoutContext);
+        if (oVerticesToLayOut.Count > 0)
+        {
+            LayOutGraphCore(graph, oVerticesToLayOut, oLayoutContext2);
+            LayoutMetadataUtil.MarkGraphAsLaidOut(graph);
+        }
     }
 
     //*************************************************************************
@@ -309,6 +304,11 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
+    /// </param>
+    ///
     /// <param name="layoutContext">
     /// Provides access to objects needed to lay out the graph.  The <see
     /// cref="LayoutContext.GraphRectangle" /> is guaranteed to have non-zero
@@ -317,9 +317,9 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     ///
     /// <remarks>
     /// This method lays out the graph <paramref name="graph" /> by setting the
-    /// <see cref="IVertex.Location" /> property on all of the graph's
-    /// vertices, and optionally adding geometry metadata to the graph,
-    /// vertices, or edges.
+    /// <see cref="IVertex.Location" /> property on the vertices in <paramref
+    /// name="verticesToLayOut" />, and optionally adding geometry metadata to
+    /// the graph, vertices, or edges.
     ///
     /// <para>
     /// The arguments have already been checked for validity.
@@ -332,6 +332,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext
     );
 
@@ -562,17 +563,9 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// <returns>
     /// The vertices to lay out.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If the derived class wants to honor the optional <see
-    /// cref="ReservedMetadataKeys.LayOutTheseVerticesOnly" /> key on the
-    /// graph, it should use this method to get the collection of vertices to
-    /// lay out.  All vertices that are not included in the returned
-    /// collection should be completely ignored.
-    /// </remarks>
     //*************************************************************************
 
-    protected ICollection
+    protected ICollection<IVertex>
     GetVerticesToLayOut
     (
         IGraph graph
@@ -608,57 +601,46 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// Graph that is being laid out.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// The vertices being laid out.
+    /// </param>
+    ///
     /// <returns>
     /// The edges to lay out.
     /// </returns>
     ///
     /// <remarks>
-    /// If the derived class wants to honor the optional <see
-    /// cref="ReservedMetadataKeys.LayOutTheseVerticesOnly" /> key on the
-    /// graph and it needs a list of the edges that connect only the specified
-    /// vertices, it should use this method to get the collection of edges to
-    /// use.  All edges that are not included in the returned collection should
-    /// be completely ignored.
-    ///
-    /// <para>
-    /// All derived classes that want to honor the optional key should use <see
-    /// cref="GetVerticesToLayOut" />.  Only those derived classes that need an
-    /// edge list to do layout calculations (such as Fruchterman-Reingold) need
-    /// to use <see cref="GetEdgesToLayOut" /> as well.
-    /// </para>
-    ///
+    /// If the derived class needs a list of the edges that connect only those
+    /// vertices being laid out, it should use this method to get the list.
     /// </remarks>
     //*************************************************************************
 
-    protected ICollection
+    protected ICollection<IEdge>
     GetEdgesToLayOut
     (
-        IGraph graph
+        IGraph graph,
+        ICollection<IVertex> verticesToLayOut
     )
     {
         Debug.Assert(graph != null);
+        Debug.Assert(verticesToLayOut != null);
         AssertValid();
 
-        // If the LayOutTheseVerticesOnly key is present on the graph, its
-        // value is an IVertex array of vertices to lay out.
-
-        Object oVerticesToLayOut;
-
-        if ( !graph.TryGetValue(ReservedMetadataKeys.LayOutTheseVerticesOnly,
-            typeof( IVertex [] ), out oVerticesToLayOut) )
+        if (verticesToLayOut.Count == graph.Vertices.Count)
         {
+            // The entire graph is being laid out.
+
             return (graph.Edges);
         }
 
-        // The key is present.  Create a dictionary of the vertices to lay out.
-        // The key is the vertex ID and the value isn't used.
+        // Create a HashSet of the vertices to lay out.  The key is the vertex
+        // ID.
 
-        Dictionary<Int32, Char> oVertexIDDictionary =
-            new Dictionary<Int32, Char>();
+        HashSet<Int32> oVertexIDHashSet = new HashSet<Int32>();
 
-        foreach (IVertex oVertex in ( IVertex [] )oVerticesToLayOut)
+        foreach (IVertex oVertex in verticesToLayOut)
         {
-            oVertexIDDictionary.Add(oVertex.ID, ' ');
+            oVertexIDHashSet.Add(oVertex.ID);
         }
 
         // Create a dictionary of the edges to lay out.  The key is the edge ID
@@ -669,17 +651,14 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         Dictionary<Int32, IEdge> oEdgeIDDictionary =
             new Dictionary<Int32, IEdge>();
 
-        foreach (IVertex oVertex in ( IVertex [] )oVerticesToLayOut)
+        foreach (IVertex oVertex in verticesToLayOut)
         {
             foreach (IEdge oIncidentEdge in oVertex.IncidentEdges)
             {
-                IVertex [] aoIncidentEdgeVertices = oIncidentEdge.Vertices;
-
                 IVertex oAdjacentVertex =
-                    (aoIncidentEdgeVertices[0].ID == oVertex.ID) ?
-                    aoIncidentEdgeVertices[1] : aoIncidentEdgeVertices[0];
+                    oIncidentEdge.GetAdjacentVertex(oVertex);
 
-                if ( oVertexIDDictionary.ContainsKey(oAdjacentVertex.ID) )
+                if ( oVertexIDHashSet.Contains(oAdjacentVertex.ID) )
                 {
                     oEdgeIDDictionary[oIncidentEdge.ID] = oIncidentEdge;
                 }
@@ -687,96 +666,6 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         }
 
         return (oEdgeIDDictionary.Values);
-    }
-
-    //*************************************************************************
-    //  Method: MarkGraphAsLaidOut()
-    //
-    /// <summary>
-    /// Marks a graph as having been laid out.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// Graph that was laid out.
-    /// </param>
-    ///
-    /// <param name="layoutContext">
-    /// Provides access to objects used to lay out the graph.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This should be called after <paramref name="graph" /> has been
-    /// successfully laid out.  It adds a metadata key to the graph.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    MarkGraphAsLaidOut
-    (
-        IGraph graph,
-        LayoutContext layoutContext
-    )
-    {
-        Debug.Assert(graph != null);
-        Debug.Assert(layoutContext != null);
-        AssertValid();
-
-        // Mark the graph as having been laid out.
-
-        graph.SetValue(ReservedMetadataKeys.LayoutBaseLayoutComplete,
-            layoutContext.GraphRectangle);
-    }
-
-    //*************************************************************************
-    //  Method: MarkGraphAsNotLaidOut()
-    //
-    /// <summary>
-    /// Removes the metadata that indicates a graph has been laid out.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// The graph to remove the metadata from.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    MarkGraphAsNotLaidOut
-    (
-        IGraph graph
-    )
-    {
-        Debug.Assert(graph != null);
-        AssertValid();
-
-        graph.RemoveKey(ReservedMetadataKeys.LayoutBaseLayoutComplete);
-    }
-
-    //*************************************************************************
-    //  Method: GraphHasBeenLaidOut()
-    //
-    /// <summary>
-    /// Gets a flag indicating whether a graph has been laid out.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// The graph to check.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph has been laid out.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    GraphHasBeenLaidOut
-    (
-        IGraph graph
-    )
-    {
-        Debug.Assert(graph != null);
-
-        return ( graph.ContainsKey(
-            ReservedMetadataKeys.LayoutBaseLayoutComplete) );
     }
 
     //*************************************************************************
@@ -907,7 +796,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     protected void
     RandomizeVertexLocations
     (
-        ICollection vertices,
+        ICollection<IVertex> vertices,
         LayoutContext layoutContext,
         Random random,
         Boolean specifiedVerticesOnly

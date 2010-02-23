@@ -63,7 +63,9 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         Debug.Assert(workbook != null);
 
         m_oWorkbook = workbook;
-        m_oAutoFillUserSettings = new AutoFillUserSettings();
+
+        m_oAutoFillUserSettings = new AutoFillUserSettings(
+            new PerWorkbookSettings(workbook) );
 
         // Instantiate an object that retrieves and saves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -75,35 +77,6 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         // Initialize the ComboBoxes used to specify the data sources for the
         // edge and vertex table columns.
 
-        m_aoEdgeSourceColumnNameComboBoxes =
-            new AutoFillEdgeColumnComboBox []
-            {
-            cbxEdgeColorSourceColumnName,
-            cbxEdgeWidthSourceColumnName,
-            cbxEdgeAlphaSourceColumnName,
-            cbxEdgeVisibilitySourceColumnName,
-            cbxEdgeLabelSourceColumnName,
-            };
-
-        m_aoVertexSourceColumnNameComboBoxes =
-            new AutoFillVertexColumnComboBox []
-            {
-            cbxVertexColorSourceColumnName,
-            cbxVertexShapeSourceColumnName,
-            cbxVertexRadiusSourceColumnName,
-            cbxVertexAlphaSourceColumnName,
-            cbxVertexLabelSourceColumnName,
-            cbxVertexLabelFillColorSourceColumnName,
-            cbxVertexToolTipSourceColumnName,
-            cbxVertexVisibilitySourceColumnName,
-            cbxVertexLayoutOrderSourceColumnName,
-            cbxVertexXSourceColumnName,
-            cbxVertexYSourceColumnName,
-            cbxVertexPolarRSourceColumnName,
-            cbxVertexPolarAngleSourceColumnName,
-            };
-
-        InitializeLabels();
         InitializeEdgeComboBoxes(m_oWorkbook);
         InitializeVertexComboBoxes(m_oWorkbook);
 
@@ -145,58 +118,6 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
 
     //*************************************************************************
-    //  Method: InitializeLabels()
-    //
-    /// <summary>
-    /// Initializes the Labels that represent worksheet columns.
-    /// </summary>
-    //*************************************************************************
-
-    protected void
-    InitializeLabels()
-    {
-        // Make the worksheet, table, and column names available to
-        // tsmClearColumn_Click().
-
-        String sEdgePrefix =
-            WorksheetNames.Edges + "\t" + TableNames.Edges + "\t";
-
-        lblEdgeColor.Tag = sEdgePrefix + EdgeTableColumnNames.Color;
-        lblEdgeWidth.Tag = sEdgePrefix + EdgeTableColumnNames.Width;
-        lblEdgeAlpha.Tag = sEdgePrefix + EdgeTableColumnNames.Alpha;
-        lblEdgeVisibility.Tag = sEdgePrefix + EdgeTableColumnNames.Visibility;
-        lblEdgeLabel.Tag = sEdgePrefix + EdgeTableColumnNames.Label;
-
-        String sVertexPrefix =
-            WorksheetNames.Vertices + "\t" + TableNames.Vertices + "\t";
-
-        lblVertexColor.Tag = sVertexPrefix + VertexTableColumnNames.Color;
-        lblVertexShape.Tag = sVertexPrefix + VertexTableColumnNames.Shape;
-        lblVertexRadius.Tag = sVertexPrefix + VertexTableColumnNames.Radius;
-        lblVertexAlpha.Tag = sVertexPrefix + VertexTableColumnNames.Alpha;
-        lblVertexLabel.Tag = sVertexPrefix + VertexTableColumnNames.Label;
-
-        lblVertexLabelFillColor.Tag =
-            sVertexPrefix + VertexTableColumnNames.LabelFillColor;
-
-        lblVertexToolTip.Tag = sVertexPrefix + VertexTableColumnNames.ToolTip;
-
-        lblVertexVisibility.Tag =
-            sVertexPrefix + VertexTableColumnNames.Visibility;
-
-        lblVertexLayoutOrder.Tag =
-            sVertexPrefix + VertexTableColumnNames.LayoutOrder;
-
-        lblVertexX.Tag = sVertexPrefix + VertexTableColumnNames.X;
-        lblVertexY.Tag = sVertexPrefix + VertexTableColumnNames.Y;
-
-        lblVertexPolarR.Tag = sVertexPrefix + VertexTableColumnNames.PolarR;
-
-        lblVertexPolarAngle.Tag =
-            sVertexPrefix + VertexTableColumnNames.PolarAngle;
-    }
-
-    //*************************************************************************
     //  Method: InitializeEdgeComboBoxes()
     //
     /// <summary>
@@ -216,6 +137,16 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     )
     {
         Debug.Assert(oWorkbook != null);
+
+        m_aoEdgeSourceColumnNameComboBoxes =
+            new AutoFillEdgeColumnComboBox []
+            {
+            cbxEdgeColorSourceColumnName,
+            cbxEdgeWidthSourceColumnName,
+            cbxEdgeAlphaSourceColumnName,
+            cbxEdgeVisibilitySourceColumnName,
+            cbxEdgeLabelSourceColumnName,
+            };
 
         ListObject oEdgeTable;
 
@@ -264,6 +195,24 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         Debug.Assert(oWorkbook != null);
 
+        m_aoVertexSourceColumnNameComboBoxes =
+            new AutoFillVertexColumnComboBox []
+            {
+            cbxVertexColorSourceColumnName,
+            cbxVertexShapeSourceColumnName,
+            cbxVertexRadiusSourceColumnName,
+            cbxVertexAlphaSourceColumnName,
+            cbxVertexVisibilitySourceColumnName,
+            cbxVertexLabelSourceColumnName,
+            cbxVertexLabelFillColorSourceColumnName,
+            cbxVertexToolTipSourceColumnName,
+            cbxVertexLayoutOrderSourceColumnName,
+            cbxVertexXSourceColumnName,
+            cbxVertexYSourceColumnName,
+            cbxVertexPolarRSourceColumnName,
+            cbxVertexPolarAngleSourceColumnName,
+            };
+
         ListObject oVertexTable;
 
         if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Vertices,
@@ -297,6 +246,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         cbxVertexShapeSourceColumnName.Tag = VertexTableColumnNames.Shape;
         cbxVertexRadiusSourceColumnName.Tag = VertexTableColumnNames.Radius;
         cbxVertexAlphaSourceColumnName.Tag = VertexTableColumnNames.Alpha;
+
+        cbxVertexVisibilitySourceColumnName.Tag =
+            VertexTableColumnNames.Visibility;
+
         cbxVertexLabelSourceColumnName.Tag = VertexTableColumnNames.Label;
 
         cbxVertexLabelFillColorSourceColumnName.Tag =
@@ -304,15 +257,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         cbxVertexToolTipSourceColumnName.Tag = VertexTableColumnNames.ToolTip;
 
-        cbxVertexVisibilitySourceColumnName.Tag =
-            VertexTableColumnNames.Visibility;
-
         cbxVertexLayoutOrderSourceColumnName.Tag =
             VertexTableColumnNames.LayoutOrder;
 
         cbxVertexXSourceColumnName.Tag = VertexTableColumnNames.X;
         cbxVertexYSourceColumnName.Tag = VertexTableColumnNames.Y;
-
         cbxVertexPolarRSourceColumnName.Tag = VertexTableColumnNames.PolarR;
 
         cbxVertexPolarAngleSourceColumnName.Tag =
@@ -528,22 +477,16 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         foreach (ComboBox oComboBox in aoSourceColumnNameComboBoxes)
         {
-            if (oComboBox.Tag is String)
+            // Prevent the user from trying to autofill a column with itself.
+
+            if ( GetSourceColumnNameFromComboBox(oComboBox).ToLower() ==
+                GetDestinationColumnNameFromComboBox(oComboBox).ToLower() )
             {
-                // The name of the column corresponding to each ComboBox is
-                // stored in the ComboBox's Tag.  Use the column name to
-                // prevent the user from trying to autofill a column with
-                // itself.
+                this.OnInvalidComboBox(oComboBox,
+                    "You can't autofill a column with itself."
+                    );
 
-                if (oComboBox.Text.ToLower() ==
-                    ( (String)oComboBox.Tag ).ToLower() )
-                {
-                    this.OnInvalidComboBox(oComboBox,
-                        "You can't autofill a column with itself."
-                        );
-
-                    return (false);
-                }
+                return (false);
             }
         }
 
@@ -587,105 +530,205 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: GetComboBoxFromLabelName()
+    //  Method: GetDestinationColumnNameFromComboBox()
     //
     /// <summary>
-    /// Gets the ComboBox associated with a Label that represents a worksheet
-    /// column.
+    /// Gets a destination column name from a ComboBox.
     /// </summary>
     ///
-    /// <param name="sLabelName">
-    /// Name of a Label that represents a worksheet column.
+    /// <param name="oComboBox">
+    /// ComboBox to get a destination column name from.
     /// </param>
     ///
     /// <returns>
-    /// The associated ComboBox, which contains the name of the source column.
+    /// The destination column corresponding to the ComboBox.
     /// </returns>
     //*************************************************************************
 
-    protected ComboBox
-    GetComboBoxFromLabelName
+    protected String
+    GetDestinationColumnNameFromComboBox
     (
-        String sLabelName
+        ComboBox oComboBox
     )
     {
+        Debug.Assert(oComboBox != null);
         AssertValid();
 
-        // Sample label name: "lblEdgeColor"
+        // The destination column name was stored in the ComboBox's Tag.
 
-        Debug.Assert( sLabelName.StartsWith("lbl") );
+        Debug.Assert(oComboBox.Tag is String);
 
-        // Sample corresponding ComboBox name: "cbxEdgeColorSourceColumnName";
-
-        String sComboBoxName =
-            "cbx" + sLabelName.Substring(3) + "SourceColumnName";
-
-        Control [] aoComboBox =
-            tlpTableLayoutPanel.Controls.Find(sComboBoxName, false);
-
-        Debug.Assert(aoComboBox.Length == 1);
-        Debug.Assert(aoComboBox[0] is ComboBox);
-
-        return ( (ComboBox)( aoComboBox[0] ) );
+        return ( (String)oComboBox.Tag );
     }
 
     //*************************************************************************
-    //  Method: TryGetDetailsButtonFromLabelName()
+    //  Method: ClearColumn()
     //
     /// <summary>
-    /// Attempts to get the details button associated with a Label that
-    /// represents a worksheet column.
+    /// Clears a worksheet column.
     /// </summary>
     ///
-    /// <param name="sLabelName">
-    /// Name of a Label that represents a worksheet column.
+    /// <param name="sWorksheetName">
+    /// Name of the worksheet containing the column.
     /// </param>
     ///
-    /// <param name="oDetailsButton">
-    /// Where the associated details button gets stored if true is returned.
+    /// <param name="sTableName">
+    /// Name of the table containing the column.
+    /// </param>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the column.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ClearColumn
+    (
+        String sWorksheetName,
+        String sTableName,
+        String sColumnName
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) ); 
+        Debug.Assert( !String.IsNullOrEmpty(sTableName) ); 
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) ); 
+        AssertValid();
+
+        ListObject oTable;
+
+        if ( ExcelUtil.TryGetTable(m_oWorkbook, sWorksheetName, sTableName,
+                out oTable) )
+        {
+            ExcelUtil.TryClearTableColumnDataContents(oTable, sColumnName);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AskWarningQuestion()
+    //
+    /// <summary>
+    /// Asks the user a question, as a warning.
+    /// </summary>
+    ///
+    /// <param name="sWarningQuestion">
+    /// The question to ask.
     /// </param>
     ///
     /// <returns>
-    /// true if there is a details button associated with the specified Label.
+    /// true if the user answered Yes, false if No.
     /// </returns>
     //*************************************************************************
 
     protected Boolean
-    TryGetDetailsButtonFromLabelName
+    AskWarningQuestion
     (
-        String sLabelName,
-        out System.Windows.Forms.Button oDetailsButton
+        String sWarningQuestion
     )
     {
+        Debug.Assert( !String.IsNullOrEmpty(sWarningQuestion) );
         AssertValid();
 
-        oDetailsButton = null;
+        return (MessageBox.Show(this, sWarningQuestion,
+            ApplicationUtil.ApplicationName, MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
+            == DialogResult.Yes);
+    }
 
-        // Sample label name: "lblEdgeColor"
+    //*************************************************************************
+    //  Method: OnDetailsClick()
+    //
+    /// <summary>
+    /// Handles the Click event on all detail buttons.
+    /// </summary>
+    ///
+    /// <param name="oDetailsButton">
+    /// The details button that was clicked.
+    /// </param>
+    ///
+    /// <param name="oSourceColumnNameComboBox">
+    /// ComboBox containing the source column name associated with the details
+    /// button.
+    /// </param>
+    ///
+    /// <param name="sColumnDescription">
+    /// Column description to use in menu text.
+    /// </param>
+    ///
+    /// <param name="sWorksheetName">
+    /// Name of the worksheet associated with the details button.
+    /// </param>
+    ///
+    /// <param name="sTableName">
+    /// Name of the table associated with the details button.
+    /// </param>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the worksheet column associated with the details button.
+    /// </param>
+    ///
+    /// <param name="oUserSettingsDialog">
+    /// Dialog for editing the details, or null if there are no details to
+    /// edit.
+    /// </param>
+    //*************************************************************************
 
-        Debug.Assert( sLabelName.StartsWith("lbl") );
+    protected void
+    OnDetailsClick
+    (
+        System.Windows.Forms.Button oDetailsButton,
+        ComboBox oSourceColumnNameComboBox,
+        String sColumnDescription,
+        String sWorksheetName,
+        String sTableName,
+        String sColumnName,
+        Form oUserSettingsDialog
+    )
+    {
+        Debug.Assert(oDetailsButton != null);
+        Debug.Assert(oSourceColumnNameComboBox != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnDescription) ); 
+        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) ); 
+        Debug.Assert( !String.IsNullOrEmpty(sTableName) ); 
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) ); 
+        AssertValid();
 
-        // Sample corresponding details button name: "btnEdgeColorDetails"
+        // Note that information needed by the individual menu item handlers
+        // gets stored in the menu item Tags.
 
-        String sDetailsButtonName =
-            "btn" + sLabelName.Substring(3) + "Details";
 
-        Control [] aoDetailsButton =
-            tlpTableLayoutPanel.Controls.Find(sDetailsButtonName, false);
+        // Sample: "Edge Color Options..."
 
-        if (aoDetailsButton.Length == 0)
-        {
-            // There is no corresponding details button.
+        this.tsmWorksheetColumnDetails.Text =
+            sColumnDescription + " &Options...";
 
-            return (false);
-        }
+        this.tsmWorksheetColumnDetails.Tag = oUserSettingsDialog;
 
-        Debug.Assert(aoDetailsButton.Length == 1);
-        Debug.Assert(aoDetailsButton[0] is System.Windows.Forms.Button);
+        this.tsmWorksheetColumnDetails.Visible = this.tssSeparator.Visible =
+            (oUserSettingsDialog != null);
 
-        oDetailsButton = (System.Windows.Forms.Button)( aoDetailsButton[0] );
 
-        return (true);
+        // Sample: "Reset Edge Color Source Column Name"
+
+        this.tsmClearSourceColumnName.Text =
+            "Reset " + sColumnDescription + " &Source Column Name";
+
+        this.tsmClearSourceColumnName.Tag = oSourceColumnNameComboBox;
+
+        this.tsmClearSourceColumnName.Enabled =
+            (GetSourceColumnNameFromComboBox(oSourceColumnNameComboBox).Length
+            > 0);
+
+
+        // Sample: "Clear Edge Color Worksheet Column Now"
+
+        this.tsmClearColumn.Text =
+            "Clear " + sColumnDescription + " &Worksheet Column Now";
+
+        this.tsmClearColumn.Tag = String.Join( "\t", new String [] {
+            sWorksheetName, sTableName, sColumnName} );;
+
+
+        this.cmsWorksheetColumn.Show(oDetailsButton, oDetailsButton.Width, 0);
     }
 
     //*************************************************************************
@@ -746,13 +789,14 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        ColorColumnAutoFillUserSettingsDialog
-            oColorColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnEdgeColorDetails,
+            this.cbxEdgeColorSourceColumnName, "Edge Color",
+            WorksheetNames.Edges, TableNames.Edges, EdgeTableColumnNames.Color,
+
             new ColorColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeColorDetails,
-                "Edge Color Options");
-
-        oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+                "Edge Color Options")
+            );
     }
 
     //*************************************************************************
@@ -780,16 +824,17 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnEdgeWidthDetails,
+            this.cbxEdgeWidthSourceColumnName, "Edge Width",
+            WorksheetNames.Edges, TableNames.Edges, EdgeTableColumnNames.Width,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeWidthDetails,
                 "Edge Width Options", "edge width", "Widths",
                 EdgeWidthConverter.MinimumWidthWorkbook,
                 EdgeWidthConverter.MaximumWidthWorkbook
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -817,16 +862,17 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnEdgeAlphaDetails,
+            this.cbxEdgeAlphaSourceColumnName, "Edge Opacity",
+            WorksheetNames.Edges, TableNames.Edges, EdgeTableColumnNames.Alpha,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeAlphaDetails,
                 "Edge Opacity Options", "edge opacity", "Opacities",
                 AlphaConverter.MinimumAlphaWorkbook,
                 AlphaConverter.MaximumAlphaWorkbook
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -854,16 +900,49 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericComparisonColumnAutoFillUserSettingsDialog
-            oNumericComparisonColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnEdgeVisibilityDetails,
+            this.cbxEdgeVisibilitySourceColumnName, "Edge Visibility",
+            WorksheetNames.Edges, TableNames.Edges,
+            EdgeTableColumnNames.Visibility,
+
             new NumericComparisonColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeVisibilityDetails,
                 "Edge Visibility Options",
                 "&Show the edge if the source column number is:",
                 "Otherwise, skip the edge"
-                );
+                )
+            );
+    }
 
-        oNumericComparisonColumnAutoFillUserSettingsDialog.ShowDialog();
+    //*************************************************************************
+    //  Method: btnEdgeLabelDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEdgeLabelDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnEdgeLabelDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        OnDetailsClick(this.btnEdgeLabelDetails,
+            this.cbxEdgeLabelSourceColumnName, "Edge Label",
+            WorksheetNames.Edges, TableNames.Edges,
+            EdgeTableColumnNames.Label, null);
     }
 
     //*************************************************************************
@@ -891,13 +970,15 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        ColorColumnAutoFillUserSettingsDialog
-            oColorColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexColorDetails,
+            this.cbxVertexColorSourceColumnName, "Vertex Color",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Color,
+
             new ColorColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexColorDetails,
-                "Vertex Color Options");
-
-        oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+                "Vertex Color Options")
+            );
     }
 
     //*************************************************************************
@@ -925,13 +1006,15 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        VertexShapeColumnAutoFillUserSettingsDialog
-            oVertexShapeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexShapeDetails,
+            this.cbxVertexShapeSourceColumnName, "Vertex Shape",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Shape,
+
             new VertexShapeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexShapeDetails
-                );
-
-        oVertexShapeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -959,16 +1042,18 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexRadiusDetails,
+            this.cbxVertexRadiusSourceColumnName, "Vertex Size",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Radius,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexRadiusDetails,
                 "Vertex Size Options", "vertex size", "Sizes",
                 VertexRadiusConverter.MinimumRadiusWorkbook,
                 VertexRadiusConverter.MaximumRadiusWorkbook
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -996,50 +1081,18 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexAlphaDetails,
+            this.cbxVertexAlphaSourceColumnName, "Vertex Opacity",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Alpha,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexAlphaDetails,
                 "Vertex Opacity Options", "vertex opacity", "Opacities",
                 AlphaConverter.MinimumAlphaWorkbook,
                 AlphaConverter.MaximumAlphaWorkbook
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
-    }
-
-    //*************************************************************************
-    //  Method: btnVertexLabelFillColorDetails_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnVertexLabelFillColorDetails button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnVertexLabelFillColorDetails_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        ColorColumnAutoFillUserSettingsDialog
-            oColorColumnAutoFillUserSettingsDialog =
-            new ColorColumnAutoFillUserSettingsDialog(
-                m_oAutoFillUserSettings.VertexLabelFillColorDetails,
-                "Vertex Label Fill Color Options");
-
-        oColorColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -1067,8 +1120,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericComparisonColumnAutoFillUserSettingsDialog
-            oNumericComparisonColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexVisibilityDetails,
+            this.cbxVertexVisibilitySourceColumnName,
+            "Vertex Visibility", WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Visibility,
+
             new NumericComparisonColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexVisibilityDetails,
                 "Vertex Visibility Options",
@@ -1077,9 +1133,107 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
                     + " column number is:",
 
                 "Otherwise, skip the vertex"
-                );
+                )
+            );
+    }
 
-        oNumericComparisonColumnAutoFillUserSettingsDialog.ShowDialog();
+    //*************************************************************************
+    //  Method: btnVertexLabelDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexLabelDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnVertexLabelDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        OnDetailsClick(this.btnVertexLabelDetails,
+            this.cbxVertexLabelSourceColumnName, "Vertex Label",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Label, null);
+    }
+
+    //*************************************************************************
+    //  Method: btnVertexLabelFillColorDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexLabelFillColorDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnVertexLabelFillColorDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        OnDetailsClick(this.btnVertexLabelFillColorDetails,
+            this.cbxVertexLabelFillColorSourceColumnName,
+            "Vertex Label Fill Color", WorksheetNames.Vertices,
+            TableNames.Vertices, VertexTableColumnNames.LabelFillColor,
+
+            new ColorColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.VertexLabelFillColorDetails,
+                "Vertex Label Fill Color Options"
+                )
+            );
+    }
+
+    //*************************************************************************
+    //  Method: btnVertexToolTipDetails_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnVertexToolTipDetails button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnVertexToolTipDetails_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        OnDetailsClick(this.btnVertexToolTipDetails,
+            this.cbxVertexToolTipSourceColumnName, "Vertex Tooltip",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.ToolTip, null);
     }
 
     //*************************************************************************
@@ -1107,15 +1261,17 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexLayoutOrderDetails,
+            this.cbxVertexLayoutOrderSourceColumnName, "Vertex Layout Order",
+            WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.LayoutOrder,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexLayoutOrderDetails,
                 "Vertex Layout Order Options", "vertex layout order", "Orders",
                 1, 99999
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -1143,17 +1299,18 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexXDetails, this.cbxVertexXSourceColumnName,
+            "Vertex X", WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.X,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexXDetails,
                 "Vertex X Options", "vertex x-coordinate",
                 CoordinateColumnNamePlural,
                 VertexLocationConverter.MinimumXYWorkbook,
                 VertexLocationConverter.MaximumXYWorkbook
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -1181,17 +1338,18 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexYDetails, this.cbxVertexYSourceColumnName,
+            "Vertex Y", WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.Y,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexYDetails,
                 "Vertex Y Options", "vertex y-coordinate",
                 CoordinateColumnNamePlural,
                 VertexLocationConverter.MinimumXYWorkbook,
                 VertexLocationConverter.MaximumXYWorkbook
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -1219,16 +1377,18 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexPolarRDetails,
+            this.cbxVertexPolarRSourceColumnName,
+            "Vertex Polar R", WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.PolarR,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexPolarRDetails,
                 "Vertex Polar R Options", "vertex polar R coordinate",
                 CoordinateColumnNamePlural,
                 0, 1
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -1256,17 +1416,19 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        NumericRangeColumnAutoFillUserSettingsDialog
-            oNumericRangeColumnAutoFillUserSettingsDialog =
+        OnDetailsClick(this.btnVertexPolarAngleDetails,
+            this.cbxVertexPolarAngleSourceColumnName,
+            "Vertex Polar Angle", WorksheetNames.Vertices, TableNames.Vertices,
+            VertexTableColumnNames.PolarAngle,
+
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexPolarAngleDetails,
                 "Vertex Polar Angle Options", "vertex polar angle coordinate",
                 CoordinateColumnNamePlural,
                 -99999,
                 99999
-                );
-
-        oNumericRangeColumnAutoFillUserSettingsDialog.ShowDialog();
+                )
+            );
     }
 
     //*************************************************************************
@@ -1300,10 +1462,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: cmsWorksheetColumn_Opening()
+    //  Method: tsmWorksheetColumnDetails_Click()
     //
     /// <summary>
-    /// Handles the Opening event on the cmsWorksheetColumn ContextMenuStrip.
+    /// Handles the Click event on the tsmWorksheetColumnDetails
+    /// ToolStripMenuItem.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1315,76 +1478,14 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     /// </param>
     ///
     /// <remarks>
-    /// The ContextMenuStrip is the context menu attached to every Label that
-    /// represents a worksheet column.
+    /// The tsmWorksheetColumnDetails ToolStripMenuItem is part of the
+    /// cmsWorksheetColumn ContextMenuStrip, which is programatically shown by
+    /// OnDetailsClick().
     /// </remarks>
     //*************************************************************************
 
     private void
-    cmsWorksheetColumn_Opening
-    (
-        object sender,
-        System.ComponentModel.CancelEventArgs e
-    )
-    {
-        AssertValid();
-
-        Debug.Assert(this.cmsWorksheetColumn.SourceControl is
-            System.Windows.Forms.Label);
-
-        System.Windows.Forms.Label oLabel =
-            (System.Windows.Forms.Label)this.cmsWorksheetColumn.SourceControl;
-
-        String sLabelName = oLabel.Name;
-        String sWorksheetColumnName = oLabel.Text.Replace("&", String.Empty);
-
-        if ( sWorksheetColumnName.Contains("Fill Color") )
-        {
-            sWorksheetColumnName = "Vertex Label Fill Color";
-        }
-
-        this.tsmClearColumn.Text =
-            "Clear " + sWorksheetColumnName + " &Worksheet Column Now";
-
-        this.tsmClearSourceColumnName.Text =
-            "Clear " + sWorksheetColumnName + " &Source Column Name";
-
-        this.tsmWorksheetColumnDetails.Text =
-            sWorksheetColumnName + " &Options...";
-
-        this.tsmClearSourceColumnName.Enabled =
-            (GetComboBoxFromLabelName(sLabelName).Text.Length > 0);
-
-        System.Windows.Forms.Button oDetailsButton;
-
-        this.tsmWorksheetColumnDetails.Enabled =
-            TryGetDetailsButtonFromLabelName(sLabelName, out oDetailsButton);
-    }
-
-    //*************************************************************************
-    //  Method: tsmClearColumn_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the tsmClearColumn ToolStripMenuItem.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <remarks>
-    /// The tsmClearColumn ToolStripMenuItem is part of the cmsWorksheetColumn
-    /// ContextMenuStrip, which is the context menu attached to every Label
-    /// that represents a worksheet column.
-    /// </remarks>
-    //*************************************************************************
-
-    private void
-    tsmClearColumn_Click
+    tsmWorksheetColumnDetails_Click
     (
         object sender,
         EventArgs e
@@ -1392,26 +1493,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        // InitializeLabels() stored the worksheet, table, and column names in
-        // the Label's Tag.
+        // OnDetailsClick() stored the Form to show in the menu item's Tag.
 
-        Debug.Assert(this.cmsWorksheetColumn.SourceControl.Tag is String);
-        String sTag = (String)this.cmsWorksheetColumn.SourceControl.Tag;
-        String [] asNames = sTag.Split('\t');
+        Debug.Assert(this.tsmWorksheetColumnDetails.Tag is Form);
 
-        Debug.Assert(asNames.Length == 3);
-
-        String sWorksheetName = asNames[0];
-        String sTableName = asNames[1];
-        String sColumnName = asNames[2];
-
-        ListObject oTable;
-
-        if ( ExcelUtil.TryGetTable(m_oWorkbook, sWorksheetName, sTableName,
-                out oTable) )
-        {
-            ExcelUtil.TryClearTableColumnDataContents(oTable, sColumnName);
-        }
+        ( (Form)this.tsmWorksheetColumnDetails.Tag ).ShowDialog();
     }
 
     //*************************************************************************
@@ -1432,8 +1518,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     ///
     /// <remarks>
     /// The tsmClearSourceColumnName ToolStripMenuItem is part of the
-    /// cmsWorksheetColumn ContextMenuStrip, which is the context menu attached
-    /// to every Label that represents a worksheet column.
+    /// cmsWorksheetColumn ContextMenuStrip, which is programatically shown by
+    /// OnDetailsClick().
     /// </remarks>
     //*************************************************************************
 
@@ -1446,16 +1532,19 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        GetComboBoxFromLabelName(this.cmsWorksheetColumn.SourceControl.Name).
-            Text = String.Empty;
+        // OnDetailsClick() stored the ComboBox to clear in the menu item's
+        // Tag.
+
+        Debug.Assert(this.tsmClearSourceColumnName.Tag is ComboBox);
+
+        ( (ComboBox)this.tsmClearSourceColumnName.Tag ).Text = String.Empty;
     }
 
     //*************************************************************************
-    //  Method: tsmClearAllSourceColumnNames_Click()
+    //  Method: tsmClearColumn_Click()
     //
     /// <summary>
-    /// Handles the Click event on the tsmClearAllSourceColumnNames
-    /// ToolStripMenuItem.
+    /// Handles the Click event on the tsmClearColumn ToolStripMenuItem.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1467,14 +1556,13 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     /// </param>
     ///
     /// <remarks>
-    /// The tsmClearSourceColumnName ToolStripMenuItem is part of the
-    /// cmsWorksheetColumn ContextMenuStrip, which is the context menu attached
-    /// to every Label that represents a worksheet column.
+    /// The tsmClearColumn ToolStripMenuItem is part of the cmsWorksheetColumn
+    /// ContextMenuStrip, which is programatically shown by OnDetailsClick().
     /// </remarks>
     //*************************************************************************
 
     private void
-    tsmClearAllSourceColumnNames_Click
+    tsmClearColumn_Click
     (
         object sender,
         EventArgs e
@@ -1482,56 +1570,66 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        foreach (Control oControl in this.tlpTableLayoutPanel.Controls)
+        // OnDetailsClick() stored the worksheet, table, and column names in
+        // the menu item's Tag.
+
+        Debug.Assert(this.tsmClearColumn.Tag is String);
+        String sTag = (String)this.tsmClearColumn.Tag;
+        String [] asNames = sTag.Split('\t');
+
+        Debug.Assert(asNames.Length == 3);
+
+        ClearColumn( asNames[0], asNames[1], asNames[2] );
+    }
+
+    //*************************************************************************
+    //  Method: btnClearAllColumns_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnClearAllColumns button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnClearAllColumns_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if ( !AskWarningQuestion(
+            "This will immediately clear all \"autofillable\" worksheet"
+            + " columns, regardless of whether they have been autofilled or"
+            + " filled in manually.  (You can clear a single worksheet column"
+            + " by clicking an arrow button in the Options column of the"
+            + " Autofill Columns dialog box.)"
+            + " \r\n\r\n"
+            + "Do you want to clear all worksheet columns now?"
+            ) )
         {
-            if (oControl is ComboBox)
-            {
-                ( (ComboBox)oControl ).Text = String.Empty;
-            }
+            return;
         }
-    }
 
-    //*************************************************************************
-    //  Method: tsmWorksheetColumnDetails_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the tsmWorksheetColumnDetails
-    /// ToolStripMenuItem.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <remarks>
-    /// The tsmWorksheetColumnDetails ToolStripMenuItem is part of the
-    /// cmsWorksheetColumn ContextMenuStrip, which is the context menu attached
-    /// to every Label that represents a worksheet column.
-    /// </remarks>
-    //*************************************************************************
-
-    private void
-    tsmWorksheetColumnDetails_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        System.Windows.Forms.Button oDetailsButton;
-
-        // Get and click the details button corresponding to the right-clicked
-        // Label.
-
-        if ( TryGetDetailsButtonFromLabelName(
-            this.cmsWorksheetColumn.SourceControl.Name, out oDetailsButton) )
+        foreach (ComboBox oComboBox in m_aoEdgeSourceColumnNameComboBoxes)
         {
-            oDetailsButton.PerformClick();
+            ClearColumn( WorksheetNames.Edges, TableNames.Edges,
+                GetDestinationColumnNameFromComboBox(oComboBox) );
+        }
+
+        foreach (ComboBox oComboBox in m_aoVertexSourceColumnNameComboBoxes)
+        {
+            ClearColumn( WorksheetNames.Vertices, TableNames.Vertices,
+                GetDestinationColumnNameFromComboBox(oComboBox) );
         }
     }
 
@@ -1560,20 +1658,18 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        if ( MessageBox.Show(this,
-
-                "This will clear all the source column names and reset any"
-                + " options you've changed.  It will not modify any worksheet"
-                + " columns.\r\n\r\nDo you want to reset all?"
-                ,
-                ApplicationUtil.ApplicationName, MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
-                == DialogResult.Yes
-            )
+        if ( !AskWarningQuestion(
+            "This will clear all the source column names and reset any options"
+            + " you've changed.  It will not clear any worksheet columns."
+            + "\r\n\r\n"
+            + "Do you want to reset all autofill settings?"
+            ) )
         {
-            m_oAutoFillUserSettings.Reset();
-            DoDataExchange(false);
+            return;
         }
+
+        m_oAutoFillUserSettings.Reset();
+        DoDataExchange(false);
     }
 
     //*************************************************************************
@@ -1749,7 +1845,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("AutoFillWorkbookDialog3") ]
+[ SettingsGroupNameAttribute("AutoFillWorkbookDialog4") ]
 
 public class AutoFillWorkbookDialogUserSettings : FormSettings
 {

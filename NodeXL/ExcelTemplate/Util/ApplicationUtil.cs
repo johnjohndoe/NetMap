@@ -231,16 +231,16 @@ public static class ApplicationUtil
         }
 
         latestVersionFileMajorPart = MathUtil.ParseCultureInvariantInt32(
-			oMatch.Groups["FileMajorPart"].Value);
+            oMatch.Groups["FileMajorPart"].Value);
 
         latestVersionFileMinorPart = MathUtil.ParseCultureInvariantInt32(
-			oMatch.Groups["FileMinorPart"].Value);
+            oMatch.Groups["FileMinorPart"].Value);
 
         latestVersionFileBuildPart = MathUtil.ParseCultureInvariantInt32(
-			oMatch.Groups["FileBuildPart"].Value);
+            oMatch.Groups["FileBuildPart"].Value);
 
         latestVersionFilePrivatePart = MathUtil.ParseCultureInvariantInt32(
-			oMatch.Groups["FilePrivatePart"].Value);
+            oMatch.Groups["FilePrivatePart"].Value);
     }
 
     //*************************************************************************

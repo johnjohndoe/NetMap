@@ -26,13 +26,13 @@ public class SimpleGraphMatrixTest : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="SimpleGraphMatrixTest" />
-	/// class.
+    /// class.
     /// </summary>
     //*************************************************************************
 
     public SimpleGraphMatrixTest()
     {
-		m_oSimpleGraphMatrix = null;
+        m_oSimpleGraphMatrix = null;
     }
 
     //*************************************************************************
@@ -48,7 +48,7 @@ public class SimpleGraphMatrixTest : Object
     public void
     SetUp()
     {
-		m_oSimpleGraphMatrix = null;
+        m_oSimpleGraphMatrix = null;
     }
 
     //*************************************************************************
@@ -64,7 +64,7 @@ public class SimpleGraphMatrixTest : Object
     public void
     TearDown()
     {
-		m_oSimpleGraphMatrix = null;
+        m_oSimpleGraphMatrix = null;
     }
 
     //*************************************************************************
@@ -80,53 +80,53 @@ public class SimpleGraphMatrixTest : Object
     public void
     TestAij()
     {
-		// Variety of edges.
+        // Variety of edges.
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, 3);
+        IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, 3);
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		oEdges.Add( aoVertices[0], aoVertices[1] );
+        oEdges.Add( aoVertices[0], aoVertices[1] );
 
-		oEdges.Add( aoVertices[1], aoVertices[0] );
+        oEdges.Add( aoVertices[1], aoVertices[0] );
 
-		// Duplicates.
+        // Duplicates.
 
-		oEdges.Add( aoVertices[1], aoVertices[2] );
-		oEdges.Add( aoVertices[1], aoVertices[2] );
+        oEdges.Add( aoVertices[1], aoVertices[2] );
+        oEdges.Add( aoVertices[1], aoVertices[2] );
 
-		oEdges.Add( aoVertices[2], aoVertices[1] );
+        oEdges.Add( aoVertices[2], aoVertices[1] );
 
-		m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
+        m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[0] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[0] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[1] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[1] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[2] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[2] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[0] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[0] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[1] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[1] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[2] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[2] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[0] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[0] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[1] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[1] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[2] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[2] ) );
     }
 
     //*************************************************************************
@@ -142,40 +142,40 @@ public class SimpleGraphMatrixTest : Object
     public void
     TestAij2()
     {
-		// No edges.
+        // No edges.
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, 3);
+        IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, 3);
 
-		m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
+        m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[0] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[0] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[1] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[1] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[2] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[2] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[0] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[0] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[1] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[1] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[2] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[2] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[0] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[0] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[1] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[1] ) );
 
-		Assert.IsFalse(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[2] ) );
+        Assert.IsFalse(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[2] ) );
     }
 
     //*************************************************************************
@@ -191,52 +191,52 @@ public class SimpleGraphMatrixTest : Object
     public void
     TestAij3()
     {
-		// All edges.
+        // All edges.
 
-		IGraph oGraph = new Graph();
+        IGraph oGraph = new Graph();
 
-		IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, 3);
+        IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, 3);
 
-		IEdgeCollection oEdges = oGraph.Edges;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-		oEdges.Add( aoVertices[0], aoVertices[0] );
-		oEdges.Add( aoVertices[0], aoVertices[1] );
-		oEdges.Add( aoVertices[0], aoVertices[2] );
-		oEdges.Add( aoVertices[1], aoVertices[0] );
-		oEdges.Add( aoVertices[1], aoVertices[1] );
-		oEdges.Add( aoVertices[1], aoVertices[2] );
-		oEdges.Add( aoVertices[2], aoVertices[0] );
-		oEdges.Add( aoVertices[2], aoVertices[1] );
-		oEdges.Add( aoVertices[2], aoVertices[2] );
+        oEdges.Add( aoVertices[0], aoVertices[0] );
+        oEdges.Add( aoVertices[0], aoVertices[1] );
+        oEdges.Add( aoVertices[0], aoVertices[2] );
+        oEdges.Add( aoVertices[1], aoVertices[0] );
+        oEdges.Add( aoVertices[1], aoVertices[1] );
+        oEdges.Add( aoVertices[1], aoVertices[2] );
+        oEdges.Add( aoVertices[2], aoVertices[0] );
+        oEdges.Add( aoVertices[2], aoVertices[1] );
+        oEdges.Add( aoVertices[2], aoVertices[2] );
 
-		m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
+        m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[0] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[0] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[1] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[1] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[2] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[0], aoVertices[2] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[0] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[0] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[1] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[1] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[2] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[1], aoVertices[2] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[0] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[0] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[1] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[1] ) );
 
-		Assert.IsTrue(
-			m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[2] ) );
+        Assert.IsTrue(
+            m_oSimpleGraphMatrix.Aij(aoVertices[2], aoVertices[2] ) );
     }
 
     //*************************************************************************
@@ -252,53 +252,53 @@ public class SimpleGraphMatrixTest : Object
     public void
     TestAij4()
     {
-		// Random edges.
+        // Random edges.
 
-		IGraph oGraph = new Graph();
-		const Int32 Vertices = 100;
+        IGraph oGraph = new Graph();
+        const Int32 Vertices = 100;
 
-		IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, Vertices);
-		IEdgeCollection oEdges = oGraph.Edges;
-		Random oRandom = new Random(0);
+        IVertex[] aoVertices = TestGraphUtil.AddVertices(oGraph, Vertices);
+        IEdgeCollection oEdges = oGraph.Edges;
+        Random oRandom = new Random(0);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			for (Int32 j = 0; j < Vertices; j++)
-			{
-				if (oRandom.Next() % 2 == 1)
-				{
-					oEdges.Add( aoVertices[i], aoVertices[j] );
-				}
-			}
-		}
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            for (Int32 j = 0; j < Vertices; j++)
+            {
+                if (oRandom.Next() % 2 == 1)
+                {
+                    oEdges.Add( aoVertices[i], aoVertices[j] );
+                }
+            }
+        }
 
-		m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
+        m_oSimpleGraphMatrix = new SimpleGraphMatrix(oGraph);
 
-		for (Int32 i = 0; i < Vertices; i++)
-		{
-			for (Int32 j = 0; j < Vertices; j++)
-			{
-				IVertex oVertex1 = aoVertices[i];
-				IVertex oVertex2 = aoVertices[j];
+        for (Int32 i = 0; i < Vertices; i++)
+        {
+            for (Int32 j = 0; j < Vertices; j++)
+            {
+                IVertex oVertex1 = aoVertices[i];
+                IVertex oVertex2 = aoVertices[j];
 
-				if (oVertex1.GetConnectingEdges(oVertex2).Length > 0)
-				{
-					Assert.IsTrue(
-						m_oSimpleGraphMatrix.Aij(oVertex1, oVertex2) );
+                if (oVertex1.GetConnectingEdges(oVertex2).Length > 0)
+                {
+                    Assert.IsTrue(
+                        m_oSimpleGraphMatrix.Aij(oVertex1, oVertex2) );
 
-					Assert.IsTrue(
-						m_oSimpleGraphMatrix.Aij(oVertex2, oVertex1) );
-				}
-				else
-				{
-					Assert.IsFalse(
-						m_oSimpleGraphMatrix.Aij(oVertex1, oVertex2) );
+                    Assert.IsTrue(
+                        m_oSimpleGraphMatrix.Aij(oVertex2, oVertex1) );
+                }
+                else
+                {
+                    Assert.IsFalse(
+                        m_oSimpleGraphMatrix.Aij(oVertex1, oVertex2) );
 
-					Assert.IsFalse(
-						m_oSimpleGraphMatrix.Aij(oVertex2, oVertex1) );
-				}
-			}
-		}
+                    Assert.IsFalse(
+                        m_oSimpleGraphMatrix.Aij(oVertex2, oVertex1) );
+                }
+            }
+        }
     }
 
 

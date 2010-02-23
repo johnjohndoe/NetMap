@@ -19,10 +19,9 @@ namespace Microsoft.NodeXL.Core
 /// to other vertices in the same graph.  The connections are called edges.
 ///
 /// <para>
-/// A vertex can be created via <see cref="IVertexFactory.CreateVertex" /> and
-/// then added to a graph via IGraph.Vertices.<see
-/// cref="IVertexCollection.Add(IVertex)" />, or created and added to a graph
-/// at the same time via IGraph.Vertices.<see
+/// A vertex can be created via the vertex constructor and then added to a
+/// graph via IGraph.Vertices.<see cref="VertexCollection.Add(IVertex)" />, or
+/// created and added to a graph at the same time via IGraph.Vertices.<see
 /// cref="IVertexCollection.Add()" />.
 /// </para>
 ///
@@ -31,27 +30,12 @@ namespace Microsoft.NodeXL.Core
 /// graph unless it is first removed from the first graph.
 /// </para>
 ///
-/// <para>
-/// The NodeXL system includes a <see cref="Vertex" /> implementation that can
-/// be used as-is in many graphing applications.  You can also derive a class
-/// from <see cref="Vertex" /> or implement your own custom vertex class from
-/// scratch.  The only requirement is that your custom class must implement
-/// <see cref="IVertex" />.
-/// </para>
-///
-/// <para>
-/// If you implement a custom vertex class, you may also want to implement <see
-/// cref="IVertexFactory" /> to allow the NodeXL system to create instances of
-/// your custom vertex.
-/// </para>
-///
 /// </remarks>
 ///
 /// <seealso cref="Vertex" />
 //*****************************************************************************
 
-public interface IVertex : IIdentityProvider, IMetadataProvider,
-    IFormattableNodeXL
+public interface IVertex : IIdentityProvider, IMetadataProvider
 {
     //*************************************************************************
     //  Property: ParentGraph
@@ -421,13 +405,8 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     //*************************************************************************
     //  Method: Clone()
     //
-    /// <overloads>
-    /// Creates a copy of the vertex.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Creates a copy of the vertex, making the copy the same type as the
-    /// original.
+    /// Creates a copy of the vertex.
     /// </summary>
     ///
     /// <param name="copyMetadataValues">
@@ -451,9 +430,9 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     /// </returns>
     ///
     /// <remarks>
-    /// The new vertex is of the same type as the original.  It has no edges
-    /// connected to it.  Its <see cref="IIdentityProvider.Name" /> is set to
-    /// the same value as the original's, but it is assigned a new <see
+    /// The new vertex has no edges connected to it.  Its <see
+    /// cref="IIdentityProvider.Name" /> is set to the same value as the
+    /// original's, but it is assigned a new <see
     /// cref="IIdentityProvider.ID" />.  Its <see cref="ParentGraph" />
     /// is null and its <see cref="Location" /> is the default value of <see
     /// cref="Point.Empty" />.
@@ -470,61 +449,6 @@ public interface IVertex : IIdentityProvider, IMetadataProvider,
     (
         Boolean copyMetadataValues,
         Boolean copyTag
-    );
-
-    //*************************************************************************
-    //  Method: Clone()
-    //
-    /// <summary>
-    /// Creates a copy of the vertex, making the copy a specified type.
-    /// </summary>
-    ///
-    /// <param name="copyMetadataValues">
-    /// If true, the key/value pairs that were set with <see
-    /// cref="IMetadataProvider.SetValue" /> are copied to the new vertex.
-    /// (This is a shallow copy.  The objects pointed to by the original values
-    /// are NOT cloned.)  If false, the key/value pairs are not copied.
-    /// </param>
-    ///
-    /// <param name="copyTag">
-    /// If true, the <see cref="IMetadataProvider.Tag" /> property on the new
-    /// vertex is set to the same value as in the original vertex.  (This is a
-    /// shallow copy.  The object pointed to by the original <see
-    /// cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
-    /// cref="IMetadataProvider.Tag "/> property on the new vertex is set to
-    /// null.
-    /// </param>
-    ///
-    /// <param name="newVertexFactory">
-    /// Object that can create a vertex.
-    /// </param>
-    ///
-    /// <returns>
-    /// The copy of the vertex, as an <see cref="IVertex" />.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The new vertex is created using <paramref name="newVertexFactory" />.
-    /// It has no edges connected to it.  Its <see
-    /// cref="IIdentityProvider.Name" /> is set to the same value as the
-    /// original's, but it is assigned a new <see
-    /// cref="IIdentityProvider.ID" />.  Its <see cref="ParentGraph" /> is null
-    /// and its <see cref="Location" /> is the default value of <see
-    /// cref="Point.Empty" />.
-    ///
-    /// <para>
-    /// The new vertex can be added to the same graph or to a different graph.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    IVertex
-    Clone
-    (
-        Boolean copyMetadataValues,
-        Boolean copyTag,
-        IVertexFactory newVertexFactory
     );
 
     //*************************************************************************

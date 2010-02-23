@@ -34,7 +34,7 @@ public class AutoFillColorColumnResults : AutoFillColumnResults
     //*************************************************************************
 
     public AutoFillColorColumnResults()
-    : this(null, 0, 0, Color.Black, Color.Black)
+    : this(null, 0, 0, 0, Color.Black, Color.Black)
     {
         // (Do nothing else.)
 
@@ -62,6 +62,10 @@ public class AutoFillColorColumnResults : AutoFillColumnResults
     /// The actual second source number used in the calculations.
     /// </param>
     ///
+    /// <param name="decimalPlaces">
+    /// The number of decimal places displayed in the column.
+    /// </param>
+    ///
     /// <param name="destinationColor1">
     /// The first color used in the destination column.
     /// </param>
@@ -76,11 +80,12 @@ public class AutoFillColorColumnResults : AutoFillColumnResults
         String sourceColumnName,
         Double sourceCalculationNumber1,
         Double sourceCalculationNumber2,
+        Int32 decimalPlaces,
         Color destinationColor1,
         Color destinationColor2
     )
     : base(sourceColumnName, sourceCalculationNumber1,
-        sourceCalculationNumber2)
+        sourceCalculationNumber2, decimalPlaces)
     {
         m_oDestinationColor1 = destinationColor1;
         m_oDestinationColor2 = destinationColor2;
@@ -161,7 +166,7 @@ public class AutoFillColorColumnResults : AutoFillColumnResults
 
         ColorConverter oColorConverter = new ColorConverter();
 
-        return ( String.Join(AutoFillWorkbookResults.FieldSeparatorString,
+        return ( String.Join(PerWorkbookSettings.FieldSeparatorString,
 
             new String [] {
                 base.ConvertToString(),
@@ -198,10 +203,11 @@ public class AutoFillColorColumnResults : AutoFillColumnResults
     )
     {
         Debug.Assert(asFields != null);
-        Debug.Assert(asFields.Length >= 5);
         Debug.Assert(iStartIndex >= 0);
 
         iStartIndex = base.ConvertFromString(asFields, iStartIndex);
+
+        Debug.Assert(iStartIndex + 1 < asFields.Length);
 
         ColorConverter oColorConverter = new ColorConverter();
 
@@ -210,6 +216,11 @@ public class AutoFillColorColumnResults : AutoFillColumnResults
 
         m_oDestinationColor2 = (Color)oColorConverter.ConvertFromString(
             asFields[iStartIndex + 1] );
+
+        // Note:
+        //
+        // If another field is added here, the total expected field count in 
+        // AutoFillWorkbookResults.ConvertFromString() must be increased.
 
         return (iStartIndex + 2);
     }

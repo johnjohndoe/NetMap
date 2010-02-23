@@ -452,6 +452,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oEdgeColorResults.SourceColumnName, ColorCaption,
                     oEdgeColorResults.SourceCalculationNumber1,
                     oEdgeColorResults.SourceCalculationNumber2,
+                    oEdgeColorResults.DecimalPlaces,
                     oEdgeColorResults.DestinationColor1,
                     oEdgeColorResults.DestinationColor2,
                     oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
@@ -466,7 +467,8 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oEdgeWidthResults.SourceColumnName, EdgeWidthCaption,
                     oEdgeWidthResults.SourceCalculationNumber1,
                     oEdgeWidthResults.SourceCalculationNumber2,
-                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+                    oEdgeWidthResults.DecimalPlaces, oColumnRectangle,
+                    iResultsLeft, iResultsRight, ref iTop);
             }
 
             AutoFillNumericRangeColumnResults oEdgeAlphaResults =
@@ -478,6 +480,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oEdgeAlphaResults.SourceColumnName,
                     oEdgeAlphaResults.SourceCalculationNumber1,
                     oEdgeAlphaResults.SourceCalculationNumber2,
+                    oEdgeAlphaResults.DecimalPlaces,
                     oEdgeAlphaResults.DestinationNumber1,
                     oEdgeAlphaResults.DestinationNumber2,
                     oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
@@ -541,6 +544,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oVertexColorResults.SourceColumnName, ColorCaption,
                     oVertexColorResults.SourceCalculationNumber1,
                     oVertexColorResults.SourceCalculationNumber2,
+                    oVertexColorResults.DecimalPlaces,
                     oVertexColorResults.DestinationColor1,
                     oVertexColorResults.DestinationColor2,
                     oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
@@ -555,7 +559,8 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oVertexRadiusResults.SourceColumnName, "Size",
                     oVertexRadiusResults.SourceCalculationNumber1,
                     oVertexRadiusResults.SourceCalculationNumber2,
-                    oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+                    oVertexRadiusResults.DecimalPlaces, oColumnRectangle,
+                    iResultsLeft, iResultsRight, ref iTop);
             }
 
             AutoFillNumericRangeColumnResults oVertexAlphaResults =
@@ -567,6 +572,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
                     oVertexAlphaResults.SourceColumnName,
                     oVertexAlphaResults.SourceCalculationNumber1,
                     oVertexAlphaResults.SourceCalculationNumber2,
+                    oVertexAlphaResults.DecimalPlaces,
                     oVertexAlphaResults.DestinationNumber1,
                     oVertexAlphaResults.DestinationNumber2,
                     oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
@@ -597,6 +603,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     ///
     /// <param name="dSourceCalculationNumber2">
     /// The actual second source number used in the calculations.
+    /// </param>
+    ///
+    /// <param name="iDecimalPlaces">
+    /// The number of decimal places displayed in the source column.
     /// </param>
     ///
     /// <param name="dDestinationNumber1">
@@ -631,6 +641,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         String sSourceColumnName,
         Double dSourceCalculationNumber1,
         Double dSourceCalculationNumber2,
+        Int32 iDecimalPlaces,
         Double dDestinationNumber1,
         Double dDestinationNumber2,
         Rectangle oColumnRectangle,
@@ -641,6 +652,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     {
         Debug.Assert(oDrawingObjects != null);
         Debug.Assert( !String.IsNullOrEmpty(sSourceColumnName) );
+        Debug.Assert(iDecimalPlaces >= 0);
         AssertValid();
 
         // The alpha results look like the color results, with the colors set
@@ -662,8 +674,8 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         DrawColorBarResults(oDrawingObjects, sSourceColumnName, "Opacity",
             dSourceCalculationNumber1, dSourceCalculationNumber2,
-            oDestinationColor1, oDestinationColor2, oColumnRectangle,
-            iResultsLeft, iResultsRight, ref iTop);
+            iDecimalPlaces, oDestinationColor1, oDestinationColor2,
+            oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
     }
 
     //*************************************************************************
@@ -860,14 +872,15 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         String sEdgeWeightColumnName;
         Double dSourceCalculationNumber1, dSourceCalculationNumber2;
+        Int32 iDecimalPlaces;
 
         m_oAutoFillWorkbookWithSchemeResults.GetEdgeWeightResults(
             out sEdgeWeightColumnName, out dSourceCalculationNumber1,
-            out dSourceCalculationNumber2);
+            out dSourceCalculationNumber2, out iDecimalPlaces);
 
         DrawRampResults(oDrawingObjects, sEdgeWeightColumnName,
             EdgeWidthCaption, dSourceCalculationNumber1,
-            dSourceCalculationNumber2, oControlRectangle,
+            dSourceCalculationNumber2, iDecimalPlaces, oControlRectangle,
             oControlRectangleWithMargin.Left,
             oControlRectangleWithMargin.Right, ref iTop);
 
@@ -992,9 +1005,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
             default:
 
-                // The calculation numbers are actual numbers.
+                // The calculation numbers are actual numbers.  In this oddball
+                // case, use an arbitrary number of decimal places.
 
-                return ( DoubleToString(dSourceCalculationNumber) );
+                return ( DoubleToString(dSourceCalculationNumber, 2) );
         }
     }
 
@@ -1030,6 +1044,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// The actual second source number used in the calculations.
     /// </param>
     ///
+    /// <param name="iDecimalPlaces">
+    /// The number of decimal places displayed in the source column.
+    /// </param>
+    ///
     /// <param name="oColor1">
     /// The color to use at the left edge of the color gradient bar.
     /// </param>
@@ -1063,6 +1081,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         String sCaption,
         Double dSourceCalculationNumber1,
         Double dSourceCalculationNumber2,
+        Int32 iDecimalPlaces,
         Color oColor1,
         Color oColor2,
         Rectangle oColumnRectangle,
@@ -1074,6 +1093,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         Debug.Assert(oDrawingObjects != null);
         Debug.Assert( !String.IsNullOrEmpty(sSourceColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(sCaption) );
+        Debug.Assert(iDecimalPlaces >= 0);
         AssertValid();
 
         if (dSourceCalculationNumber2 == dSourceCalculationNumber1)
@@ -1084,9 +1104,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         }
 
         DrawColorBarResults(oDrawingObjects, sSourceColumnName, sCaption,
-            DoubleToString(dSourceCalculationNumber1),
-            DoubleToString(dSourceCalculationNumber2), oColor1, oColor2,
-            oColumnRectangle, iResultsLeft, iResultsRight, ref iTop);
+            DoubleToString(dSourceCalculationNumber1, iDecimalPlaces),
+            DoubleToString(dSourceCalculationNumber2, iDecimalPlaces),
+            oColor1, oColor2, oColumnRectangle, iResultsLeft, iResultsRight,
+            ref iTop);
     }
 
     //*************************************************************************
@@ -1236,6 +1257,10 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// The actual second source number used in the calculations.
     /// </param>
     ///
+    /// <param name="iDecimalPlaces">
+    /// The number of decimal places displayed in the source column.
+    /// </param>
+    ///
     /// <param name="oColumnRectangle">
     /// Rectangle to draw the results within.
     /// </param>
@@ -1261,6 +1286,7 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         String sCaption,
         Double dSourceCalculationNumber1,
         Double dSourceCalculationNumber2,
+        Int32 iDecimalPlaces,
         Rectangle oColumnRectangle,
         Int32 iResultsLeft,
         Int32 iResultsRight,
@@ -1270,13 +1296,14 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
         Debug.Assert(oDrawingObjects != null);
         Debug.Assert( !String.IsNullOrEmpty(sSourceColumnName) );
         Debug.Assert( !String.IsNullOrEmpty(sCaption) );
+        Debug.Assert(iDecimalPlaces >= 0);
         AssertValid();
 
         iTop += oDrawingObjects.GetFontHeightMultiple(0.2F);
 
         DrawRangeText(oDrawingObjects,
-            DoubleToString(dSourceCalculationNumber1),
-            DoubleToString(dSourceCalculationNumber2),
+            DoubleToString(dSourceCalculationNumber1, iDecimalPlaces),
+            DoubleToString(dSourceCalculationNumber2, iDecimalPlaces),
             SystemBrushes.WindowText, iResultsLeft, iResultsRight, ref iTop);
 
         iTop += oDrawingObjects.GetFontHeightMultiple(0.35F);
@@ -1537,37 +1564,26 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
     /// The number to convert.
     /// </param>
     ///
+    /// <param name="iDecimalPlaces">
+    /// The number of decimal places to use.
+    /// </param>
+    ///
     /// <returns>
     /// <paramref name="dDouble" /> converted to a string.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If the absolute value of <paramref name="dDouble" /> is less than
-    /// 0.0001, scientific notation is used.  Otherwise, the standard "G"
-    /// format specifier with no precision is used.
-    /// </remarks>
     //*************************************************************************
 
     protected String
     DoubleToString
     (
-        Double dDouble
+        Double dDouble,
+        Int32 iDecimalPlaces
     )
     {
         AssertValid();
+        Debug.Assert(iDecimalPlaces >= 0);
 
-        String sFormatSpecifier;
-
-        if (Math.Abs(dDouble) < 0.0001)
-        {
-            sFormatSpecifier = "G4";
-        }
-        else
-        {
-            sFormatSpecifier = "G";
-        }
-
-        return ( dDouble.ToString(sFormatSpecifier) );
+        return ( dDouble.ToString( "f" + iDecimalPlaces.ToString() ) );
     }
 
 

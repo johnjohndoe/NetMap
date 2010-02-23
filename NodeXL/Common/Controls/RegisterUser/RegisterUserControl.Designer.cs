@@ -29,83 +29,97 @@ namespace Microsoft.NodeXL.Common
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txbEmailAddress = new System.Windows.Forms.TextBox();
-            this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lnkPrivacy = new System.Windows.Forms.LinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnCreateRegistrationEmail = new System.Windows.Forms.Button();
+            this.btnCopyRegistrationAddress = new System.Windows.Forms.Button();
+            this.grpCreateRegistrationEmail = new System.Windows.Forms.GroupBox();
+            this.grpCreateRegistrationEmail.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(9, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(242, 58);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Register to join the Microsoft NodeXL email list.\r\n\r\nRegistration requires an In" +
-                "ternet connection.";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 111);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "&Email address:";
-            // 
-            // txbEmailAddress
-            // 
-            this.txbEmailAddress.Location = new System.Drawing.Point(12, 130);
-            this.txbEmailAddress.MaxLength = 200;
-            this.txbEmailAddress.Name = "txbEmailAddress";
-            this.txbEmailAddress.Size = new System.Drawing.Size(239, 20);
-            this.txbEmailAddress.TabIndex = 2;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(95, 167);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 3;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(176, 167);
+            this.btnCancel.Location = new System.Drawing.Point(341, 177);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Text = "Close";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // lnkPrivacy
             // 
             this.lnkPrivacy.AutoSize = true;
-            this.lnkPrivacy.Location = new System.Drawing.Point(9, 80);
+            this.lnkPrivacy.Location = new System.Drawing.Point(9, 50);
             this.lnkPrivacy.Name = "lnkPrivacy";
             this.lnkPrivacy.Size = new System.Drawing.Size(73, 13);
-            this.lnkPrivacy.TabIndex = 5;
+            this.lnkPrivacy.TabIndex = 1;
             this.lnkPrivacy.TabStop = true;
             this.lnkPrivacy.Text = "Privacy Policy";
             this.lnkPrivacy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkPrivacy_LinkClicked);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(9, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(407, 38);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "To join the Microsoft NodeXL email list, send an email with \"Register\" in the sub" +
+                "ject line to registration@nodexl.org.";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(174, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(215, 58);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Use this if you have an email program such as Outlook, Windows Live Mail, Outlook" +
+                " Express, or Thunderbird installed on your computer.";
+            // 
+            // btnCreateRegistrationEmail
+            // 
+            this.btnCreateRegistrationEmail.Location = new System.Drawing.Point(13, 19);
+            this.btnCreateRegistrationEmail.Name = "btnCreateRegistrationEmail";
+            this.btnCreateRegistrationEmail.Size = new System.Drawing.Size(151, 23);
+            this.btnCreateRegistrationEmail.TabIndex = 0;
+            this.btnCreateRegistrationEmail.Text = "Create &Email";
+            this.btnCreateRegistrationEmail.UseVisualStyleBackColor = true;
+            this.btnCreateRegistrationEmail.Click += new System.EventHandler(this.btnCreateRegistrationEmail_Click);
+            // 
+            // btnCopyRegistrationAddress
+            // 
+            this.btnCopyRegistrationAddress.Location = new System.Drawing.Point(25, 177);
+            this.btnCopyRegistrationAddress.Name = "btnCopyRegistrationAddress";
+            this.btnCopyRegistrationAddress.Size = new System.Drawing.Size(151, 23);
+            this.btnCopyRegistrationAddress.TabIndex = 3;
+            this.btnCopyRegistrationAddress.Text = "Copy &Registration Address";
+            this.btnCopyRegistrationAddress.UseVisualStyleBackColor = true;
+            this.btnCopyRegistrationAddress.Click += new System.EventHandler(this.btnCopyRegistrationAddress_Click);
+            // 
+            // grpCreateRegistrationEmail
+            // 
+            this.grpCreateRegistrationEmail.Controls.Add(this.label3);
+            this.grpCreateRegistrationEmail.Controls.Add(this.btnCreateRegistrationEmail);
+            this.grpCreateRegistrationEmail.Location = new System.Drawing.Point(12, 73);
+            this.grpCreateRegistrationEmail.Name = "grpCreateRegistrationEmail";
+            this.grpCreateRegistrationEmail.Size = new System.Drawing.Size(404, 87);
+            this.grpCreateRegistrationEmail.TabIndex = 2;
+            this.grpCreateRegistrationEmail.TabStop = false;
             // 
             // RegisterUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.grpCreateRegistrationEmail);
+            this.Controls.Add(this.btnCopyRegistrationAddress);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lnkPrivacy);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.txbEmailAddress);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Name = "RegisterUserControl";
-            this.Size = new System.Drawing.Size(266, 207);
+            this.Size = new System.Drawing.Size(430, 213);
+            this.grpCreateRegistrationEmail.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -113,11 +127,12 @@ namespace Microsoft.NodeXL.Common
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txbEmailAddress;
-        private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.LinkLabel lnkPrivacy;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnCreateRegistrationEmail;
+        private System.Windows.Forms.Button btnCopyRegistrationAddress;
+        private System.Windows.Forms.GroupBox grpCreateRegistrationEmail;
     }
 }

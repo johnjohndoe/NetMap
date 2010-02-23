@@ -25,11 +25,10 @@ namespace Microsoft.NodeXL.Core
 /// </para>
 ///
 /// <para>
-/// An edge can be created via <see cref="IEdgeFactory.CreateEdge" /> and
-/// then added to a graph via IGraph.Edges.<see
-/// cref="IEdgeCollection.Add(IEdge)" />, or created and added to a graph at
-/// the same time via IGraph.Edges.<see
-/// cref="IEdgeCollection.Add(IEdgeFactory, IVertex, IVertex, Boolean)" />.
+/// An edge can be created via the edge constructor and then added to a graph
+/// via IGraph.Edges.<see cref="EdgeCollection.Add(IEdge)" />, or created and
+/// added to a graph at the same time via IGraph.Edges.<see
+/// cref="IEdgeCollection.Add(IVertex, IVertex, Boolean)" />.
 /// </para>
 ///
 /// <para>
@@ -37,27 +36,12 @@ namespace Microsoft.NodeXL.Core
 /// can be removed from a graph and disposed of, however.
 /// </para>
 ///
-/// <para>
-/// The NodeXL system includes an <see cref="Edge" /> implementation that can
-/// be used as-is in many graphing applications.  You can also derive a class
-/// from <see cref="Edge" /> or implement your own custom edge class from
-/// scratch.  The only requirement is that your custom class must implement
-/// <see cref="IEdge" />.
-/// </para>
-///
-/// <para>
-/// If you implement a custom edge class, you may also want to implement <see
-/// cref="IEdgeFactory" /> to allow the NodeXL system to create instances of
-/// your custom edge.
-/// </para>
-///
 /// </remarks>
 ///
 /// <seealso cref="Edge" />
 //*****************************************************************************
 
-public interface IEdge : IIdentityProvider, IMetadataProvider,
-    IFormattableNodeXL
+public interface IEdge : IIdentityProvider, IMetadataProvider
 {
     //*************************************************************************
     //  Property: ParentGraph
@@ -100,8 +84,7 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// A directed edge has a front and a back.
     ///
     /// <para>
-    /// This property is set when the edge is created by <see
-    /// cref="IEdgeFactory.CreateEdge" />.
+    /// This property is set when the edge is created by the edge constructor.
     /// </para>
     ///
     /// </remarks>
@@ -126,7 +109,7 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     ///
     /// <remarks>
     /// The order of the returned vertices is the same order that was specified
-    /// when the edge was created by <see cref="IEdgeFactory.CreateEdge" />.
+    /// when the edge was created by the edge constructor.
     ///
     /// <para>
     /// If <see cref="IsDirected" /> is true, the first vertex in the array is
@@ -140,7 +123,6 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// <seealso cref="IsDirected" />
     /// <seealso cref="FrontVertex" />
     /// <seealso cref="BackVertex" />
-    /// <seealso cref="IEdgeFactory.CreateEdge" />
     //*************************************************************************
 
     IVertex []
@@ -170,8 +152,8 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// </para>
     ///
     /// <para>
-    /// The edge's vertices are set when the edge is created by <see
-    /// cref="IEdgeFactory.CreateEdge" />.
+    /// The edge's vertices are set when the edge is created by the edge
+    /// constructor.
     /// </para>
     ///
     /// </remarks>
@@ -210,8 +192,8 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// </para>
     ///
     /// <para>
-    /// The edge's vertices are set when the edge is created by <see
-    /// cref="IEdgeFactory.CreateEdge" />.
+    /// The edge's vertices are set when the edge is created by the edge
+    /// constructor.
     /// </para>
     ///
     /// </remarks>
@@ -255,8 +237,7 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// </overloads>
     ///
     /// <summary>
-    /// Creates a copy of the edge, making the copy the same type as the
-    /// original.
+    /// Creates a copy of the edge.
     /// </summary>
     ///
     /// <param name="copyMetadataValues">
@@ -280,10 +261,9 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// </returns>
     ///
     /// <remarks>
-    /// The new edge is of the same type as the original.  It is connected to
-    /// the same vertices as the original edge.  Its <see
-    /// cref="IIdentityProvider.Name" /> is set to the same value as the
-    /// original's, but it is assigned a new <see
+    /// The new edge is connected to the same vertices as the original edge.
+    /// Its <see cref="IIdentityProvider.Name" /> is set to the same value as
+    /// the original's, but it is assigned a new <see
     /// cref="IIdentityProvider.ID" />.
     ///
     /// <para>
@@ -304,7 +284,7 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     //  Method: Clone()
     //
     /// <summary>
-    /// Creates a copy of the edge, making the copy a specified type.
+    /// Creates a copy of the edge using specified vertices.
     /// </summary>
     ///
     /// <param name="copyMetadataValues">
@@ -321,64 +301,6 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
     /// cref="IMetadataProvider.Tag "/> property on the new edge is set to
     /// null.
-    /// </param>
-    ///
-    /// <param name="newEdgeFactory">
-    /// Object that can create edges.
-    /// </param>
-    ///
-    /// <returns>
-    /// The copy of the edge, as an <see cref="IEdge" />.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The new edge is created using <paramref name="newEdgeFactory" />.  It
-    /// is connected to the same vertices as the original edge.  Its <see
-    /// cref="IIdentityProvider.Name" /> is set to the same value as the
-    /// original's, but it is assigned a new <see
-    /// cref="IIdentityProvider.ID" />.
-    ///
-    /// <para>
-    /// The new edge can be added only to the same graph.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    IEdge
-    Clone
-    (
-        Boolean copyMetadataValues,
-        Boolean copyTag,
-        IEdgeFactory newEdgeFactory
-    );
-
-    //*************************************************************************
-    //  Method: Clone()
-    //
-    /// <summary>
-    /// Creates a copy of the edge, making the copy a specified type and using
-    /// specified vertices.
-    /// </summary>
-    ///
-    /// <param name="copyMetadataValues">
-    /// If true, the key/value pairs that were set with <see
-    /// cref="IMetadataProvider.SetValue" /> are copied to the new edge.  (This
-    /// is a shallow copy.  The objects pointed to by the original values are
-    /// NOT cloned.)  If false, the key/value pairs are not copied.
-    /// </param>
-    ///
-    /// <param name="copyTag">
-    /// If true, the <see cref="IMetadataProvider.Tag" /> property on the new
-    /// edge is set to the same value as in the original edge.  (This is a
-    /// shallow copy.  The object pointed to by the original <see
-    /// cref="IMetadataProvider.Tag" /> is NOT cloned.)  If false, the <see
-    /// cref="IMetadataProvider.Tag "/> property on the new edge is set to
-    /// null.
-    /// </param>
-    ///
-    /// <param name="newEdgeFactory">
-    /// Object that can create edges.
     /// </param>
     ///
     /// <param name="vertex1">
@@ -402,11 +324,11 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     /// </returns>
     ///
     /// <remarks>
-    /// The new edge is created using <paramref name="newEdgeFactory" />.  It
-    /// is connected to <paramref name="vertex1" /> and <paramref
-    /// name="vertex2" />, which can be in the same graph as the original edge
-    /// or in a different graph.  Its <see cref="IIdentityProvider.Name" /> is
-    /// set to the same value as the original's, but it is assigned a new <see
+    /// A new edge is created and then connected to <paramref
+    /// name="vertex1" /> and <paramref name="vertex2" />, which can be in the
+    /// same graph as the original edge or in a different graph.  Its <see
+    /// cref="IIdentityProvider.Name" /> is set to the same value as the
+    /// original's, but it is assigned a new <see
     /// cref="IIdentityProvider.ID" />.
     ///
     /// <para>
@@ -422,7 +344,6 @@ public interface IEdge : IIdentityProvider, IMetadataProvider,
     (
         Boolean copyMetadataValues,
         Boolean copyTag,
-        IEdgeFactory newEdgeFactory,
         IVertex vertex1,
         IVertex vertex2,
         Boolean isDirected

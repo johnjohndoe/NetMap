@@ -136,10 +136,8 @@
       <DependentUpon>GraphZoomAndScaleControl.cs</DependentUpon>
     </Compile>
     <Compile Include="LayoutManagers\LayoutManager.cs" />
-    <Compile Include="LayoutManagers\LayoutManagerForComboBox.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="LayoutManagers\LayoutManagerForMenu.cs" />
+    <Compile Include="LayoutManagers\LayoutManagerForToolStripSplitButton.cs" />
     <Compile Include="LayoutManagers\LayoutType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

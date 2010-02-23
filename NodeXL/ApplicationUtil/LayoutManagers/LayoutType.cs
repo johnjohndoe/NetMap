@@ -90,12 +90,6 @@ LayoutType
 
     HarelKorenFastMultiscale,
 
-    /// <summary>
-    /// Use a <see cref="BinnedLayout" />.
-    /// </summary>
-
-    Binned,
-
 
     // To add support for an additional layout, do the following:
     //
@@ -394,10 +388,6 @@ public static class AllLayouts
 
                 return ( new HarelKorenFastMultiscaleLayout() );
 
-            case LayoutType.Binned:
-
-                return ( new BinnedLayout() );
-
             default:
 
                 Debug.Assert(false);
@@ -425,25 +415,23 @@ public static class AllLayouts
     /// IMPORTANT: Derived classes assume that there is one array entry for
     /// each layout in the LayoutType enumeration.  There may be additional
     /// entries that are set to the LayoutGroupSeparator constant.
+    ///
+    /// Note: The descriptions are terminated with periods because they appear
+    /// as "SuperTips" within the Excel ribbon, and SuperTips in Excel are
+    /// complete sentences.
 
     private static readonly LayoutInfo [] m_aoAllLayouts = new LayoutInfo [] {
 
         new LayoutInfo(
             LayoutType.FruchtermanReingold,
             "&Fruchterman-Reingold",
-            "Use a Fruchterman-Reingold force-directed layout"
+            "Use a Fruchterman-Reingold force-directed layout."
             ),
 
         new LayoutInfo(
             LayoutType.HarelKorenFastMultiscale,
             "Harel-&Koren Fast Multiscale",
-            "Use a Harel-Koren fast multiscale layout"
-            ),
-
-        new LayoutInfo(
-            LayoutType.Binned,
-            "&Binned",
-            "Isolate the graph's disconnected components"
+            "Use a Harel-Koren fast multiscale layout."
             ),
 
         LayoutGroupSeparator,
@@ -451,31 +439,31 @@ public static class AllLayouts
         new LayoutInfo(
             LayoutType.Circle,
             "&Circle",
-            "Place the vertices on the circumference of a circle"
+            "Place the vertices on the circumference of a circle."
             ),
 
         new LayoutInfo(
             LayoutType.Spiral,
             "&Spiral",
-            "Place the vertices along a spiral"
+            "Place the vertices along a spiral."
             ),
 
         new LayoutInfo(
             LayoutType.SinusoidHorizontal,
             "&Horizontal Sine Wave",
-            "Place the vertices along a sine wave running left to right"
+            "Place the vertices along a sine wave running left to right."
             ),
 
         new LayoutInfo(
             LayoutType.SinusoidVertical,
             "&Vertical Sine Wave",
-            "Place the vertices along a sine wave running top to bottom"
+            "Place the vertices along a sine wave running top to bottom."
             ),
 
         new LayoutInfo(
             LayoutType.Grid,
             "&Grid",
-            "Place the vertices on an evenly-spaced grid"
+            "Place the vertices on an evenly-spaced grid."
             ),
 
         new LayoutInfo(
@@ -484,7 +472,7 @@ public static class AllLayouts
 
             "Place the vertices in a polar coordinate space using the"
             + " Polar R and Polar Angle columns on the Vertices worksheet,"
-            + " where Polar R ranges from 0 to 1"
+            + " where Polar R ranges from 0 to 1."
             ),
 
         new LayoutInfo(
@@ -493,7 +481,7 @@ public static class AllLayouts
 
             "Place the vertices in a polar coordinate space using the"
             + " Polar R and Polar Angle columns on the Vertices worksheet,"
-            + " where Polar R is in absolute units of 1/96 inch"
+            + " where Polar R is in absolute units of 1/96 inch."
             ),
 
         LayoutGroupSeparator,
@@ -503,13 +491,13 @@ public static class AllLayouts
             "Sugi&yama",
 
             "Use a modified Sugiyama layered layout that tries to minimize"
-            + " edge crossings"
+            + " edge crossings."
             ),
 
         new LayoutInfo(
             LayoutType.Random,
             "&Random",
-            "Place the vertices at random locations"
+            "Place the vertices at random locations."
             ),
 
         LayoutGroupSeparator,
@@ -517,7 +505,7 @@ public static class AllLayouts
         new LayoutInfo(
             LayoutType.Null,
             "&None",
-            "Leave the vertices exactly where they are"
+            "Leave the vertices exactly where they are."
             ),
         };
 }

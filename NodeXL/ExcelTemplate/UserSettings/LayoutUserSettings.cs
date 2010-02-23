@@ -2,12 +2,10 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Globalization;
-using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using Microsoft.NodeXL.Layouts;
 using Microsoft.NodeXL.ApplicationUtil;
-using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -20,9 +18,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 //*****************************************************************************
 
-[ TypeConverterAttribute( typeof(LayoutUserSettingsTypeConverter) ) ]
+[ SettingsGroupNameAttribute("LayoutUserSettings") ]
 
-public class LayoutUserSettings : Object
+public class LayoutUserSettings : ApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: LayoutUserSettings()
@@ -34,10 +32,7 @@ public class LayoutUserSettings : Object
 
     public LayoutUserSettings()
     {
-        m_eLayout = LayoutType.FruchtermanReingold;
-        m_iMargin = 6;
-        m_fFruchtermanReingoldC = 3.0F;
-        m_iFruchtermanReingoldIterations = 10;
+        // (Do nothing.)
 
         AssertValid();
     }
@@ -55,6 +50,9 @@ public class LayoutUserSettings : Object
     /// </value>
     //*************************************************************************
 
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("FruchtermanReingold") ]
+
     public LayoutType
     Layout
     {
@@ -62,12 +60,12 @@ public class LayoutUserSettings : Object
         {
             AssertValid();
 
-            return (m_eLayout);
+            return ( (LayoutType)this[LayoutKey] );
         }
 
         set
         {
-            m_eLayout = value;
+            this[LayoutKey] = value;
 
             AssertValid();
         }
@@ -87,6 +85,9 @@ public class LayoutUserSettings : Object
     /// </value>
     //*************************************************************************
 
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("6") ]
+
     public Int32
     Margin
     {
@@ -94,12 +95,46 @@ public class LayoutUserSettings : Object
         {
             AssertValid();
 
-            return (m_iMargin);
+            return ( (Int32)this[MarginKey] );
         }
 
         set
         {
-            m_iMargin = value;
+            this[MarginKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: UseBinning
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether binning should be used when the
+    /// graph is laid out.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to use binning.  The default value is false.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public Boolean
+    UseBinning
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[UseBinningKey] );
+        }
+
+        set
+        {
+            this[UseBinningKey] = value;
 
             AssertValid();
         }
@@ -121,6 +156,9 @@ public class LayoutUserSettings : Object
     /// </value>
     //*************************************************************************
 
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("3.0") ]
+
     public Single
     FruchtermanReingoldC
     {
@@ -128,12 +166,12 @@ public class LayoutUserSettings : Object
         {
             AssertValid();
 
-            return (m_fFruchtermanReingoldC);
+            return ( (Single)this[FruchtermanReingoldCKey] );
         }
 
         set
         {
-            m_fFruchtermanReingoldC = value;
+            this[FruchtermanReingoldCKey] = value;
 
             AssertValid();
         }
@@ -154,6 +192,9 @@ public class LayoutUserSettings : Object
     /// </value>
     //*************************************************************************
 
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("10") ]
+
     public Int32
     FruchtermanReingoldIterations
     {
@@ -161,54 +202,25 @@ public class LayoutUserSettings : Object
         {
             AssertValid();
 
-            return (m_iFruchtermanReingoldIterations);
+            return ( (Int32)this[FruchtermanReingoldIterationsKey] );
         }
 
         set
         {
-            m_iFruchtermanReingoldIterations = value;
+            this[FruchtermanReingoldIterationsKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Method: Copy()
-    //
-    /// <summary>
-    /// Creates a deep copy of the object.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A deep copy of the object.
-    /// </returns>
-    //*************************************************************************
-
-    public LayoutUserSettings
-    Copy()
-    {
-        AssertValid();
-
-        LayoutUserSettings oCopy = new LayoutUserSettings();
-
-        oCopy.Layout = this.Layout;
-        oCopy.Margin = this.Margin;
-        oCopy.FruchtermanReingoldC = this.FruchtermanReingoldC;
-
-        oCopy.FruchtermanReingoldIterations =
-            this.FruchtermanReingoldIterations;
-
-        return (oCopy);
-    }
-
-    //*************************************************************************
     //  Method: TransferToLayout()
     //
     /// <summary>
-    /// Transfers the settings to an <see cref="ILayout" /> object.
+    /// Transfers the settings to an <see cref="IAsyncLayout" /> object.
     /// </summary>
     ///
-    /// <param name="layout">
+    /// <param name="asyncLayout">
     /// Layout to transfer the settings to.
     /// </param>
     //*************************************************************************
@@ -216,23 +228,24 @@ public class LayoutUserSettings : Object
     public void
     TransferToLayout
     (
-        ILayout layout
+        IAsyncLayout asyncLayout
     )
     {
-        Debug.Assert(layout != null);
+        Debug.Assert(asyncLayout != null);
         AssertValid();
 
-        layout.Margin = m_iMargin;
+        asyncLayout.Margin = this.Margin;
+        asyncLayout.UseBinning = this.UseBinning;
 
-        if (layout is FruchtermanReingoldLayout)
+        if (asyncLayout is FruchtermanReingoldLayout)
         {
             FruchtermanReingoldLayout oFruchtermanReingoldLayout =
-                (FruchtermanReingoldLayout)layout;
+                (FruchtermanReingoldLayout)asyncLayout;
 
-            oFruchtermanReingoldLayout.C = m_fFruchtermanReingoldC;
+            oFruchtermanReingoldLayout.C = this.FruchtermanReingoldC;
 
             oFruchtermanReingoldLayout.Iterations =
-                m_iFruchtermanReingoldIterations;
+                this.FruchtermanReingoldIterations;
         }
     }
 
@@ -250,271 +263,34 @@ public class LayoutUserSettings : Object
     public void
     AssertValid()
     {
-        // m_eLayout
-        Debug.Assert(m_iMargin >= 0);
-        Debug.Assert(m_fFruchtermanReingoldC > 0);
-        Debug.Assert(m_iFruchtermanReingoldIterations > 0);
-    }
-
-
-    //*************************************************************************
-    //  Protected fields
-    //*************************************************************************
-
-    /// Layout type.
-
-    protected LayoutType m_eLayout;
-
-    /// The margin to subtract from each edge of the graph rectangle before
-    /// laying out the graph.
-
-    protected Int32 m_iMargin;
-
-    /// The constant that determines the strength of the attractive and
-    /// repulsive forces between the vertices when using the
-    /// FruchtermanReingoldLayout.
-
-    protected Single m_fFruchtermanReingoldC;
-
-    /// The number of times to run the Fruchterman-Reingold algorithm when
-    /// using the FruchtermanReingoldLayout.
-
-    protected Int32 m_iFruchtermanReingoldIterations;
-}
-
-
-//*****************************************************************************
-//  Class: LayoutUserSettingsTypeConverter
-//
-/// <summary>
-/// Converts a LayoutUserSettings object to and from a String.
-/// </summary>
-/// 
-/// <remarks>
-/// One of the properties of <see cref="GeneralUserSettings" /> is of type <see
-/// cref="LayoutUserSettings" />.  The application settings architecture
-/// requires a type converter for such a complex type.
-/// </remarks>
-//*****************************************************************************
-
-public class LayoutUserSettingsTypeConverter : TypeConverter
-{
-    //*************************************************************************
-    //  Constructor: LayoutUserSettingsTypeConverter()
-    //
-    /// <summary>
-    /// Initializes a new instance of the LayoutUserSettingsTypeConverter
-    /// class.
-    /// </summary>
-    //*************************************************************************
-
-    public LayoutUserSettingsTypeConverter()
-    {
-        // (Do nothing.)
-
-        AssertValid();
-    }
-
-    //*************************************************************************
-    //  Method: CanConvertTo()
-    //
-    /// <summary>
-    /// Returns whether this converter can convert the object to the specified
-    /// type, using the specified context.
-    /// </summary>
-    ///
-    /// <param name="context">
-    /// An ITypeDescriptorContext that provides a format context. 
-    /// </param>
-    ///
-    /// <param name="sourceType">
-    /// A Type that represents the type you want to convert to. 
-    /// </param>
-    ///
-    /// <returns>
-    /// true if this converter can perform the conversion; otherwise, false.
-    /// </returns>
-    //*************************************************************************
-
-    public override Boolean
-    CanConvertTo
-    (
-        ITypeDescriptorContext context,
-        Type sourceType
-    )
-    {
-        AssertValid();
-
-        return ( sourceType == typeof(String) );
-    }
-
-    //*************************************************************************
-    //  Method: CanConvertFrom()
-    //
-    /// <summary>
-    /// Returns whether this converter can convert an object of the given type
-    /// to the type of this converter, using the specified context.
-    /// </summary>
-    ///
-    /// <param name="context">
-    /// An ITypeDescriptorContext that provides a format context. 
-    /// </param>
-    ///
-    /// <param name="sourceType">
-    /// A Type that represents the type you want to convert from. 
-    /// </param>
-    ///
-    /// <returns>
-    /// true if this converter can perform the conversion; otherwise, false.
-    /// </returns>
-    //*************************************************************************
-
-    public override Boolean
-    CanConvertFrom
-    (
-        ITypeDescriptorContext context,
-        Type sourceType
-    )
-    {
-        AssertValid();
-
-        return ( sourceType == typeof(String) );
-    }
-
-    //*************************************************************************
-    //  Method: ConvertTo()
-    //
-    /// <summary>
-    /// Converts the given value object to the specified type, using the
-    /// specified context and culture information.
-    /// </summary>
-    ///
-    /// <param name="context">
-    /// An ITypeDescriptorContext that provides a format context. 
-    /// </param>
-    ///
-    /// <param name="culture">
-    /// A CultureInfo. If null is passed, the current culture is assumed. 
-    /// </param>
-    ///
-    /// <param name="value">
-    /// The Object to convert.
-    /// </param>
-    ///
-    /// <param name="destinationType">
-    /// The Type to convert the value parameter to. 
-    /// </param>
-    ///
-    /// <returns>
-    /// An Object that represents the converted value.
-    /// </returns>
-    //*************************************************************************
-
-    public override Object
-    ConvertTo
-    (
-        ITypeDescriptorContext context,
-        CultureInfo culture,
-        Object value,
-        Type destinationType
-    )
-    {
-        Debug.Assert(value != null);
-        Debug.Assert(value is LayoutUserSettings);
-        Debug.Assert( destinationType == typeof(String) );
-        AssertValid();
-
-        LayoutUserSettings oLayoutUserSettings = (LayoutUserSettings)value;
-
-        // Use a simple tab-delimited format.  Sample string:
-        //
-        // "FruchtermanReingold\t6\t3.0\t10"
-
-        return ( String.Format(CultureInfo.InvariantCulture,
-
-            "{0}\t{1}\t{2}\t{3}"
-            ,
-            oLayoutUserSettings.Layout,
-            oLayoutUserSettings.Margin,
-            oLayoutUserSettings.FruchtermanReingoldC,
-            oLayoutUserSettings.FruchtermanReingoldIterations
-            ) );
-    }
-
-    //*************************************************************************
-    //  Method: ConvertFrom()
-    //
-    /// <summary>
-    /// Converts the given object to the type of this converter, using the
-    /// specified context and culture information.
-    /// </summary>
-    ///
-    /// <param name="context">
-    /// An ITypeDescriptorContext that provides a format context. 
-    /// </param>
-    ///
-    /// <param name="culture">
-    /// A CultureInfo. If null is passed, the current culture is assumed. 
-    /// </param>
-    ///
-    /// <param name="value">
-    /// The Object to convert.
-    /// </param>
-    ///
-    /// <returns>
-    /// An Object that represents the converted value.
-    /// </returns>
-    //*************************************************************************
-
-    public override Object
-    ConvertFrom
-    (
-        ITypeDescriptorContext context,
-        CultureInfo culture,
-        Object value
-    )
-    {
-        Debug.Assert(value != null);
-        Debug.Assert(value is String);
-        AssertValid();
-
-        LayoutUserSettings oLayoutUserSettings = new LayoutUserSettings();
-
-        String [] asStrings = ( (String)value ).Split( new Char[] {'\t'} );
-
-        Debug.Assert(asStrings.Length == 4);
-
-        oLayoutUserSettings.Layout = (LayoutType)
-            Enum.Parse( typeof(LayoutType), asStrings[0] );
-
-        oLayoutUserSettings.Margin =
-            MathUtil.ParseCultureInvariantInt32( asStrings[1] );
-
-        oLayoutUserSettings.FruchtermanReingoldC =
-            MathUtil.ParseCultureInvariantSingle( asStrings[2] );
-
-        oLayoutUserSettings.FruchtermanReingoldIterations =
-            MathUtil.ParseCultureInvariantInt32( asStrings[3] );
-
-        return (oLayoutUserSettings);
-    }
-
-
-    //*************************************************************************
-    //  Method: AssertValid()
-    //
-    /// <summary>
-    /// Asserts if the object is in an invalid state.  Debug-only.
-    /// </summary>
-    //*************************************************************************
-
-    [Conditional("DEBUG")]
-
-    public void
-    AssertValid()
-    {
         // (Do nothing.)
     }
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// Name of the settings key for the Layout property.
+
+    protected const String LayoutKey = "Layout";
+
+    /// Name of the settings key for the Margin property.
+
+    protected const String MarginKey = "Margin";
+
+    /// Name of the settings key for the UseBinning property.
+
+    protected const String UseBinningKey = "UseBinning";
+
+    /// Name of the settings key for the FruchtermanReingoldC property.
+
+    protected const String FruchtermanReingoldCKey = "FruchtermanReingoldC";
+
+    /// Name of the settings key for the FruchtermanReingoldIterations property.
+
+    protected const String FruchtermanReingoldIterationsKey =
+        "FruchtermanReingoldIterations";
 
 
     //*************************************************************************

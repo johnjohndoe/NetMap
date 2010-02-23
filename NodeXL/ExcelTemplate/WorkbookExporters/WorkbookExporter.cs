@@ -85,11 +85,9 @@ public class WorkbookExporter
     {
         AssertValid();
 
-        Application oApplication = m_oWorkbookToExport.Application;
-        Workbook oNewNodeXLWorkbook = null;
-
         // Get the path to the application's template.
 
+        Application oApplication = m_oWorkbookToExport.Application;
         String sTemplatePath;
 
         if ( !ApplicationUtil.TryGetTemplatePath(oApplication,
@@ -103,49 +101,13 @@ public class WorkbookExporter
         sTemplatePath = @"E:\NodeXL\ExcelTemplate\bin\Debug\NodeXLGraph.xltx";
         #endif
 
-        Range oVisibleSelectedTableRange;
-        ListObject oTable;
+        Workbook oNewNodeXLWorkbook = null;
 
-        // Get the visible, selected range within the edge table.
+        CopyTableToNewNodeXLWorkbook(WorksheetNames.Edges,
+            TableNames.Edges, sTemplatePath, ref oNewNodeXLWorkbook);
 
-        if (
-            ExcelUtil.TryGetVisibleSelectedTableRange(m_oWorkbookToExport,
-                WorksheetNames.Edges, TableNames.Edges, out oTable,
-                out oVisibleSelectedTableRange)
-            &&
-            !ExcelUtil.TableIsEmpty(oTable)
-            )
-        {
-            // Create the new workbook and copy the edge table's selected rows
-            // to it.
-
-            oNewNodeXLWorkbook = oApplication.Workbooks.Add(sTemplatePath);
-
-            CopyRowsToNewNodeXLWorkbook(oTable, oVisibleSelectedTableRange,
-                oNewNodeXLWorkbook);
-        }
-
-        // Get the selected range within the vertex table.
-
-        if (
-            ExcelUtil.TryGetVisibleSelectedTableRange(m_oWorkbookToExport,
-                WorksheetNames.Vertices, TableNames.Vertices, out oTable,
-                out oVisibleSelectedTableRange)
-            &&
-            !ExcelUtil.TableIsEmpty(oTable)
-            )
-        {
-            // Create the new workbook if necessary and copy the vertex table's
-            // selected rows to it.
-
-            if (oNewNodeXLWorkbook == null)
-            {
-                oNewNodeXLWorkbook = oApplication.Workbooks.Add(sTemplatePath);
-            }
-
-            CopyRowsToNewNodeXLWorkbook(oTable, oVisibleSelectedTableRange,
-                oNewNodeXLWorkbook);
-        }
+        CopyTableToNewNodeXLWorkbook(WorksheetNames.Vertices,
+            TableNames.Vertices, sTemplatePath, ref oNewNodeXLWorkbook);
 
         if (oNewNodeXLWorkbook == null)
         {
@@ -262,6 +224,93 @@ public class WorkbookExporter
     }
 
     //*************************************************************************
+    //  Method: CopyTableToNewNodeXLWorkbook()
+    //
+    /// <summary>
+    /// Copies the selected rows of a specified table to a new NodeXL workbook.
+    /// </summary>
+    ///
+    /// <param name="sWorksheetName">
+    /// Name of the worksheet containing the table.
+    /// </param>
+    ///
+    /// <param name="sTableName">
+    /// Name of the table.
+    /// </param>
+    ///
+    /// <param name="sTemplatePath">
+    /// Path to the NodeXL template.
+    /// </param>
+    ///
+    /// <param name="oNewNodeXLWorkbook">
+    /// If this isn't already set to a new workbook, this method creates the
+    /// workbook if necessary and sets this parameter to it.  Note that it may
+    /// still be null when this method returns.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    CopyTableToNewNodeXLWorkbook
+    (
+        String sWorksheetName,
+        String sTableName,
+        String sTemplatePath,
+        ref Workbook oNewNodeXLWorkbook
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(sTableName) );
+        Debug.Assert( !String.IsNullOrEmpty(sTemplatePath) );
+        AssertValid();
+
+        ListObject oTable;
+        Range oSelectedTableRange;
+
+        if (
+            !ExcelUtil.TryGetSelectedTableRange(m_oWorkbookToExport,
+                sWorksheetName, sTableName, out oTable,
+                out oSelectedTableRange)
+            ||
+            ExcelUtil.VisibleTableRangeIsEmpty(oTable)
+            )
+        {
+            return;
+        }
+
+        Range oVisibleSelectedTableRange;
+
+        // CopyRowsToNewNodeXLWorkbook() can handle hidden rows, but not hidden
+        // columns.  Temporarily show all hidden columns in the table.
+
+        ExcelHiddenColumns oHiddenColumns =
+            ExcelColumnHider.ShowHiddenColumns(oTable);
+
+        try
+        {
+            if ( ExcelUtil.TryGetVisibleRange(oSelectedTableRange,
+                out oVisibleSelectedTableRange) )
+            {
+                // Create the new workbook if necessary and copy the table's
+                // selected rows to it.
+
+                if (oNewNodeXLWorkbook == null)
+                {
+                    oNewNodeXLWorkbook =
+                        m_oWorkbookToExport.Application.Workbooks.Add(
+                            sTemplatePath);
+                }
+
+                CopyRowsToNewNodeXLWorkbook(oTable, oVisibleSelectedTableRange,
+                    oNewNodeXLWorkbook);
+            }
+        }
+        finally
+        {
+            ExcelColumnHider.RestoreHiddenColumns(oTable, oHiddenColumns);
+        }
+    }
+
+    //*************************************************************************
     //  Method: CopyRowsToNewNodeXLWorkbook()
     //
     /// <summary>
@@ -274,8 +323,9 @@ public class WorkbookExporter
     ///
     /// <param name="oSourceTableRangeToCopy">
     /// For each row in <paramref name="oSourceTable" /> that intersects this
-    /// range, the row is copied to the new workbook.  The may contain multiple
-    /// areas.
+    /// range, the row is copied to the new workbook.  This will contain
+    /// multiple areas if the table has filtered rows.  It must not contain
+    /// filtered columns.
     /// </param>
     ///
     /// <param name="oNewNodeXLWorkbook">

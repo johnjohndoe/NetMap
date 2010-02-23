@@ -159,7 +159,7 @@ public class OpenPajekFileDialog : OpenFileDialog2
 
         IGraphAdapter oPajekGraphAdapter = new PajekGraphAdapter();
 
-        oObject = oPajekGraphAdapter.LoadGraph(sFileName);
+        oObject = oPajekGraphAdapter.LoadGraphFromFile(sFileName);
     }
 
 

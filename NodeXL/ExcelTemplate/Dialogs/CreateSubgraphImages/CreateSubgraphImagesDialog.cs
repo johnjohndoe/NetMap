@@ -453,7 +453,8 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
             m_oCreateSubgraphImagesDialogUserSettings.SelectedVerticesOnly,
             m_oCreateSubgraphImagesDialogUserSettings.SelectVertex,
             m_oCreateSubgraphImagesDialogUserSettings.SelectIncidentEdges,
-            new GeneralUserSettings()
+            new GeneralUserSettings(),
+            new LayoutUserSettings()
             );
     }
 

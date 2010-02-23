@@ -58,7 +58,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         m_oGeneralUserSettings = generalUserSettings;
         m_oWorkbook = workbook;
         m_oAxisFont = m_oGeneralUserSettings.AxisFont;
-        m_oLayoutUserSettings = m_oGeneralUserSettings.LayoutUserSettings;
         m_oLabelUserSettings = m_oGeneralUserSettings.LabelUserSettings;
 
         // Instantiate an object that saves and retrieves the position of this
@@ -194,7 +193,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
 
             m_oGeneralUserSettings.AutoSelect = chkAutoSelect.Checked;
             m_oGeneralUserSettings.AxisFont = m_oAxisFont;
-            m_oGeneralUserSettings.LayoutUserSettings = m_oLayoutUserSettings;
             m_oGeneralUserSettings.LabelUserSettings = m_oLabelUserSettings;
 
             m_oGeneralUserSettings.AutoReadWorkbook =
@@ -244,9 +242,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
             chkAutoSelect.Checked = m_oGeneralUserSettings.AutoSelect;
 
             m_oAxisFont = m_oGeneralUserSettings.AxisFont;
-
-            m_oLayoutUserSettings =
-                m_oGeneralUserSettings.LayoutUserSettings.Copy();
 
             m_oLabelUserSettings =
                 m_oGeneralUserSettings.LabelUserSettings.Copy();
@@ -388,37 +383,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: btnLayout_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnLayout button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnLayout_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        LayoutUserSettingsDialog oLayoutUserSettingsDialog =
-            new LayoutUserSettingsDialog(m_oLayoutUserSettings);
-
-        oLayoutUserSettingsDialog.ShowDialog();
-    }
-
-    //*************************************************************************
     //  Method: btnLabels_Click()
     //
     /// <summary>
@@ -475,7 +439,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         AssertValid();
 
         m_oGeneralUserSettings.Reset();
-
         DoDataExchange(false);
     }
 
@@ -557,7 +520,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
         Debug.Assert(m_oGeneralUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oAxisFont != null);
-        Debug.Assert(m_oLayoutUserSettings != null);
         Debug.Assert(m_oLabelUserSettings != null);
         Debug.Assert(m_oGeneralUserSettingsDialogUserSettings != null);
     }
@@ -574,12 +536,6 @@ public partial class GeneralUserSettingsDialog : ExcelTemplateForm
     /// Workbook containing the graph data.
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
-
-    /// A copy of the LayoutUserSettings object owned by
-    /// m_oGeneralUserSettings.  This gets edited by a
-    /// LayoutUserSettingsDialog.
-
-    protected LayoutUserSettings m_oLayoutUserSettings;
 
     /// A copy of the LabelUserSettings object owned by m_oGeneralUserSettings.
     /// This gets edited by a LabelUserSettingsDialog.

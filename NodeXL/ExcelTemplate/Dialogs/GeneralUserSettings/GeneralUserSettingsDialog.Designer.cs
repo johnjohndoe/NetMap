@@ -39,7 +39,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCustomizeVertexMenu = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.btnLayout = new System.Windows.Forms.Button();
             this.btnResetAll = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.usrSelectedVertexColor = new Microsoft.Research.CommunityTechnologies.AppLib.ColorPicker();
@@ -157,16 +156,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label10.Size = new System.Drawing.Size(89, 16);
             this.label10.TabIndex = 0;
             this.label10.Text = "Vertex Menus";
-            // 
-            // btnLayout
-            // 
-            this.btnLayout.Location = new System.Drawing.Point(409, 354);
-            this.btnLayout.Name = "btnLayout";
-            this.btnLayout.Size = new System.Drawing.Size(80, 23);
-            this.btnLayout.TabIndex = 7;
-            this.btnLayout.Text = "L&ayout...";
-            this.btnLayout.UseVisualStyleBackColor = true;
-            this.btnLayout.Click += new System.EventHandler(this.btnLayout_Click);
             // 
             // btnResetAll
             // 
@@ -577,7 +566,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.Controls.Add(this.chkAutoReadWorkbook);
             this.Controls.Add(this.usrBackColor);
             this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.btnLayout);
             this.Controls.Add(this.btnResetAll);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -647,7 +635,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.NumericUpDown nudEdgeAlpha;
         private System.Windows.Forms.CheckBox chkAutoSelect;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button btnLayout;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label10;

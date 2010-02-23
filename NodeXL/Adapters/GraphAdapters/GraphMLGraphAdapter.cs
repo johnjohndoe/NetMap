@@ -19,7 +19,7 @@ namespace Microsoft.NodeXL.Adapters
 /// </summary>
 ///
 /// <remarks>
-/// The <see cref="GraphAdapterBase.LoadGraph(String)" /> method converts a
+/// The <see cref="GraphAdapterBase.LoadGraphFromFile" /> method converts a
 /// GraphML file to a graph.  The <see
 /// cref="GraphAdapterBase.SaveGraph(IGraph, String)" /> method for converting
 /// in the other direction is not yet implemented.
@@ -80,7 +80,7 @@ namespace Microsoft.NodeXL.Adapters
 /// <para>
 /// To make it possible for the caller to determine which metadata keys were
 /// added to the graph's edges and vertices, <see
-/// cref="GraphAdapterBase.LoadGraph(String)" /> adds <see
+/// cref="GraphAdapterBase.LoadGraphFromFile" /> adds <see
 /// cref="ReservedMetadataKeys.GraphMLVertexAttributes" /> and <see
 /// cref="ReservedMetadataKeys.GraphMLEdgeAttributes" /> keys to the returned
 /// graph.  The key values are of type String[].
@@ -149,27 +149,23 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     //  Method: LoadGraphCore()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="Stream" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="Stream" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that can create a graph.
-    /// </param>
     ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="stream" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="stream" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="stream" />.  It
-    /// does not close <paramref name="stream" />.
+    /// This method creates a graph, loads it with the graph data read from
+    /// <paramref name="stream" />.  It does not close <paramref
+    /// name="stream" />.
     ///
     /// <para>
     /// The arguments have already been checked for validity.
@@ -181,11 +177,9 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     protected override IGraph
     LoadGraphCore
     (
-        IGraphFactory graphFactory,
         Stream stream
     )
     {
-        Debug.Assert(graphFactory != null);
         Debug.Assert(stream != null);
         AssertValid();
 
@@ -214,8 +208,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         GraphDirectedness eGraphDirectedness =
             GetGraphDirectedness(oGraphXmlNode);
 
-        IGraph oGraph = graphFactory.CreateGraph(eGraphDirectedness,
-            GraphRestrictions.None);
+        IGraph oGraph = new Graph(eGraphDirectedness);
 
         // The key is the id attribute of the "node" XML node, and the value is
         // the corresponding IVertex.

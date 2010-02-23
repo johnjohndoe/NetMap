@@ -150,27 +150,15 @@ public class WorksheetReaderBase : NodeXLBase
         Debug.Assert(oSubrange.Areas.Count == 1);
         AssertValid();
 
-        if (iIDColumnIndex == NoSuchColumn)
+        if ( iIDColumnIndex == NoSuchColumn ||
+            ExcelUtil.VisibleTableRangeIsEmpty(oTable) )
         {
             return;
         }
 
         Range oDataBodyRange = oTable.DataBodyRange;
 
-        if (oDataBodyRange == null)
-        {
-            return;
-        }
-
-        Range oUsedRange;
-
-        if ( !ExcelUtil.TryGetNonEmptyRange(oDataBodyRange, out oUsedRange) )
-        {
-            // The table is empty, so do nothing.  (The default state of a
-            // table in a new workbook is one empty row.)
-
-            return;
-        }
+        Debug.Assert(oDataBodyRange != null);
 
         Debug.Assert(oTable.Parent is Worksheet);
 

@@ -18,8 +18,6 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 //*****************************************************************************
 
-// This class inherits from NodeXLBase to get the extended ToString()
-// functionality.
 
 public class Community : NodeXLBase
 {
@@ -529,128 +527,6 @@ public class Community : NodeXLBase
         AssertValid();
 
         return (m_iID);
-    }
-
-    //*************************************************************************
-    //  Method: AppendPropertiesToString()
-    //
-    /// <summary>
-    /// Appends the derived class's public property values to a String.
-    /// </summary>
-    ///
-    /// <param name="oStringBuilder">
-    /// Object to append to.
-    /// </param>
-    ///
-    /// <param name="iIndentationLevel">
-    /// Current indentation level.  Level 0 is "no indentation."
-    /// </param>
-    ///
-    /// <param name="sFormat">
-    /// The format to use, either "G", "P", or "D".  See <see
-    /// cref="NodeXLBase.ToString()" /> for details.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This method calls <see cref="ToStringUtil.AppendPropertyToString(
-    /// StringBuilder, Int32, String, Object, Boolean)" /> for each of the
-    /// derived class's public properties.  It is used in the implementation of
-    /// <see cref="NodeXLBase.ToString()" />.
-    /// </remarks>
-    //*************************************************************************
-
-    protected override void
-    AppendPropertiesToString
-    (
-        StringBuilder oStringBuilder,
-        Int32 iIndentationLevel,
-        String sFormat
-    )
-    {
-        AssertValid();
-        Debug.Assert(oStringBuilder != null);
-        Debug.Assert(iIndentationLevel >= 0);
-        Debug.Assert( !String.IsNullOrEmpty(sFormat) );
-        Debug.Assert(sFormat == "G" || sFormat == "P" || sFormat == "D");
-
-        const String SingleFormat = "N3";
-
-        oStringBuilder.AppendLine();
-
-        base.AppendPropertiesToString(
-            oStringBuilder, iIndentationLevel, sFormat);
-
-        if (sFormat == "G")
-        {
-            return;
-        }
-
-        ToStringUtil.AppendPropertyToString(oStringBuilder, iIndentationLevel,
-            "ID", m_iID);
-
-        ToStringUtil.AppendPropertyToString( oStringBuilder, iIndentationLevel,
-            "CommunityPairWithMaximumDeltaQ",
-
-            (m_oCommunityPairWithMaximumDeltaQ == null) ?
-                ToStringUtil.NullString
-                :
-                m_oCommunityPairWithMaximumDeltaQ.Community1.ID.ToString()
-                    + ","
-                    + m_oCommunityPairWithMaximumDeltaQ.Community2.ID.ToString()
-            );
-
-        Int32 iCommunityPairs = m_oCommunityPairs.Count;
-
-        ToStringUtil.AppendIndentationToString(oStringBuilder,
-            iIndentationLevel);
-
-        oStringBuilder.Append( iCommunityPairs.ToString(Int32Format) );
-
-        oStringBuilder.Append(
-            StringUtil.MakePlural(" community pair", iCommunityPairs) );
-
-        if (sFormat == "D")
-        {
-            oStringBuilder.AppendLine();
-
-            foreach (CommunityPair oCommunityPair in m_oCommunityPairs.Values)
-            {
-                oStringBuilder.AppendLine();
-
-                ToStringUtil.AppendIndentationToString(oStringBuilder,
-                    iIndentationLevel + 1);
-
-                oStringBuilder.AppendLine("CommunityPair");
-
-                Community oCommunity1 = oCommunityPair.Community1;
-
-                ToStringUtil.AppendPropertyToString( oStringBuilder,
-                    iIndentationLevel + 1,
-                    "Community1",
-                    oCommunity1 == null ? ToStringUtil.NullString :
-                    oCommunity1.ID.ToString() );
-
-                Community oCommunity2 = oCommunityPair.Community2;
-
-                ToStringUtil.AppendPropertyToString( oStringBuilder,
-                    iIndentationLevel + 1,
-                    "Community2",
-                    oCommunity2 == null ? ToStringUtil.NullString :
-                    oCommunity2.ID.ToString() );
-
-                Single fDeltaQ = oCommunityPair.DeltaQ;
-
-                ToStringUtil.AppendPropertyToString(oStringBuilder,
-                    iIndentationLevel + 1,
-                    "DeltaQ",
-                    ( (fDeltaQ == Community.DeltaQNotSet) ?
-                        "DeltaQNotSet" : fDeltaQ.ToString(SingleFormat) )
-                    );
-            }
-
-            ToStringUtil.AppendVerticesToString(oStringBuilder,
-                iIndentationLevel, sFormat, m_oVertices);
-        }
     }
 
 

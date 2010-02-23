@@ -43,6 +43,35 @@ namespace Microsoft.NodeXL.Layouts
 public interface IAsyncLayout : ILayout
 {
     //*************************************************************************
+    //  Property: UseBinning
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether binning should be used when the
+    /// graph is laid out.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to use binning.  The default value is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// When this property is true, the graph is split into strongly connected
+    /// components, the smaller components are laid out and placed along the
+    /// bottom of the rectangle using the <see
+    /// cref="FruchtermanReingoldLayout" />, and the remaining components are
+    /// laid out within the remaining rectangle using the implemented
+    /// algorithm.
+    /// </remarks>
+    //*************************************************************************
+
+    Boolean
+    UseBinning
+    {
+        get;
+        set;
+    }
+
+    //*************************************************************************
     //  Property: IsBusy
     //
     /// <summary>

@@ -3,10 +3,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.Common;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -122,7 +124,32 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
             return (false);
         }
 
+        OverallMetricRows oOverallMetricRows = new OverallMetricRows();
+
+
+        //*********************************
+        // Graph type
+        //*********************************
+
+        AddRow("Graph Type", oOverallMetrics.Directedness.ToString(),
+            oOverallMetricRows);
+
+
+        //*********************************
+        // Vertex count
+        //*********************************
+
+        AddRow(oOverallMetricRows);
+        AddRow("Vertices", oOverallMetrics.Vertices, oOverallMetricRows);
+
+
+        //*********************************
+        // Edge counts
+        //*********************************
+
         String sDuplicateEdgeStyle = CellStyleNames.GraphMetricGood;
+        String sDuplicateEdgeComments = String.Empty;
+        String sGraphDensityComments = String.Empty;
 
         if (oOverallMetrics.EdgesWithDuplicates > 0)
         {
@@ -130,92 +157,350 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
             // duplicate edges.
 
             sDuplicateEdgeStyle = CellStyleNames.GraphMetricBad;
+
+            sDuplicateEdgeComments =
+                "You can merge duplicate edges using NodeXL, Data, Prepare"
+                + " Data, Merge Duplicate Edges."
+                ;
+
+            sGraphDensityComments =
+                "The workbook contains duplicate edges that have caused the"
+                + " graph density to be inaccurate.  "
+                + sDuplicateEdgeComments
+                ;
         }
 
-        Double dGraphDensity = oOverallMetrics.GraphDensity;
+        AddRow(oOverallMetricRows);
+        AddRow("Unique Edges", oOverallMetrics.UniqueEdges, oOverallMetricRows);
 
-        GraphMetricValueOrdered [] aoMetricNameGraphMetricValues =
-            new GraphMetricValueOrdered [] {
+        AddRow("Edges With Duplicates",
+            FormatInt32(oOverallMetrics.EdgesWithDuplicates),
+            sDuplicateEdgeComments, sDuplicateEdgeStyle,
+            oOverallMetricRows);
 
-                new GraphMetricValueOrdered("Graph Type"),
-                new GraphMetricValueOrdered(),
-                new GraphMetricValueOrdered("Unique Edges"),
+        AddRow("Total Edges", oOverallMetrics.TotalEdges, oOverallMetricRows);
 
-                new GraphMetricValueOrdered("Edges With Duplicates",
-                    sDuplicateEdgeStyle),
 
-                new GraphMetricValueOrdered("Total Edges"),
-                new GraphMetricValueOrdered(),
-                new GraphMetricValueOrdered("Self-Loops"),
-                new GraphMetricValueOrdered(),
-                new GraphMetricValueOrdered("Vertices"),
-                new GraphMetricValueOrdered(),
+        //*********************************
+        // Self-loops
+        //*********************************
 
-                new GraphMetricValueOrdered("Graph Density",
-                    sDuplicateEdgeStyle),
+        AddRow(oOverallMetricRows);
+        AddRow("Self-Loops", oOverallMetrics.SelfLoops, oOverallMetricRows);
 
-                new GraphMetricValueOrdered(),
-                new GraphMetricValueOrdered("NodeXL Version"),
-                };
 
-        GraphMetricValueOrdered [] aoMetricValueGraphMetricValues =
-            new GraphMetricValueOrdered [] {
+        //*********************************
+        // Connected component counts
+        //*********************************
 
-                new GraphMetricValueOrdered(
-                    oOverallMetrics.Directedness.ToString() ),
+        AddRow(oOverallMetricRows);
 
-                new GraphMetricValueOrdered(),
+        AddRow("Connected Components", oOverallMetrics.ConnectedComponents,
+            oOverallMetricRows);
 
-                new GraphMetricValueOrdered( FormatInt32(
-                    oOverallMetrics.UniqueEdges) ),
+        AddRow("Single-Vertex Connected Components",
+            oOverallMetrics.SingleVertexConnectedComponents,
+            oOverallMetricRows);
 
-                new GraphMetricValueOrdered( FormatInt32(
-                    oOverallMetrics.EdgesWithDuplicates) ),
+        AddRow("Maximum Vertices in a Connected Component",
+            oOverallMetrics.MaximumConnectedComponentVertices,
+            oOverallMetricRows);
 
-                new GraphMetricValueOrdered(
-                    FormatInt32(oOverallMetrics.TotalEdges) ),
+        AddRow("Maximum Edges in a Connected Component",
+            oOverallMetrics.MaximumConnectedComponentEdges,
+            oOverallMetricRows);
 
-                new GraphMetricValueOrdered(),
 
-                new GraphMetricValueOrdered(
-                    FormatInt32(oOverallMetrics.SelfLoops) ),
+        //*********************************
+        // Geodesic distances
+        //*********************************
 
-                new GraphMetricValueOrdered(),
+        String sMaximumGeodesicDistance, sAverageGeodesicDistance,
+            sGeodesicDistanceComments;
 
-                new GraphMetricValueOrdered(
-                    FormatInt32(oOverallMetrics.Vertices) ),
+        GetGeodesicDistanceStrings(calculateGraphMetricsContext,
+            out sMaximumGeodesicDistance, out sAverageGeodesicDistance,
+            out sGeodesicDistanceComments);
 
-                new GraphMetricValueOrdered(),
+        AddRow(oOverallMetricRows);
 
-                new GraphMetricValueOrdered(
-                    (dGraphDensity == OverallMetrics.NoGraphDensity) ?
-                        "Not Applicable" : dGraphDensity.ToString(),
-                    sDuplicateEdgeStyle),
+        AddRow("Maximum Geodesic Distance (Diameter)",
+            sMaximumGeodesicDistance, sGeodesicDistanceComments, null,
+            oOverallMetricRows);
 
-                new GraphMetricValueOrdered(),
-                new GraphMetricValueOrdered( AssemblyUtil2.GetFileVersion() ),
-                };
+        AddRow("Average Geodesic Distance", sAverageGeodesicDistance,
+            sGeodesicDistanceComments, null, oOverallMetricRows);
+
+
+        //*********************************
+        // Graph density
+        //*********************************
+
+        Nullable<Double> dGraphDensity = oOverallMetrics.GraphDensity;
+
+        AddRow(oOverallMetricRows);
+
+        AddRow("Graph Density", dGraphDensity.HasValue ?
+            FormatDouble(dGraphDensity.Value) : NotApplicableMessage,
+            sGraphDensityComments, sDuplicateEdgeStyle, oOverallMetricRows);
+
+
+        //*********************************
+        // NodeXL version
+        //*********************************
+
+        AddRow(oOverallMetricRows);
+
+        AddRow("NodeXL Version", AssemblyUtil2.GetFileVersion(),
+            oOverallMetricRows);
+
 
         graphMetricColumns = new GraphMetricColumn[] {
 
-            new GraphMetricColumnOrdered(WorksheetNames.OverallMetrics,
-                TableNames.OverallMetrics,
+            CreateGraphMetricColumnOrdered(
                 OverallMetricsTableColumnNames.Name,
-                OverallMetricsTableColumnWidths.Name,
-                null, CellStyleNames.GraphMetricGood,
-                aoMetricNameGraphMetricValues
-                ),
+                oOverallMetricRows.MetricNames),
 
-            new GraphMetricColumnOrdered(WorksheetNames.OverallMetrics,
-                TableNames.OverallMetrics,
+            CreateGraphMetricColumnOrdered(
                 OverallMetricsTableColumnNames.Value,
-                OverallMetricsTableColumnWidths.Value,
-                null, CellStyleNames.GraphMetricGood,
-                aoMetricValueGraphMetricValues
-                ),
+                oOverallMetricRows.MetricValues),
+
+            CreateGraphMetricColumnOrdered(
+                OverallMetricsTableColumnNames.Comments,
+                oOverallMetricRows.MetricComments),
             };
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: GetGeodesicDistanceStrings()
+    //
+    /// <summary>
+    /// Gets strings that describe the geodesic distances.
+    /// </summary>
+    ///
+    /// <param name="oCalculateGraphMetricsContext">
+    /// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
+    /// <param name="sMaximumGeodesicDistance">
+    /// Where a string describing the maximum geodesic distance gets stored.
+    /// </param>
+    ///
+    /// <param name="sAverageGeodesicDistance">
+    /// Where a string describing the average geodesic distance gets stored.
+    /// </param>
+    ///
+    /// <param name="sGeodesicDistanceComments">
+    /// Where the geodesic comments get stored.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    GetGeodesicDistanceStrings
+    (
+        CalculateGraphMetricsContext oCalculateGraphMetricsContext,
+        out String sMaximumGeodesicDistance,
+        out String sAverageGeodesicDistance,
+        out String sGeodesicDistanceComments
+    )
+    {
+        Debug.Assert(oCalculateGraphMetricsContext != null);
+        AssertValid();
+
+        // The graph's geodesic distances may have been calculated by
+        // BrandesFastCentralityCalculator2.  (If not, the BrandesCentralities
+        // property on the context object is null.)
+
+        BrandesCentralities oBrandesCentralities =
+            oCalculateGraphMetricsContext.BrandesCentralities;
+
+        if (oBrandesCentralities != null)
+        {
+            if (oBrandesCentralities.MaximumGeodesicDistance.HasValue)
+            {
+                sMaximumGeodesicDistance = FormatInt32(
+                    oBrandesCentralities.MaximumGeodesicDistance.Value);
+
+                sAverageGeodesicDistance = FormatDouble(
+                    oBrandesCentralities.AverageGeodesicDistance.Value);
+
+                sGeodesicDistanceComments = String.Empty;
+            }
+            else
+            {
+                sMaximumGeodesicDistance = sAverageGeodesicDistance =
+                    NotApplicableMessage;
+
+                sGeodesicDistanceComments = String.Empty;
+            }
+        }
+        else
+        {
+                sMaximumGeodesicDistance = sAverageGeodesicDistance =
+                    "Not Available";
+
+                sGeodesicDistanceComments = 
+                    "Available only when betweenness and closeness"
+                    + " centralities are computed";
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AddRow()
+    //
+    /// <overloads>
+    /// Adds a row to the overall metrics table.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Adds an empty row to the overall metrics table.
+    /// </summary>
+    ///
+    /// <param name="oOverallMetricRows">
+    /// Contains the row data for the overall metrics table.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddRow
+    (
+        OverallMetricRows oOverallMetricRows
+    )
+    {
+        Debug.Assert(oOverallMetricRows != null);
+        AssertValid();
+
+        AddRow(String.Empty, String.Empty, String.Empty,
+            CellStyleNames.GraphMetricSeparatorRow, oOverallMetricRows);
+    }
+
+    //*************************************************************************
+    //  Method: AddRow()
+    //
+    /// <summary>
+    /// Adds an Int32 row to the overall metrics table.
+    /// </summary>
+    ///
+    /// <param name="sMetricName">
+    /// Name of the metric.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="iMetricValue">
+    /// Value of the metric.
+    /// </param>
+    ///
+    /// <param name="oOverallMetricRows">
+    /// Contains the row data for the overall metrics table.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddRow
+    (
+        String sMetricName,
+        Int32 iMetricValue,
+        OverallMetricRows oOverallMetricRows
+    )
+    {
+        Debug.Assert(sMetricName != null);
+        Debug.Assert(oOverallMetricRows != null);
+        AssertValid();
+
+        AddRow(sMetricName, FormatInt32(iMetricValue), String.Empty, null,
+            oOverallMetricRows);
+    }
+
+    //*************************************************************************
+    //  Method: AddRow()
+    //
+    /// <summary>
+    /// Adds a row to the overall metrics table.
+    /// </summary>
+    ///
+    /// <param name="sMetricName">
+    /// Name of the metric.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="sMetricValue">
+    /// Value of the metric.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="oOverallMetricRows">
+    /// Contains the row data for the overall metrics table.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddRow
+    (
+        String sMetricName,
+        String sMetricValue,
+        OverallMetricRows oOverallMetricRows
+    )
+    {
+        Debug.Assert(sMetricName != null);
+        Debug.Assert(sMetricValue != null);
+        Debug.Assert(oOverallMetricRows != null);
+        AssertValid();
+
+        AddRow(sMetricName, sMetricValue, String.Empty, null,
+            oOverallMetricRows);
+    }
+
+    //*************************************************************************
+    //  Method: AddRow()
+    //
+    /// <summary>
+    /// Adds a row with comments and a style to the overall metrics table.
+    /// </summary>
+    ///
+    /// <param name="sMetricName">
+    /// Name of the metric.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="sMetricValue">
+    /// Value of the metric.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="sMetricComments">
+    /// Comments for the metric.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="sStyle">
+    /// Style of the row, or null to not apply a style.
+    /// </param>
+    ///
+    /// <param name="oOverallMetricRows">
+    /// Contains the row data for the overall metrics table.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddRow
+    (
+        String sMetricName,
+        String sMetricValue,
+        String sMetricComments,
+        String sStyle,
+        OverallMetricRows oOverallMetricRows
+    )
+    {
+        Debug.Assert(sMetricName != null);
+        Debug.Assert(sMetricValue != null);
+        Debug.Assert(sMetricComments != null);
+        Debug.Assert(oOverallMetricRows != null);
+        AssertValid();
+
+        oOverallMetricRows.MetricNames.Add( new GraphMetricValueOrdered(
+            sMetricName, sStyle) );
+
+        oOverallMetricRows.MetricValues.Add( new GraphMetricValueOrdered(
+            sMetricValue, sStyle) );
+
+        oOverallMetricRows.MetricComments.Add( new GraphMetricValueOrdered(
+            sMetricComments, sStyle) );
     }
 
     //*************************************************************************
@@ -245,6 +530,70 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
         return ( iInt32.ToString(ExcelTemplateForm.Int32Format) );
     }
 
+    //*************************************************************************
+    //  Method: FormatDouble()
+    //
+    /// <summary>
+    /// Formats a Double for use in the metric value column
+    /// </summary>
+    ///
+    /// <param name="dDouble">
+    /// Double to format.
+    /// </param>
+    ///
+    /// <returns>
+    /// Formatted Double.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    FormatDouble
+    (
+        Double dDouble
+    )
+    {
+        AssertValid();
+
+        return ( dDouble.ToString("N2") );
+    }
+
+    //*************************************************************************
+    //  Method: CreateGraphMetricColumnOrdered()
+    //
+    /// <summary>
+    /// Creates a GraphMetricColumnOrdered object for one of the columns in the
+    /// overall metrics table.
+    /// </summary>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the column.
+    /// </param>
+    ///
+    /// <param name="oValues">
+    /// Column cell values.
+    /// </param>
+    ///
+    /// <returns>
+    /// A GraphMetricColumnOrdered object for the specified column.
+    /// </returns>
+    //*************************************************************************
+
+    protected GraphMetricColumnOrdered
+    CreateGraphMetricColumnOrdered
+    (
+        String sColumnName,
+        List<GraphMetricValueOrdered> oValues
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
+        Debug.Assert(oValues != null);
+        AssertValid();
+
+        return ( new GraphMetricColumnOrdered(WorksheetNames.OverallMetrics,
+            TableNames.OverallMetrics, sColumnName, ExcelUtil.AutoColumnWidth,
+            null, CellStyleNames.GraphMetricGood, oValues.ToArray() ) );
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -266,10 +615,148 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
 
 
     //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// Not applicable message.
+
+    const String NotApplicableMessage = "Not Applicable";
+
+
+    //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
     // (None.)
+
+
+    //*************************************************************************
+    //  Embedded class: OverallMetricRows
+    //
+    /// <summary>
+    /// Contains the row data for the overall metrics table.
+    /// </summary>
+    //*************************************************************************
+
+    public class OverallMetricRows : Object
+    {
+        //*********************************************************************
+        //  Constructor: OverallMetricRows()
+        //
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OverallMetricRows" />
+        /// class.
+        /// </summary>
+        //*********************************************************************
+
+        public OverallMetricRows()
+        {
+            m_oRowInformation = new List<GraphMetricValueOrdered> [3] {
+                new List<GraphMetricValueOrdered>(),
+                new List<GraphMetricValueOrdered>(),
+                new List<GraphMetricValueOrdered>(),
+                };
+
+            AssertValid();
+        }
+
+        //*********************************************************************
+        //  Property: MetricNames
+        //
+        /// <summary>
+        /// Gets the List of metric names.
+        /// </summary>
+        ///
+        /// <value>
+        /// The List of metric names.
+        /// </value>
+        //*********************************************************************
+
+        public List<GraphMetricValueOrdered>
+        MetricNames
+        {
+            get
+            {
+                AssertValid();
+
+                return ( m_oRowInformation[0] );
+            }
+        }
+
+        //*********************************************************************
+        //  Property: MetricValues
+        //
+        /// <summary>
+        /// Gets the List of metric values.
+        /// </summary>
+        ///
+        /// <value>
+        /// The List of metric values.
+        /// </value>
+        //*********************************************************************
+
+        public List<GraphMetricValueOrdered>
+        MetricValues
+        {
+            get
+            {
+                AssertValid();
+
+                return ( m_oRowInformation[1] );
+            }
+        }
+
+        //*********************************************************************
+        //  Property: MetricComments
+        //
+        /// <summary>
+        /// Gets the List of metric comments.
+        /// </summary>
+        ///
+        /// <value>
+        /// The List of metric comments.
+        /// </value>
+        //*********************************************************************
+
+        public List<GraphMetricValueOrdered>
+        MetricComments
+        {
+            get
+            {
+                AssertValid();
+
+                return ( m_oRowInformation[2] );
+            }
+        }
+
+
+        //*********************************************************************
+        //  Method: AssertValid()
+        //
+        /// <summary>
+        /// Asserts if the object is in an invalid state.  Debug-only.
+        /// </summary>
+        //*********************************************************************
+
+        [Conditional("DEBUG")]
+
+        public void
+        AssertValid()
+        {
+            Debug.Assert(m_oRowInformation != null);
+            Debug.Assert(m_oRowInformation.Length == 3);
+        }
+
+
+        //*********************************************************************
+        //  Protected fields
+        //*********************************************************************
+
+        /// 3 Lists, one for each column in the overall metrics table.
+
+        protected List<GraphMetricValueOrdered> [] m_oRowInformation;
+    }
+
 }
 
 }

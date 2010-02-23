@@ -23,6 +23,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("AutoFillUserSettings3") ]
 
+[ SettingsProviderAttribute(typeof(
+    Microsoft.NodeXL.ExcelTemplate.AutoFillSettingsProvider) ) ]
+
 public class AutoFillUserSettings : ApplicationSettingsBase
 {
     //*************************************************************************
@@ -31,11 +34,18 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// <summary>
     /// Initializes a new instance of the AutoFillUserSettings class.
     /// </summary>
+    ///
+    /// <param name="perWorkbookSettings">
+    /// Provides access to settings that are stored on a per-workbook basis.
+    /// </param>
     //*************************************************************************
 
-    public AutoFillUserSettings()
+    public AutoFillUserSettings
+    (
+        PerWorkbookSettings perWorkbookSettings
+    )
     {
-        // (Do nothing.)
+        m_oPerWorkbookSettings = perWorkbookSettings;
 
         AssertValid();
     }
@@ -1200,106 +1210,55 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Method: Copy()
+    //  Property: SettingsContext
     //
     /// <summary>
-    /// Creates a deep copy of the object.
+    /// Gets the application settings context associated with the settings
+    /// group.
     /// </summary>
     ///
-    /// <returns>
-    /// A deep copy of the object.
-    /// </returns>
+    /// <value>
+    /// A SettingsContext associated with the settings group.
+    /// </value>
     //*************************************************************************
 
-    public AutoFillUserSettings
-    Copy()
+    public override SettingsContext
+    Context
+    {
+        get
+        {
+            AssertValid();
+
+            // Make the PerWorkbookSettings object available to the
+            // AutoFillSettingsProvider class.
+
+            SettingsContext oContext = base.Context;
+            oContext[PerWorkbookSettingsKeyName] = m_oPerWorkbookSettings;
+
+            return (oContext);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: Reset()
+    //
+    /// <summary>
+    /// Restores the persisted application settings values to their
+    /// corresponding default properties.
+    /// </summary>
+    //*************************************************************************
+
+    public new void
+    Reset()
     {
         AssertValid();
 
-        AutoFillUserSettings oCopy = new AutoFillUserSettings();
+        // Clear any per-workbook settings.
 
-        oCopy.EdgeColorSourceColumnName = String.Copy(
-            this.EdgeColorSourceColumnName);
+        m_oPerWorkbookSettings.AutoFillWorkbookSettings = null;
 
-        oCopy.EdgeColorDetails = this.EdgeColorDetails.Copy();
-
-        oCopy.EdgeWidthSourceColumnName = String.Copy(
-            this.EdgeWidthSourceColumnName);
-
-        oCopy.EdgeWidthDetails = this.EdgeWidthDetails.Copy();
-
-        oCopy.EdgeAlphaSourceColumnName = String.Copy(
-            this.EdgeAlphaSourceColumnName);
-
-        oCopy.EdgeAlphaDetails = this.EdgeAlphaDetails.Copy();
-
-        oCopy.EdgeVisibilitySourceColumnName = String.Copy(
-            this.EdgeVisibilitySourceColumnName);
-
-        oCopy.EdgeVisibilityDetails = this.EdgeVisibilityDetails.Copy();
-
-        oCopy.EdgeLabelSourceColumnName = String.Copy(
-            this.EdgeLabelSourceColumnName);
-
-        oCopy.VertexColorSourceColumnName = String.Copy(
-            this.VertexColorSourceColumnName);
-
-        oCopy.VertexColorDetails = this.VertexColorDetails.Copy();
-
-        oCopy.VertexShapeSourceColumnName = String.Copy(
-            this.VertexShapeSourceColumnName);
-
-        oCopy.VertexShapeDetails = this.VertexShapeDetails.Copy();
-
-        oCopy.VertexRadiusSourceColumnName = String.Copy(
-            this.VertexRadiusSourceColumnName);
-
-        oCopy.VertexRadiusDetails = this.VertexRadiusDetails.Copy();
-
-        oCopy.VertexAlphaSourceColumnName = String.Copy(
-            this.VertexAlphaSourceColumnName);
-
-        oCopy.VertexAlphaDetails = this.VertexAlphaDetails.Copy();
-
-        oCopy.VertexLabelSourceColumnName = String.Copy(
-            this.VertexLabelSourceColumnName);
-
-        oCopy.VertexToolTipSourceColumnName = String.Copy(
-            this.VertexToolTipSourceColumnName);
-
-        oCopy.VertexVisibilitySourceColumnName = String.Copy(
-            this.VertexVisibilitySourceColumnName);
-
-        oCopy.VertexVisibilityDetails = this.VertexVisibilityDetails.Copy();
-
-        oCopy.VertexXSourceColumnName = String.Copy(
-            this.VertexXSourceColumnName);
-
-        oCopy.VertexXDetails = this.VertexXDetails.Copy();
-
-        oCopy.VertexYSourceColumnName = String.Copy(
-            this.VertexYSourceColumnName);
-
-        oCopy.VertexYDetails = this.VertexYDetails.Copy();
-
-        oCopy.VertexLayoutOrderSourceColumnName = String.Copy(
-            this.VertexLayoutOrderSourceColumnName);
-
-        oCopy.VertexLayoutOrderDetails = this.VertexLayoutOrderDetails.Copy();
-
-        oCopy.VertexPolarRSourceColumnName = String.Copy(
-            this.VertexPolarRSourceColumnName);
-
-        oCopy.VertexPolarRDetails = this.VertexPolarRDetails.Copy();
-
-        oCopy.VertexPolarAngleSourceColumnName = String.Copy(
-            this.VertexPolarAngleSourceColumnName);
-
-        oCopy.VertexPolarAngleDetails = this.VertexPolarAngleDetails.Copy();
-
-        return (oCopy);
+        base.Reset();
     }
-
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -1314,8 +1273,18 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     public void
     AssertValid()
     {
-        // (Do nothing.)
+        Debug.Assert(m_oPerWorkbookSettings != null);
     }
+
+
+    //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+    /// Name of the key that gets added to the SettingsContext object.  The
+    /// value is a PerWorkbookSettings object.
+
+    public const String PerWorkbookSettingsKeyName = "PerWorkbookSettings";
 
 
     //*************************************************************************
@@ -1494,6 +1463,253 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
     protected const String VertexPolarAngleDetailsKey =
         "VertexPolarAngleDetails";
+
+
+    //*************************************************************************
+    //  Protected fields
+    //*************************************************************************
+
+    /// Provides access to settings that are stored on a per-workbook basis.
+
+    protected PerWorkbookSettings m_oPerWorkbookSettings;
+}
+
+
+//*****************************************************************************
+//  Class: AutoFillSettingsProvider
+//
+/// <summary>
+/// Settings provider for the AutoFillUserSettings class.
+/// </summary>
+/// 
+/// <remarks>
+/// Here is how the autofill user settings should behave:
+///
+/// <list type="number">
+///
+/// <item><description>
+/// For a new workbook, the settings should be retrieved from the user's
+/// settings file by LocalFileSettingsProvider.
+/// </description></item>
+///
+/// <item><description>
+/// When the user edits the settings, they should be stored in both the user's
+/// settings file AND in the workbook.
+/// </description></item>
+///
+/// <item><description>
+/// When the autofill settings are needed again, they should be retrieved from
+/// the workbook.
+/// </description></item>
+///
+/// <item><description>
+/// The net result is that the autofill user settings travel with the workbook.
+/// </description></item>
+///
+/// </list>
+///
+/// <para>
+/// This behavior is achieved by implementing this custom SettingsProvider for
+/// the AutoFillUserSettings class.  It overrides the <see
+/// cref="GetPropertyValues" /> and <see cref="SetPropertyValues" /> methods.
+/// <see cref="SetPropertyValues" /> stores the values in both the user's
+/// settings file and in the workbook's PerWorkbookSettings object, and <see
+/// cref="GetPropertyValues" /> overrides the settings from the file with the
+/// settings from the PerWorkbookSettings object, if such per-workbook settings
+/// exist.
+/// </para>
+///
+/// </remarks>
+//*****************************************************************************
+
+public class AutoFillSettingsProvider : LocalFileSettingsProvider
+{
+    //*************************************************************************
+    //  Method: SetPropertyValues()
+    //
+    /// <summary>
+    /// Sets the values of the specified group of property settings.
+    /// </summary>
+    ///
+    /// <param name="context">
+    /// A SettingsContext describing the current application usage.
+    /// </param>
+    ///
+    /// <param name="values">
+    /// A SettingsPropertyValueCollection representing the group of property
+    /// settings to set.
+    /// </param>
+    //*************************************************************************
+
+    public override void
+    SetPropertyValues
+    (
+        SettingsContext context,
+        SettingsPropertyValueCollection values
+    )
+    {
+        AssertValid();
+
+        String [] asAutoFillWorkbookSettings = new String[values.Count * 2];
+
+        // Join the name/value pairs into a single composite string and store
+        // the composite in the PerWorkbook settings.
+
+        Int32 i = 0;
+
+        foreach (SettingsPropertyValue oSettingsPropertyValue in values)
+        {
+            asAutoFillWorkbookSettings[i + 0] = oSettingsPropertyValue.Name;
+
+            asAutoFillWorkbookSettings[i + 1] =
+                oSettingsPropertyValue.SerializedValue.ToString();
+
+            i += 2;
+        }
+
+        ( GetPerWorkbookSettings(context) ).AutoFillWorkbookSettings =
+            String.Join(PerWorkbookSettings.FieldSeparatorString,
+                asAutoFillWorkbookSettings);
+
+        // Let the base class store the settings in the user's settings file.
+
+        base.SetPropertyValues(context, values);
+    }
+
+    //*************************************************************************
+    //  Method: GetPropertyValues()
+    //
+    /// <summary>
+    /// Returns the collection of setting property values for the specified
+    /// application instance and settings property group.
+    /// </summary>
+    ///
+    /// <param name="context">
+    /// A SettingsContext describing the current application usage.
+    /// </param>
+    ///
+    /// <param name="properties">
+    /// A SettingsPropertyCollection containing the settings property group
+    /// whose values are to be retrieved.
+    /// </param>
+    //*************************************************************************
+
+    public override SettingsPropertyValueCollection
+    GetPropertyValues
+    (
+        SettingsContext context,
+        SettingsPropertyCollection properties
+    )
+    {
+        // Let the base class get the settings from the user's settings file,
+        // or from the default values.
+
+        SettingsPropertyValueCollection oValues =
+            base.GetPropertyValues(context, properties);
+
+        // Has SetPropertyValues() stored settings in the PerWorkbookSettings
+        // object?
+
+        String sAutoFillWorkbookSettings =
+            ( GetPerWorkbookSettings(context) ).AutoFillWorkbookSettings;
+
+        if (sAutoFillWorkbookSettings != null)
+        {
+            // Yes.  Split the composite string into name/value pairs.
+
+            String [] asNameValuePairs = sAutoFillWorkbookSettings.Split(
+                PerWorkbookSettings.FieldSeparator);
+
+            Int32 iNamesAndValues = asNameValuePairs.Length;
+
+            // To allow for future revisions in the name/value pairs, this
+            // method is forgiving of various unexpected conditions.
+
+            if (iNamesAndValues % 2 == 0)
+            {
+                for (Int32 i = 0; i < iNamesAndValues; i += 2)
+                {
+                    String sName = asNameValuePairs[i + 0];
+                    String sValue = asNameValuePairs[i + 1];
+
+                    if (
+                        !String.IsNullOrEmpty(sName)
+                        &&
+                        !String.IsNullOrEmpty(sValue)
+                        )
+                    {
+                        SettingsPropertyValue oSettingsPropertyValue =
+                            oValues[sName];
+
+                        if (oSettingsPropertyValue != null)
+                        {
+                            // Override the value retrieved by the base class.
+
+                            oSettingsPropertyValue.SerializedValue =
+                                sValue;
+                        }
+                    }
+                }
+            }
+        }
+
+        return (oValues);
+    }
+
+    //*************************************************************************
+    //  Method: GetPerWorkbookSettings()
+    //
+    /// <summary>
+    /// Gets the <see cref="PerWorkbookSettings" /> from the SettingsContext
+    /// object.
+    /// </summary>
+    ///
+    /// <param name="oContext">
+    /// A SettingsContext describing the current application usage.
+    /// </param>
+    ///
+    /// <returns>
+    /// The PerWorkbookSettings object stored within <paramref
+    /// name="context" />.
+    /// </returns>
+    //*************************************************************************
+
+    protected PerWorkbookSettings
+    GetPerWorkbookSettings
+    (
+        SettingsContext oContext
+    )
+    {
+        Debug.Assert(oContext != null);
+
+        // AutoFillUserSettings.SettingsContext stored the PerWorkbookSettings
+        // object using a known key.
+
+        Object oPerWorkbookSettingsAsObject =
+            oContext[AutoFillUserSettings.PerWorkbookSettingsKeyName];
+
+        Debug.Assert(oPerWorkbookSettingsAsObject != null);
+        Debug.Assert(oPerWorkbookSettingsAsObject is PerWorkbookSettings);
+
+        return ( (PerWorkbookSettings)oPerWorkbookSettingsAsObject );
+    }
+
+
+    //*************************************************************************
+    //  Method: AssertValid()
+    //
+    /// <summary>
+    /// Asserts if the object is in an invalid state.  Debug-only.
+    /// </summary>
+    //*************************************************************************
+
+    [Conditional("DEBUG")]
+
+    public void
+    AssertValid()
+    {
+        // (Do nothing.)
+    }
 
 
     //*************************************************************************

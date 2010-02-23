@@ -112,7 +112,6 @@
     </Compile>
     <Compile Include="LayoutsBase.cs" />
     <Compile Include="Layouts\AsyncLayoutBase.cs" />
-    <Compile Include="Layouts\BinnedLayout.cs" />
     <Compile Include="Layouts\CircleLayout.cs" />
     <Compile Include="Layouts\FruchtermanReingold\FruchtermanReingoldLayout.cs" />
     <Compile Include="Layouts\FruchtermanReingold\FruchtermanReingoldVertexInfo.cs" />
@@ -130,7 +129,9 @@
     <Compile Include="Layouts\SortableLayoutBase.cs" />
     <Compile Include="Layouts\SpiralLayout.cs" />
     <Compile Include="Layouts\SugiyamaLayout.cs" />
+    <Compile Include="Util\GraphBinner.cs" />
     <Compile Include="Util\LayoutContext.cs" />
+    <Compile Include="Util\LayoutMetadataUtil.cs" />
     <Compile Include="Util\LayoutSaver.cs" />
     <Compile Include="Util\RectangleBinner.cs" />
   </ItemGroup>

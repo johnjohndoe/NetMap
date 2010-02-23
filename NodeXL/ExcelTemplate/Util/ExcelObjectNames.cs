@@ -520,6 +520,12 @@ public static class OverallMetricsTableColumnNames
     /// </summary>
 
     public const String Value = "Value";
+
+    /// <summary>
+    /// Name of the optional table column containing the metric comments.
+    /// </summary>
+
+    public const String Comments = "Comments";
 }
 
 
@@ -629,6 +635,34 @@ public static class CommonTableColumnNames
 
 
 //*****************************************************************************
+//  Class: NamedRangeNames
+//
+/// <summary>
+/// Names of named ranges.
+/// </summary>
+//*****************************************************************************
+
+public static class NamedRangeNames
+{
+    /// <summary>
+    /// Name of the cell that contains the column for which a dynamic filter
+    /// histogram is needed.  Sample cell value: "Edges[Edge Weight]".
+    /// </summary>
+
+    public const String DynamicFilterSourceColumnRange =
+        "DynamicFilterSourceColumnRange";
+
+    /// <summary>
+    /// Name of the range that must be calculated when a dynamic filter
+    /// histogram is needed.
+    /// </summary>
+
+    public const String DynamicFilterForceCalculationRange =
+        "DynamicFilterForceCalculationRange";
+}
+
+
+//*****************************************************************************
 //  Class: CellStyleNames
 //
 /// <summary>
@@ -656,6 +690,31 @@ public static class CellStyleNames
     /// </summary>
 
     public const String GraphMetricBad = "Bad";
+
+    /// <summary>
+    /// Style applied to separator rows in the overall metrics table.
+    /// </summary>
+
+    public const String GraphMetricSeparatorRow =
+        "NodeXL Graph Metric Separator";
+}
+
+
+//*****************************************************************************
+//  Class: ChartNames
+//
+/// <summary>
+/// Names of charts.
+/// </summary>
+//*****************************************************************************
+
+public static class ChartNames
+{
+    /// <summary>
+    /// Name of the chart that displays a histogram for a dynamic filter.
+    /// </summary>
+
+    public const String DynamicFilterHistogram = "DynamicFilterHistogram";
 }
 
 }

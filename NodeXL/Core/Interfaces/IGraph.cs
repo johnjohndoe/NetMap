@@ -102,33 +102,12 @@ GraphRestrictions
 /// <see cref="Edges" /> that connect the <see cref="Vertices" />.  The <see
 /// cref="Directedness" /> property specifies the type of edges that can be
 /// added to the graph.
-///
-/// <para>
-/// Any class that represents a graph must implement this interface.
-/// </para>
-///
-/// <para>
-/// The NodeXL system includes a <see cref="Graph" /> implementation that can be
-/// used as-is in many graphing applications.  You can also derive a class from
-/// <see cref="Graph" /> or implement your own custom graph class from
-/// scratch.  The only requirement is that your custom class must implement
-/// <see cref="IGraph" />.
-/// </para>
-///
-/// <para>
-/// If you implement a custom graph class, you may also want to implement <see
-/// cref="IGraphFactory" /> to allow the NodeXL system to create instances of
-/// your custom graph.
-/// </para>
-///
 /// </remarks>
 ///
 /// <seealso cref="Graph" />
-/// <seealso cref="IGraphFactory" />
 //*****************************************************************************
 
-public interface IGraph : IIdentityProvider, IMetadataProvider,
-    IFormattableNodeXL
+public interface IGraph : IIdentityProvider, IMetadataProvider
 {
     //*************************************************************************
     //  Property: Vertices
@@ -308,13 +287,8 @@ public interface IGraph : IIdentityProvider, IMetadataProvider,
     //*************************************************************************
     //  Method: Clone()
     //
-    /// <overloads>
-    /// Creates a copy of the graph.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Creates a copy of the graph, making the copy the same type as the
-    /// original.
+    /// Creates a copy of the graph.
     /// </summary>
     ///
     /// <param name="copyMetadataValues">
@@ -339,10 +313,9 @@ public interface IGraph : IIdentityProvider, IMetadataProvider,
     /// </returns>
     ///
     /// <remarks>
-    /// The new graph, vertices, and edges are of the same types as the
-    /// originals.  Their <see cref="IIdentityProvider.Name" />s are set to
-    /// the same values as the originals', but they are assigned new <see
-    /// cref="IIdentityProvider.ID" />s.
+    /// The new graph, vertices, and edges have the same <see
+    /// cref="IIdentityProvider.Name" /> values as the originals, but they are
+    /// assigned new <see cref="IIdentityProvider.ID" />s.
     /// </remarks>
     //*************************************************************************
 
@@ -353,65 +326,6 @@ public interface IGraph : IIdentityProvider, IMetadataProvider,
         Boolean copyTag
     );
 
-    //*************************************************************************
-    //  Method: Clone()
-    //
-    /// <summary>
-    /// Creates a copy of the graph, making the copy a specified type.
-    /// </summary>
-    ///
-    /// <param name="copyMetadataValues">
-    /// If true, the key/value pairs that were set with <see
-    /// cref="IMetadataProvider.SetValue" /> are copied to the new graph,
-    /// vertices, and edges.  (This is a shallow copy.  The objects pointed to
-    /// by the original values are NOT cloned.)  If false, the key/value pairs
-    /// are not copied.
-    /// </param>
-    ///
-    /// <param name="copyTag">
-    /// If true, the <see cref="IMetadataProvider.Tag" /> properties on the new
-    /// graph, vertices, and edges are set to the same value as in the original
-    /// objects.  (This is a shallow copy.  The objects pointed to by the
-    /// original <see cref="IMetadataProvider.Tag" /> properties are NOT
-    /// cloned.)  If false, the <see cref="IMetadataProvider.Tag "/>
-    /// properties on the new graph, vertices, and edges are set to null.
-    /// </param>
-    ///
-    /// <param name="newGraphFactory">
-    /// Object that can create a graph.
-    /// </param>
-    ///
-    /// <param name="newVertexFactory">
-    /// Object that can create vertices.
-    /// </param>
-    ///
-    /// <param name="newEdgeFactory">
-    /// Object that can create edges.
-    /// </param>
-    ///
-    /// <returns>
-    /// The copy of the graph, as an <see cref="IGraph" />.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The new graph, vertices, and edges are created using <paramref
-    /// name="newGraphFactory" />, <paramref name="newVertexFactory" />, and
-    /// <paramref name="newEdgeFactory" />.  Their <see
-    /// cref="IIdentityProvider.Name" />s are set to the same values as the
-    /// originals', but they are assigned new <see
-    /// cref="IIdentityProvider.ID" />s.
-    /// </remarks>
-    //*************************************************************************
-
-    IGraph
-    Clone
-    (
-        Boolean copyMetadataValues,
-        Boolean copyTag,
-        IGraphFactory newGraphFactory,
-        IVertexFactory newVertexFactory,
-        IEdgeFactory newEdgeFactory
-    );
 
     //*************************************************************************
     //  Event: EdgeAdded

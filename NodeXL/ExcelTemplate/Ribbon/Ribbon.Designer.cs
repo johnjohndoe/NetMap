@@ -49,7 +49,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnAnalyzeEmailNetwork = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnConvertOldWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnConvertNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mnuExport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.btnExportToUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnExportToPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -63,6 +63,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnReadWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.rddGraphDirectedness = new Microsoft.Office.Tools.Ribbon.RibbonDropDown();
             this.rddLayout = new Microsoft.Office.Tools.Ribbon.RibbonDropDown();
+            this.btnEditLayoutUserSettings = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.grpVisualAttributes = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
             this.btnAutoFillWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnSetColor = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -169,7 +170,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.mnuImport.Items.Add(this.separator3);
             this.mnuImport.Items.Add(this.btnAnalyzeEmailNetwork);
             this.mnuImport.Items.Add(this.separator2);
-            this.mnuImport.Items.Add(this.btnConvertOldWorkbook);
+            this.mnuImport.Items.Add(this.btnConvertNodeXLWorkbook);
             this.mnuImport.Label = "Import";
             this.mnuImport.Name = "mnuImport";
             this.mnuImport.OfficeImageId = "ImportSavedImports";
@@ -264,15 +265,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.separator2.Name = "separator2";
             // 
-            // btnConvertOldWorkbook
+            // btnConvertNodeXLWorkbook
             // 
-            this.btnConvertOldWorkbook.Label = "Convert Old Workbook...";
-            this.btnConvertOldWorkbook.Name = "btnConvertOldWorkbook";
-            this.btnConvertOldWorkbook.OfficeImageId = "RecoverInviteToMeeting";
-            this.btnConvertOldWorkbook.ScreenTip = "Convert Old Workbook ";
-            this.btnConvertOldWorkbook.ShowImage = true;
-            this.btnConvertOldWorkbook.SuperTip = "Convert an old workbook created with an earlier version of NodeXL.";
-            this.btnConvertOldWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnConvertOldWorkbook_Click);
+            this.btnConvertNodeXLWorkbook.Label = "From NodeXL Workbook Created on Another Computer...";
+            this.btnConvertNodeXLWorkbook.Name = "btnConvertNodeXLWorkbook";
+            this.btnConvertNodeXLWorkbook.OfficeImageId = "RecoverInviteToMeeting";
+            this.btnConvertNodeXLWorkbook.ScreenTip = "Import from NodeXL Workbook Created on Another Computer";
+            this.btnConvertNodeXLWorkbook.ShowImage = true;
+            this.btnConvertNodeXLWorkbook.SuperTip = "Import a NodeXL workbook that was created on another computer and that can\'t be o" +
+                "pened directly in Excel.";
+            this.btnConvertNodeXLWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnConvertNodeXLWorkbook_Click);
             // 
             // mnuExport
             // 
@@ -407,12 +409,21 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // rddLayout
             // 
+            this.rddLayout.Buttons.Add(this.btnEditLayoutUserSettings);
             this.rddLayout.Image = ((System.Drawing.Image)(resources.GetObject("rddLayout.Image")));
             this.rddLayout.Label = "Layout:";
             this.rddLayout.Name = "rddLayout";
             this.rddLayout.ScreenTip = "Layout";
             this.rddLayout.ShowImage = true;
             this.rddLayout.SuperTip = "Select the algorithm used to lay out the graph.";
+            this.rddLayout.ButtonClick += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.rddLayout_ButtonClick);
+            // 
+            // btnEditLayoutUserSettings
+            // 
+            this.btnEditLayoutUserSettings.Label = "Layout Options...";
+            this.btnEditLayoutUserSettings.Name = "btnEditLayoutUserSettings";
+            this.btnEditLayoutUserSettings.ScreenTip = "Layout Options";
+            this.btnEditLayoutUserSettings.SuperTip = "Specify the options that control the selected layout algorithm.";
             // 
             // grpVisualAttributes
             // 
@@ -1128,7 +1139,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuExport;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportSelectionToNewNodeXLWorkbook;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnRegisterUser;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConvertOldWorkbook;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConvertNodeXLWorkbook;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromMatrixWorkbook;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator2;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToNewMatrixWorkbook;
@@ -1200,6 +1211,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkReadEdgeLabels;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator12;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetBackground;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton btnEditLayoutUserSettings;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

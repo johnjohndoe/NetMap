@@ -276,7 +276,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkOverallMetrics.Size = new System.Drawing.Size(39, 13);
             this.lnkOverallMetrics.TabIndex = 3;
             this.lnkOverallMetrics.TabStop = true;
-            this.lnkOverallMetrics.Tag = "Overall metrics include vertex counts, edge counts, and graph density.  They get " +
+            this.lnkOverallMetrics.Tag = "Overall metrics include vertex counts, edge counts, geodesic distances, and graph density.  They get " +
                 "inserted into the Overall Metrics worksheet.";
             this.lnkOverallMetrics.Text = "Details";
             this.lnkOverallMetrics.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);

@@ -105,7 +105,7 @@ public static class WorkbookSchemeAutoFiller : Object
                     vertexLabelColumnName, out oEdgeTable, out oVertexTable,
                     out oHiddenEdgeColumns, out oHiddenVertexColumns)
                 ||
-                ExcelUtil.TableIsEmpty(oVertexTable)
+                ExcelUtil.VisibleTableRangeIsEmpty(oVertexTable)
                 )
             {
                 return;
@@ -190,7 +190,7 @@ public static class WorkbookSchemeAutoFiller : Object
                     vertexLabelColumnName, out oEdgeTable, out oVertexTable,
                     out oHiddenEdgeColumns, out oHiddenVertexColumns)
                 ||
-                ExcelUtil.TableIsEmpty(oEdgeTable)
+                ExcelUtil.VisibleTableRangeIsEmpty(oEdgeTable)
                 )
             {
                 return;
@@ -199,13 +199,15 @@ public static class WorkbookSchemeAutoFiller : Object
             // Map the edge weight column to the edge width column.
 
             Double dSourceCalculationNumber1, dSourceCalculationNumber2;
+            Int32 iDecimalPlaces;
 
             if ( !TableColumnMapper.TryMapToNumericRange(oEdgeTable,
                 edgeWeightColumnName, EdgeTableColumnNames.Width, false, false,
                 0, 0,
                 MinimumEdgeWeightWidthWorkbook, MaximumEdgeWeightWidthWorkbook,
                 false, false,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
             {
                 return;
@@ -240,7 +242,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
             oAutoFillWorkbookWithSchemeResults.SetEdgeWeightResults(
                 edgeWeightColumnName, dSourceCalculationNumber1,
-                dSourceCalculationNumber2);
+                dSourceCalculationNumber2, iDecimalPlaces);
         }
         finally
         {
@@ -321,7 +323,7 @@ public static class WorkbookSchemeAutoFiller : Object
                     vertexLabelColumnName, out oEdgeTable, out oVertexTable,
                     out oHiddenEdgeColumns, out oHiddenVertexColumns)
                 ||
-                ExcelUtil.TableIsEmpty(oEdgeTable)
+                ExcelUtil.VisibleTableRangeIsEmpty(oEdgeTable)
                 )
             {
                 return;
@@ -330,12 +332,14 @@ public static class WorkbookSchemeAutoFiller : Object
             // Map the edge timestamp column to the edge color column.
 
             Double dSourceCalculationNumber1, dSourceCalculationNumber2;
+            Int32 iDecimalPlaces;
 
             if ( !TableColumnMapper.TryMapToColor(oEdgeTable,
                 edgeTimestampColumnName, EdgeTableColumnNames.Color, false,
                 false, 0, 0, MinimumEdgeTimestampColor,
                 MaximumEdgeTimestampColor, false, false,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
             {
                 return;

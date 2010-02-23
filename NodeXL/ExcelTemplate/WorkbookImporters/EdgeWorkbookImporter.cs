@@ -210,7 +210,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
 
         Range oNonEmptySourceRange;
 
-        if ( !ExcelUtil.TryGetNonEmptyRange(oSourceWorksheet,
+        if ( !ExcelUtil.TryGetNonEmptyRangeInWorksheet(oSourceWorksheet,
             out oNonEmptySourceRange) )
         {
             OnInvalidSourceWorkbook(

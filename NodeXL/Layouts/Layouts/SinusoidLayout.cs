@@ -3,7 +3,7 @@
 
 using System;
 using System.Drawing;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -184,7 +184,7 @@ public class SinusoidLayout : SortableLayoutBase
     }
 
     //*************************************************************************
-    //  Method: LayOutGraphCore()
+    //  Method: LayOutGraphCoreSorted()
     //
     /// <summary>
     /// Lays out a graph synchronously or asynchronously using specified
@@ -222,9 +222,9 @@ public class SinusoidLayout : SortableLayoutBase
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -244,17 +244,18 @@ public class SinusoidLayout : SortableLayoutBase
     //*************************************************************************
 
     protected override Boolean
-    LayOutGraphCore
+    LayOutGraphCoreSorted
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
-        ICollection verticesToLayOut,
         BackgroundWorker backgroundWorker
     )
     {
         Debug.Assert(graph != null);
-        Debug.Assert(layoutContext != null);
         Debug.Assert(verticesToLayOut != null);
+        Debug.Assert(verticesToLayOut.Count > 0);
+        Debug.Assert(layoutContext != null);
         AssertValid();
 
         if (backgroundWorker != null && backgroundWorker.CancellationPending)
@@ -263,8 +264,6 @@ public class SinusoidLayout : SortableLayoutBase
         }
 
         Int32 iVertices = verticesToLayOut.Count;
-
-        Debug.Assert(iVertices != 0);
 
         // The vertices are placed at equal angles along one cycle of a sine
         // wave.

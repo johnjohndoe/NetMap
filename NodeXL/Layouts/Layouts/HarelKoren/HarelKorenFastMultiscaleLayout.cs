@@ -3,7 +3,6 @@
 
 using System;
 using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -262,6 +261,11 @@ public class HarelKorenFastMultiscaleLayout : AsyncLayoutBase
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
+    /// </param>
+    ///
     /// <param name="layoutContext">
     /// Provides access to objects needed to lay out the graph.  The <see
     /// cref="LayoutContext.GraphRectangle" /> is guaranteed to have non-zero
@@ -284,9 +288,9 @@ public class HarelKorenFastMultiscaleLayout : AsyncLayoutBase
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -309,11 +313,14 @@ public class HarelKorenFastMultiscaleLayout : AsyncLayoutBase
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
         BackgroundWorker backgroundWorker
     )
     {
         Debug.Assert(graph != null);
+        Debug.Assert(verticesToLayOut != null);
+        Debug.Assert(verticesToLayOut.Count > 0);
         Debug.Assert(layoutContext != null);
         AssertValid();
 
@@ -322,20 +329,10 @@ public class HarelKorenFastMultiscaleLayout : AsyncLayoutBase
             return (false);
         }
 
-        // Honor the optional LayOutTheseVerticesOnly key on the graph.
+        ICollection<IEdge> oEdgesToLayOut =
+            GetEdgesToLayOut(graph, verticesToLayOut);
 
-        ICollection oVerticesToLayOut = GetVerticesToLayOut(graph);
-        ICollection oEdgesToLayOut = GetEdgesToLayOut(graph);
-        Int32 iVertices = oVerticesToLayOut.Count;
-
-        // Although the caller has guaranteed that there is at least one vertex
-        // in the graph, the collection returned by GetVerticesToLayOut() may
-        // be empty.
-
-        if (iVertices == 0)
-        {
-            return (true);
-        }
+        Int32 iVertices = verticesToLayOut.Count;
 
         // The MultiScaleLayout class uses a simple scheme where the graph's
         // vertices consist of the integers 0 through N-1, where N is the
@@ -349,7 +346,7 @@ public class HarelKorenFastMultiscaleLayout : AsyncLayoutBase
 
         Int32 iVertexIndex = 0;
 
-        foreach (IVertex oVertex in oVerticesToLayOut)
+        foreach (IVertex oVertex in verticesToLayOut)
         {
             oVertexDictionary.Add(oVertex, iVertexIndex);
             iVertexIndex++;
@@ -397,7 +394,7 @@ public class HarelKorenFastMultiscaleLayout : AsyncLayoutBase
         Int32 iWidth = oRectangle.Width;
         Int32 iHeight = oRectangle.Height;
 
-        foreach (IVertex oVertex in oVerticesToLayOut)
+        foreach (IVertex oVertex in verticesToLayOut)
         {
             if ( !VertexIsLocked(oVertex) )
             {

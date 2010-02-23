@@ -41,7 +41,8 @@ public abstract class GraphMetricColumn : Object
     /// </param>
     ///
     /// <param name="columnWidthChars">
-    /// Width of the column, in characters.
+    /// Width of the column, in characters, or <see
+    /// cref="ExcelUtil.AutoColumnWidth" /> to set the width automatically.
     /// </param>
     ///
     /// <param name="numberFormat">
@@ -187,7 +188,7 @@ public abstract class GraphMetricColumn : Object
     ///
     /// <value>
     /// The width of the column, in characters, or <see
-    /// cref="ExcelUtil.AutoColumnWidth" /> to automatically size the column.
+    /// cref="ExcelUtil.AutoColumnWidth" /> to set the width automatically.
     /// </value>
     //*************************************************************************
 
@@ -312,7 +313,8 @@ public abstract class GraphMetricColumn : Object
 
     protected String m_sColumnName;
 
-    /// Width of the column, in characters.
+    /// Width of the column, in characters, or AutoColumnWidth to set the width
+    /// automatically.
 
     protected Double m_fColumnWidthChars;
 

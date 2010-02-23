@@ -2,7 +2,6 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -106,7 +105,7 @@ public static class ConnectedComponentCalculator
     public static List< LinkedList<IVertex> >
     GetStronglyConnectedComponents
     (
-        ICollection vertices
+        ICollection<IVertex> vertices
     )
     {
         Debug.Assert(vertices != null);

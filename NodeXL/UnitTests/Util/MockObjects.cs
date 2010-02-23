@@ -283,20 +283,8 @@ internal class MockEdge : IEdge
     public IEdge
     Clone
     (
-        Boolean setMetadataValues,
-        Boolean setTag,
-        IEdgeFactory newEdgeFactory
-    )
-    {
-        return (null);
-    }
-
-    public IEdge
-    Clone
-    (
         Boolean copyMetadataValues,
         Boolean copyTag,
-        IEdgeFactory newEdgeFactory,
         IVertex vertex1,
         IVertex vertex2,
         Boolean isDirected
@@ -618,17 +606,6 @@ internal class MockVertex : IVertex
         return (null);
     }
 
-    public IVertex
-    Clone
-    (
-        Boolean setMetadataValues,
-        Boolean setTag,
-        IVertexFactory newVertexFactory
-    )
-    {
-        return (null);
-    }
-
     public IEdge []
     GetConnectingEdges
     (
@@ -866,18 +843,6 @@ internal class MockMetadataProvider : IMetadataProvider, IIdentityProvider
     }
 
     public void
-    AppendToString
-    (
-        StringBuilder oStringBuilder,
-        Int32 iIndentationLevel,
-        String sFormat
-    )
-    {
-        m_oMetadataProvider.AppendToString(oStringBuilder, iIndentationLevel,
-            sFormat);
-    }
-
-    public void
     ClearMetadata()
     {
         m_oMetadataProvider.ClearMetadata();
@@ -923,6 +888,19 @@ internal class MockLayout : Object, ILayout
         get
         {
             return (0);
+        }
+
+        set
+        {
+        }
+    }
+
+    public Boolean
+    UseBinning
+    {
+        get
+        {
+            return (false);
         }
 
         set

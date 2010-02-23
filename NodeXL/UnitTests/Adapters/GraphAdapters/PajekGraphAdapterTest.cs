@@ -95,17 +95,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph()
+    //  Method: TestLoadGraphFromFile()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph()
+    TestLoadGraphFromFile()
     {
         // Overall test.
 
@@ -153,7 +153,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -218,17 +218,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2()
+    //  Method: TestLoadGraphFromFile2()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2()
+    TestLoadGraphFromFile2()
     {
         // Empty graph.
 
@@ -236,7 +236,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(String.Empty);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -252,17 +252,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph3()
+    //  Method: TestLoadGraphFromFile3()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph3()
+    TestLoadGraphFromFile3()
     {
         // No edges.
 
@@ -276,7 +276,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -300,17 +300,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph4()
+    //  Method: TestLoadGraphFromFile4()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph4()
+    TestLoadGraphFromFile4()
     {
         // No vertex coordinates.
 
@@ -324,7 +324,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -348,17 +348,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph5()
+    //  Method: TestLoadGraphFromFile5()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph5()
+    TestLoadGraphFromFile5()
     {
         // Empty edge sections.
 
@@ -376,7 +376,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -400,17 +400,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph6()
+    //  Method: TestLoadGraphFromFile6()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph6()
+    TestLoadGraphFromFile6()
     {
         // Duplicate edges.
 
@@ -450,7 +450,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -510,17 +510,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph7()
+    //  Method: TestLoadGraphFromFile7()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph7()
+    TestLoadGraphFromFile7()
     {
         // Reversed section order.
 
@@ -568,7 +568,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -633,17 +633,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph8()
+    //  Method: TestLoadGraphFromFile8()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph8()
+    TestLoadGraphFromFile8()
     {
         // Unrecognized sections.
 
@@ -706,7 +706,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -771,17 +771,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph9()
+    //  Method: TestLoadGraphFromFile9()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph9()
+    TestLoadGraphFromFile9()
     {
         // No quotes around vertex names.
 
@@ -807,7 +807,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -836,17 +836,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph10()
+    //  Method: TestLoadGraphFromFile10()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph10()
+    TestLoadGraphFromFile10()
     {
         // Multiple sections of same type.
 
@@ -893,7 +893,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -958,17 +958,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph11()
+    //  Method: TestLoadGraphFromFile11()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph11()
+    TestLoadGraphFromFile11()
     {
         // Vertex name doesn't have closing quote.
 
@@ -982,7 +982,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1006,17 +1006,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph12()
+    //  Method: TestLoadGraphFromFile12()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph12()
+    TestLoadGraphFromFile12()
     {
         // Mixed tabs and spaces.
 
@@ -1042,7 +1042,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1071,17 +1071,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph13()
+    //  Method: TestLoadGraphFromFile13()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph13()
+    TestLoadGraphFromFile13()
     {
         // Sample file copied from 
         // http://www.stanford.edu/group/sonia/documentation/inputFormats.html.
@@ -1101,7 +1101,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1141,17 +1141,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph14()
+    //  Method: TestLoadGraphFromFile14()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph14()
+    TestLoadGraphFromFile14()
     {
         const Int32 Vertices = 14;
 
@@ -1213,7 +1213,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1260,17 +1260,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNNNN()
+    //  Method: TestLoadGraphFromFileNNNN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNNNN()
+    TestLoadGraphFromFileNNNN()
     {
         // *edges: no
         // *edgeslist: no
@@ -1298,7 +1298,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1333,17 +1333,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNNNY()
+    //  Method: TestLoadGraphFromFileNNNY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNNNY()
+    TestLoadGraphFromFileNNNY()
     {
         // *edges: no
         // *edgeslist: no
@@ -1369,7 +1369,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1405,17 +1405,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNNYN()
+    //  Method: TestLoadGraphFromFileNNYN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNNYN()
+    TestLoadGraphFromFileNNYN()
     {
         // *edges: no
         // *edgeslist: no
@@ -1441,7 +1441,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1476,17 +1476,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNNYY()
+    //  Method: TestLoadGraphFromFileNNYY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNNYY()
+    TestLoadGraphFromFileNNYY()
     {
         // *edges: no
         // *edgeslist: no
@@ -1514,7 +1514,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1550,17 +1550,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNYNN()
+    //  Method: TestLoadGraphFromFileNYNN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNYNN()
+    TestLoadGraphFromFileNYNN()
     {
         // *edges: no
         // *edgeslist: yes
@@ -1586,7 +1586,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1622,17 +1622,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNYNY()
+    //  Method: TestLoadGraphFromFileNYNY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNYNY()
+    TestLoadGraphFromFileNYNY()
     {
         // *edges: no
         // *edgeslist: yes
@@ -1661,7 +1661,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1698,17 +1698,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNYYN()
+    //  Method: TestLoadGraphFromFileNYYN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNYYN()
+    TestLoadGraphFromFileNYYN()
     {
         // *edges: no
         // *edgeslist: yes
@@ -1737,7 +1737,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1773,17 +1773,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphNYYY()
+    //  Method: TestLoadGraphFromFileNYYY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphNYYY()
+    TestLoadGraphFromFileNYYY()
     {
         // *edges: no
         // *edgeslist: yes
@@ -1815,7 +1815,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1852,17 +1852,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYNNN()
+    //  Method: TestLoadGraphFromFileYNNN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYNNN()
+    TestLoadGraphFromFileYNNN()
     {
         // *edges: yes
         // *edgeslist: no
@@ -1888,7 +1888,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1923,17 +1923,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYNNY()
+    //  Method: TestLoadGraphFromFileYNNY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYNNY()
+    TestLoadGraphFromFileYNNY()
     {
         // *edges: yes
         // *edgeslist: no
@@ -1962,7 +1962,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -1998,17 +1998,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYNYN()
+    //  Method: TestLoadGraphFromFileYNYN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYNYN()
+    TestLoadGraphFromFileYNYN()
     {
         // *edges: yes
         // *edgeslist: no
@@ -2037,7 +2037,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -2072,17 +2072,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYNYY()
+    //  Method: TestLoadGraphFromFileYNYY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYNYY()
+    TestLoadGraphFromFileYNYY()
     {
         // *edges: yes
         // *edgeslist: no
@@ -2114,7 +2114,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -2150,17 +2150,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYYNN()
+    //  Method: TestLoadGraphFromFileYYNN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYYNN()
+    TestLoadGraphFromFileYYNN()
     {
         // *edges: yes
         // *edgeslist: yes
@@ -2190,7 +2190,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -2226,17 +2226,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYYNY()
+    //  Method: TestLoadGraphFromFileYYNY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYYNY()
+    TestLoadGraphFromFileYYNY()
     {
         // *edges: yes
         // *edgeslist: yes
@@ -2268,7 +2268,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -2305,17 +2305,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYYYN()
+    //  Method: TestLoadGraphFromFileYYYN()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYYYN()
+    TestLoadGraphFromFileYYYN()
     {
         // *edges: yes
         // *edgeslist: yes
@@ -2348,7 +2348,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -2384,17 +2384,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphYYYY()
+    //  Method: TestLoadGraphFromFileYYYY()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraphYYYY()
+    TestLoadGraphFromFileYYYY()
     {
         // *edges: yes
         // *edgeslist: yes
@@ -2429,7 +2429,7 @@ public class PajekGraphAdapterTest : Object
 
         WriteFile(FileContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -2466,10 +2466,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad()
+    //  Method: TestLoadGraphFromFileBad()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2477,7 +2477,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
-    TestLoadGraphBad()
+    TestLoadGraphFromFileBad()
     {
         // null filename.
 
@@ -2485,15 +2485,15 @@ public class PajekGraphAdapterTest : Object
         {
             String sFileName = null;
 
-            m_oGraphAdapter.LoadGraph(sFileName);
+            m_oGraphAdapter.LoadGraphFromFile(sFileName);
         }
         catch (ArgumentNullException oArgumentNullException)
         {
             Assert.AreEqual(
 
                 "Microsoft.NodeXL.Adapters."
-                + "PajekGraphAdapter.LoadGraph: filename argument can't be"
-                + " null.\r\n"
+                + "PajekGraphAdapter.LoadGraphFromFile: filename argument"
+                + " can't be null.\r\n"
                 + "Parameter name: filename"
                 ,
                 oArgumentNullException.Message
@@ -2504,10 +2504,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad2()
+    //  Method: TestLoadGraphFromFileBad2()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2515,7 +2515,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
-    TestLoadGraphBad2()
+    TestLoadGraphFromFileBad2()
     {
         // Empty filename.
 
@@ -2523,15 +2523,15 @@ public class PajekGraphAdapterTest : Object
         {
             String sFileName = String.Empty;
 
-            m_oGraphAdapter.LoadGraph(sFileName);
+            m_oGraphAdapter.LoadGraphFromFile(sFileName);
         }
         catch (ArgumentNullException oArgumentException)
         {
             Assert.AreEqual(
 
                 "Microsoft.NodeXL.Adapters."
-                + "PajekGraphAdapter.LoadGraph: filename argument must have a"
-                + " length greater than zero.\r\n"
+                + "PajekGraphAdapter.LoadGraphFromFile: filename argument must"
+                + " have a length greater than zero.\r\n"
                 + "Parameter name: filename"
                 ,
                 oArgumentException.Message
@@ -2542,10 +2542,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad3()
+    //  Method: TestLoadGraphFromFileBad3()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2553,7 +2553,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(DirectoryNotFoundException) ) ]
 
     public void
-    TestLoadGraphBad3()
+    TestLoadGraphFromFileBad3()
     {
         // Non-existent filename.
 
@@ -2561,7 +2561,7 @@ public class PajekGraphAdapterTest : Object
         {
             String sFileName = "X:\\abc\\def\\ghi.txt";
 
-            m_oGraphAdapter.LoadGraph(sFileName);
+            m_oGraphAdapter.LoadGraphFromFile(sFileName);
         }
         catch (DirectoryNotFoundException oDirectoryNotFoundException)
         {
@@ -2574,10 +2574,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad4()
+    //  Method: TestLoadGraphFromFileBad4()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2585,7 +2585,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad4()
+    TestLoadGraphFromFileBad4()
     {
         // 2 *vertices sections.
 
@@ -2601,7 +2601,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2619,10 +2619,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad5()
+    //  Method: TestLoadGraphFromFileBad5()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2630,7 +2630,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad5()
+    TestLoadGraphFromFileBad5()
     {
         // Too many field on *vertices line.
 
@@ -2644,7 +2644,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2662,10 +2662,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad6()
+    //  Method: TestLoadGraphFromFileBad6()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2673,7 +2673,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad6()
+    TestLoadGraphFromFileBad6()
     {
         // Bad specified vertex count.
 
@@ -2687,7 +2687,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2704,10 +2704,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad7()
+    //  Method: TestLoadGraphFromFileBad7()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2715,7 +2715,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad7()
+    TestLoadGraphFromFileBad7()
     {
         // Too few vertices.
 
@@ -2729,7 +2729,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2746,10 +2746,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad8()
+    //  Method: TestLoadGraphFromFileBad8()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2757,7 +2757,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad8()
+    TestLoadGraphFromFileBad8()
     {
         // Too many vertices.
 
@@ -2772,7 +2772,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2789,10 +2789,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad9()
+    //  Method: TestLoadGraphFromFileBad9()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2800,7 +2800,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad9()
+    TestLoadGraphFromFileBad9()
     {
         // Too many vertices.
 
@@ -2814,7 +2814,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2831,10 +2831,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad10()
+    //  Method: TestLoadGraphFromFileBad10()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2842,7 +2842,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad10()
+    TestLoadGraphFromFileBad10()
     {
         // *edges section without *vertices.
 
@@ -2856,7 +2856,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2874,10 +2874,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad11()
+    //  Method: TestLoadGraphFromFileBad11()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2885,7 +2885,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad11()
+    TestLoadGraphFromFileBad11()
     {
         // *edgeslist section without *vertices.
 
@@ -2899,7 +2899,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2917,10 +2917,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad12()
+    //  Method: TestLoadGraphFromFileBad12()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2928,7 +2928,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad12()
+    TestLoadGraphFromFileBad12()
     {
         // *arcs section without *vertices.
 
@@ -2942,7 +2942,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -2960,10 +2960,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad13()
+    //  Method: TestLoadGraphFromFileBad13()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -2971,7 +2971,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad13()
+    TestLoadGraphFromFileBad13()
     {
         // *arcslist section without *vertices.
 
@@ -2985,7 +2985,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3003,10 +3003,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad14()
+    //  Method: TestLoadGraphFromFileBad14()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3014,7 +3014,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad14()
+    TestLoadGraphFromFileBad14()
     {
         // Bad vertex number.
 
@@ -3028,7 +3028,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3046,10 +3046,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad15()
+    //  Method: TestLoadGraphFromFileBad15()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3057,7 +3057,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad15()
+    TestLoadGraphFromFileBad15()
     {
         // Wrong vertex number.
 
@@ -3071,7 +3071,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3089,10 +3089,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad16()
+    //  Method: TestLoadGraphFromFileBad16()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3100,7 +3100,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad16()
+    TestLoadGraphFromFileBad16()
     {
         // X-coordinate < 0.
 
@@ -3114,7 +3114,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3132,10 +3132,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad17()
+    //  Method: TestLoadGraphFromFileBad17()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3143,7 +3143,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad17()
+    TestLoadGraphFromFileBad17()
     {
         // X-coordinate > 1.0.
 
@@ -3157,7 +3157,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3175,10 +3175,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad18()
+    //  Method: TestLoadGraphFromFileBad18()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3186,7 +3186,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad18()
+    TestLoadGraphFromFileBad18()
     {
         // Y-coordinate < 0.
 
@@ -3200,7 +3200,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3218,10 +3218,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad19()
+    //  Method: TestLoadGraphFromFileBad19()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3229,7 +3229,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad19()
+    TestLoadGraphFromFileBad19()
     {
         // Y-coordinate > 1.0.
 
@@ -3243,7 +3243,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3261,10 +3261,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad20()
+    //  Method: TestLoadGraphFromFileBad20()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3272,7 +3272,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad20()
+    TestLoadGraphFromFileBad20()
     {
         // Bad first vertex number on edge.
 
@@ -3288,7 +3288,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3305,10 +3305,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad21()
+    //  Method: TestLoadGraphFromFileBad21()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3316,7 +3316,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad21()
+    TestLoadGraphFromFileBad21()
     {
         // Bad second vertex number on edge.
 
@@ -3332,7 +3332,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3349,10 +3349,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad22()
+    //  Method: TestLoadGraphFromFileBad22()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3360,7 +3360,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad22()
+    TestLoadGraphFromFileBad22()
     {
         // Bad weight on edge.
 
@@ -3376,7 +3376,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3393,10 +3393,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad23()
+    //  Method: TestLoadGraphFromFileBad23()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3404,7 +3404,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad23()
+    TestLoadGraphFromFileBad23()
     {
         // Bad weight on edge.
 
@@ -3420,7 +3420,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3437,10 +3437,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad24()
+    //  Method: TestLoadGraphFromFileBad24()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3448,7 +3448,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad24()
+    TestLoadGraphFromFileBad24()
     {
         // Bad first vertex number on arc.
 
@@ -3464,7 +3464,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3481,10 +3481,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad25()
+    //  Method: TestLoadGraphFromFileBad25()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3492,7 +3492,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad25()
+    TestLoadGraphFromFileBad25()
     {
         // Bad second vertex number on arc.
 
@@ -3508,7 +3508,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3525,10 +3525,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad26()
+    //  Method: TestLoadGraphFromFileBad26()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3536,7 +3536,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad26()
+    TestLoadGraphFromFileBad26()
     {
         // Bad weight on arc.
 
@@ -3552,7 +3552,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3569,10 +3569,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad27()
+    //  Method: TestLoadGraphFromFileBad27()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3580,7 +3580,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad27()
+    TestLoadGraphFromFileBad27()
     {
         // Too few vertices in edge list.
 
@@ -3596,7 +3596,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3613,10 +3613,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad28()
+    //  Method: TestLoadGraphFromFileBad28()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3624,7 +3624,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad28()
+    TestLoadGraphFromFileBad28()
     {
         // Bad first vertex number in edge list.
 
@@ -3640,7 +3640,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3657,10 +3657,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad29()
+    //  Method: TestLoadGraphFromFileBad29()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3668,7 +3668,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad29()
+    TestLoadGraphFromFileBad29()
     {
         // Zero first vertex number in edge list.
 
@@ -3684,7 +3684,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3701,10 +3701,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad30()
+    //  Method: TestLoadGraphFromFileBad30()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3712,7 +3712,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad30()
+    TestLoadGraphFromFileBad30()
     {
         // Negative first vertex number in edge list.
 
@@ -3728,7 +3728,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3745,10 +3745,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad31()
+    //  Method: TestLoadGraphFromFileBad31()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3756,7 +3756,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad31()
+    TestLoadGraphFromFileBad31()
     {
         // First vertex number in edge list greater than number of vertices.
 
@@ -3772,7 +3772,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3790,10 +3790,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad32()
+    //  Method: TestLoadGraphFromFileBad32()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3801,7 +3801,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad32()
+    TestLoadGraphFromFileBad32()
     {
         // Bad second vertex number in edge list.
 
@@ -3817,7 +3817,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3834,10 +3834,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad33()
+    //  Method: TestLoadGraphFromFileBad33()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3845,7 +3845,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad33()
+    TestLoadGraphFromFileBad33()
     {
         // Zero second vertex number in edge list.
 
@@ -3861,7 +3861,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3878,10 +3878,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad34()
+    //  Method: TestLoadGraphFromFileBad34()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3889,7 +3889,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad34()
+    TestLoadGraphFromFileBad34()
     {
         // Negative second vertex number in edge list.
 
@@ -3905,7 +3905,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3922,10 +3922,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad35()
+    //  Method: TestLoadGraphFromFileBad35()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3933,7 +3933,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad35()
+    TestLoadGraphFromFileBad35()
     {
         // Second vertex number in edge list greater than number of vertices.
 
@@ -3949,7 +3949,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -3967,10 +3967,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad36()
+    //  Method: TestLoadGraphFromFileBad36()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -3978,7 +3978,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad36()
+    TestLoadGraphFromFileBad36()
     {
         // Too few vertices in arc list.
 
@@ -3994,7 +3994,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4011,10 +4011,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad37()
+    //  Method: TestLoadGraphFromFileBad37()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4022,7 +4022,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad37()
+    TestLoadGraphFromFileBad37()
     {
         // Bad first vertex number in arc list.
 
@@ -4038,7 +4038,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4055,10 +4055,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad38()
+    //  Method: TestLoadGraphFromFileBad38()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4066,7 +4066,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad38()
+    TestLoadGraphFromFileBad38()
     {
         // Zero first vertex number in arc list.
 
@@ -4082,7 +4082,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4099,10 +4099,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad39()
+    //  Method: TestLoadGraphFromFileBad39()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4110,7 +4110,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad39()
+    TestLoadGraphFromFileBad39()
     {
         // Negative first vertex number in arc list.
 
@@ -4126,7 +4126,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4143,10 +4143,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad40()
+    //  Method: TestLoadGraphFromFileBad40()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4154,7 +4154,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad40()
+    TestLoadGraphFromFileBad40()
     {
         // First vertex number in arc list greater than number of vertices.
 
@@ -4170,7 +4170,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4188,10 +4188,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad41()
+    //  Method: TestLoadGraphFromFileBad41()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4199,7 +4199,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad41()
+    TestLoadGraphFromFileBad41()
     {
         // Bad second vertex number in arc list.
 
@@ -4215,7 +4215,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4232,10 +4232,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad42()
+    //  Method: TestLoadGraphFromFileBad42()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4243,7 +4243,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad42()
+    TestLoadGraphFromFileBad42()
     {
         // Zero second vertex number in arc list.
 
@@ -4259,7 +4259,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4276,10 +4276,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad43()
+    //  Method: TestLoadGraphFromFileBad43()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4287,7 +4287,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad43()
+    TestLoadGraphFromFileBad43()
     {
         // Negative second vertex number in arc list.
 
@@ -4303,7 +4303,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4320,10 +4320,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad44()
+    //  Method: TestLoadGraphFromFileBad44()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -4331,7 +4331,7 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(FormatException) ) ]
 
     public void
-    TestLoadGraphBad44()
+    TestLoadGraphFromFileBad44()
     {
         // Second vertex number in arc list greater than number of vertices.
 
@@ -4347,7 +4347,7 @@ public class PajekGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(m_sTempFileName);
+            m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
         }
         catch (FormatException oFormatException)
         {
@@ -4365,17 +4365,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_()
+    //  Method: TestLoadFromStream()
     //
     /// <summary>
-    /// Tests the LoadGraph(GraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_()
+    TestLoadFromStream()
     {
         // Overall test.
 
@@ -4423,8 +4423,7 @@ public class PajekGraphAdapterTest : Object
 
         StringStream oStream = new StringStream(StreamContents);
 
-        IGraph oGraph =
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -4489,10 +4488,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad()
+    //  Method: TestLoadFromStreamBad()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -4500,49 +4499,13 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
-    TestLoadGraph2_Bad()
-    {
-        // null graphFactory.
-
-        try
-        {
-            m_oGraphAdapter.LoadGraph( null, new MemoryStream() );
-        }
-        catch (ArgumentNullException oArgumentNullException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Adapters."
-                + "PajekGraphAdapter.LoadGraph: graphFactory argument can't"
-                + " be null.\r\n"
-                + "Parameter name: graphFactory"
-                ,
-                oArgumentNullException.Message
-                );
-
-            throw oArgumentNullException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestLoadGraph2_Bad2()
-    //
-    /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentNullException) ) ]
-
-    public void
-    TestLoadGraph2_Bad2()
+    TestLoadFromStreamBad()
     {
         // null stream.
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), (Stream)null);
+            m_oGraphAdapter.LoadGraphFromStream(null);
         }
         catch (ArgumentNullException oArgumentNullException)
         {
@@ -4561,17 +4524,17 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph3_()
+    //  Method: TestLoadGraphFromString()
     //
     /// <summary>
-    /// Tests the LoadGraph(GraphFactory, String) method.
+    /// Tests the LoadGraphFromString() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph3_()
+    TestLoadGraphFromString()
     {
         // Overall test.
 
@@ -4617,8 +4580,7 @@ public class PajekGraphAdapterTest : Object
             + "/* This is a comment. */\r\n"
             ;
 
-        IGraph oGraph =
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), StringContents);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromString(StringContents);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -4683,10 +4645,10 @@ public class PajekGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph3_Bad()
+    //  Method: TestLoadGraphFromStringBad()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, String) method.
+    /// Tests the LoadGraphFromString() method.
     /// </summary>
     //*************************************************************************
 
@@ -4694,49 +4656,13 @@ public class PajekGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
-    TestLoadGraph3_Bad()
-    {
-        // null graphFactory.
-
-        try
-        {
-            m_oGraphAdapter.LoadGraph(null, "abc");
-        }
-        catch (ArgumentNullException oArgumentNullException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Adapters."
-                + "PajekGraphAdapter.LoadGraph: graphFactory argument can't"
-                + " be null.\r\n"
-                + "Parameter name: graphFactory"
-                ,
-                oArgumentNullException.Message
-                );
-
-            throw oArgumentNullException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestLoadGraph3_Bad2()
-    //
-    /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, String) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentNullException) ) ]
-
-    public void
-    TestLoadGraph3_Bad2()
+    TestLoadGraphFromStringBad()
     {
         // null string.
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), (String)null);
+            m_oGraphAdapter.LoadGraphFromString(null);
         }
         catch (ArgumentNullException oArgumentNullException)
         {

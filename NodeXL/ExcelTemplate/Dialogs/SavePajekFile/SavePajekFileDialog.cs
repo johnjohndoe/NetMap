@@ -30,7 +30,7 @@ public class SavePajekFileDialog : SaveFileDialog2
     //
     /// <summary>
     /// Initializes a new instance of the <see cref="SavePajekFileDialog" />
-	/// class.
+    /// class.
     /// </summary>
     ///
     /// <param name="initialDirectory">
@@ -72,7 +72,7 @@ public class SavePajekFileDialog : SaveFileDialog2
     ///
     /// <remarks>
     /// This method allows the user to select a file name.  It then saves the
-	/// graph to the file.
+    /// graph to the file.
     /// </remarks>
     //*************************************************************************
 
@@ -168,9 +168,9 @@ public class SavePajekFileDialog : SaveFileDialog2
         String sFileName
     )
     {
-		Debug.Assert(oObject is IGraph);
+        Debug.Assert(oObject is IGraph);
 
-		( new PajekGraphAdapter() ).SaveGraph( (IGraph)oObject, sFileName ); 
+        ( new PajekGraphAdapter() ).SaveGraph( (IGraph)oObject, sFileName ); 
     }
 
     //*************************************************************************

@@ -100,6 +100,10 @@ public static class TableColumnMapper : Object
     /// stored if true is returned.
     /// </param>
     ///
+    /// <param name="decimalPlaces">
+    /// Where the number of decimal places displayed in the column gets stored.
+    /// </param>
+    ///
     /// <returns>
     /// true if the mapping was performed.
     /// </returns>
@@ -131,7 +135,8 @@ public static class TableColumnMapper : Object
         Boolean ignoreOutliers,
         Boolean useLogs,
         out Double sourceCalculationNumber1,
-        out Double sourceCalculationNumber2
+        out Double sourceCalculationNumber2,
+        out Int32 decimalPlaces
     )
     {
         Debug.Assert(table != null);
@@ -141,6 +146,7 @@ public static class TableColumnMapper : Object
         Debug.Assert(!useLogs || !useSourceNumber2 || sourceNumber2 > 0);
 
         sourceCalculationNumber1 = sourceCalculationNumber2 = Double.MinValue;
+        decimalPlaces = Int32.MinValue;
 
         Range oVisibleSourceRange, oVisibleDestinationRange;
 
@@ -250,6 +256,8 @@ public static class TableColumnMapper : Object
             oDestinationArea.set_Value(Missing.Value, aoDestinationAreaValues);
         }
 
+        decimalPlaces = GetDecimalPlaces(table, sourceColumnName);
+
         return (true);
     }
 
@@ -323,6 +331,10 @@ public static class TableColumnMapper : Object
     /// stored if true is returned.
     /// </param>
     ///
+    /// <param name="decimalPlaces">
+    /// Where the number of decimal places displayed in the column gets stored.
+    /// </param>
+    ///
     /// <returns>
     /// true if the mapping was performed.
     /// </returns>
@@ -353,7 +365,8 @@ public static class TableColumnMapper : Object
         Boolean ignoreOutliers,
         Boolean useLogs,
         out Double sourceCalculationNumber1,
-        out Double sourceCalculationNumber2
+        out Double sourceCalculationNumber2,
+        out Int32 decimalPlaces
     )
     {
         Debug.Assert(table != null);
@@ -363,6 +376,7 @@ public static class TableColumnMapper : Object
         Debug.Assert(!useLogs || !useSourceNumber2 || sourceNumber2 > 0);
 
         sourceCalculationNumber1 = sourceCalculationNumber2 = Double.MinValue;
+        decimalPlaces = Int32.MinValue;
 
         Range oVisibleSourceRange, oVisibleDestinationRange;
 
@@ -448,6 +462,8 @@ public static class TableColumnMapper : Object
 
             oDestinationArea.set_Value(Missing.Value, aoDestinationAreaValues);
         }
+
+        decimalPlaces = GetDecimalPlaces(table, sourceColumnName);
 
         return (true);
     }
@@ -770,6 +786,46 @@ public static class TableColumnMapper : Object
             ExcelUtil.TryGetVisibleTableColumnData(oTable,
                 sDestinationColumnName, out oVisibleDestinationRange)
             );
+    }
+
+    //*************************************************************************
+    //  Method: GetDecimalPlaces()
+    //
+    /// <summary>
+    /// Gets the number of decimal places displayed in the source column.
+    /// </summary>
+    ///
+    /// <param name="oTable">
+    /// Table containing the source column.
+    /// </param>
+    ///
+    /// <param name="sSourceColumnName">
+    /// Name of the source column.  The column must exist.
+    /// </param>
+    ///
+    /// <returns>
+    /// The number of decimal places displayed in the source column.
+    /// </returns>
+    //*************************************************************************
+
+    private static Int32
+    GetDecimalPlaces
+    (
+        ListObject oTable,
+        String sSourceColumnName
+    )
+    {
+        Debug.Assert(oTable != null);
+        Debug.Assert( !String.IsNullOrEmpty(sSourceColumnName) );
+
+        ListColumn oSourceColumn;
+
+        Boolean bColumnFound = ExcelUtil.TryGetTableColumn(oTable,
+            sSourceColumnName, out oSourceColumn);
+
+        Debug.Assert(bColumnFound);
+
+        return ( ExcelUtil.GetTableColumnDecimalPlaces(oSourceColumn) );
     }
 
     //*************************************************************************
@@ -1390,7 +1446,14 @@ public static class TableColumnMapper : Object
         {
             // ColorGradientMapper doesn't allow a zero-width number range.
 
-            dSourceCalculationNumber2 *= 1.1;
+            if (dSourceCalculationNumber1 == 0)
+            {
+                dSourceCalculationNumber2 = .1;
+            }
+            else
+            {
+                dSourceCalculationNumber2 *= 1.1;
+            }
         }
 
         const Int32 DiscreteColorCount = 40;

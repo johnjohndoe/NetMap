@@ -1,4 +1,4 @@
-
+﻿
 
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
@@ -38,14 +38,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label2 = new System.Windows.Forms.Label();
             this.lblVertexColor = new System.Windows.Forms.Label();
             this.cmsWorksheetColumn = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmClearColumn = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmClearSourceColumnName = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmClearAllSourceColumnNames = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmWorksheetColumnDetails = new System.Windows.Forms.ToolStripMenuItem();
+            this.tssSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmClearSourceColumnName = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmClearColumn = new System.Windows.Forms.ToolStripMenuItem();
             this.cbxEdgeColorSourceColumnName = new Microsoft.NodeXL.ExcelTemplate.AutoFillEdgeColumnComboBox();
             this.tlpTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnVertexToolTipDetails = new System.Windows.Forms.Button();
+            this.btnVertexLabelDetails = new System.Windows.Forms.Button();
+            this.btnEdgeLabelDetails = new System.Windows.Forms.Button();
             this.cbxEdgeLabelSourceColumnName = new Microsoft.NodeXL.ExcelTemplate.AutoFillEdgeColumnComboBox();
             this.lblEdgeLabel = new System.Windows.Forms.Label();
             this.btnEdgeVisibilityDetails = new System.Windows.Forms.Button();
@@ -101,6 +102,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkHowAutoFillWorks = new System.Windows.Forms.LinkLabel();
             this.btnResetAll = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnClearAllColumns = new System.Windows.Forms.Button();
             this.cmsWorksheetColumn.SuspendLayout();
             this.tlpTableLayoutPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -122,72 +124,56 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(155, 11);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(155, 39);
+            this.label2.Size = new System.Drawing.Size(116, 39);
             this.label2.TabIndex = 1;
             this.label2.Text = "...using the values in these source columns, if the columns exist";
             // 
             // lblVertexColor
             // 
             this.lblVertexColor.AutoSize = true;
-            this.lblVertexColor.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexColor.Location = new System.Drawing.Point(4, 202);
             this.lblVertexColor.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexColor.Name = "lblVertexColor";
             this.lblVertexColor.Size = new System.Drawing.Size(64, 13);
-            this.lblVertexColor.TabIndex = 17;
+            this.lblVertexColor.TabIndex = 18;
             this.lblVertexColor.Text = "&Vertex Color";
             // 
             // cmsWorksheetColumn
             // 
             this.cmsWorksheetColumn.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmClearColumn,
-            this.toolStripSeparator2,
+            this.tsmWorksheetColumnDetails,
+            this.tssSeparator,
             this.tsmClearSourceColumnName,
-            this.tsmClearAllSourceColumnNames,
-            this.toolStripSeparator1,
-            this.tsmWorksheetColumnDetails});
+            this.tsmClearColumn});
             this.cmsWorksheetColumn.Name = "cmsWorksheetColumn";
             this.cmsWorksheetColumn.ShowImageMargin = false;
-            this.cmsWorksheetColumn.Size = new System.Drawing.Size(199, 104);
-            this.cmsWorksheetColumn.Opening += new System.ComponentModel.CancelEventHandler(this.cmsWorksheetColumn_Opening);
-            // 
-            // tsmClearColumn
-            // 
-            this.tsmClearColumn.Name = "tsmClearColumn";
-            this.tsmClearColumn.Size = new System.Drawing.Size(198, 22);
-            this.tsmClearColumn.Text = "[Gets set in code]";
-            this.tsmClearColumn.Click += new System.EventHandler(this.tsmClearColumn_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
-            // 
-            // tsmClearSourceColumnName
-            // 
-            this.tsmClearSourceColumnName.Name = "tsmClearSourceColumnName";
-            this.tsmClearSourceColumnName.Size = new System.Drawing.Size(198, 22);
-            this.tsmClearSourceColumnName.Text = "[Gets set in code]";
-            this.tsmClearSourceColumnName.Click += new System.EventHandler(this.tsmClearSourceColumnName_Click);
-            // 
-            // tsmClearAllSourceColumnNames
-            // 
-            this.tsmClearAllSourceColumnNames.Name = "tsmClearAllSourceColumnNames";
-            this.tsmClearAllSourceColumnNames.Size = new System.Drawing.Size(198, 22);
-            this.tsmClearAllSourceColumnNames.Text = "Clear &All Source Column Names";
-            this.tsmClearAllSourceColumnNames.Click += new System.EventHandler(this.tsmClearAllSourceColumnNames_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(195, 6);
+            this.cmsWorksheetColumn.Size = new System.Drawing.Size(141, 76);
             // 
             // tsmWorksheetColumnDetails
             // 
             this.tsmWorksheetColumnDetails.Name = "tsmWorksheetColumnDetails";
-            this.tsmWorksheetColumnDetails.Size = new System.Drawing.Size(198, 22);
+            this.tsmWorksheetColumnDetails.Size = new System.Drawing.Size(140, 22);
             this.tsmWorksheetColumnDetails.Text = "[Gets set in code]";
             this.tsmWorksheetColumnDetails.Click += new System.EventHandler(this.tsmWorksheetColumnDetails_Click);
+            // 
+            // tssSeparator
+            // 
+            this.tssSeparator.Name = "tssSeparator";
+            this.tssSeparator.Size = new System.Drawing.Size(137, 6);
+            // 
+            // tsmClearSourceColumnName
+            // 
+            this.tsmClearSourceColumnName.Name = "tsmClearSourceColumnName";
+            this.tsmClearSourceColumnName.Size = new System.Drawing.Size(140, 22);
+            this.tsmClearSourceColumnName.Text = "[Gets set in code]";
+            this.tsmClearSourceColumnName.Click += new System.EventHandler(this.tsmClearSourceColumnName_Click);
+            // 
+            // tsmClearColumn
+            // 
+            this.tsmClearColumn.Name = "tsmClearColumn";
+            this.tsmClearColumn.Size = new System.Drawing.Size(140, 22);
+            this.tsmClearColumn.Text = "[Gets set in code]";
+            this.tsmClearColumn.Click += new System.EventHandler(this.tsmClearColumn_Click);
             // 
             // cbxEdgeColorSourceColumnName
             // 
@@ -197,7 +183,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxEdgeColorSourceColumnName.Location = new System.Drawing.Point(155, 65);
             this.cbxEdgeColorSourceColumnName.MaxLength = 100;
             this.cbxEdgeColorSourceColumnName.Name = "cbxEdgeColorSourceColumnName";
-            this.cbxEdgeColorSourceColumnName.Size = new System.Drawing.Size(157, 21);
+            this.cbxEdgeColorSourceColumnName.Size = new System.Drawing.Size(119, 21);
             this.cbxEdgeColorSourceColumnName.TabIndex = 4;
             // 
             // tlpTableLayoutPanel
@@ -208,7 +194,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tlpTableLayoutPanel.ColumnCount = 3;
             this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            this.tlpTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 106F));
+            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexToolTipDetails, 2, 13);
+            this.tlpTableLayoutPanel.Controls.Add(this.btnVertexLabelDetails, 2, 11);
+            this.tlpTableLayoutPanel.Controls.Add(this.btnEdgeLabelDetails, 2, 5);
             this.tlpTableLayoutPanel.Controls.Add(this.cbxEdgeLabelSourceColumnName, 1, 5);
             this.tlpTableLayoutPanel.Controls.Add(this.lblEdgeLabel, 0, 5);
             this.tlpTableLayoutPanel.Controls.Add(this.btnEdgeVisibilityDetails, 2, 4);
@@ -285,8 +274,48 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tlpTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpTableLayoutPanel.Size = new System.Drawing.Size(385, 549);
             this.tlpTableLayoutPanel.TabIndex = 0;
+            // 
+            // btnVertexToolTipDetails
+            // 
+            this.btnVertexToolTipDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnVertexToolTipDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVertexToolTipDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVertexToolTipDetails.Location = new System.Drawing.Point(321, 389);
+            this.btnVertexToolTipDetails.Name = "btnVertexToolTipDetails";
+            this.btnVertexToolTipDetails.Size = new System.Drawing.Size(20, 20);
+            this.btnVertexToolTipDetails.TabIndex = 41;
+            this.btnVertexToolTipDetails.Text = "►";
+            this.btnVertexToolTipDetails.UseVisualStyleBackColor = true;
+            this.btnVertexToolTipDetails.Click += new System.EventHandler(this.btnVertexToolTipDetails_Click);
+            // 
+            // btnVertexLabelDetails
+            // 
+            this.btnVertexLabelDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnVertexLabelDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVertexLabelDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVertexLabelDetails.Location = new System.Drawing.Point(321, 335);
+            this.btnVertexLabelDetails.Name = "btnVertexLabelDetails";
+            this.btnVertexLabelDetails.Size = new System.Drawing.Size(20, 20);
+            this.btnVertexLabelDetails.TabIndex = 35;
+            this.btnVertexLabelDetails.Text = "►";
+            this.btnVertexLabelDetails.UseVisualStyleBackColor = true;
+            this.btnVertexLabelDetails.Click += new System.EventHandler(this.btnVertexLabelDetails_Click);
+            // 
+            // btnEdgeLabelDetails
+            // 
+            this.btnEdgeLabelDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnEdgeLabelDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEdgeLabelDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEdgeLabelDetails.Location = new System.Drawing.Point(321, 173);
+            this.btnEdgeLabelDetails.Name = "btnEdgeLabelDetails";
+            this.btnEdgeLabelDetails.Size = new System.Drawing.Size(20, 20);
+            this.btnEdgeLabelDetails.TabIndex = 17;
+            this.btnEdgeLabelDetails.Text = "►";
+            this.btnEdgeLabelDetails.UseVisualStyleBackColor = true;
+            this.btnEdgeLabelDetails.Click += new System.EventHandler(this.btnEdgeLabelDetails_Click);
             // 
             // cbxEdgeLabelSourceColumnName
             // 
@@ -296,13 +325,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxEdgeLabelSourceColumnName.Location = new System.Drawing.Point(155, 173);
             this.cbxEdgeLabelSourceColumnName.MaxLength = 100;
             this.cbxEdgeLabelSourceColumnName.Name = "cbxEdgeLabelSourceColumnName";
-            this.cbxEdgeLabelSourceColumnName.Size = new System.Drawing.Size(157, 21);
+            this.cbxEdgeLabelSourceColumnName.Size = new System.Drawing.Size(119, 21);
             this.cbxEdgeLabelSourceColumnName.TabIndex = 16;
             // 
             // lblEdgeLabel
             // 
             this.lblEdgeLabel.AutoSize = true;
-            this.lblEdgeLabel.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblEdgeLabel.Location = new System.Drawing.Point(4, 175);
             this.lblEdgeLabel.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblEdgeLabel.Name = "lblEdgeLabel";
@@ -312,27 +340,27 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnEdgeVisibilityDetails
             // 
+            this.btnEdgeVisibilityDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnEdgeVisibilityDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEdgeVisibilityDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEdgeVisibilityDetails.Location = new System.Drawing.Point(336, 146);
-            this.btnEdgeVisibilityDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnEdgeVisibilityDetails.Location = new System.Drawing.Point(321, 146);
             this.btnEdgeVisibilityDetails.Name = "btnEdgeVisibilityDetails";
             this.btnEdgeVisibilityDetails.Size = new System.Drawing.Size(20, 20);
             this.btnEdgeVisibilityDetails.TabIndex = 14;
-            this.btnEdgeVisibilityDetails.Text = "▼";
+            this.btnEdgeVisibilityDetails.Text = "►";
             this.btnEdgeVisibilityDetails.UseVisualStyleBackColor = true;
             this.btnEdgeVisibilityDetails.Click += new System.EventHandler(this.btnEdgeVisibilityDetails_Click);
             // 
             // btnEdgeAlphaDetails
             // 
+            this.btnEdgeAlphaDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnEdgeAlphaDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEdgeAlphaDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEdgeAlphaDetails.Location = new System.Drawing.Point(336, 119);
-            this.btnEdgeAlphaDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnEdgeAlphaDetails.Location = new System.Drawing.Point(321, 119);
             this.btnEdgeAlphaDetails.Name = "btnEdgeAlphaDetails";
             this.btnEdgeAlphaDetails.Size = new System.Drawing.Size(20, 20);
             this.btnEdgeAlphaDetails.TabIndex = 11;
-            this.btnEdgeAlphaDetails.Text = "▼";
+            this.btnEdgeAlphaDetails.Text = "►";
             this.btnEdgeAlphaDetails.UseVisualStyleBackColor = true;
             this.btnEdgeAlphaDetails.Click += new System.EventHandler(this.btnEdgeAlphaDetails_Click);
             // 
@@ -344,7 +372,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxEdgeWidthSourceColumnName.Location = new System.Drawing.Point(155, 92);
             this.cbxEdgeWidthSourceColumnName.MaxLength = 100;
             this.cbxEdgeWidthSourceColumnName.Name = "cbxEdgeWidthSourceColumnName";
-            this.cbxEdgeWidthSourceColumnName.Size = new System.Drawing.Size(157, 21);
+            this.cbxEdgeWidthSourceColumnName.Size = new System.Drawing.Size(119, 21);
             this.cbxEdgeWidthSourceColumnName.TabIndex = 7;
             // 
             // cbxEdgeVisibilitySourceColumnName
@@ -355,7 +383,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxEdgeVisibilitySourceColumnName.Location = new System.Drawing.Point(155, 146);
             this.cbxEdgeVisibilitySourceColumnName.MaxLength = 100;
             this.cbxEdgeVisibilitySourceColumnName.Name = "cbxEdgeVisibilitySourceColumnName";
-            this.cbxEdgeVisibilitySourceColumnName.Size = new System.Drawing.Size(157, 21);
+            this.cbxEdgeVisibilitySourceColumnName.Size = new System.Drawing.Size(119, 21);
             this.cbxEdgeVisibilitySourceColumnName.TabIndex = 13;
             // 
             // cbxEdgeAlphaSourceColumnName
@@ -366,39 +394,38 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxEdgeAlphaSourceColumnName.Location = new System.Drawing.Point(155, 119);
             this.cbxEdgeAlphaSourceColumnName.MaxLength = 100;
             this.cbxEdgeAlphaSourceColumnName.Name = "cbxEdgeAlphaSourceColumnName";
-            this.cbxEdgeAlphaSourceColumnName.Size = new System.Drawing.Size(157, 21);
+            this.cbxEdgeAlphaSourceColumnName.Size = new System.Drawing.Size(119, 21);
             this.cbxEdgeAlphaSourceColumnName.TabIndex = 10;
             // 
             // btnEdgeWidthDetails
             // 
+            this.btnEdgeWidthDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnEdgeWidthDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEdgeWidthDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEdgeWidthDetails.Location = new System.Drawing.Point(336, 92);
-            this.btnEdgeWidthDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnEdgeWidthDetails.Location = new System.Drawing.Point(321, 92);
             this.btnEdgeWidthDetails.Name = "btnEdgeWidthDetails";
             this.btnEdgeWidthDetails.Size = new System.Drawing.Size(20, 20);
             this.btnEdgeWidthDetails.TabIndex = 8;
-            this.btnEdgeWidthDetails.Text = "▼";
+            this.btnEdgeWidthDetails.Text = "►";
             this.btnEdgeWidthDetails.UseVisualStyleBackColor = true;
             this.btnEdgeWidthDetails.Click += new System.EventHandler(this.btnEdgeWidthDetails_Click);
             // 
             // btnEdgeColorDetails
             // 
+            this.btnEdgeColorDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnEdgeColorDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEdgeColorDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEdgeColorDetails.Location = new System.Drawing.Point(336, 65);
-            this.btnEdgeColorDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnEdgeColorDetails.Location = new System.Drawing.Point(321, 65);
             this.btnEdgeColorDetails.Name = "btnEdgeColorDetails";
             this.btnEdgeColorDetails.Size = new System.Drawing.Size(20, 20);
             this.btnEdgeColorDetails.TabIndex = 5;
-            this.btnEdgeColorDetails.Text = "▼";
+            this.btnEdgeColorDetails.Text = "►";
             this.btnEdgeColorDetails.UseVisualStyleBackColor = true;
             this.btnEdgeColorDetails.Click += new System.EventHandler(this.btnEdgeColorDetails_Click);
             // 
             // lblEdgeColor
             // 
             this.lblEdgeColor.AutoSize = true;
-            this.lblEdgeColor.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblEdgeColor.Location = new System.Drawing.Point(4, 67);
             this.lblEdgeColor.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblEdgeColor.Name = "lblEdgeColor";
@@ -409,7 +436,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // lblEdgeWidth
             // 
             this.lblEdgeWidth.AutoSize = true;
-            this.lblEdgeWidth.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblEdgeWidth.Location = new System.Drawing.Point(4, 94);
             this.lblEdgeWidth.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblEdgeWidth.Name = "lblEdgeWidth";
@@ -420,7 +446,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // lblEdgeAlpha
             // 
             this.lblEdgeAlpha.AutoSize = true;
-            this.lblEdgeAlpha.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblEdgeAlpha.Location = new System.Drawing.Point(4, 121);
             this.lblEdgeAlpha.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblEdgeAlpha.Name = "lblEdgeAlpha";
@@ -431,7 +456,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // lblEdgeVisibility
             // 
             this.lblEdgeVisibility.AutoSize = true;
-            this.lblEdgeVisibility.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblEdgeVisibility.Location = new System.Drawing.Point(4, 148);
             this.lblEdgeVisibility.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblEdgeVisibility.Name = "lblEdgeVisibility";
@@ -443,9 +467,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(319, 24);
+            this.label17.Location = new System.Drawing.Point(281, 24);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(62, 13);
+            this.label17.Size = new System.Drawing.Size(100, 13);
             this.label17.TabIndex = 2;
             this.label17.Text = "Options";
             this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -453,12 +477,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // lblVertexPolarAngle
             // 
             this.lblVertexPolarAngle.AutoSize = true;
-            this.lblVertexPolarAngle.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexPolarAngle.Location = new System.Drawing.Point(4, 526);
             this.lblVertexPolarAngle.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexPolarAngle.Name = "lblVertexPolarAngle";
             this.lblVertexPolarAngle.Size = new System.Drawing.Size(94, 13);
-            this.lblVertexPolarAngle.TabIndex = 51;
+            this.lblVertexPolarAngle.TabIndex = 54;
             this.lblVertexPolarAngle.Text = "Vertex Polar An&gle";
             // 
             // cbxVertexPolarAngleSourceColumnName
@@ -469,31 +492,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexPolarAngleSourceColumnName.Location = new System.Drawing.Point(155, 524);
             this.cbxVertexPolarAngleSourceColumnName.MaxLength = 100;
             this.cbxVertexPolarAngleSourceColumnName.Name = "cbxVertexPolarAngleSourceColumnName";
-            this.cbxVertexPolarAngleSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexPolarAngleSourceColumnName.TabIndex = 52;
+            this.cbxVertexPolarAngleSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexPolarAngleSourceColumnName.TabIndex = 55;
             // 
             // btnVertexPolarAngleDetails
             // 
+            this.btnVertexPolarAngleDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexPolarAngleDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexPolarAngleDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexPolarAngleDetails.Location = new System.Drawing.Point(336, 524);
-            this.btnVertexPolarAngleDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexPolarAngleDetails.Location = new System.Drawing.Point(321, 524);
             this.btnVertexPolarAngleDetails.Name = "btnVertexPolarAngleDetails";
             this.btnVertexPolarAngleDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexPolarAngleDetails.TabIndex = 53;
-            this.btnVertexPolarAngleDetails.Text = "▼";
+            this.btnVertexPolarAngleDetails.TabIndex = 56;
+            this.btnVertexPolarAngleDetails.Text = "►";
             this.btnVertexPolarAngleDetails.UseVisualStyleBackColor = true;
             this.btnVertexPolarAngleDetails.Click += new System.EventHandler(this.btnVertexPolarAngleDetails_Click);
             // 
             // lblVertexPolarR
             // 
             this.lblVertexPolarR.AutoSize = true;
-            this.lblVertexPolarR.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexPolarR.Location = new System.Drawing.Point(4, 499);
             this.lblVertexPolarR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexPolarR.Name = "lblVertexPolarR";
             this.lblVertexPolarR.Size = new System.Drawing.Size(75, 13);
-            this.lblVertexPolarR.TabIndex = 48;
+            this.lblVertexPolarR.TabIndex = 51;
             this.lblVertexPolarR.Text = "Vertex Polar &R";
             // 
             // cbxVertexPolarRSourceColumnName
@@ -504,31 +526,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexPolarRSourceColumnName.Location = new System.Drawing.Point(155, 497);
             this.cbxVertexPolarRSourceColumnName.MaxLength = 100;
             this.cbxVertexPolarRSourceColumnName.Name = "cbxVertexPolarRSourceColumnName";
-            this.cbxVertexPolarRSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexPolarRSourceColumnName.TabIndex = 49;
+            this.cbxVertexPolarRSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexPolarRSourceColumnName.TabIndex = 52;
             // 
             // btnVertexPolarRDetails
             // 
+            this.btnVertexPolarRDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexPolarRDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexPolarRDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexPolarRDetails.Location = new System.Drawing.Point(336, 497);
-            this.btnVertexPolarRDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexPolarRDetails.Location = new System.Drawing.Point(321, 497);
             this.btnVertexPolarRDetails.Name = "btnVertexPolarRDetails";
             this.btnVertexPolarRDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexPolarRDetails.TabIndex = 50;
-            this.btnVertexPolarRDetails.Text = "▼";
+            this.btnVertexPolarRDetails.TabIndex = 53;
+            this.btnVertexPolarRDetails.Text = "►";
             this.btnVertexPolarRDetails.UseVisualStyleBackColor = true;
             this.btnVertexPolarRDetails.Click += new System.EventHandler(this.btnVertexPolarRDetails_Click);
             // 
             // lblVertexY
             // 
             this.lblVertexY.AutoSize = true;
-            this.lblVertexY.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexY.Location = new System.Drawing.Point(4, 472);
             this.lblVertexY.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexY.Name = "lblVertexY";
             this.lblVertexY.Size = new System.Drawing.Size(47, 13);
-            this.lblVertexY.TabIndex = 45;
+            this.lblVertexY.TabIndex = 48;
             this.lblVertexY.Text = "Vertex &Y";
             // 
             // cbxVertexYSourceColumnName
@@ -539,31 +560,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexYSourceColumnName.Location = new System.Drawing.Point(155, 470);
             this.cbxVertexYSourceColumnName.MaxLength = 100;
             this.cbxVertexYSourceColumnName.Name = "cbxVertexYSourceColumnName";
-            this.cbxVertexYSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexYSourceColumnName.TabIndex = 46;
+            this.cbxVertexYSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexYSourceColumnName.TabIndex = 49;
             // 
             // btnVertexYDetails
             // 
+            this.btnVertexYDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexYDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexYDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexYDetails.Location = new System.Drawing.Point(336, 470);
-            this.btnVertexYDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexYDetails.Location = new System.Drawing.Point(321, 470);
             this.btnVertexYDetails.Name = "btnVertexYDetails";
             this.btnVertexYDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexYDetails.TabIndex = 47;
-            this.btnVertexYDetails.Text = "▼";
+            this.btnVertexYDetails.TabIndex = 50;
+            this.btnVertexYDetails.Text = "►";
             this.btnVertexYDetails.UseVisualStyleBackColor = true;
             this.btnVertexYDetails.Click += new System.EventHandler(this.btnVertexYDetails_Click);
             // 
             // lblVertexX
             // 
             this.lblVertexX.AutoSize = true;
-            this.lblVertexX.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexX.Location = new System.Drawing.Point(4, 445);
             this.lblVertexX.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexX.Name = "lblVertexX";
             this.lblVertexX.Size = new System.Drawing.Size(47, 13);
-            this.lblVertexX.TabIndex = 42;
+            this.lblVertexX.TabIndex = 45;
             this.lblVertexX.Text = "Vertex &X";
             // 
             // cbxVertexXSourceColumnName
@@ -574,31 +594,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexXSourceColumnName.Location = new System.Drawing.Point(155, 443);
             this.cbxVertexXSourceColumnName.MaxLength = 100;
             this.cbxVertexXSourceColumnName.Name = "cbxVertexXSourceColumnName";
-            this.cbxVertexXSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexXSourceColumnName.TabIndex = 43;
+            this.cbxVertexXSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexXSourceColumnName.TabIndex = 46;
             // 
             // btnVertexXDetails
             // 
+            this.btnVertexXDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexXDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexXDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexXDetails.Location = new System.Drawing.Point(336, 443);
-            this.btnVertexXDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexXDetails.Location = new System.Drawing.Point(321, 443);
             this.btnVertexXDetails.Name = "btnVertexXDetails";
             this.btnVertexXDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexXDetails.TabIndex = 44;
-            this.btnVertexXDetails.Text = "▼";
+            this.btnVertexXDetails.TabIndex = 47;
+            this.btnVertexXDetails.Text = "►";
             this.btnVertexXDetails.UseVisualStyleBackColor = true;
             this.btnVertexXDetails.Click += new System.EventHandler(this.btnVertexXDetails_Click);
             // 
             // lblVertexLayoutOrder
             // 
             this.lblVertexLayoutOrder.AutoSize = true;
-            this.lblVertexLayoutOrder.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexLayoutOrder.Location = new System.Drawing.Point(4, 418);
             this.lblVertexLayoutOrder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexLayoutOrder.Name = "lblVertexLayoutOrder";
             this.lblVertexLayoutOrder.Size = new System.Drawing.Size(101, 13);
-            this.lblVertexLayoutOrder.TabIndex = 39;
+            this.lblVertexLayoutOrder.TabIndex = 42;
             this.lblVertexLayoutOrder.Text = "Vertex L&ayout Order";
             // 
             // cbxVertexLayoutOrderSourceColumnName
@@ -609,32 +628,31 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexLayoutOrderSourceColumnName.Location = new System.Drawing.Point(155, 416);
             this.cbxVertexLayoutOrderSourceColumnName.MaxLength = 100;
             this.cbxVertexLayoutOrderSourceColumnName.Name = "cbxVertexLayoutOrderSourceColumnName";
-            this.cbxVertexLayoutOrderSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexLayoutOrderSourceColumnName.TabIndex = 40;
+            this.cbxVertexLayoutOrderSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexLayoutOrderSourceColumnName.TabIndex = 43;
             // 
             // btnVertexLayoutOrderDetails
             // 
+            this.btnVertexLayoutOrderDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexLayoutOrderDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexLayoutOrderDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexLayoutOrderDetails.Location = new System.Drawing.Point(336, 416);
-            this.btnVertexLayoutOrderDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexLayoutOrderDetails.Location = new System.Drawing.Point(321, 416);
             this.btnVertexLayoutOrderDetails.Name = "btnVertexLayoutOrderDetails";
             this.btnVertexLayoutOrderDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexLayoutOrderDetails.TabIndex = 41;
-            this.btnVertexLayoutOrderDetails.Text = "▼";
+            this.btnVertexLayoutOrderDetails.TabIndex = 44;
+            this.btnVertexLayoutOrderDetails.Text = "►";
             this.btnVertexLayoutOrderDetails.UseVisualStyleBackColor = true;
             this.btnVertexLayoutOrderDetails.Click += new System.EventHandler(this.btnVertexLayoutOrderDetails_Click);
             // 
             // lblVertexToolTip
             // 
             this.lblVertexToolTip.AutoSize = true;
-            this.lblVertexToolTip.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexToolTip.Location = new System.Drawing.Point(4, 391);
             this.lblVertexToolTip.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexToolTip.Name = "lblVertexToolTip";
-            this.lblVertexToolTip.Size = new System.Drawing.Size(76, 13);
-            this.lblVertexToolTip.TabIndex = 37;
-            this.lblVertexToolTip.Text = "Vertex &ToolTip";
+            this.lblVertexToolTip.Size = new System.Drawing.Size(72, 13);
+            this.lblVertexToolTip.TabIndex = 39;
+            this.lblVertexToolTip.Text = "Vertex &Tooltip";
             // 
             // cbxVertexToolTipSourceColumnName
             // 
@@ -644,18 +662,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexToolTipSourceColumnName.Location = new System.Drawing.Point(155, 389);
             this.cbxVertexToolTipSourceColumnName.MaxLength = 100;
             this.cbxVertexToolTipSourceColumnName.Name = "cbxVertexToolTipSourceColumnName";
-            this.cbxVertexToolTipSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexToolTipSourceColumnName.TabIndex = 38;
+            this.cbxVertexToolTipSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexToolTipSourceColumnName.TabIndex = 40;
             // 
             // lblVertexLabelFillColor
             // 
             this.lblVertexLabelFillColor.AutoSize = true;
-            this.lblVertexLabelFillColor.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexLabelFillColor.Location = new System.Drawing.Point(4, 364);
             this.lblVertexLabelFillColor.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexLabelFillColor.Name = "lblVertexLabelFillColor";
             this.lblVertexLabelFillColor.Size = new System.Drawing.Size(68, 13);
-            this.lblVertexLabelFillColor.TabIndex = 34;
+            this.lblVertexLabelFillColor.TabIndex = 36;
             this.lblVertexLabelFillColor.Text = "     ˪ &Fill Color";
             // 
             // cbxVertexLabelFillColorSourceColumnName
@@ -666,18 +683,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexLabelFillColorSourceColumnName.Location = new System.Drawing.Point(155, 362);
             this.cbxVertexLabelFillColorSourceColumnName.MaxLength = 100;
             this.cbxVertexLabelFillColorSourceColumnName.Name = "cbxVertexLabelFillColorSourceColumnName";
-            this.cbxVertexLabelFillColorSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexLabelFillColorSourceColumnName.TabIndex = 35;
+            this.cbxVertexLabelFillColorSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexLabelFillColorSourceColumnName.TabIndex = 37;
             // 
             // lblVertexVisibility
             // 
             this.lblVertexVisibility.AutoSize = true;
-            this.lblVertexVisibility.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexVisibility.Location = new System.Drawing.Point(4, 310);
             this.lblVertexVisibility.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexVisibility.Name = "lblVertexVisibility";
             this.lblVertexVisibility.Size = new System.Drawing.Size(76, 13);
-            this.lblVertexVisibility.TabIndex = 29;
+            this.lblVertexVisibility.TabIndex = 30;
             this.lblVertexVisibility.Text = "Vertex Visi&bility";
             // 
             // cbxVertexVisibilitySourceColumnName
@@ -688,31 +704,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexVisibilitySourceColumnName.Location = new System.Drawing.Point(155, 308);
             this.cbxVertexVisibilitySourceColumnName.MaxLength = 100;
             this.cbxVertexVisibilitySourceColumnName.Name = "cbxVertexVisibilitySourceColumnName";
-            this.cbxVertexVisibilitySourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexVisibilitySourceColumnName.TabIndex = 30;
+            this.cbxVertexVisibilitySourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexVisibilitySourceColumnName.TabIndex = 31;
             // 
             // btnVertexVisibilityDetails
             // 
+            this.btnVertexVisibilityDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexVisibilityDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexVisibilityDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexVisibilityDetails.Location = new System.Drawing.Point(336, 308);
-            this.btnVertexVisibilityDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexVisibilityDetails.Location = new System.Drawing.Point(321, 308);
             this.btnVertexVisibilityDetails.Name = "btnVertexVisibilityDetails";
             this.btnVertexVisibilityDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexVisibilityDetails.TabIndex = 31;
-            this.btnVertexVisibilityDetails.Text = "▼";
+            this.btnVertexVisibilityDetails.TabIndex = 32;
+            this.btnVertexVisibilityDetails.Text = "►";
             this.btnVertexVisibilityDetails.UseVisualStyleBackColor = true;
             this.btnVertexVisibilityDetails.Click += new System.EventHandler(this.btnVertexVisibilityDetails_Click);
             // 
             // lblVertexLabel
             // 
             this.lblVertexLabel.AutoSize = true;
-            this.lblVertexLabel.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexLabel.Location = new System.Drawing.Point(4, 337);
             this.lblVertexLabel.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexLabel.Name = "lblVertexLabel";
             this.lblVertexLabel.Size = new System.Drawing.Size(66, 13);
-            this.lblVertexLabel.TabIndex = 32;
+            this.lblVertexLabel.TabIndex = 33;
             this.lblVertexLabel.Text = "Vertex &Label";
             // 
             // cbxVertexLabelSourceColumnName
@@ -723,31 +738,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexLabelSourceColumnName.Location = new System.Drawing.Point(155, 335);
             this.cbxVertexLabelSourceColumnName.MaxLength = 100;
             this.cbxVertexLabelSourceColumnName.Name = "cbxVertexLabelSourceColumnName";
-            this.cbxVertexLabelSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexLabelSourceColumnName.TabIndex = 33;
+            this.cbxVertexLabelSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexLabelSourceColumnName.TabIndex = 34;
             // 
             // btnVertexLabelFillColorDetails
             // 
+            this.btnVertexLabelFillColorDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexLabelFillColorDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexLabelFillColorDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexLabelFillColorDetails.Location = new System.Drawing.Point(336, 362);
-            this.btnVertexLabelFillColorDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexLabelFillColorDetails.Location = new System.Drawing.Point(321, 362);
             this.btnVertexLabelFillColorDetails.Name = "btnVertexLabelFillColorDetails";
             this.btnVertexLabelFillColorDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexLabelFillColorDetails.TabIndex = 36;
-            this.btnVertexLabelFillColorDetails.Text = "▼";
+            this.btnVertexLabelFillColorDetails.TabIndex = 38;
+            this.btnVertexLabelFillColorDetails.Text = "►";
             this.btnVertexLabelFillColorDetails.UseVisualStyleBackColor = true;
             this.btnVertexLabelFillColorDetails.Click += new System.EventHandler(this.btnVertexLabelFillColorDetails_Click);
             // 
             // lblVertexAlpha
             // 
             this.lblVertexAlpha.AutoSize = true;
-            this.lblVertexAlpha.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexAlpha.Location = new System.Drawing.Point(4, 283);
             this.lblVertexAlpha.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexAlpha.Name = "lblVertexAlpha";
             this.lblVertexAlpha.Size = new System.Drawing.Size(76, 13);
-            this.lblVertexAlpha.TabIndex = 26;
+            this.lblVertexAlpha.TabIndex = 27;
             this.lblVertexAlpha.Text = "Vertex O&pacity";
             // 
             // cbxVertexAlphaSourceColumnName
@@ -758,31 +772,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexAlphaSourceColumnName.Location = new System.Drawing.Point(155, 281);
             this.cbxVertexAlphaSourceColumnName.MaxLength = 100;
             this.cbxVertexAlphaSourceColumnName.Name = "cbxVertexAlphaSourceColumnName";
-            this.cbxVertexAlphaSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexAlphaSourceColumnName.TabIndex = 27;
+            this.cbxVertexAlphaSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexAlphaSourceColumnName.TabIndex = 28;
             // 
             // btnVertexAlphaDetails
             // 
+            this.btnVertexAlphaDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexAlphaDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexAlphaDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexAlphaDetails.Location = new System.Drawing.Point(336, 281);
-            this.btnVertexAlphaDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexAlphaDetails.Location = new System.Drawing.Point(321, 281);
             this.btnVertexAlphaDetails.Name = "btnVertexAlphaDetails";
             this.btnVertexAlphaDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexAlphaDetails.TabIndex = 28;
-            this.btnVertexAlphaDetails.Text = "▼";
+            this.btnVertexAlphaDetails.TabIndex = 29;
+            this.btnVertexAlphaDetails.Text = "►";
             this.btnVertexAlphaDetails.UseVisualStyleBackColor = true;
             this.btnVertexAlphaDetails.Click += new System.EventHandler(this.btnVertexAlphaDetails_Click);
             // 
             // lblVertexRadius
             // 
             this.lblVertexRadius.AutoSize = true;
-            this.lblVertexRadius.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexRadius.Location = new System.Drawing.Point(4, 256);
             this.lblVertexRadius.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexRadius.Name = "lblVertexRadius";
             this.lblVertexRadius.Size = new System.Drawing.Size(63, 13);
-            this.lblVertexRadius.TabIndex = 23;
+            this.lblVertexRadius.TabIndex = 24;
             this.lblVertexRadius.Text = "Vertex Si&ze:";
             // 
             // cbxVertexRadiusSourceColumnName
@@ -793,31 +806,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexRadiusSourceColumnName.Location = new System.Drawing.Point(155, 254);
             this.cbxVertexRadiusSourceColumnName.MaxLength = 100;
             this.cbxVertexRadiusSourceColumnName.Name = "cbxVertexRadiusSourceColumnName";
-            this.cbxVertexRadiusSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexRadiusSourceColumnName.TabIndex = 24;
+            this.cbxVertexRadiusSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexRadiusSourceColumnName.TabIndex = 25;
             // 
             // btnVertexRadiusDetails
             // 
+            this.btnVertexRadiusDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexRadiusDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexRadiusDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexRadiusDetails.Location = new System.Drawing.Point(336, 254);
-            this.btnVertexRadiusDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexRadiusDetails.Location = new System.Drawing.Point(321, 254);
             this.btnVertexRadiusDetails.Name = "btnVertexRadiusDetails";
             this.btnVertexRadiusDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexRadiusDetails.TabIndex = 25;
-            this.btnVertexRadiusDetails.Text = "▼";
+            this.btnVertexRadiusDetails.TabIndex = 26;
+            this.btnVertexRadiusDetails.Text = "►";
             this.btnVertexRadiusDetails.UseVisualStyleBackColor = true;
             this.btnVertexRadiusDetails.Click += new System.EventHandler(this.btnVertexRadiusDetails_Click);
             // 
             // lblVertexShape
             // 
             this.lblVertexShape.AutoSize = true;
-            this.lblVertexShape.ContextMenuStrip = this.cmsWorksheetColumn;
             this.lblVertexShape.Location = new System.Drawing.Point(4, 229);
             this.lblVertexShape.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.lblVertexShape.Name = "lblVertexShape";
             this.lblVertexShape.Size = new System.Drawing.Size(71, 13);
-            this.lblVertexShape.TabIndex = 20;
+            this.lblVertexShape.TabIndex = 21;
             this.lblVertexShape.Text = "Vertex &Shape";
             // 
             // cbxVertexShapeSourceColumnName
@@ -828,19 +840,19 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexShapeSourceColumnName.Location = new System.Drawing.Point(155, 227);
             this.cbxVertexShapeSourceColumnName.MaxLength = 100;
             this.cbxVertexShapeSourceColumnName.Name = "cbxVertexShapeSourceColumnName";
-            this.cbxVertexShapeSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexShapeSourceColumnName.TabIndex = 21;
+            this.cbxVertexShapeSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexShapeSourceColumnName.TabIndex = 22;
             // 
             // btnVertexShapeDetails
             // 
+            this.btnVertexShapeDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexShapeDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexShapeDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexShapeDetails.Location = new System.Drawing.Point(336, 227);
-            this.btnVertexShapeDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexShapeDetails.Location = new System.Drawing.Point(321, 227);
             this.btnVertexShapeDetails.Name = "btnVertexShapeDetails";
             this.btnVertexShapeDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexShapeDetails.TabIndex = 22;
-            this.btnVertexShapeDetails.Text = "▼";
+            this.btnVertexShapeDetails.TabIndex = 23;
+            this.btnVertexShapeDetails.Text = "►";
             this.btnVertexShapeDetails.UseVisualStyleBackColor = true;
             this.btnVertexShapeDetails.Click += new System.EventHandler(this.btnVertexShapeDetails_Click);
             // 
@@ -852,29 +864,29 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxVertexColorSourceColumnName.Location = new System.Drawing.Point(155, 200);
             this.cbxVertexColorSourceColumnName.MaxLength = 100;
             this.cbxVertexColorSourceColumnName.Name = "cbxVertexColorSourceColumnName";
-            this.cbxVertexColorSourceColumnName.Size = new System.Drawing.Size(157, 21);
-            this.cbxVertexColorSourceColumnName.TabIndex = 18;
+            this.cbxVertexColorSourceColumnName.Size = new System.Drawing.Size(119, 21);
+            this.cbxVertexColorSourceColumnName.TabIndex = 19;
             // 
             // btnVertexColorDetails
             // 
+            this.btnVertexColorDetails.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnVertexColorDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVertexColorDetails.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVertexColorDetails.Location = new System.Drawing.Point(336, 200);
-            this.btnVertexColorDetails.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+            this.btnVertexColorDetails.Location = new System.Drawing.Point(321, 200);
             this.btnVertexColorDetails.Name = "btnVertexColorDetails";
             this.btnVertexColorDetails.Size = new System.Drawing.Size(20, 20);
-            this.btnVertexColorDetails.TabIndex = 19;
-            this.btnVertexColorDetails.Text = "▼";
+            this.btnVertexColorDetails.TabIndex = 20;
+            this.btnVertexColorDetails.Text = "►";
             this.btnVertexColorDetails.UseVisualStyleBackColor = true;
             this.btnVertexColorDetails.Click += new System.EventHandler(this.btnVertexColorDetails_Click);
             // 
             // btnAutoFill
             // 
             this.btnAutoFill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAutoFill.Location = new System.Drawing.Point(241, 595);
+            this.btnAutoFill.Location = new System.Drawing.Point(241, 601);
             this.btnAutoFill.Name = "btnAutoFill";
             this.btnAutoFill.Size = new System.Drawing.Size(75, 23);
-            this.btnAutoFill.TabIndex = 3;
+            this.btnAutoFill.TabIndex = 4;
             this.btnAutoFill.Text = "Autofill";
             this.btnAutoFill.UseVisualStyleBackColor = true;
             this.btnAutoFill.Click += new System.EventHandler(this.btnAutoFill_Click);
@@ -883,10 +895,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(322, 595);
+            this.btnClose.Location = new System.Drawing.Point(322, 601);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
-            this.btnClose.TabIndex = 4;
+            this.btnClose.TabIndex = 5;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
@@ -907,11 +919,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnResetAll
             // 
             this.btnResetAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnResetAll.Location = new System.Drawing.Point(12, 595);
+            this.btnResetAll.Location = new System.Drawing.Point(12, 611);
             this.btnResetAll.Name = "btnResetAll";
-            this.btnResetAll.Size = new System.Drawing.Size(75, 23);
-            this.btnResetAll.TabIndex = 2;
-            this.btnResetAll.Text = "Reset All";
+            this.btnResetAll.Size = new System.Drawing.Size(199, 23);
+            this.btnResetAll.TabIndex = 3;
+            this.btnResetAll.Text = "Reset All A&utofill Settings";
             this.btnResetAll.UseVisualStyleBackColor = true;
             this.btnResetAll.Click += new System.EventHandler(this.btnResetAll_Click);
             // 
@@ -927,20 +939,32 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.panel1.Size = new System.Drawing.Size(385, 551);
             this.panel1.TabIndex = 1;
             // 
+            // btnClearAllColumns
+            // 
+            this.btnClearAllColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnClearAllColumns.Location = new System.Drawing.Point(12, 586);
+            this.btnClearAllColumns.Name = "btnClearAllColumns";
+            this.btnClearAllColumns.Size = new System.Drawing.Size(199, 23);
+            this.btnClearAllColumns.TabIndex = 2;
+            this.btnClearAllColumns.Text = "&Clear All Worksheet Columns Now";
+            this.btnClearAllColumns.UseVisualStyleBackColor = true;
+            this.btnClearAllColumns.Click += new System.EventHandler(this.btnClearAllColumns_Click);
+            // 
             // AutoFillWorkbookDialog
             // 
             this.AcceptButton = this.btnAutoFill;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(412, 631);
+            this.ClientSize = new System.Drawing.Size(412, 663);
+            this.Controls.Add(this.btnClearAllColumns);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnResetAll);
             this.Controls.Add(this.lnkHowAutoFillWorks);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnAutoFill);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(700, 659);
+            this.MaximumSize = new System.Drawing.Size(700, 701);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(420, 200);
             this.Name = "AutoFillWorkbookDialog";
@@ -1008,9 +1032,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.ToolStripMenuItem tsmWorksheetColumnDetails;
         private System.Windows.Forms.ToolStripMenuItem tsmClearSourceColumnName;
         private System.Windows.Forms.ToolStripMenuItem tsmClearColumn;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem tsmClearAllSourceColumnNames;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Button btnResetAll;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblVertexLayoutOrder;
@@ -1024,5 +1045,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private Microsoft.NodeXL.ExcelTemplate.AutoFillVertexColumnComboBox cbxVertexPolarAngleSourceColumnName;
         private System.Windows.Forms.Label lblEdgeLabel;
         private AutoFillEdgeColumnComboBox cbxEdgeLabelSourceColumnName;
+        private System.Windows.Forms.Button btnEdgeLabelDetails;
+        private System.Windows.Forms.Button btnVertexLabelDetails;
+        private System.Windows.Forms.Button btnVertexToolTipDetails;
+        private System.Windows.Forms.ToolStripSeparator tssSeparator;
+        private System.Windows.Forms.Button btnClearAllColumns;
     }
 }

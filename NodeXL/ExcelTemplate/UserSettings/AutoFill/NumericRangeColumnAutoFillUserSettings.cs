@@ -309,38 +309,6 @@ public class NumericRangeColumnAutoFillUserSettings : Object
         }
     }
 
-    //*************************************************************************
-    //  Method: Copy()
-    //
-    /// <summary>
-    /// Creates a deep copy of the object.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A deep copy of the object.
-    /// </returns>
-    //*************************************************************************
-
-    public NumericRangeColumnAutoFillUserSettings
-    Copy()
-    {
-        AssertValid();
-
-        NumericRangeColumnAutoFillUserSettings oCopy =
-            new NumericRangeColumnAutoFillUserSettings();
-
-        oCopy.UseSourceNumber1 = this.UseSourceNumber1;
-        oCopy.UseSourceNumber2 = this.UseSourceNumber2;
-        oCopy.SourceNumber1 = this.SourceNumber1;
-        oCopy.SourceNumber2 = this.SourceNumber2;
-        oCopy.DestinationNumber1 = this.DestinationNumber1;
-        oCopy.DestinationNumber2 = this.DestinationNumber2;
-        oCopy.IgnoreOutliers = this.IgnoreOutliers;
-        oCopy.UseLogs = this.UseLogs;
-
-        return (oCopy);
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()

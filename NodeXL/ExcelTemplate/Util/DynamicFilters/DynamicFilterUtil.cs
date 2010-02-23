@@ -120,9 +120,11 @@ public static class DynamicFilterUtil : Object
                             {
                                 oDynamicFilterParameters.AddLast(
                                     new NumericFilterParameters(oColumn.Name,
-                                        dMinimumCellValue,
-                                        dMaximumCellValue,
-                                        GetDecimalPlaces(oColumn) ) );
+                                        dMinimumCellValue, dMaximumCellValue,
+
+                                        ExcelUtil.GetTableColumnDecimalPlaces(
+                                            oColumn) )
+                                        );
                             }
                             else
                             {
@@ -208,71 +210,6 @@ public static class DynamicFilterUtil : Object
         }
 
         return (false);
-    }
-
-    //*************************************************************************
-    //  Method: GetDecimalPlaces()
-    //
-    /// <summary>
-    /// Gets the number of decimal places displayed in a table column of format
-    /// ExcelColumnFormat.Number.
-    /// </summary>
-    ///
-    /// <param name="oColumn">
-    /// The table column to check.  The column must be of format
-    /// ExcelColumnFormat.Number.
-    /// </param>
-    ///
-    /// <returns>
-    /// The number of decimal places displayed in <paramref name="oColumn" />.
-    /// </returns>
-    //*************************************************************************
-
-    private static Int32
-    GetDecimalPlaces
-    (
-        ListColumn oColumn
-    )
-    {
-        Debug.Assert(oColumn != null);
-
-        Range oColumnData = oColumn.DataBodyRange;
-
-        Debug.Assert(oColumnData != null);
-        Debug.Assert(oColumnData.Rows.Count > 0);
-
-        // It would be nice if there were a Range.DecimalPlaces property, but
-        // there isn't.  All that Excel provides is Range.NumberFormat, which
-        // is actually a string that needs to be parsed.  Parsing that is
-        // guaranteed to be correct is difficult, because NumberFormat can be
-        // simple ("0.00") or complicated ("$#,##0.00_);[Red]($#,##0.00)").  As
-        // an approximation that will be correct most of the time (for "0.00",
-        // for example), count the characters after the last decimal place.
-        //
-        // Note: Don't use the Text property and count decimal places in that,
-        // because Range.Text can be "###" if the column is too narrow.
-
-        Debug.Assert(oColumnData.Cells[1, 1] is Range);
-
-        Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
-
-        String sFirstDataCellNumberFormat =
-            (String)oFirstDataCell.NumberFormat;
-
-        Int32 iIndexOfLastDecimalPoint =
-            sFirstDataCellNumberFormat.LastIndexOf('.');
-
-        if (iIndexOfLastDecimalPoint < 0)
-        {
-            return (0);
-        }
-
-        Int32 iDecimalPlaces =
-            sFirstDataCellNumberFormat.Length - iIndexOfLastDecimalPoint - 1;
-
-        Debug.Assert(iDecimalPlaces >= 0);
-
-        return (iDecimalPlaces);
     }
 
     //*************************************************************************

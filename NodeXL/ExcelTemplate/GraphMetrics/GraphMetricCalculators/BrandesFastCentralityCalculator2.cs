@@ -111,18 +111,21 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
         // BrandesFastCalculator class in the Algorithms namespace, which knows
         // nothing about Excel.
 
-        Dictionary<Int32, Algorithms.BrandesFastCentralities>
-            oGraphMetrics;
+        Algorithms.BrandesCentralities oBrandesCentralities;
 
         if ( !( new Algorithms.BrandesFastCentralityCalculator() ).
             TryCalculateGraphMetrics(graph,
                 calculateGraphMetricsContext.BackgroundWorker,
-                out oGraphMetrics) )
+                out oBrandesCentralities) )
         {
             // The user cancelled.
 
             return (false);
         }
+
+        Dictionary<Int32, Algorithms.BrandesVertexCentralities>
+            oVertexCentralitiesDictionary =
+            oBrandesCentralities.VertexCentralities;
 
         // Transfer the centralities to arrays of GraphMetricValue objects.
 
@@ -140,17 +143,17 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
 
             if ( TryGetRowID(oVertex, out iRowID) )
             {
-                Algorithms.BrandesFastCentralities oBrandesFastCentralities =
-                    oGraphMetrics[oVertex.ID];
+                Algorithms.BrandesVertexCentralities oVertexCentralities =
+                    oVertexCentralitiesDictionary[oVertex.ID];
 
                 oBetweennessCentralityValues.Add(
                     new GraphMetricValueWithID(iRowID,
-                        oBrandesFastCentralities.BetweennessCentrality
+                        oVertexCentralities.BetweennessCentrality
                     ) );
 
                 oClosenessCentralityValues.Add(
                     new GraphMetricValueWithID(iRowID,
-                        oBrandesFastCentralities.ClosenessCentrality
+                        oVertexCentralities.ClosenessCentrality
                     ) );
             }
         }
@@ -173,6 +176,14 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
                 oClosenessCentralityValues.ToArray()
                 )
                 };
+
+        // See the comments in the
+        // CalculateGraphMetricsContext.BrandesCentralities property for
+        // details on why the BrandesCentralities object is stored in the
+        // context object.
+
+        calculateGraphMetricsContext.BrandesCentralities =
+            oBrandesCentralities;
 
         return (true);
     }

@@ -94,17 +94,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph()
+    //  Method: TestLoadGraphFromFile()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph()
+    TestLoadGraphFromFile()
     {
         const String FileContents =
             "Vertex1\tVertex2\r\n";
@@ -117,7 +117,7 @@ public class SimpleGraphAdapterTest : Object
             oStreamWriter.Write(FileContents);
         }
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(m_sTempFileName);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromFile(m_sTempFileName);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -140,10 +140,10 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad()
+    //  Method: TestLoadGraphFromFileBad()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -151,7 +151,7 @@ public class SimpleGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
-    TestLoadGraphBad()
+    TestLoadGraphFromFileBad()
     {
         // null filename.
 
@@ -159,15 +159,15 @@ public class SimpleGraphAdapterTest : Object
         {
             String sFileName = null;
 
-            m_oGraphAdapter.LoadGraph(sFileName);
+            m_oGraphAdapter.LoadGraphFromFile(sFileName);
         }
         catch (ArgumentNullException oArgumentNullException)
         {
             Assert.AreEqual(
 
                 "Microsoft.NodeXL.Adapters."
-                + "SimpleGraphAdapter.LoadGraph: filename argument can't be"
-                + " null.\r\n"
+                + "SimpleGraphAdapter.LoadGraphFromFile: filename argument"
+                + " can't be null.\r\n"
                 + "Parameter name: filename"
                 ,
                 oArgumentNullException.Message
@@ -178,10 +178,10 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad2()
+    //  Method: TestLoadGraphFromFileBad2()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile() method.
     /// </summary>
     //*************************************************************************
 
@@ -189,7 +189,7 @@ public class SimpleGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentException) ) ]
 
     public void
-    TestLoadGraphBad2()
+    TestLoadGraphFromFileBad2()
     {
         // Empty filename.
 
@@ -197,7 +197,7 @@ public class SimpleGraphAdapterTest : Object
         {
             String sFileName = String.Empty;
 
-            m_oGraphAdapter.LoadGraph(sFileName);
+            m_oGraphAdapter.LoadGraphFromFile(sFileName);
         }
         catch (ArgumentNullException oArgumentException)
         {
@@ -216,10 +216,10 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad3()
+    //  Method: TestLoadGraphFromFileBad3()
     //
     /// <summary>
-    /// Tests the LoadGraph(String) method.
+    /// Tests the LoadGraphFromFile(String) method.
     /// </summary>
     //*************************************************************************
 
@@ -227,7 +227,7 @@ public class SimpleGraphAdapterTest : Object
     [ ExpectedException( typeof(DirectoryNotFoundException) ) ]
 
     public void
-    TestLoadGraphBad3()
+    TestLoadGraphFromFileBad3()
     {
         // Non-existent filename.
 
@@ -235,7 +235,7 @@ public class SimpleGraphAdapterTest : Object
         {
             String sFileName = "X:\\abc\\def\\ghi.txt";
 
-            m_oGraphAdapter.LoadGraph(sFileName);
+            m_oGraphAdapter.LoadGraphFromFile(sFileName);
         }
         catch (DirectoryNotFoundException oDirectoryNotFoundException)
         {
@@ -248,17 +248,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_()
+    //  Method: TestLoadGraphFromStream()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_()
+    TestLoadGraphFromStream()
     {
         const String StreamContents =
             "Vertex1\tVertex2\r\n";
@@ -268,8 +268,7 @@ public class SimpleGraphAdapterTest : Object
 
         StringStream oStream = new StringStream(StreamContents);
 
-        IGraph oGraph =
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -292,17 +291,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_2()
+    //  Method: TestLoadGraphFromStream2()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_2()
+    TestLoadGraphFromStream2()
     {
         // One edge.
 
@@ -314,10 +313,10 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_3()
+    //  Method: TestLoadGraphFromStream3()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -336,17 +335,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_4()
+    //  Method: TestLoadGraphFromStream4()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_4()
+    TestLoadGraphFromStream4()
     {
         // One edge, line feed only.
 
@@ -358,17 +357,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_5()
+    //  Method: TestLoadGraphFromStream5()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_5()
+    TestLoadGraphFromStream5()
     {
         // One edge, embedded spaces.
 
@@ -380,17 +379,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_6()
+    //  Method: TestLoadGraphFromStream6()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_6()
+    TestLoadGraphFromStream6()
     {
         // One edge, spaces for vertex name.
 
@@ -402,17 +401,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_7()
+    //  Method: TestLoadGraphFromStream7()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_7()
+    TestLoadGraphFromStream7()
     {
         // One edge, spaces for vertex name.
 
@@ -424,17 +423,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_8()
+    //  Method: TestLoadGraphFromStream8()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_8()
+    TestLoadGraphFromStream8()
     {
         // N edges.
 
@@ -446,7 +445,7 @@ public class SimpleGraphAdapterTest : Object
 
         StringStream oStream = new StringStream(StreamContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
 
         IVertexCollection oVertices = oGraph.Vertices;
 
@@ -481,17 +480,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_9()
+    //  Method: TestLoadGraphFromStream9()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_9()
+    TestLoadGraphFromStream9()
     {
         // N edges, repeated vertices.
 
@@ -503,7 +502,7 @@ public class SimpleGraphAdapterTest : Object
 
         StringStream oStream = new StringStream(StreamContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
 
         IVertexCollection oVertices = oGraph.Vertices;
 
@@ -528,17 +527,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_10()
+    //  Method: TestLoadGraphFromStream10()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_10()
+    TestLoadGraphFromStream10()
     {
         // N edges with empty lines.  (Empty lines should be skipped.)
 
@@ -555,7 +554,7 @@ public class SimpleGraphAdapterTest : Object
 
         StringStream oStream = new StringStream(StreamContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
 
         IVertexCollection oVertices = oGraph.Vertices;
 
@@ -590,10 +589,10 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad()
+    //  Method: TestLoadGraphFromStreamBad2()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -601,49 +600,13 @@ public class SimpleGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
-    TestLoadGraph2_Bad()
-    {
-        // null graphFactory.
-
-        try
-        {
-            m_oGraphAdapter.LoadGraph( null, new MemoryStream() );
-        }
-        catch (ArgumentNullException oArgumentNullException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Adapters."
-                + "SimpleGraphAdapter.LoadGraph: graphFactory argument can't"
-                + " be null.\r\n"
-                + "Parameter name: graphFactory"
-                ,
-                oArgumentNullException.Message
-                );
-
-            throw oArgumentNullException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestLoadGraph2_Bad2()
-    //
-    /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentNullException) ) ]
-
-    public void
-    TestLoadGraph2_Bad2()
+    TestLoadGraphFromStreamBad2()
     {
         // null stream.
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), (Stream)null);
+            m_oGraphAdapter.LoadGraphFromStream( (Stream)null );
         }
         catch (ArgumentNullException oArgumentNullException)
         {
@@ -662,17 +625,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad3()
+    //  Method: TestLoadGraphFromStreamBad3()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad3()
+    TestLoadGraphFromStreamBad3()
     {
         // One edge, multiple tabs.
 
@@ -682,17 +645,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad4()
+    //  Method: TestLoadGraphFromStreamBad4()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad4()
+    TestLoadGraphFromStreamBad4()
     {
         // One edge, no tabs.
 
@@ -702,17 +665,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad5()
+    //  Method: TestLoadGraphFromStreamBad5()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad5()
+    TestLoadGraphFromStreamBad5()
     {
         // One edge, leading tabs.
 
@@ -722,17 +685,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad6()
+    //  Method: TestLoadGraphFromStreamBad6()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad6()
+    TestLoadGraphFromStreamBad6()
     {
         // One edge, trailing tab.
 
@@ -742,17 +705,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad7()
+    //  Method: TestLoadGraphFromStreamBad7()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad7()
+    TestLoadGraphFromStreamBad7()
     {
         // One edge, first vertex name is empty.
 
@@ -762,17 +725,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad8()
+    //  Method: TestLoadGraphFromStreamBad8()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad8()
+    TestLoadGraphFromStreamBad8()
     {
         // One edge, second vertex name is empty.
 
@@ -782,17 +745,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2_Bad9()
+    //  Method: TestLoadGraphFromStreamBad9()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2_Bad9()
+    TestLoadGraphFromStreamBad9()
     {
         // One edge, three tokens.
 
@@ -802,17 +765,17 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph3_()
+    //  Method: TestLoadGraphFromString()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, String) method.
+    /// Tests the LoadGraphFromString() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph3_()
+    TestLoadGraphFromString()
     {
         const String String =
             "Vertex1\tVertex2\r\n";
@@ -820,8 +783,7 @@ public class SimpleGraphAdapterTest : Object
         const String Vertex1Name = "Vertex1";
         const String Vertex2Name = "Vertex2";
 
-        IGraph oGraph =
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), String);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromString(String);
 
         Assert.IsInstanceOfType( oGraph, typeof(Graph) );
 
@@ -844,10 +806,10 @@ public class SimpleGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph3_Bad()
+    //  Method: TestLoadGraphFromStringBad2()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, String) method.
+    /// Tests the LoadGraphFromString() method.
     /// </summary>
     //*************************************************************************
 
@@ -855,49 +817,13 @@ public class SimpleGraphAdapterTest : Object
     [ ExpectedException( typeof(ArgumentNullException) ) ]
 
     public void
-    TestLoadGraph3_Bad()
-    {
-        // null graphFactory.
-
-        try
-        {
-            m_oGraphAdapter.LoadGraph(null, "abc");
-        }
-        catch (ArgumentNullException oArgumentNullException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Adapters."
-                + "SimpleGraphAdapter.LoadGraph: graphFactory argument can't"
-                + " be null.\r\n"
-                + "Parameter name: graphFactory"
-                ,
-                oArgumentNullException.Message
-                );
-
-            throw oArgumentNullException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestLoadGraph3_Bad2()
-    //
-    /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, String) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentNullException) ) ]
-
-    public void
-    TestLoadGraph3_Bad2()
+    TestLoadGraphFromStringBad2()
     {
         // null string.
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), (String)null);
+            m_oGraphAdapter.LoadGraphFromString( (String)null );
         }
         catch (ArgumentNullException oArgumentNullException)
         {
@@ -1701,8 +1627,8 @@ public class SimpleGraphAdapterTest : Object
     //  Method: TestLoadGraphSingleEdge()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method when the file
-    /// contains one valid edge.
+    /// Tests the LoadGraphFromStream() method when the file contains one valid
+    /// edge.
     /// </summary>
     ///
     /// <param name="sStreamContents">
@@ -1728,7 +1654,7 @@ public class SimpleGraphAdapterTest : Object
     {
         StringStream oStream = new StringStream(sStreamContents);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(), oStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
 
         IVertexCollection oVertices = oGraph.Vertices;
 
@@ -1752,8 +1678,8 @@ public class SimpleGraphAdapterTest : Object
     //  Method: TestLoadGraphSingleEdgeBad()
     //
     /// <summary>
-    /// Tests the LoadGraph(IGraphFactory, Stream) method when the file
-    /// contains one invalid edge.
+    /// Tests the LoadGraphFromStream() method when the file contains one
+    /// invalid edge.
     /// </summary>
     ///
     /// <param name="sStreamContents">
@@ -1773,8 +1699,7 @@ public class SimpleGraphAdapterTest : Object
 
         try
         {
-            IGraph oGraph = m_oGraphAdapter.LoadGraph(
-                new GraphFactory(), oStream);
+            IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oStream);
         }
         catch (FormatException oFormatException)
         {

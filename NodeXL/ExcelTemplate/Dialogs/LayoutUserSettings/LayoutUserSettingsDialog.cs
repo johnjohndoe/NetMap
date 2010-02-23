@@ -134,7 +134,7 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
             }
 
             m_oLayoutUserSettings.Margin = iMargin;
-
+            m_oLayoutUserSettings.UseBinning = chkUseBinning.Checked;
             m_oLayoutUserSettings.FruchtermanReingoldC = fFruchtermanReingoldC;
 
             m_oLayoutUserSettings.FruchtermanReingoldIterations =
@@ -143,6 +143,7 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
         else
         {
             nudMargin.Value = m_oLayoutUserSettings.Margin;
+            chkUseBinning.Checked = m_oLayoutUserSettings.UseBinning;
 
             nudFruchtermanReingoldC.Value = (Decimal)
                 m_oLayoutUserSettings.FruchtermanReingoldC;
@@ -232,7 +233,7 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("LayoutUserSettingsDialog") ]
+[ SettingsGroupNameAttribute("LayoutUserSettingsDialog2") ]
 
 public class LayoutUserSettingsDialogUserSettings : FormSettings
 {

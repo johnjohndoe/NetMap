@@ -431,7 +431,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     yield break;
                 }
 
-                // Don't skip BadRequest on page 1, which indicates that
+                // Don't skip BadRequest or 420 on page 1, which indicates that
                 // Twitter rate limiting has kicked in.
 
                 if (
@@ -440,7 +440,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     oException is WebException
                     &&
                     !WebExceptionHasHttpStatusCode(
-                        (WebException)oException, HttpStatusCode.BadRequest)
+                        (WebException)oException,
+                        HttpStatusCode.BadRequest, (HttpStatusCode)420)
                     )
                 {
                     yield break;
@@ -1197,9 +1198,13 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             HttpStatusCode.NotFound,
 
-            // Occurs when Twitter rate limiting kicks in.
+            // Twitter used to always return BadRequest when rate limiting
+            // kicked in.  Starting January 18, 2010, the search API was
+            // changed to return 420 instead.  The REST API still returns
+            // BadRequest.
 
             HttpStatusCode.BadRequest,
+            (HttpStatusCode)420,
 
             // Not sure about this one.
 

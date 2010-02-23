@@ -58,11 +58,9 @@ public static class TestGraphUtil
 
         // Add the vertices.
 
-        VertexFactory oVertexFactory = new VertexFactory();
-
         for (Int32 i = 0; i < iVerticesToAdd; i++)
         {
-            IVertex oVertex = aoVertices[i] = oVertexFactory.CreateVertex();
+            IVertex oVertex = aoVertices[i] = new Vertex();
 
             oVertex.Name = oVertex.ID.ToString();
 
@@ -113,8 +111,6 @@ public static class TestGraphUtil
 
         IEdge[] aoAddedEdges = new IEdge[iEdges];
 
-        EdgeFactory oEdgeFactory = new EdgeFactory();
-
         IEdgeCollection oEdgeCollection = oGraph.Edges;
 
         Int32 iEdge = 0;
@@ -124,7 +120,7 @@ public static class TestGraphUtil
             for (Int32 j = i + 1; j < iVertices; j++)
             {
                 IEdge oEdge = oEdgeCollection.Add(
-                    oEdgeFactory, aoVertices[i], aoVertices[j], bDirected);
+                    aoVertices[i], aoVertices[j], bDirected);
 
                 oEdge.Name = oEdge.ID.ToString();
 

@@ -33,7 +33,7 @@ namespace Microsoft.NodeXL.ApplicationUtil
 /// </remarks>
 ///
 /// <seealso cref="LayoutManager" />
-/// <seealso cref="LayoutManagerForComboBox" />
+/// <seealso cref="LayoutManagerForToolStripSplitButton" />
 //*****************************************************************************
 
 public class LayoutManagerForMenu : LayoutManager

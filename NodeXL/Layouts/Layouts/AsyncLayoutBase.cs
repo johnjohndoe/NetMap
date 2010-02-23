@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using System.ComponentModel;
@@ -37,6 +38,8 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
 
     public AsyncLayoutBase()
     {
+        m_bUseBinning = false;
+
         // Create the BackgroundWorker used by LayOutGraphAsync() and handle
         // its DoWork event.
 
@@ -54,6 +57,73 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
         m_oSynchronizationContext = null;
 
         // AssertValid();
+    }
+
+    //*************************************************************************
+    //  Property: UseBinning
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether binning should be used when the
+    /// entire graph is laid out.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to use binning.  The default value is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// When this property is true and the entire graph is being laid out, the
+    /// graph is split into strongly connected components, the smaller
+    /// components are laid out and placed along the bottom of the rectangle
+    /// using the <see cref="FruchtermanReingoldLayout" />, and the remaining
+    /// components are laid out within the remaining rectangle using the
+    /// algorithm implemented in the derived class.
+    ///
+    /// <para>
+    /// If only a subset of the graph is being laid out, which occurs when the
+    /// graph has the <see cref="ReservedMetadataKeys.LayOutTheseVerticesOnly"
+    /// /> key, then binning is not used.  Binning makes no sense in that case,
+    /// because binning works on a component level and the binned components
+    /// might contain vertices that aren't supposed to be laid out.
+    /// </para>
+    ///
+    /// </remarks>
+    //
+    // Implementation note:
+    //
+    // Binning is not currently supported for synchronous layout via
+    // LayoutBase.LayOutGraph(), because it's a bit complicated and isn't
+    // needed by the ExcelTemplate project.  If synchronous binning is added,
+    // this property should be moved to LayoutBase and
+    // LayOutGraphOnBackgroundWorker() should be refactored so there is only
+    // one copy of the binning code.  To avoid recursive binning, UseBinning
+    // must be temporarily set to false within LayOutGraphOnBackgroundWorker()
+    // when each of the smaller components is laid out in a bin.
+    //*************************************************************************
+
+    public Boolean
+    UseBinning
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bUseBinning);
+        }
+
+        set
+        {
+            if (value == m_bUseBinning)
+            {
+                return;
+            }
+
+            m_bUseBinning = value;
+
+            FireLayoutRequired();
+
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -245,6 +315,11 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
+    /// </param>
+    ///
     /// <param name="layoutContext">
     /// Provides access to objects needed to lay out the graph.  The <see
     /// cref="LayoutContext.GraphRectangle" /> is guaranteed to have non-zero
@@ -275,10 +350,13 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext
     )
     {
         Debug.Assert(graph != null);
+        Debug.Assert(verticesToLayOut != null);
+        Debug.Assert(verticesToLayOut.Count > 0);
         Debug.Assert(layoutContext != null);
         AssertValid();
 
@@ -288,7 +366,7 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
 
         // Let the derived class do the work.
 
-        LayOutGraphCore(graph, layoutContext, null);
+        LayOutGraphCore(graph, verticesToLayOut, layoutContext, null);
     }
 
     //*************************************************************************
@@ -300,6 +378,11 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     ///
     /// <param name="graph">
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
+    /// </param>
+    ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
     /// </param>
     ///
     /// <param name="layoutContext">
@@ -324,9 +407,9 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -349,9 +432,112 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
         BackgroundWorker backgroundWorker
     );
+
+    //*************************************************************************
+    //  Method: LayOutGraphOnBackgroundWorker()
+    //
+    /// <summary>
+    /// Lays out a graph on a BackgroundWorker thread.
+    /// </summary>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// <see cref="BackgroundWorker" /> whose worker thread called this method.
+    /// </param>
+    ///
+    /// <param name="oDoWorkEventArgs">
+    /// Asynchronous event arguments.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    LayOutGraphOnBackgroundWorker
+    (
+        BackgroundWorker oBackgroundWorker,
+        DoWorkEventArgs oDoWorkEventArgs
+    )
+    {
+        Debug.Assert(oBackgroundWorker != null);
+        Debug.Assert(oDoWorkEventArgs != null);
+        AssertValid();
+
+        Debug.Assert(oDoWorkEventArgs.Argument is LayOutGraphAsyncArguments);
+
+        LayOutGraphAsyncArguments oLayOutGraphAsyncArguments =
+            (LayOutGraphAsyncArguments)oDoWorkEventArgs.Argument;
+
+        LayoutContext oLayoutContext =
+            oLayOutGraphAsyncArguments.LayoutContext;
+
+        LayoutContext oLayoutContext2;
+
+        if ( !SubtractMarginFromRectangle(oLayoutContext,
+            out oLayoutContext2) )
+        {
+            return;
+        }
+
+        IGraph oGraph = oLayOutGraphAsyncArguments.Graph;
+
+        // Honor the optional LayOutTheseVerticesOnly key on the graph.
+
+        ICollection<IVertex> oVerticesToLayOut = GetVerticesToLayOut(oGraph);
+        Int32 iVerticesToLayOut = oVerticesToLayOut.Count;
+
+        if (iVerticesToLayOut == 0)
+        {
+            return;
+        }
+
+        // Binning is supported only if the entire graph is being laid out.
+
+        if (m_bUseBinning && iVerticesToLayOut == oGraph.Vertices.Count)
+        {
+            // Lay out the graph's smaller components in bins.
+
+            GraphBinner oGraphBinner = new GraphBinner();
+
+            IVertex [] aoRemainingVertices;
+            Rectangle oRemainingRectangle;
+
+            if ( oGraphBinner.LayOutSmallerComponentsInBins(oGraph,
+                oVerticesToLayOut, oLayoutContext2, out aoRemainingVertices,
+                out oRemainingRectangle) )
+            {
+                // The remaining vertices need to be laid out in the remaining
+                // rectangle.
+
+                oVerticesToLayOut = aoRemainingVertices;
+                oLayoutContext2 = new LayoutContext(oRemainingRectangle);
+            }
+            else
+            {
+                // There are no remaining vertices, or there is no space
+                // left.
+
+                oVerticesToLayOut = new IVertex[0];
+            }
+        }
+
+        if (oVerticesToLayOut.Count > 0)
+        {
+            // Let the derived class do the work.
+
+            if ( !LayOutGraphCore(oGraph, oVerticesToLayOut, oLayoutContext2,
+                    oBackgroundWorker) )
+            {
+                // LayOutGraphAsyncCancel() was called.
+
+                oDoWorkEventArgs.Cancel = true;
+                return;
+            }
+
+            LayoutMetadataUtil.MarkGraphAsLaidOut(oGraph);
+        }
+    }
 
     //*************************************************************************
     //  Method: FireLayOutGraphIterationCompleted()
@@ -488,54 +674,15 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
         DoWorkEventArgs e
     )
     {
+        Debug.Assert(sender != null);
+        Debug.Assert(e != null);
         AssertValid();
 
-        Debug.Assert(sender != null);
         Debug.Assert(sender is BackgroundWorker);
         Debug.Assert(sender == m_oBackgroundWorker);
 
-        BackgroundWorker oBackgroundWorker = (BackgroundWorker)sender;
-
-        Debug.Assert(e.Argument is LayOutGraphAsyncArguments);
-
-        LayOutGraphAsyncArguments oLayOutGraphAsyncArguments =
-            (LayOutGraphAsyncArguments)e.Argument;
-
-        IGraph oGraph = oLayOutGraphAsyncArguments.Graph;
-
-        if (oGraph.Vertices.Count == 0)
-        {
-            return;
-        }
-
-        LayoutContext oLayoutContext =
-            oLayOutGraphAsyncArguments.LayoutContext;
-
-        // Subtract the margin from the graph rectangle.
-
-        LayoutContext oLayoutContext2;
-
-        if ( !SubtractMarginFromRectangle(oLayoutContext, out oLayoutContext2) )
-        {
-            return;
-        }
-
-        // Let the derived class do the work.
-
-        if ( !LayOutGraphCore(oGraph, oLayoutContext2, oBackgroundWorker) )
-        {
-            // LayOutGraphAsyncCancel() was called.
-
-            e.Cancel = true;
-        }
-        else
-        {
-            // Mark the graph as having been laid out.
-
-            MarkGraphAsLaidOut(oGraph, oLayoutContext);
-        }
+        LayOutGraphOnBackgroundWorker( (BackgroundWorker)sender, e );
     }
-
 
     //*************************************************************************
     //  Method: BackgroundWorker_RunWorkerCompleted()
@@ -583,6 +730,7 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     {
         base.AssertValid();
 
+        // m_bUseBinning
         Debug.Assert(m_oBackgroundWorker != null);
         // m_oSynchronizationContext
     }
@@ -591,6 +739,10 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
+
+    /// true to use binning.
+
+    protected Boolean m_bUseBinning;
 
     /// BackgroundWorker used by LayOutGraphAsync().
 

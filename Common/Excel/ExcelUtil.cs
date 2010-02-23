@@ -556,15 +556,10 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
-    //  Method: TryGetNonEmptyRange()
+    //  Method: TryGetNonEmptyRangeInWorksheet()
     //
-    /// <overloads>
-    /// Attempts to get the range that is actually used.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Attempts to get the range within a specified worksheet that is actually
-    /// used.
+    /// Attempts to get the range within a worksheet that is actually used.
     /// </summary>
     ///
     /// <param name="worksheet">
@@ -587,7 +582,7 @@ public static class ExcelUtil
     //*************************************************************************
 
     public static Boolean
-    TryGetNonEmptyRange
+    TryGetNonEmptyRangeInWorksheet
     (
         Worksheet worksheet,
         out Range usedRange
@@ -605,19 +600,20 @@ public static class ExcelUtil
                 worksheet.Rows.Count, worksheet.Columns.Count]
             );
 
-        return ( TryGetNonEmptyRange(oEntireWorksheet, out usedRange) );
+        return ( TryGetNonEmptyRangeInVisibleArea(oEntireWorksheet,
+            out usedRange) );
     }
 
     //*************************************************************************
-    //  Method: TryGetNonEmptyRange()
+    //  Method: TryGetNonEmptyRangeInVisibleArea()
     //
     /// <summary>
-    /// Attempts to get the range within a specified range that is actually
-    /// used.
+    /// Attempts to get the range within a single-area visible range that is
+    /// actually used.
     /// </summary>
     ///
-    /// <param name="range">
-    /// Range to use.
+    /// <param name="visibleArea">
+    /// Single-area visible range to use.
     /// </param>
     ///
     /// <param name="usedRange">
@@ -636,37 +632,38 @@ public static class ExcelUtil
     //*************************************************************************
 
     public static Boolean
-    TryGetNonEmptyRange
+    TryGetNonEmptyRangeInVisibleArea
     (
-        Range range,
+        Range visibleArea,
         out Range usedRange
     )
     {
-        Debug.Assert(range != null);
+        Debug.Assert(visibleArea != null);
+        Debug.Assert(visibleArea.Areas.Count == 1);
 
         usedRange = null;
 
-        if (range.Rows.Count == 1 && range.Columns.Count == 1)
+        if (visibleArea.Rows.Count == 1 && visibleArea.Columns.Count == 1)
         {
             // The code below fails for the single-cell case -- iFirstColumn
             // ends up being greater than iLastColumn.  Check the cell
             // manually.
 
-            if (range.get_Value(Missing.Value) == null)
+            if (visibleArea.get_Value(Missing.Value) == null)
             {
                 return (false);
             }
 
-            usedRange = range;
+            usedRange = visibleArea;
 
             return (true);
         }
 
         const String WildCard = "*";
 
-        Range oFirstRow = range.Find(WildCard,
-            range.Cells[range.Rows.Count, 1], XlFindLookIn.xlValues,
-            XlLookAt.xlPart, XlSearchOrder.xlByRows,
+        Range oFirstRow = visibleArea.Find(WildCard,
+            visibleArea.Cells[visibleArea.Rows.Count, 1],
+            XlFindLookIn.xlValues, XlLookAt.xlPart, XlSearchOrder.xlByRows,
             XlSearchDirection.xlNext, false, false, Missing.Value);
 
         if (oFirstRow == null)
@@ -674,18 +671,18 @@ public static class ExcelUtil
             return (false);
         }
 
-        Range oFirstColumn = range.Find(WildCard,
-            range.Cells[1, range.Columns.Count], XlFindLookIn.xlValues,
-            XlLookAt.xlPart, XlSearchOrder.xlByColumns,
+        Range oFirstColumn = visibleArea.Find(WildCard,
+            visibleArea.Cells[1, visibleArea.Columns.Count],
+            XlFindLookIn.xlValues, XlLookAt.xlPart, XlSearchOrder.xlByColumns,
             XlSearchDirection.xlNext, false, false, Missing.Value);
 
-        Range oLastRow = range.Find(WildCard,
-            range.Cells[1, 1], XlFindLookIn.xlValues,
+        Range oLastRow = visibleArea.Find(WildCard,
+            visibleArea.Cells[1, 1], XlFindLookIn.xlValues,
             XlLookAt.xlPart, XlSearchOrder.xlByRows,
             XlSearchDirection.xlPrevious, false, false, Missing.Value);
 
-        Range oLastColumn = range.Find(WildCard,
-            range.Cells[1, 1], XlFindLookIn.xlValues,
+        Range oLastColumn = visibleArea.Find(WildCard,
+            visibleArea.Cells[1, 1], XlFindLookIn.xlValues,
             XlLookAt.xlPart, XlSearchOrder.xlByColumns,
             XlSearchDirection.xlPrevious, false, false, Missing.Value);
 
@@ -698,7 +695,7 @@ public static class ExcelUtil
         Int32 iLastRow = oLastRow.Row;
         Int32 iLastColumn = oLastColumn.Column;
 
-        Worksheet oWorksheet = range.Worksheet;
+        Worksheet oWorksheet = visibleArea.Worksheet;
 
         usedRange = (Range)oWorksheet.get_Range(
             (Range)oWorksheet.Cells[iFirstRow, iFirstColumn],
@@ -1117,6 +1114,62 @@ public static class ExcelUtil
         }
 
         return (false);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetChart()
+    //
+    /// <summary>
+    /// Attempts to get a chart by name.
+    /// </summary>
+    ///
+    /// <param name="worksheet">
+    /// The worksheet to get the chart from.
+    /// </param>
+    ///
+    /// <param name="chartName">
+    /// Name of the chart embedded in the worksheet.
+    /// </param>
+    ///
+    /// <param name="chart">
+    /// Where the chart gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetChart
+    (
+        Worksheet worksheet,
+        String chartName,
+        out Chart chart
+    )
+    {
+        Debug.Assert(worksheet != null);
+        Debug.Assert( !String.IsNullOrEmpty(chartName) );
+
+        chart = null;
+
+        ChartObjects oChartObjects =
+            (ChartObjects)worksheet.ChartObjects(Type.Missing);
+
+        ChartObject oChartObject;
+
+        try
+        {
+            oChartObject = (Microsoft.Office.Interop.Excel.ChartObject)
+                oChartObjects.Item(chartName);
+        }
+        catch (ArgumentException)
+        {
+            return (false);
+        }
+
+        chart = oChartObject.Chart;
+        return (true);
     }
 
     //*************************************************************************
@@ -2060,10 +2113,10 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
-    //  Method: TableIsEmpty()
+    //  Method: VisibleTableRangeIsEmpty()
     //
     /// <summary>
-    /// Determines whether a table is empty.
+    /// Determines whether the visible range of a table is empty.
     /// </summary>
     ///
     /// <param name="table">
@@ -2071,30 +2124,34 @@ public static class ExcelUtil
     /// </param>
     ///
     /// <returns>
-    /// true if the data body range of the table is empty.
+    /// true if the visible part of the data body range of the table is empty.
     /// </returns>
     //*************************************************************************
 
     public static Boolean
-    TableIsEmpty
+    VisibleTableRangeIsEmpty
     (
         ListObject table
     )
     {
         Debug.Assert(table != null);
 
-        // Note that the default state of a table in a new workbook is one
-        // empty row.
+        Range oVisibleTableRange;
 
-        Range oDataBodyRange = table.DataBodyRange;
+        if ( TryGetVisibleTableRange(table, out oVisibleTableRange) )
+        {
+            foreach (Range oArea in oVisibleTableRange)
+            {
+                Range oUsedRange;
 
-        Range oUsedRange;
+                if ( TryGetNonEmptyRangeInVisibleArea(oArea, out oUsedRange) )
+                {
+                    return (false);
+                }
+            }
+        }
 
-        return (
-            oDataBodyRange == null
-            ||
-            !TryGetNonEmptyRange(oDataBodyRange, out oUsedRange)
-            );
+        return (true);
     }
 
     //*************************************************************************
@@ -2191,68 +2248,6 @@ public static class ExcelUtil
 
         return ( oDataBodyRange != null &&
             TryGetVisibleRange(oDataBodyRange, out visibleTableRange) );
-    }
-
-    //*************************************************************************
-    //  Method: TryGetVisibleSelectedTableRange()
-    //
-    /// <summary>
-    /// Attempts to get the visible, selected range within a table after
-    /// activating the table's parent worksheet.
-    /// </summary>
-    ///
-    /// <param name="workbook">
-    /// Workbook to get the table from.
-    /// </param>
-    ///
-    /// <param name="worksheetName">
-    /// Name of the worksheet containing the table.
-    /// </param>
-    ///
-    /// <param name="tableName">
-    /// Name of the table.
-    /// </param>
-    ///
-    /// <param name="table">
-    /// Where the table gets stored if true is returned.
-    /// </param>
-    ///
-    /// <param name="visibleSelectedTableRange">
-    /// Where the visible, selected range within the table gets stored if true
-    /// is returned.  The range may contain multiple areas.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the current selected range intersects the table and at least
-    /// part of the intersection is visible.
-    /// </returns>
-    //*************************************************************************
-
-    public static Boolean
-    TryGetVisibleSelectedTableRange
-    (
-        Microsoft.Office.Interop.Excel.Workbook workbook,
-        String worksheetName,
-        String tableName,
-        out ListObject table,
-        out Range visibleSelectedTableRange
-    )
-    {
-        Debug.Assert(workbook != null);
-        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
-        Debug.Assert( !String.IsNullOrEmpty(tableName) );
-
-        visibleSelectedTableRange = null;
-
-        Range oSelectedTableRange;
-
-        return (
-            TryGetSelectedTableRange(workbook, worksheetName, tableName,
-                out table, out oSelectedTableRange)
-            &&
-            TryGetVisibleRange(oSelectedTableRange,
-                out visibleSelectedTableRange)
-            );
     }
 
     //*************************************************************************
@@ -3099,6 +3094,84 @@ public static class ExcelUtil
         }
 
         return ( oTableColumnNames.ToArray() );
+    }
+
+    //*************************************************************************
+    //  Method: GetTableColumnDecimalPlaces()
+    //
+    /// <summary>
+    /// Gets the number of decimal places displayed in a table column of format
+    /// ExcelColumnFormat.Number.
+    /// </summary>
+    ///
+    /// <param name="column">
+    /// The table column to check.  The column must be of format
+    /// ExcelColumnFormat.Number.
+    /// </param>
+    ///
+    /// <returns>
+    /// The number of decimal places displayed in <paramref name="column" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The number of decimal places is determined by looking at the format of
+    /// the first cell in the column's data range.
+    ///
+    /// <para>
+    /// If <paramref name="column" /> is not of format
+    /// ExcelColumnFormat.Number (and this method doesn't explicitly check for
+    /// that), 0 is returned.  It's up to the caller to verify the column
+    /// format.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static Int32
+    GetTableColumnDecimalPlaces
+    (
+        ListColumn column
+    )
+    {
+        Debug.Assert(column != null);
+
+        Range oColumnData = column.DataBodyRange;
+
+        Debug.Assert(oColumnData != null);
+        Debug.Assert(oColumnData.Rows.Count > 0);
+
+        // It would be nice if there were a Range.DecimalPlaces property, but
+        // there isn't.  All that Excel provides is Range.NumberFormat, which
+        // is actually a string that needs to be parsed.  Parsing that is
+        // guaranteed to be correct is difficult, because NumberFormat can be
+        // simple ("0.00") or complicated ("$#,##0.00_);[Red]($#,##0.00)").  As
+        // an approximation that will be correct most of the time (for "0.00",
+        // for example), count the characters after the last decimal place.
+        //
+        // Note: Don't use the Text property and count decimal places in that,
+        // because Range.Text can be "###" if the column is too narrow.
+
+        Debug.Assert(oColumnData.Cells[1, 1] is Range);
+
+        Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
+
+        String sFirstDataCellNumberFormat =
+            (String)oFirstDataCell.NumberFormat;
+
+        Int32 iIndexOfLastDecimalPoint =
+            sFirstDataCellNumberFormat.LastIndexOf('.');
+
+        if (iIndexOfLastDecimalPoint < 0)
+        {
+            return (0);
+        }
+
+        Int32 iDecimalPlaces =
+            sFirstDataCellNumberFormat.Length - iIndexOfLastDecimalPoint - 1;
+
+        Debug.Assert(iDecimalPlaces >= 0);
+
+        return (iDecimalPlaces);
     }
 
     //*************************************************************************

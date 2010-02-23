@@ -455,7 +455,7 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
 
         Worksheet oSourceWorksheet = (Worksheet)oSourceWorksheetAsObject;
 
-        if ( !ExcelUtil.TryGetNonEmptyRange(oSourceWorksheet,
+        if ( !ExcelUtil.TryGetNonEmptyRangeInWorksheet(oSourceWorksheet,
             out oNonEmptyRange) )
         {
             this.ShowWarning( String.Format(

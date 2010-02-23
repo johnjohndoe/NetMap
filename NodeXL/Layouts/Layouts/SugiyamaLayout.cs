@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.ComponentModel;
@@ -60,6 +61,11 @@ public class SugiyamaLayout : AsyncLayoutBase
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
+    /// </param>
+    ///
     /// <param name="layoutContext">
     /// Provides access to objects needed to lay out the graph.  The <see
     /// cref="LayoutContext.GraphRectangle" /> is guaranteed to have non-zero
@@ -82,9 +88,9 @@ public class SugiyamaLayout : AsyncLayoutBase
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -107,11 +113,14 @@ public class SugiyamaLayout : AsyncLayoutBase
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
         BackgroundWorker backgroundWorker
     )
     {
         Debug.Assert(graph != null);
+        Debug.Assert(verticesToLayOut != null);
+        Debug.Assert(verticesToLayOut.Count > 0);
         Debug.Assert(layoutContext != null);
         AssertValid();
 
@@ -151,7 +160,7 @@ public class SugiyamaLayout : AsyncLayoutBase
 
         // Loop through the NodeXL vertices.
 
-        foreach (IVertex oVertex in graph.Vertices)
+        foreach (IVertex oVertex in verticesToLayOut)
         {
             // Create a circle that defines the GLEE node's boundary.  GLEE's
             // layout code does not modify the node's boundary, it just shifts
@@ -177,7 +186,10 @@ public class SugiyamaLayout : AsyncLayoutBase
 
         // Loop through the NodeXL edges.
 
-        foreach (IEdge oEdge in graph.Edges)
+        ICollection<IEdge> oEdgesToLayOut =
+            GetEdgesToLayOut(graph, verticesToLayOut);
+
+        foreach (IEdge oEdge in oEdgesToLayOut)
         {
             // Retrieve the NodeXL edge's vertices.
 
@@ -244,7 +256,7 @@ public class SugiyamaLayout : AsyncLayoutBase
 
         // Loop through the NodeXL vertices again.
 
-        foreach (IVertex oVertex in graph.Vertices)
+        foreach (IVertex oVertex in verticesToLayOut)
         {
             // Retrieve the corresponding GLEE node.
 
@@ -265,7 +277,7 @@ public class SugiyamaLayout : AsyncLayoutBase
 
         // Loop through the NodeXL edges again.
 
-        foreach (IEdge oEdge in graph.Edges)
+        foreach (IEdge oEdge in oEdgesToLayOut)
         {
             // Retrieve the corresponding GLEE edge.
 

@@ -2,7 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -19,8 +19,7 @@ namespace Microsoft.NodeXL.Layouts
 /// <remarks>
 /// This is the base class for several layouts that support vertex sorting and
 /// the layout of a subset of the graph's vertices.  The derived class must
-/// implement the <see cref="LayOutGraphCore(IGraph, LayoutContext, ICollection,
-/// BackgroundWorker)" /> abstract method.
+/// implement the <see cref="LayOutGraphCoreSorted" /> abstract method.
 ///
 /// <para>
 /// If you want the vertices to be placed in a certain order, set the <see
@@ -104,6 +103,11 @@ public abstract class SortableLayoutBase : AsyncLayoutBase
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
+    /// </param>
+    ///
     /// <param name="layoutContext">
     /// Provides access to objects needed to lay out the graph.  The <see
     /// cref="LayoutContext.GraphRectangle" /> is guaranteed to have non-zero
@@ -126,9 +130,9 @@ public abstract class SortableLayoutBase : AsyncLayoutBase
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -151,40 +155,30 @@ public abstract class SortableLayoutBase : AsyncLayoutBase
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
         BackgroundWorker backgroundWorker
     )
     {
         Debug.Assert(graph != null);
+        Debug.Assert(verticesToLayOut != null);
+        Debug.Assert(verticesToLayOut.Count > 0);
         Debug.Assert(layoutContext != null);
         AssertValid();
-
-        // Honor the optional LayOutTheseVerticesOnly key on the graph.
-
-        ICollection oVerticesToLayOut = GetVerticesToLayOut(graph);
 
         // Sort the vertices if necessary.
 
         if (m_oVertexSorter != null)
         {
-            oVerticesToLayOut = m_oVertexSorter.Sort(oVerticesToLayOut);
+            verticesToLayOut = m_oVertexSorter.Sort(verticesToLayOut);
         }
 
-        // Although the caller has guaranteed that there is at least one vertex
-        // in the graph, the collection returned by GetVerticesToLayOut() may
-        // be empty.
-
-        if (oVerticesToLayOut.Count == 0)
-        {
-            return (true);
-        }
-
-        return ( LayOutGraphCore(graph, layoutContext, oVerticesToLayOut,
+        return ( LayOutGraphCoreSorted(graph, verticesToLayOut, layoutContext,
             backgroundWorker) );
     }
 
     //*************************************************************************
-    //  Method: LayOutGraphCore()
+    //  Method: LayOutGraphCoreSorted()
     //
     /// <summary>
     /// Lays out a graph synchronously or asynchronously using specified
@@ -222,9 +216,9 @@ public abstract class SortableLayoutBase : AsyncLayoutBase
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -244,11 +238,11 @@ public abstract class SortableLayoutBase : AsyncLayoutBase
     //*************************************************************************
 
     protected abstract Boolean
-    LayOutGraphCore
+    LayOutGraphCoreSorted
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
-        ICollection verticesToLayOut,
         BackgroundWorker backgroundWorker
     );
 

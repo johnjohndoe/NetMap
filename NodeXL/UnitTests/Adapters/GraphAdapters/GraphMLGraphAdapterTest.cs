@@ -87,17 +87,17 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph()
+    //  Method: TestLoadGraphFromStream()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph()
+    TestLoadGraphFromStream()
     {
         // Overall test.
 
@@ -138,8 +138,7 @@ public class GraphMLGraphAdapterTest : Object
 
         Stream oXmlStream = new StringStream(XmlString);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(),
-            oXmlStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
 
         Assert.AreEqual(GraphDirectedness.Undirected, oGraph.Directedness);
 
@@ -231,17 +230,17 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraph2()
+    //  Method: TestLoadGraphFromStream2()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestLoadGraph2()
+    TestLoadGraphFromStream2()
     {
         // Overall test, using sample XML from the GraphML Primer.
 
@@ -291,8 +290,7 @@ public class GraphMLGraphAdapterTest : Object
 
         Stream oXmlStream = new StringStream(XmlString);
 
-        IGraph oGraph = m_oGraphAdapter.LoadGraph(new GraphFactory(),
-            oXmlStream);
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
 
         Assert.AreEqual(GraphDirectedness.Undirected, oGraph.Directedness);
 
@@ -385,10 +383,10 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad()
+    //  Method: TestLoadGraphFromStreamBad()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -396,7 +394,7 @@ public class GraphMLGraphAdapterTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestLoadGraphBad()
+    TestLoadGraphFromStreamBad()
     {
         // Bad graph directedness.
 
@@ -439,7 +437,7 @@ public class GraphMLGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oXmlStream);
+            m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
         }
         catch (XmlException oXmlException)
         {
@@ -455,10 +453,10 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad2()
+    //  Method: TestLoadGraphFromStreamBad2()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -466,7 +464,7 @@ public class GraphMLGraphAdapterTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestLoadGraphBad2()
+    TestLoadGraphFromStreamBad2()
     {
         // Two GraphML-attributes with same ID.
 
@@ -509,7 +507,7 @@ public class GraphMLGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oXmlStream);
+            m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
         }
         catch (XmlException oXmlException)
         {
@@ -525,10 +523,10 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad3()
+    //  Method: TestLoadGraphFromStreamBad3()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -536,7 +534,7 @@ public class GraphMLGraphAdapterTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestLoadGraphBad3()
+    TestLoadGraphFromStreamBad3()
     {
         // Data XML node with no corresponding key XML node.
 
@@ -579,7 +577,7 @@ public class GraphMLGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oXmlStream);
+            m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
         }
         catch (XmlException oXmlException)
         {
@@ -595,10 +593,10 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad4()
+    //  Method: TestLoadGraphFromStreamBad4()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -606,7 +604,7 @@ public class GraphMLGraphAdapterTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestLoadGraphBad4()
+    TestLoadGraphFromStreamBad4()
     {
         // Duplicate vertex IDs.
 
@@ -650,7 +648,7 @@ public class GraphMLGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oXmlStream);
+            m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
         }
         catch (XmlException oXmlException)
         {
@@ -666,10 +664,10 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestLoadGraphBad5()
+    //  Method: TestLoadGraphFromStreamBad5()
     //
     /// <summary>
-    /// Tests the LoadGraph(Stream) method.
+    /// Tests the LoadGraphFromStream() method.
     /// </summary>
     //*************************************************************************
 
@@ -677,7 +675,7 @@ public class GraphMLGraphAdapterTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestLoadGraphBad5()
+    TestLoadGraphFromStreamBad5()
     {
         // Edge specifies vertex that doesn't exist.
 
@@ -721,7 +719,7 @@ public class GraphMLGraphAdapterTest : Object
 
         try
         {
-            m_oGraphAdapter.LoadGraph(new GraphFactory(), oXmlStream);
+            m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
         }
         catch (XmlException oXmlException)
         {

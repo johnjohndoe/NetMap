@@ -86,8 +86,9 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GraphMetricCalculators\Brandes\BrandesFastCentralities.cs" />
+    <Compile Include="GraphMetricCalculators\Brandes\BrandesCentralities.cs" />
     <Compile Include="GraphMetricCalculators\Brandes\BrandesFastCentralityCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Brandes\BrandesVertexCentralities.cs" />
     <Compile Include="GraphMetricCalculators\ClusteringCoefficientCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\ClusterCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\Community.cs" />
@@ -97,7 +98,8 @@
     <Compile Include="GraphMetricCalculators\GraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetricCalculators\GraphMetricException.cs" />
     <Compile Include="GraphMetricCalculators\IGraphMetricCalculator.cs" />
-    <Compile Include="GraphMetricCalculators\OverallMetricCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Overall\OverallMetricCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Overall\OverallMetrics.cs" />
     <Compile Include="GraphMetricCalculators\VertexDegreeCalculator.cs" />
     <Compile Include="Miscellaneous\ConnectedComponentCalculator.cs" />
     <Compile Include="Miscellaneous\DuplicateEdgeDetector.cs" />

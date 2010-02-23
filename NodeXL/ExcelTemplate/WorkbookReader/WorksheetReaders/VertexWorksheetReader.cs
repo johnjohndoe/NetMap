@@ -1462,7 +1462,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 + " If you enter polar coordinates, they must include both"
                 + " {1} and {2} numbers.  Any numbers are acceptable."
                 + "\r\n\r\n"
-                + "Polar coordinates are used only when a Layout Type of Polar"
+                + "Polar coordinates are used only when a Layout of Polar"
                 + " or Polar Absolute is selected in the graph pane."
                 ,
                 ExcelUtil.GetRangeAddress(oInvalidCell),

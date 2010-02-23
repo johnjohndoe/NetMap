@@ -84,17 +84,16 @@ public partial class TaskPane : UserControl
         m_oSaveGraphImageFileDialog = null;
         m_oDynamicFilterDialog = null;
 
-        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+        LayoutType eInitialLayout = ( new LayoutUserSettings() ).Layout;
 
-        LayoutType eInitialLayout =
-            oGeneralUserSettings.LayoutUserSettings.Layout;
+        // Instantiate an object that populates the sbLayout
+        // ToolStripSplitButton and handles its LayoutChanged event.
 
-        // Instantiate an object that populates the cbxLayout ComboBox and
-        // handles its SelectedIndexChanged event.
+        m_oLayoutManagerForToolStripSplitButton =
+            new LayoutManagerForToolStripSplitButton();
 
-        m_oLayoutManagerForComboBox = new LayoutManagerForComboBox();
-        m_oLayoutManagerForComboBox.AddComboBoxItems(this.cbxLayout.ComboBox);
-        m_oLayoutManagerForComboBox.Layout = eInitialLayout;
+        m_oLayoutManagerForToolStripSplitButton.AddItems(this.sbLayout);
+        m_oLayoutManagerForToolStripSplitButton.Layout = eInitialLayout;
 
         // Instantiate an object that populates the msiContextLayout
         // context menu and handles the Clicked events on the child menu items.
@@ -103,7 +102,7 @@ public partial class TaskPane : UserControl
         m_oLayoutManagerForContextMenu.AddMenuItems(this.msiContextLayout);
         m_oLayoutManagerForContextMenu.Layout = eInitialLayout;
 
-        m_oLayoutManagerForComboBox.LayoutChanged +=
+        m_oLayoutManagerForToolStripSplitButton.LayoutChanged +=
             new EventHandler(this.LayoutManager_LayoutChanged);
 
         m_oLayoutManagerForContextMenu.LayoutChanged +=
@@ -147,7 +146,7 @@ public partial class TaskPane : UserControl
             Ribbon_RunRibbonCommand);
 
 
-        CreateNodeXLControl(oGeneralUserSettings);
+        CreateNodeXLControl();
         usrGraphZoomAndScale.NodeXLControl = oNodeXLControl;
 
         this.ShowGraphLegend = m_oRibbon.ShowGraphLegend;
@@ -363,25 +362,41 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Property: LayoutIsNull
+    //
+    /// <summary>
+    /// Gets a flag indicating whether the selected layout is LayoutType.Null.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the selected layout is LayoutType.Null.
+    /// </value>
+    //*************************************************************************
+
+    protected Boolean
+    LayoutIsNull
+    {
+        get
+        {
+            // Either layout manager will work.  Arbitrarily use one of them.
+
+            return (m_oLayoutManagerForToolStripSplitButton.Layout ==
+                LayoutType.Null);
+        }
+    }
+
+    //*************************************************************************
     //  Method: CreateNodeXLControl()
     //
     /// <summary>
     /// Creates a NodeXLControl, hooks up its events, and assigns it as the
     /// child of an ElementHost.
     /// </summary>
-    ///
-    /// <param name="oGeneralUserSettings">
-    /// The user's general settings.
-    /// </param>
     //*************************************************************************
 
     protected void
-    CreateNodeXLControl
-    (
-        GeneralUserSettings oGeneralUserSettings
-    )
+    CreateNodeXLControl()
     {
-        Debug.Assert(oGeneralUserSettings != null);
         // AssertValid();
 
         // Control hierarchy:
@@ -393,6 +408,8 @@ public partial class TaskPane : UserControl
         // 3. The ExcelTemplateNodeXLControl is derived from NodeXLControl.
 
         oNodeXLControl = new ExcelTemplateNodeXLControl();
+
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         m_oNodeXLWithAxesControl = new NodeXLWithAxesControl(oNodeXLControl);
         m_oNodeXLWithAxesControl.ShowAxes = oGeneralUserSettings.ShowGraphAxes;
@@ -406,6 +423,9 @@ public partial class TaskPane : UserControl
         oNodeXLControl.GraphMouseUp += new GraphMouseButtonEventHandler(
             this.oNodeXLControl_GraphMouseUp);
 
+        oNodeXLControl.VertexDoubleClick += new VertexEventHandler(
+            this.oNodeXLControl_VertexDoubleClick);
+
         oNodeXLControl.DrawingGraph += new System.EventHandler(
             this.oNodeXLControl_DrawingGraph);
 
@@ -414,7 +434,8 @@ public partial class TaskPane : UserControl
 
         ehNodeXLControlHost.Child = m_oNodeXLWithAxesControl;
 
-        ApplyUserSettings(oGeneralUserSettings);
+        ApplyGeneralUserSettings(oGeneralUserSettings);
+        ApplyLayoutUserSettings( new LayoutUserSettings() );
     }
 
     //*************************************************************************
@@ -465,10 +486,9 @@ public partial class TaskPane : UserControl
         }
 
         if (
-            !this.WorkbookRead &&
-            m_oLayoutManagerForComboBox.Layout == LayoutType.Null
-            &&
-            !ShowLayoutTypeIsNoneNotification()
+            !this.WorkbookRead
+            && this.LayoutIsNull
+            && !ShowLayoutTypeIsNoneNotification()
             )
         {
             return;
@@ -529,10 +549,6 @@ public partial class TaskPane : UserControl
             oNodeXLControl.ShowVertexToolTips =
                 oReadWorkbookContext.ToolTipsUsed;
 
-            // Apply the current layout to the NodeXLControl.
-
-            ApplyLayoutAndUserSettings(oGeneralUserSettings);
-
             // If the dynamic filter dialog is open, read the dynamic filter
             // columns it filled in.
 
@@ -590,13 +606,12 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        if (m_oLayoutManagerForComboBox.Layout == LayoutType.Null)
+        if (LayoutIsNull)
         {
             ShowLayoutTypeIsNoneWarning("lay out the graph again");
             return;
         }
 
-        ApplyLayoutAndUserSettings( new GeneralUserSettings() );
         oNodeXLControl.DrawGraph(true);
     }
 
@@ -614,33 +629,83 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
+        ForceLayoutTheseVerticesOnly(oNodeXLControl.SelectedVertices,
+            "lay out the selected vertices again");
+    }
+
+    //*************************************************************************
+    //  Method: ForceLayoutVisible()
+    //
+    /// <summary>
+    /// Forces the NodeXLControl to lay out visible vertices in the graph
+    /// again.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    ForceLayoutVisible()
+    {
+        AssertValid();
+
+        ForceLayoutTheseVerticesOnly(
+            NodeXLControlUtil.GetVisibleVerticesAsArray(oNodeXLControl),
+            "lay out the visible vertices again");
+    }
+
+    //*************************************************************************
+    //  Method: ForceLayoutTheseVerticesOnly()
+    //
+    /// <summary>
+    /// Forces the NodeXLControl to lay out visible vertices in the graph
+    /// again.
+    /// </summary>
+    ///
+    /// <param name="aoVerticesToLayOut">
+    /// The vertices to lay out.
+    /// </param>
+    ///
+    /// <param name="sLayoutTypeIsNoneWarning">
+    /// Warning to show if the layout is LayoutType.Null.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ForceLayoutTheseVerticesOnly
+    (
+        IVertex[] aoVerticesToLayOut,
+        String sLayoutTypeIsNoneWarning
+    )
+    {
+        Debug.Assert(aoVerticesToLayOut != null);
+        Debug.Assert( !String.IsNullOrEmpty(sLayoutTypeIsNoneWarning) );
+        AssertValid();
+
         if (oNodeXLControl.IsDrawing)
         {
             return;
         }
 
-        if (m_oLayoutManagerForComboBox.Layout == LayoutType.Null)
+        if (LayoutIsNull)
         {
-            ShowLayoutTypeIsNoneWarning("lay out the selected vertices again");
+            ShowLayoutTypeIsNoneWarning(sLayoutTypeIsNoneWarning);
             return;
         }
 
         // This method works by adding a value to the graph specifying that
-        // only the selected vertices should be laid out and all other vertices
-        // should be completely ignored.
+        // only the specified vertices should be laid out and all other
+        // vertices should be completely ignored.
         //
         // When the graph completes drawing (which happens asynchronously),
         // oNodeXLControl_GraphDrawn() removes the value.
 
         oNodeXLControl.Graph.SetValue(
-            ReservedMetadataKeys.LayOutTheseVerticesOnly,
-            oNodeXLControl.SelectedVertices);
+            ReservedMetadataKeys.LayOutTheseVerticesOnly, aoVerticesToLayOut);
 
         ForceLayout();
     }
 
     //*************************************************************************
-    //  Method: ShowGeneralUserSettingsDialog()
+    //  Method: EditGeneralUserSettings()
     //
     /// <summary>
     /// Shows the dialog that lets the user edit his general settings.
@@ -648,7 +713,7 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     protected void
-    ShowGeneralUserSettingsDialog()
+    EditGeneralUserSettings()
     {
         AssertValid();
 
@@ -657,8 +722,6 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        // Allow the user to edit the general settings.
-
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         GeneralUserSettingsDialog oGeneralUserSettingsDialog =
@@ -666,13 +729,39 @@ public partial class TaskPane : UserControl
 
         if (oGeneralUserSettingsDialog.ShowDialog() == DialogResult.OK)
         {
-            // Save the new settings.
-
             oGeneralUserSettings.Save();
+            ApplyGeneralUserSettings(oGeneralUserSettings);
+            oNodeXLControl.DrawGraph();
+        }
+    }
 
-            // Apply the new settings to the NodeXLControl.
+    //*************************************************************************
+    //  Method: EditLayoutUserSettings()
+    //
+    /// <summary>
+    /// Shows the dialog that lets the user edit his layout settings.
+    /// </summary>
+    //*************************************************************************
 
-            ApplyUserSettings(oGeneralUserSettings);
+    protected void
+    EditLayoutUserSettings()
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        LayoutUserSettings oLayoutUserSettings = new LayoutUserSettings();
+
+        LayoutUserSettingsDialog oLayoutUserSettingsDialog =
+            new LayoutUserSettingsDialog(oLayoutUserSettings);
+
+        if (oLayoutUserSettingsDialog.ShowDialog() == DialogResult.OK)
+        {
+            oLayoutUserSettings.Save();
+            ApplyLayoutUserSettings(oLayoutUserSettings);
             oNodeXLControl.DrawGraph();
         }
     }
@@ -704,8 +793,8 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         FormUtil.ShowWarning(
-            "The Layout Type is set to None.  Before you can " + sAction + 
-                ", you must select a different Layout Type.\r\n\r\n"
+            "The Layout is set to None.  Before you can " + sAction + 
+                ", you must select a different Layout.\r\n\r\n"
                 + HowToSetLayoutType
             );
     }
@@ -746,19 +835,19 @@ public partial class TaskPane : UserControl
         Boolean bReturn = true;
 
         const String Message =
-            "The Layout Type is set to None.  If the graph has never been laid"
+            "The Layout is set to None.  If the graph has never been laid"
             + " out, all the vertices will be placed at the upper-left corner"
             + " of the graph pane."
             + "\r\n\r\n"
             + "If you want to lay out the graph, click No and select a"
-            + " different Layout Type.  "
+            + " different Layout.  "
             + HowToSetLayoutType
             + "\r\n\r\n"
             + "Do you want to read the workbook?"
             ;
 
         NotificationDialog oNotificationDialog = new NotificationDialog(
-            "Layout Type is None", SystemIcons.Warning, Message);
+            "Layout is None", SystemIcons.Warning, Message);
 
         if (oNotificationDialog.ShowDialog() != DialogResult.Yes)
         {
@@ -775,69 +864,46 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: ApplyLayoutAndUserSettings()
+    //  Method: ApplyLayoutUserSettings()
     //
     /// <summary>
-    /// Applies the current general settings and layout to the NodeXLControl.
+    /// Applies the user's layout settings to the NodeXLControl.
     /// </summary>
     ///
-    /// <param name="oGeneralUserSettings">
-    /// The user's general settings.
+    /// <param name="oLayoutUserSettings">
+    /// The user's layout settings.
     /// </param>
     //*************************************************************************
 
     protected void
-    ApplyLayoutAndUserSettings
+    ApplyLayoutUserSettings
     (
-        GeneralUserSettings oGeneralUserSettings
+        LayoutUserSettings oLayoutUserSettings
     )
     {
-        Debug.Assert(oGeneralUserSettings != null);
-        AssertValid();
-
-        ApplyLayout(oGeneralUserSettings);
-        ApplyUserSettings(oGeneralUserSettings);
-    }
-
-    //*************************************************************************
-    //  Method: ApplyLayout()
-    //
-    /// <summary>
-    /// Applies the current layout to the NodeXLControl.
-    /// </summary>
-    ///
-    /// <param name="oGeneralUserSettings">
-    /// The user's general settings.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ApplyLayout
-    (
-        GeneralUserSettings oGeneralUserSettings
-    )
-    {
-        Debug.Assert(oGeneralUserSettings != null);
+        Debug.Assert(oLayoutUserSettings != null);
         AssertValid();
 
         // Make sure the two layout managers are in sync.
 
-        Debug.Assert(m_oLayoutManagerForComboBox.Layout ==
+        Debug.Assert(m_oLayoutManagerForToolStripSplitButton.Layout ==
             m_oLayoutManagerForContextMenu.Layout);
 
         // Either layout manager will work; arbitrarily use one of them to
         // create a layout.
 
-        IAsyncLayout oLayout = m_oLayoutManagerForComboBox.CreateLayout();
-        oLayout.Margin = oGeneralUserSettings.LayoutUserSettings.Margin;
+        IAsyncLayout oLayout =
+            m_oLayoutManagerForToolStripSplitButton.CreateLayout();
+
+        oLayoutUserSettings.TransferToLayout(oLayout);
         oNodeXLControl.Layout = oLayout;
     }
 
     //*************************************************************************
-    //  Method: ApplyUserSettings()
+    //  Method: ApplyGeneralUserSettings()
     //
     /// <summary>
-    /// Applies the current general settings to the NodeXLControl.
+    /// Applies the user's general settings to the NodeXLControl.
     /// </summary>
     ///
     /// <param name="oGeneralUserSettings">
@@ -846,7 +912,7 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     protected void
-    ApplyUserSettings
+    ApplyGeneralUserSettings
     (
         GeneralUserSettings oGeneralUserSettings
     )
@@ -1014,6 +1080,7 @@ public partial class TaskPane : UserControl
         MenuUtil.EnableToolStripMenuItems(
             iVertices > 0,
             msiContextForceLayout,
+            msiContextForceLayoutVisible,
             msiContextSelectAll,
             msiContextDeselectAll
             );
@@ -2901,6 +2968,35 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: ForceLayoutVisible_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the msiForceLayoutVisible and
+    /// msiContextForceLayoutVisible menu items.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ForceLayoutVisible_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        ForceLayoutVisible();
+    }
+
+    //*************************************************************************
     //  Method: ShowDynamicFilters_Click()
     //
     /// <summary>
@@ -2955,7 +3051,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        ShowGeneralUserSettingsDialog();
+        EditGeneralUserSettings();
     }
 
     //*************************************************************************
@@ -2991,6 +3087,34 @@ public partial class TaskPane : UserControl
             iSelectedVertices > 0,
             msiForceLayoutSelected
             );
+    }
+
+    //*************************************************************************
+    //  Method: msiLayoutOptions_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the msiLayoutOptions ToolStripMenuItem.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    msiLayoutOptions_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        EditLayoutUserSettings();
     }
 
     //*************************************************************************
@@ -3560,6 +3684,34 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: oNodeXLControl_VertexDoubleClick()
+    //
+    /// <summary>
+    /// Handles the VertexDoubleClick event on the oNodeXLControl control.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    oNodeXLControl_VertexDoubleClick
+    (
+        object sender,
+        VertexEventArgs e
+    )
+    {
+        AssertValid();
+
+        SelectAdjacentVertices(e.Vertex, true);
+    }
+
+    //*************************************************************************
     //  Method: oNodeXLControl_DrawingGraph()
     //
     /// <summary>
@@ -4084,7 +4236,7 @@ public partial class TaskPane : UserControl
             // (The user can clear the X and Y autofill results by changing the
             // layout type.)
 
-            m_oLayoutManagerForComboBox.Layout = LayoutType.Null;
+            m_oLayoutManagerForToolStripSplitButton.Layout = LayoutType.Null;
         }
 
         if ( (new GeneralUserSettings() ).AutoReadWorkbook )
@@ -4474,11 +4626,66 @@ public partial class TaskPane : UserControl
                 ReadWorkbook();
                 break;
 
+            case RibbonCommand.EditLayoutUserSettings:
+
+                EditLayoutUserSettings();
+                break;
+
             default:
 
                 Debug.Assert(false);
                 break;
         }
+    }
+
+    //*************************************************************************
+    //  Method: TaskPane_Resize()
+    //
+    /// <summary>
+    /// Handles the Resize event.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    TaskPane_Resize
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        // Until version 1.0.1.110, the splLegend SplitContainer control, which
+        // occupies the entire space beneath the TaskPane's toolbar, had its
+        // Anchor property set to Top|Left|Right|Bottom.  That usually worked
+        // fine, but in some cases splLegend would end up with a height that
+        // was greater than the TaskPane's height.  That resulted in the graph
+        // being drawn below the bottom of the graph pane.
+        //
+        // Here is one repro case:
+        //
+        // 1. Create a graph.
+        //
+        // 2. Export the selection to a new workbook.
+        //
+        // The new workbook is where the problem could be seen.
+        //
+        // Is this a bug in the SplitContainer control?  There is at least one
+        // other easily reproducible layout bug in that control (see the
+        // comments in splLegend_Panel2_Resize() for details), so that is a
+        // possibility.
+        //
+        // To work around this problem, the Anchor property of splLegend was
+        // changed to the default Top|Left, and the following code was added to
+        // do the right and bottom anchoring manually.
+
+        splLegend.Size = new Size(this.Width, this.Height - splLegend.Top);
     }
 
     //*************************************************************************
@@ -4598,22 +4805,22 @@ public partial class TaskPane : UserControl
         // The user just selected a layout via one of the Layout menus.
         // Synchronize the layout managers that manage those menus.
 
-        if (sender == m_oLayoutManagerForComboBox)
+        if (sender == m_oLayoutManagerForToolStripSplitButton)
         {
             m_oRibbon.Layout =
             m_oLayoutManagerForContextMenu.Layout =
-                m_oLayoutManagerForComboBox.Layout;
+                m_oLayoutManagerForToolStripSplitButton.Layout;
         }
         else if (sender == m_oLayoutManagerForContextMenu)
         {
             m_oRibbon.Layout =
-            m_oLayoutManagerForComboBox.Layout =
+            m_oLayoutManagerForToolStripSplitButton.Layout =
                 m_oLayoutManagerForContextMenu.Layout;
         }
         else if (sender == m_oRibbon)
         {
             m_oLayoutManagerForContextMenu.Layout =
-            m_oLayoutManagerForComboBox.Layout =
+            m_oLayoutManagerForToolStripSplitButton.Layout =
                 m_oRibbon.Layout;
         }
         else
@@ -4623,18 +4830,19 @@ public partial class TaskPane : UserControl
 
         // Save the new layout.
 
-        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+        LayoutUserSettings oLayoutUserSettings = new LayoutUserSettings();
 
-        oGeneralUserSettings.LayoutUserSettings.Layout =
-            m_oLayoutManagerForComboBox.Layout;
+        oLayoutUserSettings.Layout =
+            m_oLayoutManagerForToolStripSplitButton.Layout;
 
-        oGeneralUserSettings.Save();
+        oLayoutUserSettings.Save();
+        ApplyLayoutUserSettings(oLayoutUserSettings);
 
         // If the layout was just changed from Null to something else and the
         // X and Y columns were autofilled, the X and Y autofill results need
         // to be cleared.
 
-        if (m_oLayoutManagerForComboBox.Layout != LayoutType.Null)
+        if (!this.LayoutIsNull)
         {
             PerWorkbookSettings oPerWorkbookSettings =
                 this.PerWorkbookSettings;
@@ -4683,7 +4891,7 @@ public partial class TaskPane : UserControl
         Debug.Assert(m_oRibbon != null);
         Debug.Assert(m_iTemplateVersion > 0);
 
-        Debug.Assert(m_oLayoutManagerForComboBox != null);
+        Debug.Assert(m_oLayoutManagerForToolStripSplitButton != null);
         Debug.Assert(m_oLayoutManagerForContextMenu != null);
 
         // m_bHandlingLayoutChanged
@@ -4708,8 +4916,8 @@ public partial class TaskPane : UserControl
     /// Message that explains how to set the layout type.
 
     protected const String HowToSetLayoutType =
-        "The Layout Type can be set from the toolbar at the top of the graph"
-        + " pane, or by right-clicking within the graph pane."
+        "The Layout can be set in the Excel Ribbon using NodeXL, Graph,"
+        + " Layout."
         ;
 
 
@@ -4739,7 +4947,8 @@ public partial class TaskPane : UserControl
 
     /// Helper objects for managing layouts.
 
-    protected LayoutManagerForComboBox m_oLayoutManagerForComboBox;
+    protected LayoutManagerForToolStripSplitButton
+        m_oLayoutManagerForToolStripSplitButton;
     ///
     protected LayoutManagerForMenu m_oLayoutManagerForContextMenu;
 

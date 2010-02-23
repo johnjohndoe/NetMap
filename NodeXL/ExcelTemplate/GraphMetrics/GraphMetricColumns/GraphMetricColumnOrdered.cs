@@ -42,7 +42,9 @@ public class GraphMetricColumnOrdered : GraphMetricColumn
     /// </param>
     ///
     /// <param name="columnWidthChars">
-    /// Width of the column, in characters.
+    /// Width of the column, in characters, or <see
+    /// cref="Microsoft.Research.CommunityTechnologies.AppLib.ExcelUtil.
+    /// AutoColumnWidth" /> to set the width automatically.
     /// </param>
     ///
     /// <param name="numberFormat">

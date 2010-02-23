@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Drawing;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -154,6 +155,44 @@ public interface IDynamicFilterRangeTrackBar
 
     Boolean
     AvailableRangeSelected
+    {
+        get;
+    }
+
+    //*************************************************************************
+    //  Property: Left
+    //
+    /// <summary>
+    /// Gets the x-coordinate of the left edge of the control.
+    /// </summary>
+    ///
+    /// <value>
+    /// The x-coordinate of the left edge of the control.
+    /// </value>
+    //*************************************************************************
+
+    Int32
+    Left
+    {
+        get;
+    }
+
+    //*************************************************************************
+    //  Property: InternalTrackBarBounds
+    //
+    /// <summary>
+    /// Gets the bounds of the internal track bar.
+    /// </summary>
+    ///
+    /// <value>
+    /// The bounds of the internal track bar control, relative to this parent
+    /// control.  This excludes the pair of internal NumericUpDown controls
+    /// that display the selected minimum and maximum values.
+    /// </value>
+    //*************************************************************************
+
+    Rectangle
+    InternalTrackBarBounds
     {
         get;
     }

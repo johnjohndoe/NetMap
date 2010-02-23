@@ -18,11 +18,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The betweenness and closeness centralities are provided as a
-/// Dictionary&lt;Int32, BrandesFastCentralities&gt;.  There is one key/value
-/// pair for each vertex in the graph.  The key is the IVertex.ID and the value
-/// is a <see cref="BrandesFastCentralities" /> object containing the vertex's
-/// centralities.
+/// The betweenness and closeness centralities are provided as a <see
+/// cref="BrandesCentralities" /> object.
 ///
 /// <para>
 /// If a vertex is isolated, its betweenness and closeness centralities are
@@ -115,7 +112,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     /// the method is being called by some other thread.
     /// </param>
     ///
-    /// <param name="brandesFastCentralities">
+    /// <param name="brandesCentralities">
     /// Where the graph metrics get stored if true is returned.  See the class
     /// notes for details on the type.
     /// </param>
@@ -131,7 +128,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out Dictionary<Int32, BrandesFastCentralities> brandesFastCentralities
+        out BrandesCentralities brandesCentralities
     )
     {
         Debug.Assert(graph != null);
@@ -141,9 +138,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
         Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
             out oGraphMetricsAsObject);
 
-        brandesFastCentralities =
-            ( Dictionary<Int32, BrandesFastCentralities> )
-            oGraphMetricsAsObject;
+        brandesCentralities = (BrandesCentralities)oGraphMetricsAsObject;
 
         return (bReturn);
     }
@@ -188,6 +183,8 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
+        oGraphMetrics = null;
+
         IVertexCollection oVertices = oGraph.Vertices;
         Int32 iVertices = oVertices.Count;
 
@@ -201,14 +198,12 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
         // The key is an IVertex.ID and the value is the corresponding
         // betweenness centrality.
 
-        Dictionary<Int32, BrandesFastCentralities> Cb =
-            new Dictionary<Int32, BrandesFastCentralities>(iVertices);
-
-        oGraphMetrics = Cb;
+        Dictionary<Int32, BrandesVertexCentralities> Cb =
+            new Dictionary<Int32, BrandesVertexCentralities>(iVertices);
 
         foreach (IVertex oVertex in oVertices)
         {
-            Cb.Add( oVertex.ID, new BrandesFastCentralities() );
+            Cb.Add( oVertex.ID, new BrandesVertexCentralities() );
         }
 
         // These objects are created once and cleared before the betweenness
@@ -229,6 +224,12 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
 
         Int32 iCalculations = 0;
         Double MaximumCb = 0;
+
+        // These are for calculating geodesic distances.
+
+        Int64 lGeodesicDistanceSum = 0;
+        Int32 iGeodesicDistanceCount = 0;
+        Int32 iMaximumGeodesicDistance = Int32.MinValue;
 
         foreach (IVertex s in oVertices)
         {
@@ -300,7 +301,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
 
             // These are for calculating closeness centrality.
 
-            Int64 lClosenessTotalDistance = 0;
+            Int64 lClosenessSum = 0;
             Int32 iClosenessOtherVertices = 0;
 
             // S returns vertices in order of non-increasing distance from s.
@@ -325,7 +326,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
 
                 if (w.ID != s.ID)
                 {
-                    BrandesFastCentralities oCentralities = Cb[w.ID];
+                    BrandesVertexCentralities oCentralities = Cb[w.ID];
 
                     Double CbOfW =
                         oCentralities.BetweennessCentrality + delta[w.ID];
@@ -333,18 +334,25 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
                     MaximumCb = Math.Max(MaximumCb, CbOfW);
                     oCentralities.BetweennessCentrality = CbOfW;
 
-                    lClosenessTotalDistance += d[w.ID];
+                    Int32 iDistance = d[w.ID];
+
+                    lClosenessSum += iDistance;
                     iClosenessOtherVertices++;
+
+                    lGeodesicDistanceSum += iDistance;
+                    iGeodesicDistanceCount++;
+
+                    iMaximumGeodesicDistance =
+                        Math.Max(iMaximumGeodesicDistance, iDistance);
                 }
             }
 
             if (iClosenessOtherVertices > 0)
             {
-                BrandesFastCentralities oCentralities = Cb[s.ID];
+                BrandesVertexCentralities oCentralities = Cb[s.ID];
 
                 oCentralities.ClosenessCentrality =
-                    (Double)lClosenessTotalDistance /
-                    (Double)iClosenessOtherVertices;
+                    (Double)lClosenessSum / (Double)iClosenessOtherVertices;
             }
 
             iCalculations++;
@@ -365,7 +373,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
 
         // Adjust the final values.
 
-        foreach (BrandesFastCentralities oCentralities in Cb.Values)
+        foreach (BrandesVertexCentralities oCentralities in Cb.Values)
         {
             Double ThisCb = oCentralities.BetweennessCentrality;
 
@@ -382,6 +390,25 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
             }
 
             oCentralities.BetweennessCentrality = ThisCb;
+        }
+
+        if (iGeodesicDistanceCount > 0)
+        {
+            oGraphMetrics = new BrandesCentralities(Cb,
+
+                new Nullable<Int32>(iMaximumGeodesicDistance),
+
+                new Nullable<Single>( (Single)(
+                    (Double)lGeodesicDistanceSum /
+                    (Double)iGeodesicDistanceCount)
+                    )
+                );
+        }
+        else
+        {
+            oGraphMetrics = new BrandesCentralities( Cb,
+                new Nullable<Int32>(),
+                new Nullable<Single>() );
         }
 
         return (true);

@@ -140,7 +140,7 @@ public class UcinetGraphAdapter : GraphAdapterBase, IGraphAdapter
 
         m_eLoadedGraphDirectedness = fileDirectedness;
 
-        return ( base.LoadGraph(filename) );
+        return ( base.LoadGraphFromFile(filename) );
     }
 
     //*************************************************************************
@@ -185,27 +185,23 @@ public class UcinetGraphAdapter : GraphAdapterBase, IGraphAdapter
     //  Method: LoadGraphCore()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="Stream" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="Stream" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that can create a graph.
-    /// </param>
     ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="stream" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="stream" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="stream" />.  It
-    /// does not close <paramref name="stream" />.
+    /// This method creates a graph, loads it with the graph data read from
+    /// <paramref name="stream" />.  It does not close <paramref
+    /// name="stream" />.
     ///
     /// <para>
     /// The arguments have already been checked for validity.
@@ -217,18 +213,15 @@ public class UcinetGraphAdapter : GraphAdapterBase, IGraphAdapter
     protected override IGraph
     LoadGraphCore
     (
-        IGraphFactory graphFactory,
         Stream stream
     )
     {
-        Debug.Assert(graphFactory != null);
         Debug.Assert(stream != null);
         AssertValid();
 
         const String DataMarker = "DATA:";
 
-        IGraph oGraph = graphFactory.CreateGraph(
-            m_eLoadedGraphDirectedness, GraphRestrictions.None);
+        IGraph oGraph = new Graph(m_eLoadedGraphDirectedness);
 
         IVertexCollection oVertices = oGraph.Vertices;
 

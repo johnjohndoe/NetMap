@@ -115,7 +115,7 @@ public partial class MainForm : Form
             m_oNodeXLControl.VertexDrawer ).Radius = 5;
         */
 
-        m_oNodeXLControl.Graph = oGraphAdapter.LoadGraph(
+        m_oNodeXLControl.Graph = oGraphAdapter.LoadGraphFromFile(
             "..\\..\\SampleGraph.txt");
 
         AddToolTipsToVertices();

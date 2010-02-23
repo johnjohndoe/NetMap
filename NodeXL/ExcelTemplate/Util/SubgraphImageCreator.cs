@@ -150,7 +150,11 @@ public class SubgraphImageCreator : Object
     /// </param>
     ///
     /// <param name="generalUserSettings">
-    /// The user's general user settings for the application.
+    /// The user's general user settings.
+    /// </param>
+    ///
+    /// <param name="layoutUserSettings">
+    /// The user's layout user settings.
     /// </param>
     ///
     /// <remarks>
@@ -188,7 +192,8 @@ public class SubgraphImageCreator : Object
         Boolean selectedVerticesOnly,
         Boolean selectVertex,
         Boolean selectIncidentEdges,
-        GeneralUserSettings generalUserSettings
+        GeneralUserSettings generalUserSettings,
+        LayoutUserSettings layoutUserSettings
     )
     {
         Debug.Assert(graph != null);
@@ -244,7 +249,7 @@ public class SubgraphImageCreator : Object
             generalUserSettings;
 
         oCreateSubgraphImagesAsyncArgs.Layout =
-            CreateLayout(generalUserSettings.LayoutUserSettings);
+            CreateLayout(layoutUserSettings);
 
         // Note: the NodeXLVisual object can't be created yet, because it must
         // be created on the same thread that uses it.  It will get created by
@@ -403,7 +408,7 @@ public class SubgraphImageCreator : Object
 
         oDoWorkEventArgs.Result = oThumbnailImages;
 
-        System.Collections.ICollection oVertices;
+        ICollection<IVertex> oVertices;
 
         if (oCreateSubgraphImagesAsyncArgs.SelectedVerticesOnly)
         {
@@ -710,7 +715,9 @@ public class SubgraphImageCreator : Object
 
         // Lay out the graph, then draw it using the NodeXLVisual object.
 
-        oCreateSubgraphImagesAsyncArgs.Layout.LayOutGraph( oSubgraph,
+        IAsyncLayout oLayout = oCreateSubgraphImagesAsyncArgs.Layout;
+
+        oLayout.LayOutGraph( oSubgraph,
             new LayoutContext(oSubgraphRectangle) );
 
         NodeXLVisual oNodeXLVisual =
@@ -718,6 +725,7 @@ public class SubgraphImageCreator : Object
 
         GraphDrawingContext oGraphDrawingContext =
             CreateGraphDrawingContext(oSubgraphRectangle,
+                oLayout.Margin,
                 oCreateSubgraphImagesAsyncArgs.GeneralUserSettings);
 
         oNodeXLVisual.GraphDrawer.DrawGraph(oSubgraph, oGraphDrawingContext);
@@ -758,7 +766,12 @@ public class SubgraphImageCreator : Object
         LayoutManager oLayoutManager = new LayoutManager();
         oLayoutManager.Layout = oLayoutUserSettings.Layout;
         IAsyncLayout oLayout = oLayoutManager.CreateLayout();
-        oLayout.Margin = oLayoutUserSettings.Margin;
+        oLayoutUserSettings.TransferToLayout(oLayout);
+
+        // Don't use binning, even if the user is using binning in the
+        // NodeXLControl.
+
+        oLayout.UseBinning = false;
 
         return (oLayout);
     }
@@ -819,6 +832,10 @@ public class SubgraphImageCreator : Object
     /// The subgraph rectangle.
     /// </param>
     ///
+    /// <param name="iMargin">
+    /// The graph margin.
+    /// </param>
+    ///
     /// <param name="oGeneralUserSettings">
     /// The user's general settings.
     /// </param>
@@ -832,17 +849,16 @@ public class SubgraphImageCreator : Object
     CreateGraphDrawingContext
     (
         Rectangle oSubgraphRectangle,
+        Int32 iMargin,
         GeneralUserSettings oGeneralUserSettings
     )
     {
+        Debug.Assert(iMargin >= 0);
         Debug.Assert(oGeneralUserSettings != null);
         AssertValid();
 
         return ( new GraphDrawingContext(
-
-            WpfGraphicsUtil.RectangleToRect(oSubgraphRectangle),
-            oGeneralUserSettings.LayoutUserSettings.Margin,
-
+            WpfGraphicsUtil.RectangleToRect(oSubgraphRectangle), iMargin,
             WpfGraphicsUtil.ColorToWpfColor(oGeneralUserSettings.BackColor) 
             ) );
     }

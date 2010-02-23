@@ -41,6 +41,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label1 = new System.Windows.Forms.Label();
             this.nudMargin = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
+            this.chkUseBinning = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudFruchtermanReingoldIterations)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudFruchtermanReingoldC)).BeginInit();
@@ -50,19 +51,19 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(160, 165);
+            this.btnCancel.Location = new System.Drawing.Point(160, 214);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 4;
+            this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(74, 165);
+            this.btnOK.Location = new System.Drawing.Point(74, 214);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 3;
+            this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -74,7 +75,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(102, 13);
             this.label7.TabIndex = 2;
-            this.label7.Text = "Iterations &per layout:";
+            this.label7.Text = "&Iterations per layout:";
             // 
             // nudFruchtermanReingoldIterations
             // 
@@ -99,12 +100,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.nudFruchtermanReingoldIterations);
-            this.groupBox1.Location = new System.Drawing.Point(12, 40);
+            this.groupBox1.Location = new System.Drawing.Point(12, 89);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(228, 109);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Fruchterman-Reingold";
+            this.groupBox1.Text = "Fruchterman-Reingold layout";
             // 
             // nudFruchtermanReingoldC
             // 
@@ -153,13 +154,23 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label10.TabIndex = 0;
             this.label10.Text = "&Margin:";
             // 
+            // chkUseBinning
+            // 
+            this.chkUseBinning.Location = new System.Drawing.Point(15, 33);
+            this.chkUseBinning.Name = "chkUseBinning";
+            this.chkUseBinning.Size = new System.Drawing.Size(224, 51);
+            this.chkUseBinning.TabIndex = 2;
+            this.chkUseBinning.Text = "&Put the graph\'s smaller components at the bottom of the graph";
+            this.chkUseBinning.UseVisualStyleBackColor = true;
+            // 
             // LayoutUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(253, 203);
+            this.ClientSize = new System.Drawing.Size(253, 253);
+            this.Controls.Add(this.chkUseBinning);
             this.Controls.Add(this.nudMargin);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.groupBox1);
@@ -191,5 +202,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.NumericUpDown nudFruchtermanReingoldC;
         private System.Windows.Forms.NumericUpDown nudMargin;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox chkUseBinning;
     }
 }

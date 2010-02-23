@@ -43,6 +43,7 @@ public class AutoFillWorkbookWithSchemeResults : Object
         m_sEdgeWeightColumnName = null;
         m_dEdgeWeightSourceCalculationNumber1 = 0;
         m_dEdgeWeightSourceCalculationNumber2 = 0;
+        m_iEdgeWeightDecimalPlaces = 0;
 
         m_sEdgeTimestampColumnName = null;
         m_eEdgeTimestampColumnFormat = ExcelColumnFormat.Other;
@@ -178,6 +179,10 @@ public class AutoFillWorkbookWithSchemeResults : Object
     /// <param name="sourceCalculationNumber2">
     /// The actual second source number used in the calculations.
     /// </param>
+    ///
+    /// <param name="decimalPlaces">
+    /// The number of decimal places displayed in the source column.
+    /// </param>
     //*************************************************************************
 
     public void
@@ -185,16 +190,19 @@ public class AutoFillWorkbookWithSchemeResults : Object
     (
         String edgeWeightColumnName,
         Double sourceCalculationNumber1,
-        Double sourceCalculationNumber2
+        Double sourceCalculationNumber2,
+        Int32 decimalPlaces
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(edgeWeightColumnName) );
+        Debug.Assert(decimalPlaces >= 0);
         AssertValid();
 
         m_eSchemeType = AutoFillSchemeType.EdgeWeight;
         m_sEdgeWeightColumnName = edgeWeightColumnName;
         m_dEdgeWeightSourceCalculationNumber1 = sourceCalculationNumber1;
         m_dEdgeWeightSourceCalculationNumber2 = sourceCalculationNumber2;
+        m_iEdgeWeightDecimalPlaces = decimalPlaces;
     }
 
     //*************************************************************************
@@ -220,6 +228,11 @@ public class AutoFillWorkbookWithSchemeResults : Object
     /// stored if true is returned.
     /// </param>
     ///
+    /// <param name="decimalPlaces">
+    /// Where the number of decimal places displayed in the source column gets
+    /// stored if true is returned.
+    /// </param>
+    ///
     /// <remarks>
     /// Call this only if <see cref="SchemeType" /> returns <see
     /// cref="AutoFillSchemeType.EdgeWeight" />.
@@ -231,7 +244,8 @@ public class AutoFillWorkbookWithSchemeResults : Object
     (
         out String edgeWeightColumnName,
         out Double sourceCalculationNumber1,
-        out Double sourceCalculationNumber2
+        out Double sourceCalculationNumber2,
+        out Int32 decimalPlaces
     )
     {
         Debug.Assert(m_eSchemeType == AutoFillSchemeType.EdgeWeight);
@@ -240,6 +254,7 @@ public class AutoFillWorkbookWithSchemeResults : Object
         edgeWeightColumnName = m_sEdgeWeightColumnName;
         sourceCalculationNumber1 = m_dEdgeWeightSourceCalculationNumber1;
         sourceCalculationNumber2 = m_dEdgeWeightSourceCalculationNumber2;
+        decimalPlaces = m_iEdgeWeightDecimalPlaces;
     }
 
     //*************************************************************************
@@ -373,7 +388,7 @@ public class AutoFillWorkbookWithSchemeResults : Object
             case AutoFillSchemeType.VertexCategory:
 
                 return ( String.Join(
-                    AutoFillWorkbookResults.FieldSeparatorString,
+                    PerWorkbookSettings.FieldSeparatorString,
 
                     new String [] {
                         sSchemeType,
@@ -386,7 +401,7 @@ public class AutoFillWorkbookWithSchemeResults : Object
             case AutoFillSchemeType.EdgeWeight:
 
                 return ( String.Join(
-                    AutoFillWorkbookResults.FieldSeparatorString,
+                    PerWorkbookSettings.FieldSeparatorString,
 
                     new String [] {
                         sSchemeType,
@@ -396,13 +411,15 @@ public class AutoFillWorkbookWithSchemeResults : Object
                             oInvariantCulture),
 
                         m_dEdgeWeightSourceCalculationNumber2.ToString(
-                            oInvariantCulture)
+                            oInvariantCulture),
+
+                        m_iEdgeWeightDecimalPlaces.ToString(oInvariantCulture),
                     } ) );
 
             case AutoFillSchemeType.EdgeTimestamp:
 
                 return ( String.Join(
-                    AutoFillWorkbookResults.FieldSeparatorString,
+                    PerWorkbookSettings.FieldSeparatorString,
 
                     new String [] {
                         sSchemeType,
@@ -453,7 +470,7 @@ public class AutoFillWorkbookWithSchemeResults : Object
             new AutoFillWorkbookWithSchemeResults();
 
         String [] asFields = theString.Split(
-            AutoFillWorkbookResults.FieldSeparator);
+            PerWorkbookSettings.FieldSeparator);
 
         Int32 iFields = asFields.Length;
 
@@ -492,12 +509,13 @@ public class AutoFillWorkbookWithSchemeResults : Object
 
             case AutoFillSchemeType.EdgeWeight:
 
-                if (iFields == 4)
+                if (iFields == 5)
                 {
                     oAutoFillWorkbookWithSchemeResults.SetEdgeWeightResults(
                         asFields[1],
                         MathUtil.ParseCultureInvariantDouble( asFields[2] ),
-                        MathUtil.ParseCultureInvariantDouble( asFields[3] )
+                        MathUtil.ParseCultureInvariantDouble( asFields[3] ),
+                        MathUtil.ParseCultureInvariantInt32( asFields[4] )
                         );
                 }
 
@@ -565,6 +583,7 @@ public class AutoFillWorkbookWithSchemeResults : Object
             case AutoFillSchemeType.EdgeWeight:
 
                 Debug.Assert( !String.IsNullOrEmpty(m_sEdgeWeightColumnName) );
+                Debug.Assert(m_iEdgeWeightDecimalPlaces >= 0);
                 break;
 
             case AutoFillSchemeType.EdgeTimestamp:
@@ -637,6 +656,10 @@ public class AutoFillWorkbookWithSchemeResults : Object
     /// The actual second source number used in the calculations.
 
     protected Double m_dEdgeWeightSourceCalculationNumber2;
+
+    /// The number of decimal places displayed in the source column.
+
+    protected Int32 m_iEdgeWeightDecimalPlaces;
 
 
     //**************************

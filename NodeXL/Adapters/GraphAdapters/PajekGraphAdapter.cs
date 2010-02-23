@@ -144,27 +144,23 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
     //  Method: LoadGraphCore()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="Stream" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="Stream" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that can create a graph.
-    /// </param>
     ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="stream" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="stream" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="stream" />.  It
-    /// does not close <paramref name="stream" />.
+    /// This method creates a graph, loads it with the graph data read from
+    /// <paramref name="stream" />.  It does not close <paramref
+    /// name="stream" />.
     ///
     /// <para>
     /// The arguments have already been checked for validity.
@@ -176,11 +172,9 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
     protected override IGraph
     LoadGraphCore
     (
-        IGraphFactory graphFactory,
         Stream stream
     )
     {
-        Debug.Assert(graphFactory != null);
         Debug.Assert(stream != null);
         AssertValid();
 
@@ -346,8 +340,8 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
                 ) );
         }
 
-        IGraph oGraph = CreateGraph(graphFactory, aoVertices,
-            oUndirectedEdgeData, oDirectedEdgeData);
+        IGraph oGraph = CreateGraph(aoVertices, oUndirectedEdgeData,
+            oDirectedEdgeData);
 
         oUndirectedEdgeData.Clear();
         oDirectedEdgeData.Clear();
@@ -704,7 +698,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
 
         Debug.Assert(sName.Length > 0);
 
-        IVertex oVertex = ( new VertexFactory() ).CreateVertex();
+        IVertex oVertex = new Vertex();
         oVertex.Name = sName;
         aoVertices[iVerticesParsed] = oVertex;
         iVerticesParsed++;
@@ -982,10 +976,6 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// Creates a graph given collections of vertices and edges.
     /// </summary>
     ///
-    /// <param name="oGraphFactory">
-    /// Object that can create a graph.
-    /// </param>
-    ///
     /// <param name="aoVertices">
     /// Vertices to add to the graph, or null if there are no vertices.
     /// </param>
@@ -1006,13 +996,11 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
     protected IGraph
     CreateGraph
     (
-        IGraphFactory oGraphFactory,
         IVertex [] aoVertices,
         List<PajekEdgeData> oUndirectedEdgeData,
         List<PajekEdgeData> oDirectedEdgeData
     )
     {
-        Debug.Assert(oGraphFactory != null);
         Debug.Assert(oUndirectedEdgeData != null);
         Debug.Assert(oDirectedEdgeData != null);
 
@@ -1031,9 +1019,7 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
             eDirectedness = GraphDirectedness.Directed;
         }
 
-        IGraph oGraph = oGraphFactory.CreateGraph(
-            eDirectedness, GraphRestrictions.None);
-
+        IGraph oGraph = new Graph(eDirectedness);
         IVertexCollection oVertices = oGraph.Vertices;
         IEdgeCollection oEdges = oGraph.Edges;
 

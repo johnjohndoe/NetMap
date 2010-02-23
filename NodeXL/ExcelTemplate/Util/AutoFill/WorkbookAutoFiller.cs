@@ -56,7 +56,7 @@ public static class WorkbookAutoFiller : Object
     ///
     /// <para>
     /// In addition to autofilling one or more columns, this method stores the
-    /// results of the autofill as a <see cref="AutoFillWorkbookResults" />
+    /// results of the autofill as an <see cref="AutoFillWorkbookResults" />
     /// using <see cref="PerWorkbookSettings" />.
     /// </para>
     ///
@@ -200,18 +200,21 @@ public static class WorkbookAutoFiller : Object
         Debug.Assert(oAutoFillWorkbookResults != null);
 
         Double dSourceCalculationNumber1, dSourceCalculationNumber2;
+        Int32 iDecimalPlaces;
 
         if ( TryAutoFillColorColumn(oEdgeTable,
                 oAutoFillUserSettings.EdgeColorSourceColumnName,
                 EdgeTableColumnNames.Color,
                 oAutoFillUserSettings.EdgeColorDetails,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
         {
             oAutoFillWorkbookResults.EdgeColorResults =
                 new AutoFillColorColumnResults(
                     oAutoFillUserSettings.EdgeColorSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.EdgeColorDetails.DestinationColor1,
                     oAutoFillUserSettings.EdgeColorDetails.DestinationColor2
                     );
@@ -221,13 +224,15 @@ public static class WorkbookAutoFiller : Object
                 oAutoFillUserSettings.EdgeWidthSourceColumnName,
                 EdgeTableColumnNames.Width,
                 oAutoFillUserSettings.EdgeWidthDetails,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
         {
             oAutoFillWorkbookResults.EdgeWidthResults =
                 new AutoFillNumericRangeColumnResults(
                     oAutoFillUserSettings.EdgeWidthSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.EdgeWidthDetails.DestinationNumber1,
                     oAutoFillUserSettings.EdgeWidthDetails.DestinationNumber2
                     );
@@ -237,13 +242,15 @@ public static class WorkbookAutoFiller : Object
                 oAutoFillUserSettings.EdgeAlphaSourceColumnName,
                 EdgeTableColumnNames.Alpha,
                 oAutoFillUserSettings.EdgeAlphaDetails,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
         {
             oAutoFillWorkbookResults.EdgeAlphaResults =
                 new AutoFillNumericRangeColumnResults(
                     oAutoFillUserSettings.EdgeAlphaSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.EdgeAlphaDetails.DestinationNumber1,
                     oAutoFillUserSettings.EdgeAlphaDetails.DestinationNumber2
                     );
@@ -294,19 +301,22 @@ public static class WorkbookAutoFiller : Object
         Debug.Assert(oAutoFillWorkbookResults != null);
 
         Double dSourceCalculationNumber1, dSourceCalculationNumber2;
+        Int32 iDecimalPlaces;
 
         if ( TryAutoFillColorColumn(oVertexTable,
                 oAutoFillUserSettings.VertexColorSourceColumnName,
                 VertexTableColumnNames.Color,
                 oAutoFillUserSettings.VertexColorDetails,
                 out dSourceCalculationNumber1,
-                out dSourceCalculationNumber2
+                out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
         {
             oAutoFillWorkbookResults.VertexColorResults =
                 new AutoFillColorColumnResults(
                     oAutoFillUserSettings.VertexColorSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.VertexColorDetails.DestinationColor1,
                     oAutoFillUserSettings.VertexColorDetails.DestinationColor2
                     );
@@ -322,13 +332,15 @@ public static class WorkbookAutoFiller : Object
                 oAutoFillUserSettings.VertexRadiusSourceColumnName,
                 VertexTableColumnNames.Radius,
                 oAutoFillUserSettings.VertexRadiusDetails,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
         {
             oAutoFillWorkbookResults.VertexRadiusResults =
                 new AutoFillNumericRangeColumnResults(
                     oAutoFillUserSettings.VertexRadiusSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.VertexRadiusDetails.
                         DestinationNumber1,
                     oAutoFillUserSettings.VertexRadiusDetails.
@@ -340,13 +352,15 @@ public static class WorkbookAutoFiller : Object
                 oAutoFillUserSettings.VertexAlphaSourceColumnName,
                 VertexTableColumnNames.Alpha,
                 oAutoFillUserSettings.VertexAlphaDetails,
-                out dSourceCalculationNumber1, out dSourceCalculationNumber2
+                out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+                out iDecimalPlaces
                 ) )
         {
             oAutoFillWorkbookResults.VertexAlphaResults =
                 new AutoFillNumericRangeColumnResults(
                     oAutoFillUserSettings.VertexAlphaSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.VertexAlphaDetails.DestinationNumber1,
                     oAutoFillUserSettings.VertexAlphaDetails.DestinationNumber2
                     );
@@ -361,8 +375,8 @@ public static class WorkbookAutoFiller : Object
             oAutoFillUserSettings.VertexLabelFillColorSourceColumnName,
             VertexTableColumnNames.LabelFillColor,
             oAutoFillUserSettings.VertexLabelFillColorDetails,
-            out dSourceCalculationNumber1,
-            out dSourceCalculationNumber2
+            out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+            out iDecimalPlaces
             );
 
         AutoFillColumnViaCopy(oVertexTable,
@@ -380,14 +394,16 @@ public static class WorkbookAutoFiller : Object
             oAutoFillUserSettings.VertexLayoutOrderSourceColumnName,
             VertexTableColumnNames.LayoutOrder,
             oAutoFillUserSettings.VertexLayoutOrderDetails,
-            out dSourceCalculationNumber1, out dSourceCalculationNumber2
+            out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+            out iDecimalPlaces
             );
 
         Boolean bXAutoFilled = TryAutoFillNumericRangeColumn(oVertexTable,
             oAutoFillUserSettings.VertexXSourceColumnName,
             VertexTableColumnNames.X,
             oAutoFillUserSettings.VertexXDetails,
-            out dSourceCalculationNumber1, out dSourceCalculationNumber2
+            out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+            out iDecimalPlaces
             );
 
         Double dYSourceCalculationNumber1, dYSourceCalculationNumber2;
@@ -396,15 +412,20 @@ public static class WorkbookAutoFiller : Object
             oAutoFillUserSettings.VertexYSourceColumnName,
             VertexTableColumnNames.Y,
             oAutoFillUserSettings.VertexYDetails,
-            out dYSourceCalculationNumber1, out dYSourceCalculationNumber2
+            out dYSourceCalculationNumber1, out dYSourceCalculationNumber2,
+            out iDecimalPlaces
             );
 
         if (bXAutoFilled && bYAutoFilled)
         {
+            // (Note that the decimal places for the Y column take precedence
+            // here.)
+
             oAutoFillWorkbookResults.VertexXResults =
                 new AutoFillNumericRangeColumnResults(
                     oAutoFillUserSettings.VertexXSourceColumnName,
                     dSourceCalculationNumber1, dSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.VertexXDetails.DestinationNumber1,
                     oAutoFillUserSettings.VertexXDetails.DestinationNumber2
                     );
@@ -413,6 +434,7 @@ public static class WorkbookAutoFiller : Object
                 new AutoFillNumericRangeColumnResults(
                     oAutoFillUserSettings.VertexYSourceColumnName,
                     dYSourceCalculationNumber1, dYSourceCalculationNumber2,
+                    iDecimalPlaces,
                     oAutoFillUserSettings.VertexYDetails.DestinationNumber1,
                     oAutoFillUserSettings.VertexYDetails.DestinationNumber2
                     );
@@ -422,14 +444,16 @@ public static class WorkbookAutoFiller : Object
             oAutoFillUserSettings.VertexPolarRSourceColumnName,
             VertexTableColumnNames.PolarR,
             oAutoFillUserSettings.VertexPolarRDetails,
-            out dSourceCalculationNumber1, out dSourceCalculationNumber2
+            out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+            out iDecimalPlaces
             );
 
         TryAutoFillNumericRangeColumn(oVertexTable,
             oAutoFillUserSettings.VertexPolarAngleSourceColumnName,
             VertexTableColumnNames.PolarAngle,
             oAutoFillUserSettings.VertexPolarAngleDetails,
-            out dSourceCalculationNumber1, out dSourceCalculationNumber2
+            out dSourceCalculationNumber1, out dSourceCalculationNumber2,
+            out iDecimalPlaces
             );
     }
 
@@ -467,6 +491,10 @@ public static class WorkbookAutoFiller : Object
     /// stored if true is returned.
     /// </param>
     ///
+    /// <param name="iDecimalPlaces">
+    /// Where the number of decimal places displayed in the column gets stored.
+    /// </param>
+    ///
     /// <returns>
     /// true if the autofill was performed.
     /// </returns>
@@ -480,7 +508,8 @@ public static class WorkbookAutoFiller : Object
         String sDestinationColumnName,
         ColorColumnAutoFillUserSettings oDetails,
         out Double dSourceCalculationNumber1,
-        out Double dSourceCalculationNumber2
+        out Double dSourceCalculationNumber2,
+        out Int32 iDecimalPlaces
     )
     {
         Debug.Assert(oTable != null);
@@ -489,6 +518,8 @@ public static class WorkbookAutoFiller : Object
 
         dSourceCalculationNumber1 = dSourceCalculationNumber2 =
             Double.MinValue;
+
+        iDecimalPlaces = Int32.MinValue;
 
         if ( String.IsNullOrEmpty(sSourceColumnName) )
         {
@@ -506,7 +537,8 @@ public static class WorkbookAutoFiller : Object
             oDetails.IgnoreOutliers,
             oDetails.UseLogs,
             out dSourceCalculationNumber1,
-            out dSourceCalculationNumber2
+            out dSourceCalculationNumber2,
+            out iDecimalPlaces
             ) );
     }
 
@@ -544,6 +576,10 @@ public static class WorkbookAutoFiller : Object
     /// stored if true is returned.
     /// </param>
     ///
+    /// <param name="iDecimalPlaces">
+    /// Where the number of decimal places displayed in the column gets stored.
+    /// </param>
+    ///
     /// <returns>
     /// true if the autofill was performed.
     /// </returns>
@@ -557,7 +593,8 @@ public static class WorkbookAutoFiller : Object
         String sDestinationColumnName,
         NumericRangeColumnAutoFillUserSettings oDetails,
         out Double dSourceCalculationNumber1,
-        out Double dSourceCalculationNumber2
+        out Double dSourceCalculationNumber2,
+        out Int32 iDecimalPlaces
     )
     {
         Debug.Assert(oTable != null);
@@ -566,6 +603,8 @@ public static class WorkbookAutoFiller : Object
 
         dSourceCalculationNumber1 = dSourceCalculationNumber2 =
             Double.MinValue;
+
+        iDecimalPlaces = Int32.MinValue;
 
         if ( String.IsNullOrEmpty(sSourceColumnName) )
         {
@@ -583,7 +622,8 @@ public static class WorkbookAutoFiller : Object
             oDetails.IgnoreOutliers,
             oDetails.UseLogs,
             out dSourceCalculationNumber1,
-            out dSourceCalculationNumber2
+            out dSourceCalculationNumber2,
+            out iDecimalPlaces
             ) );
     }
 

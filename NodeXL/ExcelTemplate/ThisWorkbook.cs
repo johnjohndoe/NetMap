@@ -249,8 +249,8 @@ public partial class ThisWorkbook
                 return;
             }
 
-            IGraph oGraph = ( new GraphMLGraphAdapter() ).LoadGraph(
-                new GraphFactory(), sGraphDataAsGraphML);
+            IGraph oGraph = ( new GraphMLGraphAdapter() ).LoadGraphFromString(
+                sGraphDataAsGraphML);
 
             ImportGraph(oGraph, 
 
@@ -543,16 +543,16 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: ConvertOldWorkbook()
+    //  Method: ConvertNodeXLWorkbook()
     //
     /// <summary>
-    /// Converts an old workbook created with an earlier version of the program
-    /// to work with the current version.
+    /// Copies a NodeXL workbook created on another machine and converts the
+    /// copy to work on this machine.
     /// </summary>
     //*************************************************************************
 
     public void
-    ConvertOldWorkbook()
+    ConvertNodeXLWorkbook()
     {
         AssertValid();
 
@@ -561,10 +561,10 @@ public partial class ThisWorkbook
             return;
         }
 
-        ConvertOldWorkbookDialog oConvertOldWorkbookDialog =
-            new ConvertOldWorkbookDialog(this.Application);
+        ConvertNodeXLWorkbookDialog oConvertNodeXLWorkbookDialog =
+            new ConvertNodeXLWorkbookDialog(this.Application);
 
-        oConvertOldWorkbookDialog.ShowDialog();
+        oConvertNodeXLWorkbookDialog.ShowDialog();
     }
 
     //*************************************************************************

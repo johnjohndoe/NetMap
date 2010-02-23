@@ -85,10 +85,10 @@ public class GraphMetricValueOrdered : GraphMetricValue
     /// <remarks>
     /// If a style is ever applied to a row, a style should always be applied
     /// to the row.  If the CellStyleNames.Bad style is applied when the row is
-	/// bad, for example, using a default null style when the row is good would
-	/// always leave the bad style in place.  Instead, the
-	/// CellStyleNames.GraphMetricGood style should be applied when the row is
-	/// good.
+    /// bad, for example, using a default null style when the row is good would
+    /// always leave the bad style in place.  Instead, the
+    /// CellStyleNames.GraphMetricGood style should be applied when the row is
+    /// good.
     /// </remarks>
     //*************************************************************************
 
@@ -118,10 +118,10 @@ public class GraphMetricValueOrdered : GraphMetricValue
     /// <remarks>
     /// If a style is ever applied to a row, a style should always be applied
     /// to the row.  If the CellStyleNames.Bad style is applied when the row is
-	/// bad, for example, using a default null style when the row is good would
-	/// always leave the bad style in place.  Instead, the
-	/// CellStyleNames.GraphMetricGood style should be applied when the row is
-	/// good.
+    /// bad, for example, using a default null style when the row is good would
+    /// always leave the bad style in place.  Instead, the
+    /// CellStyleNames.GraphMetricGood style should be applied when the row is
+    /// good.
     /// </remarks>
     //*************************************************************************
 

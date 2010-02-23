@@ -35,7 +35,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <seealso cref="LayoutManager" />
 /// <seealso cref="LayoutManagerForMenu" />
-/// <seealso cref="LayoutManagerForComboBox" />
+/// <seealso cref="LayoutManagerForToolStripSplitButton" />
 //*****************************************************************************
 
 public class LayoutManagerForRibbonDropDown : LayoutManager
@@ -164,6 +164,8 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
 
         foreach ( LayoutInfo oLayoutInfo in AllLayouts.GetAllLayouts() )
         {
+            // Note: Separators cannot be added to the RibbonDropDown class.
+
             if (oLayoutInfo != AllLayouts.LayoutGroupSeparator)
             {
                 LayoutType eLayout = oLayoutInfo.Layout;
@@ -174,7 +176,8 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
                 }
 
                 RibbonDropDownItem oItem = new RibbonDropDownItem();
-                oItem.Label = oLayoutInfo.Text;
+                oItem.Label = oItem.ScreenTip = oLayoutInfo.Text;
+                oItem.SuperTip = oLayoutInfo.Description;
                 oItem.Tag = eLayout;
 
                 oItems.Add(oItem);

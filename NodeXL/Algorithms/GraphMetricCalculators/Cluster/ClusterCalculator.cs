@@ -183,10 +183,6 @@ public class ClusterCalculator : GraphMetricCalculatorBase
 
         oGraphMetrics = oCommunities;
 
-        #if false
-        WriteCommunitiesToTrace(oCommunities);
-        #endif
-
         if (iVertices == 0 || iEdges == 0)
         {
             // There is no point in going any further.
@@ -204,10 +200,6 @@ public class ClusterCalculator : GraphMetricCalculatorBase
         // Initialize all the delta Q values.
 
         InitializeDeltaQs(oCommunities, oDeltaQMaxHeap, iEdges);
-
-        #if false
-        WriteCommunitiesToTrace(oCommunities);
-        #endif
 
         // Run the algorithm outlined in the Wakita/Tsurumi paper.
 
@@ -258,10 +250,6 @@ public class ClusterCalculator : GraphMetricCalculatorBase
 
             iMergeCycles++;
         }
-
-        #if false
-        WriteCommunitiesToTrace(oCommunities);
-        #endif
 
         return (true);
     }
@@ -647,36 +635,6 @@ public class ClusterCalculator : GraphMetricCalculatorBase
         oDeltaQMaxHeap.Remove(oCommunity1);
         oDeltaQMaxHeap.Remove(oCommunity2);
         oDeltaQMaxHeap.Add(oNewCommunity, oNewCommunity.MaximumDeltaQ);
-    }
-
-    //*************************************************************************
-    //  Method: WriteCommunitiesToTrace()
-    //
-    /// <summary>
-    /// Writes the collection of communities to the TraceListeners collection.
-    /// Debug-only.
-    /// </summary>
-    ///
-    /// <param name="oCommunities">
-    /// List of all communities.
-    /// </param>
-    //*************************************************************************
-
-    [Conditional("DEBUG")]
-
-    protected void
-    WriteCommunitiesToTrace
-    (
-        LinkedList<Community> oCommunities
-    )
-    {
-        Debug.WriteLine(oCommunities != null);
-        AssertValid();
-
-        foreach (Community oCommunity in oCommunities)
-        {
-            Debug.Write( oCommunity.ToString("D") );
-        }
     }
 
 

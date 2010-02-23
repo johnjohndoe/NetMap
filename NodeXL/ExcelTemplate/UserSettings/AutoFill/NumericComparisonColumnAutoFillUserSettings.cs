@@ -178,34 +178,6 @@ public class NumericComparisonColumnAutoFillUserSettings : Object
         }
     }
 
-    //*************************************************************************
-    //  Method: Copy()
-    //
-    /// <summary>
-    /// Creates a deep copy of the object.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A deep copy of the object.
-    /// </returns>
-    //*************************************************************************
-
-    public NumericComparisonColumnAutoFillUserSettings
-    Copy()
-    {
-        AssertValid();
-
-        NumericComparisonColumnAutoFillUserSettings oCopy =
-            new NumericComparisonColumnAutoFillUserSettings();
-
-        oCopy.ComparisonOperator = this.ComparisonOperator;
-        oCopy.SourceNumberToCompareTo = this.SourceNumberToCompareTo;
-        oCopy.DestinationString1 = String.Copy(this.DestinationString1);
-        oCopy.DestinationString2 = String.Copy(this.DestinationString2);
-
-        return (oCopy);
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()

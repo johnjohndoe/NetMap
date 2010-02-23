@@ -350,6 +350,53 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
+    //  Property: AutoFillWorkbookSettings
+    //
+    /// <summary>
+    /// Gets or sets the per-workbook version of the user's autofill workbook
+    /// settings.
+    /// </summary>
+    ///
+    /// <value>
+    /// The per-workbook version of the user's autofill workbook settings, as a
+    /// String, or null if autofill settings aren't available.
+    /// </value>
+    ///
+    /// <remarks>
+    /// See the AutoFillSettingsProvider class for details on how the user's
+    /// autofill workbook settings are managed.
+    /// </remarks>
+    //*************************************************************************
+
+    public String
+    AutoFillWorkbookSettings
+    {
+        get
+        {
+            AssertValid();
+
+            // The results are stored in the workbook as a String.
+
+            Object oAutoFillWorkbookSettings;
+
+            if ( TryGetValue(AutoFillWorkbookSettingsSettingName,
+                typeof(String), out oAutoFillWorkbookSettings) )
+            {
+                return ( (String)oAutoFillWorkbookSettings );
+            }
+
+            return (null);
+        }
+
+        set
+        {
+            SetValue(AutoFillWorkbookSettingsSettingName, value);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: AutoFillWorkbookResults
     //
     /// <summary>
@@ -995,6 +1042,11 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
     protected const String FilteredAlphaSettingName = "Filtered Alpha";
 
+    /// Name of the AutoFillWorkbookSettings setting.
+
+    protected const String AutoFillWorkbookSettingsSettingName =
+        "Autofill Workbook Settings";
+
     /// Name of the AutoFillWorkbookResults setting.
 
     protected const String AutoFillWorkbookResultsSettingName =
@@ -1004,7 +1056,6 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
     protected const String AutoFillWorkbookWithSchemeResultsSettingName =
         "Autofill Workbook With Scheme Results";
-
 
 
     //*************************************************************************
@@ -1023,6 +1074,21 @@ public class PerWorkbookSettings : WorksheetReaderBase
     /// Default value of the FilteredAlpha property.
 
     protected const Single DefaultFilteredAlpha = 0;
+
+
+    //*************************************************************************
+    //  Separator constants
+    //*************************************************************************
+
+    /// Field separator used by various classes that store joined strings in
+    /// the per-workbook settings.  This is the Unicode "dark shade" character,
+    /// which is unlikely to be used within the strings that are joined.  This
+    /// is defined in both character array and string versions to accommodate
+    /// String.Split() and String.Join().
+
+    public static readonly Char [] FieldSeparator = new Char[] {'\u2593'};
+    ///
+    public const String FieldSeparatorString = "\u2593";
 
 
     //*************************************************************************

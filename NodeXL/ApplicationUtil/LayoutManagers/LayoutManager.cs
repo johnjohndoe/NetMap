@@ -27,14 +27,15 @@ namespace Microsoft.NodeXL.ApplicationUtil
 /// <para>
 /// Use the derived <see cref="LayoutManagerForMenu" /> class if your
 /// application uses ToolStripMenuItems for selecting the current layout.  Use
-/// the derived <see cref="LayoutManagerForComboBox" /> class if your
-/// application uses a ComboBox for selecting the current layout.
+/// the derived <see cref="LayoutManagerForToolStripSplitButton" /> class if
+/// your application uses a ToolStripSplitButton for selecting the current
+/// layout.
 /// </para>
 ///
 /// </remarks>
 ///
 /// <seealso cref="LayoutManagerForMenu" />
-/// <seealso cref="LayoutManagerForComboBox" />
+/// <seealso cref="LayoutManagerForToolStripSplitButton" />
 //*****************************************************************************
 
 public class LayoutManager : Object

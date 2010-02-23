@@ -134,7 +134,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
             new Dictionary<Int32, Int32>();
 
         // Calculate the degrees for each vertex using the
-		// VertexDegreeCalculator class in the Algorithms namespace, which
+        // VertexDegreeCalculator class in the Algorithms namespace, which
         // knows nothing about Excel.
         //
         // For simplicity, all degree metrics (in-degree, out-degree, and
@@ -192,7 +192,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
 
         graphMetricColumns = FilterGraphMetricColumns(graph,
             calculateGraphMetricsContext, oInDegreeGraphMetricValues,
-			oOutDegreeGraphMetricValues, oDegreeGraphMetricValues);
+            oOutDegreeGraphMetricValues, oDegreeGraphMetricValues);
 
         return (true);
     }

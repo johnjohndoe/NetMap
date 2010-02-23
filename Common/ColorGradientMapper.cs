@@ -103,6 +103,8 @@ public class ColorGradientMapper
 
         if (dMaxColorMetric <= dMinColorMetric)
         {
+            Debug.Assert(false);
+
             throw new ArgumentOutOfRangeException("dMaxColorMetric",
                 dMaxColorMetric,
                 sMethodName + ": dMaxColorMetric must be > dMinColorMetric.");
@@ -110,6 +112,8 @@ public class ColorGradientMapper
 
         if (iDiscreteColorCount < 2 || iDiscreteColorCount > 256)
         {
+            Debug.Assert(false);
+
             throw new ArgumentOutOfRangeException("iDiscreteColorCount",
                 iDiscreteColorCount,
                 sMethodName +
@@ -176,6 +180,8 @@ public class ColorGradientMapper
     {
         if (m_iDiscreteColorCount == 0)
         {
+            Debug.Assert(false);
+
             throw new InvalidOperationException(
                 "ColorGradientMapper.ColorMetricToColor: Must call"
                 + " Initialize() first.");
@@ -229,6 +235,8 @@ public class ColorGradientMapper
     {
         if (m_iDiscreteColorCount == 0)
         {
+            Debug.Assert(false);
+
             throw new InvalidOperationException(
                 "ColorGradientMapper.ColorMetricToBrush: Must call"
                 + " Initialize() first.");
@@ -236,6 +244,8 @@ public class ColorGradientMapper
 
         if (m_aoDiscreteBrushes == null)
         {
+            Debug.Assert(false);
+
             throw new InvalidOperationException(
                 "ColorGradientMapper.ColorMetricToBrush: Must specify"
                 + " bCreateBrushes=true in Initialize() call.");

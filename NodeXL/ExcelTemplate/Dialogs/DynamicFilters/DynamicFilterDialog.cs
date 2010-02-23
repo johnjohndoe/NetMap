@@ -1,5 +1,4 @@
 
-
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
@@ -345,6 +344,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         AssertValid();
 
         m_bHandleControlEvents = false;
+        this.UseWaitCursor = true;
 
         m_oEdgeDynamicFilterColumnData =
             InitializeDynamicFiltersForOneTable(WorksheetNames.Edges,
@@ -358,6 +358,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
         grpEdgeFilters.Visible = grpVertexFilters.Visible = true;
 
+        this.UseWaitCursor = false;
         m_bHandleControlEvents = true;
     }
 
@@ -458,19 +459,37 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
                 case "NumericFilterParameters":
                 case "DateTimeFilterParameters":
 
-                    // Add a label and a range track bar control to the
-                    // GroupBox.
+                    Label oLabel = AddLabelToGroupBox(oDynamicFilterParameters,
+                        oGroupBox, iX, iY);
 
-                    AddLabelToGroupBox(oDynamicFilterParameters, oGroupBox,
+                    PictureBox oHistogram = AddHistogramToGroupBox(
+                        sWorksheetName, oDynamicFilterParameters, oGroupBox,
                         iX, ref iY);
 
                     Debug.Assert(oDynamicFilterParameters is
                         NumericFilterParameters);
 
-                    AddRangeTrackBarToGroupBox(
-                        (NumericFilterParameters)oDynamicFilterParameters,
-                        sTableName, oGroupBox, oDynamicFilterConditions,
-                        iX, ref iY);
+                    IDynamicFilterRangeTrackBar oDynamicFilterRangeTrackBar =
+                        AddRangeTrackBarToGroupBox(
+                            (NumericFilterParameters)oDynamicFilterParameters,
+                            sTableName, oGroupBox, oDynamicFilterConditions,
+                            iX, ref iY);
+
+                    // Adjust the location and dimension of the controls that
+                    // depend on other controls.
+
+                    Rectangle oInternalTrackBarBounds =
+                        oDynamicFilterRangeTrackBar.InternalTrackBarBounds;
+
+                    oHistogram.Width = oInternalTrackBarBounds.Width;
+
+                    oHistogram.Left = oDynamicFilterRangeTrackBar.Left
+                        + oInternalTrackBarBounds.Left;
+
+                    oLabel.Width = oHistogram.Left - oLabel.Left
+                        - LabelRightMargin;
+
+                    oLabel.Height = oHistogram.Height;
 
                     break;
 
@@ -606,18 +625,24 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     /// </param>
     ///
     /// <param name="iY">
-    /// y-coordinate of the Label.  When this method returns, this is set to
-    /// the y-coordinate to use for the dynamic filter control.
+    /// y-coordinate of the Label.  Note that this does NOT get increased by
+    /// the height of the Label.  The histogram, which has the same Top
+    /// coordinate as the Label, is taller than the Label, so
+    /// AddHistogramImageToPictureBox() increases iY, not this method.
     /// </param>
+    ///
+    /// <returns>
+    /// The new Label.
+    /// </returns>
     //*************************************************************************
 
-    protected void
+    protected Label
     AddLabelToGroupBox
     (
         DynamicFilterParameters oDynamicFilterParameters,
         GroupBox oGroupBox,
         Int32 iX,
-        ref Int32 iY
+        Int32 iY
     )
     {
         Debug.Assert(oGroupBox != null);
@@ -628,16 +653,197 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         oLabel.Text = oDynamicFilterParameters.ColumnName + ":";
         oLabel.Location = new Point(iX, iY);
         oLabel.Margin = Padding.Empty;
-        oLabel.Height = 15;
-        oLabel.Width = oGroupBox.Width - (2 * iX);
-
-        oLabel.Anchor =
-            AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-
         oLabel.AutoEllipsis = true;
+
+        // The actual size of the Label will get set by the caller.
+
+        oLabel.AutoSize = false;
+
         oGroupBox.Controls.Add(oLabel);
 
-        iY += oLabel.Height + LabelBottomMargin;
+        return (oLabel);
+    }
+
+    //*************************************************************************
+    //  Method: AddHistogramToGroupBox()
+    //
+    /// <summary>
+    /// Adds a dynamic filter control histogram to a GroupBox.
+    /// </summary>
+    ///
+    /// <param name="sWorksheetName">
+    /// Name of the worksheet containing the column the histogram is for.
+    /// </param>
+    ///
+    /// <param name="oDynamicFilterParameters">
+    /// Parameters for the dynamic filter control.
+    /// </param>
+    ///
+    /// <param name="oGroupBox">
+    /// GroupBox to which the histogram should be added.
+    /// </param>
+    ///
+    /// <param name="iX">
+    /// x-coordinate of the histogram.
+    /// </param>
+    ///
+    /// <param name="iY">
+    /// y-coordinate of the histogram.  Gets increased by the height of the
+    /// histogram.
+    /// </param>
+    ///
+    /// <returns>
+    /// The new PictureBox that displays the histogram.
+    /// </returns>
+    //*************************************************************************
+
+    protected PictureBox
+    AddHistogramToGroupBox
+    (
+        String sWorksheetName,
+        DynamicFilterParameters oDynamicFilterParameters,
+        GroupBox oGroupBox,
+        Int32 iX,
+        ref Int32 iY
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
+        Debug.Assert(oDynamicFilterParameters != null);
+        Debug.Assert(oGroupBox != null);
+        AssertValid();
+
+        // The histogram is a PictureBox containing an image created by Excel.
+
+        PictureBoxPlus oPictureBox = new PictureBoxPlus();
+        oPictureBox.Location = new Point(iX, iY);
+        oPictureBox.Margin = Padding.Empty;
+        oPictureBox.Height = HistogramHeight;
+        oPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+
+        oPictureBox.Anchor =
+            AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+
+        oGroupBox.Controls.Add(oPictureBox);
+
+        AddHistogramImageToPictureBox(sWorksheetName, oDynamicFilterParameters,
+            oPictureBox);
+
+        iY += oPictureBox.Height + HistogramBottomMargin;
+
+        return (oPictureBox);
+    }
+
+    //*************************************************************************
+    //  Method: AddHistogramImageToPictureBox()
+    //
+    /// <summary>
+    /// Adds a dynamic filter control histogram image to a PictureBox.
+    /// </summary>
+    ///
+    /// <param name="sWorksheetName">
+    /// Name of the worksheet containing the column the histogram is for.
+    /// </param>
+    ///
+    /// <param name="oDynamicFilterParameters">
+    /// Parameters for the dynamic filter control.
+    /// </param>
+    ///
+    /// <param name="oPictureBox">
+    /// The PictureBox to which the histogram image should be added.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddHistogramImageToPictureBox
+    (
+        String sWorksheetName,
+        DynamicFilterParameters oDynamicFilterParameters,
+        PictureBoxPlus oPictureBox
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
+        Debug.Assert(oDynamicFilterParameters != null);
+        Debug.Assert(oPictureBox != null);
+        AssertValid();
+
+        // This method uses the following technique to get Excel to generate
+        // the histogram image.
+        //
+        // There is a hidden chart on the Miscellaneous worksheet that is
+        // used for the histogram.  It gets its data from two columns in a
+        // hidden table on the Overall Metrics worksheet that use Excel
+        // formulas to calculate the frequency distribution of the values in an
+        // Excel column, called the "source column."  The formulas use Excel's
+        // INDIRECT() function to get the address of the source column from a
+        // cell named NamedRange.DynamicFilterSourceColumnRange.
+        //
+        // In a new workbook, the frequency distribution columns initially
+        // contain all #REF! errors, because the named range is empty.  This
+        // method sets the named range to something like
+        // "Vertices[ColumnName]", then forces Excel to recalculate the
+        // frequency distribution columns.  This causes a histogram to appear
+        // in the chart.  An image of the chart is then copied to the clipboard
+        // and pasted into the PictureBox.
+
+        Microsoft.Office.Interop.Excel.Worksheet oOverallMetricsWorksheet,
+            oMiscellaneousWorksheet;
+
+        Microsoft.Office.Interop.Excel.Range oDynamicFilterSourceColumnRange,
+            oDynamicFilterForceCalculationRange;
+
+        Microsoft.Office.Interop.Excel.Chart oDynamicFilterHistogram;
+
+        if (
+            ExcelUtil.TryGetWorksheet(m_oWorkbook,
+                WorksheetNames.OverallMetrics, out oOverallMetricsWorksheet)
+            &&
+            ExcelUtil.TryGetNamedRange(oOverallMetricsWorksheet,
+                NamedRangeNames.DynamicFilterSourceColumnRange,
+                out oDynamicFilterSourceColumnRange)
+            &&
+            ExcelUtil.TryGetNamedRange(oOverallMetricsWorksheet,
+                NamedRangeNames.DynamicFilterForceCalculationRange,
+                out oDynamicFilterForceCalculationRange)
+            &&
+            ExcelUtil.TryGetWorksheet(m_oWorkbook,
+                WorksheetNames.Miscellaneous, out oMiscellaneousWorksheet)
+            &&
+            ExcelUtil.TryGetChart(oMiscellaneousWorksheet,
+                ChartNames.DynamicFilterHistogram, out oDynamicFilterHistogram)
+            )
+        {
+            // Set the named range to the address of the source column.
+            // Sample: "Vertices[Degree]".
+
+            oDynamicFilterSourceColumnRange.set_Value(Missing.Value,
+                String.Format(
+                    "{0}[{1}]",
+                    sWorksheetName,
+                    oDynamicFilterParameters.ColumnName
+                    )
+                );
+
+            // Excel's automatic calculation may be turned off, either by the
+            // user or by code elsewhere in this dialog.  Make sure the
+            // frequency distribution columns get calculated.
+
+            oDynamicFilterForceCalculationRange.Calculate();
+
+            // Make sure the chart is drawn immediately.
+
+            oDynamicFilterHistogram.Refresh();
+
+            // Tell Excel to copy the chart image to the clipboard.  (Although
+            // the second argument to CopyPicture is xlBitmap, no bitmap gets
+            // copied.  Instead, Excel uses an enhanced metafile.)
+
+            oDynamicFilterHistogram.CopyPicture(
+                Microsoft.Office.Interop.Excel.XlPictureAppearance.xlScreen,
+                Microsoft.Office.Interop.Excel.XlCopyPictureFormat.xlBitmap,
+                Microsoft.Office.Interop.Excel.XlPictureAppearance.xlScreen);
+
+            oPictureBox.TryPasteEnhancedMetafile();
+        }
     }
 
     //*************************************************************************
@@ -668,12 +874,16 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     /// </param>
     ///
     /// <param name="iY">
-    /// y-coordinate of the range track bar.  When this method returns, this is
-    /// set to the y-coordinate to use for the next Label.
+    /// y-coordinate of the range track bar.  Gets increased by the height of
+    /// the range track bar.
     /// </param>
+    ///
+    /// <returns>
+    /// The new range track bar.
+    /// </returns>
     //*************************************************************************
 
-    protected void
+    protected IDynamicFilterRangeTrackBar
     AddRangeTrackBarToGroupBox
     (
         NumericFilterParameters oNumericFilterParameters,
@@ -769,6 +979,8 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
             sSelectedMinimumAddress,
             sSelectedMaximumAddress
             );
+
+        return (oDynamicFilterRangeTrackBar);
     }
 
     //*************************************************************************
@@ -829,7 +1041,7 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
         // Check whether the entire table is empty.  (The default state of a
         // table in a new workbook is one empty row.)
 
-        if ( !ExcelUtil.TableIsEmpty(oTable) )
+        if ( !ExcelUtil.VisibleTableRangeIsEmpty(oTable) )
         {
             // Set every cell to the filter formula.
 
@@ -1577,15 +1789,25 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
 
     protected const Int32 MaximumDynamicFiltersPerTable = 20;
 
-    /// Vertical margin between a dynamic filter label and its dynamic filter
-    /// control.
+    /// Margin between the right edge of a dynamic filter label and the left
+    /// edge of the histogram.  (The label and histogram have the same Top
+    /// coordinate.)
 
-    protected const Int32 LabelBottomMargin = 1;
+    protected const Int32 LabelRightMargin = 2;
 
-    /// Vertical margin between a dynamic filter control and the next dynamic
-    /// filter label.
+    /// Height of a dynamic filter histogram.
 
-    protected const Int32 DynamicFilterControlBottomMargin = 5;
+    protected const Int32 HistogramHeight = 40;
+
+    /// Vertical margin between the bottom of a dynamic filter histogram and
+    /// the top of a dynamic filter range track bar control.
+
+    protected const Int32 HistogramBottomMargin = 1;
+
+    /// Vertical margin between the bottom of a dynamic filter range track bar
+    /// control and the next dynamic filter label and histogram.
+
+    protected const Int32 DynamicFilterControlBottomMargin = 20;
 
     /// Vertical margin between the group boxes containing the dynamic filters.
 

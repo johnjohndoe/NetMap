@@ -138,7 +138,7 @@ public static class MathUtil
     //  Method: ParseCultureInvariantInt32()
     //
     /// <summary>
-	/// Parses a string containing an Int32 using the invariant culture.
+    /// Parses a string containing an Int32 using the invariant culture.
     /// </summary>
     ///
     /// <param name="s">
@@ -163,7 +163,7 @@ public static class MathUtil
     //  Method: ParseCultureInvariantSingle()
     //
     /// <summary>
-	/// Parses a string containing a Single using the invariant culture.
+    /// Parses a string containing a Single using the invariant culture.
     /// </summary>
     ///
     /// <param name="s">
@@ -188,7 +188,7 @@ public static class MathUtil
     //  Method: ParseCultureInvariantDouble()
     //
     /// <summary>
-	/// Parses a string containing a Double using the invariant culture.
+    /// Parses a string containing a Double using the invariant culture.
     /// </summary>
     ///
     /// <param name="s">
@@ -213,13 +213,13 @@ public static class MathUtil
     //  Method: TryParseCultureInvariantInt32()
     //
     /// <summary>
-	/// Attempts to parse a string containing an Int32 using the invariant
-	/// culture.
+    /// Attempts to parse a string containing an Int32 using the invariant
+    /// culture.
     /// </summary>
     ///
     /// <param name="s">
     /// String that might contain an Int32, formatted with the invariant
-	/// culture.
+    /// culture.
     /// </param>
     ///
     /// <param name="result">
@@ -235,24 +235,24 @@ public static class MathUtil
     TryParseCultureInvariantInt32
     (
         String s,
-		out Int32 result
+        out Int32 result
     )
     {
         return ( Int32.TryParse(s, NumberStyles.Integer,
-			CultureInfo.InvariantCulture, out result) );
+            CultureInfo.InvariantCulture, out result) );
     }
 
     //*************************************************************************
     //  Method: TryParseCultureInvariantSingle()
     //
     /// <summary>
-	/// Attempts to parse a string containing a Single using the invariant
-	/// culture.
+    /// Attempts to parse a string containing a Single using the invariant
+    /// culture.
     /// </summary>
     ///
     /// <param name="s">
     /// String that might contain a Single, formatted with the invariant
-	/// culture.
+    /// culture.
     /// </param>
     ///
     /// <param name="result">
@@ -268,11 +268,11 @@ public static class MathUtil
     TryParseCultureInvariantSingle
     (
         String s,
-		out Single result
+        out Single result
     )
     {
         return ( Single.TryParse(s, NumberStyles.Float,
-			CultureInfo.InvariantCulture, out result) );
+            CultureInfo.InvariantCulture, out result) );
     }
 
 
@@ -280,13 +280,13 @@ public static class MathUtil
     //  Method: TryParseCultureInvariantDouble()
     //
     /// <summary>
-	/// Attempts to parse a string containing a Double using the invariant
-	/// culture.
+    /// Attempts to parse a string containing a Double using the invariant
+    /// culture.
     /// </summary>
     ///
     /// <param name="s">
     /// String that might contain a Double, formatted with the invariant
-	/// culture.
+    /// culture.
     /// </param>
     ///
     /// <param name="result">
@@ -302,11 +302,11 @@ public static class MathUtil
     TryParseCultureInvariantDouble
     (
         String s,
-		out Double result
+        out Double result
     )
     {
         return ( Double.TryParse(s, NumberStyles.Float,
-			CultureInfo.InvariantCulture, out result) );
+            CultureInfo.InvariantCulture, out result) );
     }
 }
 

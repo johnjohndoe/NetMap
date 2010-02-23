@@ -58,6 +58,7 @@ public class CalculateGraphMetricsContext : Object
         m_oBackgroundWorker = backgroundWorker;
         m_oSimpleGraphMatrix = null;
         m_iSimpleGraphMatrixGraphID = Int32.MinValue;
+        m_oBrandesCentralities = null;
 
         AssertValid();
     }
@@ -134,6 +135,50 @@ public class CalculateGraphMetricsContext : Object
     }
 
     //*************************************************************************
+    //  Property: BrandesCentralities
+    //
+    /// <summary>
+    /// Gets or sets the Brandes centralities.
+    /// </summary>
+    ///
+    /// <value>
+    /// The <see cref="BrandesCentralities" /> object created by <see
+    /// cref="BrandesFastCentralityCalculator2" />, or null if the centralities
+    /// haven't been calculated.  The default value is null.
+    /// </value>
+    ///
+    /// <remarks>
+    /// Most of the graph metric calculators have no need to pass calculated
+    /// metrics to each other.  The exception is <see
+    /// cref="BrandesFastCentralityCalculator2" />, which calculates geodesic
+    /// distances that must be written to the overall metrics worksheet.  The
+    /// class responsible for writing to the overall metrics worksheet is <see
+    /// cref="OverallMetricCalculator2" />, not <see
+    /// cref="BrandesFastCentralityCalculator2" />, so this property exists to
+    /// allow those geodesic distances to be passed from one calculator to the
+    /// other.
+    /// </remarks>
+    //*************************************************************************
+
+    public BrandesCentralities
+    BrandesCentralities
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_oBrandesCentralities);
+        }
+
+        set
+        {
+            m_oBrandesCentralities = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: GetSimpleGraphMatrix()
     //
     /// <summary>
@@ -196,6 +241,8 @@ public class CalculateGraphMetricsContext : Object
 
         Debug.Assert(m_iSimpleGraphMatrixGraphID == Int32.MinValue ||
             m_oSimpleGraphMatrix != null);
+
+        // m_oBrandesCentralities
     }
 
 
@@ -222,6 +269,12 @@ public class CalculateGraphMetricsContext : Object
     /// ID of the graph that m_oSimpleGraphMatrix was created for.
 
     protected Int32 m_iSimpleGraphMatrixGraphID;
+
+    /// The BrandesCentralities object created by
+    /// BrandesFastCentralityCalculator2, or null if the centralities haven't
+    /// been calculated.
+
+    protected BrandesCentralities m_oBrandesCentralities;
 }
 
 }

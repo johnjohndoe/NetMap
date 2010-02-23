@@ -3,7 +3,7 @@
 
 using System;
 using System.Drawing;
-using System.Collections;
+using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -249,6 +249,11 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     /// Graph to lay out.  The graph is guaranteed to have at least one vertex.
     /// </param>
     ///
+    /// <param name="verticesToLayOut">
+    /// Vertices to lay out.  The collection is guaranteed to have at least one
+    /// vertex.
+    /// </param>
+    ///
     /// <param name="layoutContext">
     /// Provides access to objects needed to lay out the graph.  The <see
     /// cref="LayoutContext.GraphRectangle" /> is guaranteed to have non-zero
@@ -271,9 +276,9 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     /// This method lays out the graph <paramref name="graph" /> either
     /// synchronously (if <paramref name="backgroundWorker" /> is null) or
     /// asynchronously (if (<paramref name="backgroundWorker" /> is not null)
-    /// by setting the the <see cref="IVertex.Location" /> property on all of
-    /// the graph's vertices and optionally adding geometry metadata to the
-    /// graph, vertices, or edges.
+    /// by setting the the <see cref="IVertex.Location" /> property on the
+    /// vertices in <paramref name="verticesToLayOut" /> and optionally adding
+    /// geometry metadata to the graph, vertices, or edges.
     ///
     /// <para>
     /// In the asynchronous case, the <see
@@ -296,34 +301,26 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     LayOutGraphCore
     (
         IGraph graph,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
         BackgroundWorker backgroundWorker
     )
     {
         Debug.Assert(graph != null);
+        Debug.Assert(verticesToLayOut != null);
+        Debug.Assert(verticesToLayOut.Count > 0);
         Debug.Assert(layoutContext != null);
         AssertValid();
 
-        // Honor the optional LayOutTheseVerticesOnly key on the graph.
+        Int32 iVertices = verticesToLayOut.Count;
 
-        ICollection oVerticesToLayOut = GetVerticesToLayOut(graph);
-        ICollection oEdgesToLayOut = GetEdgesToLayOut(graph);
-
-        Int32 iVertices = oVerticesToLayOut.Count;
-
-        // Although the caller has guaranteed that there is at least one vertex
-        // in the graph, the collection returned by GetVerticesToLayOut() may
-        // be empty.
-
-        if (iVertices == 0)
-        {
-            return (true);
-        }
+        ICollection<IEdge> oEdgesToLayOut =
+            GetEdgesToLayOut(graph, verticesToLayOut);
 
         // If the graph has already been laid out, use the current vertex
         // locations as initial values.
 
-        if ( !GraphHasBeenLaidOut(graph) )
+        if ( !LayoutMetadataUtil.GraphHasBeenLaidOut(graph) )
         {
             // The graph has not been laid out.  By default, randomize the
             // locations of those vertices that are not locked.  If the graph
@@ -336,13 +333,13 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
                 ReservedMetadataKeys.
                     FruchtermanReingoldLayoutSelectivelyRandomize);
 
-            RandomizeVertexLocations(oVerticesToLayOut, layoutContext,
+            RandomizeVertexLocations(verticesToLayOut, layoutContext,
                 new Random(1), bSelectivelyRandomize);
         }
 
         // Store required metadata on the graph's vertices.
 
-        InitializeMetadata(oVerticesToLayOut);
+        InitializeMetadata(verticesToLayOut);
 
         Rectangle oRectangle = layoutContext.GraphRectangle;
 
@@ -381,13 +378,13 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
             // Calculate the attractive and repulsive forces between the
             // vertices.  The results get written to metadata on the vertices.
 
-            CalculateRepulsiveForces(oVerticesToLayOut, k);
+            CalculateRepulsiveForces(verticesToLayOut, k);
             CalculateAttractiveForces(oEdgesToLayOut, k);
 
             // Set the location of each vertex based on the vertex's current
             // location and the calculated forces.
 
-            SetVertexLocations(oVerticesToLayOut, layoutContext, fTemperature);
+            SetVertexLocations(verticesToLayOut, layoutContext, fTemperature);
 
             // Decrease the temperature.
 
@@ -399,7 +396,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
             }
         }
 
-        RemoveMetadata(oVerticesToLayOut);
+        RemoveMetadata(verticesToLayOut);
 
         return (true);
     }
@@ -421,7 +418,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     protected void
     InitializeMetadata
     (
-        ICollection verticesToLayOut
+        ICollection<IVertex> verticesToLayOut
     )
     {
         Debug.Assert(verticesToLayOut != null);
@@ -471,7 +468,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     protected void
     RemoveMetadata
     (
-        ICollection verticesToLayOut
+        ICollection<IVertex> verticesToLayOut
     )
     {
         Debug.Assert(verticesToLayOut != null);
@@ -520,7 +517,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     protected void
     CalculateRepulsiveForces
     (
-        ICollection verticesToLayOut,
+        ICollection<IVertex> verticesToLayOut,
         Single k
     )
     {
@@ -622,7 +619,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     protected void
     CalculateAttractiveForces
     (
-        ICollection edgesToLayOut,
+        ICollection<IEdge> edgesToLayOut,
         Single k
     )
     {
@@ -746,7 +743,7 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     protected void
     SetVertexLocations
     (
-        ICollection verticesToLayOut,
+        ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
         Single fTemperature
     )

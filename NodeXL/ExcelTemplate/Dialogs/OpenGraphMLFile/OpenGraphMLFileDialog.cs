@@ -159,7 +159,7 @@ public class OpenGraphMLFileDialog : OpenFileDialog2
 
         IGraphAdapter oGraphMLGraphAdapter = new GraphMLGraphAdapter();
 
-        oObject = oGraphMLGraphAdapter.LoadGraph(sFileName);
+        oObject = oGraphMLGraphAdapter.LoadGraphFromFile(sFileName);
     }
 
 

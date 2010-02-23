@@ -815,41 +815,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: LayoutUserSettings
-    //
-    /// <summary>
-    /// Gets or sets the user's settings for all the graph layouts used by the
-    /// application.
-    /// </summary>
-    ///
-    /// <value>
-    /// The user's settings for all the graph layouts used by the application,
-    /// as a LayoutUserSettings.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("FruchtermanReingold\t6\t3.0\t10") ]
-
-    public LayoutUserSettings
-    LayoutUserSettings
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (LayoutUserSettings)this[LayoutUserSettingsKey] );
-        }
-
-        set
-        {
-            this[LayoutUserSettingsKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: LabelUserSettings
     //
     /// <summary>
@@ -1008,8 +973,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
     {
         Debug.Assert(nodeXLControl != null);
         AssertValid();
-
-        this.LayoutUserSettings.TransferToLayout(nodeXLControl.Layout);
 
         TransferToGraphDrawer(nodeXLControl.GraphDrawer);
 
@@ -1236,11 +1199,6 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
     protected const String SelectedVertexColorKey =
         "SelectedVertexColor";
-
-    /// Name of the settings key for the LayoutUserSettings property.
-
-    protected const String LayoutUserSettingsKey =
-        "LayoutUserSettings";
 
     /// Name of the settings key for the LabelUserSettings property.
 

@@ -41,7 +41,7 @@ public partial class Ribbon : OfficeRibbon
 
         UserSettingsManager.Initialize();
 
-        // Populate the rddLayouts RibbonDropDown.
+        // Populate the rddLayout RibbonDropDown.
 
         m_oLayoutManagerForRibbonDropDown =
             new LayoutManagerForRibbonDropDown();
@@ -1068,6 +1068,35 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: rddLayout_ButtonClick()
+    //
+    /// <summary>
+    /// Handles the ButtonClick event on the rddLayout RibbonDropDown.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    rddLayout_ButtonClick
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        if (sender == this.btnEditLayoutUserSettings)
+        {
+            FireRunRibbonCommandEvent(RibbonCommand.EditLayoutUserSettings);
+        }
+    }
+
+    //*************************************************************************
     //  Method: btnReadWorkbook_Click()
     //
     /// <summary>
@@ -1711,10 +1740,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: btnConvertOldWorkbook_Click()
+    //  Method: btnConvertNodeXLWorkbook_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnConvertOldWorkbook button.
+    /// Handles the Click event on the btnConvertNodeXLWorkbook button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1727,7 +1756,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnConvertOldWorkbook_Click
+    btnConvertNodeXLWorkbook_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1735,7 +1764,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.ConvertOldWorkbook();
+        this.ThisWorkbook.ConvertNodeXLWorkbook();
     }
 
     //*************************************************************************
@@ -2219,5 +2248,11 @@ RibbonCommand
     /// </summary>
 
     ReadWorkbook,
+
+    /// <summary>
+    /// The user wants to edit his layout settings.
+    /// </summary>
+
+    EditLayoutUserSettings,
 }
 }

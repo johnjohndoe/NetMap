@@ -36,7 +36,7 @@ public class AutoFillNumericRangeColumnResults : AutoFillColumnResults
 
     public AutoFillNumericRangeColumnResults()
     :
-    this(null, 0, 0, 0, 0)
+    this(null, 0, 0, 0, 0, 0)
     {
         // (Do nothing else.)
 
@@ -64,6 +64,10 @@ public class AutoFillNumericRangeColumnResults : AutoFillColumnResults
     /// The actual second source number used in the calculations.
     /// </param>
     ///
+    /// <param name="decimalPlaces">
+    /// The number of decimal places displayed in the column.
+    /// </param>
+    ///
     /// <param name="destinationNumber1">
     /// The first number used in the destination column.
     /// </param>
@@ -78,11 +82,12 @@ public class AutoFillNumericRangeColumnResults : AutoFillColumnResults
         String sourceColumnName,
         Double sourceCalculationNumber1,
         Double sourceCalculationNumber2,
+        Int32 decimalPlaces,
         Double destinationNumber1,
         Double destinationNumber2
     )
     : base(sourceColumnName, sourceCalculationNumber1,
-        sourceCalculationNumber2)
+        sourceCalculationNumber2, decimalPlaces)
     {
         m_dDestinationNumber1 = destinationNumber1;
         m_dDestinationNumber2 = destinationNumber2;
@@ -163,7 +168,7 @@ public class AutoFillNumericRangeColumnResults : AutoFillColumnResults
 
         IFormatProvider oInvariantCulture = CultureInfo.InvariantCulture;
 
-        return (String.Join(AutoFillWorkbookResults.FieldSeparatorString,
+        return (String.Join(PerWorkbookSettings.FieldSeparatorString,
 
             new String [] {
                 base.ConvertToString(),
@@ -200,16 +205,22 @@ public class AutoFillNumericRangeColumnResults : AutoFillColumnResults
     )
     {
         Debug.Assert(asFields != null);
-        Debug.Assert(asFields.Length >= 5);
         Debug.Assert(iStartIndex >= 0);
 
         iStartIndex = base.ConvertFromString(asFields, iStartIndex);
+
+        Debug.Assert(iStartIndex + 1 < asFields.Length);
 
         m_dDestinationNumber1 = MathUtil.ParseCultureInvariantDouble(
             asFields[iStartIndex + 0] );
 
         m_dDestinationNumber2 = MathUtil.ParseCultureInvariantDouble(
             asFields[iStartIndex + 1] );
+
+        // Note:
+        //
+        // If another field is added here, the total expected field count in 
+        // AutoFillWorkbookResults.ConvertFromString() must be increased.
 
         return (iStartIndex + 2);
     }

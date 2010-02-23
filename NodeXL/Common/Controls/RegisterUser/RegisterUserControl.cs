@@ -14,13 +14,18 @@ namespace Microsoft.NodeXL.Common
 //  Class: RegisterUserControl
 //
 /// <summary>
-/// Registers a user by sending his email address to a Web service.
+/// Registers a user by creating an email.
 /// </summary>
 ///
 /// <remarks>
-/// Registration is handled within this control when the user clicks OK.  The
-/// parent form should handle the <see cref="Done" /> event and
-/// close itself when the event is fired.
+/// The dialog includes a button for creating a registration email via the
+/// mailto protocol.
+///
+/// <para>
+/// The parent form should handle the <see cref="Done" /> event and close
+/// itself when the event is fired.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -39,9 +44,8 @@ public partial class RegisterUserControl : UserControl
     {
         InitializeComponent();
 
-        m_sEmailAddress = String.Empty;
-
-        DoDataExchange(false);
+        this.grpCreateRegistrationEmail.Enabled =
+            UserRegisterer.CanCreateRegistrationEmail();
 
         AssertValid();
     }
@@ -50,7 +54,7 @@ public partial class RegisterUserControl : UserControl
     //  Event: Done
     //
     /// <summary>
-    /// Occurs when the user registers or cancels.
+    /// Occurs when the user is done.
     /// </summary>
     ///
     /// <remarks>
@@ -59,90 +63,6 @@ public partial class RegisterUserControl : UserControl
     //*************************************************************************
 
     public event EventHandler Done;
-
-
-    //*************************************************************************
-    //  Method: DoDataExchange()
-    //
-    /// <summary>
-    /// Transfers data between the dialog's fields and its controls.
-    /// </summary>
-    ///
-    /// <param name="bFromControls">
-    /// true to transfer data from the dialog's controls to its fields, false
-    /// for the other direction.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the transfer was successful.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    DoDataExchange
-    (
-        Boolean bFromControls
-    )
-    {
-        if (bFromControls)
-        {
-            if ( !FormUtil.ValidateRequiredTextBox(txbEmailAddress,
-                "Enter an email address.", out m_sEmailAddress) )
-            {
-                return (false);
-            }
-        }
-        else
-        {
-            txbEmailAddress.Text = m_sEmailAddress;
-        }
-
-        return (true);
-    }
-
-    //*************************************************************************
-    //  Method: RegisterTheUser()
-    //
-    /// <summary>
-    /// Registers the user.
-    /// </summary>
-    ///
-    /// <returns>
-    /// true if successful.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    RegisterTheUser()
-    {
-        AssertValid();
-
-        UserRegisterer oUserRegisterer = new UserRegisterer();
-
-        try
-        {
-            oUserRegisterer.RegisterUser(m_sEmailAddress);
-
-            return (true);
-        }
-        catch (RegisterUserException oRegisterUserException)
-        {
-            FormUtil.ShowWarning(oRegisterUserException.Message);
-        }
-        catch (Exception oException)
-        {
-            FormUtil.ShowWarning( String.Format(
-
-                "An unexpected problem occurred.\r\n\r\n"
-                + "Details:\r\n\r\n"
-                + "{0}"
-                ,
-                ExceptionUtil.GetMessageTrace(oException)
-                ) );
-        }
-
-        return (false);
-    }
 
 
     //*************************************************************************
@@ -204,27 +124,19 @@ public partial class RegisterUserControl : UserControl
             + " individuals or organizations.  This list is only for the"
             + " NodeXL project."
             + "\r\n\r\n"
-            + "The following information will be registered:"
-            + "\r\n\r\n"
-            + "1. Your email address"
-            + "\r\n"
-            + "2. The version number of NodeXL"
-            + "\r\n"
-            + "3. The time you registered"
-            + "\r\n\r\n"
             + "If you have questions or comments, please go to {0}."
             + "\r\n\r\n"
-            + "(Last updated December 15, 2008.)"
+            + "(Last updated February 17, 2010.)"
             ,
             ProjectInformation.DiscussionUrl
             ) );
     }
 
     //*************************************************************************
-    //  Method: btnOK_Click()
+    //  Method: btnCreateRegistrationEmail_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnOK button.
+    /// Handles the Click event on the btnCreateRegistrationEmail button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -237,7 +149,7 @@ public partial class RegisterUserControl : UserControl
     //*************************************************************************
 
     private void
-    btnOK_Click
+    btnCreateRegistrationEmail_Click
     (
         object sender,
         EventArgs e
@@ -245,23 +157,41 @@ public partial class RegisterUserControl : UserControl
     {
         AssertValid();
 
-        if ( !DoDataExchange(true) )
+        if (!UserRegisterer.TryCreateRegistrationEmail())
         {
-            return;
-        }
-
-        this.UseWaitCursor = true;
-
-        if ( RegisterTheUser() )
-        {
-            FormUtil.ShowInformation(
-                "Thank you for registering."
+            FormUtil.ShowWarning(
+                "The email couldn't be created.  There might not be an email"
+                + " program installed on this computer."
                 );
-
-            FireDone();
         }
+    }
 
-        this.UseWaitCursor = false;
+    //*************************************************************************
+    //  Method: btnCopyRegistrationAddress_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCopyRegistrationAddress button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnCopyRegistrationAddress_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        Clipboard.SetText(ProjectInformation.RegistrationEmailAddress);
     }
 
     //*************************************************************************
@@ -306,7 +236,7 @@ public partial class RegisterUserControl : UserControl
     public void
     AssertValid()
     {
-        Debug.Assert(m_sEmailAddress != null);
+        // (Do nothing.)
     }
 
 
@@ -314,9 +244,7 @@ public partial class RegisterUserControl : UserControl
     //  Protected fields
     //*************************************************************************
 
-    /// Email address to register.
-
-    protected String m_sEmailAddress;
+    // (None.)
 }
 
 }

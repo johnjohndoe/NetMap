@@ -39,15 +39,10 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
-    //  Method: LoadGraph()
+    //  Method: LoadGraphFromFile()
     //
-    /// <overloads>
-    /// Creates a graph and loads it with graph data.
-    /// </overloads>
-    ///
     /// <summary>
-    /// Creates a graph of type <see cref="Graph" /> and loads it with graph
-    /// data read from a file.
+    /// Creates a graph and loads it with graph data read from a file.
     /// </summary>
     ///
     /// <param name="filename">
@@ -55,25 +50,25 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <returns>
-    /// A new <see cref="Graph" /> loaded with graph data read from <paramref
+    /// A new graph loaded with graph data read from <paramref
     /// name="filename" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a <see cref="Graph" /> and loads it with the graph
-    /// data read from <paramref name="filename" />.
+    /// This method creates a graph and loads it with the graph data read from
+    /// <paramref name="filename" />.
     /// </remarks>
     //*************************************************************************
 
     public IGraph
-    LoadGraph
+    LoadGraphFromFile
     (
         String filename
     )
     {
         AssertValid();
 
-        const String MethodName = "LoadGraph";
+        const String MethodName = "LoadGraphFromFile";
 
         this.ArgumentChecker.CheckArgumentNotEmpty(
             MethodName, "filename", filename);
@@ -85,8 +80,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
         try
         {
             oStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
-
-            oGraph = LoadGraph(new GraphFactory(), oStream);
+            oGraph = LoadGraphFromStream(oStream);
         }
         finally
         {
@@ -101,45 +95,37 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
-    //  Method: LoadGraph()
+    //  Method: LoadGraphFromString()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="String" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="String" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that knows how to create a graph.
-    /// </param>
     ///
     /// <param name="theString">
     /// <see cref="String" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="theString" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="theString" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="theString" />.
+    /// This method creates a graph and loads it with the graph data read from
+    /// <paramref name="theString" />.
     /// </remarks>
     //*************************************************************************
 
     public IGraph
-    LoadGraph
+    LoadGraphFromString
     (
-        IGraphFactory graphFactory,
         String theString
     )
     {
         AssertValid();
 
         const String MethodName = "LoadGraph";
-
-        this.ArgumentChecker.CheckArgumentNotNull(
-            MethodName, "graphFactory", graphFactory);
 
         this.ArgumentChecker.CheckArgumentNotNull(
             MethodName, "theString", theString);
@@ -151,7 +137,7 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
             oMemoryStream = new MemoryStream(
                 Encoding.UTF8.GetBytes(theString), false);
 
-            return ( LoadGraph(graphFactory, oMemoryStream) );
+            return ( LoadGraphFromStream(oMemoryStream) );
         }
         finally
         {
@@ -163,37 +149,32 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
-    //  Method: LoadGraph()
+    //  Method: LoadGraphFromStream()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="Stream" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="Stream" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that knows how to create a graph.
-    /// </param>
     ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="stream" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="stream" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="stream" />.  It
-    /// does not close <paramref name="stream" />.
+    /// This method creates a graph and loads it with the graph data read from
+    /// <paramref name="stream" />.  It does not close <paramref
+    /// name="stream" />.
     /// </remarks>
     //*************************************************************************
 
     public IGraph
-    LoadGraph
+    LoadGraphFromStream
     (
-        IGraphFactory graphFactory,
         Stream stream
     )
     {
@@ -202,12 +183,9 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
         const String MethodName = "LoadGraph";
 
         this.ArgumentChecker.CheckArgumentNotNull(
-            MethodName, "graphFactory", graphFactory);
-
-        this.ArgumentChecker.CheckArgumentNotNull(
             MethodName, "stream", stream);
 
-        return ( LoadGraphCore(graphFactory, stream) );
+        return ( LoadGraphCore(stream) );
     }
 
     //*************************************************************************
@@ -422,27 +400,23 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     //  Method: LoadGraphCore()
     //
     /// <summary>
-    /// Creates a graph of a specified type and loads it with graph data read
-    /// from a <see cref="Stream" />.
+    /// Creates a graph and loads it with graph data read from a <see
+    /// cref="Stream" />.
     /// </summary>
-    ///
-    /// <param name="graphFactory">
-    /// Object that can create a graph.
-    /// </param>
     ///
     /// <param name="stream">
     /// <see cref="Stream" /> containing graph data.
     /// </param>
     ///
     /// <returns>
-    /// A new graph created by <paramref name="graphFactory" /> and loaded with
-    /// graph data read from <paramref name="stream" />.
+    /// A new graph loaded with graph data read from <paramref
+    /// name="stream" />.
     /// </returns>
     ///
     /// <remarks>
-    /// This method creates a graph using <paramref name="graphFactory" /> and
-    /// loads it with the graph data read from <paramref name="stream" />.  It
-    /// does not close <paramref name="stream" />.
+    /// This method creates a graph, loads it with the graph data read from
+    /// <paramref name="stream" />.  It does not close <paramref
+    /// name="stream" />.
     ///
     /// <para>
     /// The arguments have already been checked for validity.
@@ -454,7 +428,6 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     protected abstract IGraph
     LoadGraphCore
     (
-        IGraphFactory graphFactory,
         Stream stream
     );
 

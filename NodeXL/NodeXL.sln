@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplate", "ExcelTempl
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ExcelTemplateSetup", "ExcelTemplateSetup\ExcelTemplateSetup.vdproj", "{86512D2B-8AC4-4E8E-AA01-37840F0AFA70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplateSetupCustomActions", "ExcelTemplateSetupCustomActions\ExcelTemplateSetupCustomActions.csproj", "{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplateRegisterUser", "ExcelTemplateRegisterUser\ExcelTemplateRegisterUser.csproj", "{97418ACF-DF88-4552-BF75-E423A107680B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfVisualization", "WpfVisualization\WpfVisualization.csproj", "{3228C440-7166-44E1-A1A2-036ECDD9371F}"
@@ -34,6 +32,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWpfNodeXLControl", "TestWpfNodeXLControl\TestWpfNodeXLControl.csproj", "{7A928209-DA65-4CB0-8DDA-29CE875787C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplatePlugIns", "ExcelTemplatePlugIns\ExcelTemplatePlugIns.csproj", "{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplateSetupClickOnceInstaller", "ExcelTemplateSetupClickOnceInstaller\ExcelTemplateSetupClickOnceInstaller.csproj", "{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplateSetupTrustInstaller", "ExcelTemplateSetupTrustInstaller\ExcelTemplateSetupTrustInstaller.csproj", "{8A8A2FB3-C1CD-4F9C-8707-47DAA71B2224}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTemplateSetupStarter", "ExcelTemplateSetupStarter\ExcelTemplateSetupStarter.csproj", "{AB30BA9F-716E-4443-84C0-48FAEA75BAC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +79,6 @@ Global
 		{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}.Release|Any CPU.Build.0 = Release|Any CPU
 		{86512D2B-8AC4-4E8E-AA01-37840F0AFA70}.Debug|Any CPU.ActiveCfg = Debug
 		{86512D2B-8AC4-4E8E-AA01-37840F0AFA70}.Release|Any CPU.ActiveCfg = Release
-		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97418ACF-DF88-4552-BF75-E423A107680B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97418ACF-DF88-4552-BF75-E423A107680B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97418ACF-DF88-4552-BF75-E423A107680B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,6 +99,18 @@ Global
 		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A8A2FB3-C1CD-4F9C-8707-47DAA71B2224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A8A2FB3-C1CD-4F9C-8707-47DAA71B2224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A8A2FB3-C1CD-4F9C-8707-47DAA71B2224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A8A2FB3-C1CD-4F9C-8707-47DAA71B2224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB30BA9F-716E-4443-84C0-48FAEA75BAC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB30BA9F-716E-4443-84C0-48FAEA75BAC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB30BA9F-716E-4443-84C0-48FAEA75BAC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB30BA9F-716E-4443-84C0-48FAEA75BAC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

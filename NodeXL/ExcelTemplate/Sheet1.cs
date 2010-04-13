@@ -136,7 +136,7 @@ public partial class Sheet1
         // See if the specified attribute is set by the helper class.
 
         m_oSheets1And2Helper.SetVisualAttribute(e, oSelectedRange,
-            EdgeTableColumnNames.Color, EdgeTableColumnNames.Alpha);
+            EdgeTableColumnNames.Color, CommonTableColumnNames.Alpha);
 
         if (e.VisualAttributeSet)
         {
@@ -162,7 +162,7 @@ public partial class Sheet1
 
             ExcelUtil.SetVisibleSelectedTableColumnData(
                 this.Edges.InnerObject, oSelectedRange,
-                EdgeTableColumnNames.Visibility,
+                CommonTableColumnNames.Visibility,
 
                 ( new EdgeVisibilityConverter() ).GraphToWorkbook(
                     (EdgeWorksheetReader.Visibility)e.AttributeValue)

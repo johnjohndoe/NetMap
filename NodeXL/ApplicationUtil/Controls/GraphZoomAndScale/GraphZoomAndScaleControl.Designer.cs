@@ -32,7 +32,6 @@ namespace Microsoft.NodeXL.ApplicationUtil
             this.tbGraphZoom = new System.Windows.Forms.TrackBar();
             this.label2 = new System.Windows.Forms.Label();
             this.tbGraphScale = new System.Windows.Forms.TrackBar();
-            this.lnkHelp = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphScale)).BeginInit();
             this.SuspendLayout();
@@ -40,7 +39,7 @@ namespace Microsoft.NodeXL.ApplicationUtil
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 3);
+            this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(37, 13);
             this.label1.TabIndex = 0;
@@ -48,9 +47,11 @@ namespace Microsoft.NodeXL.ApplicationUtil
             // 
             // tbGraphZoom
             // 
-            this.tbGraphZoom.Location = new System.Drawing.Point(43, 0);
+            this.tbGraphZoom.AutoSize = false;
+            this.tbGraphZoom.Location = new System.Drawing.Point(46, 1);
+            this.tbGraphZoom.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.tbGraphZoom.Name = "tbGraphZoom";
-            this.tbGraphZoom.Size = new System.Drawing.Size(92, 42);
+            this.tbGraphZoom.Size = new System.Drawing.Size(92, 22);
             this.tbGraphZoom.TabIndex = 1;
             this.tbGraphZoom.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbGraphZoom.Scroll += new System.EventHandler(this.tbGraphZoom_Scroll);
@@ -58,7 +59,7 @@ namespace Microsoft.NodeXL.ApplicationUtil
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(141, 3);
+            this.label2.Location = new System.Drawing.Point(144, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 2;
@@ -66,35 +67,26 @@ namespace Microsoft.NodeXL.ApplicationUtil
             // 
             // tbGraphScale
             // 
-            this.tbGraphScale.Location = new System.Drawing.Point(184, 0);
+            this.tbGraphScale.AutoSize = false;
+            this.tbGraphScale.Location = new System.Drawing.Point(187, 1);
+            this.tbGraphScale.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.tbGraphScale.Name = "tbGraphScale";
-            this.tbGraphScale.Size = new System.Drawing.Size(92, 42);
+            this.tbGraphScale.Size = new System.Drawing.Size(92, 22);
             this.tbGraphScale.TabIndex = 3;
             this.tbGraphScale.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbGraphScale.Scroll += new System.EventHandler(this.tbGraphScale_Scroll);
-            // 
-            // lnkHelp
-            // 
-            this.lnkHelp.AutoSize = true;
-            this.lnkHelp.Location = new System.Drawing.Point(306, 3);
-            this.lnkHelp.Name = "lnkHelp";
-            this.lnkHelp.Size = new System.Drawing.Size(116, 13);
-            this.lnkHelp.TabIndex = 4;
-            this.lnkHelp.TabStop = true;
-            this.lnkHelp.Text = "About Zoom and Scale";
-            this.lnkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelp_LinkClicked);
             // 
             // GraphZoomAndScaleControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lnkHelp);
             this.Controls.Add(this.tbGraphScale);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbGraphZoom);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.Name = "GraphZoomAndScaleControl";
-            this.Size = new System.Drawing.Size(440, 30);
+            this.Size = new System.Drawing.Size(285, 23);
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphZoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphScale)).EndInit();
             this.ResumeLayout(false);
@@ -108,6 +100,5 @@ namespace Microsoft.NodeXL.ApplicationUtil
         private System.Windows.Forms.TrackBar tbGraphZoom;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TrackBar tbGraphScale;
-        private System.Windows.Forms.LinkLabel lnkHelp;
     }
 }

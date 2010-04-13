@@ -976,9 +976,7 @@ public class GeneralUserSettings : ApplicationSettingsBase
 
         TransferToGraphDrawer(nodeXLControl.GraphDrawer);
 
-        nodeXLControl.MouseSelectionMode = this.AutoSelect ?
-            MouseSelectionMode.SelectVertexAndIncidentEdges :
-            MouseSelectionMode.SelectVertexOnly;
+        nodeXLControl.MouseAlsoSelectsIncidentEdges = this.AutoSelect;
     }
 
     //*************************************************************************

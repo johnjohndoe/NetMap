@@ -1267,8 +1267,17 @@ public partial class PajekGraphAdapter : GraphAdapterBase, IGraphAdapter
     //*************************************************************************
 
     /// Encoding to use when loading and saving graphs.
+    ///
+    /// Note that Pajek will not read a file encoded with UTF-8.  It
+    /// successfully reads the list of vertices, but not the edges.  It seems
+    /// to be the UTF-8 BOM marker that confuses Pajek, because manually
+    /// removing the marker fixes the problem.
+    ///
+    /// Using ASCII instead of UTF-8 will cause problems with non-ASCII
+    /// characters used in vertex names, but there is no way around that, given
+    /// Pajek's limitations.
 
-    protected static readonly Encoding StreamEncoding = Encoding.UTF8;
+    protected static readonly Encoding StreamEncoding = Encoding.ASCII;
 
     /// Default edge weight to use when an edge weight isn't specified.
 

@@ -5,6 +5,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -84,7 +86,10 @@ public partial class TaskPane : UserControl
         m_oSaveGraphImageFileDialog = null;
         m_oDynamicFilterDialog = null;
 
-        LayoutType eInitialLayout = ( new LayoutUserSettings() ).Layout;
+        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+        LayoutUserSettings oLayoutUserSettings = new LayoutUserSettings();
+
+        LayoutType eInitialLayout = oLayoutUserSettings.Layout;
 
         // Instantiate an object that populates the sbLayout
         // ToolStripSplitButton and handles its LayoutChanged event.
@@ -145,9 +150,11 @@ public partial class TaskPane : UserControl
         m_oRibbon.RunRibbonCommand += new RunRibbonCommandEventHandler(
             Ribbon_RunRibbonCommand);
 
+        CreateNodeXLControl(oGeneralUserSettings);
+        CreateGraphZoomAndScaleControl();
 
-        CreateNodeXLControl();
-        usrGraphZoomAndScale.NodeXLControl = oNodeXLControl;
+        ApplyGeneralUserSettings(oGeneralUserSettings);
+        ApplyLayoutUserSettings(oLayoutUserSettings);
 
         this.ShowGraphLegend = m_oRibbon.ShowGraphLegend;
 
@@ -392,11 +399,20 @@ public partial class TaskPane : UserControl
     /// Creates a NodeXLControl, hooks up its events, and assigns it as the
     /// child of an ElementHost.
     /// </summary>
+    ///
+    /// <param name="oGeneralUserSettings">
+    /// The user's general settings.
+    /// </param>
     //*************************************************************************
 
     protected void
-    CreateNodeXLControl()
+    CreateNodeXLControl
+    (
+        GeneralUserSettings oGeneralUserSettings
+    )
     {
+        Debug.Assert(oGeneralUserSettings != null);
+
         // AssertValid();
 
         // Control hierarchy:
@@ -408,8 +424,6 @@ public partial class TaskPane : UserControl
         // 3. The ExcelTemplateNodeXLControl is derived from NodeXLControl.
 
         oNodeXLControl = new ExcelTemplateNodeXLControl();
-
-        GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         m_oNodeXLWithAxesControl = new NodeXLWithAxesControl(oNodeXLControl);
         m_oNodeXLWithAxesControl.ShowAxes = oGeneralUserSettings.ShowGraphAxes;
@@ -429,13 +443,34 @@ public partial class TaskPane : UserControl
         oNodeXLControl.DrawingGraph += new System.EventHandler(
             this.oNodeXLControl_DrawingGraph);
 
-        oNodeXLControl.GraphDrawn += new System.EventHandler(
-            this.oNodeXLControl_GraphDrawn);
+        oNodeXLControl.DrawGraphCompleted += new AsyncCompletedEventHandler(
+            this.oNodeXLControl_DrawGraphCompleted);
 
         ehNodeXLControlHost.Child = m_oNodeXLWithAxesControl;
+    }
 
-        ApplyGeneralUserSettings(oGeneralUserSettings);
-        ApplyLayoutUserSettings( new LayoutUserSettings() );
+    //*************************************************************************
+    //  Method: CreateGraphZoomAndScaleControl()
+    //
+    /// <summary>
+    /// Creates the control that can zoom and scale the NodeXLControl.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    CreateGraphZoomAndScaleControl()
+    {
+        Debug.Assert(oNodeXLControl != null);
+
+        GraphZoomAndScaleControl oGraphZoomAndScaleControl =
+            new GraphZoomAndScaleControl();
+
+        oGraphZoomAndScaleControl.NodeXLControl = oNodeXLControl;
+
+        // The control lives within the graph navigation ToolStrip.
+
+        this.tsGraphNavigation.Items.Add( new ToolStripControlHost(
+            oGraphZoomAndScaleControl) );
     }
 
     //*************************************************************************
@@ -558,7 +593,7 @@ public partial class TaskPane : UserControl
                 ReadFilteredAlpha(false);
             }
 
-            oNodeXLControl.DrawGraph(bLayOutGraph);
+            oNodeXLControl.DrawGraphAsync(bLayOutGraph);
 
             PerWorkbookSettings oPerWorkbookSettings =
                 this.PerWorkbookSettings;
@@ -612,7 +647,7 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        oNodeXLControl.DrawGraph(true);
+        oNodeXLControl.DrawGraphAsync(true);
     }
 
     //*************************************************************************
@@ -629,8 +664,36 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        ForceLayoutTheseVerticesOnly(oNodeXLControl.SelectedVertices,
+        ForceLayoutTheseVerticesOnly(oNodeXLControl.SelectedVertices.ToArray(),
             "lay out the selected vertices again");
+    }
+
+    //*************************************************************************
+    //  Method: ForceLayoutSelectedWithinBounds()
+    //
+    /// <summary>
+    /// Forces the NodeXLControl to lay out selected vertices in the graph
+    /// again, within the vertices' bounding box.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    ForceLayoutSelectedWithinBounds()
+    {
+        AssertValid();
+
+        // The combination of the LayOutTheseVerticesWithinBounds key added to
+        // the graph by this method and the LayOutTheseVerticesOnly key added
+        // later cause the selected vertices to be laid out within their
+        // bounding box.
+        //
+        // When the graph completes drawing (which happens asynchronously),
+        // oNodeXLControl_DrawGraphCompleted() removes both keys.
+
+        oNodeXLControl.Graph.SetValue(
+            ReservedMetadataKeys.LayOutTheseVerticesWithinBounds, null);
+
+        ForceLayoutSelected();
     }
 
     //*************************************************************************
@@ -696,7 +759,7 @@ public partial class TaskPane : UserControl
         // vertices should be completely ignored.
         //
         // When the graph completes drawing (which happens asynchronously),
-        // oNodeXLControl_GraphDrawn() removes the value.
+        // oNodeXLControl_DrawGraphCompleted() removes the value.
 
         oNodeXLControl.Graph.SetValue(
             ReservedMetadataKeys.LayOutTheseVerticesOnly, aoVerticesToLayOut);
@@ -731,7 +794,7 @@ public partial class TaskPane : UserControl
         {
             oGeneralUserSettings.Save();
             ApplyGeneralUserSettings(oGeneralUserSettings);
-            oNodeXLControl.DrawGraph();
+            oNodeXLControl.DrawGraphAsync();
         }
     }
 
@@ -762,7 +825,7 @@ public partial class TaskPane : UserControl
         {
             oLayoutUserSettings.Save();
             ApplyLayoutUserSettings(oLayoutUserSettings);
-            oNodeXLControl.DrawGraph();
+            oNodeXLControl.DrawGraphAsync();
         }
     }
 
@@ -970,11 +1033,12 @@ public partial class TaskPane : UserControl
                 (iVertices > 0 && m_iTemplateVersion >= 58);
         }
 
-        tsToolStrip.Enabled = usrGraphZoomAndScale.Enabled = bEnable2;
+        tsGeneral.Enabled = tsGraphNavigation.Enabled = bEnable2;
+
         this.UseWaitCursor = !bEnable2;
 
         // Setting this.UseWaitCursor affects the cursor when the mouse is
-        // over the tsToolStrip, but not when it's over the NodeXLControl.
+        // over a ToolStrip, but not when it's over the NodeXLControl.
 
         oNodeXLControl.Cursor =
             bEnable2 ? null : System.Windows.Input.Cursors.Wait;
@@ -1021,8 +1085,11 @@ public partial class TaskPane : UserControl
         }
 
         Int32 iVertices = this.VertexCount;
-        IVertex [] aoSelectedVertices = oNodeXLControl.SelectedVertices;
-        Int32 iSelectedVertices = aoSelectedVertices.Length;
+
+        ICollection<IVertex> oSelectedVertices =
+            oNodeXLControl.SelectedVertices;
+
+        Int32 iSelectedVertices = oSelectedVertices.Count;
 
         // Selecting a vertex's incident edges makes sense only if they are not
         // automatically selected when the vertex is clicked.
@@ -1085,6 +1152,11 @@ public partial class TaskPane : UserControl
             msiContextDeselectAll
             );
 
+        MenuUtil.EnableToolStripMenuItems(
+            iSelectedVertices > 1,
+            msiContextForceLayoutSelectedWithinBounds
+            );
+
         msiContextSelectAllEdges.Enabled = bEnableSelectAllEdges;
         msiContextDeselectAllEdges.Enabled = bEnableDeselectAllEdges;
 
@@ -1120,7 +1192,9 @@ public partial class TaskPane : UserControl
 
             Object oCustomMenuItemInformationAsObject;
 
-            if ( aoSelectedVertices[0].TryGetValue(
+            IVertex oSelectedVertex = oSelectedVertices.First();
+
+            if ( oSelectedVertex.TryGetValue(
                     ReservedMetadataKeys.CustomContextMenuItems,
                     typeof( KeyValuePair<String, String>[] ),
                     out oCustomMenuItemInformationAsObject) )
@@ -1250,7 +1324,7 @@ public partial class TaskPane : UserControl
         }
 
         Int32 iVertices = this.VertexCount;
-        Int32 iSelectedVertices = oNodeXLControl.SelectedVertices.Length;
+        Int32 iSelectedVertices = oNodeXLControl.SelectedVertices.Count;
         Boolean bVertexClicked = (oClickedVertex != null);
 
         bEnableSelectAllVertices = (iVertices > 0);
@@ -1315,7 +1389,7 @@ public partial class TaskPane : UserControl
         }
 
         Int32 iEdges = oNodeXLControl.Graph.Edges.Count;
-        Int32 iSelectedEdges = oNodeXLControl.SelectedEdges.Length;
+        Int32 iSelectedEdges = oNodeXLControl.SelectedEdges.Count;
         Boolean bEdgeClicked = (oClickedEdge != null);
 
         bEnableSelectAllEdges = (iEdges > 0);
@@ -1492,8 +1566,8 @@ public partial class TaskPane : UserControl
 
         oNodeXLControl.SetSelected(
 
-            bSelect ? NodeXLControlUtil.GetVerticesAsArray(oNodeXLControl) :
-                new IVertex[0],
+            bSelect ? ( IEnumerable<IVertex> )oNodeXLControl.Graph.Vertices :
+                ( IEnumerable<IVertex> )new IVertex[0],
 
             oNodeXLControl.SelectedEdges
             );
@@ -1523,8 +1597,8 @@ public partial class TaskPane : UserControl
 
             oNodeXLControl.SelectedVertices,
 
-            bSelect ? NodeXLControlUtil.GetEdgesAsArray(oNodeXLControl) :
-                new IEdge[0]
+            bSelect ? ( IEnumerable<IEdge> )oNodeXLControl.Graph.Edges :
+                ( IEnumerable<IEdge> )new IEdge[0]
             );
     }
 
@@ -1608,10 +1682,7 @@ public partial class TaskPane : UserControl
         // Replace the selection.
 
         oNodeXLControl.SetSelected(oNodeXLControl.SelectedVertices,
-
-            CollectionUtil.DictionaryKeysToArray<IEdge, Char>(
-                oSelectedEdges)
-            );
+            oSelectedEdges.Keys);
     }
 
     //*************************************************************************
@@ -1664,13 +1735,8 @@ public partial class TaskPane : UserControl
 
         // Replace the selection.
 
-        oNodeXLControl.SetSelected(
-
-            CollectionUtil.DictionaryKeysToArray<IVertex, Char>(
-                oSelectedVertices),
-
-            oNodeXLControl.SelectedEdges
-            );
+        oNodeXLControl.SetSelected(oSelectedVertices.Keys,
+            oNodeXLControl.SelectedEdges);
     }
 
     //*************************************************************************
@@ -1723,13 +1789,8 @@ public partial class TaskPane : UserControl
 
         // Replace the selection.
 
-        oNodeXLControl.SetSelected(
-
-            CollectionUtil.DictionaryKeysToArray<IVertex, Char>(
-                oSelectedVertices),
-
-            oNodeXLControl.SelectedEdges
-            );
+        oNodeXLControl.SetSelected(oSelectedVertices.Keys,
+            oNodeXLControl.SelectedEdges);
     }
 
     //*************************************************************************
@@ -2529,7 +2590,7 @@ public partial class TaskPane : UserControl
 
         if (bForceRedraw)
         {
-            oNodeXLControl.DrawGraph();
+            oNodeXLControl.DrawGraphAsync();
         }
     }
 
@@ -2561,7 +2622,7 @@ public partial class TaskPane : UserControl
 
         if (bForceRedraw)
         {
-            oNodeXLControl.DrawGraph();
+            oNodeXLControl.DrawGraphAsync();
         }
     }
 
@@ -2968,6 +3029,35 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: ForceLayoutSelectedWithinBounds_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the msiForceLayoutSelectedWithinBounds and
+    /// msiContextForceLayoutSelectedWithinBounds menu items.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ForceLayoutSelectedWithinBounds_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        ForceLayoutSelectedWithinBounds();
+    }
+
+    //*************************************************************************
     //  Method: ForceLayoutVisible_Click()
     //
     /// <summary>
@@ -3055,10 +3145,67 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: MouseModeButton_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on all the ToolStripButtons that correspond
+    /// to values in the MouseMode enumeration.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    MouseModeButton_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        // tsGraphNavigation contains a ToolStripButton for each value in the
+        // MouseMode enumeration.  They should act like radio buttons.
+
+        foreach (ToolStripItem oToolStripItem in tsGraphNavigation.Items)
+        {
+            if (oToolStripItem is ToolStripButton)
+            {
+                ToolStripButton oToolStripButton =
+                    (ToolStripButton)oToolStripItem;
+
+                if (oToolStripButton.Tag is MouseMode)
+                {
+                    // Check the clicked button and uncheck the others.
+
+                    Boolean bChecked = false;
+
+                    if (oToolStripButton == sender)
+                    {
+                        oNodeXLControl.MouseMode =
+                            (MouseMode)oToolStripButton.Tag;
+
+                        bChecked = true;
+                    }
+
+                    oToolStripButton.Checked = bChecked;
+                }
+            }
+        }
+    }
+
+    //*************************************************************************
     //  Method: tssbForceLayout_DropDownOpening()
     //
     /// <summary>
-    /// Handles the DropDownOpening event on the tssbForceLayout context menu.
+    /// Handles the DropDownOpening event on the tssbForceLayout
+    /// ToolStripSplitButton.
     /// </summary>
     ///
     /// <param name="sender">
@@ -3081,12 +3228,102 @@ public partial class TaskPane : UserControl
 
         // If there are selected vertices, allow the user to lay them out.
 
-        Int32 iSelectedVertices = oNodeXLControl.SelectedVertices.Length;
+        Int32 iSelectedVertices = oNodeXLControl.SelectedVertices.Count;
 
         MenuUtil.EnableToolStripMenuItems(
             iSelectedVertices > 0,
             msiForceLayoutSelected
             );
+
+        MenuUtil.EnableToolStripMenuItems(
+            iSelectedVertices > 1,
+            msiForceLayoutSelectedWithinBounds
+            );
+    }
+
+    //*************************************************************************
+    //  Method: msiSnapVerticesToGrid_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the msiSnapVerticesToGrid menu item.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    msiSnapVerticesToGrid_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        this.UseWaitCursor = true;
+
+        VertexGridSnapper.SnapVerticesToGrid(oNodeXLControl.Graph,
+            ( new VertexGridSnapperUserSettings() ).GridSize);
+
+        oNodeXLControl.DrawGraphAsync(false);
+
+        this.UseWaitCursor = false;
+    }
+
+    //*************************************************************************
+    //  Method: msiGridSize_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the msiGridSize menu item.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    msiGridSize_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsDrawing)
+        {
+            return;
+        }
+
+        VertexGridSnapperUserSettings oVertexGridSnapperUserSettings =
+            new VertexGridSnapperUserSettings();
+
+        VertexGridSnapperUserSettingsDialog
+            oVertexGridSnapperUserSettingsDialog =
+                new VertexGridSnapperUserSettingsDialog(
+                    oVertexGridSnapperUserSettings);
+
+        if (oVertexGridSnapperUserSettingsDialog.ShowDialog() ==
+            DialogResult.OK)
+        {
+            oVertexGridSnapperUserSettings.Save();
+        }
     }
 
     //*************************************************************************
@@ -3681,6 +3918,20 @@ public partial class TaskPane : UserControl
         cmsNodeXLControl.Show( WpfGraphicsUtil.WpfPointToPoint(
             oNodeXLControl.PointToScreen(
                 e.GetPosition(oNodeXLControl) ) ) );
+
+        // It shouldn't be necessary to give focus to the context menu, but if
+        // this isn't done, the following bug occurs: Run the ExcelTemplate
+        // project on a Vista or XP machine.  Detach the graph pane (Excel's
+        // Document Actions pane) from the Excel window and right-click the
+        // NodeXLControl.  A context menu pops up, but it behaves erratically:
+        // if you click a menu item that has a submenu, the submenu doesn't
+        // appear.  Instead, focus is given back to the Excel workbook, which
+        // flashes a cell in an odd manner.
+        //
+        // This bug does not occur if the graph pane is not detached from the
+        // Excel window.
+
+        cmsNodeXLControl.Focus();
     }
 
     //*************************************************************************
@@ -3708,7 +3959,21 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        SelectAdjacentVertices(e.Vertex, true);
+        switch (oNodeXLControl.MouseMode)
+        {
+            case MouseMode.Select:
+            case MouseMode.AddToSelection:
+
+                SelectAdjacentVertices(e.Vertex, true);
+                break;
+
+            default:
+
+                // Don't select adjacent vertices while in any other MouseMode,
+                // which could lead to confusing behavior.
+
+                break;
+        }
     }
 
     //*************************************************************************
@@ -3740,10 +4005,10 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: oNodeXLControl_GraphDrawn()
+    //  Method: oNodeXLControl_DrawGraphCompleted()
     //
     /// <summary>
-    /// Handles the GraphDrawn event on the oNodeXLControl control.
+    /// Handles the DrawGraphCompleted event on the oNodeXLControl control.
     /// </summary>
     ///
     /// <param name="sender">
@@ -3756,24 +4021,27 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     private void
-    oNodeXLControl_GraphDrawn
+    oNodeXLControl_DrawGraphCompleted
     (
         object sender,
-        EventArgs e
+        AsyncCompletedEventArgs e
     )
     {
         AssertValid();
 
-        // Remove the value that may have been added to the graph by
-        // ForceLayoutSelected().
+        // Remove the keys that may have been added to the graph by
+        // ForceLayoutSelected() and ForceLayoutSelectedWithinBounds().
 
         oNodeXLControl.Graph.RemoveKey(
             ReservedMetadataKeys.LayOutTheseVerticesOnly);
 
+        oNodeXLControl.Graph.RemoveKey(
+            ReservedMetadataKeys.LayOutTheseVerticesWithinBounds);
+
         // If the edge and vertex dictionaries are null, NodeXLControl has
         // drawn a default, empty graph.
 
-        if (m_oEdgeIDDictionary != null)
+        if (e.Error == null && m_oEdgeIDDictionary != null)
         {
             // Forward the event.
 
@@ -3798,6 +4066,28 @@ public partial class TaskPane : UserControl
         }
 
         EnableGraphControls(true);
+
+        if (e.Error is OutOfMemoryException)
+        {
+            FormUtil.ShowError(
+                "The computer does not have enough memory to lay out the"
+                + " graph.  Try the following to fix the problem:"
+                + "\r\n\r\n"
+                + "1. Select a different layout algorithm."
+                + "\r\n\r\n"
+                + "2. Close other programs."
+                + "\r\n\r\n"
+                + "3. Restart the computer."
+                + "\r\n\r\n"
+                + "4. Reduce the number of edges in the graph."
+                + "\r\n\r\n"
+                + "5. Add more memory to the computer."
+                );
+        }
+        else if (e.Error != null)
+        {
+            ErrorUtil.OnException(e.Error);
+        }
     }
 
     //*************************************************************************
@@ -4187,14 +4477,8 @@ public partial class TaskPane : UserControl
             }
         }
 
-        oNodeXLControl.SetSelected(
-
-            CollectionUtil.DictionaryValuesToArray<Int32, IVertex>(
-                oVerticesToSelect),
-
-            CollectionUtil.DictionaryValuesToArray<Int32, IEdge>(
-                oEdgesToSelect)
-            );
+        oNodeXLControl.SetSelected(oVerticesToSelect.Values,
+            oEdgesToSelect.Values);
     }
 
     //*************************************************************************

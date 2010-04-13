@@ -18,12 +18,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
-/// Call <see cref="ShowDialogAndSaveGraph" /> to allow the user to save a
-/// graph to a location of his choice.
+/// Call <see cref="SaveGraphFileDialog.ShowDialogAndSaveGraph" /> to allow the
+/// user to save a graph to a location of his choice.
 /// </remarks>
 //*****************************************************************************
 
-public class SaveUcinetFileDialog : SaveFileDialog2
+public class SaveUcinetFileDialog : SaveGraphFileDialog
 {
     //*************************************************************************
     //  Constructor: SaveUcinetFileDialog()
@@ -52,43 +52,6 @@ public class SaveUcinetFileDialog : SaveFileDialog2
     ) : base(initialDirectory, initialFileName)
     {
         // (Do nothing else.)
-    }
-
-    //*************************************************************************
-    //  Method: ShowDialogAndSaveGraph()
-    //
-    /// <summary>
-    /// Shows the file save dialog and saves the graph to the selected file.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// Graph to save.
-    /// </param>
-    ///
-    /// <returns>
-    /// DialogResult.OK if the user selected a file name and the graph was
-    /// successfully saved.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// This method allows the user to select a file name.  It then saves the
-    /// graph to the file.
-    /// </remarks>
-    //*************************************************************************
-
-    public DialogResult
-    ShowDialogAndSaveGraph
-    (
-        IGraph graph
-    )
-    {
-        Debug.Assert(graph != null);
-        AssertValid();
-
-        // Let the base class do most of the work.  The actual saving will be
-        // done by SaveObject() in this class.
-
-        return ( ShowDialogAndSaveObject(graph) );
     }
 
     //*************************************************************************

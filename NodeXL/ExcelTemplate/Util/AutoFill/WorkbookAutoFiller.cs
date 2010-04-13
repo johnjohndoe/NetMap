@@ -240,7 +240,7 @@ public static class WorkbookAutoFiller : Object
 
         if ( TryAutoFillNumericRangeColumn(oEdgeTable,
                 oAutoFillUserSettings.EdgeAlphaSourceColumnName,
-                EdgeTableColumnNames.Alpha,
+                CommonTableColumnNames.Alpha,
                 oAutoFillUserSettings.EdgeAlphaDetails,
                 out dSourceCalculationNumber1, out dSourceCalculationNumber2,
                 out iDecimalPlaces
@@ -258,7 +258,7 @@ public static class WorkbookAutoFiller : Object
 
         AutoFillNumericComparisonColumn(oEdgeTable,
             oAutoFillUserSettings.EdgeVisibilitySourceColumnName,
-            EdgeTableColumnNames.Visibility,
+            CommonTableColumnNames.Visibility,
             oAutoFillUserSettings.EdgeVisibilityDetails
             );
 
@@ -350,7 +350,7 @@ public static class WorkbookAutoFiller : Object
 
         if ( TryAutoFillNumericRangeColumn(oVertexTable,
                 oAutoFillUserSettings.VertexAlphaSourceColumnName,
-                VertexTableColumnNames.Alpha,
+                CommonTableColumnNames.Alpha,
                 oAutoFillUserSettings.VertexAlphaDetails,
                 out dSourceCalculationNumber1, out dSourceCalculationNumber2,
                 out iDecimalPlaces
@@ -386,7 +386,7 @@ public static class WorkbookAutoFiller : Object
 
         AutoFillNumericComparisonColumn(oVertexTable,
             oAutoFillUserSettings.VertexVisibilitySourceColumnName,
-            VertexTableColumnNames.Visibility,
+            CommonTableColumnNames.Visibility,
             oAutoFillUserSettings.VertexVisibilityDetails
             );
 

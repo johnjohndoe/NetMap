@@ -335,6 +335,17 @@ public static class ReservedMetadataKeys : Object
         FirstChar + "EDWidth";
 
     /// <summary>
+    /// Key added to an edge to force it to have a specified style.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an EdgeStyle.
+    /// </remarks>
+
+    public static readonly String PerEdgeStyle =
+        FirstChar + "EDStyle";
+
+    /// <summary>
     /// Key added to an edge to force a label to be drawn on top of it.
     /// </summary>
     ///
@@ -414,11 +425,34 @@ public static class ReservedMetadataKeys : Object
     /// The key's value is an IVertex array containing the vertices to lay out.
     /// When this key is present on the graph, the layout completely ignores
     /// the graph's vertices that are not in the specified array.
+    ///
+    /// <para>
+    /// By default, the specified vertices are laid out within the full graph
+    /// rectangle, but if the <see cref="LayOutTheseVerticesWithinBounds" />
+    /// key is also added to the graph, then the specified vertices are laid
+    /// out within the rectangle defined by the current locations of the
+    /// outermost vertices in the set.
+    /// </para>
+    ///
     /// </remarks>
 
     public static readonly String LayOutTheseVerticesOnly =
-
         FirstChar + "LTheseOnly";
+
+    /// <summary>
+    /// Key added to a graph to tell the layout algorithm to lay out only a
+    /// specified set of vertices within a bounding rectangle.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key is used only if the <see cref="LayOutTheseVerticesOnly" /> key
+    /// is also added to the graph.  If both keys are present, the specified
+    /// vertices are laid out within the rectangle defined by the current
+    /// locations of the outermost vertices in the set.
+    /// </remarks>
+
+    public static readonly String LayOutTheseVerticesWithinBounds =
+        FirstChar + "LTheseOnlyWithin";
 
     /// <summary>
     /// Key added to a vertex to tell the layout algorithm to leave the vertex
@@ -633,46 +667,50 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
-    //  Keys used by GraphMLGraphAdapter
+    //  Keys used by WorkbookReader and GraphMLGraphAdapter
     //*************************************************************************
 
     /// <summary>
-    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
-    /// which keys were added to each of the graph's edges.
+    /// Key added to a graph to specify the complete set of metadata key values
+    /// that may be present on the graph's edges.
     /// </summary>
     ///
     /// <remarks>
-    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
-    /// String[], and the array contains one string for each edge
-    /// GraphML-attribute defined in the GraphML XML.
+    /// When WorkbookReader.ReadWorkbook() is called with a
+    /// ReadWorkbookContext.ReadAllEdgeAndVertexColumns value of true, this key
+    /// gets added to the graph.  The key's value is of type String[] and the
+    /// array contains one string for each possible key value.
     ///
     /// <para>
-    /// See the "GraphML Primer" for information on the GraphML XML format.
+    /// Also, GraphMLGraphAdapter.LoadGraph() adds this key to the graph to
+    /// indicate which keys may have been added to the graph's edges.
     /// </para>
     ///
     /// </remarks>
 
-    public static readonly String GraphMLEdgeAttributes =
-        FirstChar + "GraphMLEdgeAttributes";
+    public static readonly String AllEdgeMetadataKeys =
+        FirstChar + "AllEdgeMetadataKeys";
 
     /// <summary>
-    /// Key added to a graph by GraphMLGraphAdapter.LoadGraph() to indicate
-    /// which keys were added to each of the graph's vertices.
+    /// Key added to a graph to specify the complete set of metadata key values
+    /// that may be present on the graph's vertices.
     /// </summary>
     ///
     /// <remarks>
-    /// The <see cref="GraphMLVertexAttributes" /> key's value is of type
-    /// String[], and the array contains one string for each vertex
-    /// GraphML-attribute defined in the GraphML XML.
+    /// When WorkbookReader.ReadWorkbook() is called with a
+    /// ReadWorkbookContext.ReadAllEdgeAndVertexColumns value of true, this key
+    /// gets added to the graph.  The key's value is of type String[] and the
+    /// array contains one string for each possible key value.
     ///
     /// <para>
-    /// See the "GraphML Primer" for information on the GraphML XML format.
+    /// Also, GraphMLGraphAdapter.LoadGraph() adds this key to the graph to
+    /// indicate which keys may have been added to the graph's vertices.
     /// </para>
     ///
     /// </remarks>
 
-    public static readonly String GraphMLVertexAttributes =
-        FirstChar + "GraphMLVertexAttributes";
+    public static readonly String AllVertexMetadataKeys =
+        FirstChar + "AllVertexMetadataKeys";
 
 
     //*************************************************************************

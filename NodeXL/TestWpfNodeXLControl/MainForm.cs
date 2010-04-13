@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Drawing;
 using System.Reflection;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -30,18 +31,16 @@ public partial class MainForm : Form
 
         CreateNodeXLControl();
 
+        usrGraphZoomAndScale.NodeXLControl = m_oNodeXLControl;
+
         chkShowVertexToolTips.Checked = m_oNodeXLControl.ShowVertexToolTips;
         chkShowAxes.Checked = m_oNodeXLWithAxesControl.ShowAxes;
 
-        cbxMouseSelectionMode.PopulateWithEnumValues(
-            typeof(Microsoft.NodeXL.Visualization.Wpf.MouseSelectionMode),
-            false);
+        cbxMouseMode.PopulateWithEnumValues(
+            typeof(Microsoft.NodeXL.Visualization.Wpf.MouseMode), false);
 
-        cbxMouseSelectionMode.SelectedValue =
-            Microsoft.NodeXL.Visualization.Wpf.MouseSelectionMode.
-                SelectVertexAndIncidentEdges;
-
-        tbGraphScale.Value = (Int32)m_oNodeXLControl.GraphScale * 100;
+        cbxMouseMode.SelectedValue =
+            Microsoft.NodeXL.Visualization.Wpf.MouseMode.Select;
 
         #if false
         m_oNodeXLControl.Layout =
@@ -99,8 +98,9 @@ public partial class MainForm : Form
         m_oNodeXLControl.DrawingGraph +=
             new System.EventHandler(this.m_oNodeXLControl_DrawingGraph);
 
-        m_oNodeXLControl.GraphDrawn +=
-            new System.EventHandler(this.m_oNodeXLControl_GraphDrawn);
+        m_oNodeXLControl.DrawGraphCompleted +=
+            new AsyncCompletedEventHandler(
+                this.m_oNodeXLControl_DrawGraphCompleted);
 
         ehElementHost.Child = m_oNodeXLWithAxesControl;
     }
@@ -120,7 +120,7 @@ public partial class MainForm : Form
 
         AddToolTipsToVertices();
 
-        m_oNodeXLControl.DrawGraph(true);
+        m_oNodeXLControl.DrawGraphAsync(true);
     }
 
     protected void
@@ -166,7 +166,7 @@ public partial class MainForm : Form
 
         // oEdge.SetValue(ReservedMetadataKeys.PerEdgeWidth, 20F);
 
-        m_oNodeXLControl.DrawGraph(true);
+        m_oNodeXLControl.DrawGraphAsync(true);
 
         return;
 
@@ -200,7 +200,7 @@ public partial class MainForm : Form
 
         oEdges.Add(oVertex1, oVertex2, true);
 
-        m_oNodeXLControl.DrawGraph(true);
+        m_oNodeXLControl.DrawGraphAsync(true);
 
         return;
 
@@ -397,7 +397,7 @@ public partial class MainForm : Form
         AddToolTipsToVertices();
         SetBackgroundImage();
 
-        m_oNodeXLControl.DrawGraph(true);
+        m_oNodeXLControl.DrawGraphAsync(true);
     }
 
     protected void
@@ -523,13 +523,13 @@ public partial class MainForm : Form
     }
 
     private void
-    m_oNodeXLControl_GraphDrawn
+    m_oNodeXLControl_DrawGraphCompleted
     (
         object sender,
-        EventArgs e
+        AsyncCompletedEventArgs e
     )
     {
-        AddToStatus("GraphDrawn");
+        AddToStatus("DrawGraphCompleted");
     }
 
     private void
@@ -705,7 +705,7 @@ public partial class MainForm : Form
     )
     {
         SetBackgroundImage();
-        m_oNodeXLControl.DrawGraph(false);
+        m_oNodeXLControl.DrawGraphAsync(false);
     }
 
     private void
@@ -784,15 +784,15 @@ public partial class MainForm : Form
     }
 
     private void
-    cbxMouseSelectionMode_SelectedIndexChanged
+    cbxMouseMode_SelectedIndexChanged
     (
         object sender,
         EventArgs e
     )
     {
-        m_oNodeXLControl.MouseSelectionMode =
-            (Microsoft.NodeXL.Visualization.Wpf.MouseSelectionMode)
-            cbxMouseSelectionMode.SelectedValue;
+        m_oNodeXLControl.MouseMode =
+            (Microsoft.NodeXL.Visualization.Wpf.MouseMode)
+            cbxMouseMode.SelectedValue;
     }
 
     private void
@@ -814,7 +814,7 @@ public partial class MainForm : Form
                 VisibilityKeyValue.Hidden);
         }
 
-        m_oNodeXLControl.DrawGraph();
+        m_oNodeXLControl.DrawGraphAsync();
     }
 
     private void
@@ -834,17 +834,7 @@ public partial class MainForm : Form
             oSelectedEdge.RemoveKey(ReservedMetadataKeys.Visibility);
         }
 
-        m_oNodeXLControl.DrawGraph();
-    }
-
-    private void
-    tbGraphScale_Scroll
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        m_oNodeXLControl.GraphScale = tbGraphScale.Value / 100.0;
+        m_oNodeXLControl.DrawGraphAsync();
     }
 
     protected const String LongLabel =

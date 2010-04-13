@@ -133,7 +133,7 @@ public static class PlugInManager
     {
         oFileNames = null;
 
-        String sPlugInFolder = GetPlugInFolder();
+        String sPlugInFolder = ApplicationUtil.GetPlugInFolder();
 
         if ( !Directory.Exists(sPlugInFolder) )
         {
@@ -151,32 +151,6 @@ public static class PlugInManager
         oFileNames = oFileNameList;
 
         return (true);
-    }
-
-    //*************************************************************************
-    //  Method: GetPlugInFolder()
-    //
-    /// <summary>
-    /// Gets the full path to folder where plug-in assemblies are stored.
-    /// </summary>
-    ///
-    /// <returns>
-    /// The full path to folder where plug-in assemblies are stored.
-    /// </returns>
-    //*************************************************************************
-
-    private static String
-    GetPlugInFolder()
-    {
-        String sAssemblyPath = Path.GetDirectoryName(
-            Assembly.GetExecutingAssembly().CodeBase);
-
-        if ( sAssemblyPath.StartsWith("file:") )
-        {
-            sAssemblyPath = sAssemblyPath.Substring(6);
-        }
-
-        return ( Path.Combine(sAssemblyPath, PlugInSubfolder) );
     }
 
     //*************************************************************************
@@ -240,15 +214,5 @@ public static class PlugInManager
 
         return (true);
     }
-
-
-    //*************************************************************************
-    //  Private constants
-    //*************************************************************************
-
-    /// Subfolder under the application folder where plug-in assemblies are
-    /// stored.
-
-    private const String PlugInSubfolder = "PlugIns";
 }
 }

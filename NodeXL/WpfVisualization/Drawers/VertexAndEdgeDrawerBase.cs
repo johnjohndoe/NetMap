@@ -37,6 +37,7 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         m_oSelectedColor = SystemColors.HighlightColor;
         m_btFilteredAlpha = 10;
         m_iMaximumLabelLength = Int32.MaxValue;
+        m_dGraphScale = 1.0;
 
         m_oTypeface = new Typeface(SystemFonts.MessageFontFamily,
             FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
@@ -273,6 +274,47 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         set
         {
             m_iMaximumLabelLength = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: GraphScale
+    //
+    /// <summary>
+    /// Gets or sets a value that determines the scale of the graph's vertices
+    /// and edges.
+    /// </summary>
+    ///
+    /// <value>
+    /// A value that determines the scale of the graph's vertices and edges.
+    /// Must be between <see cref="GraphDrawer.MinimumGraphScale" /> and <see
+    /// cref="GraphDrawer.MaximumGraphScale" />.  The default value is 1.0.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If the value is anything besides 1.0, the graph's vertices and edges
+    /// are shrunk while their positions remain the same.  If it is set to 0.5,
+    /// for example, the vertices are half their normal size and the edges are
+    /// half their normal width.  The overall size of the graph is not
+    /// affected.
+    /// </remarks>
+    //*************************************************************************
+
+    public Double
+    GraphScale
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_dGraphScale);
+        }
+
+        set
+        {
+            m_dGraphScale = value;
 
             AssertValid();
         }
@@ -614,7 +656,9 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         // AssertValid();
 
         m_oDefaultBrush = CreateFrozenSolidColorBrush(m_oColor);
-        m_oDefaultPen = CreateFrozenPen(m_oDefaultBrush, DefaultPenThickness);
+
+        m_oDefaultPen = CreateFrozenPen(m_oDefaultBrush, DefaultPenThickness,
+            DefaultDashStyle);
     }
 
     //*************************************************************************
@@ -721,7 +765,7 @@ public class VertexAndEdgeDrawerBase : DrawerBase
 
         FormattedText oFormattedText = new FormattedText( sText,
             CultureInfo.CurrentCulture, FlowDirection.LeftToRight, m_oTypeface,
-            dFontSize, GetBrush(oColor) );
+            dFontSize * m_dGraphScale, GetBrush(oColor) );
 
         return (oFormattedText);
     }
@@ -761,8 +805,12 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     //*************************************************************************
     //  Method: GetPen()
     //
-    /// <summary>
+    /// <overloads>
     /// Gets a pen to use to draw a vertex or edge.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Gets a solid pen to use to draw a vertex or edge.
     /// </summary>
     ///
     /// <param name="oColor">
@@ -774,7 +822,8 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     /// </param>
     ///
     /// <returns>
-    /// A pen to use to draw a vertex or edge.
+    /// A pen to use to draw a vertex or edge.  The pen has the default dash
+    /// style, which is DashStyles.Solid.
     /// </returns>
     //*************************************************************************
 
@@ -788,15 +837,58 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         Debug.Assert(dThickness > 0);
         AssertValid();
 
+        return ( GetPen(oColor, dThickness, DefaultDashStyle) );
+    }
+
+    //*************************************************************************
+    //  Method: GetPen()
+    //
+    /// <summary>
+    /// Gets a pen to use to draw a vertex or edge, using a specified dash
+    /// style.
+    /// </summary>
+    ///
+    /// <param name="oColor">
+    /// The vertex or edge color.
+    /// </param>
+    ///
+    /// <param name="dThickness">
+    /// The pen thickness.
+    /// </param>
+    ///
+    /// <param name="oDashStyle">
+    /// The pen's dash style.
+    /// </param>
+    ///
+    /// <returns>
+    /// A pen to use to draw a vertex or edge.
+    /// </returns>
+    //*************************************************************************
+
+    protected Pen
+    GetPen
+    (
+        Color oColor,
+        Double dThickness,
+        DashStyle oDashStyle
+    )
+    {
+        Debug.Assert(dThickness > 0);
+        Debug.Assert(oDashStyle != null);
+        AssertValid();
+
         Debug.Assert(m_oDefaultPen.Brush is SolidColorBrush);
 
-        if (oColor == ( (SolidColorBrush)m_oDefaultPen.Brush ).Color &&
-            dThickness == m_oDefaultPen.Thickness)
+        if (
+            oColor == ( (SolidColorBrush)m_oDefaultPen.Brush ).Color &&
+            dThickness == m_oDefaultPen.Thickness &&
+            oDashStyle == DefaultDashStyle
+            )
         {
             return (m_oDefaultPen);
         }
 
-        return ( CreateFrozenPen( GetBrush(oColor), dThickness) );
+        return ( CreateFrozenPen( GetBrush(oColor), dThickness, oDashStyle) );
     }
 
 
@@ -821,6 +913,8 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         Debug.Assert(m_btFilteredAlpha >= 0);
         Debug.Assert(m_btFilteredAlpha <= 255);
         Debug.Assert(m_iMaximumLabelLength >= 0);
+        Debug.Assert(m_dGraphScale >= GraphDrawer.MinimumGraphScale);
+        Debug.Assert(m_dGraphScale <= GraphDrawer.MaximumGraphScale);
         Debug.Assert(m_oDefaultBrush != null);
         Debug.Assert(m_oDefaultPen != null);
         Debug.Assert(m_oTypeface != null);
@@ -835,6 +929,10 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     /// Default pen thickness.
 
     protected const Double DefaultPenThickness = 1;
+
+    /// Default pen dash style.
+
+    protected static readonly DashStyle DefaultDashStyle = DashStyles.Solid;
 
 
     //*************************************************************************
@@ -862,6 +960,10 @@ public class VertexAndEdgeDrawerBase : DrawerBase
     /// for no maximum.
 
     protected Int32 m_iMaximumLabelLength;
+
+    /// Determines the scale of the graph's vertices and edges.
+
+    protected Double m_dGraphScale;
 
     /// Default brush to use.
 

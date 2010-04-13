@@ -32,6 +32,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <item><see cref="ReservedMetadataKeys.PerColor" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerAlpha" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerEdgeWidth" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerEdgeStyle" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerEdgeLabel" /></item>
 /// <item><see cref="ReservedMetadataKeys.IsSelected" /></item>
 ///
@@ -318,6 +319,7 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
         Boolean bDrawAsSelected = GetDrawAsSelected(edge);
         Color oColor = GetColor(edge, eVisibility, bDrawAsSelected);
         Double dWidth = GetWidth(edge, bDrawAsSelected);
+        DashStyle oDashStyle = GetDashStyle(edge, dWidth, bDrawAsSelected);
         Boolean bDrawArrow = (m_bDrawArrowOnDirectedEdge && edge.IsDirected);
         IVertex [] aoVertices = edge.Vertices;
 
@@ -364,7 +366,7 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
 
                 // Draw the edge.
 
-                oDrawingContext.DrawLine(GetPen(oColor, dWidth),
+                oDrawingContext.DrawLine(GetPen(oColor, dWidth, oDashStyle),
                     oEdgeEndpoint1, oEdgeEndpoint2);
 
                 // Draw the edge's label, if there is one.
@@ -701,7 +703,114 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
             }
         }
 
-        return (dWidth);
+        return (dWidth * m_dGraphScale);
+    }
+
+    //*************************************************************************
+    //  Method: GetDashStyle()
+    //
+    /// <summary>
+    /// Gets the DashStyle of an edge.
+    /// </summary>
+    ///
+    /// <param name="oEdge">
+    /// The edge to get the DashStyle for.
+    /// </param>
+    ///
+    /// <param name="dWidth">
+    /// The edge width.
+    /// </param>
+    ///
+    /// <param name="bDrawAsSelected">
+    /// true to draw the edge as selected.
+    /// </param>
+    ///
+    /// <returns>
+    /// The DashStyle of the edge.
+    /// </returns>
+    //*************************************************************************
+
+    protected DashStyle
+    GetDashStyle
+    (
+        IEdge oEdge,
+        Double dWidth,
+        Boolean bDrawAsSelected
+    )
+    {
+        Debug.Assert(oEdge != null);
+        Debug.Assert(dWidth >= 0);
+        AssertValid();
+
+        // Note:
+        //
+        // An early implementation used the predefined DashStyle objects
+        // provided by the DashStyles class, but those did not look good at
+        // smaller edge widths.  This implementation builds the DashStyle's
+        // Dashes collection from scratch.
+
+        Double [] adDashes = null;
+
+        if (!bDrawAsSelected)
+        {
+            Object oPerEdgeStyleAsObject;
+
+            // Check for a per-edge style.
+
+            if ( oEdge.TryGetValue(ReservedMetadataKeys.PerEdgeStyle,
+                typeof(EdgeStyle), out oPerEdgeStyleAsObject) )
+            {
+                switch ( (EdgeStyle)oPerEdgeStyleAsObject )
+                {
+                    case EdgeStyle.Solid:
+
+                        break;
+
+                    case EdgeStyle.Dash:
+
+                        adDashes = new Double[] {4.0, 2.0};
+                        break;
+
+                    case EdgeStyle.Dot:
+
+                        adDashes = new Double[] {1.0, 2.0};
+                        break;
+
+                    case EdgeStyle.DashDot:
+
+                        adDashes = new Double[] {4.0, 2.0, 1.0, 2.0};
+                        break;
+
+                    case EdgeStyle.DashDotDot:
+
+                        adDashes = new Double[] {4.0, 2.0, 1.0, 2.0, 1.0, 2.0};
+                        break;
+
+                    default:
+
+                        throw new FormatException( String.Format(
+
+                            "{0}: The edge with the ID {1} has an invalid {2}"
+                            + " value."
+                            ,
+                            this.ClassName,
+                            oEdge.ID,
+                            "ReservedMetadataKeys.PerEdgeStyle"
+                            ) );
+                }
+            }
+        }
+
+        if (adDashes == null)
+        {
+            return (DashStyles.Solid);
+        }
+
+        DashStyle oDashStyle = new DashStyle();
+        oDashStyle.Dashes = new DoubleCollection(adDashes);
+        WpfGraphicsUtil.FreezeIfFreezable(oDashStyle);
+
+        return (oDashStyle);
     }
 
     //*************************************************************************
@@ -1174,4 +1283,58 @@ public class EdgeDrawer : VertexAndEdgeDrawerBase
     protected Double m_dRelativeArrowSize;
 }
 
+
+//*****************************************************************************
+//  Enum: EdgeStyle
+//
+/// <summary>
+/// Specifies the style of an edge.
+/// </summary>
+//*****************************************************************************
+
+public enum
+EdgeStyle
+{
+    // Note:
+    //
+    // These values may get stored in user setting files and their numerical
+    // values should not be modified.
+
+    /// <summary>
+    /// The edge is drawn as a solid line.
+    /// </summary>
+
+    Solid = 0,
+
+    /// <summary>
+    /// The edge is drawn as a dashed line.
+    /// </summary>
+
+    Dash = 1,
+
+    /// <summary>
+    /// The edge is drawn as a dotted line.
+    /// </summary>
+
+    Dot = 2,
+
+    /// <summary>
+    /// The edge is drawn as a dash-dot line.
+    /// </summary>
+
+    DashDot = 3,
+
+    /// <summary>
+    /// The edge is drawn as a dash-dot-dot line.
+    /// </summary>
+
+    DashDotDot = 4,
+
+    // If a new style is added, the following must be done:
+    //
+    // 1. Update the drawing code in this class.
+    //
+    // 2. Add new entries to the Valid Edge Styles column on the Misc table
+    //    of the NodeXLGraph.xltx Excel template.
+}
 }

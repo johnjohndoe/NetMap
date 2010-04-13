@@ -15,18 +15,11 @@ namespace Microsoft.NodeXL.Adapters
 //  Class: GraphMLGraphAdapter
 //
 /// <summary>
-/// Converts a graph from (but no to) a GraphML file.
+/// Converts a graph to and from a GraphML file.
 /// </summary>
 ///
 /// <remarks>
-/// The <see cref="GraphAdapterBase.LoadGraphFromFile" /> method converts a
-/// GraphML file to a graph.  The <see
-/// cref="GraphAdapterBase.SaveGraph(IGraph, String)" /> method for converting
-/// in the other direction is not yet implemented.
-///
-/// <para>
 /// A good introduction to GraphML can be found in the GraphML Primer:
-/// </para>
 ///
 /// <para>
 /// http://graphml.graphdrawing.org/primer/graphml-primer.html
@@ -70,20 +63,30 @@ namespace Microsoft.NodeXL.Adapters
 /// </code>
 ///
 /// <para>
-/// Edge and vertex attributes, which GraphML calls "GraphML-attributes, are
-/// supported by this class.  When an edge or vertex has a GraphML-attribute,
-/// it gets added to the metadata of the <see cref="IVertex" /> or <see
-/// cref="IEdge" />.  The metadata key is the GraphML-attribute's attr.name
-/// value and the metadata value is the GraphML-attribute's value.
+/// Edge and vertex attributes, which GraphML calls "GraphML-attributes," are
+/// supported by this class.  When loading a graph, if an edge or vertex has a
+/// GraphML-attribute, it gets added to the metadata of the <see
+/// cref="IEdge" /> or <see cref="IVertex" />.  The metadata key is the
+/// GraphML-attribute's attr.name value and the metadata value is the
+/// GraphML-attribute's value.  When saving a graph, every metadata value on
+/// every edge and vertex gets converted to a GraphML-attribute in the saved
+/// GraphML.
 /// </para>
 ///
 /// <para>
 /// To make it possible for the caller to determine which metadata keys were
-/// added to the graph's edges and vertices, <see
-/// cref="GraphAdapterBase.LoadGraphFromFile" /> adds <see
-/// cref="ReservedMetadataKeys.GraphMLVertexAttributes" /> and <see
-/// cref="ReservedMetadataKeys.GraphMLEdgeAttributes" /> keys to the returned
+/// added to the graph's edges and vertices, the LoadXX methods add <see
+/// cref="ReservedMetadataKeys.AllEdgeMetadataKeys" /> and <see
+/// cref="ReservedMetadataKeys.AllVertexMetadataKeys" /> keys to the returned
 /// graph.  The key values are of type String[].
+/// </para>
+///
+/// <para>
+/// When saving a graph, the <see
+/// cref="IGraphAdapter.SaveGraph(IGraph, Stream)" /> caller must add <see
+/// cref="ReservedMetadataKeys.AllEdgeMetadataKeys" /> and <see
+/// cref="ReservedMetadataKeys.AllVertexMetadataKeys" /> keys to the graph
+/// before calling <see cref="IGraphAdapter.SaveGraph(IGraph, Stream)" />.
 /// </para>
 ///
 /// </remarks>
@@ -314,7 +317,8 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         // Read the GraphML-attribute nodes.
 
         foreach ( XmlNode oKeyXmlNode in oGraphMLXmlNode.SelectNodes(
-            GraphMLPrefix + ":key", oXmlNamespaceManager) )
+            GraphMLPrefix + ":key[@for='node' or @for='edge']",
+            oXmlNamespaceManager) )
         {
             GraphMLAttribute oGraphMLAttribute =
                 new GraphMLAttribute(oKeyXmlNode, oXmlNamespaceManager,
@@ -521,6 +525,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// <param name="oXmlNamespaceManager">
     /// XML namespace manager.
     /// </param>
+    ///
     /// <param name="oEdgeOrVertex">
     /// The edge or vertex created from the node.
     /// </param>
@@ -672,8 +677,8 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     ///
     /// <remarks>
     /// This method adds <see
-    /// cref="ReservedMetadataKeys.GraphMLVertexAttributes" /> and <see
-    /// cref="ReservedMetadataKeys.GraphMLEdgeAttributes" /> keys to the graph.
+    /// cref="ReservedMetadataKeys.AllVertexMetadataKeys" /> and <see
+    /// cref="ReservedMetadataKeys.AllEdgeMetadataKeys" /> keys to the graph.
     /// </remarks>
     //*************************************************************************
 
@@ -700,10 +705,10 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
             oListToAddTo.Add(oGraphMLAttribute.Name);
         }
 
-        oGraph.SetValue( ReservedMetadataKeys.GraphMLVertexAttributes,
+        oGraph.SetValue( ReservedMetadataKeys.AllVertexMetadataKeys,
             oVertexKeys.ToArray() );
 
-        oGraph.SetValue( ReservedMetadataKeys.GraphMLEdgeAttributes,
+        oGraph.SetValue( ReservedMetadataKeys.AllEdgeMetadataKeys,
             oEdgeKeys.ToArray() );
     }
 
@@ -744,10 +749,124 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         Debug.Assert(stream != null);
         AssertValid();
 
-        // This isn't implemented simply because it hasn't yet been a
-        // requirement.
+        GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(
+            graph.Directedness == GraphDirectedness.Directed);
 
-        throw new NotImplementedException();
+        String [] asEdgeAttributeNames = ( String[] )graph.GetRequiredValue(
+            ReservedMetadataKeys.AllEdgeMetadataKeys, typeof( String[] ) );
+
+        String [] asVertexAttributeNames = ( String[] )graph.GetRequiredValue(
+            ReservedMetadataKeys.AllVertexMetadataKeys, typeof( String[] ) );
+
+        // Define the Graph-ML attributes.
+
+        const String VertexAttributeIDPrefix = "V-";
+        const String EdgeAttributeIDPrefix = "E-";
+
+        foreach (String sVertexAttributeName in asVertexAttributeNames)
+        {
+            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
+                VertexAttributeIDPrefix + sVertexAttributeName,
+                sVertexAttributeName, "string", null);
+        }
+
+        foreach (String sEdgeAttributeName in asEdgeAttributeNames)
+        {
+            oGraphMLXmlDocument.DefineGraphMLAttribute(true,
+                EdgeAttributeIDPrefix + sEdgeAttributeName,
+                sEdgeAttributeName, "string", null);
+        }
+
+        // Add the vertices and their Graph-ML attribute values.
+
+        foreach (IVertex oVertex in graph.Vertices)
+        {
+            XmlNode oVertexXmlNode = oGraphMLXmlDocument.AppendVertexXmlNode(
+                oVertex.Name);
+
+            AppendGraphMLAttributeValues(oVertex, oGraphMLXmlDocument,
+                oVertexXmlNode, asVertexAttributeNames,
+                VertexAttributeIDPrefix);
+        }
+
+        // Add the edges and their Graph-ML attribute values.
+
+        foreach (IEdge oEdge in graph.Edges)
+        {
+            IVertex [] oVertices = oEdge.Vertices;
+
+            XmlNode oEdgeXmlNode = oGraphMLXmlDocument.AppendEdgeXmlNode(
+                oVertices[0].Name, oVertices[1].Name);
+
+            AppendGraphMLAttributeValues(oEdge, oGraphMLXmlDocument,
+                oEdgeXmlNode, asEdgeAttributeNames, EdgeAttributeIDPrefix);
+        }
+
+        oGraphMLXmlDocument.Save(stream);
+    }
+
+    //*************************************************************************
+    //  Method: AppendGraphMLAttributeValues()
+    //
+    /// <summary>
+    /// Appends Graph-ML attribute values to a vertex or edge XML node while
+    /// saving a graph.
+    /// </summary>
+    ///
+    /// <param name="oEdgeOrVertex">
+    /// The edge or vertex to read metadata from.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphML document being populated.
+    /// </param>
+    ///
+    /// <param name="oEdgeOrVertexXmlNode">
+    /// The edge or vertex XML node in the GraphML document that corresponds to
+    /// <paramref name="oEdgeOrVertex" />.
+    /// </param>
+    ///
+    /// <param name="asAttributeNames">
+    /// Array of all possible Graph-ML attribute names for the edge or vertex.
+    /// </param>
+    ///
+    /// <param name="AttributeIDPrefix">
+    /// The prefix to use for each Graph-ML attribute ID.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendGraphMLAttributeValues
+    (
+        IMetadataProvider oEdgeOrVertex,
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        XmlNode oEdgeOrVertexXmlNode,
+        String [] asAttributeNames,
+        String AttributeIDPrefix
+    )
+    {
+        Debug.Assert(oEdgeOrVertex != null);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oEdgeOrVertexXmlNode != null);
+        Debug.Assert(asAttributeNames != null);
+        Debug.Assert( !String.IsNullOrEmpty(AttributeIDPrefix) );
+        AssertValid();
+
+        foreach (String sAttributeName in asAttributeNames)
+        {
+            Object oAttributeValue;
+
+            // Note that the value type isn't checked.  Whatever type it is,
+            // it gets converted to a string.
+
+            if (oEdgeOrVertex.TryGetValue(sAttributeName,
+                out oAttributeValue) && oAttributeValue != null)
+            {
+                oGraphMLXmlDocument.AppendGraphMLAttributeValue( 
+                    oEdgeOrVertexXmlNode, AttributeIDPrefix + sAttributeName,
+                    oAttributeValue.ToString() );
+            }
+        }
     }
 
 

@@ -22,13 +22,19 @@
         "Entry"
         {
         "MsmKey" = "8:_0CC613CC23E801922BE1B64CC243EBF3"
+        "OwnerKey" = "8:_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0CC613CC23E801922BE1B64CC243EBF3"
         "OwnerKey" = "8:_4D2F1060B8173724F57AC64D5C6870E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_0CC613CC23E801922BE1B64CC243EBF3"
-        "OwnerKey" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+        "OwnerKey" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -41,12 +47,6 @@
         {
         "MsmKey" = "8:_0DE040EAD3E07728FFF9A7389BB62967"
         "OwnerKey" = "8:_52603E393BAEC88D288ED7F73A59F9CC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1C9FB66126DF4ED88D0A5D15E244AE6C"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -94,7 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_4D2F1060B8173724F57AC64D5C6870E0"
-        "OwnerKey" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+        "OwnerKey" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -107,6 +107,12 @@
         {
         "MsmKey" = "8:_4D2F1060B8173724F57AC64D5C6870E0"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4D2F1060B8173724F57AC64D5C6870E0"
+        "OwnerKey" = "8:_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -154,12 +160,6 @@
         "Entry"
         {
         "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
-        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_60BB7CE7209677A75DCC24192CBA5890"
         "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,7 +195,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+        "MsmKey" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -297,6 +297,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_92959334899249ADB3C76BB817716A08"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9799BBC64130499395121DED868D29B9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9DB47FE3D6584E85A949BD947C5F1D7A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -339,8 +351,14 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
+        "OwnerKey" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C2A6EC8425B1FEA63E470BA2BD63C274"
-        "OwnerKey" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+        "OwnerKey" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -376,6 +394,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C2A6EC8425B1FEA63E470BA2BD63C274"
+        "OwnerKey" = "8:_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C2A6EC8425B1FEA63E470BA2BD63C274"
         "OwnerKey" = "8:_4D2F1060B8173724F57AC64D5C6870E0"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -383,12 +407,6 @@
         {
         "MsmKey" = "8:_C5188550FEDAAAED11160EA74CDBA874"
         "OwnerKey" = "8:_CDE75C1CF1DC4F17B77B8CB6012FB931"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C90F3349EEAC4F5D98C3418D73D48190"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -580,13 +598,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_92959334899249ADB3C76BB817716A08"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_81B863B968F049D584EF6BEF69F060D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+        "OwnerKey" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -693,59 +723,115 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_210158651CB948928F6A6C82703E02B6"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_2367768A41D548A2AD425E1551EB4C67"
             {
-            "Name" = "8:Attach Customization"
+            "Name" = "8:Primary output from ExcelTemplateSetupTrustInstaller (Active)"
             "Condition" = "8:"
-            "Object" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+            "Object" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
             "FileType" = "3:1"
             "InstallAction" = "3:1"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_34382FCE_99B1_4765_9200_446E0A1F4149"
+            "Identifier" = "8:_A19E6758_AAB2_43D1_8381_ED29339CE873"
             "InstallerClass" = "11:TRUE"
-            "CustomActionData" = "8:/assemblyLocation=\"[TARGETDIR]Microsoft.NodeXL.ExcelTemplate.dll\" /deploymentManifestLocation=\"[TARGETDIR]Microsoft.NodeXL.ExcelTemplate.vsto\" /documentLocation=\"[AppDataFolder]Microsoft\\Templates\\TempNodeXLGraph.xltx\" /newDocumentName=\"NodeXLGraph.xltx\""
+            "CustomActionData" = "8:/deploymentLocation=\"[TARGETDIR]\\Microsoft.NodeXL.ExcelTemplate.vsto\""
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_67BFD65F7DD14E0C9ECA0318677F9BF6"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_96CDEC710A2746FB88ADF3D4EBE62C57"
             {
-            "Name" = "8:Do Nothing"
+            "Name" = "8:Primary output from ExcelTemplateSetupClickOnceInstaller (Active)"
             "Condition" = "8:"
-            "Object" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+            "Object" = "8:_92959334899249ADB3C76BB817716A08"
             "FileType" = "3:1"
             "InstallAction" = "3:3"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_4C94BC51_02BD_4147_9A80_F4D6762B441F"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_2F934038_1AC3_4480_B6D6_2FABD78A1107"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_AC7DCCCE899049859AD6D81D1309A3F0"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_9E16EB4C3C3B4E1C846D850FB8566F7E"
             {
-            "Name" = "8:Do Nothing"
+            "Name" = "8:Primary output from ExcelTemplateSetupClickOnceInstaller (Active)"
             "Condition" = "8:"
-            "Object" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+            "Object" = "8:_92959334899249ADB3C76BB817716A08"
+            "FileType" = "3:1"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_AE0E13D9_C687_441D_9819_3FDABBC7F124"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:/deploymentLocation=\"[TARGETDIR]\\Microsoft.NodeXL.ExcelTemplate.vsto\""
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_A4745212AEB043B9870E9F98BA327F4F"
+            {
+            "Name" = "8:Primary output from ExcelTemplateSetupClickOnceInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_92959334899249ADB3C76BB817716A08"
+            "FileType" = "3:1"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_142B9956_30B4_4D8C_B4A0_B059BA554477"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_B0CC3171EE494843B5B69F969359EBA4"
+            {
+            "Name" = "8:Primary output from ExcelTemplateSetupTrustInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
             "FileType" = "3:1"
             "InstallAction" = "3:4"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_491F7BC7_0B0B_458E_A04D_8BD86AFD4475"
+            "Identifier" = "8:_1649ED54_4F08_458B_BF31_36BB2813188E"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_F64EE770007348B78001C5C4319862C9"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_CBDAF079560D49E2A6F636FF3C2032A6"
             {
-            "Name" = "8:Do Nothing"
+            "Name" = "8:Primary output from ExcelTemplateSetupTrustInstaller (Active)"
             "Condition" = "8:"
-            "Object" = "8:_6BB837BF1A0E43A7AEF28D29E79B540E"
+            "Object" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
+            "FileType" = "3:1"
+            "InstallAction" = "3:3"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_7BD30A9F_B85D_4161_8EE6_ABBA8E0EFD4A"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_EC7DEC6386E345BE94BF85ECB0619D43"
+            {
+            "Name" = "8:Primary output from ExcelTemplateSetupClickOnceInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_92959334899249ADB3C76BB817716A08"
+            "FileType" = "3:1"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_440E6CAE_DB0E_40C6_B027_6D93DC81CC47"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_EE76FB83BC5A4CC5AEF2DE5F944EFA99"
+            {
+            "Name" = "8:Primary output from ExcelTemplateSetupTrustInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
             "FileType" = "3:1"
             "InstallAction" = "3:2"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_1EA389DE_E03A_429F_AAE4_C3BD350A5AEE"
+            "Identifier" = "8:_E97600CA_0359_49B5_8AE6_AFA694B08B26"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
@@ -834,26 +920,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1C9FB66126DF4ED88D0A5D15E244AE6C"
-            {
-            "SourcePath" = "8:ReadMe.rtf"
-            "TargetName" = "8:ReadMe.rtf"
-            "Tag" = "8:"
-            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_26C3D846F8D18D6C573BB4B6324243EB"
             {
             "AssemblyRegister" = "3:1"
@@ -940,7 +1006,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Control.Wpf, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Control.Wpf, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_35B0BAD5D30C324FABB4A3A452EF5CDE"
@@ -1053,7 +1119,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Algorithms, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Algorithms, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_5D96C1A3C205CF2B46F64DB6A406DFD5"
@@ -1084,7 +1150,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Util, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Util, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_60BB7CE7209677A75DCC24192CBA5890"
@@ -1115,7 +1181,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ApplicationUtil, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ApplicationUtil, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6928A3C23638DD4BD3B7BE2725FEE4E9"
@@ -1146,7 +1212,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Visualization.Wpf, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Visualization.Wpf, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6AEC068F1235A9ABF183289DA8B49D60"
@@ -1177,7 +1243,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Core, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Core, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_7E726C199B8AABAF49C92D8BF69B7496"
@@ -1208,7 +1274,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Adapters, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Adapters, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_86E63028DE99EA01A1C23565AAA93835"
@@ -1297,9 +1363,29 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9799BBC64130499395121DED868D29B9"
+            {
+            "SourcePath" = "8:ReadMeDialogText.rtf"
+            "TargetName" = "8:ReadMeDialogText.rtf"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9DB47FE3D6584E85A949BD947C5F1D7A"
             {
-            "SourcePath" = "8:..\\ExcelTemplate\\bin\\Debug\\NodeXLGraph.xltx"
+            "SourcePath" = "8:.\\TemplateModifiedForClickOnce\\NodeXLGraph.xltx"
             "TargetName" = "8:NodeXLGraph.xltx"
             "Tag" = "8:"
             "Folder" = "8:_29D88DFD852342F6822D6C91F88A61FA"
@@ -1352,7 +1438,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.113, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.121, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_AD13B06AC547D893A40E43C53B2E9BA1"
@@ -1393,6 +1479,37 @@
                     }
                 }
             "SourcePath" = "8:Microsoft.GLEE.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.VisualStudio.Tools.Office.Runtime.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_B64E6A62A4A61DA0AE1CB451FCEFFA6B"
+                    {
+                    "Name" = "8:Microsoft.VisualStudio.Tools.Office.Runtime.v9.0.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.VisualStudio.Tools.Office.Runtime.v9.0.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
@@ -1472,31 +1589,11 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C90F3349EEAC4F5D98C3418D73D48190"
-            {
-            "SourcePath" = "8:..\\ExcelTemplate\\bin\\Debug\\NodeXLGraph.xltx"
-            "TargetName" = "8:TempNodeXLGraph.xltx"
-            "Tag" = "8:"
-            "Folder" = "8:_29D88DFD852342F6822D6C91F88A61FA"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CFB4CE07CE9282744778769DB186A1B6"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Layouts, Version=1.0.1.113, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Layouts, Version=1.0.1.121, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_CFB4CE07CE9282744778769DB186A1B6"
@@ -1578,7 +1675,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.GraphDataProviders, Version=1.0.1.113, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.GraphDataProviders, Version=1.0.1.121, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F28A3C83FB2E4CB5861F58A2460A0E6A"
@@ -1716,14 +1813,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Microsoft NodeXL Excel Template"
-        "ProductCode" = "8:{A171CF56-89B2-42E9-804F-2080AF0EA847}"
-        "PackageCode" = "8:{9CF138B4-785B-490A-A0B2-2AEA3BB214DB}"
+        "ProductCode" = "8:{8FCCB962-7FD3-4DC8-A372-C9BC9398E69D}"
+        "PackageCode" = "8:{349207C5-C1FA-4A7E-A1DB-3D04D5EB3F35}"
         "UpgradeCode" = "8:{87DDE855-47E5-48B2-9D6E-03B84139823A}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.113"
+        "ProductVersion" = "8:1.0.121"
         "Manufacturer" = "8:Microsoft Research"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1739,7 +1836,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:"
+        "PostBuildEvent" = "8:cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"INSERT INTO Property(Property, Value) VALUES ('DISABLEADVTSHORTCUTS', '1')\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"INSERT INTO Property(Property, Value) VALUES ('REINSTALLMODE', 'amus')\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `CustomAction` SET `CustomAction`.`Type`='1025' WHERE `CustomAction`.`Action`='_AE0E13D9_C687_441D_9819_3FDABBC7F124.install'\" && ren \"$(ProjectDir)\\$(Configuration)\\Setup.exe\" \"Dnrd.exe\" && copy \"$(ProjectDir)\\..\\ExcelTemplateSetupStarter\\Bin\\$(Configuration)\\Setup.exe\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
@@ -1996,42 +2093,6 @@
                             }
                         }
                     }
-                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_71705E5E9F1D492AA3FB11DE5B4186EE"
-                    {
-                    "Sequence" = "3:200"
-                    "DisplayName" = "8:Installation Folder"
-                    "UseDynamicProperties" = "11:TRUE"
-                    "IsDependency" = "11:FALSE"
-                    "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
-                        "Properties"
-                        {
-                            "BannerBitmap"
-                            {
-                            "Name" = "8:BannerBitmap"
-                            "DisplayName" = "8:#1001"
-                            "Description" = "8:#1101"
-                            "Type" = "3:8"
-                            "ContextData" = "8:Bitmap"
-                            "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_DCEA35EA982149D2A68E1906F2EE8F1F"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                            "InstallAllUsersVisible"
-                            {
-                            "Name" = "8:InstallAllUsersVisible"
-                            "DisplayName" = "8:#1059"
-                            "Description" = "8:#1159"
-                            "Type" = "3:5"
-                            "ContextData" = "8:1;True=1;False=0"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:0"
-                            "Value" = "3:0"
-                            "DefaultValue" = "3:1"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                        }
-                    }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_DE2F0E39F650451A8BA6D79CDE738B9B"
                     {
                     "Sequence" = "3:300"
@@ -2240,7 +2301,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:_1C9FB66126DF4ED88D0A5D15E244AE6C"
+                            "Value" = "8:_9799BBC64130499395121DED868D29B9"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "Sunken"
@@ -2350,9 +2411,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6BB837BF1A0E43A7AEF28D29E79B540E"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_75FC4E5B1E3840D7AAF4DBC6AAB06A74"
             {
-            "SourcePath" = "8:..\\ExcelTemplateSetupCustomActions\\obj\\Debug\\Microsoft.NodeXL.ExcelTemplateSetupCustomActions.dll"
+            "SourcePath" = "8:..\\ExcelTemplateSetupTrustInstaller\\obj\\Debug\\Microsoft.NodeXL.ExcelTemplateSetupTrustInstaller.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
@@ -2372,7 +2433,7 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}"
+            "OutputProjectGuid" = "8:{8A8A2FB3-C1CD-4F9C-8707-47DAA71B2224}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -2401,6 +2462,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{97418ACF-DF88-4552-BF75-E423A107680B}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92959334899249ADB3C76BB817716A08"
+            {
+            "SourcePath" = "8:..\\ExcelTemplateSetupClickOnceInstaller\\obj\\Debug\\Microsoft.NodeXL.ExcelTemplateSetupClickOnceInstaller.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{92F0A6B5-5D7E-48AF-898B-AA34ADEA32F1}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

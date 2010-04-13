@@ -269,6 +269,50 @@ public class GraphDrawer : DrawerBase
     }
 
     //*************************************************************************
+    //  Property: GraphScale
+    //
+    /// <summary>
+    /// Gets or sets a value that determines the scale of the graph's vertices
+    /// and edges.
+    /// </summary>
+    ///
+    /// <value>
+    /// A value that determines the scale of the graph's vertices and edges.
+    /// Must be between <see cref="MinimumGraphScale" /> and <see
+    /// cref="MaximumGraphScale" />.  The default value is 1.0.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If the value is anything besides 1.0, the graph's vertices and edges
+    /// are shrunk while their positions remain the same.  If it is set to 0.5,
+    /// for example, the vertices are half their normal size and the edges are
+    /// half their normal width.  The overall size of the graph is not
+    /// affected.
+    /// </remarks>
+    //*************************************************************************
+
+    public Double
+    GraphScale
+    {
+        get
+        {
+            AssertValid();
+
+            Debug.Assert(m_oVertexDrawer.GraphScale ==
+                m_oEdgeDrawer.GraphScale);
+
+            return (m_oVertexDrawer.GraphScale);
+        }
+
+        set
+        {
+            m_oVertexDrawer.GraphScale = m_oEdgeDrawer.GraphScale = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: DrawGraph()
     //
     /// <summary>
@@ -1045,6 +1089,23 @@ public class GraphDrawer : DrawerBase
         Debug.Assert(m_oEdgeDrawer != null);
         // m_oBackColor
     }
+
+
+    //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+    /// <summary>
+    /// Minimum value of the <see cref="GraphScale" /> property.
+    /// </summary>
+
+    public const Double MinimumGraphScale = 0.1;
+
+    /// <summary>
+    /// Maximum value of the <see cref="GraphScale" /> property.
+    /// </summary>
+
+    public const Double MaximumGraphScale = 1.0;
 
 
     //*************************************************************************

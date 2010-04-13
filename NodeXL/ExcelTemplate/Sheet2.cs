@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
@@ -51,10 +52,8 @@ public partial class Sheet2
         Debug.Assert(oSelectedRange != null);
         AssertValid();
 
-        return ( CollectionUtil.DictionaryKeysToArray<String, Char>(
-            m_oSheets1And2Helper.GetSelectedColumnValues(oSelectedRange,
-                VertexTableColumnNames.VertexName)
-            ) );
+        return ( m_oSheets1And2Helper.GetSelectedColumnValues(oSelectedRange,
+            VertexTableColumnNames.VertexName).Keys.ToArray() );
     }
 
     //*************************************************************************
@@ -531,11 +530,11 @@ public partial class Sheet2
             out aoRadiusValues);
 
         ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
-            VertexTableColumnNames.Alpha, out oAlphaColumnData,
+            CommonTableColumnNames.Alpha, out oAlphaColumnData,
             out aoAlphaValues);
 
         ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
-            VertexTableColumnNames.Visibility, out oVisibilityColumnData,
+            CommonTableColumnNames.Visibility, out oVisibilityColumnData,
             out aoVisibilityValues);
 
         ExcelUtil.TryGetTableColumnDataAndValues(oVertexTable,
@@ -1112,7 +1111,7 @@ public partial class Sheet2
         // See if the specified attribute is set by the helper class.
 
         m_oSheets1And2Helper.SetVisualAttribute(e, oSelectedRange,
-            VertexTableColumnNames.Color, VertexTableColumnNames.Alpha);
+            VertexTableColumnNames.Color, CommonTableColumnNames.Alpha);
 
         if (e.VisualAttributeSet)
         {
@@ -1153,7 +1152,7 @@ public partial class Sheet2
 
             ExcelUtil.SetVisibleSelectedTableColumnData(
                 this.Vertices.InnerObject, oSelectedRange,
-                VertexTableColumnNames.Visibility,
+                CommonTableColumnNames.Visibility,
 
                 ( new VertexVisibilityConverter() ).GraphToWorkbook(
                     (VertexWorksheetReader.Visibility)e.AttributeValue)

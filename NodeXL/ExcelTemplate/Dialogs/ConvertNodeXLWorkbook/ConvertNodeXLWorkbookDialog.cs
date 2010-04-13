@@ -448,7 +448,7 @@ public partial class ConvertNodeXLWorkbookDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("ConvertNodeXLWorkbookDialog") ]
+[ SettingsGroupNameAttribute("ConvertNodeXLWorkbookDialog2") ]
 
 public class ConvertNodeXLWorkbookDialogUserSettings : FormSettings
 {

@@ -313,6 +313,85 @@ public class ConnectedComponentCalculatorTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestGetStronglyConnectedComponents7()
+    //
+    /// <summary>
+    /// Tests the GetStronglyConnectedComponents() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetStronglyConnectedComponents7()
+    {
+        // Test component sorting when layout sort order is specified.
+
+        IVertex [] aoVertices = new IVertex[14];
+
+        for (Int32 i = 0; i < aoVertices.Length; i++)
+        {
+            IVertex oVertex = m_oVertices.Add();
+
+            // Make sure that sorting can handle a missing key.  They key is
+            // optional.
+
+            if (i != 12)
+            {
+                oVertex.SetValue(ReservedMetadataKeys.SortableLayoutOrder,
+                    (Single)i);
+            }
+
+            aoVertices[i] = oVertex;
+        }
+
+        m_oGraph.SetValue(ReservedMetadataKeys.SortableLayoutOrderSet, null);
+
+        // Each group of Add() calls here is a strongly connected component.
+
+        m_oEdges.Add( aoVertices[6], aoVertices[7] );
+
+        m_oEdges.Add( aoVertices[4], aoVertices[5] );
+
+        m_oEdges.Add( aoVertices[2], aoVertices[3] );
+
+        m_oEdges.Add( aoVertices[13], aoVertices[12] );
+        m_oEdges.Add( aoVertices[13], aoVertices[11] );
+
+        m_oEdges.Add( aoVertices[10], aoVertices[9] );
+        m_oEdges.Add( aoVertices[10], aoVertices[8] );
+
+        List< LinkedList<IVertex> > oStronglyConnectedComponents =
+            ConnectedComponentCalculator.GetStronglyConnectedComponents(
+                m_oGraph);
+
+        Assert.AreEqual(7, oStronglyConnectedComponents.Count);
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[0],
+            new Int32[]{aoVertices[0].ID} );
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[1],
+            new Int32[]{aoVertices[1].ID} );
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[2],
+            new Int32[]{aoVertices[2].ID, aoVertices[3].ID} );
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[3],
+            new Int32[]{aoVertices[4].ID, aoVertices[5].ID} );
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[4],
+            new Int32[]{aoVertices[6].ID, aoVertices[7].ID} );
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[5],
+            new Int32[]{aoVertices[8].ID, aoVertices[9].ID,
+                aoVertices[10].ID} );
+
+        CheckThatComponentConsistsOfVertices( oStronglyConnectedComponents[6],
+            new Int32[]{aoVertices[11].ID, aoVertices[12].ID,
+                aoVertices[13].ID} );
+    }
+
+    //*************************************************************************
     //  Method: CheckThatComponentConsistsOfVertices()
     //
     /// <summary>
@@ -381,7 +460,7 @@ public class ConnectedComponentCalculatorTest : Object
     //  Protected fields
     //*************************************************************************
 
-    /// The graph being test.
+    /// The graph being tested.
 
     protected IGraph m_oGraph;
 

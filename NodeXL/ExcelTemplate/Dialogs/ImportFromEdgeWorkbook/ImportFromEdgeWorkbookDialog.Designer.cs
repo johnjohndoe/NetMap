@@ -32,7 +32,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbxSourceWorkbook = new Microsoft.Research.CommunityTechnologies.AppLib.ExcelWorkbookListBox();
@@ -41,15 +40,13 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.cbxSourceColumnsHaveHeaders = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.clbSourceColumns = new System.Windows.Forms.CheckedListBox();
-            this.cmsSourceColumns = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmSourceColumnsSelectAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmSourceColumnsDeselectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.lblVertex1 = new System.Windows.Forms.Label();
             this.cbxVertex1 = new System.Windows.Forms.ComboBox();
             this.cbxVertex2 = new System.Windows.Forms.ComboBox();
             this.lblVertex2 = new System.Windows.Forms.Label();
             this.pnlVertices = new System.Windows.Forms.Panel();
-            this.cmsSourceColumns.SuspendLayout();
+            this.btnUncheckAllSourceColumns = new System.Windows.Forms.Button();
+            this.btnCheckAllSourceColumns = new System.Windows.Forms.Button();
             this.pnlVertices.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,10 +80,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnOK
             // 
             this.btnOK.Enabled = false;
-            this.btnOK.Location = new System.Drawing.Point(162, 453);
+            this.btnOK.Location = new System.Drawing.Point(162, 474);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 7;
+            this.btnOK.TabIndex = 9;
             this.btnOK.Text = "Import";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -94,10 +91,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(243, 453);
+            this.btnCancel.Location = new System.Drawing.Point(243, 474);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 8;
+            this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -124,36 +121,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // clbSourceColumns
             // 
             this.clbSourceColumns.CheckOnClick = true;
-            this.clbSourceColumns.ContextMenuStrip = this.cmsSourceColumns;
             this.clbSourceColumns.FormattingEnabled = true;
             this.clbSourceColumns.Location = new System.Drawing.Point(15, 222);
             this.clbSourceColumns.Name = "clbSourceColumns";
             this.clbSourceColumns.Size = new System.Drawing.Size(303, 94);
             this.clbSourceColumns.TabIndex = 5;
             this.clbSourceColumns.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbSourceColumns_ItemCheck);
-            // 
-            // cmsSourceColumns
-            // 
-            this.cmsSourceColumns.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmSourceColumnsSelectAll,
-            this.tsmSourceColumnsDeselectAll});
-            this.cmsSourceColumns.Name = "cmsSourceColumns";
-            this.cmsSourceColumns.Size = new System.Drawing.Size(131, 48);
-            this.cmsSourceColumns.Opening += new System.ComponentModel.CancelEventHandler(this.cmsSourceColumns_Opening);
-            // 
-            // tsmSourceColumnsSelectAll
-            // 
-            this.tsmSourceColumnsSelectAll.Name = "tsmSourceColumnsSelectAll";
-            this.tsmSourceColumnsSelectAll.Size = new System.Drawing.Size(130, 22);
-            this.tsmSourceColumnsSelectAll.Text = "&Select All";
-            this.tsmSourceColumnsSelectAll.Click += new System.EventHandler(this.tsmSourceColumnsSelectAll_Click);
-            // 
-            // tsmSourceColumnsDeselectAll
-            // 
-            this.tsmSourceColumnsDeselectAll.Name = "tsmSourceColumnsDeselectAll";
-            this.tsmSourceColumnsDeselectAll.Size = new System.Drawing.Size(130, 22);
-            this.tsmSourceColumnsDeselectAll.Text = "&Deselect All";
-            this.tsmSourceColumnsDeselectAll.Click += new System.EventHandler(this.tsmSourceColumnsDeselectAll_Click);
             // 
             // lblVertex1
             // 
@@ -199,10 +172,30 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.pnlVertices.Controls.Add(this.cbxVertex2);
             this.pnlVertices.Controls.Add(this.cbxVertex1);
             this.pnlVertices.Controls.Add(this.lblVertex2);
-            this.pnlVertices.Location = new System.Drawing.Point(15, 337);
+            this.pnlVertices.Location = new System.Drawing.Point(15, 358);
             this.pnlVertices.Name = "pnlVertices";
             this.pnlVertices.Size = new System.Drawing.Size(308, 103);
-            this.pnlVertices.TabIndex = 6;
+            this.pnlVertices.TabIndex = 8;
+            // 
+            // btnUncheckAllSourceColumns
+            // 
+            this.btnUncheckAllSourceColumns.Location = new System.Drawing.Point(243, 322);
+            this.btnUncheckAllSourceColumns.Name = "btnUncheckAllSourceColumns";
+            this.btnUncheckAllSourceColumns.Size = new System.Drawing.Size(75, 23);
+            this.btnUncheckAllSourceColumns.TabIndex = 7;
+            this.btnUncheckAllSourceColumns.Text = "&Deselect All";
+            this.btnUncheckAllSourceColumns.UseVisualStyleBackColor = true;
+            this.btnUncheckAllSourceColumns.Click += new System.EventHandler(this.btnUncheckAllSourceColumns_Click);
+            // 
+            // btnCheckAllSourceColumns
+            // 
+            this.btnCheckAllSourceColumns.Location = new System.Drawing.Point(162, 322);
+            this.btnCheckAllSourceColumns.Name = "btnCheckAllSourceColumns";
+            this.btnCheckAllSourceColumns.Size = new System.Drawing.Size(75, 23);
+            this.btnCheckAllSourceColumns.TabIndex = 6;
+            this.btnCheckAllSourceColumns.Text = "&Select All";
+            this.btnCheckAllSourceColumns.UseVisualStyleBackColor = true;
+            this.btnCheckAllSourceColumns.Click += new System.EventHandler(this.btnCheckAllSourceColumns_Click);
             // 
             // ImportFromEdgeWorkbookDialog
             // 
@@ -210,8 +203,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(330, 488);
+            this.ClientSize = new System.Drawing.Size(330, 511);
+            this.Controls.Add(this.btnUncheckAllSourceColumns);
             this.Controls.Add(this.pnlVertices);
+            this.Controls.Add(this.btnCheckAllSourceColumns);
             this.Controls.Add(this.clbSourceColumns);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbxSourceColumnsHaveHeaders);
@@ -225,7 +220,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.MinimizeBox = false;
             this.Name = "ImportFromEdgeWorkbookDialog";
             this.Text = "Import from Open Edge Workbook";
-            this.cmsSourceColumns.ResumeLayout(false);
             this.pnlVertices.ResumeLayout(false);
             this.pnlVertices.PerformLayout();
             this.ResumeLayout(false);
@@ -248,8 +242,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.ComboBox cbxVertex2;
         private System.Windows.Forms.Label lblVertex2;
         private System.Windows.Forms.Panel pnlVertices;
-        private System.Windows.Forms.ContextMenuStrip cmsSourceColumns;
-        private System.Windows.Forms.ToolStripMenuItem tsmSourceColumnsSelectAll;
-        private System.Windows.Forms.ToolStripMenuItem tsmSourceColumnsDeselectAll;
+        private System.Windows.Forms.Button btnUncheckAllSourceColumns;
+        private System.Windows.Forms.Button btnCheckAllSourceColumns;
     }
 }

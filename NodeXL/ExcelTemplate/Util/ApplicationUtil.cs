@@ -244,6 +244,51 @@ public static class ApplicationUtil
     }
 
     //*************************************************************************
+    //  Method: GetPlugInFolder()
+    //
+    /// <summary>
+    /// Gets the full path to folder where plug-in assemblies are stored.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The full path to folder where plug-in assemblies are stored.
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    GetPlugInFolder()
+    {
+        #if false  // For testing only.
+
+        return (@"E:\NodeXL\ExcelTemplate\bin\Debug\PlugIns");
+
+        #endif
+
+        // For versions 1.0.1.113 and earlier, the setup program installed
+        // NodeXL into a standard Program Files folder and the program was run
+        // from there.  The application folder could then be obtained as
+        // follows:
+        //
+        //
+        // String sApplicationFolder = Path.GetDirectoryName(
+        //     Assembly.GetExecutingAssembly().CodeBase);
+        //
+        // Versions since then have continued to install NodeXL into that
+        // folder, but ClickOnce is now called at the end of the setup to
+        // install the application in the ClickOnce cache, and that is where
+        // the application actually runs from.  That means that the location of
+        // the executing assembly is now in some obscure location, far from the
+        // plug-in folder.  The following code is now used to get the
+        // application folder:
+
+        String sApplicationFolder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            ApplicationSubFolder);
+
+        return ( Path.Combine(sApplicationFolder, PlugInSubfolder) );
+    }
+
+    //*************************************************************************
     //  Method: TryGetTemplatePath()
     //
     /// <summary>
@@ -319,6 +364,23 @@ public static class ApplicationUtil
             sTemplatePath
             ) );
     }
+
+
+    //*************************************************************************
+    //  Private constants
+    //*************************************************************************
+
+    /// Application subfolder within the Program Files folder.  There is no
+    /// UI in the setup program to select another folder, so this will always
+    /// be the correct subfolder.
+
+    private const String ApplicationSubFolder =
+        @"Microsoft Research\Microsoft NodeXL Excel Template";
+
+    /// Subfolder under the application folder where plug-in assemblies are
+    /// stored.
+
+    private const String PlugInSubfolder = "PlugIns";
 
 
     //*************************************************************************

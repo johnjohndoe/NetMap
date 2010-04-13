@@ -46,7 +46,7 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     //  Method: ReadWorksheet()
     //
     /// <summary>
-    /// Reads the cluster worksheets and adds the cluster data to a graph.
+    /// Reads the cluster worksheets and adds the contents to a graph.
     /// </summary>
     ///
     /// <param name="workbook">
@@ -106,9 +106,7 @@ public class ClusterWorksheetReader : WorksheetReaderBase
 
             try
             {
-                // Add the cluster data in the tables to the graph.
-
-                AddClusterTablesToGraph(oClusterTable, oClusterVertexTable,
+                ReadClusterTables(oClusterTable, oClusterVertexTable,
                     readWorkbookContext, graph);
             }
             finally
@@ -123,10 +121,10 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: AddClusterTablesToGraph()
+    //  Method: ReadClusterTables()
     //
     /// <summary>
-    /// Adds the contents of the cluster tables to a NodeXL graph.
+    /// Reads the cluster tables and add the contents to a graph.
     /// </summary>
     ///
     /// <param name="oClusterTable">
@@ -134,7 +132,7 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     /// </param>
     ///
     /// <param name="oClusterVertexTable">
-    /// Table that contains the cluster-vertex data.
+    /// Table that contains the cluster vertex data.
     /// </param>
     ///
     /// <param name="oReadWorkbookContext">
@@ -148,7 +146,7 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    AddClusterTablesToGraph
+    ReadClusterTables
     (
         ListObject oClusterTable,
         ListObject oClusterVertexTable,
@@ -162,38 +160,25 @@ public class ClusterWorksheetReader : WorksheetReaderBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
-        // Get the ranges that contain visible cluster data.  If a table is
-        // filtered, a range may contain multiple areas.
+        // If a required column is missing, do nothing.
 
-        Range oVisibleClusterRange, oVisibleClusterVertexRange;
+        ListColumn oColumn;
 
         if (
-            !ExcelUtil.TryGetVisibleTableRange(
-                oClusterTable, out oVisibleClusterRange)
+            !ExcelUtil.TryGetTableColumn(oClusterTable,
+                ClusterTableColumnNames.Name, out oColumn)
             ||
-            !ExcelUtil.TryGetVisibleTableRange(
-                oClusterVertexTable, out oVisibleClusterVertexRange)
-            )
-        {
-            // There is no visible cluster data.
-
-            return;
-        }
-
-        // Get the indexes of the columns within the tables.
-
-        ClusterTableColumnIndexes oClusterTableColumnIndexes =
-            GetClusterTableColumnIndexes(oClusterTable);
-
-        ClusterVertexTableColumnIndexes oClusterVertexTableColumnIndexes =
-            GetClusterVertexTableColumnIndexes(oClusterVertexTable);
-
-        if (
-            oClusterTableColumnIndexes.ClusterName == NoSuchColumn ||
-            oClusterTableColumnIndexes.VertexColor == NoSuchColumn ||
-            oClusterTableColumnIndexes.VertexShape == NoSuchColumn ||
-            oClusterVertexTableColumnIndexes.ClusterName == NoSuchColumn ||
-            oClusterVertexTableColumnIndexes.VertexName == NoSuchColumn
+            !ExcelUtil.TryGetTableColumn(oClusterTable,
+                ClusterTableColumnNames.VertexColor, out oColumn)
+            ||
+            !ExcelUtil.TryGetTableColumn(oClusterTable,
+                ClusterTableColumnNames.VertexShape, out oColumn)
+            ||
+            !ExcelUtil.TryGetTableColumn(oClusterVertexTable,
+                ClusterVertexTableColumnNames.ClusterName, out oColumn)
+            ||
+            !ExcelUtil.TryGetTableColumn(oClusterVertexTable,
+                ClusterVertexTableColumnNames.VertexName, out oColumn)
             )
         {
             return;
@@ -203,95 +188,13 @@ public class ClusterWorksheetReader : WorksheetReaderBase
         // name and the value is a ClusterInformation object for the cluster.
 
         Dictionary<String, ClusterInformation> oClusterNameDictionary =
-            ReadClusterTable(oVisibleClusterRange, oClusterTableColumnIndexes);
+            ReadClusterTable(oClusterTable);
 
-        // Read the cluster-vertex table and add the cluster-vertex information
+        // Read the cluster vertex table and add the cluster vertex information
         // to the graph.
 
-        ReadClusterVertexTable(oVisibleClusterVertexRange,
-            oClusterVertexTableColumnIndexes, oClusterNameDictionary,
+        ReadClusterVertexTable(oClusterVertexTable, oClusterNameDictionary,
             oReadWorkbookContext.VertexNameDictionary, oGraph);
-    }
-
-    //*************************************************************************
-    //  Method: GetClusterTableColumnIndexes()
-    //
-    /// <summary>
-    /// Gets the one-based indexes of the columns within the cluster table.
-    /// </summary>
-    ///
-    /// <param name="clusterTable">
-    /// Table that contains the cluster data.
-    /// </param>
-    ///
-    /// <returns>
-    /// The column indexes, as an <see cref="ClusterTableColumnIndexes" />.
-    /// </returns>
-    //*************************************************************************
-
-    public ClusterTableColumnIndexes
-    GetClusterTableColumnIndexes
-    (
-        ListObject clusterTable
-    )
-    {
-        Debug.Assert(clusterTable != null);
-        AssertValid();
-
-        ClusterTableColumnIndexes oClusterTableColumnIndexes =
-            new ClusterTableColumnIndexes();
-
-        oClusterTableColumnIndexes.ClusterName = GetTableColumnIndex(
-            clusterTable, ClusterTableColumnNames.Name, false);
-
-        oClusterTableColumnIndexes.VertexColor = GetTableColumnIndex(
-            clusterTable, ClusterTableColumnNames.VertexColor, false);
-
-        oClusterTableColumnIndexes.VertexShape = GetTableColumnIndex(
-            clusterTable, ClusterTableColumnNames.VertexShape, false);
-
-        return (oClusterTableColumnIndexes);
-    }
-
-    //*************************************************************************
-    //  Method: GetClusterVertexTableColumnIndexes()
-    //
-    /// <summary>
-    /// Gets the one-based indexes of the columns within the cluster-vertex
-    /// table.
-    /// </summary>
-    ///
-    /// <param name="clusterVertexTable">
-    /// Table that contains the cluster-vertex data.
-    /// </param>
-    ///
-    /// <returns>
-    /// The column indexes, as an <see
-    /// cref="ClusterVertexTableColumnIndexes" />.
-    /// </returns>
-    //*************************************************************************
-
-    public ClusterVertexTableColumnIndexes
-    GetClusterVertexTableColumnIndexes
-    (
-        ListObject clusterVertexTable
-    )
-    {
-        Debug.Assert(clusterVertexTable != null);
-        AssertValid();
-
-        ClusterVertexTableColumnIndexes oClusterVertexTableColumnIndexes =
-            new ClusterVertexTableColumnIndexes();
-
-        oClusterVertexTableColumnIndexes.ClusterName = GetTableColumnIndex(
-            clusterVertexTable, ClusterVertexTableColumnNames.ClusterName,
-            false);
-
-        oClusterVertexTableColumnIndexes.VertexName = GetTableColumnIndex(
-            clusterVertexTable, ClusterVertexTableColumnNames.VertexName,
-            false);
-
-        return (oClusterVertexTableColumnIndexes);
     }
 
     //*************************************************************************
@@ -301,12 +204,8 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     /// Reads the cluster table.
     /// </summary>
     ///
-    /// <param name="oVisibleClusterRange">
-    /// Visible range within the cluster table.  May contain multiple areas.
-    /// </param>
-    ///
-    /// <param name="oClusterTableColumnIndexes">
-    /// One-based indexes of the columns within the cluster table.
+    /// <param name="oClusterTable">
+    /// The cluster table.
     /// </param>
     ///
     /// <returns>
@@ -318,12 +217,10 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     protected Dictionary<String, ClusterInformation>
     ReadClusterTable
     (
-        Range oVisibleClusterRange,
-        ClusterTableColumnIndexes oClusterTableColumnIndexes
+        ListObject oClusterTable
     )
     {
-        Debug.Assert(oVisibleClusterRange != null);
-        Debug.Assert(oClusterTableColumnIndexes != null);
+        Debug.Assert(oClusterTable != null);
         AssertValid();
 
         Dictionary<String, ClusterInformation> oClusterNameDictionary =
@@ -331,75 +228,60 @@ public class ClusterWorksheetReader : WorksheetReaderBase
 
         ColorConverter2 oColorConverter2 = new ColorConverter2();
 
-        // Loop through the areas, and split each area into subranges if the
-        // area contains too many rows.
+        ExcelTableReader oExcelTableReader =
+            new ExcelTableReader(oClusterTable);
 
-        foreach ( Range oClusterSubrange in
-            ExcelRangeSplitter.SplitRange(oVisibleClusterRange) )
+        foreach ( ExcelTableReader.ExcelTableRow oRow in
+            oExcelTableReader.GetRows() )
         {
-            Object [,] aoClusterValues =
-                ExcelUtil.GetRangeValues(oClusterSubrange);
+            // Get the cluster information.
 
-            // Loop through the rows.
+            String sClusterName;
+            Color oVertexColor;
+            VertexShape eVertexShape;
 
-            Int32 iRows = oClusterSubrange.Rows.Count;
-
-            for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+            if (
+                !oRow.TryGetNonEmptyStringFromCell(
+                    ClusterTableColumnNames.Name, out sClusterName)
+                ||
+                !TryGetColor(oRow, ClusterTableColumnNames.VertexColor,
+                    oColorConverter2, out oVertexColor)
+                ||
+                !TryGetVertexShape(oRow, ClusterTableColumnNames.VertexShape,
+                    out eVertexShape)
+                )
             {
-                // Get the cluster information.
+                continue;
+            }
 
-                String sClusterName;
-                Color oVertexColor;
-                VertexShape eVertexShape;
+            // Add the cluster information to the dictionary.
 
-                if (
-                    !ExcelUtil.TryGetNonEmptyStringFromCell(aoClusterValues,
-                        iRowOneBased, oClusterTableColumnIndexes.ClusterName,
-                        out sClusterName)
-                    ||
-                    !TryGetColor(oClusterSubrange, aoClusterValues,
-                        iRowOneBased, oClusterTableColumnIndexes.VertexColor,
-                        oColorConverter2, out oVertexColor)
-                    ||
-                    !TryGetVertexShape(oClusterSubrange, aoClusterValues,
-                        iRowOneBased, oClusterTableColumnIndexes.VertexShape,
-                        out eVertexShape)
-                    )
-                {
-                    continue;
-                }
+            ClusterInformation oClusterInformation =
+                new ClusterInformation();
 
-                // Add the cluster information to the dictionary.
+            oClusterInformation.VertexColor = oVertexColor;
+            oClusterInformation.VertexShape = eVertexShape;
 
-                ClusterInformation oClusterInformation =
-                    new ClusterInformation();
+            try
+            {
+                oClusterNameDictionary.Add(
+                    sClusterName, oClusterInformation);
+            }
+            catch (ArgumentException)
+            {
+                Range oInvalidCell = oRow.GetRangeForCell(
+                    ClusterTableColumnNames.Name);
 
-                oClusterInformation.VertexColor = oVertexColor;
-                oClusterInformation.VertexShape = eVertexShape;
+                OnWorkbookFormatError( String.Format(
 
-                try
-                {
-                    oClusterNameDictionary.Add(
-                        sClusterName, oClusterInformation);
-                }
-                catch (ArgumentException)
-                {
-                    Range oInvalidCell =
-                        (Range)oClusterSubrange.Cells[iRowOneBased,
-                            oClusterTableColumnIndexes.ClusterName];
+                    "The cell {0} contains a duplicate cluster name.  There"
+                    + " can't be two rows with the same cluster name."
+                    ,
+                    ExcelUtil.GetRangeAddress(oInvalidCell)
+                    ),
 
-                    OnWorkbookFormatError( String.Format(
-
-                        "The cell {0} contains a duplicate cluster name."
-                        + "  There can't be two rows with the same cluster"
-                        + " name."
-                        ,
-                        ExcelUtil.GetRangeAddress(oInvalidCell)
-                        ),
-
-                        oInvalidCell
-                    );
-                }
+                    oInvalidCell
+                );
             }
         }
 
@@ -410,16 +292,11 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     //  Method: ReadClusterVertexTable()
     //
     /// <summary>
-    /// Reads the cluster-vertex table.
+    /// Reads the cluster vertex table.
     /// </summary>
     ///
-    /// <param name="oVisibleClusterVertexRange">
-    /// Visible range within the cluster-vertex table.  May contain multiple
-    /// areas.
-    /// </param>
-    ///
-    /// <param name="oClusterVertexTableColumnIndexes">
-    /// One-based indexes of the columns within the cluster-vertex table.
+    /// <param name="oClusterVertexTable">
+    /// The cluster vertex table.
     /// </param>
     ///
     /// <param name="oVertexNameDictionary">
@@ -445,77 +322,62 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     protected void
     ReadClusterVertexTable
     (
-        Range oVisibleClusterVertexRange,
-        ClusterVertexTableColumnIndexes oClusterVertexTableColumnIndexes,
+        ListObject oClusterVertexTable,
         Dictionary<String, ClusterInformation> oClusterNameDictionary,
         Dictionary<String, IVertex> oVertexNameDictionary,
         IGraph oGraph
     )
     {
-        Debug.Assert(oVisibleClusterVertexRange != null);
-        Debug.Assert(oClusterVertexTableColumnIndexes != null);
+        Debug.Assert(oClusterVertexTable != null);
         Debug.Assert(oClusterNameDictionary != null);
         Debug.Assert(oVertexNameDictionary != null);
         Debug.Assert(oGraph != null);
         AssertValid();
 
-        // Loop through the areas, and split each area into subranges if the
-        // area contains too many rows.
+        ExcelTableReader oExcelTableReader =
+            new ExcelTableReader(oClusterVertexTable);
 
-        foreach ( Range oClusterVertexSubrange in
-            ExcelRangeSplitter.SplitRange(oVisibleClusterVertexRange) )
+        foreach ( ExcelTableReader.ExcelTableRow oRow in
+            oExcelTableReader.GetRows() )
         {
-            Object [,] aoClusterVertexValues =
-                ExcelUtil.GetRangeValues(oClusterVertexSubrange);
+            // Get the cluster vertex information from the row.
 
-            // Loop through the rows.
+            String sClusterName, sVertexName;
 
-            Int32 iRows = oClusterVertexSubrange.Rows.Count;
-
-            for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+            if (
+                !oRow.TryGetNonEmptyStringFromCell(
+                    ClusterVertexTableColumnNames.ClusterName,
+                    out sClusterName)
+                ||
+                !oRow.TryGetNonEmptyStringFromCell(
+                    ClusterVertexTableColumnNames.VertexName, out sVertexName)
+                )
             {
-                // Get the cluster-vertex information from the row.
-
-                String sClusterName, sVertexName;
-
-                if (
-                    !ExcelUtil.TryGetNonEmptyStringFromCell(
-                        aoClusterVertexValues, iRowOneBased,
-                        oClusterVertexTableColumnIndexes.ClusterName,
-                        out sClusterName)
-                    ||
-                    !ExcelUtil.TryGetNonEmptyStringFromCell(
-                        aoClusterVertexValues, iRowOneBased,
-                        oClusterVertexTableColumnIndexes.VertexName,
-                        out sVertexName)
-                    )
-                {
-                    continue;
-                }
-
-                // Get the cluster information for the vertex and store the
-                // cluster information in the vertex.
-
-                ClusterInformation oClusterInformation;
-                IVertex oVertex;
-
-                if (
-                    !oClusterNameDictionary.TryGetValue(sClusterName,
-                        out oClusterInformation)
-                    ||
-                    !oVertexNameDictionary.TryGetValue(sVertexName,
-                        out oVertex)
-                    )
-                {
-                    continue;
-                }
-
-                oVertex.SetValue(ReservedMetadataKeys.PerColor,
-                    oClusterInformation.VertexColor);
-
-                oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
-                    oClusterInformation.VertexShape);
+                continue;
             }
+
+            // Get the cluster information for the vertex and store the cluster
+            // information in the vertex.
+
+            ClusterInformation oClusterInformation;
+            IVertex oVertex;
+
+            if (
+                !oClusterNameDictionary.TryGetValue(sClusterName,
+                    out oClusterInformation)
+                ||
+                !oVertexNameDictionary.TryGetValue(sVertexName,
+                    out oVertex)
+                )
+            {
+                continue;
+            }
+
+            oVertex.SetValue(ReservedMetadataKeys.PerColor,
+                oClusterInformation.VertexColor);
+
+            oVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+                oClusterInformation.VertexShape);
         }
     }
 
@@ -544,52 +406,6 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     // (None.)
-
-
-    //*************************************************************************
-    //  Embedded class: ClusterTableColumnIndexes
-    //
-    /// <summary>
-    /// Contains the one-based indexes of the columns in the optional cluster
-    /// table.
-    /// </summary>
-    //*************************************************************************
-
-    public class ClusterTableColumnIndexes
-    {
-        /// Name of the cluster.
-
-        public Int32 ClusterName;
-
-        /// Color of the vertices in the cluster.
-
-        public Int32 VertexColor;
-
-        /// Shape of the vertices in the cluster.
-
-        public Int32 VertexShape;
-    }
-
-
-    //*************************************************************************
-    //  Embedded class: ClusterVertexTableColumnIndexes
-    //
-    /// <summary>
-    /// Contains the one-based indexes of the columns in the optional
-    /// cluster-vertex table.
-    /// </summary>
-    //*************************************************************************
-
-    public class ClusterVertexTableColumnIndexes
-    {
-        /// Name of the cluster.
-
-        public Int32 ClusterName;
-
-        /// Name of the vertex in the cluster.
-
-        public Int32 VertexName;
-    }
 
 
     //*************************************************************************

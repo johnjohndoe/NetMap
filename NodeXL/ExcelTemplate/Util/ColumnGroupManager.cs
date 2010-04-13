@@ -375,8 +375,9 @@ public static class ColumnGroupManager
                 asColumnNames = new String [] {
                     EdgeTableColumnNames.Color,
                     EdgeTableColumnNames.Width,
-                    EdgeTableColumnNames.Alpha,
-                    EdgeTableColumnNames.Visibility,
+                    EdgeTableColumnNames.Style,
+                    CommonTableColumnNames.Alpha,
+                    CommonTableColumnNames.Visibility,
                     };
 
                 break;
@@ -403,9 +404,9 @@ public static class ColumnGroupManager
                     VertexTableColumnNames.Color,
                     VertexTableColumnNames.Shape,
                     VertexTableColumnNames.Radius,
-                    VertexTableColumnNames.Alpha,
+                    CommonTableColumnNames.Alpha,
                     VertexTableColumnNames.ImageUri,
-                    VertexTableColumnNames.Visibility,
+                    CommonTableColumnNames.Visibility,
                     };
 
                 break;

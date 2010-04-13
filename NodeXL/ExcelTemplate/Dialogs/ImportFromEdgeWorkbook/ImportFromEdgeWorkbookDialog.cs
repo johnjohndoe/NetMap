@@ -364,19 +364,19 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: SelectAllSourceColumns()
+    //  Method: CheckAllSourceColumns()
     //
     /// <summary>
-    /// Selects or deselects all the source columns.
+    /// Checks or unchecks all the source columns.
     /// </summary>
     ///
     /// <param name="bSelect">
-    /// true to select, false to deselect.
+    /// true to check, false to uncheck.
     /// </param>
     //*************************************************************************
 
     protected void
-    SelectAllSourceColumns
+    CheckAllSourceColumns
     (
         Boolean bSelect
     )
@@ -544,6 +544,9 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
         // CheckedItems collection gets updated.
 
         pnlVertices.Enabled = (cbxVertex1.Items.Count > 0);
+
+        btnCheckAllSourceColumns.Enabled = btnUncheckAllSourceColumns.Enabled =
+            (clbSourceColumns.Items.Count > 0);
 
         btnOK.Enabled = pnlVertices.Enabled && cbxVertex1.SelectedIndex >= 0
             && cbxVertex2.SelectedIndex >= 0;
@@ -838,11 +841,10 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: tsmSourceColumnsSelectAll_Click()
+    //  Method: btnCheckAllSourceColumns_Click()
     //
     /// <summary>
-    /// Handles the Click event on the tsmSourceColumnsSelectAll
-    /// ToolStripMenuItem.
+    /// Handles the Click event on the btnCheckAllSourceColumns button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -855,23 +857,22 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    tsmSourceColumnsSelectAll_Click
+    btnCheckAllSourceColumns_Click
     (
         object sender,
-        EventArgs e
+        System.EventArgs e
     )
     {
         AssertValid();
 
-        SelectAllSourceColumns(true);
+        CheckAllSourceColumns(true);
     }
 
     //*************************************************************************
-    //  Method: tsmSourceColumnsDeselectAll_Click()
+    //  Method: btnUncheckAllSourceColumns_Click()
     //
     /// <summary>
-    /// Handles the Click event on the tsmSourceColumnsDeselectAll
-    /// ToolStripMenuItem.
+    /// Handles the Click event on the btnUncheckAllSourceColumns button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -884,15 +885,15 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    tsmSourceColumnsDeselectAll_Click
+    btnUncheckAllSourceColumns_Click
     (
         object sender,
-        EventArgs e
+        System.EventArgs e
     )
     {
         AssertValid();
 
-        SelectAllSourceColumns(false);
+        CheckAllSourceColumns(false);
     }
 
     //*************************************************************************
@@ -1026,7 +1027,7 @@ public partial class ImportFromEdgeWorkbookDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("ImportFromEdgeWorkbookDialog") ]
+[ SettingsGroupNameAttribute("ImportFromEdgeWorkbookDialog2") ]
 
 public class ImportFromEdgeWorkbookDialogUserSettings : FormSettings
 {

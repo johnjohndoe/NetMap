@@ -174,20 +174,12 @@ public class VertexWorksheetPopulator : Object
         if ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Vertices,
             TableNames.Vertices, out oVertexTable) )
         {
-            // Get the indexes of the columns within the table.
-
-            VertexWorksheetReader oVertexWorksheetReader =
-                new VertexWorksheetReader();
-
-            VertexWorksheetReader.VertexTableColumnIndexes
-                oVertexTableColumnIndexes =
-                    oVertexWorksheetReader.GetVertexTableColumnIndexes(
-                        oVertexTable);
-
             // Make sure the vertex name column exists.
 
-            if (oVertexTableColumnIndexes.VertexName ==
-                WorksheetReaderBase.NoSuchColumn)
+            ListColumn oColumn;
+
+            if ( !ExcelUtil.TryGetTableColumn(oVertexTable,
+                VertexTableColumnNames.VertexName, out oColumn) )
             {
                 oVertexTable = null;
             }

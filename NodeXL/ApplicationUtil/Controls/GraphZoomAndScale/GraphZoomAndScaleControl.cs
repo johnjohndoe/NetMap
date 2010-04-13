@@ -317,62 +317,6 @@ public partial class GraphZoomAndScaleControl : UserControl
         m_bChangingNodeXLControlValue = false;
     }
 
-    //*************************************************************************
-    //  Method: lnkHelp_LinkClicked()
-    //
-    /// <summary>
-    /// Handles the LinkClicked event on the lnkHelp LinkLabel.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    lnkHelp_LinkClicked
-    (
-        object sender,
-        LinkLabelLinkClickedEventArgs e
-    )
-    {
-        AssertValid();
-
-        FormUtil.ShowInformation(
-            "Use these sliders to zoom in and out of the graph and to set the"
-            + " size of the canvas the graph is drawn on."
-            + "\r\n\r\n"
-            + "You can move around a zoomed-in graph by pressing the spacebar"
-            + " while dragging the mouse.  You can also use the mouse wheel to"
-            + " zoom in and out of the graph."
-            + "\r\n\r\n"
-            + "By the way, here are some other things you can do with the"
-            + " mouse:"
-            + "\r\n\r\n"
-            + "• Click a vertex to select it."
-            + "\r\n\r\n"
-            + "• Press the Control key and click a vertex to add it to or"
-            + " subtract it from the selection."
-            + "\r\n\r\n"
-            + "• Drag a box around multiple vertices to select them."
-            + "\r\n\r\n"
-            + "• Press the Shift key while dragging a box around multiple"
-            + " vertices to add them to the selection."
-            + "\r\n\r\n"
-            + "• Press the Alt key while dragging a box around multiple"
-            + " vertices to subtract them from the selection."
-            + "\r\n\r\n"
-            + "• Click and drag a vertex to move it."
-            + "\r\n\r\n"
-            + "• If more than one vertex is selected, click and drag one of"
-            + " them to move them all."
-            );
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()

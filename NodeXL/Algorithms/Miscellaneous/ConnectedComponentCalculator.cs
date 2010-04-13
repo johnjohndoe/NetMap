@@ -40,7 +40,11 @@ public static class ConnectedComponentCalculator
     /// <returns>
     /// A List of LinkedLists of vertices.  Each LinkedList of vertices
     /// comprises a strongly connected component of the graph.  The components
-    /// are sorted by their vertex count, in increasing order.
+    /// are sorted into groups by vertex count, in increasing order.  If the
+    /// <see cref="ReservedMetadataKeys.SortableLayoutOrderSet" /> key is set
+    /// on the graph, then the components within each group are further sorted
+    /// by the smallest <see cref="ReservedMetadataKeys.SortableLayoutOrder" />
+    /// value on the vertices within each component.
     /// </returns>
     ///
     /// <remarks>
@@ -63,7 +67,7 @@ public static class ConnectedComponentCalculator
     {
         Debug.Assert(graph != null);
 
-        return ( GetStronglyConnectedComponents(graph.Vertices) );
+        return ( GetStronglyConnectedComponents(graph.Vertices, graph) );
     }
 
     //*************************************************************************
@@ -77,10 +81,18 @@ public static class ConnectedComponentCalculator
     /// Vertices to get the strongly connected components for.
     /// </param>
     ///
+    /// <param name="graph">
+    /// The graph the vertices belong to.
+    /// </param>
+    ///
     /// <returns>
     /// A List of LinkedLists of vertices.  Each LinkedList of vertices
     /// comprises a strongly connected component of the graph.  The components
-    /// are sorted by their vertex count, in increasing order.
+    /// are sorted into groups by vertex count, in increasing order.  If the
+    /// <see cref="ReservedMetadataKeys.SortableLayoutOrderSet" /> key is set
+    /// on the graph, then the components within each group are further sorted
+    /// by the smallest <see cref="ReservedMetadataKeys.SortableLayoutOrder" />
+    /// value on the vertices within each component.
     /// </returns>
     ///
     /// <remarks>
@@ -105,10 +117,12 @@ public static class ConnectedComponentCalculator
     public static List< LinkedList<IVertex> >
     GetStronglyConnectedComponents
     (
-        ICollection<IVertex> vertices
+        ICollection<IVertex> vertices,
+        IGraph graph
     )
     {
         Debug.Assert(vertices != null);
+        Debug.Assert(graph != null);
 
         Int32 iNextIndex = 0;
         Stack<IVertex> oStack = new Stack<IVertex>();
@@ -130,20 +144,7 @@ public static class ConnectedComponentCalculator
             }
         }
 
-        // Sort the components by increasing vertex count.
-
-        oStronglyConnectedComponents.Sort(
-            delegate
-            (
-                LinkedList<IVertex> oStronglyConnectedComponent1,
-                LinkedList<IVertex> oStronglyConnectedComponent2
-            )
-            {
-                return (oStronglyConnectedComponent1.Count.CompareTo(
-                    oStronglyConnectedComponent2.Count)
-                    );
-            }
-            );
+        SortStronglyConnectedComponents(oStronglyConnectedComponents, graph);
 
         // Remove the metadata that was added to each vertex.
 
@@ -367,6 +368,135 @@ public static class ConnectedComponentCalculator
         return ( (Int32)oVertex.GetRequiredValue(
             ReservedMetadataKeys.ConnectedComponentCalculatorLowLink,
             typeof(Int32) ) );
+    }
+
+    //*************************************************************************
+    //  Method: SortStronglyConnectedComponents()
+    //
+    /// <summary>
+    /// Sorts the strongly connected components.
+    /// </summary>
+    ///
+    /// <param name="oStronglyConnectedComponents">
+    /// Unsorted List of strongly connected components.
+    /// </param>
+    ///
+    /// <param name="oGraph">
+    /// The graph the vertices belong to.
+    /// </param>
+    ///
+    /// <remarks>
+    /// See the remarks in the calling method for details on how the sort is
+    /// performed.
+    /// </remarks>
+    //*************************************************************************
+
+    private static void
+    SortStronglyConnectedComponents
+    (
+        List< LinkedList<IVertex> > oStronglyConnectedComponents,
+        IGraph oGraph
+    )
+    {
+        Debug.Assert(oStronglyConnectedComponents != null);
+        Debug.Assert(oGraph != null);
+
+        // The key is a strongly connected component and the value is the
+        // smallest vertex layout sort order within the component.
+
+        Dictionary<LinkedList<IVertex>, Single>
+            oSmallestSortableLayoutOrder = null;
+
+        if ( oGraph.ContainsKey(ReservedMetadataKeys.SortableLayoutOrderSet) )
+        {
+            // The vertex layout sort orders have been set on the vertices.
+            // Populate the dictionary.
+
+            oSmallestSortableLayoutOrder =
+                new Dictionary<LinkedList<IVertex>, Single>();
+
+            foreach (LinkedList<IVertex> oStronglyConnectedComponent in
+                oStronglyConnectedComponents)
+            {
+                oSmallestSortableLayoutOrder.Add(
+                    oStronglyConnectedComponent,
+                    GetSmallestSortableLayoutOrder(oStronglyConnectedComponent)
+                    );
+            }
+        }
+
+        oStronglyConnectedComponents.Sort(
+            delegate
+            (
+                LinkedList<IVertex> oStronglyConnectedComponent1,
+                LinkedList<IVertex> oStronglyConnectedComponent2
+            )
+            {
+                // Sort the components first by increasing vertex count.
+
+                Int32 iCompareTo =
+                    oStronglyConnectedComponent1.Count.CompareTo(
+                        oStronglyConnectedComponent2.Count);
+
+                if (iCompareTo == 0 && oSmallestSortableLayoutOrder != null)
+                {
+                    // Sub-sort components with the same vertex count by the
+                    // smallest layout order within the component.
+
+                    iCompareTo = oSmallestSortableLayoutOrder[
+                        oStronglyConnectedComponent1].CompareTo(
+                            oSmallestSortableLayoutOrder[
+                                oStronglyConnectedComponent2] );
+                }
+
+                return (iCompareTo);
+            }
+            );
+    }
+
+    //*************************************************************************
+    //  Method: GetSmallestSortableLayoutOrder()
+    //
+    /// <summary>
+    /// Gets the smallest layout sort order value for the vertices within a
+    /// strongly connected component.
+    /// </summary>
+    ///
+    /// <param name="oStronglyConnectedComponent">
+    /// The strongly connected component to get the smallest value for.
+    /// </param>
+    ///
+    /// <returns>
+    /// The smallest layout sort order value.
+    /// </returns>
+    //*************************************************************************
+
+    private static Single
+    GetSmallestSortableLayoutOrder
+    (
+        LinkedList<IVertex> oStronglyConnectedComponent
+    )
+    {
+        Debug.Assert(oStronglyConnectedComponent != null);
+
+        Single fSmallestSortableLayoutOrder = Single.MaxValue;
+
+        foreach (IVertex oVertex in oStronglyConnectedComponent)
+        {
+            Object oSortableLayoutOrder;
+
+            if ( oVertex.TryGetValue(
+                ReservedMetadataKeys.SortableLayoutOrder, typeof(Single),
+                out oSortableLayoutOrder) )
+            {
+                fSmallestSortableLayoutOrder = Math.Min(
+                    fSmallestSortableLayoutOrder,
+                    (Single)oSortableLayoutOrder);
+            }
+        }
+
+        return ( (fSmallestSortableLayoutOrder == Single.MaxValue) ?
+            0: fSmallestSortableLayoutOrder );
     }
 }
 

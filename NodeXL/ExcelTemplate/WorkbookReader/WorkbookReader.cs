@@ -83,7 +83,7 @@ public class WorkbookReader : Object
 
         // Turn off screen updating, for two reasons:
         //
-        // 1. Reading the workbook involves writing to edge and vertex ID
+        // 1. Reading the workbook can involve writing to edge and vertex ID
         //    columns, which can be slow when updating is turned on.
         //
         // 2. Any hidden columns get temporarily shown as each worksheet is
@@ -157,7 +157,8 @@ public class WorkbookReader : Object
         Debug.Assert(workbook != null);
         AssertValid();
 
-        if (readWorkbookContext.PopulateVertexWorksheet)
+        if (readWorkbookContext.PopulateVertexWorksheet &&
+            !readWorkbookContext.ReadAllEdgeAndVertexColumns)
         {
             // Create and use the object that fills in the vertex worksheet.
 
@@ -208,6 +209,13 @@ public class WorkbookReader : Object
             oGraph);
 
         oVertexWorksheetReader = null;
+
+        if (readWorkbookContext.ReadAllEdgeAndVertexColumns)
+        {
+            // The other worksheets should be ignored.
+
+            return (oGraph);
+        }
 
         if (readWorkbookContext.ReadClusters)
         {

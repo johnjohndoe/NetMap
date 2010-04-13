@@ -88,15 +88,18 @@
     <Compile Include="..\..\Common\ArgumentChecker.cs">
       <Link>Util\ArgumentChecker.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\GraphMLXmlDocument.cs">
+      <Link>Util\GraphMLXmlDocument.cs</Link>
+    </Compile>
     <Compile Include="AdapterBase.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GraphAdapters\GraphAdapterBase.cs" />
-    <Compile Include="GraphAdapters\GraphMLAttribute.cs" />
-    <Compile Include="GraphAdapters\GraphMLGraphAdapter.cs" />
-    <Compile Include="GraphAdapters\PajekEdgeData.cs" />
-    <Compile Include="GraphAdapters\PajekGraphAdapter.cs" />
+    <Compile Include="GraphAdapters\GraphML\GraphMLAttribute.cs" />
+    <Compile Include="GraphAdapters\GraphML\GraphMLGraphAdapter.cs" />
+    <Compile Include="GraphAdapters\Pajek\PajekEdgeData.cs" />
+    <Compile Include="GraphAdapters\Pajek\PajekGraphAdapter.cs" />
     <Compile Include="GraphAdapters\SaveGraphException.cs" />
     <Compile Include="GraphAdapters\SimpleGraphAdapter.cs" />
     <Compile Include="GraphAdapters\UcinetGraphAdapter.cs" />

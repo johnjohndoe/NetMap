@@ -1096,11 +1096,10 @@ public class SubgraphImageCreator : Object
         // Get the original vertices and edges to clone.  For the vertex
         // dictionary, the key is the IVertex and the value is the vertex's
         // level, which is the distance of the vertex from oOriginalVertex.
-        // For the edge dictionary, the key is the IEdge and the value isn't
-        // used.
+        // For the edge HashSet, the key is the IEdge.
 
         Dictionary<IVertex, Int32> oOriginalVerticesToClone;
-        Dictionary<IEdge, Char> oOriginalEdgesToClone;
+        HashSet<IEdge> oOriginalEdgesToClone;
 
         SubgraphCalculator.GetSubgraph(oOriginalVertex, decLevels, true,
             out oOriginalVerticesToClone, out oOriginalEdgesToClone);
@@ -1134,7 +1133,7 @@ public class SubgraphImageCreator : Object
 
         IEdgeCollection oSubgraphEdges = oSubgraph.Edges;
 
-        foreach (IEdge oOriginalEdgeToClone in oOriginalEdgesToClone.Keys)
+        foreach (IEdge oOriginalEdgeToClone in oOriginalEdgesToClone)
         {
             IVertex [] aoOriginalVertices = oOriginalEdgeToClone.Vertices;
 

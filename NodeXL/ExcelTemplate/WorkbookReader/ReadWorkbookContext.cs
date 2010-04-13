@@ -38,8 +38,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </para>
 ///
 /// <para>
-/// Set <see cref="SetEdgeWeightValues" /> to true to read any edge weight
-/// column in the edge table and set the edge weight value on each edge.
+/// Set <see cref="ReadEdgeWeights" /> to true to read the edge weight column
+/// in the edge table.
 /// </para>
 ///
 /// <para>
@@ -55,6 +55,13 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// To read images specified on the vertex worksheet, set <see
 /// cref="ReadVertexImages" /> to true, then set <see
 /// cref="DefaultVertexImageSize" /> and <see cref="DefaultVertexShape" />.
+/// </para>
+///
+/// <para>
+/// To read all columns in the edge and vertex worksheets and store the cell
+/// values as metadata on the graph's edge and vertex objects, set <see
+/// cref="ReadAllEdgeAndVertexColumns" /> to true.  All other <see
+/// cref="ReadWorkbookContext" /> properties are ignored in this case.
 /// </para>
 ///
 /// </remarks>
@@ -76,17 +83,19 @@ public class ReadWorkbookContext : Object
         m_bIgnoreVertexLocations = true;
         m_bFillIDColumns = false;
         m_bPopulateVertexWorksheet = false;
-        m_bSetEdgeWeightValues = false;
+        m_bReadEdgeWeights = false;
         m_bReadClusters = false;
         m_bReadVertexLabels = false;
         m_bReadEdgeLabels = false;
         m_bReadVertexImages = false;
         m_oDefaultVertexImageSize = new Nullable<Single>();
         m_eDefaultVertexShape = VertexShape.Disk;
+        m_bReadAllEdgeAndVertexColumns = false;
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
         m_bLayoutOrderSet = false;
         m_oColorConverter2 = new ColorConverter2();
         m_oEdgeWidthConverter = new EdgeWidthConverter();
+        m_oEdgeStyleConverter = new EdgeStyleConverter();
         m_oVertexRadiusConverter = new VertexRadiusConverter();
 
         m_oVertexLocationConverter =
@@ -209,16 +218,15 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
-    //  Property: SetEdgeWeightValues
+    //  Property: ReadEdgeWeights
     //
     /// <summary>
-    /// Gets or sets a flag indicating whether to read any edge weight column
-    /// in the edge table and set the edge weight value on the each edge.
+    /// Gets or sets a flag indicating whether to read the edge weight column
+    /// in the edge table.
     /// </summary>
     ///
     /// <value>
-    /// true to read any edge weight column and set the edge weight value on
-    /// each edge.  The default is false.
+    /// true to read the edge weight column.  The default is false.
     /// </value>
     ///
     /// <remarks>
@@ -228,18 +236,18 @@ public class ReadWorkbookContext : Object
     //*************************************************************************
 
     public Boolean
-    SetEdgeWeightValues
+    ReadEdgeWeights
     {
         get
         {
             AssertValid();
 
-            return (m_bSetEdgeWeightValues);
+            return (m_bReadEdgeWeights);
         }
 
         set
         {
-            m_bSetEdgeWeightValues = value;
+            m_bReadEdgeWeights = value;
 
             AssertValid();
         }
@@ -446,6 +454,61 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
+    //  Property: ReadAllEdgeAndVertexColumns
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether all columns on the edge and
+    /// vertex worksheets should be read.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to read all columns on the edge and vertex worksheets.  The
+    /// default is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If set to true, all columns in the edge and vertex worksheets are read
+    /// and the cell values are stored as metadata on the graph's edge and
+    /// vertex objects.  For example, if the vertex worksheet has a column
+    /// named "My Column", then a key named My Column is added to every vertex
+    /// whose cell has a non-empty value and the key's value is a String that
+    /// contains that value, with leading and trailing spaces removed.  No
+    /// other conversions are performed on the values.
+    ///
+    /// <para>
+    /// Also, if set to true, the names of all columns in the edge and vertex
+    /// worksheets are stored as metadata on the graph object using the <see
+    /// cref="ReservedMetadataKeys.AllEdgeMetadataKeys" /> and
+    /// <see cref="ReservedMetadataKeys.AllVertexMetadataKeys" /> keys.
+    /// </para>
+    ///
+    /// <para>
+    /// When set to true, all other <see cref="ReadWorkbookContext" />
+    /// properties are ignored.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    ReadAllEdgeAndVertexColumns
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bReadAllEdgeAndVertexColumns);
+        }
+
+        set
+        {
+            m_bReadAllEdgeAndVertexColumns = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: GraphRectangle
     //
     /// <summary>
@@ -563,6 +626,30 @@ public class ReadWorkbookContext : Object
             AssertValid();
 
             return (m_oEdgeWidthConverter);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: EdgeStyleConverter
+    //
+    /// <summary>
+    /// Gets an object that converts an edge style between values used in the
+    /// Excel workbook and values used in the NodeXL graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// An <see cref="EdgeStyleConverter" /> object.
+    /// </value>
+    //*************************************************************************
+
+    public EdgeStyleConverter
+    EdgeStyleConverter
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_oEdgeStyleConverter);
         }
     }
 
@@ -744,17 +831,19 @@ public class ReadWorkbookContext : Object
         // m_bIgnoreVertexLocations
         // m_bFillIDColumns
         // m_bPopulateVertexWorksheet
-        // m_bSetEdgeWeightValues
+        // m_bReadEdgeWeights
         // m_bReadClusters
         // m_bReadVertexLabels
         // m_bReadEdgeLabels
         // m_bReadVertexImages
         // m_oDefaultVertexImageSize
         // m_eDefaultVertexShape
+        // m_bReadAllEdgeAndVertexColumns
         // m_oGraphRectangle
         // m_bLayoutOrderSet
         Debug.Assert(m_oColorConverter2 != null);
         Debug.Assert(m_oEdgeWidthConverter != null);
+        Debug.Assert(m_oEdgeStyleConverter != null);
         Debug.Assert(m_oVertexRadiusConverter != null);
         Debug.Assert(m_oVertexLocationConverter != null);
         Debug.Assert(m_oVertexNameDictionary != null);
@@ -783,7 +872,7 @@ public class ReadWorkbookContext : Object
     /// true to read any edge weight column and set the edge weight value on
     /// each edge.
 
-    protected Boolean m_bSetEdgeWeightValues;
+    protected Boolean m_bReadEdgeWeights;
 
     /// true to read the cluster worksheets.
 
@@ -809,6 +898,10 @@ public class ReadWorkbookContext : Object
 
     protected VertexShape m_eDefaultVertexShape;
 
+    /// true to read all columns on the edge and vertex worksheets.
+
+    protected Boolean m_bReadAllEdgeAndVertexColumns;
+
     /// The rectangle the graph is being drawn within.
 
     protected Rectangle m_oGraphRectangle;
@@ -825,6 +918,11 @@ public class ReadWorkbookContext : Object
     /// workbook and values used in the NodeXL graph.
 
     protected EdgeWidthConverter m_oEdgeWidthConverter;
+
+    /// Object that converts an edge style between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
+
+    protected EdgeStyleConverter m_oEdgeStyleConverter;
 
     /// Object that converts a vertex radius between values used in the Excel
     /// workbook and values used in the NodeXL graph.

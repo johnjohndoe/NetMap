@@ -12,17 +12,18 @@
     <OfficeApplication>Excel</OfficeApplication>
     <ProjectGuid>{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}</ProjectGuid>
     <SolutionID>aa51c0f3-62b4-4782-83a8-a15dcdd17698</SolutionID>
-    <ManifestCertificateThumbprint>54D5CA354825C1C2432CF9E5319B536276A0B92E</ManifestCertificateThumbprint>
-    <ManifestKeyFile>ExcelTemplate_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>800D7920FF28705C62F6AA2F6A198F128B055070</ManifestCertificateThumbprint>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>False</IsWebBootstrapper>
     <TargetFrameworkSubset>Full</TargetFrameworkSubset>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>H:\Projects\NodeXL\Releases\1.0.1.54\ExcelAddIn\</PublishUrl>
+    <PublishUrl>E:\NodeXL\ExcelTemplate\Publish\</PublishUrl>
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.54</ApplicationVersion>
+    <ApplicationVersion>1.0.1.121</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>false</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -178,6 +179,9 @@
     </Compile>
     <Compile Include="..\..\Common\Excel\ExcelRangeSplitter.cs">
       <Link>Util\Excel\ExcelRangeSplitter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelTableReader.cs">
+      <Link>Util\Excel\ExcelTableReader.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Excel\ExcelUtil.cs">
       <Link>Util\Excel\ExcelUtil.cs</Link>
@@ -425,7 +429,9 @@
     <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.designer.cs">
       <DependentUpon>RegisterUserDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SaveGraphFile\SaveGraphFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphImageFile\SaveGraphImageFileDialog.cs" />
+    <Compile Include="Dialogs\SaveGraphMLFile\SaveGraphMLFileDialog.cs" />
     <Compile Include="Dialogs\SavePajekFile\SavePajekFileDialog.cs" />
     <Compile Include="Dialogs\SaveUcinetFile\SaveUcinetFileDialog.cs" />
     <Compile Include="Dialogs\SelectSubgraphs\SelectSubgraphsDialog.cs">
@@ -440,6 +446,12 @@
     </Compile>
     <Compile Include="Dialogs\VertexAttributes\VertexAttributesDialog.Designer.cs">
       <DependentUpon>VertexAttributesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\VertexGridSnapperUserSettings\VertexGridSnapperUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\VertexGridSnapperUserSettings\VertexGridSnapperUserSettingsDialog.designer.cs">
+      <DependentUpon>VertexGridSnapperUserSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\VertexRadius\VertexRadiusDialog.cs">
       <SubType>Form</SubType>
@@ -608,6 +620,7 @@
     <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
     <Compile Include="UserSettings\UserSettingsManager.cs" />
+    <Compile Include="UserSettings\VertexGridSnapperUserSettings.cs" />
     <Compile Include="Util\ApplicationUtil.cs" />
     <Compile Include="Util\AutoFill\Results\AutoFillColorColumnResults.cs" />
     <Compile Include="Util\AutoFill\Results\AutoFillColumnResults.cs" />
@@ -654,6 +667,7 @@
     <Compile Include="WorkbookReader\ValueConverters\AlphaConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\BooleanConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\ColorConverter2.cs" />
+    <Compile Include="WorkbookReader\ValueConverters\EdgeStyleConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\EdgeVisibilityConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\EdgeWidthConverter.cs" />
     <Compile Include="WorkbookReader\ValueConverters\NumericValueConverterBase.cs" />
@@ -822,6 +836,9 @@
       <DependentUpon>SelectSubgraphsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\VertexGridSnapperUserSettings\VertexGridSnapperUserSettingsDialog.resx">
+      <DependentUpon>VertexGridSnapperUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\VertexRadius\VertexRadiusDialog.resx">
       <DependentUpon>VertexRadiusDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -862,11 +879,11 @@
         <Host Name="Excel Document" Path=".\NodeXLGraph.xltx" GeneratedCodeNamespace="Microsoft.NodeXL.ExcelTemplate" PublishedHash="4D8E879928CBA270A29ED7FD412557FCA49DBAF9">
           <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="245DB3698AC9C0D8DC43523F505F15A7AE65DDCD" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
           <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
-          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="929EB06E3232D25BBFB6DA207F133759A5E75F10" CanActivate="false" DisplayName="Do Not Delete" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
-          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="16CC5CE95B1FFE7AAB3A1C0BED926CB7BF5B766E" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
-          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="651F0F18F0DA9DEEF21F2887996E77B7C73F9326" DisplayName="Clusters" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
-          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="1641ABE04217FBFF4F1B81D6385356B84C00F914" DisplayName="Cluster Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
-          <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="9D6EBDFD59407161A65741A2F78E7AC34A88358D" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
+          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="04125E3672981A7C2AA07936FF737FD756F66CA4" CanActivate="false" DisplayName="Do Not Delete" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
+          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="9EE73D40BB7D145575B638D7A5861EFB589F4310" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
+          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="EC26F5300A312638C56042DE6ACEBCB63D72E48B" DisplayName="Clusters" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
+          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="E82EFC8FEA9B24281C1D102E0DEEC97416211009" DisplayName="Cluster Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
+          <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="38D946713A47D3D95E270D765518A40A17CB2F97" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="D0EA144E67D552625DC149C1653F9B8844BAE80B" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
         </Host>
       </FlavorProperties>

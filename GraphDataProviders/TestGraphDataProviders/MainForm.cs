@@ -1,4 +1,8 @@
-﻿using System;
+﻿
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
+
+using System;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;

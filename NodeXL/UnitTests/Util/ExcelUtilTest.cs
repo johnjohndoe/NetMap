@@ -162,87 +162,6 @@ public class ExcelUtilTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestGetOneBasedRowNumbers()
-    //
-    /// <summary>
-    /// Tests the GetOneBasedRowNumbers() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetOneBasedRowNumbers()
-    {
-        TestGetOneBasedRowNumbers( "A1", new Int32[] {1} );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetOneBasedRowNumbers2()
-    //
-    /// <summary>
-    /// Tests the GetOneBasedRowNumbers() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetOneBasedRowNumbers2()
-    {
-        TestGetOneBasedRowNumbers( "B429", new Int32[] {429} );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetOneBasedRowNumbers3()
-    //
-    /// <summary>
-    /// Tests the GetOneBasedRowNumbers() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetOneBasedRowNumbers3()
-    {
-        TestGetOneBasedRowNumbers( "XDF1048576", new Int32[] {1048576} );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetOneBasedRowNumbers4()
-    //
-    /// <summary>
-    /// Tests the GetOneBasedRowNumbers() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetOneBasedRowNumbers4()
-    {
-        TestGetOneBasedRowNumbers( "A1:B5", new Int32[] {1, 2, 3, 4, 5} );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetOneBasedRowNumbers5()
-    //
-    /// <summary>
-    /// Tests the GetOneBasedRowNumbers() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetOneBasedRowNumbers5()
-    {
-        TestGetOneBasedRowNumbers( "A3,B16,A30,A24:F25,C2:C5,A5:F5",
-            new Int32[] {3, 16, 30, 24, 25, 2, 4, 5} );
-    }
-
-    //*************************************************************************
     //  Method: TestGetOneBasedRowNumber()
     //
     /// <summary>
@@ -294,42 +213,6 @@ public class ExcelUtilTest : Object
     {
         Assert.AreEqual( sExpectedColumnLetter,
             ExcelUtil.GetColumnLetter(sCellAddress) );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetOneBasedRowNumbers()
-    //
-    /// <summary>
-    /// Tests the GetOneBasedRowNumbers() method.
-    /// </summary>
-    ///
-    /// <param name="sRangeAddress">
-    /// Cell address.
-    /// </param>
-    ///
-    /// <param name="aiExpectedRowNumbers">
-    /// Expected row numbers.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    TestGetOneBasedRowNumbers
-    (
-        String sRangeAddress,
-        Int32 [] aiExpectedRowNumbers
-    )
-    {
-        Int32 [] aiRowNumbers = ExcelUtil.GetOneBasedRowNumbers(sRangeAddress);
-
-        Int32 iLength = aiRowNumbers.Length;
-
-        Assert.AreEqual(aiExpectedRowNumbers.Length, iLength);
-
-        for (Int32 i = 0; i < iLength; i++)
-        {
-            Assert.IsTrue(Array.IndexOf<Int32>(
-                aiRowNumbers, aiExpectedRowNumbers[i] ) != -1);
-        }
     }
 
 

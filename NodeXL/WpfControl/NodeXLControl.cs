@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.Reflection;
 using System.IO;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.NodeXL.Core;
@@ -59,7 +60,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <para>
 /// To use <see cref="NodeXLControl" />, populate the graph exposed by the <see
 /// cref="NodeXLControl.Graph" /> property, then call <see
-/// cref="DrawGraph(Boolean)" />.  See the sample code below.
+/// cref="DrawGraphAsync(Boolean)" />.  See the sample code below.
 /// </para>
 ///
 /// <h3>Vertex and Edge Appearance</h3>
@@ -120,6 +121,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <item><see cref="ReservedMetadataKeys.PerColor" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerAlpha" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerEdgeWidth" /></item>
+/// <item><see cref="ReservedMetadataKeys.PerEdgeStyle" /></item>
 /// <item><see cref="ReservedMetadataKeys.PerEdgeLabel" /></item>
 /// </list>
 ///
@@ -164,7 +166,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 ///
 /// <para>
 /// One or more vertices and their incident edges can be selected with the
-/// mouse.  See the <see cref="MouseSelectionMode" /> property for details.
+/// mouse.  See the <see cref="MouseMode" /> property for details.
 /// </para>
 ///
 /// <para>
@@ -190,7 +192,8 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// </para>
 ///
 /// <para>
-/// The size of the graph can controlled with <see cref="GraphScale" />.
+/// The size of the graph's vertices and edges can controlled with <see
+/// cref="GraphScale" />.
 /// </para>
 ///
 /// <h3>Vertex Tooltips</h3>
@@ -305,7 +308,7 @@ public partial class Window1 : Window
         oEdge3.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 0, 255, 0));
 
-        nodeXLControl1.DrawGraph(true);
+        nodeXLControl1.DrawGraphAsync(true);
     }
 }
 }
@@ -413,7 +416,7 @@ public partial class Form1 : Form
         oEdge3.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 0, 255, 0));
 
-        nodeXLControl1.DrawGraph(true);
+        nodeXLControl1.DrawGraphAsync(true);
     }
 }
 }
@@ -477,17 +480,16 @@ public partial class NodeXLControl : FrameworkElement
 
         m_eLayoutState = LayoutState.Stable;
 
-        m_eMouseSelectionMode =
-            MouseSelectionMode.SelectVertexAndIncidentEdges;
-
+        m_eMouseMode = MouseMode.Select;
+        m_bMouseAlsoSelectsIncidentEdges = true;
         m_bAllowVertexDrag = true;
 
         m_oVerticesBeingDragged = null;
         m_oMarqueeBeingDragged = null;
         m_oTranslationBeingDragged = null;
 
-        m_oSelectedVertices = new Dictionary<IVertex, Byte>();
-        m_oSelectedEdges = new Dictionary<IEdge, Byte>();
+        m_oSelectedVertices = new HashSet<IVertex>();
+        m_oSelectedEdges = new HashSet<IEdge>();
 
         m_bShowVertexToolTips = false;
         m_oLastMouseMoveLocation = new Point(-1, -1);
@@ -551,7 +553,7 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// <remarks>
     /// After the graph is populated or modified, you must call <see
-    /// cref="DrawGraph(Boolean)" /> to draw it.
+    /// cref="DrawGraphAsync(Boolean)" /> to draw it.
     ///
     /// <para>
     /// An exception is thrown if this property is set while an asynchronous
@@ -1234,48 +1236,26 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Property: MouseSelectionMode
+    //  Property: MouseMode
     //
     /// <summary>
-    /// Gets or sets a value that determines what gets selected when a vertex
-    /// is clicked with the mouse.
+    /// Gets or sets a value that determines how the mouse can be used to
+    /// interact with the graph.
     /// </summary>
     ///
     /// <value>
-    /// A <see cref="Visualization.Wpf.MouseSelectionMode" /> value.  The
-    /// default value is <see cref="Visualization.Wpf.MouseSelectionMode.
-    /// SelectVertexAndIncidentEdges" />.
+    /// A <see cref="Visualization.Wpf.MouseMode" /> value.  The default value
+    /// is <see cref="Visualization.Wpf.MouseMode.Select" />.
     /// </value>
     ///
     /// <remarks>
-    /// When this property is set to SelectVertexAndIncidentEdges, one or more
-    /// vertices can be selected with the mouse.  If the Control key is not
-    /// pressed, clicking a vertex clears the current selection, then selects
-    /// the clicked vertex and its incident edges.  If the Control key is
-    /// pressed, clicking a vertex toggles the selection state of the vertex
-    /// and its incident edges without affecting the other vertices and edges.
-    /// Clicking without the Control key on an area not occupied by a vertex
-    /// clears the current selection.
+    /// The mouse behavior is also affected by the <see
+    /// cref="MouseAlsoSelectsIncidentEdges" /> property.
     ///
     /// <para>
-    /// When this property is set to SelectVertexAndIncidentEdges, vertices can
-    /// also be selected by dragging a marquee over them.  If no key is
-    /// pressed, the current selection is cleared, then any vertices within the
-    /// marquee are selected, along with their incident edges.  If the Shift
-    /// key is pressed, the vertices and their incident edges are added to the
-    /// current selection.  If the Alt key is pressed, the vertices and their
-    /// incident edges are subtracted from the current selection.
-    /// </para>
-    ///
-    /// <para>
-    /// When this property is set to SelectVertex, the behavior is the same as
-    /// with SelectVertexAndIncidentEdges, except that the incident edges are
-    /// not selected.
-    /// </para>
-    ///
-    /// <para>
-    /// When this property is set to SelectVertexAndIncidentEdges or
-    /// SelectVertex, clicking on a vertex results in the following sequence:
+    /// When this property is set to <see
+    /// cref="Visualization.Wpf.MouseMode.Select" />, clicking on a vertex
+    /// results in the following sequence:
     /// </para>
     ///
     /// <list type="bullet">
@@ -1304,7 +1284,8 @@ public partial class NodeXLControl : FrameworkElement
     /// </list>
     ///
     /// <para>
-    /// When this property is set to SelectNothing, clicking on a vertex
+    /// When this property is set to <see
+    /// cref="Visualization.Wpf.MouseMode.DoNothing" />, clicking on a vertex
     /// results in the following sequence:
     /// </para>
     ///
@@ -1325,12 +1306,14 @@ public partial class NodeXLControl : FrameworkElement
     /// </list>
     ///
     /// <para>
-    /// Set this property to SelectNothing if you want mouse clicks to have no
-    /// effect, or if you want to customize the click behavior.
+    /// Set this property to <see
+    /// cref="Visualization.Wpf.MouseMode.DoNothing" /> if you want to disable
+    /// all mouse interactions, or if you want to customize the click behavior.
     /// </para>
     ///
     /// </remarks>
     ///
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -1343,14 +1326,14 @@ public partial class NodeXLControl : FrameworkElement
 
     [Category("Behavior")]
 
-    public MouseSelectionMode
-    MouseSelectionMode
+    public MouseMode
+    MouseMode
     {
         get
         {
             AssertValid();
 
-            return (m_eMouseSelectionMode);
+            return (m_eMouseMode);
         }
 
         set
@@ -1359,7 +1342,61 @@ public partial class NodeXLControl : FrameworkElement
             // out, because the mouse is ignored until graph drawing is
             // complete.
 
-            m_eMouseSelectionMode = value;
+            m_eMouseMode = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: MouseAlsoSelectsIncidentEdges
+    //
+    /// <summary>
+    /// Gets or sets a flag specifying whether selecting or deselecting a
+    /// vertex with the mouse also selects or deselects its incident edges.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if selecting or deselecting a vertex with the mouse also selects
+    /// or deselects its incident edges, false if the incident edges are not
+    /// affected.
+    /// </value>
+    ///
+    /// <remarks>
+    /// See the <see cref="MouseMode" /> property for details on how vertices
+    /// can be selected and deselected with the mouse.
+    /// </remarks>
+    ///
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="SetVertexSelected" />
+    /// <seealso cref="SetEdgeSelected" />
+    /// <seealso cref="SetSelected" />
+    /// <seealso cref="SelectAll" />
+    /// <seealso cref="DeselectAll" />
+    /// <seealso cref="SelectedVertices" />
+    /// <seealso cref="SelectedEdges" />
+    /// <seealso cref="SelectionChanged" />
+    //*************************************************************************
+
+    [Category("Behavior")]
+
+    public Boolean
+    MouseAlsoSelectsIncidentEdges
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bMouseAlsoSelectsIncidentEdges);
+        }
+
+        set
+        {
+            // It is okay to change this property while the graph is being laid
+            // out, because the mouse is ignored until graph drawing is
+            // complete.
+
+            m_bMouseAlsoSelectsIncidentEdges = value;
 
             AssertValid();
         }
@@ -1369,21 +1406,21 @@ public partial class NodeXLControl : FrameworkElement
     //  Property: AllowVertexDrag
     //
     /// <summary>
-    /// Gets or sets a flag indicating whether vertices can be moved by
-    /// dragging them with the mouse.
+    /// Gets or sets a flag indicating whether selected vertices can be moved
+    /// by dragging them with the mouse.
     /// </summary>
     ///
     /// <value>
-    /// true if vertices can be moved by dragging them with the mouse, false
-    /// otherwise.  The default value is true.
+    /// true if selected vertices can be moved by dragging them with the mouse,
+    /// false otherwise.  The default value is true.
     /// </value>
     ///
     /// <remarks>
-    /// When this property is true, the user can move a single vertex by
-    /// left-clicking it and dragging it with the mouse.  She can also select
-    /// multiple vertices via multiple clicks or a marquee, then drag all the
-    /// selected vertices by left-clicking one of them and dragging with the
-    /// mouse.
+    /// When this property is true and <see cref="MouseMode" /> is set to <see
+    /// cref="Visualization.Wpf.MouseMode.Select" /> or <see
+    /// cref="Visualization.Wpf.MouseMode.AddToSelection" />, the user
+    /// can move the selected vertices by clicking one of them and dragging
+    /// them with the mouse.
     ///
     /// <para>
     /// The dragged vertices and their incident edges are redrawn, but no other
@@ -1505,23 +1542,22 @@ public partial class NodeXLControl : FrameworkElement
     //  Property: GraphScale
     //
     /// <summary>
-    /// Gets or sets a value that determines the size of the graph.
+    /// Gets or sets a value that determines the scale of the graph's vertices
+    /// and edges.
     /// </summary>
     ///
     /// <value>
-    /// A value that determines the size of the graph.  Must be between <see
-    /// cref="MinimumGraphScale" /> and <see cref="MaximumGraphScale" />.  The
-    /// default value is 1.0.
+    /// A value that determines the scale of the graph's vertices and edges.
+    /// Must be between <see cref="MinimumGraphScale" /> and <see
+    /// cref="MaximumGraphScale" />.  The default value is 1.0.
     /// </value>
     ///
     /// <remarks>
-    /// If this is left at its default value of 1.0, the graph is laid out and
-    /// rendered within a rectangle that is the same size as the control.  If
-    /// it is set to 2.0, for example, the graph is laid out within a rectangle
-    /// whose sides are twice as long as the sides of the control, but the
-    /// laid out graph is shrunk to fit the control.  The result is that the
-    /// graph fits within the control but all its vertices and edges are
-    /// smaller than normal.
+    /// If the value is anything besides 1.0, the graph's vertices and edges
+    /// are shrunk while their positions remain the same.  If it is set to 0.5,
+    /// for example, the vertices are half their normal size and the edges are
+    /// half their normal width.  The overall size of the graph is not
+    /// affected.
     /// </remarks>
     //*************************************************************************
 
@@ -1536,13 +1572,7 @@ public partial class NodeXLControl : FrameworkElement
         {
             AssertValid();
 
-            ScaleTransform oScaleTransformForLayout =
-                this.ScaleTransformForLayout;
-
-            Debug.Assert(oScaleTransformForLayout.ScaleX ==
-                oScaleTransformForLayout.ScaleY);
-
-            return (1.0 / oScaleTransformForLayout.ScaleX);
+            return (m_oGraphDrawer.GraphScale);
         }
 
         set
@@ -1552,16 +1582,9 @@ public partial class NodeXLControl : FrameworkElement
             this.ArgumentChecker.CheckPropertyInRange(PropertyName, value,
                 MinimumGraphScale, MaximumGraphScale);
 
-            // See CreateTransforms() for details on how the graph scale works.
+            m_oGraphDrawer.GraphScale = value;
 
-            ScaleTransform oScaleTransformForLayout =
-                this.ScaleTransformForLayout;
-
-            oScaleTransformForLayout.ScaleX =
-                oScaleTransformForLayout.ScaleY = 1.0 / value;
-
-            // Note that changing the layout transform results in
-            // OnRenderSizeChanged() getting called.
+            DrawGraphAsync(false);
 
             AssertValid();
         }
@@ -1629,25 +1652,26 @@ public partial class NodeXLControl : FrameworkElement
     //  Property: SelectedVertices
     //
     /// <summary>
-    /// Gets an array of the graph's selected vertices.
+    /// Gets a collection of the graph's selected vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the graph's selected vertices.
+    /// A collection of the graph's selected vertices.
     /// </value>
     ///
     /// <remarks>
-    /// If there are no selected vertices, the returned array has zero
+    /// If there are no selected vertices, the returned collection has zero
     /// elements.  The returned value is never null.
     ///
     /// <para>
-    /// The returned array should be considered read-only.  To select a vertex,
-    /// use <see cref="SetVertexSelected" /> or a related method.
+    /// The returned collection should be considered read-only.  To select a
+    /// vertex, use <see cref="SetVertexSelected" /> or a related method.
     /// </para>
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -1660,15 +1684,14 @@ public partial class NodeXLControl : FrameworkElement
     [System.ComponentModel.Browsable(false)]
     [System.ComponentModel.ReadOnly(true)]
 
-    public IVertex []
+    public ICollection<IVertex>
     SelectedVertices
     {
         get
         {
             AssertValid();
 
-            return ( CollectionUtil.DictionaryKeysToArray<IVertex, Byte>(
-                m_oSelectedVertices) );
+            return ( m_oSelectedVertices.ToArray() );
         }
     }
 
@@ -1676,25 +1699,26 @@ public partial class NodeXLControl : FrameworkElement
     //  Property: SelectedEdges
     //
     /// <summary>
-    /// Gets an array of the graph's selected edges.
+    /// Gets a collection of the graph's selected edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the graph's selected edges.
+    /// A collection of the graph's selected edges.
     /// </value>
     ///
     /// <remarks>
-    /// If there are no selected edges, the returned array has zero elements.
-    /// The returned value is never null.
+    /// If there are no selected edges, the returned collection has zero
+    /// elements.  The returned value is never null.
     ///
     /// <para>
-    /// The returned array should be considered read-only.  To select an edge,
-    /// use <see cref="SetEdgeSelected" /> or a related method.
+    /// The returned collection should be considered read-only.  To select an
+    /// edge, use <see cref="SetEdgeSelected" /> or a related method.
     /// </para>
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -1707,15 +1731,14 @@ public partial class NodeXLControl : FrameworkElement
     [System.ComponentModel.Browsable(false)]
     [System.ComponentModel.ReadOnly(true)]
 
-    public IEdge []
+    public ICollection<IEdge>
     SelectedEdges
     {
         get
         {
             AssertValid();
 
-            return ( CollectionUtil.DictionaryKeysToArray<IEdge, Byte>(
-                m_oSelectedEdges) );
+            return ( m_oSelectedEdges.ToArray() );
         }
     }
 
@@ -1732,24 +1755,25 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// <remarks>
     /// Graph drawing, which may include an interative graph layout stage,
-    /// occurs asynchronously after <see cref="DrawGraph()" /> is called. 
+    /// occurs asynchronously after <see cref="DrawGraphAsync()" /> is called. 
     /// Several properties and methods, such as <see cref="Graph" />, <see
     /// cref="Layout" />, and <see cref="SetSelected" />, cannot be accessed
     /// while the graph is being drawn.  Check <see cref="IsDrawing" /> or
-    /// monitor the <see cref="DrawingGraph" /> and <see cref="GraphDrawn" />
-    /// events before accessing those properties and methods.
+    /// monitor the <see cref="DrawingGraph" /> and <see
+    /// cref="DrawGraphCompleted" /> events before accessing those properties
+    /// and methods.
     ///
     /// <para>
     /// The <see cref="DrawingGraph" /> event fires before graph drawing
-    /// begins.  The <see cref="GraphDrawn" /> event fires after graph drawing
-    /// completes.
+    /// begins.  The <see cref="DrawGraphCompleted" /> event fires after graph
+    /// drawing completes.
     /// </para>
     ///
     /// <para>
     /// Typically, an application will populate and draw the graph in the
     /// load event of the Window or Form, and use the <see
-    /// cref="DrawingGraph" /> and <see cref="GraphDrawn" /> events to disable
-    /// and enable any controls that might be used to redraw the graph.
+    /// cref="DrawingGraph" /> and <see cref="DrawGraphCompleted" /> events to
+    /// disable and enable any controls that might be used to redraw the graph.
     /// </para>
     ///
     /// </remarks>
@@ -1874,7 +1898,8 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
     /// <seealso cref="SelectAll" />
@@ -1972,7 +1997,8 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetSelected" />
     /// <seealso cref="SelectAll" />
@@ -2050,7 +2076,8 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="DeselectAll" />
@@ -2122,7 +2149,8 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -2168,7 +2196,8 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -2313,12 +2342,8 @@ public partial class NodeXLControl : FrameworkElement
         Double dOriginalActualWidth = this.ActualWidth;
         Double dOriginalActualHeight = this.ActualHeight;
 
-        ScaleTransform oScaleTransformForLayout = this.ScaleTransformForLayout;
-
         Rect oBitmapRectangle = new Rect(0, 0,
-            (Double)bitmapWidthPx / oScaleTransformForLayout.ScaleX,
-            (Double)bitmapHeightPx / oScaleTransformForLayout.ScaleY
-            );
+            (Double)bitmapWidthPx, (Double)bitmapHeightPx);
 
         TransformLayout(oBitmapRectangle);
 
@@ -2353,10 +2378,10 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: DrawGraph()
+    //  Method: DrawGraphAsync()
     //
     /// <overloads>
-    /// Draws the graph.
+    /// Asynchronously draws the graph.
     /// </overloads>
     ///
     /// <summary>
@@ -2375,18 +2400,18 @@ public partial class NodeXLControl : FrameworkElement
     //*************************************************************************
 
     public void
-    DrawGraph()
+    DrawGraphAsync()
     {
         AssertValid();
 
-        DrawGraph(false);
+        DrawGraphAsync(false);
     }
 
     //*************************************************************************
-    //  Method: DrawGraph()
+    //  Method: DrawGraphAsync()
     //
     /// <summary>
-    /// Draws the graph after optionally laying it out.
+    /// Asynchronously draws the graph after optionally laying it out.
     /// </summary>
     ///
     /// <param name="layOutGraphFirst">
@@ -2406,7 +2431,7 @@ public partial class NodeXLControl : FrameworkElement
     //*************************************************************************
 
     public void
-    DrawGraph
+    DrawGraphAsync
     (
         Boolean layOutGraphFirst
     )
@@ -2487,7 +2512,8 @@ public partial class NodeXLControl : FrameworkElement
     /// cref="SelectedVertices" /> and <see cref="SelectedEdges" /> properties.
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -2511,11 +2537,13 @@ public partial class NodeXLControl : FrameworkElement
     /// </summary>
     ///
     /// <remarks>
-    /// See <see cref="MouseSelectionMode" /> for details on how vertices are
+    /// See <see cref="MouseMode" /> and <see
+    /// cref="MouseAlsoSelectsIncidentEdges" /> for details on how vertices are
     /// selected with the mouse.
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SetVertexSelected" />
     /// <seealso cref="SetEdgeSelected" />
     /// <seealso cref="SetSelected" />
@@ -2538,7 +2566,8 @@ public partial class NodeXLControl : FrameworkElement
     /// is released.
     /// </summary>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SelectedVertices" />
     //*************************************************************************
 
@@ -2560,7 +2589,8 @@ public partial class NodeXLControl : FrameworkElement
     /// attempt to do this.
     /// </remarks>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SelectedVertices" />
     //*************************************************************************
 
@@ -2576,7 +2606,8 @@ public partial class NodeXLControl : FrameworkElement
     /// Occurs when a vertex is double-clicked.
     /// </summary>
     ///
-    /// <seealso cref="MouseSelectionMode" />
+    /// <seealso cref="MouseMode" />
+    /// <seealso cref="MouseAlsoSelectsIncidentEdges" />
     /// <seealso cref="SelectedVertices" />
     //*************************************************************************
 
@@ -2701,7 +2732,8 @@ public partial class NodeXLControl : FrameworkElement
     /// drawing begins.
     ///
     /// <para>
-    /// The <see cref="GraphDrawn" /> event fires after drawing is complete.
+    /// The <see cref="DrawGraphCompleted" /> event fires after drawing is
+    /// complete.
     /// </para>
     ///
     /// <para>
@@ -2718,7 +2750,7 @@ public partial class NodeXLControl : FrameworkElement
 
 
     //*************************************************************************
-    //  Event: GraphDrawn
+    //  Event: DrawGraphCompleted
     //
     /// <summary>
     /// Occurs after graph drawing completes.
@@ -2726,7 +2758,13 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// <remarks>
     /// Graph drawing occurs asynchronously.  This event fires when the graph
-    /// is completely drawn.
+    /// is successfully drawn or an error occurs.
+    ///
+    /// <para>
+    /// Check the <see cref="AsyncCompletedEventArgs.Error" /> property to
+    /// determine whether an error occurred while laying out or drawing the
+    /// graph.
+    /// </para>
     ///
     /// <para>
     /// The <see cref="DrawingGraph" /> event fires before graph drawing
@@ -2743,7 +2781,7 @@ public partial class NodeXLControl : FrameworkElement
 
     [Category("Action")]
 
-    public event EventHandler GraphDrawn;
+    public event AsyncCompletedEventHandler DrawGraphCompleted;
 
 
     //*************************************************************************
@@ -2879,8 +2917,7 @@ public partial class NodeXLControl : FrameworkElement
     /// The rectangle's dimensions are not affected by either of the transforms
     /// used for the control's render transform, <see
     /// cref="ScaleTransformForRender" /> or <see
-    /// cref="TranslateTransformForRender" />.  The ARE affected by <see
-    /// cref="ScaleTransformForLayout" />, however.  See <see
+    /// cref="TranslateTransformForRender" />.  See <see
     /// cref="CreateTransforms" /> for details. 
     /// </remarks>
     //*************************************************************************
@@ -2892,31 +2929,6 @@ public partial class NodeXLControl : FrameworkElement
         {
             return (
                 new Rect( new Size(this.ActualWidth, this.ActualHeight) ) );
-        }
-    }
-
-    //*************************************************************************
-    //  Property: ScaleTransformForLayout
-    //
-    /// <summary>
-    /// Gets the ScaleTransform used for the control's layout transform.
-    /// </summary>
-    ///
-    /// <value>
-    /// A ScaleTransform object that controls the size of the graph's canvas.
-    /// </value>
-    //*************************************************************************
-
-    protected ScaleTransform
-    ScaleTransformForLayout
-    {
-        get
-        {
-            AssertValid();
-
-            Debug.Assert(this.LayoutTransform is ScaleTransform);
-
-            return ( (ScaleTransform)this.LayoutTransform );
         }
     }
 
@@ -3155,17 +3167,6 @@ public partial class NodeXLControl : FrameworkElement
     protected void
     CreateTransforms()
     {
-        // The graph scale is controlled by a ScaleTransform used as a layout
-        // transform.  If its ScaleX and ScaleY properties are set to 0.5, for
-        // example, the control size reported by ActualWidth and ActualHeight
-        // are twice the actual window dimensions and the graph gets laid out
-        // within this enlarged rectangle.  The enlarged rectangle gets reduced
-        // to the control size when it is rendered, so the entire graph fits
-        // within the control but all the vertices and edges are smaller than
-        // normal.
-
-        this.LayoutTransform = new ScaleTransform();
-
         // The zoom is controlled by a ScaleTransform used as the first of two
         // render transforms.  If its ScaleX and ScaleY properties are set to
         // 2.0, for example, the graph is rendered twice as large as normal and
@@ -3188,7 +3189,7 @@ public partial class NodeXLControl : FrameworkElement
         this.RenderTransform = oTransformGroup;
 
         // Note that mouse coordinates as reported by
-        // MouseEventArgs.GetLocation() are affected by all three transforms.
+        // MouseEventArgs.GetLocation() are affected by both transforms.
         // Because of this, it is sometimes more convenient to convert the
         // mouse coordinates to screen coordinates, which are not affected by
         // any of the transforms.
@@ -3262,17 +3263,9 @@ public partial class NodeXLControl : FrameworkElement
         AssertValid();
 
         ScaleTransform oScaleTransformForRender = this.ScaleTransformForRender;
-        Double dLayoutScale = this.ScaleTransformForLayout.ScaleX;
 
-        // The ScaleTransform used for the control's layout transform affects
-        // the control's dimensions.  Adjust for this.  (See CreateTransforms()
-        // for details.)
-
-        oScaleTransformForRender.CenterX =
-            dLayoutScale * this.ActualWidth / 2.0;
-
-        oScaleTransformForRender.CenterY =
-            dLayoutScale * this.ActualHeight / 2.0;
+        oScaleTransformForRender.CenterX = this.ActualWidth / 2.0;
+        oScaleTransformForRender.CenterY = this.ActualHeight / 2.0;
     }
 
     //*************************************************************************
@@ -3354,7 +3347,6 @@ public partial class NodeXLControl : FrameworkElement
         Double dScaleTransformForRenderCenterY =
             oScaleTransformForRender.CenterY;
 
-        Double dLayoutScale = this.ScaleTransformForLayout.ScaleX;
         Double dRenderScale = oScaleTransformForRender.ScaleX;
         Rect oGraphRectangle = this.GraphRectangle;
 
@@ -3367,8 +3359,8 @@ public partial class NodeXLControl : FrameworkElement
 
         dTranslateX = Math.Max(
 
-            -( (oGraphRectangle.Width * dLayoutScale) -
-                dScaleTransformForRenderCenterX) * dRenderScaleMinus1,
+            -(oGraphRectangle.Width - dScaleTransformForRenderCenterX)
+                * dRenderScaleMinus1,
 
             dTranslateX
             );
@@ -3381,8 +3373,8 @@ public partial class NodeXLControl : FrameworkElement
 
         dTranslateY = Math.Max(
 
-            -( (oGraphRectangle.Height * dLayoutScale) -
-                dScaleTransformForRenderCenterY) * dRenderScaleMinus1,
+            -(oGraphRectangle.Height - dScaleTransformForRenderCenterY)
+                * dRenderScaleMinus1,
 
             dTranslateY
             );
@@ -3671,12 +3663,13 @@ public partial class NodeXLControl : FrameworkElement
         }
         else
         {
-            // Do not directly iterate m_oSelectedVertices.Keys here.  Keys may
-            // be removed by SetVertexSelectedState() and you can't modify a
-            // collection while it's being iterated.  this.SelectedVertices
-            // copies the collection to an array.
+            // Do not directly iterate m_oSelectedVertices here.  Keys may be
+            // removed by SetVertexSelectedInternal() and you can't modify a
+            // collection while it's being iterated.  Copy the collection to
+            // an array first.
 
-            foreach (IVertex oSelectedVertex in this.SelectedVertices)
+            foreach ( IVertex oSelectedVertex in
+                m_oSelectedVertices.ToArray() )
             {
                 SetVertexSelectedInternal(oSelectedVertex, false);
             }
@@ -3713,12 +3706,12 @@ public partial class NodeXLControl : FrameworkElement
         }
         else
         {
-            // Do not directly iterate m_oSelectedEdges.Keys here.  Keys may be
+            // Do not directly iterate m_oSelectedEdges here.  Keys may be
             // removed by SetEdgeSelectedInternal() and you can't modify a
-            // collection while it's being iterated.  this.SelectedEdges copies
-            // the collection to an array.
+            // collection while it's being iterated.  Copy the collection to
+            // an array first.
 
-            foreach (IEdge oSelectedEdge in this.SelectedEdges)
+            foreach ( IEdge oSelectedEdge in m_oSelectedEdges.ToArray() )
             {
                 SetEdgeSelectedInternal(oSelectedEdge, false);
             }
@@ -3755,11 +3748,11 @@ public partial class NodeXLControl : FrameworkElement
 
         MarkVertexOrEdgeAsSelected(oVertex, bSelected);
 
-        // Modify the dictionary of selected vertices.
+        // Modify the collection of selected vertices.
 
         if (bSelected)
         {
-            m_oSelectedVertices[oVertex] = 0;
+            m_oSelectedVertices.Add(oVertex);
         }
         else
         {
@@ -3803,11 +3796,11 @@ public partial class NodeXLControl : FrameworkElement
 
         MarkVertexOrEdgeAsSelected(oEdge, bSelected);
 
-        // Modify the dictionary of selected edges.
+        // Modify the collection of selected edges.
 
         if (bSelected)
         {
-            m_oSelectedEdges[oEdge] = 0;
+            m_oSelectedEdges.Add(oEdge);
         }
         else
         {
@@ -3981,6 +3974,7 @@ public partial class NodeXLControl : FrameworkElement
         Point oMouseLocation;
 
         if ( !DragIsInProgress(m_oVerticesBeingDragged, oMouseEventArgs,
+            new MouseButtonState[]{oMouseEventArgs.LeftButton},
             out oMouseLocation) )
         {
             return;
@@ -4046,7 +4040,7 @@ public partial class NodeXLControl : FrameworkElement
             // m_oVerticesBeingDragged may have moved the selected vertices, so
             // redraw the graph.
 
-            DrawGraph();
+            DrawGraphAsync();
         }
 
         m_oVerticesBeingDragged = null;
@@ -4076,6 +4070,7 @@ public partial class NodeXLControl : FrameworkElement
         Point oMouseLocation;
 
         if ( !DragIsInProgress(m_oMarqueeBeingDragged, oMouseEventArgs,
+            new MouseButtonState[]{oMouseEventArgs.LeftButton},
             out oMouseLocation) )
         {
             return;
@@ -4161,8 +4156,12 @@ public partial class NodeXLControl : FrameworkElement
 
         Point oMouseLocation;
 
-        if ( !DragIsInProgress(m_oTranslationBeingDragged,
-            oMouseEventArgs, out oMouseLocation) )
+        if ( !DragIsInProgress(m_oTranslationBeingDragged, oMouseEventArgs,
+
+            new MouseButtonState[]{oMouseEventArgs.LeftButton,
+                oMouseEventArgs.MiddleButton},
+
+            out oMouseLocation) )
         {
             return;
         }
@@ -4269,66 +4268,6 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: ControlKeyIsPressed()
-    //
-    /// <summary>
-    /// Determines whether a control key is pressed.
-    /// </summary>
-    ///
-    /// <returns>
-    /// true if a control key is pressed.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    ControlKeyIsPressed()
-    {
-        AssertValid();
-
-        return ( (Keyboard.Modifiers & ModifierKeys.Control) != 0 );
-    }
-
-    //*************************************************************************
-    //  Method: ShiftKeyIsPressed()
-    //
-    /// <summary>
-    /// Determines whether a shift key is pressed.
-    /// </summary>
-    ///
-    /// <returns>
-    /// true if a shift key is pressed.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    ShiftKeyIsPressed()
-    {
-        AssertValid();
-
-        return ( (Keyboard.Modifiers & ModifierKeys.Shift) != 0 );
-    }
-
-    //*************************************************************************
-    //  Method: AltKeyIsPressed()
-    //
-    /// <summary>
-    /// Determines whether an Alt key is pressed.
-    /// </summary>
-    ///
-    /// <returns>
-    /// true if an Alt key is pressed.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    AltKeyIsPressed()
-    {
-        AssertValid();
-
-        return ( (Keyboard.Modifiers & ModifierKeys.Alt) != 0 );
-    }
-
-    //*************************************************************************
     //  Method: EscapeKeyIsPressed()
     //
     /// <summary>
@@ -4349,80 +4288,36 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: TranslationDragKeyIsPressed()
+    //  Method: StartTranslationDrag()
     //
     /// <summary>
-    /// Determines whether the key used to start dragging a translation with
-    /// the mouse is pressed.
+    /// Starts a translation drag operation.
     /// </summary>
     ///
-    /// <returns>
-    /// true if the key is pressed.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TranslationDragKeyIsPressed()
-    {
-        AssertValid();
-
-        return ( Keyboard.IsKeyDown(TranslationDragKey) );
-    }
-
-    //*************************************************************************
-    //  Method: LeftButtonIsPressed()
-    //
-    /// <summary>
-    /// Determines whether the left mouse button is pressed.
-    /// </summary>
-    ///
-    /// <param name="oMouseEventArgs">
-    /// Standard mouse event arguments.
+    /// <param name="oMouseLocation">
+    /// Mouse location, relative to the control.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the left mouse button is pressed.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    LeftButtonIsPressed
+    protected void
+    StartTranslationDrag
     (
-        MouseEventArgs oMouseEventArgs
+        Point oMouseLocation
     )
     {
-        Debug.Assert(oMouseEventArgs != null);
         AssertValid();
 
-        return (oMouseEventArgs.LeftButton == MouseButtonState.Pressed);
-    }
+        // Save the mouse location for use within the MouseMove event.
 
-    //*************************************************************************
-    //  Method: RightButtonIsPressed()
-    //
-    /// <summary>
-    /// Determines whether the right mouse button is pressed.
-    /// </summary>
-    ///
-    /// <param name="oMouseEventArgs">
-    /// Standard mouse event arguments.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the right mouse button is pressed.
-    /// </returns>
-    //*************************************************************************
+        TranslateTransform oTranslateTransform =
+            this.TranslateTransformForRender;
 
-    protected Boolean
-    RightButtonIsPressed
-    (
-        MouseEventArgs oMouseEventArgs
-    )
-    {
-        Debug.Assert(oMouseEventArgs != null);
-        AssertValid();
+        m_oTranslationBeingDragged = new DraggedTranslation(oMouseLocation,
+            this.PointToScreen(oMouseLocation), oTranslateTransform.X,
+            oTranslateTransform.Y);
 
-        return (oMouseEventArgs.RightButton == MouseButtonState.Pressed);
+        this.Cursor = Cursors.Hand;
+        Mouse.Capture(this);
     }
 
     //*************************************************************************
@@ -4441,6 +4336,11 @@ public partial class NodeXLControl : FrameworkElement
     /// Standard mouse event arguments.
     /// </param>
     ///
+    /// <param name="aeMouseButtonStates">
+    /// Array of button states, one for each button that can be pressed to
+    /// allow the drag to be considered in progress.
+    /// </param>
+    ///
     /// <param name="oMouseLocation">
     /// Where the mouse location get stored if true is returned.
     /// </param>
@@ -4455,22 +4355,31 @@ public partial class NodeXLControl : FrameworkElement
     (
         MouseDrag oMouseDrag,
         MouseEventArgs oMouseEventArgs,
+        MouseButtonState [] aeMouseButtonStates,
         out Point oMouseLocation
     )
     {
         Debug.Assert(oMouseEventArgs != null);
+        Debug.Assert(aeMouseButtonStates != null);
+        Debug.Assert(aeMouseButtonStates.Length > 0);
         AssertValid();
 
         oMouseLocation = new Point();
 
-        if ( oMouseDrag == null || !LeftButtonIsPressed(oMouseEventArgs) )
+        if (oMouseDrag != null)
         {
-            return (false);
+            foreach (MouseButtonState eMouseButtonState in aeMouseButtonStates)
+            {
+                if (eMouseButtonState == MouseButtonState.Pressed)
+                {
+                    oMouseLocation = oMouseEventArgs.GetPosition(this);
+
+                    return ( oMouseDrag.OnMouseMove(oMouseLocation) );
+                }
+            }
         }
 
-        oMouseLocation = oMouseEventArgs.GetPosition(this);
-
-        return ( oMouseDrag.OnMouseMove(oMouseLocation) );
+        return (false);
     }
 
     //*************************************************************************
@@ -4553,11 +4462,11 @@ public partial class NodeXLControl : FrameworkElement
 
         String sResourceName = null;
 
-        if ( this.ShiftKeyIsPressed() )
+        if (m_eMouseMode == MouseMode.AddToSelection)
         {
             sResourceName = "MarqueeAdd.cur";
         }
-        else if ( this.AltKeyIsPressed() )
+        else if (m_eMouseMode == MouseMode.SubtractFromSelection)
         {
             sResourceName = "MarqueeSubtract.cur";
         }
@@ -4592,28 +4501,28 @@ public partial class NodeXLControl : FrameworkElement
         // Dictionaries are used instead of lists or arrays to prevent the same
         // vertex or edge from being added twice.
 
-        Dictionary<IVertex, Byte> oVerticesToSelect;
-        Dictionary<IEdge, Byte> oEdgesToSelect;
+        HashSet<IVertex> oVerticesToSelect;
+        HashSet<IEdge> oEdgesToSelect;
 
-        Boolean bShiftKeyIsPressed = ShiftKeyIsPressed();
-        Boolean bAltKeyIsPressed = AltKeyIsPressed();
+        Boolean bAddToSelection = (m_eMouseMode == MouseMode.AddToSelection);
 
-        if (bShiftKeyIsPressed || bAltKeyIsPressed)
+        Boolean bSubtractFromSelection =
+            (m_eMouseMode == MouseMode.SubtractFromSelection);
+
+        if (bAddToSelection || bSubtractFromSelection)
         {
             // The new selection gets added to or subtracted from the old
             // selection.
 
-            oVerticesToSelect =
-                new Dictionary<IVertex, Byte>(m_oSelectedVertices);
-
-            oEdgesToSelect = new Dictionary<IEdge, Byte>(m_oSelectedEdges);
+            oVerticesToSelect = new HashSet<IVertex>(m_oSelectedVertices);
+            oEdgesToSelect = new HashSet<IEdge>(m_oSelectedEdges);
         }
         else
         {
             // The new selection replaces the old selection.
 
-            oVerticesToSelect = new Dictionary<IVertex, Byte>();
-            oEdgesToSelect = new Dictionary<IEdge, Byte>();
+            oVerticesToSelect = new HashSet<IVertex>();
+            oEdgesToSelect = new HashSet<IEdge>();
         }
 
         // Loop through the vertices that intersect the marquee rectangle.
@@ -4623,41 +4532,112 @@ public partial class NodeXLControl : FrameworkElement
         foreach ( IVertex oMarqueedVertex in
             m_oGraphDrawer.GetVerticesFromRectangle(oMarqueeRectangle) )
         {
-            if (bAltKeyIsPressed)
+            if (bSubtractFromSelection)
             {
                 oVerticesToSelect.Remove(oMarqueedVertex);
             }
             else
             {
-                oVerticesToSelect[oMarqueedVertex] = 0;
+                oVerticesToSelect.Add(oMarqueedVertex);
             }
 
-            if (m_eMouseSelectionMode ==
-                MouseSelectionMode.SelectVertexAndIncidentEdges)
+            if (m_bMouseAlsoSelectsIncidentEdges)
             {
                 // Also loop through the vertex's incident edges.
 
                 foreach (IEdge oEdge in oMarqueedVertex.IncidentEdges)
                 {
-                    if (bAltKeyIsPressed)
+                    if (bSubtractFromSelection)
                     {
                         oEdgesToSelect.Remove(oEdge);
                     }
                     else
                     {
-                        oEdgesToSelect[oEdge] = 0;
+                        oEdgesToSelect.Add(oEdge);
                     }
                 }
             }
         }
 
-        SetSelected(
-            CollectionUtil.DictionaryKeysToArray<IVertex, Byte>(
-                oVerticesToSelect),
+        SetSelected(oVerticesToSelect, oEdgesToSelect);
+    }
 
-            CollectionUtil.DictionaryKeysToArray<IEdge, Byte>(
-                oEdgesToSelect)
-            );
+    //*************************************************************************
+    //  Method: ZoomViaMouse()
+    //
+    /// <summary>
+    /// Zooms the graph via the mouse.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// The MouseEventArgs that contains the event data.
+    /// </param>
+    ///
+    /// <param name="dGraphZoomFactor">
+    /// Factor by which to multiply the current value of <see
+    /// cref="GraphZoom" />.  Must be greater than zero.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ZoomViaMouse
+    (
+        MouseEventArgs e,
+        Double dGraphZoomFactor
+    )
+    {
+        Debug.Assert(e != null);
+        Debug.Assert(dGraphZoomFactor > 0);
+        AssertValid();
+
+        // Do nothing if the drawing isn't in a stable state or a drag is in
+        // progress.
+
+        if ( this.IsDrawing || DragMightBeInProgress() )
+        {
+            return;
+        }
+
+        Double dGraphZoom = this.GraphZoom;
+
+        Double dNewGraphZoom = dGraphZoom * dGraphZoomFactor;
+        dNewGraphZoom = Math.Min(dNewGraphZoom, MaximumGraphZoom);
+        dNewGraphZoom = Math.Max(dNewGraphZoom, MinimumGraphZoom);
+
+        if (dNewGraphZoom == dGraphZoom)
+        {
+            return;
+        }
+
+        // Set the center of the zoom to the mouse position.  Note that the
+        // mouse position is affected by the ScaleTransform used for this
+        // control's layout transform and needs to be adjusted for this.
+
+        Point oMousePosition = e.GetPosition(this);
+
+        ScaleTransform oScaleTransformForRender = this.ScaleTransformForRender;
+        oScaleTransformForRender.CenterX = oMousePosition.X;
+        oScaleTransformForRender.CenterY = oMousePosition.Y;
+
+        // Zoom the graph.
+
+        SetGraphZoom(dNewGraphZoom, false);
+
+        // That caused the point under the mouse to shift.  Adjust the
+        // translation to shift the point back.
+
+        Point oNewMousePosition = e.GetPosition(this);
+
+        TranslateTransform oTranslateTransformForRender =
+            this.TranslateTransformForRender;
+
+        oTranslateTransformForRender.X +=
+            (oNewMousePosition.X - oMousePosition.X) * dNewGraphZoom;
+
+        oTranslateTransformForRender.Y +=
+            (oNewMousePosition.Y - oMousePosition.Y) * dNewGraphZoom;
+
+        LimitTranslation();
     }
 
     //*************************************************************************
@@ -4903,19 +4883,33 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: FireGraphDrawn()
+    //  Method: FireDrawGraphCompleted()
     //
     /// <summary>
-    /// Fires the <see cref="GraphDrawn" /> event if appropriate.
+    /// Fires the <see cref="DrawGraphCompleted" /> event if appropriate.
     /// </summary>
+    ///
+    /// <param name="oAsyncCompletedEventArgs">
+    /// Standard event argument.
+    /// </param>
     //*************************************************************************
 
     protected void
-    FireGraphDrawn()
+    FireDrawGraphCompleted
+    (
+        AsyncCompletedEventArgs oAsyncCompletedEventArgs
+    )
     {
+        Debug.Assert(oAsyncCompletedEventArgs != null);
         AssertValid();
 
-        EventUtil.FireEvent(this, this.GraphDrawn);
+        AsyncCompletedEventHandler oDrawGraphCompleted =
+            this.DrawGraphCompleted;
+
+        if (oDrawGraphCompleted != null)
+        {
+            oDrawGraphCompleted(this, oAsyncCompletedEventArgs);
+        }
     }
 
     //*************************************************************************
@@ -5125,14 +5119,19 @@ public partial class NodeXLControl : FrameworkElement
             //
             // This has been tested on both 96 and 120 DPI screen resolutions.
 
-            Point oMousePosition = Mouse.GetPosition(this);
-
             Double dCursorHeight = SystemParameters.CursorHeight * 0.75;
 
+            // Note that Mouse.GetPosition() retrieves a position that is
+            // relative to the control's origin, which won't be the viewport
+            // origin if the control is zoomed or panned by the render
+            // transform.  We want a position relative to the viewpoint origin,
+            // so transform the returned point.
+
+            Point oMousePosition = this.RenderTransform.Transform(
+                Mouse.GetPosition(this) );
+
             Rect oToolTipRectangle = new Rect(
-
                 new Point(oMousePosition.X, oMousePosition.Y + dCursorHeight),
-
                 m_oVertexToolTip.DesiredSize);
 
             // Limit the tooltip to the graph rectangle.
@@ -5151,6 +5150,17 @@ public partial class NodeXLControl : FrameworkElement
                     oMousePosition.Y - oBoundedToolTipRectangle.Bottom
                     );
             }
+
+            // The position has been computed relative to the viewport origin.
+            // Transform it to be relative to the control's origin.
+
+            oBoundedToolTipRectangle = new Rect(
+
+                this.RenderTransform.Inverse.Transform(
+                    oBoundedToolTipRectangle.Location),
+
+                    oBoundedToolTipRectangle.Size
+                );
 
             m_oVertexToolTip.Arrange(oBoundedToolTipRectangle);
         }
@@ -5313,16 +5323,11 @@ public partial class NodeXLControl : FrameworkElement
 
         if ( DragMightBeInProgress() )
         {
-            // This can occur if the user clicks the right button while
-            // dragging with the left button.
+            // This can occur if the user clicks another button while dragging
+            // with the left button.
 
             return;
         }
-
-        // Some drag operations can be cancelled with the Escape key, so
-        // capture keyboard focus.
-
-        Keyboard.Focus(this);
 
         // Check whether the user clicked on a vertex.
 
@@ -5334,122 +5339,273 @@ public partial class NodeXLControl : FrameworkElement
 
         FireGraphMouseDown(e, oClickedVertex);
 
-        Boolean bControlKeyIsPressed = ControlKeyIsPressed();
-        Boolean bRightButtonIsPressed = RightButtonIsPressed(e);
-
-        ScaleTransform oScaleTransformForRender = this.ScaleTransformForRender;
-
-        if ( !bRightButtonIsPressed && TranslationDragKeyIsPressed() )
+        if (bVertexClicked)
         {
-            // The user might want to translate the graph by dragging with the
-            // mouse.  Save the mouse location for use within the MouseMove
-            // event.
+            FireVertexClick(oClickedVertex);
 
-            TranslateTransform oTranslateTransform =
-                this.TranslateTransformForRender;
+            if (e.ClickCount == 2)
+            {
+                FireVertexDoubleClick(oClickedVertex);
+            }
+        }
 
-            m_oTranslationBeingDragged = new DraggedTranslation(
-                oMouseLocation, this.PointToScreen(oMouseLocation),
-                oTranslateTransform.X, oTranslateTransform.Y);
+        // Some drag operations can be cancelled with the Escape key, so
+        // capture keyboard focus.
 
-            this.Cursor = Cursors.Hand;
-            Mouse.Capture(this);
+        Keyboard.Focus(this);
 
+        if (m_eMouseMode == MouseMode.DoNothing)
+        {
             return;
         }
 
-        if (!bVertexClicked)
+        switch (e.ChangedButton)
         {
-            // The user clicked on part of the graph not covered by a
-            // vertex.
+            case MouseButton.Left:
 
-            if (m_eMouseSelectionMode != MouseSelectionMode.SelectNothing)
+                OnMouseDownLeft(e, oMouseLocation, oClickedVertex);
+                break;
+
+            case MouseButton.Middle:
+
+                OnMouseDownMiddle(oMouseLocation);
+                break;
+
+            case MouseButton.Right:
+
+                OnMouseDownRight(oMouseLocation, oClickedVertex);
+                break;
+
+            default:
+
+                break;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: OnMouseDownLeft()
+    //
+    /// <summary>
+    /// Handles the MouseDown event for the left mouse button.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// The MouseButtonEventArgs that contains the event data.
+    /// </param>
+    ///
+    /// <param name="oMouseLocation">
+    /// Mouse location, relative to the control.
+    /// </param>
+    ///
+    /// <param name="oClickedVertex">
+    /// The vertex that was clicked, or null if an empty area of the graph was
+    /// clicked.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnMouseDownLeft
+    (
+        MouseButtonEventArgs e,
+        Point oMouseLocation,
+        IVertex oClickedVertex
+    )
+    {
+        AssertValid();
+
+        if ( m_eMouseMode == MouseMode.Translate ||
+            Keyboard.IsKeyDown(Key.Space) )
+        {
+            // The user might want to translate the zoomed graph by dragging
+            // with the mouse.
+
+            StartTranslationDrag(oMouseLocation);
+            return;
+        }
+
+        if (m_eMouseMode == MouseMode.ZoomIn)
+        {
+            ZoomViaMouse(e, MouseLeftClickZoomFactor);
+            return;
+        }
+
+        if (m_eMouseMode == MouseMode.ZoomOut)
+        {
+            ZoomViaMouse(e, 1.0 / MouseLeftClickZoomFactor);
+            return;
+        }
+
+        if (oClickedVertex == null)
+        {
+            // The user clicked on part of the graph not covered by a vertex.
+
+            if (m_eMouseMode == MouseMode.Select)
             {
-                Boolean bShiftKeyIsPressed = ShiftKeyIsPressed();
-                Boolean bAltKeyIsPressed = AltKeyIsPressed();
+                DeselectAll();
+            }
 
-                if (!bShiftKeyIsPressed && !bControlKeyIsPressed &&
-                    !bAltKeyIsPressed && !bRightButtonIsPressed)
-                {
-                    DeselectAll();
-                }
+            if (this.Graph.Vertices.Count > 0)
+            {
+                // The user might want to drag a marquee.  Save the mouse
+                // location for use within the MouseMove event.
 
-                if (this.Graph.Vertices.Count > 0)
-                {
-                    // The user might want to drag a marquee.  Save the mouse
-                    // location for use within the MouseMove event.
+                m_oMarqueeBeingDragged = new DraggedMarquee(oMouseLocation,
+                    this.GraphRectangle, m_oAsyncLayout.Margin);
 
-                    m_oMarqueeBeingDragged = new DraggedMarquee(
-                        oMouseLocation, this.GraphRectangle,
-                        m_oAsyncLayout.Margin);
-
-                    this.Cursor = GetCursorForMarqueeDrag();
-                    Mouse.Capture(this);
-                }
+                this.Cursor = GetCursorForMarqueeDrag();
+                Mouse.Capture(this);
             }
 
             return;
         }
 
-        // The user clicked on a vertex.  Fire VertexClick and
-        // VertexDoubleClick events if appropriate.
+        // If the control key is pressed, clicking a vertex should invert its
+        // selected state.  Otherwise...
+        //
+        // In Select mode, clicking an unselected vertex should clear the
+        // selection and then select the vertex.  Clicking a selected vertex
+        // should leave the vertex selected.
+        //
+        // In AddToSelection mode, clicking a vertex should select it.
+        //
+        // In SubtractFromSelection mode, clicking a vertex should deselect
+        // it.
 
-        FireVertexClick(oClickedVertex);
+        Boolean bClickedVertexIsSelected =
+            oClickedVertex.ContainsKey(ReservedMetadataKeys.IsSelected);
 
-        if (e.ClickCount == 2)
+        Boolean bSelectClickedVertex = true;
+
+        if ( (Keyboard.Modifiers & ModifierKeys.Control) != 0 )
         {
-            FireVertexDoubleClick(oClickedVertex);
+            bSelectClickedVertex = !bClickedVertexIsSelected;
         }
-
-        if (m_eMouseSelectionMode != MouseSelectionMode.SelectNothing)
+        else if (m_eMouseMode == MouseMode.Select)
         {
-            Boolean bSelectVertex = true;
-
-            if (bControlKeyIsPressed)
+            if (!bClickedVertexIsSelected)
             {
-                // Toggle the vertex's selected state.
-
-                bSelectVertex = !oClickedVertex.ContainsKey(
-                    ReservedMetadataKeys.IsSelected);
-            }
-            else if (! (bRightButtonIsPressed ||
-                oClickedVertex.ContainsKey(ReservedMetadataKeys.IsSelected) ) )
-            {
-                // Clear the selection.
-
                 SetAllVerticesSelected(false);
                 SetAllEdgesSelected(false);
-
-                Debug.Assert(m_oSelectedVertices.Count == 0);
-                Debug.Assert(m_oSelectedEdges.Count == 0);
             }
-
-            // Select or deselect the clicked vertex and possibly its incident
-            // edges.
-
-            SetVertexSelected(oClickedVertex, bSelectVertex,
-                m_eMouseSelectionMode ==
-                    MouseSelectionMode.SelectVertexAndIncidentEdges
-                );
+        }
+        else if (m_eMouseMode == MouseMode.SubtractFromSelection)
+        {
+            bSelectClickedVertex = false;
         }
 
-        if (m_bAllowVertexDrag && LeftButtonIsPressed(e) &&
-            m_oSelectedVertices.Count > 0)
+        SetVertexSelected(oClickedVertex, bSelectClickedVertex,
+            m_bMouseAlsoSelectsIncidentEdges);
+
+        if (
+            m_bAllowVertexDrag
+            &&
+            (m_eMouseMode == MouseMode.Select ||
+                m_eMouseMode == MouseMode.AddToSelection)
+            &&
+            m_oSelectedVertices.Count > 0
+            )
         {
             // The user might want to drag the selected vertices.  Save the
             // mouse location for use within the MouseMove event.
 
             m_oVerticesBeingDragged = new DraggedVertices(
-
-                CollectionUtil.CollectionToArray<IVertex>(
-                    m_oSelectedVertices.Keys),
-
-                oMouseLocation, this.GraphRectangle,
-                m_oAsyncLayout.Margin);
+                m_oSelectedVertices.ToArray(), oMouseLocation,
+                this.GraphRectangle, m_oAsyncLayout.Margin);
 
             this.Cursor = Cursors.ScrollAll;
             Mouse.Capture(this);
         }
+    }
+
+    //*************************************************************************
+    //  Method: OnMouseDownMiddle()
+    //
+    /// <summary>
+    /// Handles the MouseDown event for the middle mouse button.
+    /// </summary>
+    ///
+    /// <param name="oMouseLocation">
+    /// Mouse location, relative to the control.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnMouseDownMiddle
+    (
+        Point oMouseLocation
+    )
+    {
+        AssertValid();
+
+        // The user might want to translate the zoomed graph by dragging with
+        // the mouse.
+
+        StartTranslationDrag(oMouseLocation);
+    }
+
+    //*************************************************************************
+    //  Method: OnMouseDownRight()
+    //
+    /// <summary>
+    /// Handles the MouseDown event for the right mouse button.
+    /// </summary>
+    ///
+    /// <param name="oMouseLocation">
+    /// Mouse location, relative to the control.
+    /// </param>
+    ///
+    /// <param name="oClickedVertex">
+    /// The vertex that was clicked, or null if an empty area of the graph was
+    /// clicked.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnMouseDownRight
+    (
+        Point oMouseLocation,
+        IVertex oClickedVertex
+    )
+    {
+        AssertValid();
+
+        if (oClickedVertex == null)
+        {
+            // Right-clicking a part of the graph not covered by a vertex
+            // should do nothing.
+
+            return;
+        }
+
+        switch (m_eMouseMode)
+        {
+            case MouseMode.Select:
+            case MouseMode.AddToSelection:
+
+                break;
+
+            default:
+
+                return;
+        }
+
+        // In Select mode, right-clicking an unselected vertex should clear the
+        // selection and then select the vertex.
+        //
+        // In AddToSelection mode, right-clicking an unselected vertex should
+        // select the vertex.
+
+        if (
+            m_eMouseMode == MouseMode.Select &&
+            !oClickedVertex.ContainsKey(ReservedMetadataKeys.IsSelected)
+            )
+        {
+            SetAllVerticesSelected(false);
+            SetAllEdgesSelected(false);
+        }
+
+        SetVertexSelected(oClickedVertex, true,
+            m_bMouseAlsoSelectsIncidentEdges);
     }
 
     //*************************************************************************
@@ -5589,69 +5745,15 @@ public partial class NodeXLControl : FrameworkElement
     {
         AssertValid();
 
+        if (m_eMouseMode == MouseMode.DoNothing)
+        {
+            return;
+        }
+
+        ZoomViaMouse(e, e.Delta > 0 ?
+            MouseWheelZoomFactor : 1 / MouseWheelZoomFactor);
+
         e.Handled = true;
-
-        // Do nothing if the drawing isn't in a stable state or a drag is in
-        // progress.
-
-        if ( this.IsDrawing || DragMightBeInProgress() )
-        {
-            return;
-        }
-
-        Double dGraphZoom = this.GraphZoom;
-        Double dNewGraphZoom = dGraphZoom;
-        Int32 iWheelDelta = e.Delta;
-
-        if (iWheelDelta > 0)
-        {
-            dNewGraphZoom = Math.Min(
-                dGraphZoom * GraphZoomFactor,
-                MaximumGraphZoom);
-        }
-        else
-        {
-            dNewGraphZoom = Math.Max(
-                dGraphZoom / GraphZoomFactor,
-                MinimumGraphZoom);
-        }
-
-        if (dNewGraphZoom == dGraphZoom)
-        {
-            return;
-        }
-
-        // Set the center of the zoom to the mouse position.  Note that the
-        // mouse position is affected by the ScaleTransform used for this
-        // control's layout transform and needs to be adjusted for this.
-
-        Point oMousePosition = e.GetPosition(this);
-
-        ScaleTransform oScaleTransformForLayout = this.ScaleTransformForLayout;
-        Double dScaleForLayout = oScaleTransformForLayout.ScaleX;
-        ScaleTransform oScaleTransformForRender = this.ScaleTransformForRender;
-        oScaleTransformForRender.CenterX = oMousePosition.X * dScaleForLayout;
-        oScaleTransformForRender.CenterY = oMousePosition.Y * dScaleForLayout;
-
-        // Zoom the graph.
-
-        SetGraphZoom(dNewGraphZoom, false);
-
-        // That caused the point under the mouse to shift.  Adjust the
-        // translation to shift the point back.
-
-        Point oNewMousePosition = e.GetPosition(this);
-
-        TranslateTransform oTranslateTransformForRender =
-            this.TranslateTransformForRender;
-
-        oTranslateTransformForRender.X += dScaleForLayout *
-            (oNewMousePosition.X - oMousePosition.X) * dNewGraphZoom;
-
-        oTranslateTransformForRender.Y += dScaleForLayout *
-            (oNewMousePosition.Y - oMousePosition.Y) * dNewGraphZoom;
-
-        LimitTranslation();
     }
 
     //*************************************************************************
@@ -5724,25 +5826,20 @@ public partial class NodeXLControl : FrameworkElement
         Debug.WriteLine("NodeXLControl: AsyncLayout_LayOutGraphCompleted()");
         #endif
 
-        FireGraphDrawn();
-
-        if (oAsyncCompletedEventArgs.Error != null)
-        {
-            throw new InvalidOperationException(
-                "A problem occurred while laying out the graph.",
-                oAsyncCompletedEventArgs.Error);
-        }
-        else if (oAsyncCompletedEventArgs.Cancelled)
-        {
-        }
-        else
+        if (oAsyncCompletedEventArgs.Error == null)
         {
             // The asynchronous layout has completed and now the graph needs to
             // be drawn.
+
+            m_eLayoutState = LayoutState.LayoutCompleted;
+            LayOutOrDrawGraph();
+        }
+        else
+        {
+            m_eLayoutState = LayoutState.Stable;
         }
 
-        m_eLayoutState = LayoutState.LayoutCompleted;
-        LayOutOrDrawGraph();
+        FireDrawGraphCompleted(oAsyncCompletedEventArgs);
     }
 
     //*************************************************************************
@@ -5820,6 +5917,12 @@ public partial class NodeXLControl : FrameworkElement
                 (String)oVertexToolTipAsObject);
         }
 
+        // The tooltip shouldn't zoom.  Compensate for a zoomed graph by
+        // scaling the tooltip with the graph zoom's inverse.
+
+        Double dScale = 1.0 / this.ScaleTransformForRender.ScaleX;
+        m_oVertexToolTip.RenderTransform = new ScaleTransform(dScale, dScale);
+
         m_oGraphDrawer.AddVisualOnTopOfGraph(m_oVertexToolTip);
 
         // If this isn't called, MeasureOverride() may not be called and
@@ -5881,7 +5984,8 @@ public partial class NodeXLControl : FrameworkElement
         Debug.Assert(m_oLastLayoutContext != null);
         // m_oLastGraphDrawingContext
         // m_eLayoutState
-        // m_eMouseSelectionMode
+        // m_eMouseMode
+        // m_bMouseAlsoSelectsIncidentEdges
         // m_bAllowVertexDrag
         // m_oVerticesBeingDragged
         // m_oMarqueeBeingDragged
@@ -5902,17 +6006,17 @@ public partial class NodeXLControl : FrameworkElement
 
     /// <summary>
     /// Minimum value of the <see cref="GraphScale" /> property.  The value is
-    /// 1.0.
+    /// 0.1.
     /// </summary>
 
-    public const Double MinimumGraphScale = 1.0;
+    public const Double MinimumGraphScale = GraphDrawer.MinimumGraphScale;
 
     /// <summary>
     /// Maximum value of the <see cref="GraphScale" /> property.  The value is
-    /// 10.0.
+    /// 1.0.
     /// </summary>
 
-    public const Double MaximumGraphScale = 10.0;
+    public const Double MaximumGraphScale = GraphDrawer.MaximumGraphScale;
 
     /// <summary>
     /// Minimum value of the <see cref="GraphZoom" /> property.  The value is
@@ -5933,13 +6037,13 @@ public partial class NodeXLControl : FrameworkElement
     //  Protected constants
     //*************************************************************************
 
-    /// Key the user must hold down to translate the graph with the mouse.
+    /// Zoom factor to use when the user zooms in with a mouse click.
 
-    protected const Key TranslationDragKey = Key.Space;
+    protected const Double MouseLeftClickZoomFactor = 1.50;
 
-    /// Factor used by OnMouseWheel() to compute a new zoom value.
+    /// Zoom factor to use when the user zooms in with the mouse wheel.
 
-    protected const Double GraphZoomFactor = 1.10;
+    protected const Double MouseWheelZoomFactor = 1.10;
 
 
     //*************************************************************************
@@ -5971,9 +6075,14 @@ public partial class NodeXLControl : FrameworkElement
 
     protected LayoutState m_eLayoutState;
 
-    /// Determines what gets selected when a vertex is clicked with the mouse.
+    /// Determines how the mouse can be used to interact with the graph.
 
-    protected MouseSelectionMode m_eMouseSelectionMode;
+    protected MouseMode m_eMouseMode;
+
+    /// true if selecting or deselecting a vertex with the mouse also selects
+    /// or deselects its incident edges.
+
+    protected Boolean m_bMouseAlsoSelectsIncidentEdges;
 
     /// true if a vertex can be moved by dragging it with the mouse.
 
@@ -5994,13 +6103,13 @@ public partial class NodeXLControl : FrameworkElement
 
     protected DraggedTranslation m_oTranslationBeingDragged;
 
-    /// Selected vertices and edges.  Dictionaries are used instead of lists or
+    /// Selected vertices and edges.  HashSets are used instead of lists or
     /// arrays to prevent the same vertex or edge from being added twice.  The
-    /// keys are IVertex or IEdge and the values aren't used.
+    /// keys are IVertex or IEdge.
 
-    Dictionary<IVertex, Byte> m_oSelectedVertices;
+    HashSet<IVertex> m_oSelectedVertices;
     ///
-    Dictionary<IEdge, Byte> m_oSelectedEdges;
+    HashSet<IEdge> m_oSelectedEdges;
 
     /// true to show vertex tooltips.
 

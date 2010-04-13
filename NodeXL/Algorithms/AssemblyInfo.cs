@@ -1,3 +1,4 @@
+﻿
 
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
@@ -14,7 +15,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft Research")]
 [assembly: AssemblyProduct("Microsoft NodeXL")]
-[assembly: AssemblyCopyright("Copyright ┬⌐  2010 Microsoft Corporation")]
+[assembly: AssemblyCopyright("Copyright ©  2010 Microsoft Corporation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]     
 
@@ -29,5 +30,5 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.0.1.113")]
+[assembly: AssemblyVersion("1.0.1.121")]
 

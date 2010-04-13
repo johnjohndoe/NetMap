@@ -193,6 +193,10 @@ public class DrawerBase : VisualizationBase
     /// The pen thickness.
     /// </param>
     ///
+    /// <param name="oDashStyle">
+    /// The pen's dash style.
+    /// </param>
+    ///
     /// <returns>
     /// A new frozen Pen.
     /// </returns>
@@ -202,15 +206,18 @@ public class DrawerBase : VisualizationBase
     CreateFrozenPen
     (
         Brush oBrush,
-        Double dThickness
+        Double dThickness,
+        DashStyle oDashStyle
     )
     {
         Debug.Assert(oBrush != null);
         Debug.Assert(dThickness > 0);
+        Debug.Assert(oDashStyle != null);
         // AssertValid();
 
         Pen oPen = new Pen(oBrush, dThickness);
-
+        oPen.DashStyle = oDashStyle;
+        oPen.DashCap = PenLineCap.Flat;
         WpfGraphicsUtil.FreezeIfFreezable(oPen);
 
         return (oPen);

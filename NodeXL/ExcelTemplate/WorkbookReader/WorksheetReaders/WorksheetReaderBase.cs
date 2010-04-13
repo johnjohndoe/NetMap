@@ -3,12 +3,10 @@
 
 using System;
 using System.Drawing;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.NodeXL.Core;
-using Microsoft.NodeXL.Layouts;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -117,41 +115,50 @@ public class WorksheetReaderBase : NodeXLBase
     //  Method: FillIDColumn()
     //
     /// <summary>
-    /// Fills part of a table column with a sequence of unique IDs.
+    /// Fills the ID column in a a table with a sequence of unique IDs.
     /// </summary>
     ///
     /// <param name="oTable">
-    /// Table containing the ID column.
+    /// Table containing the ID column to fill.
     /// </param>
     ///
-    /// <param name="iIDColumnIndex">
-    /// One-based index of the table column that contains unique IDs, or
-    /// NoSuchColumn if there is no such column.  In the latter case, this
-    /// method does nothing.
-    /// </param>
+    /// <remarks>
+    /// If the table has no ID column, which is a column named
+    /// CommonTableColumnNames.ID, this method does nothing.
     ///
-    /// <param name="oSubrange">
-    /// Subrange of the table that encompasses the rows within the ID column
-    /// that should be filled in.  Can't contain multiple areas.
-    /// </param>
+    /// <para>
+    /// Filtered rows are not filled.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     protected void
     FillIDColumn
     (
-        ListObject oTable,
-        Int32 iIDColumnIndex,
-        Range oSubrange
+        ListObject oTable
     )
     {
         Debug.Assert(oTable != null);
-        Debug.Assert(iIDColumnIndex == NoSuchColumn || iIDColumnIndex >= 1);
-        Debug.Assert(oSubrange != null);
-        Debug.Assert(oSubrange.Areas.Count == 1);
         AssertValid();
 
-        if ( iIDColumnIndex == NoSuchColumn ||
-            ExcelUtil.VisibleTableRangeIsEmpty(oTable) )
+        // Read the range that contains visible data.  If the table is
+        // filtered, the range may contain multiple areas.
+
+        Range oVisibleRange;
+
+        if (
+            !ExcelUtil.TryGetVisibleTableRange(oTable, out oVisibleRange) ||
+            ExcelUtil.VisibleTableRangeIsEmpty(oTable)
+            )
+        {
+            return;
+        }
+
+        Int32 iIDColumnIndex = GetTableColumnIndex(oTable,
+            CommonTableColumnNames.ID, false);
+
+        if (iIDColumnIndex == NoSuchColumn)
         {
             return;
         }
@@ -164,73 +171,64 @@ public class WorksheetReaderBase : NodeXLBase
 
         Worksheet oWorksheet = (Worksheet)oTable.Parent;
 
-        // Get the rows within the ID column that should be filled in.
-
-        Int32 iSubrangeStartRowOneBased = oSubrange.Row;
-        Int32 iRowsInSubrange = oSubrange.Rows.Count;
-        Int32 iTableStartRowOneBased = oTable.Range.Row;
-
-        Range oIDRange = oWorksheet.get_Range(
-
-            oDataBodyRange.Cells[
-                iSubrangeStartRowOneBased - iTableStartRowOneBased,
-                iIDColumnIndex
-                ],
-
-            oDataBodyRange.Cells[
-                iSubrangeStartRowOneBased - iTableStartRowOneBased
-                    + iRowsInSubrange - 1,
-                iIDColumnIndex
-                ]
-            );
-
-        // Use the Excel row numbers as the unique IDs.  Create a one-column
-        // array, then fill it in with the row numbers.
-
-        Int32 iRows = oIDRange.Rows.Count;
-
-        Object [,] aoValues = ExcelUtil.GetSingleColumn2DArray(iRows);
-
-        for (Int32 i = 1; i <= iRows; i++)
+        foreach (Range oArea in oVisibleRange.Areas)
         {
-            aoValues[i, 1] = iSubrangeStartRowOneBased + i - 1;
+            // Get the rows within the ID column that should be filled in.
+
+            Int32 iAreaStartRowOneBased = oArea.Row;
+            Int32 iRowsInArea = oArea.Rows.Count;
+            Int32 iTableStartRowOneBased = oTable.Range.Row;
+
+            Range oIDRange = oWorksheet.get_Range(
+
+                oDataBodyRange.Cells[
+                    iAreaStartRowOneBased - iTableStartRowOneBased,
+                    iIDColumnIndex
+                    ],
+
+                oDataBodyRange.Cells[
+                    iAreaStartRowOneBased - iTableStartRowOneBased
+                        + iRowsInArea - 1,
+                    iIDColumnIndex
+                    ]
+                );
+
+            // Use the Excel row numbers as the unique IDs.  Create a
+            // one-column array, then fill it in with the row numbers.
+
+            Int32 iRows = oIDRange.Rows.Count;
+
+            Object [,] aoValues = ExcelUtil.GetSingleColumn2DArray(iRows);
+
+            for (Int32 i = 1; i <= iRows; i++)
+            {
+                aoValues[i, 1] = iAreaStartRowOneBased + i - 1;
+            }
+
+            oIDRange.Value2 = aoValues;
+
+            #if false
+
+            // Note: Don't use the following clever code to fill in the row
+            // numbers.  On large worksheets, the calculations take forever.
+
+            oIDRange.Value2 = "=ROW()";
+            oIDRange.Value2 = oIDRange.Value2;
+
+            #endif
         }
-
-        oIDRange.Value2 = aoValues;
-
-        #if false
-
-        // Note: Don't use the following clever code to fill in the row
-        // numbers.  On large worksheets, the calculations take forever.
-
-        oIDRange.Value2 = "=ROW()";
-        oIDRange.Value2 = oIDRange.Value2;
-
-        #endif
     }
 
     //*************************************************************************
-    //  Method: CheckForAlpha()
+    //  Method: ReadAlpha()
     //
     /// <summary>
     /// If an alpha has been specified for an edge or vertex, sets the alpha
     /// value on the edge or vertex.
     /// </summary>
     ///
-    /// <param name="oRange">
-    /// Range containing the edge or vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iAlphaColumnOneBased">
-    /// One-based alpha column index to check.
+    /// <param name="oRow">
+    /// Row containing the edge or vertex data.
     /// </param>
     ///
     /// <param name="oEdgeOrVertex">
@@ -243,27 +241,21 @@ public class WorksheetReaderBase : NodeXLBase
     //*************************************************************************
 
     protected Boolean
-    CheckForAlpha
+    ReadAlpha
     (
-        Range oRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iAlphaColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IMetadataProvider oEdgeOrVertex
     )
     {
-        Debug.Assert(oRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iAlphaColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oEdgeOrVertex != null);
 
         AssertValid();
 
         String sString;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues, iRowOneBased,
-            iAlphaColumnOneBased, out sString) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(CommonTableColumnNames.Alpha,
+            out sString) )
         {
             return (false);
         }
@@ -272,8 +264,8 @@ public class WorksheetReaderBase : NodeXLBase
 
         if ( !Single.TryParse(sString, out fAlpha) )
         {
-            Range oInvalidCell =
-                (Range)oRange.Cells[iRowOneBased, iAlphaColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                CommonTableColumnNames.Alpha);
 
             OnWorkbookFormatError( String.Format(
 
@@ -300,27 +292,19 @@ public class WorksheetReaderBase : NodeXLBase
     }
 
     //*************************************************************************
-    //  Method: CheckForColor()
+    //  Method: ReadColor()
     //
     /// <summary>
     /// If a color has been specified for an edge or vertex, sets the edge's
     /// or vertex's color.
     /// </summary>
     ///
-    /// <param name="oRange">
-    /// Range containing the edge or vertex data.
+    /// <param name="oRow">
+    /// Row to check.
     /// </param>
     ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="sColumnName">
+    /// Name of the column to check.
     /// </param>
     ///
     /// <param name="oEdgeOrVertex">
@@ -337,21 +321,17 @@ public class WorksheetReaderBase : NodeXLBase
     //*************************************************************************
 
     protected void
-    CheckForColor
+    ReadColor
     (
-        Range oRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
+        String sColumnName,
         IMetadataProvider oEdgeOrVertex,
         String sColorKey,
         ColorConverter2 oColorConverter2
     )
     {
-        Debug.Assert(oRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
         Debug.Assert(oEdgeOrVertex != null);
         Debug.Assert( !String.IsNullOrEmpty(sColorKey) );
         Debug.Assert(oColorConverter2 != null);
@@ -359,31 +339,26 @@ public class WorksheetReaderBase : NodeXLBase
 
         Color oColor;
 
-        if ( TryGetColor(oRange, aoValues, iRowOneBased, iColumnOneBased,
-                oColorConverter2, out oColor) )
+        if ( TryGetColor(oRow, sColumnName, oColorConverter2, out oColor) )
         {
             oEdgeOrVertex.SetValue(sColorKey, oColor);
         }
     }
 
     //*************************************************************************
-    //  Method: CheckForNonEmptyCell()
+    //  Method: ReadCellAndSetMetadata()
     //
     /// <summary>
     /// If a cell is not empty, sets a metadata value on an edge or vertex to
     /// the cell contents.
     /// </summary>
     ///
-    /// <param name="aoValues">
-    /// Values read from the worksheet.
+    /// <param name="oRow">
+    /// Row to check.
     /// </param>
     ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="sColumnName">
+    /// Name of the column to check.
     /// </param>
     ///
     /// <param name="oEdgeOrVertex">
@@ -400,26 +375,24 @@ public class WorksheetReaderBase : NodeXLBase
     //*************************************************************************
 
     protected Boolean
-    CheckForNonEmptyCell
+    ReadCellAndSetMetadata
     (
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
+        String sColumnName,
         IMetadataProvider oEdgeOrVertex,
         String sKeyName
     )
     {
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
         Debug.Assert(oEdgeOrVertex != null);
         Debug.Assert( !String.IsNullOrEmpty(sKeyName) );
         AssertValid();
 
         String sNonEmptyString;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues, iRowOneBased,
-            iColumnOneBased, out sNonEmptyString) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(sColumnName,
+            out sNonEmptyString) )
         {
             return (false);
         }
@@ -436,20 +409,12 @@ public class WorksheetReaderBase : NodeXLBase
     /// Attempts to get a color from a worksheet cell.
     /// </summary>
     ///
-    /// <param name="oRange">
-    /// Range to check.
+    /// <param name="oRow">
+    /// Row to check.
     /// </param>
     ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="sColumnName">
+    /// Name of the column to check.
     /// </param>
     ///
     /// <param name="oColorConverter2">
@@ -475,18 +440,14 @@ public class WorksheetReaderBase : NodeXLBase
     protected Boolean
     TryGetColor
     (
-        Range oRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
+        String sColumnName,
         ColorConverter2 oColorConverter2,
         out Color oColor
     )
     {
-        Debug.Assert(oRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
         Debug.Assert(oColorConverter2 != null);
         AssertValid();
 
@@ -494,16 +455,14 @@ public class WorksheetReaderBase : NodeXLBase
 
         String sColor;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iColumnOneBased, out sColor) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(sColumnName, out sColor) )
         {
             return (false);
         }
 
         if ( !oColorConverter2.TryWorkbookToGraph(sColor, out oColor) )
         {
-            Range oInvalidCell =
-                (Range)oRange.Cells[iRowOneBased, iColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(sColumnName);
 
             OnWorkbookFormatError( String.Format(
 
@@ -527,20 +486,12 @@ public class WorksheetReaderBase : NodeXLBase
     /// Attempts to get a vertex shape from a worksheet cell.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="sColumnName">
+    /// Name of the column containing the vertex shape.
     /// </param>
     ///
     /// <param name="eShape">
@@ -552,7 +503,7 @@ public class WorksheetReaderBase : NodeXLBase
     /// </returns>
     ///
     /// <remarks>
-    /// If the specified cell is empty, false is returned.  If the cell
+    /// If the specified shape cell is empty, false is returned.  If the cell
     /// contains a valid vertex shape, the shape gets stored at <paramref
     /// name="eShape" /> and true is returned.  If the cell contains an invalid
     /// shape, a <see cref="WorkbookFormatException" /> is thrown.
@@ -562,25 +513,19 @@ public class WorksheetReaderBase : NodeXLBase
     protected Boolean
     TryGetVertexShape
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
+        String sColumnName,
         out VertexShape eShape
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
         AssertValid();
 
         eShape = VertexShape.Circle;
-
         String sShape;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iColumnOneBased, out sShape) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(sColumnName, out sShape) )
         {
             return (false);
         }
@@ -590,19 +535,7 @@ public class WorksheetReaderBase : NodeXLBase
 
         if ( !oVertexShapeConverter.TryWorkbookToGraph(sShape, out eShape) )
         {
-            Range oInvalidCell =
-                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
-
-            OnWorkbookFormatError( String.Format(
-
-                "The cell {0} contains an invalid shape.  Try selecting from"
-                + " the cell's drop-down list instead."
-                ,
-                ExcelUtil.GetRangeAddress(oInvalidCell)
-                ),
-
-                oInvalidCell
-            );
+            OnWorkbookFormatErrorWithDropDown(oRow, sColumnName, "shape");
         }
 
         return (true);
@@ -616,20 +549,8 @@ public class WorksheetReaderBase : NodeXLBase
     /// Tag to the ID.
     /// </summary>
     ///
-    /// <param name="oRange">
-    /// Range containing the edge or vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iIDColumnOneBased">
-    /// One-based ID column index to check.
+    /// <param name="oRow">
+    /// Row containing the edge or vertex data.
     /// </param>
     ///
     /// <param name="oEdgeOrVertex">
@@ -647,31 +568,25 @@ public class WorksheetReaderBase : NodeXLBase
     protected void
     AddToIDDictionary
     (
-        Range oRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iIDColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IIdentityProvider oEdgeOrVertex,
         Dictionary<Int32, IIdentityProvider> oDictionary
     )
     {
-        Debug.Assert(oRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iIDColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oEdgeOrVertex != null);
         Debug.Assert(oDictionary != null);
         AssertValid();
 
         // Because the derived class fills in its ID column if the column
-        // exists, each cell in the column must be valid.
+        // exists, each cell in the column should be valid.
 
         String sID;
         Int32 iID = Int32.MinValue;
 
         if (
-            ExcelUtil.TryGetNonEmptyStringFromCell(aoValues, iRowOneBased,
-                iIDColumnOneBased, out sID)
+            oRow.TryGetNonEmptyStringFromCell(CommonTableColumnNames.ID,
+                out sID)
             &&
             Int32.TryParse(sID, out iID)
             )
@@ -684,6 +599,98 @@ public class WorksheetReaderBase : NodeXLBase
 
             ( (IMetadataProvider)oEdgeOrVertex ).Tag = iID;
         }
+    }
+
+    //*************************************************************************
+    //  Method: ReadAllColumns()
+    //
+    /// <summary>
+    /// Reads all columns in a table row and stores the cell values as metadata
+    /// on an edge or vertex.
+    /// </summary>
+    ///
+    /// <param name="oExcelTableReader">
+    /// Object that is reading the edge or vertex table.
+    /// </param>
+    ///
+    /// <param name="oRow">
+    /// Row containing the edge or vertex data.
+    /// </param>
+    ///
+    /// <param name="oEdgeOrVertex">
+    /// Edge or vertex to set the metadata on.
+    /// </param>
+    ///
+    /// <param name="oColumnNamesToExclude">
+    /// HashSet of zero or more columns to exclude.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ReadAllColumns
+    (
+        ExcelTableReader oExcelTableReader,
+        ExcelTableReader.ExcelTableRow oRow,
+        IMetadataProvider oEdgeOrVertex,
+        HashSet<String> oColumnNamesToExclude
+    )
+    {
+        Debug.Assert(oExcelTableReader != null);
+        Debug.Assert(oRow != null);
+        Debug.Assert(oEdgeOrVertex != null);
+        Debug.Assert(oColumnNamesToExclude != null);
+        AssertValid();
+
+        foreach (String sColumnName in oExcelTableReader.ColumnNames)
+        {
+            String sValue;
+
+            if ( !oColumnNamesToExclude.Contains(sColumnName) &&
+                oRow.TryGetNonEmptyStringFromCell(sColumnName, out sValue) )
+            {
+                oEdgeOrVertex.SetValue(sColumnName, sValue);
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: FilterColumnNames()
+    //
+    /// <summary>
+    /// Returns an array of table column names with some names filtered out.
+    /// </summary>
+    ///
+    /// <param name="oExcelTableReader">
+    /// Object that is reading the edge or vertex table.
+    /// </param>
+    ///
+    /// <param name="oColumnNamesToExclude">
+    /// HashSet of zero or more columns to exclude.
+    /// </param>
+    //*************************************************************************
+
+    protected String []
+    FilterColumnNames
+    (
+        ExcelTableReader oExcelTableReader,
+        HashSet<String> oColumnNamesToExclude
+    )
+    {
+        Debug.Assert(oExcelTableReader != null);
+        Debug.Assert(oColumnNamesToExclude != null);
+        AssertValid();
+
+        List<String> oFilteredColumnNames = new List<String>();
+
+        foreach (String sColumnName in oExcelTableReader.ColumnNames)
+        {
+            if ( !oColumnNamesToExclude.Contains(sColumnName) )
+            {
+                oFilteredColumnNames.Add(sColumnName);
+            }
+        }
+
+        return ( oFilteredColumnNames.ToArray() );
     }
 
     //*************************************************************************
@@ -801,16 +808,8 @@ public class WorksheetReaderBase : NodeXLBase
     /// Handles an invalid edge or vertex visibility.
     /// </summary>
     ///
-    /// <param name="oRange">
-    /// Range containing the invalid visibility.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row number of the cell containing the invalid visibility.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column number of the cell containing the invalid visibility.
+    /// <param name="oRow">
+    /// Row containing the invalid visibility.
     /// </param>
     ///
     /// <remarks>
@@ -821,25 +820,59 @@ public class WorksheetReaderBase : NodeXLBase
     protected void
     OnInvalidVisibility
     (
-        Range oRange,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased
+        ExcelTableReader.ExcelTableRow oRow
     )
     {
-        Debug.Assert(oRange != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         AssertValid();
 
-        Range oInvalidCell =
-            (Range)oRange.Cells[iRowOneBased, iColumnOneBased];
+        OnWorkbookFormatErrorWithDropDown(oRow,
+            CommonTableColumnNames.Visibility, "visibility");
+    }
+
+    //*************************************************************************
+    //  Method: OnWorkbookFormatErrorWithDropDown()
+    //
+    /// <summary>
+    /// Handles a workbook format error that prevents a graph from being
+    /// created, where the invalid cell has a drop-down list.
+    /// </summary>
+    ///
+    /// <param name="oRow">
+    /// Row containing the invalid cell.
+    /// </param>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the column containing the invalid cell.
+    /// </param>
+    ///
+    /// <param name="sInvalidCellDescription">
+    /// Description of the invalid cell.  Sample: "shape".
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnWorkbookFormatErrorWithDropDown
+    (
+        ExcelTableReader.ExcelTableRow oRow,
+        String sColumnName,
+        String sInvalidCellDescription
+    )
+    {
+        Debug.Assert(oRow != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
+        Debug.Assert( !String.IsNullOrEmpty(sInvalidCellDescription) );
+        AssertValid();
+
+        Range oInvalidCell = oRow.GetRangeForCell(sColumnName);
 
         OnWorkbookFormatError( String.Format(
 
-            "The cell {0} contains an unrecognized visibility.  Try selecting"
+            "The cell {0} contains an invalid {1}.  Try selecting"
             + " from the cell's drop-down list instead."
             ,
-            ExcelUtil.GetRangeAddress(oInvalidCell)
+            ExcelUtil.GetRangeAddress(oInvalidCell),
+            sInvalidCellDescription
             ),
 
             oInvalidCell

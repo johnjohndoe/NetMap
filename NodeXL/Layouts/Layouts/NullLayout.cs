@@ -40,6 +40,32 @@ public class NullLayout : AsyncLayoutBase
     }
 
     //*************************************************************************
+    //  Property: SupportsBinning
+    //
+    /// <summary>
+    /// Gets a flag indicating whether binning can be used when the entire
+    /// graph is laid out.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if binning can be used.
+    /// </value>
+    //*************************************************************************
+
+    public override Boolean
+    SupportsBinning
+    {
+        get
+        {
+            AssertValid();
+
+            // When this layout is used, no vertices should be laid out.
+
+            return (false);
+        }
+    }
+
+    //*************************************************************************
     //  Method: LayOutGraphCore()
     //
     /// <summary>

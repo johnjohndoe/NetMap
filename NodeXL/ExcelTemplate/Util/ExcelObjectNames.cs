@@ -155,17 +155,10 @@ public static class EdgeTableColumnNames
     public const String Width = "Width";
 
     /// <summary>
-    /// Name of the optional table column containing the edge's alpha, from
-    /// 0 (transparent) to 10 (opaque).
+    /// Name of the optional table column containing the edge's style.
     /// </summary>
 
-    public const String Alpha = "Opacity";
-
-    /// <summary>
-    /// Name of the optional table column containing the edge's visibility.
-    /// </summary>
-
-    public const String Visibility = "Visibility";
+    public const String Style = "Style";
 
     /// <summary>
     /// Name of the optional table column containing the edge's label.
@@ -267,23 +260,10 @@ public static class VertexTableColumnNames
     public const String LabelPosition = "Label Position";
 
     /// <summary>
-    /// Name of the optional table column containing the vertex's alpha, from
-    /// 0 (transparent) to 10 (opaque).
-    /// </summary>
-
-    public const String Alpha = "Opacity";
-
-    /// <summary>
     /// Name of the optional table column containing the vertex's tooltip.
     /// </summary>
 
     public const String ToolTip = "Tooltip";
-
-    /// <summary>
-    /// Name of the optional table column containing the vertex's visibility.
-    /// </summary>
-
-    public const String Visibility = "Visibility";
 
     /// <summary>
     /// Name of the optional table column containing the vertex's layout order.
@@ -618,6 +598,18 @@ public static class CommonTableColumnNames
     /// </summary>
 
     public const String ID = "ID";
+
+    /// <summary>
+    /// Name of the optional table column containing a visibility.
+    /// </summary>
+
+    public const String Visibility = "Visibility";
+
+    /// <summary>
+    /// Name of the optional table column containing an alpha value.
+    /// </summary>
+
+    public const String Alpha = "Opacity";
 
     /// <summary>
     /// Name of the optional table column indicating to users where their own

@@ -5,6 +5,7 @@
 using System;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -531,14 +532,14 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
         Nullable<T> oFirstValue = null;
 
-        IVertex [] aoSelectedVertices = m_oNodeXLControl.SelectedVertices;
+        ICollection<IVertex> oSelectedVertices =
+            m_oNodeXLControl.SelectedVertices;
 
-        Int32 iSelectedVertices = aoSelectedVertices.Length;
+        Int32 iSelectedVertices = oSelectedVertices.Count;
+        Int32 i = 0;
 
-        for (Int32 i = 0; i < iSelectedVertices; i++)
+        foreach (IVertex oVertex in oSelectedVertices)
         {
-            IVertex oVertex = aoSelectedVertices[i];
-
             Object oValueForThisVertex;
 
             // Does this vertex have a value?
@@ -559,6 +560,8 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
             {
                 return (null);
             }
+
+            i++;
         }
 
         return (oFirstValue);
@@ -753,7 +756,7 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 }
             }
 
-            m_oNodeXLControl.DrawGraph();
+            m_oNodeXLControl.DrawGraphAsync();
 
             this.UseWaitCursor = false;
         }

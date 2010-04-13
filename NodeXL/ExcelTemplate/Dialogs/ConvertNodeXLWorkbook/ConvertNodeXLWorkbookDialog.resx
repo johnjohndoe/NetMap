@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,6 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>Due to a limitation in NodeXL's setup program (to be fixed in a future release), a NodeXL workbook created on another computer might not be directly openable on this computer.  If you are unable to directly open a NodeXL workbook in Excel, use this to copy the workbook and convert the copy to a format that can be opened.</value>
+    <value>You might run into a problem if you attempt to open a NodeXL workbook created on another computer that had an older version of NodeXL installed on it.  Excel might pop up a message that includes "Could not find a part of the path" in the message details.
+
+If you run into that problem, use this to fix it.  It will create a copy of the other workbook, then convert the copy to make it work properly.
+
+Workbooks created with newer versions of NodeXL do not have this problem — they can be opened on any computer that also has a newer version of NodeXL.</value>
   </data>
 </root>

@@ -64,8 +64,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         m_oWorkbook = workbook;
 
-        m_oAutoFillUserSettings = new AutoFillUserSettings(
-            new PerWorkbookSettings(workbook) );
+        m_oAutoFillUserSettings = new AutoFillUserSettings(workbook);
 
         // Instantiate an object that retrieves and saves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -169,8 +168,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         cbxEdgeColorSourceColumnName.Tag = EdgeTableColumnNames.Color;
         cbxEdgeWidthSourceColumnName.Tag = EdgeTableColumnNames.Width;
-        cbxEdgeAlphaSourceColumnName.Tag = EdgeTableColumnNames.Alpha;
-        cbxEdgeVisibilitySourceColumnName.Tag = EdgeTableColumnNames.Visibility;
+        cbxEdgeAlphaSourceColumnName.Tag = CommonTableColumnNames.Alpha;
+
+        cbxEdgeVisibilitySourceColumnName.Tag =
+            CommonTableColumnNames.Visibility;
+
         cbxEdgeLabelSourceColumnName.Tag = EdgeTableColumnNames.Label;
     }
 
@@ -245,10 +247,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         cbxVertexColorSourceColumnName.Tag = VertexTableColumnNames.Color;
         cbxVertexShapeSourceColumnName.Tag = VertexTableColumnNames.Shape;
         cbxVertexRadiusSourceColumnName.Tag = VertexTableColumnNames.Radius;
-        cbxVertexAlphaSourceColumnName.Tag = VertexTableColumnNames.Alpha;
+        cbxVertexAlphaSourceColumnName.Tag = CommonTableColumnNames.Alpha;
 
         cbxVertexVisibilitySourceColumnName.Tag =
-            VertexTableColumnNames.Visibility;
+            CommonTableColumnNames.Visibility;
 
         cbxVertexLabelSourceColumnName.Tag = VertexTableColumnNames.Label;
 
@@ -864,7 +866,8 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         OnDetailsClick(this.btnEdgeAlphaDetails,
             this.cbxEdgeAlphaSourceColumnName, "Edge Opacity",
-            WorksheetNames.Edges, TableNames.Edges, EdgeTableColumnNames.Alpha,
+            WorksheetNames.Edges, TableNames.Edges,
+            CommonTableColumnNames.Alpha,
 
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeAlphaDetails,
@@ -903,7 +906,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         OnDetailsClick(this.btnEdgeVisibilityDetails,
             this.cbxEdgeVisibilitySourceColumnName, "Edge Visibility",
             WorksheetNames.Edges, TableNames.Edges,
-            EdgeTableColumnNames.Visibility,
+            CommonTableColumnNames.Visibility,
 
             new NumericComparisonColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.EdgeVisibilityDetails,
@@ -1084,7 +1087,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         OnDetailsClick(this.btnVertexAlphaDetails,
             this.cbxVertexAlphaSourceColumnName, "Vertex Opacity",
             WorksheetNames.Vertices, TableNames.Vertices,
-            VertexTableColumnNames.Alpha,
+            CommonTableColumnNames.Alpha,
 
             new NumericRangeColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexAlphaDetails,
@@ -1123,7 +1126,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         OnDetailsClick(this.btnVertexVisibilityDetails,
             this.cbxVertexVisibilitySourceColumnName,
             "Vertex Visibility", WorksheetNames.Vertices, TableNames.Vertices,
-            VertexTableColumnNames.Visibility,
+            CommonTableColumnNames.Visibility,
 
             new NumericComparisonColumnAutoFillUserSettingsDialog(
                 m_oAutoFillUserSettings.VertexVisibilityDetails,

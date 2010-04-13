@@ -45,9 +45,9 @@
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
     </Compile>
-    <Compile Include="Adapters\GraphAdapters\GraphMLAttributeTest.cs" />
-    <Compile Include="Adapters\GraphAdapters\GraphMLGraphAdapterTest.cs" />
-    <Compile Include="Adapters\GraphAdapters\PajekGraphAdapterTest.cs" />
+    <Compile Include="Adapters\GraphAdapters\GraphML\GraphMLAttributeTest.cs" />
+    <Compile Include="Adapters\GraphAdapters\GraphML\GraphMLGraphAdapterTest.cs" />
+    <Compile Include="Adapters\GraphAdapters\Pajek\PajekGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\SimpleGraphAdapterTest.cs" />
     <Compile Include="Algorithms\Miscellaneous\ConnectedComponentCalculatorTest.cs" />
     <Compile Include="Algorithms\Miscellaneous\DuplicateEdgeDetectorTest.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="Layouts\Layouts\FruchtermanReingold\FruchtermanReingoldLayoutTest.cs" />
     <Compile Include="Layouts\Layouts\FruchtermanReingold\FruchtermanReingoldVertexInfoTest.cs" />
     <Compile Include="Layouts\Util\RectangleBinnerTest.cs" />
+    <Compile Include="Layouts\Util\VertexGridSnapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ExcelUtilTest.cs" />
     <Compile Include="Util\MetadataUtil.cs" />

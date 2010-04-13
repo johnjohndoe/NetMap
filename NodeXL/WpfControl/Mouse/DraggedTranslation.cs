@@ -16,10 +16,11 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// </summary>
 ///
 /// <remarks>
-/// Create an instance of this class when the graph is clicked while the
-/// NodeXLControl.TranslationDragKey is held down.  When the mouse is moved,
-/// call <see cref="GetTranslationDistances" /> to get the distances to
-/// translate the graph.
+/// Create an instance of this class when the graph is clicked while
+/// <see cref="NodeXLControl.MouseMode" /> is set to <see
+/// cref="MouseMode.Translate" />.  When the mouse is moved, call <see
+/// cref="GetTranslationDistances" /> to get the distances to translate the
+/// graph.
 /// </remarks>
 //*****************************************************************************
 

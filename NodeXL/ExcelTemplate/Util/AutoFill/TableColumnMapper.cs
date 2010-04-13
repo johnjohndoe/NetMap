@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -677,7 +678,8 @@ public static class TableColumnMapper : Object
     /// </param>
     ///
     /// <remarks>
-    /// Each cell in the source column is copied to the destination column.
+    /// The text of each cell in the source column is copied to the destination
+    /// column.
     ///
     /// <para>
     /// If the source or destination column doesn't exist, this method does
@@ -708,24 +710,71 @@ public static class TableColumnMapper : Object
             return;
         }
 
-        // Loop through the areas.
-
         Int32 iAreas = oVisibleSourceRange.Areas.Count;
-
         Debug.Assert(iAreas == oVisibleDestinationRange.Areas.Count);
 
         for (Int32 iArea = 1; iArea <= iAreas; iArea++)
         {
+            // The desired behavior is to copy the text from the source column
+            // to the destination column.  This can't be done via Range.Copy()
+            // and Range.PasteSpecial(), because Range.PasteSpecial() does not
+            // have an option to paste text only.  It has a values-only option,
+            // but when copying numbers, the values-only option pastes the
+            // entire number, not the rounded number in the source column.
+            //
+            // This could be done by reading Range.Text on each of the source
+            // cells, but because that involves a COM call for every cell, it's
+            // too slow.
+            //
+            // The technique used here is to use Range.Copy(), then get the
+            // text from the clipboard and parse the text.
+
             Range oSourceArea = oVisibleSourceRange.Areas[iArea];
             Range oDestinationArea = oVisibleDestinationRange.Areas[iArea];
 
-            Debug.Assert(oSourceArea.Rows.Count ==
-                oDestinationArea.Rows.Count);
+            Int32 iRows = oSourceArea.Rows.Count;
+            Debug.Assert(iRows == oDestinationArea.Rows.Count);
 
-            Object [,] aoSourceAreaValues =
-                ExcelUtil.GetRangeValues(oSourceArea);
+            // Range.Copy() will copy in several formats, including text.
 
-            oDestinationArea.set_Value(Missing.Value, aoSourceAreaValues);
+            oSourceArea.Copy(Missing.Value);
+
+            // Get the copied text.  Excel joined each cell's text using
+            // "\r\n", so split the clipboard text using the same delimiter.
+            // Don't use String.Split(), which uses double the amount of
+            // memory.
+            //
+            // Known bug: If a cell contains multiple lines, Excel copies the
+            // cell's text to the clipboard as "Line1\nLine2", WITH the quotes!
+            // That results in the destination cells containing unwanted
+            // quotes.
+
+            Debug.Assert( Clipboard.ContainsText() );
+            String sValues = Clipboard.GetText();
+
+            String [,] asDestinationAreaValues =
+                ExcelUtil.GetSingleColumn2DStringArray(iRows);
+
+            Int32 iStartIndex = 0;
+
+            for (Int32 i = 1; i <= iRows; i++)
+            {
+                const String Delimiter = "\r\n";
+
+                Int32 iDelimiterIndex = sValues.IndexOf(
+                    Delimiter, iStartIndex);
+
+                Debug.Assert(iDelimiterIndex >= 0);
+
+                asDestinationAreaValues[i, 1] = sValues.Substring(
+                    iStartIndex, iDelimiterIndex - iStartIndex);
+
+                iStartIndex = iDelimiterIndex + Delimiter.Length;
+            }
+
+            sValues = null;
+
+            oDestinationArea.set_Value(Missing.Value, asDestinationAreaValues);
         }
     }
 

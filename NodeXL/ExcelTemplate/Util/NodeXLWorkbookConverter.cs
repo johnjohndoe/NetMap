@@ -63,12 +63,62 @@ public class NodeXLWorkbookConverter : Object
     /// </param>
     ///
     /// <remarks>
-    /// As of February 2010, the NodeXL setup program embeds the path to the
-    /// NodeXL assemblies in the Excel template file.  If the path differs
-    /// between two machines (as it will for 32-bit vs 64-bit machines), a
-    /// NodeXL workbook created on one machine won't be able to be opened on
-    /// the other.  This method fixes that by copying the other workbook and
-    /// embedding this machine's NodeXL path in the copy.
+    /// NodeXL setup programs for versions 1.0.1.113 and earlier embedded the
+    /// full path to NodeXL's deployment manifest in the Excel template file.
+    /// For example, here is the _AssemblyLocation custom property value on one
+    /// machine:
+    ///
+    /// <para>
+    /// file:///C:/Program Files/Microsoft Research/Microsoft NodeXL Excel
+    /// Template/Microsoft.NodeXL.ExcelTemplate.vsto|aa51c0f3-62b4-4782-83a8-
+    /// a15dcdd17698|vstolocal
+    /// </para>
+    ///
+    /// <para>
+    /// On a 64-bit machine, however, NodeXL has a different installation path
+    /// and the _AssemblyLocation property value path might be this:
+    /// </para>
+    ///
+    /// <para>
+    /// file:///C:/Program Files (x86)/Microsoft Research/Microsoft NodeXL
+    /// Excel Template/Microsoft.NodeXL.ExcelTemplate.vsto|aa51c0f3-62b4-4782-
+    /// 83a8-a15dcdd17698|vstolocal
+    /// </para>
+    ///
+    /// <para>
+    /// Because the paths differ, a NodeXL workbook created on one machine
+    /// couldn't be opened on the other.
+    /// </para>
+    ///
+    /// <para>
+    /// The setup program for version 1.0.1.114 fixed the problem for newly-
+    /// created workbooks by using ClickOnce to install the application.  With
+    /// ClickOnce, only the deployment manifest's name (without a path) is
+    /// embedded in the Excel template file.  For example:
+    /// </para>
+    ///
+    /// <para>
+    /// Microsoft.NodeXL.ExcelTemplate.vsto|aa51c0f3-62b4-4782-83a8-
+    /// a15dcdd17698
+    /// </para>
+    ///
+    /// <para>
+    /// Now, a workbook created on any machine has the same _AssemblyLocation
+    /// property value, and workbooks can be freely interchanged.
+    /// </para>
+    ///
+    /// <para>
+    /// For a workbook created with older NodeXL versions on another machine
+    /// that didn't have the same installation path, this method will fix the
+    /// problem of not being able to open the workbook on this machine.  It
+    /// copies the older workbook, then modifies the copy's _AssemblyLocation
+    /// property to look like this:
+    /// </para>
+    ///
+    /// <para>
+    /// Microsoft.NodeXL.ExcelTemplate.vsto|aa51c0f3-62b4-4782-83a8-
+    /// a15dcdd17698
+    /// </para>
     ///
     /// <para>
     /// An <see cref="NodeXLWorkbookConversionException" /> is thrown if the
@@ -103,6 +153,13 @@ public class NodeXLWorkbookConverter : Object
             throw new NodeXLWorkbookConversionException(
                 ApplicationUtil.GetMissingTemplateMessage(application) );
         }
+
+        #if false  // For testing.
+
+        sTemplatePath = @"E:\NodeXL\ExcelTemplateSetup\"
+            + "TemplateModifiedForClickOnce\NodeXLGraph.xltx";
+
+        #endif
 
         try
         {
@@ -146,34 +203,24 @@ public class NodeXLWorkbookConverter : Object
             );
         }
 
-        // Create a ServerDocument from the application's template.  Most of
-        // the customization information to add to the converted workbook will
-        // be obtained from this.
+        // Create a ServerDocument from the application's template.  The
+        // solution ID and deployment manifest name will be obtained from this.
 
         using ( ServerDocument oTemplateServerDocument =
             new ServerDocument(sTemplatePath) )
         {
-            // The solution ID and deployment manifest path are available
-            // directly from the ServerDocument.  For some reason, the assembly
-            // file name is not, and so it has to be derived.
-            //
-            // The assembly is in the same directory as the deployment
-            // manifest, so start with that directory.  Then add the file name
-            // (without path) of the current assembly.
+            // For some reason, ServerDocument.AddCustomization() also requires
+            // a path to the NodeXL assembly file, even though it doesn't get
+            // embedded in the document.
 
-            Uri oDeploymentManifestUrl =
-                oTemplateServerDocument.DeploymentManifestUrl;
-
-            String sAssemblyFile = Path.Combine(
-                Path.GetDirectoryName(oDeploymentManifestUrl.LocalPath),
-                Path.GetFileName(Assembly.GetExecutingAssembly().Location)
-                );
+            String sAssemblyFile = new Uri(
+                Assembly.GetExecutingAssembly().CodeBase).LocalPath;
 
             String [] asNonPublicCachedDataMembers;
 
             ServerDocument.AddCustomization(convertedWorkbookFile,
                 sAssemblyFile, oTemplateServerDocument.SolutionId,
-                oDeploymentManifestUrl, true,
+                oTemplateServerDocument.DeploymentManifestUrl, false,
                 out asNonPublicCachedDataMembers);
         }
     }

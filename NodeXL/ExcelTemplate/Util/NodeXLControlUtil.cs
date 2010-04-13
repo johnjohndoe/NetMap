@@ -260,49 +260,6 @@ public static class NodeXLControlUtil
     }
 
     //*************************************************************************
-    //  Method: GetVerticesAsArray()
-    //
-    /// <summary>
-    /// Gets the entire collection of vertices as an array.
-    /// </summary>
-    ///
-    /// <param name="nodeXLControl">
-    /// Control to get the vertices from.
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of vertices.  The array may be empty.
-    /// </returns>
-    //*************************************************************************
-
-    public static IVertex []
-    GetVerticesAsArray
-    (
-        NodeXLControl nodeXLControl
-    )
-    {
-        Debug.Assert(nodeXLControl != null);
-
-        // Note: This method is inefficient.  A future refactoring should
-        // replace most IVertex[] parameters with ICollection<IVertex>,
-        // eliminating the need to convert collections to arrays.
-
-        IVertexCollection oVertices = nodeXLControl.Graph.Vertices;
-        Int32 iVertices = oVertices.Count;
-        IVertex [] aoVertices = new IVertex[iVertices];
-        Int32 i = 0;
-
-        foreach (IVertex oVertex in oVertices)
-        {
-            aoVertices[i] = oVertex;
-
-            i++;
-        }
-
-        return (aoVertices);
-    }
-
-    //*************************************************************************
     //  Method: GetVisibleVerticesAsArray()
     //
     /// <summary>
@@ -352,45 +309,6 @@ public static class NodeXLControlUtil
     }
 
     //*************************************************************************
-    //  Method: GetEdgesAsArray()
-    //
-    /// <summary>
-    /// Gets the entire collection of edges as an array.
-    /// </summary>
-    ///
-    /// <param name="nodeXLControl">
-    /// Control to get the edges from.
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of edges.
-    /// </returns>
-    //*************************************************************************
-
-    public static IEdge []
-    GetEdgesAsArray
-    (
-        NodeXLControl nodeXLControl
-    )
-    {
-        Debug.Assert(nodeXLControl != null);
-
-        IEdgeCollection oEdges = nodeXLControl.Graph.Edges;
-        Int32 iEdges = oEdges.Count;
-        IEdge [] aoEdges = new IEdge[iEdges];
-        Int32 i = 0;
-
-        foreach (IEdge oEdge in oEdges)
-        {
-            aoEdges[i] = oEdge;
-
-            i++;
-        }
-
-        return (aoEdges);
-    }
-
-    //*************************************************************************
     //  Method: SelectSubgraphs()
     //
     /// <summary>
@@ -427,7 +345,7 @@ public static class NodeXLControlUtil
     SelectSubgraphs
     (
         NodeXLControl nodeXLControl,
-        IVertex [] verticesToSelectSubgraphsFor,
+        IEnumerable<IVertex> verticesToSelectSubgraphsFor,
         Decimal levels,
         Boolean selectConnectingEdges
     )
@@ -437,27 +355,21 @@ public static class NodeXLControlUtil
         Debug.Assert(levels >= 0);
         Debug.Assert(Decimal.Remainder(levels, 0.5M) == 0M);
 
-        // Create dictionaries for all of the vertices and edges that will be
-        // selected.  The key is the IVertex or IEdge and the value isn't used.
-        // Dictionaries are used to prevent the same vertex or edge from being
-        // selected twice.
+        // Create HashSets for all of the vertices and edges that will be
+        // selected.  The key is the IVertex or IEdge.  HashSets are used to
+        // prevent the same vertex or edge from being selected twice.
 
-        Dictionary<IVertex, Char> oAllSelectedVertices =
-            new Dictionary<IVertex, Char>();
-
-        Dictionary<IEdge, Char> oAllSelectedEdges =
-            new Dictionary<IEdge, Char>();
-
-        // Loop through the specified vertices.
+        HashSet<IVertex> oAllSelectedVertices = new HashSet<IVertex>();
+        HashSet<IEdge> oAllSelectedEdges = new HashSet<IEdge>();
 
         foreach (IVertex oVertexToSelectSubgraphFor in
             verticesToSelectSubgraphsFor)
         {
-            // These are similar dictionaries for the vertices and edges that
+            // These are similar collections for the vertices and edges that
             // will be selected for this subgraph only.
 
             Dictionary<IVertex, Int32> oThisSubgraphSelectedVertices;
-            Dictionary<IEdge, Char> oThisSubgraphSelectedEdges;
+            HashSet<IEdge> oThisSubgraphSelectedEdges;
 
             SubgraphCalculator.GetSubgraph(oVertexToSelectSubgraphFor, levels,
                 selectConnectingEdges, out oThisSubgraphSelectedVertices,
@@ -468,25 +380,18 @@ public static class NodeXLControlUtil
 
             foreach (IVertex oVertex in oThisSubgraphSelectedVertices.Keys)
             {
-                oAllSelectedVertices[oVertex] = ' ';
+                oAllSelectedVertices.Add(oVertex);
             }
 
-            foreach (IEdge oEdge in oThisSubgraphSelectedEdges.Keys)
+            foreach (IEdge oEdge in oThisSubgraphSelectedEdges)
             {
-                oAllSelectedEdges[oEdge] = ' ';
+                oAllSelectedEdges.Add(oEdge);
             }
         }
 
         // Replace the selection.
 
-        nodeXLControl.SetSelected(
-
-            CollectionUtil.DictionaryKeysToArray<IVertex, Char>(
-                oAllSelectedVertices),
-
-            CollectionUtil.DictionaryKeysToArray<IEdge, Char>(
-                oAllSelectedEdges)
-            );
+        nodeXLControl.SetSelected(oAllSelectedVertices, oAllSelectedEdges);
     }
 }
 

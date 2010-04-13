@@ -5,8 +5,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Media;
-using System.Reflection;
 using Microsoft.Office.Interop.Excel;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
@@ -90,7 +90,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //  Method: ReadWorksheet()
     //
     /// <summary>
-    /// Reads the vertex worksheet and adds the vertex data to a graph.
+    /// Reads the vertex worksheet and adds the contents to a graph.
     /// </summary>
     ///
     /// <param name="workbook">
@@ -150,10 +150,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             try
             {
-                // Add the vertices in the table to the graph.
-
-                AddVertexTableToGraph(oVertexTable, readWorkbookContext,
-                    graph);
+                ReadVertexTable(oVertexTable, readWorkbookContext, graph);
             }
             finally
             {
@@ -182,99 +179,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: GetVertexTableColumnIndexes()
+    //  Method: ReadVertexTable()
     //
     /// <summary>
-    /// Gets the one-based indexes of the columns within the table that
-    /// contains the vertex data.
-    /// </summary>
-    ///
-    /// <param name="oVertexTable">
-    /// Table that contains the vertex data.
-    /// </param>
-    ///
-    /// <returns>
-    /// The column indexes, as a <see cref="VertexTableColumnIndexes" />.
-    /// </returns>
-    //*************************************************************************
-
-    public VertexTableColumnIndexes
-    GetVertexTableColumnIndexes
-    (
-        ListObject oVertexTable
-    )
-    {
-        Debug.Assert(oVertexTable != null);
-        AssertValid();
-
-        VertexTableColumnIndexes oVertexTableColumnIndexes =
-            new VertexTableColumnIndexes();
-
-        oVertexTableColumnIndexes.VertexName = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.VertexName, false);
-
-        oVertexTableColumnIndexes.Color = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Color, false);
-
-        oVertexTableColumnIndexes.Shape = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Shape, false);
-
-        oVertexTableColumnIndexes.Radius = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Radius, false);
-
-        oVertexTableColumnIndexes.ImageUri = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.ImageUri, false);
-
-        oVertexTableColumnIndexes.Label = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Label, false);
-
-        oVertexTableColumnIndexes.LabelFillColor = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.LabelFillColor, false);
-
-        oVertexTableColumnIndexes.LabelPosition = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.LabelPosition, false);
-
-        oVertexTableColumnIndexes.Alpha = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Alpha, false);
-
-        oVertexTableColumnIndexes.ToolTip = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.ToolTip, false);
-
-        oVertexTableColumnIndexes.Visibility = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Visibility, false);
-
-        oVertexTableColumnIndexes.Order = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.LayoutOrder, false);
-
-        oVertexTableColumnIndexes.X = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.X, false);
-
-        oVertexTableColumnIndexes.Y = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Y, false);
-
-        oVertexTableColumnIndexes.PolarR = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.PolarR, false);
-
-        oVertexTableColumnIndexes.PolarAngle = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.PolarAngle, false);
-
-        oVertexTableColumnIndexes.Locked = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Locked, false);
-
-        oVertexTableColumnIndexes.ID = GetTableColumnIndex(
-            oVertexTable, CommonTableColumnNames.ID, false);
-
-        oVertexTableColumnIndexes.Marked = GetTableColumnIndex(
-            oVertexTable, VertexTableColumnNames.Marked, false);
-
-        return (oVertexTableColumnIndexes);
-    }
-
-    //*************************************************************************
-    //  Method: AddVertexTableToGraph()
-    //
-    /// <summary>
-    /// Adds the contents of the vertex table to a NodeXL graph.
+    /// Reads the vertex table and adds the contents to a graph.
     /// </summary>
     ///
     /// <param name="oVertexTable">
@@ -292,7 +200,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    AddVertexTableToGraph
+    ReadVertexTable
     (
         ListObject oVertexTable,
         ReadWorkbookContext oReadWorkbookContext,
@@ -304,117 +212,34 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
-        // Read the range that contains visible vertex data.  If the table is
-        // filtered, the range may contain multiple areas.
-
-        Range oVisibleVertexRange;
-
-        if ( !ExcelUtil.TryGetVisibleTableRange(
-            oVertexTable, out oVisibleVertexRange) )
+        if (GetTableColumnIndex(oVertexTable,
+            VertexTableColumnNames.VertexName, false) == NoSuchColumn)
         {
-            // There is no visible vertex data.
+            // Nothing can be done without vertex names.
 
             return;
         }
 
-        // Get the indexes of the columns within the table.
+        Boolean bReadAllEdgeAndVertexColumns =
+            oReadWorkbookContext.ReadAllEdgeAndVertexColumns;
 
-        VertexTableColumnIndexes oVertexTableColumnIndexes =
-            GetVertexTableColumnIndexes(oVertexTable);
-
-        if (oVertexTableColumnIndexes.VertexName == NoSuchColumn)
+        if (oReadWorkbookContext.FillIDColumns &&
+            !bReadAllEdgeAndVertexColumns)
         {
-            // There are no vertex names.
-
-            return;
+            FillIDColumn(oVertexTable);
         }
 
-        // Get the one-based indexes of all the column pairs that are used to
-        // add custom menu items to the vertex context menu in the graph.
+        // Get the names of all the column pairs that are used to add custom
+        // menu items to the vertex context menu in the graph.
 
         TableColumnAdder oTableColumnAdder = new TableColumnAdder();
 
-        KeyValuePair<Int32, Int32> [] aoCustomMenuItemPairIndexes =
-            oTableColumnAdder.GetColumnPairIndexes(oVertexTable,
+        ICollection< KeyValuePair<String, String> > aoCustomMenuItemPairNames =
+            oTableColumnAdder.GetColumnPairNames(oVertexTable,
                 VertexTableColumnNames.CustomMenuItemTextBase,
                 VertexTableColumnNames.CustomMenuItemActionBase);
 
-        // Loop through the areas, and split each area into subranges if the
-        // area contains too many rows.
-
-        foreach ( Range oSubrange in
-            ExcelRangeSplitter.SplitRange(oVisibleVertexRange) )
-        {
-            if (oReadWorkbookContext.FillIDColumns)
-            {
-                // If the ID column exists, fill the rows within it that
-                // are contained within the subrange with a sequence of
-                // unique IDs.
-
-                FillIDColumn(oVertexTable, oVertexTableColumnIndexes.ID,
-                    oSubrange);
-            }
-
-            // Add the contents of the subrange to the graph.
-
-            AddVertexSubrangeToGraph(oSubrange,
-                oVertexTableColumnIndexes, aoCustomMenuItemPairIndexes,
-                oReadWorkbookContext, oGraph);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AddVertexSubrangeToGraph()
-    //
-    /// <summary>
-    /// Adds the contents of one subrange of the vertex range to a NodeXL
-    /// graph.
-    /// </summary>
-    ///
-    /// <param name="oVertexSubrange">
-    /// One subrange of the range that contains vertex data.
-    /// </param>
-    ///
-    /// <param name="oVertexTableColumnIndexes">
-    /// One-based indexes of the columns within the vertex table.
-    /// </param>
-    ///
-    /// <param name="aoCustomMenuItemPairIndexes">
-    /// Array of pairs of one-based column indexes, one array element for each
-    /// pair of columns that are used to add custom menu items to the vertex
-    /// context menu in the graph.  They key is the index of the custom menu
-    /// item text and the value is the index of the custom menu item action.
-    /// </param>
-    ///
-    /// <param name="oReadWorkbookContext">
-    /// Provides access to objects needed for converting an Excel workbook to a
-    /// NodeXL graph.
-    /// </param>
-    ///
-    /// <param name="oGraph">
-    /// Graph to add vertices to.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AddVertexSubrangeToGraph
-    (
-        Range oVertexSubrange,
-        VertexTableColumnIndexes oVertexTableColumnIndexes,
-        KeyValuePair<Int32, Int32> [] aoCustomMenuItemPairIndexes,
-        ReadWorkbookContext oReadWorkbookContext,
-        IGraph oGraph
-    )
-    {
-        Debug.Assert(oVertexSubrange != null);
-        Debug.Assert(oVertexTableColumnIndexes.VertexName != NoSuchColumn);
-        Debug.Assert(aoCustomMenuItemPairIndexes != null);
-        Debug.Assert(oReadWorkbookContext != null);
-        Debug.Assert(oGraph != null);
-        AssertValid();
-
         IVertexCollection oVertices = oGraph.Vertices;
-        Object [,] aoVertexValues = ExcelUtil.GetRangeValues(oVertexSubrange);
 
         Dictionary<String, IVertex> oVertexNameDictionary =
             oReadWorkbookContext.VertexNameDictionary;
@@ -428,20 +253,24 @@ public class VertexWorksheetReader : WorksheetReaderBase
         VertexLabelPositionConverter oVertexLabelPositionConverter =
             new VertexLabelPositionConverter();
 
-        Int32 iRows = oVertexSubrange.Rows.Count;
+        ExcelTableReader oExcelTableReader =
+            new ExcelTableReader(oVertexTable);
 
-        for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+        HashSet<String> oColumnNamesToExclude = new HashSet<String>(
+            new String[] {
+                VertexTableColumnNames.VertexName
+                } );
+
+        foreach ( ExcelTableReader.ExcelTableRow oRow in
+            oExcelTableReader.GetRows() )
         {
             // Get the name of the vertex.
 
             String sVertexName;
 
-            if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.VertexName,
-                    out sVertexName) )
+            if ( !oRow.TryGetNonEmptyStringFromCell(
+                VertexTableColumnNames.VertexName, out sVertexName) )
             {
-                // There is no vertex name.  Skip the row.
-
                 continue;
             }
 
@@ -458,22 +287,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
             // Assume a default visibility.
 
             Visibility eVisibility = Visibility.ShowIfInAnEdge;
-
             String sVisibility;
 
-            if (
-                oVertexTableColumnIndexes.Visibility != NoSuchColumn
-                &&
-                ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.Visibility,
-                    out sVisibility)
-                )
+            if ( oRow.TryGetNonEmptyStringFromCell(
+                    CommonTableColumnNames.Visibility, out sVisibility) )
             {
                 if ( !oVertexVisibilityConverter.TryWorkbookToGraph(
                     sVisibility, out eVisibility) )
                 {
-                    OnInvalidVisibility(oVertexSubrange, iRowOneBased,
-                        oVertexTableColumnIndexes.Visibility);
+                    OnInvalidVisibility(oRow);
                 }
             }
 
@@ -553,8 +375,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
                     if (oVertex == null)
                     {
-                        oVertex = CreateVertex(
-                            sVertexName, oVertices, oVertexNameDictionary);
+                        oVertex = CreateVertex(sVertexName, oVertices,
+                            oVertexNameDictionary);
                     }
 
                     break;
@@ -570,160 +392,98 @@ public class VertexWorksheetReader : WorksheetReaderBase
             // If there is an ID column, add the vertex to the vertex ID
             // dictionary and set the vertex's Tag to the ID.
 
-            if (oVertexTableColumnIndexes.ID != NoSuchColumn)
+            AddToIDDictionary(oRow, oVertex,
+                oReadWorkbookContext.VertexIDDictionary);
+
+            if (bReadAllEdgeAndVertexColumns)
             {
-                AddToIDDictionary(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.ID, oVertex,
-                    oReadWorkbookContext.VertexIDDictionary);
+                // All columns except the vertex name should be read and stored
+                // as metadata on the vertex.
+
+                ReadAllColumns( oExcelTableReader, oRow, oVertex,
+                    oColumnNamesToExclude);
+
+                continue;
             }
 
-            // Vertex order.
+            // Layout order.
 
-            if (oVertexTableColumnIndexes.Order != NoSuchColumn)
+            if ( ReadLayoutOrder(oRow, oVertex) )
             {
-                if ( CheckForOrder(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.Order, oVertex) )
-                {
-                    oReadWorkbookContext.LayoutOrderSet = true;
-                }
+                oReadWorkbookContext.LayoutOrderSet = true;
             }
+
+            // Location and Locked.
 
             if (!oReadWorkbookContext.IgnoreVertexLocations)
             {
                 Boolean bLocationSpecified = false;
 
-                // If there are X and Y columns and a location has been
-                // specified for the vertex, set the vertex's location.
+                bLocationSpecified = ReadLocation(oRow,
+                    oReadWorkbookContext.VertexLocationConverter, oVertex);
 
-                if (oVertexTableColumnIndexes.X != NoSuchColumn &&
-                    oVertexTableColumnIndexes.Y != NoSuchColumn)
-                {
-                    bLocationSpecified = CheckForLocation(
-                        oVertexSubrange, aoVertexValues, iRowOneBased,
-                        oVertexTableColumnIndexes.X,
-                        oVertexTableColumnIndexes.Y,
-                        oReadWorkbookContext.VertexLocationConverter,
-                        oVertex);
-                }
-
-                // If there is a lock column and a lock flag has been specified
-                // for the vertex, set the vertex's lock flag.  ("Lock" means
-                // "prevent the layout algorithm from moving the vertex.")
-
-                if (oVertexTableColumnIndexes.Locked != NoSuchColumn)
-                {
-                    CheckForLocked(oVertexSubrange, aoVertexValues,
-                        iRowOneBased, oVertexTableColumnIndexes.Locked,
-                        bLocationSpecified, oVertex);
-                }
+                ReadLocked(oRow, bLocationSpecified, oVertex);
             }
 
             // Polar coordinates.
 
-            if (oVertexTableColumnIndexes.PolarR != NoSuchColumn &&
-                oVertexTableColumnIndexes.PolarAngle != NoSuchColumn)
+            ReadPolarCoordinates(oRow, oVertex);
+
+            // Marked.
+
+            ReadMarked(oRow, oVertex);
+
+            // Custom menu items.
+
+            if (aoCustomMenuItemPairNames.Count > 0)
             {
-                CheckForPolarCoordinates(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.PolarR,
-                    oVertexTableColumnIndexes.PolarAngle, oVertex);
-            }
-
-            // Marked.  ("Marking" is something the user does for himself.  A
-            // marked vertex doesn't behave differently from an unmarked
-            // vertex.)
-
-            if (oVertexTableColumnIndexes.Marked != NoSuchColumn)
-            {
-                CheckForMarked(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.Marked, oVertex);
-            }
-
-            // If there is at least one pair of columns that are used to add
-            // custom menu items to the vertex context menu in the graph, and
-            // if custom menu items have been specified for the vertex, store
-            // the custom menu item information in the vertex.
-
-            if (aoCustomMenuItemPairIndexes.Length > 0)
-            {
-                CheckForCustomMenuItems(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, aoCustomMenuItemPairIndexes, oVertex);
+                ReadCustomMenuItems(oRow, aoCustomMenuItemPairNames, oVertex);
             }
 
             // Alpha.
 
-            if (oVertexTableColumnIndexes.Alpha != NoSuchColumn)
-            {
-                CheckForAlpha(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.Alpha, oVertex);
-            }
+            ReadAlpha(oRow, oVertex);
 
             // Tooltip.
 
-            if (oVertexTableColumnIndexes.ToolTip != NoSuchColumn)
+            if ( ReadCellAndSetMetadata(oRow, VertexTableColumnNames.ToolTip,
+                oVertex, ReservedMetadataKeys.VertexToolTip) )
             {
-                if ( CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.ToolTip, oVertex,
-                    ReservedMetadataKeys.VertexToolTip) )
-                {
-                    oReadWorkbookContext.ToolTipsUsed = true;
-                }
+                oReadWorkbookContext.ToolTipsUsed = true;
             }
 
             // Label.
 
-            if (oReadWorkbookContext.ReadVertexLabels &&
-                oVertexTableColumnIndexes.Label != NoSuchColumn)
+            if (oReadWorkbookContext.ReadVertexLabels)
             {
-                CheckForNonEmptyCell(aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.Label, oVertex,
-                    ReservedMetadataKeys.PerVertexLabel);
+                ReadCellAndSetMetadata(oRow, VertexTableColumnNames.Label,
+                    oVertex, ReservedMetadataKeys.PerVertexLabel);
             }
 
             // Label fill color.
 
-            if (oVertexTableColumnIndexes.LabelFillColor != NoSuchColumn)
-            {
-                CheckForColor(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.LabelFillColor, oVertex,
-                    ReservedMetadataKeys.PerVertexLabelFillColor,
-                    oReadWorkbookContext.ColorConverter2);
-            }
+            ReadColor(oRow, VertexTableColumnNames.LabelFillColor, oVertex,
+                ReservedMetadataKeys.PerVertexLabelFillColor,
+                oReadWorkbookContext.ColorConverter2);
 
             // Label position.
 
-            if (oVertexTableColumnIndexes.LabelPosition != NoSuchColumn)
-            {
-                CheckForLabelPosition(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.LabelPosition,
-                    oVertexLabelPositionConverter, oVertex);
-            }
+            ReadLabelPosition(oRow, oVertexLabelPositionConverter, oVertex);
 
             // Radius.
 
             Nullable<Single> oRadiusWorkbook = new Nullable<Single>();
 
-            if (oVertexTableColumnIndexes.Radius != NoSuchColumn)
-            {
-                oRadiusWorkbook = CheckForRadius(oVertexSubrange,
-                    aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.Radius,
-                    oReadWorkbookContext.VertexRadiusConverter, oVertex);
-            }
+            oRadiusWorkbook = ReadRadius(oRow,
+                oReadWorkbookContext.VertexRadiusConverter, oVertex);
 
             // Shape.
 
-            VertexShape eVertexShape = oReadWorkbookContext.DefaultVertexShape;
+            VertexShape eVertexShape;
 
-            if (oVertexTableColumnIndexes.Shape != NoSuchColumn)
+            if ( !ReadShape(oRow, oVertex, out eVertexShape) )
             {
-                VertexShape ePerVertexShape;
-
-                if ( CheckForShape(oVertexSubrange, aoVertexValues,
-                    iRowOneBased, oVertexTableColumnIndexes.Shape, oVertex,
-                    out ePerVertexShape) )
-                {
-                    eVertexShape = ePerVertexShape;
-                }
+                eVertexShape = oReadWorkbookContext.DefaultVertexShape;
             }
 
             // Label font size.
@@ -741,11 +501,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
             // Image URI.
 
             if (eVertexShape == VertexShape.Image &&
-                oReadWorkbookContext.ReadVertexImages &&
-                oVertexTableColumnIndexes.ImageUri != NoSuchColumn)
+                oReadWorkbookContext.ReadVertexImages)
             {
-                CheckForImageUri(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.ImageUri, oVertex,
+                ReadImageuri(oRow, oVertex,
                     oReadWorkbookContext.VertexRadiusConverter,
 
                     oRadiusWorkbook.HasValue ? oRadiusWorkbook :
@@ -755,38 +513,30 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             // Color
 
-            if (oVertexTableColumnIndexes.Color != NoSuchColumn)
-            {
-                CheckForColor(oVertexSubrange, aoVertexValues, iRowOneBased,
-                    oVertexTableColumnIndexes.Color, oVertex,
-                    ReservedMetadataKeys.PerColor,
-                    oReadWorkbookContext.ColorConverter2);
-            }
+            ReadColor(oRow, VertexTableColumnNames.Color, oVertex,
+                ReservedMetadataKeys.PerColor,
+                oReadWorkbookContext.ColorConverter2);
+        }
+
+        if (bReadAllEdgeAndVertexColumns)
+        {
+            // Store the vertex column names on the graph.
+
+            oGraph.SetValue( ReservedMetadataKeys.AllVertexMetadataKeys,
+                FilterColumnNames(oExcelTableReader, oColumnNamesToExclude) );
         }
     }
 
     //*************************************************************************
-    //  Method: CheckForLabelPosition()
+    //  Method: ReadLabelPosition()
     //
     /// <summary>
     /// If a label position has been specified for a vertex, sets the vertex's
     /// label position.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoVertexValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertexLabelPositionConverter">
@@ -800,28 +550,22 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    CheckForLabelPosition
+    ReadLabelPosition
     (
-        Range oVertexRange,
-        Object [,] aoVertexValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         VertexLabelPositionConverter oVertexLabelPositionConverter,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoVertexValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         Debug.Assert(oVertexLabelPositionConverter != null);
         AssertValid();
 
         String sLabelPosition;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sLabelPosition) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.LabelPosition, out sLabelPosition) )
         {
             return;
         }
@@ -831,19 +575,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
         if ( !oVertexLabelPositionConverter.TryWorkbookToGraph(sLabelPosition,
             out eLabelPosition) )
         {
-            Range oInvalidCell =
-                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
-
-            OnWorkbookFormatError( String.Format(
-
-                "The cell {0} contains an invalid label position.  Try"
-                + " selecting from the cell's drop-down list instead."
-                ,
-                ExcelUtil.GetRangeAddress(oInvalidCell)
-                ),
-
-                oInvalidCell
-            );
+            OnWorkbookFormatErrorWithDropDown(oRow,
+                VertexTableColumnNames.LabelPosition, "label position");
         }
 
         oVertex.SetValue( ReservedMetadataKeys.PerVertexLabelPosition,
@@ -851,26 +584,14 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForRadius()
+    //  Method: ReadRadius()
     //
     /// <summary>
     /// If a radius has been specified for a vertex, sets the vertex's radius.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoVertexValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertexRadiusConverter">
@@ -890,28 +611,22 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Nullable<Single>
-    CheckForRadius
+    ReadRadius
     (
-        Range oVertexRange,
-        Object [,] aoVertexValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         VertexRadiusConverter oVertexRadiusConverter,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoVertexValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         Debug.Assert(oVertexRadiusConverter != null);
         AssertValid();
 
         String sRadius;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sRadius) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(VertexTableColumnNames.Radius,
+            out sRadius) )
         {
             return ( new Nullable<Single>() );
         }
@@ -920,8 +635,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         if ( !Single.TryParse(sRadius, out fRadius) )
         {
-            Range oInvalidCell =
-                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.Radius);
 
             OnWorkbookFormatError( String.Format(
 
@@ -946,26 +661,14 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForShape()
+    //  Method: ReadShape()
     //
     /// <summary>
     /// If a shape has been specified for a vertex, sets the vertex's shape.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertex">
@@ -982,25 +685,19 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Boolean
-    CheckForShape
+    ReadShape
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IVertex oVertex,
         out VertexShape eShape
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
-        if ( TryGetVertexShape(oVertexRange, aoValues, iRowOneBased,
-            iColumnOneBased, out eShape) )
+        if ( TryGetVertexShape(oRow, VertexTableColumnNames.Shape,
+            out eShape) )
         {
             oVertex.SetValue(ReservedMetadataKeys.PerVertexShape, eShape);
             return (true);
@@ -1010,27 +707,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForImageUri()
+    //  Method: ReadImageuri()
     //
     /// <summary>
     /// If an image URI has been specified for a vertex, sets the vertex's
     /// image.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoVertexValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertex">
@@ -1053,29 +738,23 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Boolean
-    CheckForImageUri
+    ReadImageuri
     (
-        Range oVertexRange,
-        Object [,] aoVertexValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IVertex oVertex,
         VertexRadiusConverter oVertexRadiusConverter,
         Nullable<Single> oVertexImageSize
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoVertexValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         Debug.Assert(oVertexRadiusConverter != null);
         AssertValid();
 
         String sImageUri;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sImageUri) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.ImageUri, out sImageUri) )
         {
             return (false);
         }
@@ -1096,8 +775,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
         {
             // No.  It appears to be a relative path.
 
+            Range oCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.ImageUri);
+
             String sWorkbookPath =
-                ( (Workbook)(oVertexRange.Worksheet.Parent) ).Path;
+                ( (Workbook)(oCell.Worksheet.Parent) ).Path;
 
             if ( !String.IsNullOrEmpty(sWorkbookPath) )
             {
@@ -1105,9 +787,6 @@ public class VertexWorksheetReader : WorksheetReaderBase
             }
             else
             {
-                Range oInvalidCell = (Range)oVertexRange.Cells[
-                    iRowOneBased, iColumnOneBased];
-
                 OnWorkbookFormatError( String.Format(
 
                     "The image file path specified in cell {0} is a relative"
@@ -1116,10 +795,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     + "  Either save the workbook or change the image file to"
                     + " an absolute path, such as \"C:\\MyImages\\Image.jpg\"."
                     ,
-                    ExcelUtil.GetRangeAddress(oInvalidCell)
+                    ExcelUtil.GetRangeAddress(oCell)
                     ),
 
-                    oInvalidCell
+                    oCell
                     );
             }
         }
@@ -1150,59 +829,41 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForOrder()
+    //  Method: ReadLayoutOrder()
     //
     /// <summary>
-    /// If a sort order has been specified for a vertex, sets the vertex's
-    /// sort order.
+    /// If a layout order has been specified for a vertex, sets the vertex's
+    /// layout order.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoVertexValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertex">
-    /// Vertex to set the sort order on.
+    /// Vertex to set the layout order on.
     /// </param>
     ///
     /// <returns>
-    /// true if a sort order was specified.
+    /// true if a layout order was specified.
     /// </returns>
     //*************************************************************************
 
     protected Boolean
-    CheckForOrder
+    ReadLayoutOrder
     (
-        Range oVertexRange,
-        Object [,] aoVertexValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoVertexValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
         String sOrder;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoVertexValues,
-            iRowOneBased, iColumnOneBased, out sOrder) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.LayoutOrder, out sOrder) )
         {
             return (false);
         }
@@ -1211,8 +872,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         if ( !Single.TryParse(sOrder, out fOrder) )
         {
-            Range oInvalidCell =
-                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.LayoutOrder);
 
             OnWorkbookFormatError( String.Format(
 
@@ -1232,31 +893,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForLocation()
+    //  Method: ReadLocation()
     //
     /// <summary>
     /// If a location has been specified for a vertex, sets the vertex's
     /// location.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iXColumnOneBased">
-    /// One-based X column index to check.
-    /// </param>
-    ///
-    /// <param name="iYColumnOneBased">
-    /// One-based Y column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertexLocationConverter">
@@ -1274,35 +919,27 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Boolean
-    CheckForLocation
+    ReadLocation
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iXColumnOneBased,
-        Int32 iYColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         VertexLocationConverter oVertexLocationConverter,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iXColumnOneBased >= 1);
-        Debug.Assert(iYColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertexLocationConverter != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
         String sX;
 
-        Boolean bHasX = ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iXColumnOneBased, out sX);
+        Boolean bHasX = oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.X, out sX);
 
         String sY;
 
-        Boolean bHasY = ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iYColumnOneBased, out sY);
+        Boolean bHasY = oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.Y, out sY);
 
         if (bHasX != bHasY)
         {
@@ -1332,8 +969,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         Error:
 
-            Range oInvalidCell = (Range)oVertexRange.Cells[
-                iRowOneBased, iXColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.X);
 
             OnWorkbookFormatError( String.Format(
 
@@ -1361,35 +998,19 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForPolarCoordinates()
+    //  Method: ReadPolarCoordinates()
     //
     /// <summary>
     /// If polar coordinates have been specified for a vertex, sets the
     /// vertex's polar coordinates.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iPolarRColumnOneBased">
-    /// One-based polar R coordinate column index to check.
-    /// </param>
-    ///
-    /// <param name="iPolarAngleColumnOneBased">
-    /// One-based polar angle coordinate column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertex">
-    /// Vertex to set the location on.
+    /// Vertex to set the polar coordinates on.
     /// </param>
     ///
     /// <returns>
@@ -1398,33 +1019,25 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Boolean
-    CheckForPolarCoordinates
+    ReadPolarCoordinates
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iPolarRColumnOneBased,
-        Int32 iPolarAngleColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iPolarRColumnOneBased >= 1);
-        Debug.Assert(iPolarAngleColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
         String sR;
 
-        Boolean bHasR = ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iPolarRColumnOneBased, out sR);
+        Boolean bHasR = oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.PolarR, out sR);
 
         String sAngle;
 
-        Boolean bHasAngle = ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iPolarAngleColumnOneBased, out sAngle);
+        Boolean bHasAngle = oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.PolarAngle, out sAngle);
 
         if (bHasR != bHasAngle)
         {
@@ -1453,8 +1066,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
         Error:
 
-            Range oInvalidCell = (Range)oVertexRange.Cells[
-                iRowOneBased, iPolarRColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.PolarR);
 
             OnWorkbookFormatError( String.Format(
 
@@ -1479,27 +1092,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: CheckForLocked()
+    //  Method: ReadLocked()
     //
     /// <summary>
     /// If a locked flag has been specified for a vertex, sets the vertex's
     /// locked flag.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="bLocationSpecified">
@@ -1509,134 +1110,99 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// <param name="oVertex">
     /// Vertex to set the lock flag on.
     /// </param>
+    ///
+    /// <remarks>
+    /// "Locked" means "prevent the layout algorithm from moving the vertex."
+    /// </remarks>
     //*************************************************************************
 
     protected void
-    CheckForLocked
+    ReadLocked
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         Boolean bLocationSpecified,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
         String sLocked;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iColumnOneBased, out sLocked) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(
+            VertexTableColumnNames.Locked, out sLocked) )
         {
             return;
         }
 
         Boolean bLocked;
-        String sErrorMessage;
 
         if ( !( new BooleanConverter() ).TryWorkbookToGraph(
             sLocked, out bLocked) )
         {
-            sErrorMessage = 
-                "The cell {0} contains an invalid lock value.  Try selecting"
-                + " from the cell's drop-down list instead."
-                ;
-
-            goto Error;
+            OnWorkbookFormatErrorWithDropDown(oRow,
+                VertexTableColumnNames.Locked, "locked value");
         }
 
         if (bLocked && !bLocationSpecified)
         {
-            sErrorMessage = 
-                "The cell {0} indicates that the vertex should be locked,"
-                + " but the vertex has no X and Y location values.  Either"
-                + " clear the lock or specify a vertex location."
-                ;
-
-            goto Error;
-        }
-
-        // Set the "lock vertex" key.
-
-        oVertex.SetValue(ReservedMetadataKeys.LockVertexLocation, bLocked);
-
-        return;
-
-        Error:
-
-            Debug.Assert(sErrorMessage != null);
-            Debug.Assert(sErrorMessage.IndexOf("{0}") >= 0);
-
-            Range oInvalidCell =
-                (Range)oVertexRange.Cells[iRowOneBased, iColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.Locked);
 
             OnWorkbookFormatError( String.Format(
 
-                sErrorMessage
+                "The cell {0} indicates that the vertex should be locked,"
+                + " but the vertex has no X and Y location values.  Either"
+                + " clear the lock or specify a vertex location."
                 ,
                 ExcelUtil.GetRangeAddress(oInvalidCell)
                 ),
 
                 oInvalidCell
             );
+        }
+
+        oVertex.SetValue(ReservedMetadataKeys.LockVertexLocation, bLocked);
     }
 
     //*************************************************************************
-    //  Method: CheckForMarked()
+    //  Method: ReadMarked()
     //
     /// <summary>
     /// If a marked flag has been specified for a vertex, sets the vertex's
     /// marked flag.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
-    /// </param>
-    ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
     /// <param name="oVertex">
     /// Vertex to set the marked flag on.
     /// </param>
+    ///
+    /// <remarks>
+    /// "Marking" is something the user does for himself.  A marked vertex
+    /// doesn't behave differently from an unmarked vertex.)
+    /// </remarks>
     //*************************************************************************
 
     protected void
-    CheckForMarked
+    ReadMarked
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
         String sMarked;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-            iRowOneBased, iColumnOneBased, out sMarked) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(VertexTableColumnNames.Marked,
+            out sMarked) )
         {
             return;
         }
@@ -1646,13 +1212,12 @@ public class VertexWorksheetReader : WorksheetReaderBase
         if ( !( new BooleanConverter() ).TryWorkbookToGraph(
             sMarked, out bMarked) )
         {
-            Range oInvalidCell = (Range)oVertexRange.Cells[
-                iRowOneBased, iColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                VertexTableColumnNames.Marked);
 
             OnWorkbookFormatError( String.Format(
 
-                "The cell {0} contains an invalid marked value.  Try selecting"
-                + " from the cell's drop-down list instead."
+                "The cell {0} contains an invalid marked value."
                 ,
                 ExcelUtil.GetRangeAddress(oInvalidCell)
                 ),
@@ -1661,38 +1226,28 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 );
         }
 
-        // Set the "mark vertex" key.
-
         oVertex.SetValue(ReservedMetadataKeys.Marked, bMarked);
 
         return;
     }
 
     //*************************************************************************
-    //  Method: CheckForCustomMenuItems()
+    //  Method: ReadCustomMenuItems()
     //
     /// <summary>
     /// If custom menu items have been specified for a vertex, stores the
     /// custom menu item information in the vertex.
     /// </summary>
     ///
-    /// <param name="oVertexRange">
-    /// Range containing the vertex data.
+    /// <param name="oRow">
+    /// Row containing the vertex data.
     /// </param>
     ///
-    /// <param name="aoValues">
-    /// Values from <paramref name="oVertexRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="aoCustomMenuItemPairIndexes">
-    /// Array of pairs of one-based column indexes, one array element for each
-    /// pair of columns that are used to add custom menu items to the vertex
-    /// context menu in the graph.  They key is the index of the custom menu
-    /// item text and the value is the index of the custom menu item action.
+    /// <param name="aoCustomMenuItemPairNames">
+    /// Collection of pairs of column names, one element for each pair of
+    /// columns that are used to add custom menu items to the vertex context
+    /// menu in the graph.  They key is the name of the custom menu item text
+    /// and the value is the name of the custom menu item action.
     /// </param>
     ///
     /// <param name="oVertex">
@@ -1701,19 +1256,15 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    CheckForCustomMenuItems
+    ReadCustomMenuItems
     (
-        Range oVertexRange,
-        Object [,] aoValues,
-        Int32 iRowOneBased,
-        KeyValuePair<Int32, Int32> [] aoCustomMenuItemPairIndexes,
+        ExcelTableReader.ExcelTableRow oRow,
+        ICollection< KeyValuePair<String, String> > aoCustomMenuItemPairNames,
         IVertex oVertex
     )
     {
-        Debug.Assert(oVertexRange != null);
-        Debug.Assert(aoValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(aoCustomMenuItemPairIndexes != null);
+        Debug.Assert(oRow != null);
+        Debug.Assert(aoCustomMenuItemPairNames != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
@@ -1724,10 +1275,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
         List<KeyValuePair<String, String>> oCustomMenuItemInformation =
             new List<KeyValuePair<String, String>>();
 
-        // Loop through the column index pairs.
-
-        foreach (KeyValuePair<Int32, Int32> oCustomMenuItemPairIndex in
-            aoCustomMenuItemPairIndexes)
+        foreach (KeyValuePair<String, String> oPairNames in
+            aoCustomMenuItemPairNames)
         {
             String sCustomMenuItemText, sCustomMenuItemAction;
 
@@ -1735,12 +1284,10 @@ public class VertexWorksheetReader : WorksheetReaderBase
             // Skip the pair if either is missing.
 
             if (
-                !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-                    iRowOneBased, oCustomMenuItemPairIndex.Key,
+                !oRow.TryGetNonEmptyStringFromCell(oPairNames.Key,
                     out sCustomMenuItemText)
                 ||
-                !ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-                    iRowOneBased, oCustomMenuItemPairIndex.Value,
+                !oRow.TryGetNonEmptyStringFromCell(oPairNames.Value,
                     out sCustomMenuItemAction)
                 )
             {
@@ -1751,8 +1298,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             if (iCustomMenuItemTextLength > MaximumCustomMenuItemTextLength)
             {
-                Range oInvalidCell = (Range)oVertexRange.Cells[
-                    iRowOneBased, oCustomMenuItemPairIndex.Key];
+                Range oInvalidCell = oRow.GetRangeForCell(oPairNames.Key);
 
                 OnWorkbookFormatError( String.Format(
 
@@ -1851,96 +1397,6 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     // (None.)
-
-
-    //*************************************************************************
-    //  Embedded class: VertexTableColumnIndexes
-    //
-    /// <summary>
-    /// Contains the one-based indexes of the columns in the optional vertex
-    /// table.
-    /// </summary>
-    //*************************************************************************
-
-    public class VertexTableColumnIndexes
-    {
-        /// Name of the vertex, required if any of the other columns are to be
-        /// used.
-
-        public Int32 VertexName;
-
-        /// The vertex's optional color.
-
-        public Int32 Color;
-
-        /// The vertex's optional shape.
-
-        public Int32 Shape;
-
-        /// The vertex's optional radius.
-
-        public Int32 Radius;
-
-        /// The vertex's optional image URI.
-
-        public Int32 ImageUri;
-
-        /// The vertex's optional label.
-
-        public Int32 Label;
-
-        /// The vertex's optional label fill color.
-
-        public Int32 LabelFillColor;
-
-        /// The vertex's optional label position.
-
-        public Int32 LabelPosition;
-
-        /// The vertex's optional alpha.
-
-        public Int32 Alpha;
-
-        /// The vertex's optional tooltip.
-
-        public Int32 ToolTip;
-
-        /// The vertex's optional visibility.
-
-        public Int32 Visibility;
-
-        /// The vertex's optional sort order.
-
-        public Int32 Order;
-
-        /// The vertex's optional x-coordinate.
-
-        public Int32 X;
-
-        /// The vertex's optional y-coordinate.
-
-        public Int32 Y;
-
-        /// The vertex's optional polar R coordinate.
-
-        public Int32 PolarR;
-
-        /// The vertex's optional polar angle coordinate.
-
-        public Int32 PolarAngle;
-
-        /// The vertex's optional "lock vertex location" boolean flag.
-
-        public Int32 Locked;
-
-        /// The vertex's ID, which is filled in by ReadWorksheet().
-
-        public Int32 ID;
-
-        /// The vertex's optional "mark vertex" boolean flag.
-
-        public Int32 Marked;
-    }
 }
 
 }

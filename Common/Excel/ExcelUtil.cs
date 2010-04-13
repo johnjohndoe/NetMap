@@ -2140,7 +2140,7 @@ public static class ExcelUtil
 
         if ( TryGetVisibleTableRange(table, out oVisibleTableRange) )
         {
-            foreach (Range oArea in oVisibleTableRange)
+            foreach (Range oArea in oVisibleTableRange.Areas)
             {
                 Range oUsedRange;
 
@@ -3489,120 +3489,6 @@ public static class ExcelUtil
         }
 
         return (union != null);
-    }
-
-    //*************************************************************************
-    //  Method: GetOneBasedRowNumbers()
-    //
-    /// <summary>
-    /// Gets the one-based row number of every row in a range.
-    /// </summary>
-    ///
-    /// <param name="range">
-    /// Range from which to get the one-based row numbers.
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of one-based row numbers, one for each row in <paramref
-    /// name="range" />.  The order of row numbers in the array is undefined.
-    /// The returned array is never null.
-    /// </returns>
-    //*************************************************************************
-
-    public static Int32 []
-    GetOneBasedRowNumbers
-    (
-        Range range
-    )
-    {
-        Debug.Assert(range != null);
-
-        // One way to do this is to loop through the areas in range, then loop
-        // through the rows in each area.  This wouldn't scale well, however,
-        // because all the calls to get areas and rows would have to be
-        // marshalled, and marshalling is slow.
-        //
-        // Instead, let Excel do all the work in a single marshalled call that
-        // converts the range to an address, then parse the address.
-
-        String sAddress = GetRangeAddress(range);
-
-        return ( GetOneBasedRowNumbers(sAddress) );
-    }
-
-    //*************************************************************************
-    //  Method: GetOneBasedRowNumbers()
-    //
-    /// <summary>
-    /// Gets the one-based row number of every row in a range.
-    /// </summary>
-    ///
-    /// <param name="rangeAddress">
-    /// Range address from which to get the one-based row numbers.  Can be
-    /// empty, but can't be null.  Sample range address:
-    /// "A3,B16,A30,A24:F24,C2:C244,A5:F5".
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of one-based row numbers, one for each row in <paramref
-    /// name="range" />.  The order of row numbers in the array is undefined.
-    /// The returned array is never null.
-    /// </returns>
-    //*************************************************************************
-
-    public static Int32 []
-    GetOneBasedRowNumbers
-    (
-        String rangeAddress
-    )
-    {
-        Debug.Assert(rangeAddress != null);
-
-        // Excel delimites areas with commas.  Split the address into area
-        // addresses.
-
-        String [] asAreaAddresses = rangeAddress.Split(
-            new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
-
-        // Create a dictionary to keep track of unique row numbers.  The key
-        // is the row number and the value is unused.
-
-        Dictionary<Int32, Char> oUniqueRowNumbers =
-            new Dictionary<Int32, Char>();
-
-        foreach (String sAreaAddress in asAreaAddresses)
-        {
-            // If the area address includes a colon, split it further.
-
-            String [] asAreaSubaddresses = sAreaAddress.Split(
-                new Char[] {':'}, StringSplitOptions.RemoveEmptyEntries);
-
-            Debug.Assert(asAreaSubaddresses.Length >= 1);
-
-            Int32 iFirstRowNumber =
-                GetOneBasedRowNumber( asAreaSubaddresses[0] );
-
-            if (asAreaSubaddresses.Length == 1)
-            {
-                oUniqueRowNumbers[iFirstRowNumber] = ' ';
-            }
-            else
-            {
-                Int32 iSecondRowNumber =
-                    GetOneBasedRowNumber( asAreaSubaddresses[1] );
-
-                for (Int32 iRowNumber = iFirstRowNumber;
-                    iRowNumber <= iSecondRowNumber; iRowNumber++)
-                {
-                    oUniqueRowNumbers[iRowNumber] = ' ';
-                }
-            }
-        }
-
-        // Copy the unique row numbers to an array.
-
-        return ( CollectionUtil.DictionaryKeysToArray<Int32, Char>(
-            oUniqueRowNumbers) );
     }
 
     //*************************************************************************

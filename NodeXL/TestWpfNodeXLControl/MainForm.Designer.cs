@@ -51,17 +51,15 @@ namespace TestWpfNodeXLControl
             this.label3 = new System.Windows.Forms.Label();
             this.chkShowVertexToolTips = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.cbxMouseSelectionMode = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
+            this.cbxMouseMode = new Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus();
             this.btnHideSelected = new System.Windows.Forms.Button();
             this.ehElementHost = new System.Windows.Forms.Integration.ElementHost();
             this.btnShowSelected = new System.Windows.Forms.Button();
-            this.tbGraphScale = new System.Windows.Forms.TrackBar();
-            this.label5 = new System.Windows.Forms.Label();
             this.chkShowAxes = new System.Windows.Forms.CheckBox();
             this.chkSetBackgroundImage = new System.Windows.Forms.CheckBox();
+            this.usrGraphZoomAndScale = new Microsoft.NodeXL.ApplicationUtil.GraphZoomAndScaleControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbGraphScale)).BeginInit();
             this.SuspendLayout();
             // 
             // txbStatus
@@ -73,7 +71,7 @@ namespace TestWpfNodeXLControl
             this.txbStatus.Name = "txbStatus";
             this.txbStatus.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txbStatus.Size = new System.Drawing.Size(521, 102);
-            this.txbStatus.TabIndex = 16;
+            this.txbStatus.TabIndex = 15;
             // 
             // label1
             // 
@@ -82,7 +80,7 @@ namespace TestWpfNodeXLControl
             this.label1.Location = new System.Drawing.Point(9, 450);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 15;
+            this.label1.TabIndex = 14;
             this.label1.Text = "Status:";
             // 
             // btnClearStatus
@@ -91,7 +89,7 @@ namespace TestWpfNodeXLControl
             this.btnClearStatus.Location = new System.Drawing.Point(545, 482);
             this.btnClearStatus.Name = "btnClearStatus";
             this.btnClearStatus.Size = new System.Drawing.Size(104, 23);
-            this.btnClearStatus.TabIndex = 17;
+            this.btnClearStatus.TabIndex = 16;
             this.btnClearStatus.Text = "Clear Status";
             this.btnClearStatus.UseVisualStyleBackColor = true;
             this.btnClearStatus.Click += new System.EventHandler(this.btnClearStatus_Click);
@@ -269,20 +267,20 @@ namespace TestWpfNodeXLControl
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(666, 157);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(113, 13);
+            this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 8;
-            this.label4.Text = "MouseSelectionMode:";
+            this.label4.Text = "MouseMode:";
             // 
-            // cbxMouseSelectionMode
+            // cbxMouseMode
             // 
-            this.cbxMouseSelectionMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbxMouseSelectionMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxMouseSelectionMode.FormattingEnabled = true;
-            this.cbxMouseSelectionMode.Location = new System.Drawing.Point(669, 177);
-            this.cbxMouseSelectionMode.Name = "cbxMouseSelectionMode";
-            this.cbxMouseSelectionMode.Size = new System.Drawing.Size(202, 21);
-            this.cbxMouseSelectionMode.TabIndex = 9;
-            this.cbxMouseSelectionMode.SelectedIndexChanged += new System.EventHandler(this.cbxMouseSelectionMode_SelectedIndexChanged);
+            this.cbxMouseMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbxMouseMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxMouseMode.FormattingEnabled = true;
+            this.cbxMouseMode.Location = new System.Drawing.Point(669, 177);
+            this.cbxMouseMode.Name = "cbxMouseMode";
+            this.cbxMouseMode.Size = new System.Drawing.Size(202, 21);
+            this.cbxMouseMode.TabIndex = 9;
+            this.cbxMouseMode.SelectedIndexChanged += new System.EventHandler(this.cbxMouseMode_SelectedIndexChanged);
             // 
             // btnHideSelected
             // 
@@ -319,30 +317,6 @@ namespace TestWpfNodeXLControl
             this.btnShowSelected.UseVisualStyleBackColor = true;
             this.btnShowSelected.Click += new System.EventHandler(this.btnShowSelected_Click);
             // 
-            // tbGraphScale
-            // 
-            this.tbGraphScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbGraphScale.LargeChange = 100;
-            this.tbGraphScale.Location = new System.Drawing.Point(669, 314);
-            this.tbGraphScale.Maximum = 1000;
-            this.tbGraphScale.Minimum = 100;
-            this.tbGraphScale.Name = "tbGraphScale";
-            this.tbGraphScale.Size = new System.Drawing.Size(202, 42);
-            this.tbGraphScale.SmallChange = 10;
-            this.tbGraphScale.TabIndex = 14;
-            this.tbGraphScale.Value = 100;
-            this.tbGraphScale.Scroll += new System.EventHandler(this.tbGraphScale_Scroll);
-            // 
-            // label5
-            // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(666, 295);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(66, 13);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "GraphScale:";
-            // 
             // chkShowAxes
             // 
             this.chkShowAxes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -367,19 +341,27 @@ namespace TestWpfNodeXLControl
             this.chkSetBackgroundImage.UseVisualStyleBackColor = true;
             this.chkSetBackgroundImage.CheckedChanged += new System.EventHandler(this.chkSetBackgroundImage_CheckedChanged);
             // 
+            // usrGraphZoomAndScale
+            // 
+            this.usrGraphZoomAndScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.usrGraphZoomAndScale.Location = new System.Drawing.Point(545, 310);
+            this.usrGraphZoomAndScale.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.usrGraphZoomAndScale.Name = "usrGraphZoomAndScale";
+            this.usrGraphZoomAndScale.Size = new System.Drawing.Size(285, 23);
+            this.usrGraphZoomAndScale.TabIndex = 13;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(887, 586);
+            this.Controls.Add(this.usrGraphZoomAndScale);
             this.Controls.Add(this.chkSetBackgroundImage);
             this.Controls.Add(this.chkShowAxes);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.tbGraphScale);
             this.Controls.Add(this.btnShowSelected);
             this.Controls.Add(this.ehElementHost);
             this.Controls.Add(this.btnHideSelected);
-            this.Controls.Add(this.cbxMouseSelectionMode);
+            this.Controls.Add(this.cbxMouseMode);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.chkShowVertexToolTips);
             this.Controls.Add(this.groupBox2);
@@ -396,7 +378,6 @@ namespace TestWpfNodeXLControl
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbGraphScale)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -424,14 +405,13 @@ namespace TestWpfNodeXLControl
         private System.Windows.Forms.CheckBox chkAlsoAdjacentVertices;
         private System.Windows.Forms.CheckBox chkShowVertexToolTips;
         private System.Windows.Forms.Label label4;
-        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxMouseSelectionMode;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ComboBoxPlus cbxMouseMode;
         private System.Windows.Forms.Button btnHideSelected;
         private System.Windows.Forms.Integration.ElementHost ehElementHost;
         private System.Windows.Forms.Button btnShowSelected;
-        private System.Windows.Forms.TrackBar tbGraphScale;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox chkShowAxes;
         private System.Windows.Forms.CheckBox chkSetBackgroundImage;
+        private Microsoft.NodeXL.ApplicationUtil.GraphZoomAndScaleControl usrGraphZoomAndScale;
     }
 }
 

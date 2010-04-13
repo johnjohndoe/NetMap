@@ -128,6 +128,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnRegisterUser = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCheckForUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnExportToGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -279,6 +280,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // mnuExport
             // 
             this.mnuExport.Items.Add(this.btnExportToUcinetFile);
+            this.mnuExport.Items.Add(this.btnExportToGraphMLFile);
             this.mnuExport.Items.Add(this.btnExportToPajekFile);
             this.mnuExport.Items.Add(this.separator8);
             this.mnuExport.Items.Add(this.btnExportSelectionToNewNodeXLWorkbook);
@@ -1092,6 +1094,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAbout.SuperTip = "View information about Microsoft NodeXL.";
             this.btnAbout.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAbout_Click);
             // 
+            // btnExportToGraphMLFile
+            // 
+            this.btnExportToGraphMLFile.Label = "To GraphML File...";
+            this.btnExportToGraphMLFile.Name = "btnExportToGraphMLFile";
+            this.btnExportToGraphMLFile.OfficeImageId = "ExportTextFile";
+            this.btnExportToGraphMLFile.ScreenTip = "Export to GraphML File";
+            this.btnExportToGraphMLFile.ShowImage = true;
+            this.btnExportToGraphMLFile.SuperTip = resources.GetString("btnExportToGraphMLFile.SuperTip");
+            this.btnExportToGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportToGraphMLFile_Click);
+            // 
             // Ribbon
             // 
             this.Name = "Ribbon";
@@ -1212,6 +1224,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator12;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetBackground;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnEditLayoutUserSettings;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToGraphMLFile;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

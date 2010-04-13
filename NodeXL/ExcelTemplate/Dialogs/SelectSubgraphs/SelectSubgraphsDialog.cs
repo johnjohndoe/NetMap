@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Windows.Forms;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.NodeXL.Core;
@@ -64,7 +65,7 @@ public partial class SelectSubgraphsDialog : ExcelTemplateForm
         m_oClickedVertex = clickedVertex;
 
         m_aoInitiallySelectedVertices =
-            ( IVertex [] )nodeXLControl.SelectedVertices.Clone();
+            nodeXLControl.SelectedVertices.ToArray();
 
         DoDataExchange(false);
 

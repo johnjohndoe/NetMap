@@ -134,6 +134,7 @@
     <Compile Include="Util\LayoutMetadataUtil.cs" />
     <Compile Include="Util\LayoutSaver.cs" />
     <Compile Include="Util\RectangleBinner.cs" />
+    <Compile Include="Util\VertexGridSnapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Algorithms\Algorithms.csproj">

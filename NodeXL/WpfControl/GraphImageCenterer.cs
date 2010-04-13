@@ -96,9 +96,6 @@ protected class GraphImageCenterer : Object
 
         // Get the transforms used by the control.
 
-        ScaleTransform oScaleTransformForLayout =
-            m_oNodeXLControl.ScaleTransformForLayout;
-
         TranslateTransform oTranslateTransformForRender =
             m_oNodeXLControl.TranslateTransformForRender;
 
@@ -119,16 +116,13 @@ protected class GraphImageCenterer : Object
         m_dOriginalScaleTransformForRenderCenterY =
             oScaleTransformForRender.CenterY;
 
-        Double dUnscaledControlWidth =
-            m_oNodeXLControl.ActualWidth * oScaleTransformForLayout.ScaleX;
-
-        Double dUnscaledControlHeight =
-            m_oNodeXLControl.ActualHeight * oScaleTransformForLayout.ScaleY;
+        Double dUnscaledControlWidth = m_oNodeXLControl.ActualWidth;
+        Double dUnscaledControlHeight = m_oNodeXLControl.ActualHeight;
 
         Double dWidthRatio = imageSize.Width / dUnscaledControlWidth;
         Double dHeightRatio = imageSize.Height / dUnscaledControlHeight;
 
-        // Two transforms affect the graph location.  Modify them.
+        // The transforms affect the graph location.  Modify them.
 
         oTranslateTransformForRender.X *= dWidthRatio;
         oTranslateTransformForRender.Y *= dHeightRatio;

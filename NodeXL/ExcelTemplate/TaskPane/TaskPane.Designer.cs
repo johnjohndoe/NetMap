@@ -54,6 +54,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tssContextEditVertexAttributes = new System.Windows.Forms.ToolStripSeparator();
             this.msiContextForceLayout = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextForceLayoutSelected = new System.Windows.Forms.ToolStripMenuItem();
+            this.msiContextForceLayoutSelectedWithinBounds = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextForceLayoutVisible = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextLayout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -64,7 +65,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextSaveImageToFile = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextSetImageSize = new System.Windows.Forms.ToolStripMenuItem();
             this.msiContextSaveImage = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsToolStrip = new Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus();
+            this.tsGeneral = new Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus();
             this.tsbReadWorkbook = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -73,22 +74,37 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiLayoutOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.tssbForceLayout = new System.Windows.Forms.ToolStripSplitButton();
             this.msiForceLayoutSelected = new System.Windows.Forms.ToolStripMenuItem();
+            this.msiForceLayoutSelectedWithinBounds = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.msiForceLayoutVisible = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.msiSnapVerticesToGrid = new System.Windows.Forms.ToolStripMenuItem();
+            this.msiGridSize = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbShowDynamicFilters = new System.Windows.Forms.ToolStripButton();
             this.tsbOptions = new System.Windows.Forms.ToolStripButton();
             this.ehNodeXLControlHost = new System.Windows.Forms.Integration.ElementHost();
-            this.usrGraphZoomAndScale = new Microsoft.NodeXL.ApplicationUtil.GraphZoomAndScaleControl();
             this.splLegend = new System.Windows.Forms.SplitContainer();
             this.pnlForBackColorOnly = new System.Windows.Forms.Panel();
             this.usrAutoFillResultsLegend = new Microsoft.NodeXL.ExcelTemplate.AutoFillResultsLegendControl();
             this.usrDynamicFiltersLegend = new Microsoft.NodeXL.ExcelTemplate.DynamicFiltersLegendControl();
+            this.tsGraphNavigation = new Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus();
+            this.tsbMouseModeSelect = new System.Windows.Forms.ToolStripButton();
+            this.tsbMouseModeAddToSelection = new System.Windows.Forms.ToolStripButton();
+            this.tsbMouseModeSubtractFromSelection = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbMouseModeZoomIn = new System.Windows.Forms.ToolStripButton();
+            this.tsbMouseModeZoomOut = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbMouseModeTranslate = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.cmsNodeXLControl.SuspendLayout();
-            this.tsToolStrip.SuspendLayout();
+            this.tsGeneral.SuspendLayout();
             this.splLegend.Panel1.SuspendLayout();
             this.splLegend.Panel2.SuspendLayout();
             this.splLegend.SuspendLayout();
             this.pnlForBackColorOnly.SuspendLayout();
+            this.tsGraphNavigation.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmsNodeXLControl
@@ -108,6 +124,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tssContextEditVertexAttributes,
             this.msiContextForceLayout,
             this.msiContextForceLayoutSelected,
+            this.msiContextForceLayoutSelectedWithinBounds,
             this.msiContextForceLayoutVisible,
             this.msiContextLayout,
             this.toolStripSeparator4,
@@ -117,7 +134,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextCopyImageToClipboard,
             this.msiContextSaveImageToFile});
             this.cmsNodeXLControl.Name = "cmsNodeXLControl";
-            this.cmsNodeXLControl.Size = new System.Drawing.Size(242, 430);
+            this.cmsNodeXLControl.Size = new System.Drawing.Size(325, 430);
             // 
             // msiContextSelectAll
             // 
@@ -126,7 +143,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextSelectAllEdges,
             this.msiContextSelectAllVerticesAndEdges});
             this.msiContextSelectAll.Name = "msiContextSelectAll";
-            this.msiContextSelectAll.Size = new System.Drawing.Size(241, 22);
+            this.msiContextSelectAll.Size = new System.Drawing.Size(324, 22);
             this.msiContextSelectAll.Text = "Select &All";
             // 
             // msiContextSelectAllVertices
@@ -160,7 +177,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextDeselectAllEdges,
             this.msiContextDeselectAllVerticesAndEdges});
             this.msiContextDeselectAll.Name = "msiContextDeselectAll";
-            this.msiContextDeselectAll.Size = new System.Drawing.Size(241, 22);
+            this.msiContextDeselectAll.Size = new System.Drawing.Size(324, 22);
             this.msiContextDeselectAll.Text = "&Deselect All";
             // 
             // msiContextDeselectAllVertices
@@ -190,7 +207,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // msiContextSelectAdjacentVertices
             // 
             this.msiContextSelectAdjacentVertices.Name = "msiContextSelectAdjacentVertices";
-            this.msiContextSelectAdjacentVertices.Size = new System.Drawing.Size(241, 22);
+            this.msiContextSelectAdjacentVertices.Size = new System.Drawing.Size(324, 22);
             this.msiContextSelectAdjacentVertices.Text = "Select Ad&jacent Vertices";
             this.msiContextSelectAdjacentVertices.ToolTipText = "Select the vertices adjacent to the clicked vertex";
             this.msiContextSelectAdjacentVertices.Click += new System.EventHandler(this.msiContextSelectAdjacentVertices_Click);
@@ -198,7 +215,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // msiContextDeselectAdjacentVertices
             // 
             this.msiContextDeselectAdjacentVertices.Name = "msiContextDeselectAdjacentVertices";
-            this.msiContextDeselectAdjacentVertices.Size = new System.Drawing.Size(241, 22);
+            this.msiContextDeselectAdjacentVertices.Size = new System.Drawing.Size(324, 22);
             this.msiContextDeselectAdjacentVertices.Text = "Deselect Adjace&nt Vertices";
             this.msiContextDeselectAdjacentVertices.ToolTipText = "Deselect the vertices adjacent to the clicked vertex";
             this.msiContextDeselectAdjacentVertices.Click += new System.EventHandler(this.msiContextDeselectAdjacentVertices_Click);
@@ -206,7 +223,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // msiContextSelectIncidentEdges
             // 
             this.msiContextSelectIncidentEdges.Name = "msiContextSelectIncidentEdges";
-            this.msiContextSelectIncidentEdges.Size = new System.Drawing.Size(241, 22);
+            this.msiContextSelectIncidentEdges.Size = new System.Drawing.Size(324, 22);
             this.msiContextSelectIncidentEdges.Text = "Select &Incident Edges";
             this.msiContextSelectIncidentEdges.ToolTipText = "Select the edges incident to the clicked vertex";
             this.msiContextSelectIncidentEdges.Visible = false;
@@ -215,7 +232,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // msiContextDeselectIncidentEdges
             // 
             this.msiContextDeselectIncidentEdges.Name = "msiContextDeselectIncidentEdges";
-            this.msiContextDeselectIncidentEdges.Size = new System.Drawing.Size(241, 22);
+            this.msiContextDeselectIncidentEdges.Size = new System.Drawing.Size(324, 22);
             this.msiContextDeselectIncidentEdges.Text = "Deselec&t Incident Edges";
             this.msiContextDeselectIncidentEdges.ToolTipText = "Deselect the edges incident to the clicked vertex";
             this.msiContextDeselectIncidentEdges.Click += new System.EventHandler(this.msiContextDeselectIncidentEdges_Click);
@@ -223,7 +240,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // msiContextSelectSubgraphs
             // 
             this.msiContextSelectSubgraphs.Name = "msiContextSelectSubgraphs";
-            this.msiContextSelectSubgraphs.Size = new System.Drawing.Size(241, 22);
+            this.msiContextSelectSubgraphs.Size = new System.Drawing.Size(324, 22);
             this.msiContextSelectSubgraphs.Text = "Select S&ubgraphs...";
             this.msiContextSelectSubgraphs.ToolTipText = "Select one or more subgraphs";
             this.msiContextSelectSubgraphs.Click += new System.EventHandler(this.msiContextSelectSubgraphs_Click);
@@ -231,14 +248,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(321, 6);
             // 
             // msiContextEditVertexAttributes
             // 
             this.msiContextEditVertexAttributes.Image = ((System.Drawing.Image)(resources.GetObject("msiContextEditVertexAttributes.Image")));
             this.msiContextEditVertexAttributes.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextEditVertexAttributes.Name = "msiContextEditVertexAttributes";
-            this.msiContextEditVertexAttributes.Size = new System.Drawing.Size(241, 22);
+            this.msiContextEditVertexAttributes.Size = new System.Drawing.Size(324, 22);
             this.msiContextEditVertexAttributes.Text = "&Edit Selected Vertex Properties...";
             this.msiContextEditVertexAttributes.ToolTipText = "Edit the visual attributes of the selected vertices";
             this.msiContextEditVertexAttributes.Click += new System.EventHandler(this.msiContextEditVertexAttributes_Click);
@@ -246,14 +263,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(321, 6);
             // 
             // msiContextReadWorkbook
             // 
             this.msiContextReadWorkbook.Image = ((System.Drawing.Image)(resources.GetObject("msiContextReadWorkbook.Image")));
             this.msiContextReadWorkbook.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextReadWorkbook.Name = "msiContextReadWorkbook";
-            this.msiContextReadWorkbook.Size = new System.Drawing.Size(241, 22);
+            this.msiContextReadWorkbook.Size = new System.Drawing.Size(324, 22);
             this.msiContextReadWorkbook.Text = "Show &Graph";
             this.msiContextReadWorkbook.ToolTipText = "Read the workbook contents into the graph pane";
             this.msiContextReadWorkbook.Click += new System.EventHandler(this.ReadWorkbook_Click);
@@ -261,14 +278,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // tssContextEditVertexAttributes
             // 
             this.tssContextEditVertexAttributes.Name = "tssContextEditVertexAttributes";
-            this.tssContextEditVertexAttributes.Size = new System.Drawing.Size(238, 6);
+            this.tssContextEditVertexAttributes.Size = new System.Drawing.Size(321, 6);
             // 
             // msiContextForceLayout
             // 
             this.msiContextForceLayout.Image = ((System.Drawing.Image)(resources.GetObject("msiContextForceLayout.Image")));
             this.msiContextForceLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextForceLayout.Name = "msiContextForceLayout";
-            this.msiContextForceLayout.Size = new System.Drawing.Size(241, 22);
+            this.msiContextForceLayout.Size = new System.Drawing.Size(324, 22);
             this.msiContextForceLayout.Text = "Lay Out A&gain";
             this.msiContextForceLayout.ToolTipText = "Lay out all vertices without reading the workbook again";
             this.msiContextForceLayout.Click += new System.EventHandler(this.ForceLayout_Click);
@@ -278,16 +295,27 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextForceLayoutSelected.Image = ((System.Drawing.Image)(resources.GetObject("msiContextForceLayoutSelected.Image")));
             this.msiContextForceLayoutSelected.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextForceLayoutSelected.Name = "msiContextForceLayoutSelected";
-            this.msiContextForceLayoutSelected.Size = new System.Drawing.Size(241, 22);
+            this.msiContextForceLayoutSelected.Size = new System.Drawing.Size(324, 22);
             this.msiContextForceLayoutSelected.Text = "Lay Out &Selected Vertices Again";
             this.msiContextForceLayoutSelected.ToolTipText = "Lay out the selected vertices without reading the workbook again";
             this.msiContextForceLayoutSelected.Click += new System.EventHandler(this.ForceLayoutSelected_Click);
+            // 
+            // msiContextForceLayoutSelectedWithinBounds
+            // 
+            this.msiContextForceLayoutSelectedWithinBounds.Image = ((System.Drawing.Image)(resources.GetObject("msiContextForceLayoutSelectedWithinBounds.Image")));
+            this.msiContextForceLayoutSelectedWithinBounds.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.msiContextForceLayoutSelectedWithinBounds.Name = "msiContextForceLayoutSelectedWithinBounds";
+            this.msiContextForceLayoutSelectedWithinBounds.Size = new System.Drawing.Size(324, 22);
+            this.msiContextForceLayoutSelectedWithinBounds.Text = "Lay Out Selected Vertices Again, Within Bounds";
+            this.msiContextForceLayoutSelectedWithinBounds.ToolTipText = "Lay out the selected vertices within their bounding box without reading the workb" +
+                "ook again";
+            this.msiContextForceLayoutSelectedWithinBounds.Click += new System.EventHandler(this.ForceLayoutSelectedWithinBounds_Click);
             // 
             // msiContextForceLayoutVisible
             // 
             this.msiContextForceLayoutVisible.Image = ((System.Drawing.Image)(resources.GetObject("msiContextForceLayoutVisible.Image")));
             this.msiContextForceLayoutVisible.Name = "msiContextForceLayoutVisible";
-            this.msiContextForceLayoutVisible.Size = new System.Drawing.Size(241, 22);
+            this.msiContextForceLayoutVisible.Size = new System.Drawing.Size(324, 22);
             this.msiContextForceLayoutVisible.Text = "Lay Out &Visible Vertices Again";
             this.msiContextForceLayoutVisible.ToolTipText = "Lay out the visible vertices without reading the workbook again";
             this.msiContextForceLayoutVisible.Click += new System.EventHandler(this.ForceLayoutVisible_Click);
@@ -297,21 +325,21 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextLayout.Image = ((System.Drawing.Image)(resources.GetObject("msiContextLayout.Image")));
             this.msiContextLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextLayout.Name = "msiContextLayout";
-            this.msiContextLayout.Size = new System.Drawing.Size(241, 22);
+            this.msiContextLayout.Size = new System.Drawing.Size(324, 22);
             this.msiContextLayout.Text = "&Layout";
             this.msiContextLayout.ToolTipText = "Select the algorithm used to lay out the graph";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(321, 6);
             // 
             // msiContextShowDynamicFilters
             // 
             this.msiContextShowDynamicFilters.Image = ((System.Drawing.Image)(resources.GetObject("msiContextShowDynamicFilters.Image")));
             this.msiContextShowDynamicFilters.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextShowDynamicFilters.Name = "msiContextShowDynamicFilters";
-            this.msiContextShowDynamicFilters.Size = new System.Drawing.Size(241, 22);
+            this.msiContextShowDynamicFilters.Size = new System.Drawing.Size(324, 22);
             this.msiContextShowDynamicFilters.Text = "&Dynamic Filters...";
             this.msiContextShowDynamicFilters.ToolTipText = "Filter the graph\'s vertices and edges in real time";
             this.msiContextShowDynamicFilters.Click += new System.EventHandler(this.ShowDynamicFilters_Click);
@@ -321,7 +349,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextOptions.Image = ((System.Drawing.Image)(resources.GetObject("msiContextOptions.Image")));
             this.msiContextOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextOptions.Name = "msiContextOptions";
-            this.msiContextOptions.Size = new System.Drawing.Size(241, 22);
+            this.msiContextOptions.Size = new System.Drawing.Size(324, 22);
             this.msiContextOptions.Text = "&Options...";
             this.msiContextOptions.ToolTipText = "Specify options that control the graph\'s appearance";
             this.msiContextOptions.Click += new System.EventHandler(this.Options_Click);
@@ -329,14 +357,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(321, 6);
             // 
             // msiContextCopyImageToClipboard
             // 
             this.msiContextCopyImageToClipboard.Image = ((System.Drawing.Image)(resources.GetObject("msiContextCopyImageToClipboard.Image")));
             this.msiContextCopyImageToClipboard.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextCopyImageToClipboard.Name = "msiContextCopyImageToClipboard";
-            this.msiContextCopyImageToClipboard.Size = new System.Drawing.Size(241, 22);
+            this.msiContextCopyImageToClipboard.Size = new System.Drawing.Size(324, 22);
             this.msiContextCopyImageToClipboard.Text = "&Copy Image to Clipboard";
             this.msiContextCopyImageToClipboard.ToolTipText = "Copy the graph image to the clipboard";
             this.msiContextCopyImageToClipboard.Click += new System.EventHandler(this.msiContextCopyImageToClipboard_Click);
@@ -349,7 +377,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextSaveImageToFile.Image = ((System.Drawing.Image)(resources.GetObject("msiContextSaveImageToFile.Image")));
             this.msiContextSaveImageToFile.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiContextSaveImageToFile.Name = "msiContextSaveImageToFile";
-            this.msiContextSaveImageToFile.Size = new System.Drawing.Size(241, 22);
+            this.msiContextSaveImageToFile.Size = new System.Drawing.Size(324, 22);
             this.msiContextSaveImageToFile.Text = "Save Image to &File";
             this.msiContextSaveImageToFile.ToolTipText = "Save the graph image to a file";
             // 
@@ -371,11 +399,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextSaveImage.ToolTipText = "Save the graph image to a file";
             this.msiContextSaveImage.Click += new System.EventHandler(this.msiContextSaveImage_Click);
             // 
-            // tsToolStrip
+            // tsGeneral
             // 
-            this.tsToolStrip.ClickThrough = true;
-            this.tsToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.tsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsGeneral.ClickThrough = true;
+            this.tsGeneral.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.tsGeneral.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbReadWorkbook,
             this.toolStripSeparator1,
             this.toolStripLabel1,
@@ -384,11 +412,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.toolStripSeparator2,
             this.tsbShowDynamicFilters,
             this.tsbOptions});
-            this.tsToolStrip.Location = new System.Drawing.Point(0, 0);
-            this.tsToolStrip.Name = "tsToolStrip";
-            this.tsToolStrip.Size = new System.Drawing.Size(653, 25);
-            this.tsToolStrip.TabIndex = 3;
-            this.tsToolStrip.Text = "toolStrip1";
+            this.tsGeneral.Location = new System.Drawing.Point(0, 0);
+            this.tsGeneral.Name = "tsGeneral";
+            this.tsGeneral.Size = new System.Drawing.Size(653, 25);
+            this.tsGeneral.TabIndex = 3;
+            this.tsGeneral.Text = "toolStrip1";
             // 
             // tsbReadWorkbook
             // 
@@ -447,7 +475,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.tssbForceLayout.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msiForceLayoutSelected,
-            this.msiForceLayoutVisible});
+            this.msiForceLayoutSelectedWithinBounds,
+            this.toolStripSeparator8,
+            this.msiForceLayoutVisible,
+            this.toolStripSeparator12,
+            this.msiSnapVerticesToGrid,
+            this.msiGridSize});
             this.tssbForceLayout.Enabled = false;
             this.tssbForceLayout.Image = ((System.Drawing.Image)(resources.GetObject("tssbForceLayout.Image")));
             this.tssbForceLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -463,19 +496,60 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiForceLayoutSelected.Image = ((System.Drawing.Image)(resources.GetObject("msiForceLayoutSelected.Image")));
             this.msiForceLayoutSelected.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.msiForceLayoutSelected.Name = "msiForceLayoutSelected";
-            this.msiForceLayoutSelected.Size = new System.Drawing.Size(240, 22);
+            this.msiForceLayoutSelected.Size = new System.Drawing.Size(324, 22);
             this.msiForceLayoutSelected.Text = "Lay Out Selected Vertices Again";
             this.msiForceLayoutSelected.ToolTipText = "Lay out the selected vertices without reading the workbook again";
             this.msiForceLayoutSelected.Click += new System.EventHandler(this.ForceLayoutSelected_Click);
+            // 
+            // msiForceLayoutSelectedWithinBounds
+            // 
+            this.msiForceLayoutSelectedWithinBounds.Image = ((System.Drawing.Image)(resources.GetObject("msiForceLayoutSelectedWithinBounds.Image")));
+            this.msiForceLayoutSelectedWithinBounds.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.msiForceLayoutSelectedWithinBounds.Name = "msiForceLayoutSelectedWithinBounds";
+            this.msiForceLayoutSelectedWithinBounds.Size = new System.Drawing.Size(324, 22);
+            this.msiForceLayoutSelectedWithinBounds.Text = "Lay Out Selected Vertices Again, Within Bounds";
+            this.msiForceLayoutSelectedWithinBounds.ToolTipText = "Lay out the selected vertices within their bounding box without reading the workb" +
+                "ook again";
+            this.msiForceLayoutSelectedWithinBounds.Click += new System.EventHandler(this.ForceLayoutSelectedWithinBounds_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(321, 6);
             // 
             // msiForceLayoutVisible
             // 
             this.msiForceLayoutVisible.Image = ((System.Drawing.Image)(resources.GetObject("msiForceLayoutVisible.Image")));
             this.msiForceLayoutVisible.Name = "msiForceLayoutVisible";
-            this.msiForceLayoutVisible.Size = new System.Drawing.Size(240, 22);
+            this.msiForceLayoutVisible.Size = new System.Drawing.Size(324, 22);
             this.msiForceLayoutVisible.Text = "Lay Out Visible Vertices Again";
             this.msiForceLayoutVisible.ToolTipText = "Lay out the visible vertices without reading the workbook again";
             this.msiForceLayoutVisible.Click += new System.EventHandler(this.ForceLayoutVisible_Click);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(321, 6);
+            // 
+            // msiSnapVerticesToGrid
+            // 
+            this.msiSnapVerticesToGrid.Image = ((System.Drawing.Image)(resources.GetObject("msiSnapVerticesToGrid.Image")));
+            this.msiSnapVerticesToGrid.ImageTransparentColor = System.Drawing.Color.White;
+            this.msiSnapVerticesToGrid.Name = "msiSnapVerticesToGrid";
+            this.msiSnapVerticesToGrid.Size = new System.Drawing.Size(324, 22);
+            this.msiSnapVerticesToGrid.Text = "Snap Vertices to Grid";
+            this.msiSnapVerticesToGrid.ToolTipText = "Snap each vertex to the nearest location on a grid after the graph has been laid " +
+                "out";
+            this.msiSnapVerticesToGrid.Click += new System.EventHandler(this.msiSnapVerticesToGrid_Click);
+            // 
+            // msiGridSize
+            // 
+            this.msiGridSize.Image = ((System.Drawing.Image)(resources.GetObject("msiGridSize.Image")));
+            this.msiGridSize.Name = "msiGridSize";
+            this.msiGridSize.Size = new System.Drawing.Size(324, 22);
+            this.msiGridSize.Text = "Set Grid Size...";
+            this.msiGridSize.ToolTipText = "Set the grid size to use when snapping vertices";
+            this.msiGridSize.Click += new System.EventHandler(this.msiGridSize_Click);
             // 
             // toolStripSeparator2
             // 
@@ -511,23 +585,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.ehNodeXLControlHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ehNodeXLControlHost.Location = new System.Drawing.Point(0, 0);
             this.ehNodeXLControlHost.Name = "ehNodeXLControlHost";
-            this.ehNodeXLControlHost.Size = new System.Drawing.Size(653, 314);
+            this.ehNodeXLControlHost.Size = new System.Drawing.Size(653, 322);
             this.ehNodeXLControlHost.TabIndex = 4;
             this.ehNodeXLControlHost.Text = "elementHost1";
             this.ehNodeXLControlHost.Child = null;
-            // 
-            // usrGraphZoomAndScale
-            // 
-            this.usrGraphZoomAndScale.Location = new System.Drawing.Point(0, 28);
-            this.usrGraphZoomAndScale.Name = "usrGraphZoomAndScale";
-            this.usrGraphZoomAndScale.Size = new System.Drawing.Size(480, 26);
-            this.usrGraphZoomAndScale.TabIndex = 5;
             // 
             // splLegend
             // 
             this.splLegend.BackColor = System.Drawing.SystemColors.ControlDark;
             this.splLegend.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splLegend.Location = new System.Drawing.Point(0, 60);
+            this.splLegend.Location = new System.Drawing.Point(0, 52);
+            this.splLegend.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.splLegend.Name = "splLegend";
             this.splLegend.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -541,7 +609,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.splLegend.Panel2.Resize += new System.EventHandler(this.splLegend_Panel2_Resize);
             this.splLegend.Panel2Collapsed = true;
             this.splLegend.Panel2MinSize = 15;
-            this.splLegend.Size = new System.Drawing.Size(653, 314);
+            this.splLegend.Size = new System.Drawing.Size(653, 322);
             this.splLegend.SplitterDistance = 265;
             this.splLegend.TabIndex = 6;
             // 
@@ -577,24 +645,137 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.usrDynamicFiltersLegend.Size = new System.Drawing.Size(653, 42);
             this.usrDynamicFiltersLegend.TabIndex = 0;
             // 
+            // tsGraphNavigation
+            // 
+            this.tsGraphNavigation.ClickThrough = true;
+            this.tsGraphNavigation.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.tsGraphNavigation.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbMouseModeSelect,
+            this.tsbMouseModeAddToSelection,
+            this.tsbMouseModeSubtractFromSelection,
+            this.toolStripSeparator9,
+            this.tsbMouseModeZoomIn,
+            this.tsbMouseModeZoomOut,
+            this.toolStripSeparator10,
+            this.tsbMouseModeTranslate,
+            this.toolStripSeparator11});
+            this.tsGraphNavigation.Location = new System.Drawing.Point(0, 25);
+            this.tsGraphNavigation.Name = "tsGraphNavigation";
+            this.tsGraphNavigation.Size = new System.Drawing.Size(653, 25);
+            this.tsGraphNavigation.TabIndex = 7;
+            this.tsGraphNavigation.Text = "toolStrip1";
+            // 
+            // tsbMouseModeSelect
+            // 
+            this.tsbMouseModeSelect.Checked = true;
+            this.tsbMouseModeSelect.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsbMouseModeSelect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMouseModeSelect.Image = ((System.Drawing.Image)(resources.GetObject("tsbMouseModeSelect.Image")));
+            this.tsbMouseModeSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMouseModeSelect.Name = "tsbMouseModeSelect";
+            this.tsbMouseModeSelect.Size = new System.Drawing.Size(23, 22);
+            this.tsbMouseModeSelect.Tag = Microsoft.NodeXL.Visualization.Wpf.MouseMode.Select;
+            this.tsbMouseModeSelect.Text = "toolStripButton1";
+            this.tsbMouseModeSelect.ToolTipText = resources.GetString("tsbMouseModeSelect.ToolTipText");
+            this.tsbMouseModeSelect.Click += new System.EventHandler(this.MouseModeButton_Click);
+            // 
+            // tsbMouseModeAddToSelection
+            // 
+            this.tsbMouseModeAddToSelection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMouseModeAddToSelection.Image = ((System.Drawing.Image)(resources.GetObject("tsbMouseModeAddToSelection.Image")));
+            this.tsbMouseModeAddToSelection.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMouseModeAddToSelection.Name = "tsbMouseModeAddToSelection";
+            this.tsbMouseModeAddToSelection.Size = new System.Drawing.Size(23, 22);
+            this.tsbMouseModeAddToSelection.Tag = Microsoft.NodeXL.Visualization.Wpf.MouseMode.AddToSelection;
+            this.tsbMouseModeAddToSelection.Text = "toolStripButton2";
+            this.tsbMouseModeAddToSelection.ToolTipText = resources.GetString("tsbMouseModeAddToSelection.ToolTipText");
+            this.tsbMouseModeAddToSelection.Click += new System.EventHandler(this.MouseModeButton_Click);
+            // 
+            // tsbMouseModeSubtractFromSelection
+            // 
+            this.tsbMouseModeSubtractFromSelection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMouseModeSubtractFromSelection.Image = ((System.Drawing.Image)(resources.GetObject("tsbMouseModeSubtractFromSelection.Image")));
+            this.tsbMouseModeSubtractFromSelection.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMouseModeSubtractFromSelection.Name = "tsbMouseModeSubtractFromSelection";
+            this.tsbMouseModeSubtractFromSelection.Size = new System.Drawing.Size(23, 22);
+            this.tsbMouseModeSubtractFromSelection.Tag = Microsoft.NodeXL.Visualization.Wpf.MouseMode.SubtractFromSelection;
+            this.tsbMouseModeSubtractFromSelection.Text = "toolStripButton3";
+            this.tsbMouseModeSubtractFromSelection.ToolTipText = resources.GetString("tsbMouseModeSubtractFromSelection.ToolTipText");
+            this.tsbMouseModeSubtractFromSelection.Click += new System.EventHandler(this.MouseModeButton_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbMouseModeZoomIn
+            // 
+            this.tsbMouseModeZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMouseModeZoomIn.Image = ((System.Drawing.Image)(resources.GetObject("tsbMouseModeZoomIn.Image")));
+            this.tsbMouseModeZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMouseModeZoomIn.Name = "tsbMouseModeZoomIn";
+            this.tsbMouseModeZoomIn.Size = new System.Drawing.Size(23, 22);
+            this.tsbMouseModeZoomIn.Tag = Microsoft.NodeXL.Visualization.Wpf.MouseMode.ZoomIn;
+            this.tsbMouseModeZoomIn.Text = "toolStripButton4";
+            this.tsbMouseModeZoomIn.ToolTipText = "Zoom In\r\n\r\n• Click on the graph to zoom in\r\n\r\n• (You can also zoom in and out at " +
+                "any time with the mouse wheel or the Zoom slider)";
+            this.tsbMouseModeZoomIn.Click += new System.EventHandler(this.MouseModeButton_Click);
+            // 
+            // tsbMouseModeZoomOut
+            // 
+            this.tsbMouseModeZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMouseModeZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("tsbMouseModeZoomOut.Image")));
+            this.tsbMouseModeZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMouseModeZoomOut.Name = "tsbMouseModeZoomOut";
+            this.tsbMouseModeZoomOut.Size = new System.Drawing.Size(23, 22);
+            this.tsbMouseModeZoomOut.Tag = Microsoft.NodeXL.Visualization.Wpf.MouseMode.ZoomOut;
+            this.tsbMouseModeZoomOut.Text = "toolStripButton5";
+            this.tsbMouseModeZoomOut.ToolTipText = "Zoom Out\r\n\r\n• Click on the graph to zoom out\r\n\r\n• (You can also zoom in and out a" +
+                "t any time with the mouse wheel or the Zoom slider)";
+            this.tsbMouseModeZoomOut.Click += new System.EventHandler(this.MouseModeButton_Click);
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbMouseModeTranslate
+            // 
+            this.tsbMouseModeTranslate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMouseModeTranslate.Image = ((System.Drawing.Image)(resources.GetObject("tsbMouseModeTranslate.Image")));
+            this.tsbMouseModeTranslate.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMouseModeTranslate.Name = "tsbMouseModeTranslate";
+            this.tsbMouseModeTranslate.Size = new System.Drawing.Size(23, 22);
+            this.tsbMouseModeTranslate.Tag = Microsoft.NodeXL.Visualization.Wpf.MouseMode.Translate;
+            this.tsbMouseModeTranslate.Text = "toolStripButton6";
+            this.tsbMouseModeTranslate.ToolTipText = resources.GetString("tsbMouseModeTranslate.ToolTipText");
+            this.tsbMouseModeTranslate.Click += new System.EventHandler(this.MouseModeButton_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 25);
+            // 
             // TaskPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.tsGraphNavigation);
             this.Controls.Add(this.splLegend);
-            this.Controls.Add(this.usrGraphZoomAndScale);
-            this.Controls.Add(this.tsToolStrip);
+            this.Controls.Add(this.tsGeneral);
             this.Name = "TaskPane";
             this.Size = new System.Drawing.Size(653, 374);
             this.Resize += new System.EventHandler(this.TaskPane_Resize);
             this.cmsNodeXLControl.ResumeLayout(false);
-            this.tsToolStrip.ResumeLayout(false);
-            this.tsToolStrip.PerformLayout();
+            this.tsGeneral.ResumeLayout(false);
+            this.tsGeneral.PerformLayout();
             this.splLegend.Panel1.ResumeLayout(false);
             this.splLegend.Panel2.ResumeLayout(false);
             this.splLegend.ResumeLayout(false);
             this.pnlForBackColorOnly.ResumeLayout(false);
+            this.tsGraphNavigation.ResumeLayout(false);
+            this.tsGraphNavigation.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -602,7 +783,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
         #endregion
 
-        private Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus tsToolStrip;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus tsGeneral;
         private System.Windows.Forms.ToolStripButton tsbOptions;
         private System.Windows.Forms.ContextMenuStrip cmsNodeXLControl;
         private System.Windows.Forms.ToolStripMenuItem msiContextCopyImageToClipboard;
@@ -639,7 +820,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem msiContextShowDynamicFilters;
         private System.Windows.Forms.Integration.ElementHost ehNodeXLControlHost;
-        private Microsoft.NodeXL.ApplicationUtil.GraphZoomAndScaleControl usrGraphZoomAndScale;
         private System.Windows.Forms.ToolStripMenuItem msiContextSetImageSize;
         private System.Windows.Forms.ToolStripMenuItem msiContextSaveImage;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
@@ -652,5 +832,21 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.ToolStripMenuItem msiLayoutOptions;
         private System.Windows.Forms.ToolStripMenuItem msiForceLayoutVisible;
         private System.Windows.Forms.ToolStripMenuItem msiContextForceLayoutVisible;
+        private System.Windows.Forms.ToolStripButton tsbMouseModeSelect;
+        private System.Windows.Forms.ToolStripButton tsbMouseModeAddToSelection;
+        private System.Windows.Forms.ToolStripButton tsbMouseModeSubtractFromSelection;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripButton tsbMouseModeZoomIn;
+        private System.Windows.Forms.ToolStripButton tsbMouseModeZoomOut;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripButton tsbMouseModeTranslate;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+        private Microsoft.Research.CommunityTechnologies.AppLib.ToolStripPlus tsGraphNavigation;
+        private System.Windows.Forms.ToolStripMenuItem msiForceLayoutSelectedWithinBounds;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem msiContextForceLayoutSelectedWithinBounds;
+        private System.Windows.Forms.ToolStripMenuItem msiSnapVerticesToGrid;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripMenuItem msiGridSize;
     }
 }

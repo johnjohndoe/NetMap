@@ -101,12 +101,8 @@ public class ExcelTemplateNodeXLControl : NodeXLControl
         oFixedPage.Width = imageSize.Width;
         oFixedPage.Height = imageSize.Height;
 
-        // This control's size needs to be adjusted for the scale
-        // transform.
-
-        ScaleTransform oScaleTransformForLayout = this.ScaleTransformForLayout;
-        this.Width = imageSize.Width / oScaleTransformForLayout.ScaleX;
-        this.Height = imageSize.Height / oScaleTransformForLayout.ScaleY;
+        this.Width = imageSize.Width;
+        this.Height = imageSize.Height;
 
         // Adjust the control's translate transforms so that the image will be
         // centered on the same point on the graph that the control is centered
@@ -159,7 +155,7 @@ public class ExcelTemplateNodeXLControl : NodeXLControl
 
             this.UpdateLayout();
             oLayoutSaver.RestoreLayout();
-            this.DrawGraph(false);
+            this.DrawGraphAsync(false);
         }
     }
 

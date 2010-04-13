@@ -939,6 +939,34 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: btnExportToGraphMLFile_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnExportToGraphMLFile button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnExportToGraphMLFile_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ExportToGraphMLFile();
+    }
+
+    //*************************************************************************
     //  Method: btnExportToPajekFile_Click()
     //
     /// <summary>

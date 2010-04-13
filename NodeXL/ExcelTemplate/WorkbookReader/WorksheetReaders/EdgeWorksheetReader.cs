@@ -3,11 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
 using Microsoft.Office.Interop.Excel;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -76,7 +76,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     //  Method: ReadWorksheet()
     //
     /// <summary>
-    /// Reads the edge worksheet and adds the edge data to a graph.
+    /// Reads the edge worksheet and adds the contents to a graph.
     /// </summary>
     ///
     /// <param name="workbook">
@@ -127,7 +127,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
         try
         {
-            AddEdgeTableToGraph(oEdgeTable, readWorkbookContext, graph);
+            ReadEdgeTable(oEdgeTable, readWorkbookContext, graph);
         }
         finally
         {
@@ -200,91 +200,22 @@ public class EdgeWorksheetReader : WorksheetReaderBase
                 ) );
         }
 
-        if (oEdgeTable.ListColumns.Count < MinimumEdgeTableColumns)
-        {
-            OnWorkbookFormatError( String.Format(
+        // Make sure the vertex name columns exist.
 
-                "The table named \"{0}\" must have at least {1} columns."
-                + "\r\n\r\n{2}"
-                ,
-                TableNames.Edges,
-                MinimumEdgeTableColumns,
-                ErrorUtil.GetTemplateMessage()
-                ) );
-        }
+        GetTableColumnIndex(oEdgeTable, EdgeTableColumnNames.Vertex1Name,
+            true);
+
+        GetTableColumnIndex(oEdgeTable, EdgeTableColumnNames.Vertex2Name,
+            true);
 
         return (oEdgeTable);
     }
 
     //*************************************************************************
-    //  Method: GetEdgeTableColumnIndexes()
+    //  Method: ReadEdgeTable()
     //
     /// <summary>
-    /// Gets the one-based indexes of the columns within the table that
-    /// contains the edge data.
-    /// </summary>
-    ///
-    /// <param name="edgeTable">
-    /// Table that contains the edge data.
-    /// </param>
-    ///
-    /// <returns>
-    /// The column indexes, as an <see cref="EdgeTableColumnIndexes" />.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// If the indexes can't be returned, a <see
-    /// cref="WorkbookFormatException" /> is thrown.
-    /// </remarks>
-    //*************************************************************************
-
-    public EdgeTableColumnIndexes
-    GetEdgeTableColumnIndexes
-    (
-        ListObject edgeTable
-    )
-    {
-        Debug.Assert(edgeTable != null);
-        AssertValid();
-
-        EdgeTableColumnIndexes oEdgeTableColumnIndexes =
-            new EdgeTableColumnIndexes();
-
-        oEdgeTableColumnIndexes.Vertex1Name = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Vertex1Name, true);
-
-        oEdgeTableColumnIndexes.Vertex2Name = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Vertex2Name, true);
-
-        oEdgeTableColumnIndexes.Color = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Color, false);
-
-        oEdgeTableColumnIndexes.Width = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Width, false);
-
-        oEdgeTableColumnIndexes.Alpha = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Alpha, false);
-
-        oEdgeTableColumnIndexes.Visibility = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Visibility, false);
-
-        oEdgeTableColumnIndexes.Label = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.Label, false);
-
-        oEdgeTableColumnIndexes.EdgeWeight = GetTableColumnIndex(
-            edgeTable, EdgeTableColumnNames.EdgeWeight, false);
-
-        oEdgeTableColumnIndexes.ID = GetTableColumnIndex(
-            edgeTable, CommonTableColumnNames.ID, false);
-
-        return (oEdgeTableColumnIndexes);
-    }
-
-    //*************************************************************************
-    //  Method: AddEdgeTableToGraph()
-    //
-    /// <summary>
-    /// Adds the contents of the edge table to a NodeXL graph.
+    /// Reads the edge table and adds the contents to a graph.
     /// </summary>
     ///
     /// <param name="oEdgeTable">
@@ -302,7 +233,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    AddEdgeTableToGraph
+    ReadEdgeTable
     (
         ListObject oEdgeTable,
         ReadWorkbookContext oReadWorkbookContext,
@@ -314,87 +245,14 @@ public class EdgeWorksheetReader : WorksheetReaderBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
-        // Read the range that contains visible edge data.  If the table is
-        // filtered, the range may contain multiple areas.
+        Boolean bReadAllEdgeAndVertexColumns =
+            oReadWorkbookContext.ReadAllEdgeAndVertexColumns;
 
-        Range oVisibleEdgeRange;
-
-        if ( !ExcelUtil.TryGetVisibleTableRange(oEdgeTable,
-            out oVisibleEdgeRange) )
+        if (oReadWorkbookContext.FillIDColumns &&
+            !bReadAllEdgeAndVertexColumns)
         {
-            return;
+            FillIDColumn(oEdgeTable);
         }
-
-        // Get the indexes of the columns within the table.
-
-        EdgeTableColumnIndexes oEdgeTableColumnIndexes =
-            GetEdgeTableColumnIndexes(oEdgeTable);
-
-        // Loop through the areas, and split each area into subranges if the
-        // area contains too many rows.
-
-        foreach ( Range oSubrange in
-            ExcelRangeSplitter.SplitRange(oVisibleEdgeRange) )
-        {
-            if (oReadWorkbookContext.FillIDColumns)
-            {
-                // If the ID column exists, fill the rows within it that are
-                // contained within the subrange with a sequence of unique IDs.
-
-                FillIDColumn(oEdgeTable, oEdgeTableColumnIndexes.ID,
-                    oSubrange);
-            }
-
-            // Add the contents of the subrange to the graph.
-
-            AddEdgeSubrangeToGraph(oSubrange, oEdgeTableColumnIndexes,
-                oGraph, oReadWorkbookContext);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AddEdgeSubrangeToGraph()
-    //
-    /// <summary>
-    /// Adds the contents of one subrange of the edge range to a NodeXL graph.
-    /// </summary>
-    ///
-    /// <param name="oEdgeSubrange">
-    /// One subrange of the range that contains edge data.
-    /// </param>
-    ///
-    /// <param name="oEdgeTableColumnIndexes">
-    /// One-based indexes of the columns within the edge table.
-    /// </param>
-    ///
-    /// <param name="oGraph">
-    /// Graph to add edges to.
-    /// </param>
-    ///
-    /// <param name="oReadWorkbookContext">
-    /// Provides access to objects needed for converting an Excel workbook to a
-    /// NodeXL graph.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AddEdgeSubrangeToGraph
-    (
-        Range oEdgeSubrange,
-        EdgeTableColumnIndexes oEdgeTableColumnIndexes,
-        IGraph oGraph,
-        ReadWorkbookContext oReadWorkbookContext
-    )
-    {
-        Debug.Assert(oEdgeSubrange != null);
-        Debug.Assert(oGraph != null);
-        Debug.Assert(oReadWorkbookContext != null);
-        AssertValid();
-
-        IVertexCollection oVertices = oGraph.Vertices;
-        IEdgeCollection oEdges = oGraph.Edges;
-
-        Object [,] aoEdgeValues = ExcelUtil.GetRangeValues(oEdgeSubrange);
 
         Dictionary<String, IVertex> oVertexNameDictionary =
             oReadWorkbookContext.VertexNameDictionary;
@@ -405,24 +263,28 @@ public class EdgeWorksheetReader : WorksheetReaderBase
         Boolean bGraphIsDirected =
             (oGraph.Directedness == GraphDirectedness.Directed);
 
-        // Loop through the rows.  Each row contains two vertex names at a
-        // minimum and represents an edge.
+        ExcelTableReader oExcelTableReader = new ExcelTableReader(oEdgeTable);
+        IVertexCollection oVertices = oGraph.Vertices;
+        IEdgeCollection oEdges = oGraph.Edges;
 
-        Int32 iRows = oEdgeSubrange.Rows.Count;
+        HashSet<String> oColumnNamesToExclude = new HashSet<String>(
+            new String[] {
+                EdgeTableColumnNames.Vertex1Name,
+                EdgeTableColumnNames.Vertex2Name
+                } );
 
-        for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+        foreach ( ExcelTableReader.ExcelTableRow oRow in
+            oExcelTableReader.GetRows() )
         {
             // Get the names of the edge's vertices.
 
             String sVertex1Name, sVertex2Name;
 
-            Boolean bVertex1IsEmpty = !ExcelUtil.TryGetNonEmptyStringFromCell(
-                aoEdgeValues, iRowOneBased,
-                oEdgeTableColumnIndexes.Vertex1Name, out sVertex1Name);
+            Boolean bVertex1IsEmpty = !oRow.TryGetNonEmptyStringFromCell(
+                EdgeTableColumnNames.Vertex1Name, out sVertex1Name);
 
-            Boolean bVertex2IsEmpty = !ExcelUtil.TryGetNonEmptyStringFromCell(
-                aoEdgeValues, iRowOneBased,
-                oEdgeTableColumnIndexes.Vertex2Name, out sVertex2Name);
+            Boolean bVertex2IsEmpty = !oRow.TryGetNonEmptyStringFromCell(
+                EdgeTableColumnNames.Vertex2Name, out sVertex2Name);
 
             if (bVertex1IsEmpty && bVertex2IsEmpty)
             {
@@ -435,8 +297,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
             {
                 // A half-empty row is an error.
 
-                OnHalfEmptyEdgeRow(oEdgeSubrange, iRowOneBased,
-                    oEdgeTableColumnIndexes, bVertex1IsEmpty);
+                OnHalfEmptyEdgeRow(oRow, bVertex1IsEmpty);
             }
 
             // Assume a default visibility.
@@ -446,18 +307,14 @@ public class EdgeWorksheetReader : WorksheetReaderBase
             String sVisibility;
 
             if (
-                oEdgeTableColumnIndexes.Visibility != NoSuchColumn
-                &&
-                ExcelUtil.TryGetNonEmptyStringFromCell(aoEdgeValues,
-                    iRowOneBased, oEdgeTableColumnIndexes.Visibility,
-                    out sVisibility)
+                oRow.TryGetNonEmptyStringFromCell(
+                    CommonTableColumnNames.Visibility, out sVisibility)
                 &&
                 !oEdgeVisibilityConverter.TryWorkbookToGraph(
                     sVisibility, out eVisibility)
                 )
             {
-                OnInvalidVisibility(oEdgeSubrange, iRowOneBased,
-                    oEdgeTableColumnIndexes.Visibility);
+                OnInvalidVisibility(oRow);
             }
 
             if (eVisibility == Visibility.Skip)
@@ -483,11 +340,18 @@ public class EdgeWorksheetReader : WorksheetReaderBase
             // If there is an ID column, add the edge to the edge ID dictionary
             // and set the edge's Tag to the ID.
 
-            if (oEdgeTableColumnIndexes.ID != NoSuchColumn)
+            AddToIDDictionary(oRow, oEdge,
+                oReadWorkbookContext.EdgeIDDictionary);
+
+            if (bReadAllEdgeAndVertexColumns)
             {
-                AddToIDDictionary(oEdgeSubrange, aoEdgeValues, iRowOneBased,
-                    oEdgeTableColumnIndexes.ID, oEdge,
-                    oReadWorkbookContext.EdgeIDDictionary);
+                // All columns except the vertex names should be read and
+                // stored as metadata on the edge.
+
+                ReadAllColumns(oExcelTableReader, oRow, oEdge,
+                    oColumnNamesToExclude);
+
+                continue;
             }
 
             if (eVisibility == Visibility.Hide)
@@ -502,78 +366,61 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
             // Alpha.
 
-            if (oEdgeTableColumnIndexes.Alpha != NoSuchColumn)
-            {
-                Boolean bAlphaIsZero = CheckForAlpha(oEdgeSubrange,
-                    aoEdgeValues, iRowOneBased, oEdgeTableColumnIndexes.Alpha,
-                    oEdge);
+            Boolean bAlphaIsZero = ReadAlpha(oRow, oEdge);
 
-                if (bAlphaIsZero)
-                {
-                    continue;
-                }
+            if (bAlphaIsZero)
+            {
+                continue;
             }
 
             // Color.
 
-            if (oEdgeTableColumnIndexes.Color != NoSuchColumn)
-            {
-                CheckForColor(oEdgeSubrange, aoEdgeValues, iRowOneBased,
-                    oEdgeTableColumnIndexes.Color, oEdge,
-                    ReservedMetadataKeys.PerColor,
-                    oReadWorkbookContext.ColorConverter2);
-            }
+            ReadColor(oRow, EdgeTableColumnNames.Color, oEdge,
+                ReservedMetadataKeys.PerColor,
+                oReadWorkbookContext.ColorConverter2);
 
             // Width.
 
-            if (oEdgeTableColumnIndexes.Width != NoSuchColumn)
-            {
-                CheckForWidth(oEdgeSubrange, aoEdgeValues, iRowOneBased,
-                    oEdgeTableColumnIndexes.Width,
-                    oReadWorkbookContext.EdgeWidthConverter, oEdge);
-            }
+            ReadWidth(oRow, oReadWorkbookContext.EdgeWidthConverter, oEdge);
+
+            // Style.
+
+            ReadStyle(oRow, oReadWorkbookContext.EdgeStyleConverter, oEdge);
 
             // Label.
 
-            if (oReadWorkbookContext.ReadEdgeLabels &&
-                oEdgeTableColumnIndexes.Label != NoSuchColumn)
+            if (oReadWorkbookContext.ReadEdgeLabels)
             {
-                CheckForNonEmptyCell(aoEdgeValues, iRowOneBased,
-                    oEdgeTableColumnIndexes.Label, oEdge,
+                ReadCellAndSetMetadata(oRow, EdgeTableColumnNames.Label, oEdge,
                     ReservedMetadataKeys.PerEdgeLabel);
             }
 
             // Weight.
 
-            if (oReadWorkbookContext.SetEdgeWeightValues)
+            if (oReadWorkbookContext.ReadEdgeWeights)
             {
-                SetEdgeWeight(oEdgeSubrange, aoEdgeValues, iRowOneBased,
-                    oEdgeTableColumnIndexes.EdgeWeight, oEdge);
+                ReadEdgeWeight(oRow, oEdge);
             }
+        }
+
+        if (bReadAllEdgeAndVertexColumns)
+        {
+            // Store the edge column names on the graph.
+
+            oGraph.SetValue( ReservedMetadataKeys.AllEdgeMetadataKeys,
+                FilterColumnNames(oExcelTableReader, oColumnNamesToExclude) );
         }
     }
 
     //*************************************************************************
-    //  Method: CheckForWidth()
+    //  Method: ReadWidth()
     //
     /// <summary>
     /// If a width has been specified for an edge, sets the edge's width.
     /// </summary>
     ///
-    /// <param name="oEdgeRange">
-    /// Range containing the edge data.
-    /// </param>
-    ///
-    /// <param name="aoEdgeValues">
-    /// Values from <paramref name="oEdgeRange" />.
-    /// </param>
-    ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
-    /// </param>
-    ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check.
+    /// <param name="oRow">
+    /// Row containing the edge data.
     /// </param>
     ///
     /// <param name="oEdgeWidthConverter">
@@ -587,28 +434,21 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    CheckForWidth
+    ReadWidth
     (
-        Range oEdgeRange,
-        Object [,] aoEdgeValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         EdgeWidthConverter oEdgeWidthConverter,
         IEdge oEdge
     )
     {
-        Debug.Assert(oEdge != null);
-        Debug.Assert(oEdgeRange != null);
-        Debug.Assert(aoEdgeValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         Debug.Assert(oEdgeWidthConverter != null);
         AssertValid();
 
         String sWidth;
 
-        if ( !ExcelUtil.TryGetNonEmptyStringFromCell(aoEdgeValues,
-            iRowOneBased, iColumnOneBased, out sWidth) )
+        if ( !oRow.TryGetNonEmptyStringFromCell(EdgeTableColumnNames.Width,
+            out sWidth) )
         {
             return;
         }
@@ -617,8 +457,8 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
         if ( !Single.TryParse(sWidth, out fWidth) )
         {
-            Range oInvalidCell =
-                (Range)oEdgeRange.Cells[iRowOneBased, iColumnOneBased];
+            Range oInvalidCell = oRow.GetRangeForCell(
+                EdgeTableColumnNames.Width);
 
             OnWorkbookFormatError( String.Format(
 
@@ -641,27 +481,66 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: SetEdgeWeight()
+    //  Method: ReadStyle()
     //
     /// <summary>
-    /// Sets the edge weight on an edge.
+    /// If a style has been specified for an edge, sets the edge's style.
     /// </summary>
     ///
-    /// <param name="oEdgeRange">
-    /// Range containing the edge data.
+    /// <param name="oRow">
+    /// Row containing the edge data.
     /// </param>
     ///
-    /// <param name="aoEdgeValues">
-    /// Values from <paramref name="oEdgeRange" />.
+    /// <param name="oEdgeStyleConverter">
+    /// Object that converts an edge style between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
     /// </param>
     ///
-    /// <param name="iRowOneBased">
-    /// One-based row index to check.
+    /// <param name="oEdge">
+    /// Edge to set the style on.
     /// </param>
+    //*************************************************************************
+
+    protected void
+    ReadStyle
+    (
+        ExcelTableReader.ExcelTableRow oRow,
+        EdgeStyleConverter oEdgeStyleConverter,
+        IEdge oEdge
+    )
+    {
+        Debug.Assert(oRow != null);
+        Debug.Assert(oEdgeStyleConverter != null);
+        AssertValid();
+
+        String sStyle;
+
+        if ( !oRow.TryGetNonEmptyStringFromCell(EdgeTableColumnNames.Style,
+            out sStyle) )
+        {
+            return;
+        }
+
+        EdgeStyle eStyle;
+
+        if ( !oEdgeStyleConverter.TryWorkbookToGraph(sStyle, out eStyle) )
+        {
+            OnWorkbookFormatErrorWithDropDown(oRow, EdgeTableColumnNames.Style,
+                "style");
+        }
+
+        oEdge.SetValue(ReservedMetadataKeys.PerEdgeStyle, eStyle);
+    }
+
+    //*************************************************************************
+    //  Method: ReadEdgeWeight()
+    //
+    /// <summary>
+    /// Reads the edge weight column.
+    /// </summary>
     ///
-    /// <param name="iColumnOneBased">
-    /// One-based column index to check, or NoSuchColumn if there is no edge
-    /// weight column.
+    /// <param name="oRow">
+    /// Row containing the edge data.
     /// </param>
     ///
     /// <param name="oEdge">
@@ -675,29 +554,19 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected void
-    SetEdgeWeight
+    ReadEdgeWeight
     (
-        Range oEdgeRange,
-        Object [,] aoEdgeValues,
-        Int32 iRowOneBased,
-        Int32 iColumnOneBased,
+        ExcelTableReader.ExcelTableRow oRow,
         IEdge oEdge
     )
     {
-        Debug.Assert(oEdge != null);
-        Debug.Assert(oEdgeRange != null);
-        Debug.Assert(aoEdgeValues != null);
-        Debug.Assert(iRowOneBased >= 1);
-        Debug.Assert(iColumnOneBased == NoSuchColumn || iColumnOneBased >= 1);
+        Debug.Assert(oRow != null);
         AssertValid();
 
         Double dEdgeWeight = 0;
 
-        if (
-            iColumnOneBased == NoSuchColumn
-            ||
-            !ExcelUtil.TryGetDoubleFromCell(aoEdgeValues,
-                iRowOneBased, iColumnOneBased, out dEdgeWeight)
+        if ( !oRow.TryGetDoubleFromCell(EdgeTableColumnNames.EdgeWeight,
+            out dEdgeWeight)
             )
         {
             // There is no edge weight column, or the edge weight cell for this
@@ -717,17 +586,8 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     /// name.
     /// </summary>
     ///
-    /// <param name="oEdgeRange">
-    /// Range containing edge data.
-    /// </param>
-    ///
-    /// <param name="iHalfEmptyRowOneBased">
-    /// One-based index of the row in <paramref name="oEdgeRange" /> that
-    /// is half-empty.
-    /// </param>
-    ///
-    /// <param name="oEdgeTableColumnIndexes">
-    /// One-based indexes of the columns within the edge table.
+    /// <param name="oRow">
+    /// Invalid row.
     /// </param>
     ///
     /// <param name="bVertex1IsEmpty">
@@ -743,24 +603,19 @@ public class EdgeWorksheetReader : WorksheetReaderBase
     protected void
     OnHalfEmptyEdgeRow
     (
-        Range oEdgeRange,
-        Int32 iHalfEmptyRowOneBased,
-        EdgeTableColumnIndexes oEdgeTableColumnIndexes,
+        ExcelTableReader.ExcelTableRow oRow,
         Boolean bVertex1IsEmpty
     )
     {
-        Debug.Assert(oEdgeRange != null);
-        Debug.Assert(iHalfEmptyRowOneBased >= 1);
+        Debug.Assert(oRow != null);
 
         AssertValid();
 
-        Range oVertex1Cell = (Range)oEdgeRange.Cells[
-            iHalfEmptyRowOneBased, oEdgeTableColumnIndexes.Vertex1Name
-            ];
+        Range oVertex1Cell = oRow.GetRangeForCell(
+            EdgeTableColumnNames.Vertex1Name);
 
-        Range oVertex2Cell = (Range)oEdgeRange.Cells[
-            iHalfEmptyRowOneBased, oEdgeTableColumnIndexes.Vertex2Name
-            ];
+        Range oVertex2Cell = oRow.GetRangeForCell(
+            EdgeTableColumnNames.Vertex2Name);
 
         Range oEmptyCell = bVertex1IsEmpty ? oVertex1Cell : oVertex2Cell;
         Range oNonEmptyCell = bVertex1IsEmpty ? oVertex2Cell : oVertex1Cell;
@@ -805,70 +660,10 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
 
     //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Minimum number of columns in the edges table.  (Some of the columns
-    /// used by this class are optional, and the user can add his own columns
-    /// to the table.)
-
-    protected const Int32 MinimumEdgeTableColumns = 2;
-
-
-    //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
     // (None.)
-
-
-    //*************************************************************************
-    //  Embedded class: EdgeTableColumnIndexes
-    //
-    /// <summary>
-    /// Contains the one-based indexes of the columns in the required edge
-    /// table.
-    /// </summary>
-    //*************************************************************************
-
-    public class EdgeTableColumnIndexes
-    {
-        /// Name of the edge's first vertex.
-
-        public Int32 Vertex1Name;
-
-        /// Name of the edge's second vertex.
-
-        public Int32 Vertex2Name;
-
-        /// The edge's optional color.
-
-        public Int32 Color;
-
-        /// The edge's optional width.
-
-        public Int32 Width;
-
-        /// The edge's optional alpha, from 0 (transparent) to 10 (opaque).
-
-        public Int32 Alpha;
-
-        /// The edge's optional visibility.
-
-        public Int32 Visibility;
-
-        /// The edge's optional label.
-
-        public Int32 Label;
-
-        /// The edge's optional edge weight.
-
-        public Int32 EdgeWeight;
-
-        /// The edge's ID, which is filled in by ReadWorksheet().
-
-        public Int32 ID;
-    }
 }
 
 }

@@ -222,7 +222,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
                 oEdgeTable, EdgeTableColumnNames.Color, sBlack,
 
-                oEdgeTable, EdgeTableColumnNames.Alpha,
+                oEdgeTable, CommonTableColumnNames.Alpha,
                     0.6F * (AlphaConverter.MaximumAlphaWorkbook -
                         AlphaConverter.MinimumAlphaWorkbook),
 
@@ -234,7 +234,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
                 oVertexTable, VertexTableColumnNames.Radius, 3.0F,
 
-                oVertexTable, VertexTableColumnNames.Alpha,
+                oVertexTable, CommonTableColumnNames.Alpha,
                     AlphaConverter.MaximumAlphaWorkbook
                 );
 
@@ -351,7 +351,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
                 oEdgeTable, EdgeTableColumnNames.Width, 2.0F,
 
-                oEdgeTable, EdgeTableColumnNames.Alpha,
+                oEdgeTable, CommonTableColumnNames.Alpha,
                     AlphaConverter.MaximumAlphaWorkbook,
 
                 oVertexTable, VertexTableColumnNames.Shape,
@@ -364,7 +364,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
                 oVertexTable, VertexTableColumnNames.Radius, 1.5F,
 
-                oVertexTable, VertexTableColumnNames.Alpha,
+                oVertexTable, CommonTableColumnNames.Alpha,
                     AlphaConverter.MaximumAlphaWorkbook
                 );
 
@@ -673,7 +673,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
         FillColumnsWithConstants(
 
-            oVertexTable, VertexTableColumnNames.Alpha,
+            oVertexTable, CommonTableColumnNames.Alpha,
                 AlphaConverter.MaximumAlphaWorkbook,
 
             oEdgeTable, EdgeTableColumnNames.Color,
@@ -682,7 +682,7 @@ public static class WorkbookSchemeAutoFiller : Object
 
             oEdgeTable, EdgeTableColumnNames.Width, 1.0F,
 
-            oEdgeTable, EdgeTableColumnNames.Alpha,
+            oEdgeTable, CommonTableColumnNames.Alpha,
                 AlphaConverter.MaximumAlphaWorkbook
             );
 

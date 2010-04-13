@@ -52,9 +52,6 @@
     <Compile Include="..\..\Common\BinaryHeapItem.cs">
       <Link>BinaryHeapItem.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\CollectionUtil.cs">
-      <Link>CollectionUtil.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\ColorUtil.cs">
       <Link>ColorUtil.cs</Link>
     </Compile>

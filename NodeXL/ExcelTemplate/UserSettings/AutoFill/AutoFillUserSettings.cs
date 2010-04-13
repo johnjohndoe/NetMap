@@ -35,17 +35,19 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// Initializes a new instance of the AutoFillUserSettings class.
     /// </summary>
     ///
-    /// <param name="perWorkbookSettings">
-    /// Provides access to settings that are stored on a per-workbook basis.
+    /// <param name="workbook">
+    /// The workbook being autofilled.
     /// </param>
     //*************************************************************************
 
     public AutoFillUserSettings
     (
-        PerWorkbookSettings perWorkbookSettings
+        Microsoft.Office.Interop.Excel.Workbook workbook
     )
     {
-        m_oPerWorkbookSettings = perWorkbookSettings;
+        Debug.Assert(workbook != null);
+
+        m_oWorkbook = workbook;
 
         AssertValid();
     }
@@ -1233,7 +1235,9 @@ public class AutoFillUserSettings : ApplicationSettingsBase
             // AutoFillSettingsProvider class.
 
             SettingsContext oContext = base.Context;
-            oContext[PerWorkbookSettingsKeyName] = m_oPerWorkbookSettings;
+
+            oContext[PerWorkbookSettingsKeyName] =
+                new PerWorkbookSettings(m_oWorkbook);
 
             return (oContext);
         }
@@ -1255,7 +1259,8 @@ public class AutoFillUserSettings : ApplicationSettingsBase
 
         // Clear any per-workbook settings.
 
-        m_oPerWorkbookSettings.AutoFillWorkbookSettings = null;
+        ( new PerWorkbookSettings(m_oWorkbook) ).AutoFillWorkbookSettings =
+            null;
 
         base.Reset();
     }
@@ -1273,7 +1278,7 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     public void
     AssertValid()
     {
-        Debug.Assert(m_oPerWorkbookSettings != null);
+        Debug.Assert(m_oWorkbook != null);
     }
 
 
@@ -1469,9 +1474,9 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     //  Protected fields
     //*************************************************************************
 
-    /// Provides access to settings that are stored on a per-workbook basis.
+    /// The workbook being autofilled.
 
-    protected PerWorkbookSettings m_oPerWorkbookSettings;
+    protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
 }
 
 

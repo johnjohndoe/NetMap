@@ -159,9 +159,10 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         this.ArgumentChecker.CheckArgumentNotNull(MethodName, "layoutContext",
             layoutContext);
 
-        LayoutContext oLayoutContext2;
+        LayoutContext oAdjustedLayoutContext;
 
-        if ( !SubtractMarginFromRectangle(layoutContext, out oLayoutContext2) )
+        if ( !GetAdjustedLayoutContext(graph, layoutContext,
+            out oAdjustedLayoutContext) )
         {
             return;
         }
@@ -172,7 +173,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
 
         if (oVerticesToLayOut.Count > 0)
         {
-            LayOutGraphCore(graph, oVerticesToLayOut, oLayoutContext2);
+            LayOutGraphCore(graph, oVerticesToLayOut, oAdjustedLayoutContext);
             LayoutMetadataUtil.MarkGraphAsLaidOut(graph);
         }
     }
@@ -440,62 +441,103 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     }
 
     //*************************************************************************
-    //  Method: SubtractMarginFromRectangle()
+    //  Method: GetAdjustedLayoutContext()
     //
     /// <summary>
-    /// Subtracts a margin from each edge of the graph rectangle before laying
-    /// out the graph.
+    /// Gets an adjusted layout context object to use when laying out the
+    /// graph.
     /// </summary>
     ///
-    /// <param name="oLayoutContext">
-    /// Provides access to objects needed to lay out the graph.
+    /// <param name="oGraph">
+    /// The graph being laid out.
     /// </param>
     ///
-    /// <param name="oLayoutContext2">
+    /// <param name="oOriginalLayoutContext">
+    /// The original layout context passed to the layout method.
+    /// </param>
+    ///
+    /// <param name="oAdjustedLayoutContext">
     /// If true is returned, this gets set to a copy of <paramref
-    /// name="oLayoutContext" /> with a modified <see
-    /// cref="LayoutContext.GraphRectangle" />.
+    /// name="oOriginalLayoutContext" /> that has been adjusted.
     /// </param>
     ///
     /// <returns>
-    /// true if the modified rectangle has positive width and height, false if
-    /// the modified rectangle can't be used.
+    /// true if the graph can be laid out, false if it can't be.
     /// </returns>
     ///
     /// <remarks>
-    /// This method subtracts <see cref="LayoutBase.Margin" /> from each edge
-    /// of the <see cref="LayoutContext.GraphRectangle" /> stored in <paramref
-    /// name="oLayoutContext" />.  If the resulting rectangle has a positive
-    /// width and height, a new <see cref="LayoutContext" /> is stored at
-    /// <paramref name="oLayoutContext2" /> and true is returned.  false is
-    /// returned otherwise.
+    /// This method adjusts the graph rectangle stored in <paramref
+    /// name="oOriginalLayoutContext" /> according to the <see
+    /// cref="LayoutBase.Margin" /> setting and the presence of a <see
+    /// cref="ReservedMetadataKeys.LayOutTheseVerticesWithinBounds" /> key on
+    /// the graph.  If subtracting the margin results in a non-positive width
+    /// or height, false is returned.
     /// </remarks>
     //*************************************************************************
 
     protected Boolean
-    SubtractMarginFromRectangle
+    GetAdjustedLayoutContext
     (
-        LayoutContext oLayoutContext,
-        out LayoutContext oLayoutContext2
+        IGraph oGraph,
+        LayoutContext oOriginalLayoutContext,
+        out LayoutContext oAdjustedLayoutContext
     )
     {
-        Debug.Assert(oLayoutContext != null);
+        Debug.Assert(oGraph != null);
+        Debug.Assert(oOriginalLayoutContext != null);
         AssertValid();
 
-        Rectangle oRectangle = oLayoutContext.GraphRectangle;
+        oAdjustedLayoutContext = null;
+        Rectangle oAdjustedRectangle = oOriginalLayoutContext.GraphRectangle;
 
-        oRectangle.Inflate(-m_iMargin, -m_iMargin);
-
-        if (oRectangle.Width <= 0 || oRectangle.Height <= 0)
+        if (
+            oGraph.ContainsKey(
+                ReservedMetadataKeys.LayOutTheseVerticesWithinBounds)
+            &&
+            oGraph.ContainsKey(
+                ReservedMetadataKeys.LayOutTheseVerticesOnly)
+            )
         {
-            oLayoutContext2 = null;
+            // Get the bounding rectangle of the specified vertices.
 
-            return (false);
+            Single fMinimumX = Single.MaxValue;
+            Single fMaximumX = Single.MinValue;
+            Single fMinimumY = Single.MaxValue;
+            Single fMaximumY = Single.MinValue;
+            
+            foreach ( IVertex oVertex in GetVerticesToLayOut(oGraph) )
+            {
+                PointF oLocation = oVertex.Location;
+                Single fX = oLocation.X;
+                Single fY = oLocation.Y;
+
+                fMinimumX = Math.Min(fX, fMinimumX);
+                fMaximumX = Math.Max(fX, fMaximumX);
+                fMinimumY = Math.Min(fY, fMinimumY);
+                fMaximumY = Math.Max(fY, fMaximumY);
+            }
+
+            if (fMinimumX != Single.MaxValue)
+            {
+                oAdjustedRectangle = Rectangle.FromLTRB(
+                    (Int32)Math.Ceiling(fMinimumX),
+                    (Int32)Math.Ceiling(fMinimumY),
+                    (Int32)Math.Floor(fMaximumX),
+                    (Int32)Math.Floor(fMaximumY) );
+            }
+        }
+        else
+        {
+            oAdjustedRectangle.Inflate(-m_iMargin, -m_iMargin);
         }
 
-        oLayoutContext2 = new LayoutContext(oRectangle);
+        if (oAdjustedRectangle.Width > 0 && oAdjustedRectangle.Height > 0)
+        {
+            oAdjustedLayoutContext = new LayoutContext(oAdjustedRectangle);
+            return (true);
+        }
 
-        return (true);
+        return (false);
     }
 
     //*************************************************************************

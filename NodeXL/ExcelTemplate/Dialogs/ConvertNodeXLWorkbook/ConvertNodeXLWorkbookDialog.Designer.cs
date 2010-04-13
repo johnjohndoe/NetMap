@@ -48,14 +48,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(396, 78);
+            this.label1.Size = new System.Drawing.Size(396, 150);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 94);
+            this.label2.Location = new System.Drawing.Point(9, 170);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 13);
             this.label2.TabIndex = 1;
@@ -63,7 +63,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // txbOtherWorkbookFile
             // 
-            this.txbOtherWorkbookFile.Location = new System.Drawing.Point(12, 113);
+            this.txbOtherWorkbookFile.Location = new System.Drawing.Point(12, 189);
             this.txbOtherWorkbookFile.MaxLength = 256;
             this.txbOtherWorkbookFile.Name = "txbOtherWorkbookFile";
             this.txbOtherWorkbookFile.Size = new System.Drawing.Size(313, 20);
@@ -72,7 +72,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(334, 111);
+            this.btnBrowse.Location = new System.Drawing.Point(334, 187);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(74, 23);
             this.btnBrowse.TabIndex = 3;
@@ -83,7 +83,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 145);
+            this.label3.Location = new System.Drawing.Point(9, 221);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(85, 13);
             this.label3.TabIndex = 4;
@@ -91,7 +91,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // txbConvertedWorkbookFile
             // 
-            this.txbConvertedWorkbookFile.Location = new System.Drawing.Point(12, 164);
+            this.txbConvertedWorkbookFile.Location = new System.Drawing.Point(12, 240);
             this.txbConvertedWorkbookFile.Name = "txbConvertedWorkbookFile";
             this.txbConvertedWorkbookFile.ReadOnly = true;
             this.txbConvertedWorkbookFile.Size = new System.Drawing.Size(313, 20);
@@ -99,7 +99,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(253, 224);
+            this.btnOK.Location = new System.Drawing.Point(253, 300);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(74, 23);
             this.btnOK.TabIndex = 7;
@@ -110,7 +110,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(333, 224);
+            this.btnCancel.Location = new System.Drawing.Point(333, 300);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(74, 23);
             this.btnCancel.TabIndex = 8;
@@ -120,7 +120,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // cbxOpenConvertedWorkbook
             // 
             this.cbxOpenConvertedWorkbook.AutoSize = true;
-            this.cbxOpenConvertedWorkbook.Location = new System.Drawing.Point(12, 199);
+            this.cbxOpenConvertedWorkbook.Location = new System.Drawing.Point(12, 275);
             this.cbxOpenConvertedWorkbook.Name = "cbxOpenConvertedWorkbook";
             this.cbxOpenConvertedWorkbook.Size = new System.Drawing.Size(203, 17);
             this.cbxOpenConvertedWorkbook.TabIndex = 6;
@@ -133,7 +133,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(419, 260);
+            this.ClientSize = new System.Drawing.Size(419, 338);
             this.Controls.Add(this.cbxOpenConvertedWorkbook);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);

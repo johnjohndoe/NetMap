@@ -72,7 +72,7 @@
     <Compile Include="Mouse\GraphMouseButtonEventArgs.cs" />
     <Compile Include="Mouse\MouseDrag.cs" />
     <Compile Include="Mouse\MouseDragWithVisual.cs" />
-    <Compile Include="Mouse\MouseSelectionMode.cs" />
+    <Compile Include="Mouse\MouseMode.cs" />
     <Compile Include="Mouse\VertexToolTipShownEventArgs.cs" />
     <Compile Include="Mouse\VerticesMovedEventArgs.cs" />
     <Compile Include="NodeXLControl.cs" />

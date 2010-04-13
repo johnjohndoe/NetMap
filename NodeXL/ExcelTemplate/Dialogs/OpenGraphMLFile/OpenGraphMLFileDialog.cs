@@ -181,18 +181,13 @@ public class OpenGraphMLFileDialog : OpenFileDialog2
 
 
     //*************************************************************************
-    //  Public constants
+    //  Protected constants
     //*************************************************************************
 
     /// Filter to use for this dialog.
 
-    public const String Filter =
+    protected const String Filter =
         "GraphML Files (*.graphml, *.xml)|*.graphml;*.xml";
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
 
     /// Title to use for this dialog.
 

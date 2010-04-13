@@ -1,11 +1,12 @@
 
 Overview
 --------
-NodeXL is a network graphing API and a set of applications created by Marc
-Smith's team at Microsoft Research.  To build NodeXL, see
-.\HowToBuildNodeXL.txt.
+NodeXL is an Excel 2007 template for displaying and analyzing network graphs,
+along with an API for incorporating graphs in other applications.  To build
+NodeXL, see .\HowToBuildNodeXL.txt.
 
-The following sections describe the subdirectories within this directory.
+The following sections describe the subdirectories within this directory,
+listed in alphabetical order.
 
 
 Adapters
@@ -25,6 +26,11 @@ algorithms need to be refactored to make them available to other applications.
 ApplicationUtil
 ---------------
 Visual Studio project, contains classes useful to graphing applications.
+
+
+BuildTools
+----------
+Tools needed by the build process, but not needed on client machines.
 
 
 Common
@@ -69,9 +75,20 @@ ExcelTemplateSetup
 Visual Studio deployment project, installs ExcelTemplate.
 
 
-ExcelTemplateSetupCustomActions
--------------------------------
-Custom action classes used by ExcelTemplateSetup.
+ExcelTemplateSetupClickOnceInstaller
+------------------------------------
+Custom action class used by ExcelTemplateSetup.
+
+
+ExcelTemplateSetupStarter
+-------------------------
+Console application for starting the Excel Template setup process on a client
+machine.
+
+
+ExcelTemplateSetupTrustInstaller
+--------------------------------
+Custom action class used by ExcelTemplateSetup.
 
 
 Layouts

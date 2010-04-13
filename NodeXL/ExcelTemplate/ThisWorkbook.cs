@@ -255,11 +255,11 @@ public partial class ThisWorkbook
             ImportGraph(oGraph, 
 
                 ( String[] )oGraph.GetRequiredValue(
-                    ReservedMetadataKeys.GraphMLEdgeAttributes,
+                    ReservedMetadataKeys.AllEdgeMetadataKeys,
                     typeof( String[] ) ),
 
                 ( String[] )oGraph.GetRequiredValue(
-                    ReservedMetadataKeys.GraphMLVertexAttributes,
+                    ReservedMetadataKeys.AllVertexMetadataKeys,
                     typeof( String[] ) )
                 );
         }
@@ -298,42 +298,45 @@ public partial class ThisWorkbook
         }
 
         ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
-        oReadWorkbookContext.SetEdgeWeightValues = true;
-        WorkbookReader oWorkbookReader = new WorkbookReader();
+        oReadWorkbookContext.ReadEdgeWeights = true;
 
         SaveUcinetFileDialog oSaveUcinetFileDialog =
             new SaveUcinetFileDialog(String.Empty, String.Empty);
 
-        ShowWaitCursor = true;
-        this.ScreenUpdating = false;
+        ExportToFile(oReadWorkbookContext, oSaveUcinetFileDialog);
+    }
 
-        try
+    //*************************************************************************
+    //  Method: ExportToGraphMLFile()
+    //
+    /// <summary>
+    /// Exports the edge and vertex tables to a new GraphML file.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    ExportToGraphMLFile()
+    {
+        AssertValid();
+
+        if (
+            !this.ExcelApplicationIsReady(true)
+            ||
+            !MergeIsApproved(
+                "add an Edge Weight column, and export the edges and vertices"
+                + " to a new GraphML file.")
+            )
         {
-            // Merge duplicate edges and add an edge weight column.
-
-            ( new DuplicateEdgeMerger() ).MergeDuplicateEdges(
-                this.InnerObject);
-
-            this.ScreenUpdating = true;
-
-            // Read the workbook, including the edge weight column, then let
-            // the user save it.
-
-            IGraph oGraph = oWorkbookReader.ReadWorkbook(
-                this.InnerObject, oReadWorkbookContext);
-
-            oSaveUcinetFileDialog.ShowDialogAndSaveGraph(oGraph);
+            return;
         }
-        catch (Exception oException)
-        {
-            this.ScreenUpdating = true;
-            ErrorUtil.OnException(oException);
-        }
-        finally
-        {
-            this.ScreenUpdating = true;
-            ShowWaitCursor = false;
-        }
+
+        ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
+        oReadWorkbookContext.ReadAllEdgeAndVertexColumns = true;
+
+        SaveGraphMLFileDialog oSaveGraphMLFileDialog =
+            new SaveGraphMLFileDialog(String.Empty, String.Empty);
+
+        ExportToFile(oReadWorkbookContext, oSaveGraphMLFileDialog);
     }
 
     //*************************************************************************
@@ -349,13 +352,19 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        if ( !this.ExcelApplicationIsReady(true) )
+        if (
+            !this.ExcelApplicationIsReady(true)
+            ||
+            !MergeIsApproved(
+                "add an Edge Weight column, and export the edges and vertices"
+                + " to a new Pajek file.")
+            )
         {
             return;
         }
 
         ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
-        oReadWorkbookContext.SetEdgeWeightValues = true;
+        oReadWorkbookContext.ReadEdgeWeights = true;
 
         // Map any vertex coordinates stored in the workbook to an arbitrary
         // rectangle.  PajekGraphAdapter will in turn map these to Pajek
@@ -366,31 +375,10 @@ public partial class ThisWorkbook
         oReadWorkbookContext.GraphRectangle =
             new System.Drawing.Rectangle(0, 0, 10000, 10000);
 
-        WorkbookReader oWorkbookReader = new WorkbookReader();
-
         SavePajekFileDialog oSavePajekFileDialog =
             new SavePajekFileDialog(String.Empty, String.Empty);
 
-        ShowWaitCursor = true;
-
-        try
-        {
-            // Read the workbook into a Graph object, then let the user save
-            // it.
-
-            IGraph oGraph = oWorkbookReader.ReadWorkbook(
-                this.InnerObject, oReadWorkbookContext);
-
-            oSavePajekFileDialog.ShowDialogAndSaveGraph(oGraph);
-        }
-        catch (Exception oException)
-        {
-            ErrorUtil.OnException(oException);
-        }
-        finally
-        {
-            ShowWaitCursor = false;
-        }
+        ExportToFile(oReadWorkbookContext, oSavePajekFileDialog);
     }
 
     //*************************************************************************
@@ -993,11 +981,11 @@ public partial class ThisWorkbook
             ImportGraph(oGraph,
 
                 ( String[] )oGraph.GetRequiredValue(
-                    ReservedMetadataKeys.GraphMLEdgeAttributes,
+                    ReservedMetadataKeys.AllEdgeMetadataKeys,
                     typeof( String[] ) ),
 
                 ( String[] )oGraph.GetRequiredValue(
-                    ReservedMetadataKeys.GraphMLVertexAttributes,
+                    ReservedMetadataKeys.AllVertexMetadataKeys,
                     typeof( String[] ) )
                 );
         }
@@ -1652,6 +1640,66 @@ public partial class ThisWorkbook
         }
 
         this.Ribbon.EnableSetVisualAttributes(eVisualAttributes);
+    }
+
+    //*************************************************************************
+    //  Method: ExportToFile()
+    //
+    /// <summary>
+    /// Merges duplicate edges and exports the edge and vertex tables to a file
+    /// using a provided dialog.
+    /// </summary>
+    ///
+    /// <param name="oReadWorkbookContext">
+    /// Provides access to objects needed for converting an Excel workbook to a
+    /// NodeXL graph.
+    /// </param>
+    ///
+    /// <param name="oSaveGraphFileDialog">
+    /// The dialog to use to save the graph.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    ExportToFile
+    (
+        ReadWorkbookContext oReadWorkbookContext,
+        SaveGraphFileDialog oSaveGraphFileDialog
+    )
+    {
+        Debug.Assert(oReadWorkbookContext != null);
+        Debug.Assert(oSaveGraphFileDialog != null);
+        AssertValid();
+
+        WorkbookReader oWorkbookReader = new WorkbookReader();
+
+        ShowWaitCursor = true;
+        this.ScreenUpdating = false;
+
+        try
+        {
+            ( new DuplicateEdgeMerger() ).MergeDuplicateEdges(
+                this.InnerObject);
+
+            this.ScreenUpdating = true;
+
+            // Read the workbook and let the user save it.
+
+            IGraph oGraph = oWorkbookReader.ReadWorkbook(
+                this.InnerObject, oReadWorkbookContext);
+
+            oSaveGraphFileDialog.ShowDialogAndSaveGraph(oGraph);
+        }
+        catch (Exception oException)
+        {
+            this.ScreenUpdating = true;
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            this.ScreenUpdating = true;
+            ShowWaitCursor = false;
+        }
     }
 
     //*************************************************************************

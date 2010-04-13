@@ -53,15 +53,15 @@ public static class SubgraphCalculator
     /// </param>
     ///
     /// <param name="subgraphVertices">
-    /// Where a dictionary of subgraph vertices gets stored.  The key is the
+    /// Where a Dictionary of subgraph vertices gets stored.  The key is the
     /// IVertex and the value is the vertex's level, which is the distance of
     /// the subgraph vertex from <paramref name="vertex" />.
     /// </param>
     ///
     /// <param name="subgraphEdges">
-    /// Where a dictionary of subgraph edges gets stored.  The key is the IEdge
-    /// and the value isn't used.  If <paramref name="getSubgraphEdges" /> is
-    /// false, the dictionary is always empty.
+    /// Where a HashSet of subgraph edges gets stored.  The key is the IEdge.
+    /// If <paramref name="getSubgraphEdges" /> is false, the HashSet is always
+    /// empty.
     /// </param>
     //*************************************************************************
 
@@ -72,7 +72,7 @@ public static class SubgraphCalculator
         Decimal levels,
         Boolean getSubgraphEdges,
         out Dictionary<IVertex, Int32> subgraphVertices,
-        out Dictionary<IEdge, Char> subgraphEdges
+        out HashSet<IEdge> subgraphEdges
     )
     {
         Debug.Assert(vertex != null);
@@ -80,7 +80,7 @@ public static class SubgraphCalculator
         Debug.Assert(Decimal.Remainder(levels, 0.5M) == 0M);
 
         subgraphVertices = new Dictionary<IVertex, Int32>();
-        subgraphEdges = new Dictionary<IEdge, Char>();
+        subgraphEdges = new HashSet<IEdge>();
 
         // This algorithm was suggested by Jure Leskovec at Carnegie Mellon
         // University.
@@ -112,10 +112,7 @@ public static class SubgraphCalculator
             {
                 if (getSubgraphEdges)
                 {
-                    // Use the Item property, not the Add() method, because the
-                    // same edge may be added twice.
-
-                    subgraphEdges[oIncidentEdge] = ' ';
+                    subgraphEdges.Add(oIncidentEdge);
                 }
 
                 IVertex oAdjacentVertex =
@@ -156,8 +153,8 @@ public static class SubgraphCalculator
     /// </param>
     ///
     /// <param name="oSubgraphEdges">
-    /// Dictionary of subgraph edges.  The key is the IEdge and the value isn't
-    /// used.  This method adds any outer edges to this dictionary.
+    /// HashSet of subgraph edges.  The key is the IEdge.  This method adds any
+    /// outer edges to this HashSet.
     /// </param>
     //*************************************************************************
 
@@ -166,7 +163,7 @@ public static class SubgraphCalculator
     (
         Int32 iOuterLevel,
         Dictionary<IVertex, Int32> oSubgraphVertices,
-        Dictionary<IEdge, Char> oSubgraphEdges
+        HashSet<IEdge> oSubgraphEdges
     )
     {
         Debug.Assert(iOuterLevel > 0);
@@ -204,7 +201,7 @@ public static class SubgraphCalculator
                     iAdjacentVertexLevel == iOuterLevel
                     )
                 {
-                    oSubgraphEdges[oIncidentEdge] = ' ';
+                    oSubgraphEdges.Add(oIncidentEdge);
                 }
             }
         }

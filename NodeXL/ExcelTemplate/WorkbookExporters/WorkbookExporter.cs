@@ -150,7 +150,7 @@ public class WorkbookExporter
         // Read the workbook, including the edge weight column.
 
         ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
-        oReadWorkbookContext.SetEdgeWeightValues = true;
+        oReadWorkbookContext.ReadEdgeWeights = true;
 
         IGraph oGraph = ( new WorkbookReader() ).ReadWorkbook(
             m_oWorkbookToExport, oReadWorkbookContext);

@@ -23,6 +23,13 @@ namespace Microsoft.NodeXL.Adapters
 /// <see cref="GetAttributeValue" /> parses a "data" XML node.  <see
 /// cref="TryGetDefaultAttributeValue" /> provides a default value for the
 /// GraphML-attribute, if one was specified.
+///
+/// <para>
+/// NodeXL doesn't support the for="graph" or for="all" attribute values
+/// allowed by the GraphML specification.  The caller should filter out such
+/// "key" XML nodes before using this class to parse them.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -107,7 +114,8 @@ public class GraphMLAttribute : Object
     ///
     /// <remarks>
     /// The name is the value of the "attr.name" attribute on the "key" XML
-    /// node.
+    /// node, or the value of the "id" attribute if the "attr.name" attribute
+    /// is missing.
     /// </remarks>
     //*************************************************************************
 
@@ -186,8 +194,16 @@ public class GraphMLAttribute : Object
 
         Debug.Assert(sKey == m_sID);
 
-        String sAttributeValue = XmlUtil2.SelectRequiredSingleNodeAsString(
-            dataXmlNode, "text()", null);
+        String sAttributeValue;
+        
+        if ( !XmlUtil2.TrySelectSingleNodeAsString(dataXmlNode, "text()",
+            null, out sAttributeValue) )
+        {
+            // Allow missing inner text for GraphML-attributes of type string.
+            // This was found in a GraphML file created by the yED program.
+
+            sAttributeValue = String.Empty;
+        }
 
         try
         {
@@ -272,11 +288,22 @@ public class GraphMLAttribute : Object
         String sFor = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
             "@for", null);
 
-        m_sName = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
-            "@attr.name", null);
+        // Note that the @attr.name and @attr.type attributes are optional.
+        // Default to sensible values if they are missing.
 
-        String sType = XmlUtil2.SelectRequiredSingleNodeAsString(oKeyXmlNode,
-            "@attr.type", null);
+        if ( !XmlUtil2.TrySelectSingleNodeAsString(oKeyXmlNode,
+            "@attr.name", null, out m_sName) )
+        {
+            m_sName = m_sID;
+        }
+
+        String sType;
+
+        if ( !XmlUtil2.TrySelectSingleNodeAsString(oKeyXmlNode, "@attr.type",
+            null, out sType) )
+        {
+            sType = "string";
+        }
 
         switch (sFor)
         {
@@ -290,6 +317,10 @@ public class GraphMLAttribute : Object
                 m_bIsForVertex = false;
                 break;
             
+            // NodeXL doesn't support the "graph" or "all" values allowed by
+            // the GraphML specification.  The caller should filter out such
+            // "key" XML nodes before using this class.
+
             default:
 
                 throw new XmlException(
@@ -375,7 +406,7 @@ public class GraphMLAttribute : Object
     /// </summary>
     ///
     /// <param name="sAttributeValue">
-    /// The value to convert.  Can't be null or empty.
+    /// The value to convert.  Can't be null.
     /// </param>
     //*************************************************************************
 
@@ -385,7 +416,10 @@ public class GraphMLAttribute : Object
         String sAttributeValue
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sAttributeValue) );
+        Debug.Assert(sAttributeValue != null);
+
+        Debug.Assert(m_eType == AttributeType.String ||
+            sAttributeValue.Length > 0);
 
         switch (m_eType)
         {

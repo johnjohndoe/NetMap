@@ -20,7 +20,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <remarks>
 /// Use <see cref="AddColumnPair" /> to add a pair of columns to a table.  Use
-/// <see cref="GetColumnPairIndexes" /> to get a collection of all the columns
+/// <see cref="GetColumnPairNames" /> to get a collection of all the columns
 /// pairs that were added.
 /// </remarks>
 //*****************************************************************************
@@ -92,7 +92,7 @@ public class TableColumnAdder : Object
     ///
     /// <para>
     /// The column pairs that were added by calls to this method can be
-    /// retrieved with <see cref="GetColumnPairIndexes" />.
+    /// retrieved with <see cref="GetColumnPairNames" />.
     /// </para>
     ///
     /// </remarks>
@@ -173,10 +173,10 @@ public class TableColumnAdder : Object
     }
 
     //*************************************************************************
-    //  Method: GetColumnPairIndexes()
+    //  Method: GetColumnPairNames()
     //
     /// <summary>
-    /// Gets the indexes of all the column pairs that were added to a table.
+    /// Gets the names of all the column pairs that were added to a table.
     /// </summary>
     ///
     /// <param name="table">
@@ -192,17 +192,17 @@ public class TableColumnAdder : Object
     /// </param>
     ///
     /// <returns>
-    /// An array of KeyValuePairs, one for each pair of columns that were
+    /// A collection of KeyValuePairs, one for each pair of columns that were
     /// added to the table by <see cref="AddColumnPair" />.  The key is the
-    /// one-based index of the column corresponding to <paramref
-    /// name="column1NameBase" /> and the value is the one-based index of the
-    /// column corresponding to <paramref name="column2NameBase" />.  The array
-    /// may be empty but is never null.
+    /// name of the column corresponding to <paramref name="column1NameBase" />
+    /// and the value is the name of the column corresponding to <paramref
+    /// name="column2NameBase" />.  The collection may be empty but is never
+    /// null.
     /// </returns>
     //*************************************************************************
 
-    public KeyValuePair<Int32, Int32> []
-    GetColumnPairIndexes
+    public ICollection< KeyValuePair<String, String> >
+    GetColumnPairNames
     (
         ListObject table,
         String column1NameBase,
@@ -212,8 +212,8 @@ public class TableColumnAdder : Object
         Debug.Assert(table != null);
         AssertValid();
 
-        List<KeyValuePair<Int32, Int32>> oColumnPairIndexes =
-            new List<KeyValuePair<Int32, Int32>>();
+        List<KeyValuePair<String, String>> oColumnPairNames =
+            new List<KeyValuePair<String, String>>();
 
         Regex oRegex = GetColumnNameRegex(column1NameBase);
 
@@ -273,12 +273,12 @@ public class TableColumnAdder : Object
 
             if (oColumn2 != null)
             {
-                oColumnPairIndexes.Add(new KeyValuePair<Int32, Int32>(
-                    oColumn1.Index, oColumn2.Index) );
+                oColumnPairNames.Add(new KeyValuePair<String, String>(
+                    oColumn1.Name, oColumn2.Name) );
             }
         }
 
-        return ( oColumnPairIndexes.ToArray() );
+        return (oColumnPairNames);
     }
 
     //*************************************************************************

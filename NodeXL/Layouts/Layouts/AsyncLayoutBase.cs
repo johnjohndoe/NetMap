@@ -60,6 +60,30 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     }
 
     //*************************************************************************
+    //  Property: SupportsBinning
+    //
+    /// <summary>
+    /// Gets a flag indicating whether binning can be used when the entire
+    /// graph is laid out.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if binning can be used.
+    /// </value>
+    //*************************************************************************
+
+    public virtual Boolean
+    SupportsBinning
+    {
+        get
+        {
+            AssertValid();
+
+            return (true);
+        }
+    }
+
+    //*************************************************************************
     //  Property: UseBinning
     //
     /// <summary>
@@ -72,12 +96,13 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     /// </value>
     ///
     /// <remarks>
-    /// When this property is true and the entire graph is being laid out, the
-    /// graph is split into strongly connected components, the smaller
-    /// components are laid out and placed along the bottom of the rectangle
-    /// using the <see cref="FruchtermanReingoldLayout" />, and the remaining
-    /// components are laid out within the remaining rectangle using the
-    /// algorithm implemented in the derived class.
+    /// When this property and <see cref="SupportsBinning" /> are both true and
+    /// the entire graph is being laid out, the graph is split into
+    /// strongly connected components, the smaller components are laid out and
+    /// placed along the bottom of the rectangle using the <see
+    /// cref="FruchtermanReingoldLayout" />, and the remaining components are
+    /// laid out within the remaining rectangle using the algorithm implemented
+    /// in the derived class.
     ///
     /// <para>
     /// If only a subset of the graph is being laid out, which occurs when the
@@ -469,18 +494,18 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
         LayOutGraphAsyncArguments oLayOutGraphAsyncArguments =
             (LayOutGraphAsyncArguments)oDoWorkEventArgs.Argument;
 
+        IGraph oGraph = oLayOutGraphAsyncArguments.Graph;
+
         LayoutContext oLayoutContext =
             oLayOutGraphAsyncArguments.LayoutContext;
 
-        LayoutContext oLayoutContext2;
+        LayoutContext oAdjustedLayoutContext;
 
-        if ( !SubtractMarginFromRectangle(oLayoutContext,
-            out oLayoutContext2) )
+        if ( !GetAdjustedLayoutContext(oGraph, oLayoutContext,
+            out oAdjustedLayoutContext) )
         {
             return;
         }
-
-        IGraph oGraph = oLayOutGraphAsyncArguments.Graph;
 
         // Honor the optional LayOutTheseVerticesOnly key on the graph.
 
@@ -494,24 +519,27 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
 
         // Binning is supported only if the entire graph is being laid out.
 
-        if (m_bUseBinning && iVerticesToLayOut == oGraph.Vertices.Count)
+        if (this.SupportsBinning && m_bUseBinning &&
+            iVerticesToLayOut == oGraph.Vertices.Count)
         {
             // Lay out the graph's smaller components in bins.
 
             GraphBinner oGraphBinner = new GraphBinner();
 
-            IVertex [] aoRemainingVertices;
+            ICollection<IVertex> oRemainingVertices;
             Rectangle oRemainingRectangle;
 
             if ( oGraphBinner.LayOutSmallerComponentsInBins(oGraph,
-                oVerticesToLayOut, oLayoutContext2, out aoRemainingVertices,
-                out oRemainingRectangle) )
+                oVerticesToLayOut, oAdjustedLayoutContext,
+                out oRemainingVertices, out oRemainingRectangle) )
             {
                 // The remaining vertices need to be laid out in the remaining
                 // rectangle.
 
-                oVerticesToLayOut = aoRemainingVertices;
-                oLayoutContext2 = new LayoutContext(oRemainingRectangle);
+                oVerticesToLayOut = oRemainingVertices;
+
+                oAdjustedLayoutContext =
+                    new LayoutContext(oRemainingRectangle);
             }
             else
             {
@@ -526,8 +554,8 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
         {
             // Let the derived class do the work.
 
-            if ( !LayOutGraphCore(oGraph, oVerticesToLayOut, oLayoutContext2,
-                    oBackgroundWorker) )
+            if ( !LayOutGraphCore(oGraph, oVerticesToLayOut,
+                oAdjustedLayoutContext, oBackgroundWorker) )
             {
                 // LayOutGraphAsyncCancel() was called.
 

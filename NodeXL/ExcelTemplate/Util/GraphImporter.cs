@@ -160,7 +160,7 @@ public class GraphImporter : Object
                 VertexTableColumnNames.VertexName, out oVertexNameColumnData)
             ||
             !ExcelUtil.TryGetTableColumnData(oVertexTable,
-                VertexTableColumnNames.Visibility, out oVisibilityColumnData)
+                CommonTableColumnNames.Visibility, out oVisibilityColumnData)
             )
         {
             ErrorUtil.OnMissingColumn();

@@ -89,7 +89,7 @@ public class GraphBinner : Object
         IGraph graph,
         ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
-        out IVertex [] remainingVertices,
+        out ICollection<IVertex> remainingVertices,
         out Rectangle remainingRectangle
     )
     {
@@ -114,7 +114,7 @@ public class GraphBinner : Object
 
         List< LinkedList<IVertex> > oComponents =
             ConnectedComponentCalculator.GetStronglyConnectedComponents(
-                verticesToLayOut);
+                verticesToLayOut, graph);
 
         Int32 iComponents = oComponents.Count;
 
@@ -183,7 +183,7 @@ public class GraphBinner : Object
         {
             remainingVertices = GetRemainingVertices(oComponents, iComponent);
 
-            return (remainingVertices.Length > 0);
+            return (remainingVertices.Count > 0);
         }
 
         return (false);
@@ -251,11 +251,11 @@ public class GraphBinner : Object
     /// </param>
     ///
     /// <returns>
-    /// An array of remaining vertices that have not been binned.
+    /// A collection of remaining vertices that have not been binned.
     /// </returns>
     //*************************************************************************
 
-    protected IVertex []
+    protected ICollection<IVertex>
     GetRemainingVertices
     (
         List< LinkedList<IVertex> > oComponents,

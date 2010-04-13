@@ -826,8 +826,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         // Move the vertex if it falls outside the graph rectangle.
 
         Rect oVertexRectangle = GetVertexRectangle(
-            GetVertexLocation(oVertex), oImageSource.Width,
-            oImageSource.Height);
+            GetVertexLocation(oVertex), oImageSource.Width * m_dGraphScale,
+            oImageSource.Height * m_dGraphScale);
 
         MoveVertexIfNecessary(oVertex, ref oVertexRectangle,
             oGraphDrawingContext);
@@ -998,8 +998,8 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         FormattedText oFormattedText = CreateFormattedText(sLabel, oTextColor,
             dLabelFontSize);
 
-        oFormattedText.MaxTextWidth = MaximumLabelWidth;
-        oFormattedText.MaxTextHeight = MaximumLabelHeight;
+        oFormattedText.MaxTextWidth = MaximumLabelWidth * m_dGraphScale;
+        oFormattedText.MaxTextHeight = MaximumLabelHeight * m_dGraphScale;
 
         Rect oVertexRectangle = GetVertexRectangle(
             GetVertexLocation(oVertex), oFormattedText.Width,
@@ -1225,7 +1225,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             }
         }
 
-        return (dRadius);
+        return (dRadius * m_dGraphScale);
     }
 
     //*************************************************************************
@@ -1280,7 +1280,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             }
         }
 
-        return (dLabelFontSize);
+        return (dLabelFontSize * m_dGraphScale);
     }
 
     //*************************************************************************
@@ -1323,7 +1323,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
         dLabelPadding = Math.Max(0, dLabelPadding);
 
-        return (dLabelPadding);
+        return (dLabelPadding * m_dGraphScale);
     }
 
     //*************************************************************************

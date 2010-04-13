@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿
+
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -33,5 +37,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.1.113")]
-[assembly: AssemblyFileVersion("1.0.1.113")]
+[assembly: AssemblyVersion("1.0.1.121")]
+[assembly: AssemblyFileVersion("1.0.1.121")]

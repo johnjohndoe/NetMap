@@ -4,6 +4,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -18,20 +19,16 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The clusters are provided as a LinkedList&lt;Community&gt;.  There is one
-/// <see cref="Community" /> object in the LinkedList for each calculated
+/// The clusters are provided as a ICollection&lt;Community&gt;.  There is one
+/// <see cref="Community" /> object in the ICollection for each calculated
 /// cluster.  The vertices in each cluster can be obtained via the
 /// Community.<see cref="Community.Vertices" /> property.  All the other
 /// properties and methods of the  <see cref="Community" /> class are meant for
 /// internal use and should be ignored.
 ///
 /// <para>
-/// The algorithm used by this class is from "Finding Community Structure in
-/// Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi:
-/// </para>
-///
-/// <para>
-/// http://arxiv.org/PS_cache/cs/pdf/0702/0702048v1.pdf
+/// Use the <see cref="Algorithm" /> property to specify the clustering
+/// algorithm to use.
 /// </para>
 ///
 /// </remarks>
@@ -50,7 +47,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
 
     public ClusterCalculator()
     {
-        // (Do nothing.)
+        m_eAlgorithm = ClusterAlgorithm.ClausetNewmanMoore;
 
         AssertValid();
     }
@@ -77,6 +74,37 @@ public class ClusterCalculator : GraphMetricCalculatorBase
             AssertValid();
 
             return ("clusters");
+        }
+    }
+
+    //*************************************************************************
+    //  Property: Algorithm
+    //
+    /// <summary>
+    /// Gets or sets the algorithm to use to partition the graph into clusters.
+    /// </summary>
+    ///
+    /// <value>
+    /// The algorithm to use, as a <see cref="ClusterAlgorithm" />.  The
+    /// default is <see cref="ClusterAlgorithm.ClausetNewmanMoore" />.
+    /// </value>
+    //*************************************************************************
+
+    public ClusterAlgorithm
+    Algorithm
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_eAlgorithm);
+        }
+
+        set
+        {
+            m_eAlgorithm = value;
+
+            AssertValid();
         }
     }
 
@@ -115,7 +143,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out LinkedList<Community> communities
+        out ICollection<Community> communities
     )
     {
         Debug.Assert(graph != null);
@@ -125,7 +153,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
         Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
             out oGraphMetricsAsObject);
 
-        communities = ( LinkedList<Community> )oGraphMetricsAsObject;
+        communities = ( ICollection<Community> )oGraphMetricsAsObject;
 
         return (bReturn);
     }
@@ -161,6 +189,78 @@ public class ClusterCalculator : GraphMetricCalculatorBase
 
     protected override Boolean
     TryCalculateGraphMetricsCore
+    (
+        IGraph oGraph,
+        BackgroundWorker oBackgroundWorker,
+        out Object oGraphMetrics
+    )
+    {
+        Debug.Assert(oGraph != null);
+        AssertValid();
+
+        oGraphMetrics = null;
+
+        switch (m_eAlgorithm)
+        {
+            case ClusterAlgorithm.WakitaTsurumi:
+
+                return ( TryCalculateClustersWakitaTsurumi(oGraph,
+                    oBackgroundWorker, out oGraphMetrics) );
+
+            case ClusterAlgorithm.GirvanNewman:
+
+                return ( TryCalculateClustersSnap(oGraph,
+                    SnapGraphMetrics.GirvanNewmanClusters,
+                    oBackgroundWorker, out oGraphMetrics) );
+
+            case ClusterAlgorithm.ClausetNewmanMoore:
+
+                return ( TryCalculateClustersSnap(oGraph,
+                    SnapGraphMetrics.ClausetNewmanMooreClusters,
+                    oBackgroundWorker, out oGraphMetrics) );
+
+            default:
+
+                Debug.Assert(false);
+                return (false);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TryCalculateClustersWakitaTsurumi()
+    //
+    /// <summary>
+    /// Attempts to calculate clusters using the Wakita-Tsurumi algorithm.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// The BackgroundWorker whose thread is calling this method, or null if
+    /// the method is being called by some other thread.
+    /// </param>
+    ///
+    /// <param name="oGraphMetrics">
+    /// Where the graph metrics get stored if true is returned.  See the class
+    /// notes for the return type.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph metrics were calculated, false if the user wants to
+    /// cancel.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// See the <see cref="ClusterAlgorithm.WakitaTsurumi" /> comments for
+    /// details on the algorithm used.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    TryCalculateClustersWakitaTsurumi
     (
         IGraph oGraph,
         BackgroundWorker oBackgroundWorker,
@@ -250,6 +350,128 @@ public class ClusterCalculator : GraphMetricCalculatorBase
 
             iMergeCycles++;
         }
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: TryCalculateClustersSnap()
+    //
+    /// <summary>
+    /// Attempts to calculate clusters using one of the algorithms implemented
+    /// by the SNAP graph library.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <param name="eSnapGraphMetric">
+    /// Specifies which SNAP algorithm to use.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// The BackgroundWorker whose thread is calling this method, or null if
+    /// the method is being called by some other thread.
+    /// </param>
+    ///
+    /// <param name="oGraphMetrics">
+    /// Where the graph metrics get stored if true is returned.  See the class
+    /// notes for the return type.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph metrics were calculated, false if the user wants to
+    /// cancel.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryCalculateClustersSnap
+    (
+        IGraph oGraph,
+        SnapGraphMetrics eSnapGraphMetric,
+        BackgroundWorker oBackgroundWorker,
+        out Object oGraphMetrics
+    )
+    {
+        Debug.Assert(oGraph != null);
+        AssertValid();
+
+        LinkedList<Community> oCommunities = new LinkedList<Community>();
+        oGraphMetrics = oCommunities;
+        
+        if (oBackgroundWorker != null)
+        {
+            if (oBackgroundWorker.CancellationPending)
+            {
+                return (false);
+            }
+
+            ReportProgress(1, 3, oBackgroundWorker);
+        }
+
+        // Make it easy to find the graph's vertices by vertex ID.  The key is
+        // a vertex ID and the value is the corresponding vertex object.
+
+        IVertexCollection oVertices = oGraph.Vertices;
+
+        Dictionary<Int32, IVertex> oVertexIDDictionary =
+            new Dictionary<Int32, IVertex>(oVertices.Count);
+
+        foreach (IVertex oVertex in oVertices)
+        {
+            oVertexIDDictionary.Add(oVertex.ID, oVertex);
+        }
+
+        // Tell the SNAP graph library to calculate the clusters.
+
+        String sOutputFilePath = CalculateSnapGraphMetrics(oGraph,
+            eSnapGraphMetric);
+
+        if (oBackgroundWorker != null)
+        {
+            ReportProgress(2, 3, oBackgroundWorker);
+        }
+
+        // The output file for cluster metrics has a header line followed by
+        // one line for each vertex that identifies which cluster the vertex is
+        // in.  The vertices are sorted by cluster.
+
+        using ( StreamReader oStreamReader = new StreamReader(
+            sOutputFilePath) ) 
+        {
+            String sLine = oStreamReader.ReadLine();
+            Debug.Assert(sLine == "Cluster ID\tVertex ID");
+
+            Int32 iLastClusterID = -1;
+            Community oCommunity = null;
+
+            while (oStreamReader.Peek() >= 0)
+            {
+                sLine = oStreamReader.ReadLine();
+                String [] asFields = sLine.Split('\t');
+                Debug.Assert(asFields.Length == 2);
+
+                Int32 iClusterID = ParseSnapInt32GraphMetricValue(asFields, 0);
+                Int32 iVertexID = ParseSnapInt32GraphMetricValue(asFields, 1);
+
+                if (iClusterID != iLastClusterID)
+                {
+                    oCommunity = new Community();
+                    oCommunity.ID = iClusterID;
+                    oCommunities.AddLast(oCommunity);
+                    iLastClusterID = iClusterID;
+                }
+
+                Debug.Assert(oCommunity != null);
+
+                oCommunity.Vertices.AddLast( oVertexIDDictionary[iVertexID] );
+            }
+        }
+
+        File.Delete(sOutputFilePath);
 
         return (true);
     }
@@ -653,7 +875,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     {
         base.AssertValid();
 
-        // (Do nothing else.)
+        // m_eAlgorithm
     }
 
 
@@ -671,7 +893,9 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     //  Protected fields
     //*************************************************************************
 
-    // (None.)
+    /// The algorithm to use.
+
+    protected ClusterAlgorithm m_eAlgorithm;
 }
 
 }

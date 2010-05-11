@@ -523,7 +523,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="sScreenName">
-    /// Where the screen name gets stored if true is returned.
+    /// Where the screen name gets stored if true is returned.  Always in lower
+    /// case.
     /// </param>
     ///
     /// <returns>
@@ -541,8 +542,18 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oUserXmlNode != null);
         AssertValid();
 
-        return ( XmlUtil2.TrySelectSingleNodeAsString(oUserXmlNode,
-            "screen_name/text()", null, out sScreenName) );
+        sScreenName = null;
+
+        String sScreenNameUnknownCase;
+
+        if ( XmlUtil2.TrySelectSingleNodeAsString(oUserXmlNode,
+            "screen_name/text()", null, out sScreenNameUnknownCase) )
+        {
+            sScreenName = sScreenNameUnknownCase.ToLower();
+            return (true);
+        }
+
+        return (false);
     }
 
     //*************************************************************************
@@ -573,8 +584,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="bIncludeStatistics">
@@ -626,7 +637,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             sScreenName);
 
         oTwitterVertex = new TwitterVertex(oVertexXmlNode);
-        oScreenNameDictionary.Add( sScreenName, oTwitterVertex);
+        oScreenNameDictionary.Add(sScreenName, oTwitterVertex);
 
         oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
             MenuTextID, "Open Twitter Page for This Person");
@@ -636,9 +647,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         if (oUserXmlNode != null)
         {
-            AppendFromUserXmlNode(sScreenName, oUserXmlNode,
-                oGraphMLXmlDocument, oTwitterVertex, bIncludeStatistics,
-                bIncludeLatestStatus);
+            AppendFromUserXmlNode(oUserXmlNode, oGraphMLXmlDocument,
+                oTwitterVertex, bIncludeStatistics, bIncludeLatestStatus);
         }
 
         return (true);
@@ -666,8 +676,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="bIncludeStatistics">
@@ -714,10 +724,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// Twitter to a vertex XML node.
     /// </summary>
     ///
-    /// <param name="sScreenName">
-    /// Screen name corresponding to the "user" XML node.
-    /// </param>
-    ///
     /// <param name="oUserXmlNode">
     /// The "user" XML node returned by Twitter.  Can't be null.
     /// </param>
@@ -749,7 +755,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     protected void
     AppendFromUserXmlNode
     (
-        String sScreenName,
         XmlNode oUserXmlNode,
         GraphMLXmlDocument oGraphMLXmlDocument,
         TwitterVertex oTwitterVertex,
@@ -757,7 +762,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Boolean bIncludeLatestStatus
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
         Debug.Assert(oUserXmlNode != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oTwitterVertex != null);
@@ -901,8 +905,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="bIncludeStatistics">
@@ -1047,8 +1051,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             if ( XmlUtil2.TrySelectSingleNode(oXmlDocument, "user", null,
                 out oUserXmlNode) )
             {
-                AppendFromUserXmlNode(sScreenName, oUserXmlNode,
-                    oGraphMLXmlDocument, oTwitterVertex, bIncludeStatistics,
+                AppendFromUserXmlNode(oUserXmlNode, oGraphMLXmlDocument,
+                    oTwitterVertex, bIncludeStatistics,
                     bIncludeLatestStatuses);
             }
         }
@@ -1066,8 +1070,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="bIncludeRepliesToEdges">
@@ -1097,59 +1101,73 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             return;
         }
 
-        foreach (KeyValuePair<String, TwitterVertex> oKeyValuePair1 in
+        ReportProgress("Examining relationships");
+
+        // "Starts with a screen name," which means it's a "reply-to".
+
+        Regex oReplyToRegex = new Regex(@"^@(?<ScreenName>\w+)");
+
+        // "Contains a screen name," which means it's a "mentions".
+        //
+        // Note that a "reply-to" is also a "mentions."
+
+        Regex oMentionsRegex = new Regex(@"(^|\s)@(?<ScreenName>\w+)");
+
+        foreach (KeyValuePair<String, TwitterVertex> oKeyValuePair in
             oScreenNameDictionary)
         {
-            foreach (KeyValuePair<String, TwitterVertex> oKeyValuePair2 in
-                oScreenNameDictionary)
+            String sScreenName = oKeyValuePair.Key;
+
+            String sStatusForAnalysis =
+                oKeyValuePair.Value.StatusForAnalysis;
+
+            if ( String.IsNullOrEmpty(sStatusForAnalysis) )
             {
-                String sStatusForAnalysis1 =
-                    oKeyValuePair1.Value.StatusForAnalysis;
+                continue;
+            }
 
-                if ( String.IsNullOrEmpty(sStatusForAnalysis1) )
+            if (bIncludeRepliesToEdges)
+            {
+                Match oReplyToMatch = oReplyToRegex.Match(sStatusForAnalysis);
+
+                if (oReplyToMatch.Success)
                 {
-                    continue;
+                    String sReplyToScreenName =
+                        oReplyToMatch.Groups["ScreenName"].Value.ToLower();
+
+                    if (
+                        sReplyToScreenName != sScreenName
+                        &&
+                        oScreenNameDictionary.ContainsKey(sReplyToScreenName)
+                        )
+                    {
+                        AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName,
+                            sReplyToScreenName, "Replies to");
+                    }
                 }
+            }
 
-                String sScreenName1 = oKeyValuePair1.Key;
-                String sScreenName2 = oKeyValuePair2.Key;
+            if (bIncludeMentionsEdges)
+            {
+                Match oMentionsMatch =
+                    oMentionsRegex.Match(sStatusForAnalysis);
 
-                if (sScreenName1 == sScreenName2)
+                while (oMentionsMatch.Success)
                 {
-                    continue;
-                }
+                    String sMentionsScreenName =
+                        oMentionsMatch.Groups["ScreenName"].Value.ToLower();
 
-                String sScreenName2WithAt = "@" + sScreenName2;
-                const String EndMarker = "(\\s|:|$)";
+                    if (
+                        sMentionsScreenName != sScreenName
+                        &&
+                        oScreenNameDictionary.ContainsKey(sMentionsScreenName)
+                        )
+                    {
+                        AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName,
+                            sMentionsScreenName, "Mentions");
+                    }
 
-                // Does the status start with screen name 2, meaning it's a
-                // reply-to?  The Regex here is "starts with @ScreenName2
-                // followed by whitespace or a colon or the end of the status."
-
-                if (
-                    bIncludeRepliesToEdges
-                    &&
-                    Regex.IsMatch(sStatusForAnalysis1,
-                        "^" + sScreenName2WithAt + EndMarker)
-                    )
-                {
-                    AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName1,
-                        sScreenName2, "Replies to");
-                }
-
-                // Does the status include screen name B, meaning it's a
-                // "mentions"?  The Regex here is "@ScreenName2 followed by
-                // whitespace or a colon or the end of the status."
-
-                if (
-                    bIncludeMentionsEdges
-                    &&
-                    Regex.IsMatch(sStatusForAnalysis1,
-                        sScreenName2WithAt + EndMarker)
-                    )
-                {
-                    AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName1,
-                        sScreenName2, "Mentions");
+                    oMentionsMatch = oMentionsMatch.NextMatch();
                 }
             }
         }

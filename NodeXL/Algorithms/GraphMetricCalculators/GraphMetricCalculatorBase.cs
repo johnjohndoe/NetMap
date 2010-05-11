@@ -3,8 +3,10 @@
 
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.Algorithms
 {
@@ -20,6 +22,20 @@ namespace Microsoft.NodeXL.Algorithms
 public abstract class GraphMetricCalculatorBase :
     Object, IGraphMetricCalculator
 {
+    //*************************************************************************
+    //  Constructor: GraphMetricCalculatorBase()
+    //
+    /// <summary>
+    /// Static constructor for the <see cref="GraphMetricCalculatorBase" />
+    /// class.
+    /// </summary>
+    //*************************************************************************
+
+    static GraphMetricCalculatorBase()
+    {
+        m_sSnapGraphMetricCalculatorPath = null;
+    }
+
     //*************************************************************************
     //  Constructor: GraphMetricCalculatorBase()
     //
@@ -54,6 +70,59 @@ public abstract class GraphMetricCalculatorBase :
     GraphMetricDescription
     {
         get;
+    }
+
+    //*************************************************************************
+    //  Method: SetSnapGraphMetricCalculatorPath()
+    //
+    /// <summary>
+    /// Sets the path to the executable that calculates graph metrics using
+    /// the SNAP library.
+    /// </summary>
+    ///
+    /// <param name="snapGraphMetricCalculatorPath">
+    /// Full path to the executable.  Sample:
+    /// "C:\MyProgram\SnapGraphMetricCalculator.exe".
+    /// </param>
+    ///
+    /// <remarks>
+    /// Some of the derived classes use a separate executable to do their graph
+    /// metric calculations.  This executable, which is custom built for NodeXL
+    /// and is provided with the NodeXL source code, uses the SNAP library
+    /// created by Jure Leskovec at Stanford.  The SNAP code is written in C++
+    /// and is optimized for speed and scalability, so it can calculate certain
+    /// graph much faster than could be done in C# code.
+    ///
+    /// <para>
+    /// By default, the NodeXL build process copies the executable, which is
+    /// named SnapGraphMetricCalculator.exe, to the Algorithm project's output
+    /// directory, which is either bin\Debug or bin\Release.  Also by default,
+    /// derived classes look for this executable in the same folder as the
+    /// Algorithm assembly.  That means that for many projects, the executable
+    /// will be automatically found and this method does not need to be called.
+    /// </para>
+    ///
+    /// <para>
+    /// If your application's deployment places the executable somewhere else,
+    /// however, you must call this static method once to provide the derived
+    /// classes with the executable's path.
+    /// </para>
+    ///
+    /// <para>
+    /// A future release may wrap the SNAP library in an interop DLL,
+    /// eliminating the need for a separate executable.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    static public void
+    SetSnapGraphMetricCalculatorPath
+    (
+        String snapGraphMetricCalculatorPath
+    )
+    {
+        m_sSnapGraphMetricCalculatorPath = snapGraphMetricCalculatorPath;
     }
 
     //*************************************************************************
@@ -311,6 +380,360 @@ public abstract class GraphMetricCalculatorBase :
             (bGraphIsDirected ? 1: 2) );
     }
 
+    //*************************************************************************
+    //  Enum: SnapGraphMetrics
+    //
+    /// <summary>
+    /// Specifies one or more graph metrics that can be calculated by the SNAP
+    /// library.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// See the GraphMetrics enumeration in the Snap/GraphMetricCalculator
+    /// project for details on how graph metrics must be specified.
+    /// </remarks>
+    //*************************************************************************
+
+    [System.FlagsAttribute]
+
+    protected enum SnapGraphMetrics
+    {
+        /// <summary>
+        /// Closeness centrality.  Type: Per-vertex.
+        /// </summary>
+
+        ClosenessCentrality = 1,
+
+        /// <summary>
+        /// Betweenness centrality.  Type: Per-vertex.
+        /// </summary>
+
+        BetweennessCentrality = 2,
+
+        /// <summary>
+        /// Eigenvector centrality.  Type: Per-vertex.
+        /// </summary>
+
+        EigenvectorCentrality = 4,
+
+        /// <summary>
+        /// PageRank.  Type: Per-vertex.
+        /// </summary>
+
+        PageRank = 8,
+
+        /// <summary>
+        /// Maximum geodesic distance, also known as graph diameter, and
+        /// average geodesic distance.  Type: Per-graph.
+        /// </summary>
+
+        GeodesicDistances = 16,
+
+        /// <summary>
+        /// Clusters using the Girvan-Newman algorithm.  Type: Clusters.
+        /// </summary>
+
+        GirvanNewmanClusters = 32,
+
+        /// <summary>
+        /// Clusters using the Clauset-Newman-Moore algorithm.  Type: Clusters.
+        /// </summary>
+    
+        ClausetNewmanMooreClusters = 64,
+
+        /// <summary>
+        /// No graph metrics.
+        /// </summary>
+
+        None = 0,
+    };
+
+    //*************************************************************************
+    //  Method: CalculateSnapGraphMetrics()
+    //
+    /// <summary>
+    /// Calculates one or more graph metrics using the SNAP executable.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.
+    /// </param>
+    ///
+    /// <param name="eSnapGraphMetrics">
+    /// One or more graph metrics to calculate.
+    /// </param>
+    ///
+    /// <returns>
+    /// Full path to a temporary output file containing the calculated metrics.
+    /// The caller must delete this file after it is done with it.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If an error occurs while calling the executable, an IOException is
+    /// thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    protected String
+    CalculateSnapGraphMetrics
+    (
+        IGraph oGraph,
+        SnapGraphMetrics eSnapGraphMetrics
+    )
+    {
+        AssertValid();
+
+        String sInputFilePath = null;
+        String sOutputFilePath = null;
+
+        try
+        {
+            // The SNAP executable expects an input text file that contains one
+            // line per edge.  The line contains a tab-separated pair of
+            // integer vertex IDs.  Create the file.
+
+            sInputFilePath = Path.GetTempFileName();
+
+            using ( StreamWriter oStreamWriter = new StreamWriter(
+                sInputFilePath) ) 
+            {
+                foreach (IEdge oEdge in oGraph.Edges)
+                {
+                    IVertex [] oVertices = oEdge.Vertices;
+
+                    oStreamWriter.WriteLine(
+                        "{0}\t{1}"
+                        ,
+                        oVertices[0].ID,
+                        oVertices[1].ID
+                        );
+                }
+            }
+
+            // SNAP will overwrite this output file, which initially has zero
+            // length:
+
+            sOutputFilePath = Path.GetTempFileName();
+
+            // The arguments should look like this:
+            //
+            // InputFilePath IsDirected GraphMetricsToCalculate OutputFilePath
+
+            String sArguments = String.Format(
+                "\"{0}\" {1} {2} \"{3}\""
+                ,
+                sInputFilePath,
+
+                oGraph.Directedness == GraphDirectedness.Directed ?
+                    "true" : "false",
+
+                (Int32)eSnapGraphMetrics,
+                sOutputFilePath
+                );
+
+            String sStandardError;
+
+            if ( !TryCallSnapGraphMetricCalculator(sArguments,
+                out sStandardError) )
+            {
+                throw new IOException(
+                    "A problem occurred while calling the executable that"
+                    + " calculates SNAP graph metrics.  Details: "
+                    + sStandardError
+                    );
+            }
+
+            Debug.Assert( File.Exists(sOutputFilePath) );
+        }
+        catch
+        {
+            // Delete the output file on error.
+
+            if ( sOutputFilePath != null && File.Exists(sOutputFilePath) )
+            {
+                File.Delete(sOutputFilePath);
+            }
+
+            throw;
+        }
+        finally
+        {
+            // Always delete the input file.
+
+            if ( sInputFilePath != null && File.Exists(sInputFilePath) )
+            {
+                File.Delete(sInputFilePath);
+            }
+        }
+
+        return (sOutputFilePath);
+    }
+
+    //*************************************************************************
+    //  Method: ParseSnapInt32GraphMetricValue()
+    //
+    /// <summary>
+    /// Parses an Int32 graph metric value read from the output file created by
+    /// the SNAP command-line executable.
+    /// </summary>
+    ///
+    /// <param name="asFieldsFromSnapOutputFileLine">
+    /// Fields read from one line of the output file created by the SNAP
+    /// command-line executable.
+    /// </param>
+    ///
+    /// <param name="iFieldIndex">
+    /// The zero-based index of the field to parse.
+    /// </param>
+    ///
+    /// <returns>
+    /// The parsed Int32 graph metric value.
+    /// </returns>
+    //*************************************************************************
+
+    protected Int32
+    ParseSnapInt32GraphMetricValue
+    (
+        String [] asFieldsFromSnapOutputFileLine,
+        Int32 iFieldIndex
+    )
+    {
+        Debug.Assert(asFieldsFromSnapOutputFileLine != null);
+        Debug.Assert(iFieldIndex >= 0);
+        Debug.Assert(iFieldIndex < asFieldsFromSnapOutputFileLine.Length);
+        AssertValid();
+
+        Int32 iGraphMetricValue;
+
+        if ( !MathUtil.TryParseCultureInvariantInt32(
+            asFieldsFromSnapOutputFileLine[iFieldIndex], out iGraphMetricValue)
+            )
+        {
+            throw new FormatException(
+                "A field read from the SNAP output file is not an Int32."
+                );
+        }
+
+        return (iGraphMetricValue);
+    }
+
+    //*************************************************************************
+    //  Method: ParseSnapDoubleGraphMetricValue()
+    //
+    /// <summary>
+    /// Parses a Double graph metric value read from the output file created by
+    /// the SNAP command-line executable.
+    /// </summary>
+    ///
+    /// <param name="asFieldsFromSnapOutputFileLine">
+    /// Fields read from one line of the output file created by the SNAP
+    /// command-line executable.
+    /// </param>
+    ///
+    /// <param name="iFieldIndex">
+    /// The zero-based index of the field to parse.
+    /// </param>
+    ///
+    /// <returns>
+    /// The parsed Double graph metric value.
+    /// </returns>
+    //*************************************************************************
+
+    protected Double
+    ParseSnapDoubleGraphMetricValue
+    (
+        String [] asFieldsFromSnapOutputFileLine,
+        Int32 iFieldIndex
+    )
+    {
+        Debug.Assert(asFieldsFromSnapOutputFileLine != null);
+        Debug.Assert(iFieldIndex >= 0);
+        Debug.Assert(iFieldIndex < asFieldsFromSnapOutputFileLine.Length);
+        AssertValid();
+
+        Double dGraphMetricValue;
+
+        if ( !MathUtil.TryParseCultureInvariantDouble(
+            asFieldsFromSnapOutputFileLine[iFieldIndex], out dGraphMetricValue)
+            )
+        {
+            throw new FormatException(
+                "A field read from the SNAP output file is not a Double."
+                );
+        }
+
+        return (dGraphMetricValue);
+    }
+
+    //*************************************************************************
+    //  Method: TryCallSnapGraphMetricCalculator()
+    //
+    /// <summary>
+    /// Calls the SNAP command-line executable.
+    /// </summary>
+    ///
+    /// <param name="sArguments">
+    /// Command line arguments.
+    /// </param>
+    ///
+    /// <param name="sStandardError">
+    /// Where the standard error string gets stored if false is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the executable was successfully called, false if the executable
+    /// reported an error via the StandardError stream.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryCallSnapGraphMetricCalculator
+    (
+        String sArguments,
+        out String sStandardError
+    )
+    {
+        String sSnapGraphMetricCalculatorPath =
+            m_sSnapGraphMetricCalculatorPath;
+
+        if (sSnapGraphMetricCalculatorPath == null)
+        {
+            // SetSnapGraphMetricCalculatorPath() hasn't been called.  Use a
+            // default path.
+
+            sSnapGraphMetricCalculatorPath = Path.Combine(
+
+                Path.GetDirectoryName(
+                    System.Reflection.Assembly.GetExecutingAssembly().Location),
+
+                DefaultSnapGraphMetricCalculatorFileName
+                );
+        }
+
+        if ( !File.Exists(sSnapGraphMetricCalculatorPath) )
+        {
+            throw new IOException(
+                "The executable that calculates SNAP graph metrics can't be"
+                + " found.  See the comments for the GraphMetricCalculatorBase"
+                + ".SetSnapGraphMetricCalculatorPath() method."
+                );
+        }
+
+        ProcessStartInfo oProcessStartInfo = new ProcessStartInfo(
+            sSnapGraphMetricCalculatorPath, sArguments);
+
+        oProcessStartInfo.UseShellExecute = false;
+        oProcessStartInfo.RedirectStandardError = true;
+        oProcessStartInfo.CreateNoWindow = true;
+
+        Process oProcess = new Process();
+        oProcess.StartInfo = oProcessStartInfo;
+        oProcess.Start();
+        sStandardError = oProcess.StandardError.ReadToEnd();
+        oProcess.WaitForExit();
+
+        return (sStandardError.Length == 0);
+    }
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -330,10 +753,31 @@ public abstract class GraphMetricCalculatorBase :
 
 
     //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// Default file name of the executable that computes graph metrics using
+    /// the SNAP library.  Not used if m_sSnapGraphMetricCalculatorPath is set.
+
+    protected const String DefaultSnapGraphMetricCalculatorFileName =
+        "SnapGraphMetricCalculator.exe";
+
+
+    //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
     // (None.)
+
+
+    //*************************************************************************
+    //  Private fields
+    //*************************************************************************
+
+    /// Path to the executable that computes graph metrics using the SNAP
+    /// library, or null to use a default path.
+
+    private static String m_sSnapGraphMetricCalculatorPath;
 }
 
 }

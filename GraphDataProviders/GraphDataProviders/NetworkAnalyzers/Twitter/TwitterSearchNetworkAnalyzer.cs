@@ -473,8 +473,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="oRequestStatistics">
@@ -586,6 +586,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 sScreenName = sAuthorName.Substring(0, iIndexOfSpace);
             }
 
+            sScreenName = sScreenName.ToLower();
+
             TwitterVertex oTwitterVertex;
             
             if ( !TryAppendVertexXmlNode(sScreenName, null,
@@ -665,8 +667,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="oRequestStatistics">
@@ -762,9 +764,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                     {
                         // The other vertex node has no statistics.  Add them.
 
-                        AppendFromUserXmlNode(sOtherScreenName,
-                            oOtherUserXmlNode, oGraphMLXmlDocument,
-                            oOtherTwitterVertex, bIncludeStatistics, false);
+                        AppendFromUserXmlNode(oOtherUserXmlNode,
+                            oGraphMLXmlDocument, oOtherTwitterVertex,
+                            bIncludeStatistics, false);
                     }
                 }
             }

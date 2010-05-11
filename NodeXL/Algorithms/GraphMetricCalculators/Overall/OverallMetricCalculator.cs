@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -172,7 +173,7 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
                 return (false);
             }
 
-            ReportProgress(5, 100, oBackgroundWorker);
+            ReportProgress(1, 3, oBackgroundWorker);
         }
 
         Int32 iVertices = oGraph.Vertices.Count;
@@ -199,10 +200,21 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
             iMaximumConnectedComponentVertices,
             iMaximumConnectedComponentEdges;
 
-        GetConnectedComponentMetrics(oGraph, out iConnectedComponents,
+        CalculateConnectedComponentMetrics(oGraph, out iConnectedComponents,
             out iSingleVertexConnectedComponents,
             out iMaximumConnectedComponentVertices,
             out iMaximumConnectedComponentEdges);
+
+        Nullable<Int32> iMaximumGeodesicDistance;
+        Nullable<Double> dAverageGeodesicDistance;
+
+        if (oBackgroundWorker != null)
+        {
+            ReportProgress(2, 3, oBackgroundWorker);
+        }
+
+        CalculateGeodesicDistances(oGraph, out iMaximumGeodesicDistance,
+            out dAverageGeodesicDistance);
 
         OverallMetrics oOverallMetrics = new OverallMetrics(
             oGraph.Directedness,
@@ -215,7 +227,9 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
             iConnectedComponents,
             iSingleVertexConnectedComponents,
             iMaximumConnectedComponentVertices,
-            iMaximumConnectedComponentEdges
+            iMaximumConnectedComponentEdges,
+            iMaximumGeodesicDistance,
+            dAverageGeodesicDistance
             );
 
         oGraphMetrics = oOverallMetrics;
@@ -341,10 +355,10 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
-    //  Method: GetConnectedComponentMetrics()
+    //  Method: CalculateConnectedComponentMetrics()
     //
     /// <summary>
-    /// Gets the graph's connected component metrics.
+    /// Calculates the graph's connected component metrics.
     /// </summary>
     ///
     /// <param name="oGraph">
@@ -371,7 +385,7 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     //*************************************************************************
 
     protected void
-    GetConnectedComponentMetrics
+    CalculateConnectedComponentMetrics
     (
         IGraph oGraph,
         out Int32 iConnectedComponents,
@@ -409,6 +423,78 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
                 iMaximumConnectedComponentEdges,
                 CountUniqueEdges(oConnectedComponent) );
         }
+    }
+
+    //*************************************************************************
+    //  Method: CalculateGeodesicDistances()
+    //
+    /// <summary>
+    /// Calculates the graph's maximum and average geodesic distances.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.
+    /// </param>
+    ///
+    /// <param name="iMaximumGeodesicDistance">
+    /// Where the maximum geodesic distance in the graph gets stored.  Gets set
+    /// to null if the graph is empty.
+    /// </param>
+    ///
+    /// <param name="dAverageGeodesicDistance">
+    /// Where the average geodesic distance in the graph gets stored.  Gets set
+    /// to null if the graph is empty.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    CalculateGeodesicDistances
+    (
+        IGraph oGraph,
+        out Nullable<Int32> iMaximumGeodesicDistance,
+        out Nullable<Double> dAverageGeodesicDistance
+    )
+    {
+        Debug.Assert(oGraph != null);
+        AssertValid();
+
+        iMaximumGeodesicDistance = new Nullable<Int32>();
+        dAverageGeodesicDistance = new Nullable<Double>();
+
+        if (oGraph.Vertices.Count == 0)
+        {
+            return;
+        }
+
+        String sOutputFilePath = CalculateSnapGraphMetrics(oGraph,
+            SnapGraphMetrics.GeodesicDistances);
+
+        using ( StreamReader oStreamReader = new StreamReader(
+            sOutputFilePath) ) 
+        {
+            // The first line is a header.
+
+            String sLine = oStreamReader.ReadLine();
+
+            Debug.Assert(sLine ==
+                "Maximum Geodesic Distance\tAverage Geodesic Distance");
+
+            // The second line contains the metric values.
+
+            Debug.Assert(oStreamReader.Peek() >= 0);
+
+            sLine = oStreamReader.ReadLine();
+            String [] asFields = sLine.Split('\t');
+            Debug.Assert(asFields.Length == 2);
+
+            iMaximumGeodesicDistance =
+                ParseSnapInt32GraphMetricValue(asFields, 0);
+
+            dAverageGeodesicDistance =
+                ParseSnapDoubleGraphMetricValue(asFields, 1);
+        }
+
+        File.Delete(sOutputFilePath);
     }
 
     //*************************************************************************

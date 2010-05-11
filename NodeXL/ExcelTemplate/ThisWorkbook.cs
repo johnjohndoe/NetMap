@@ -11,6 +11,7 @@ using Microsoft.Office.Core;
 using System.Reflection;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
+using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.Adapters;
 using Microsoft.NodeXL.ExcelTemplatePlugIns;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -1032,10 +1033,17 @@ public partial class ThisWorkbook
     /// <summary>
     /// Partitions the graph into clusters.
     /// </summary>
+    ///
+    /// <param name="clusterAlgorithm">
+    /// The cluster algorithm to use.
+    /// </param>
     //*************************************************************************
 
     public void
-    CreateClusters()
+    CreateClusters
+    (
+        ClusterAlgorithm clusterAlgorithm
+    )
     {
         AssertValid();
 
@@ -1044,13 +1052,16 @@ public partial class ThisWorkbook
             return;
         }
 
-        // The CalculateGraphMetricsDialog does all the work.  (Clusters are
-        // just another set of graph metrics.)  Use the constructor overload
-        // that accepts a list of graph metric calculators.
+        ClusterCalculator2 oClusterCalculator2 = new ClusterCalculator2();
+        oClusterCalculator2.Algorithm = clusterAlgorithm;
+
+        // The CalculateGraphMetricsDialog does the work.  (Clusters are just
+        // another set of graph metrics.)  Use the constructor overload that
+        // accepts a list of graph metric calculators.
 
         CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
             new CalculateGraphMetricsDialog( this.InnerObject,
-                new IGraphMetricCalculator2 [] { new ClusterCalculator2() },
+                new IGraphMetricCalculator2 [] {oClusterCalculator2},
                 new GraphMetricUserSettings(),
                 new NotificationUserSettings(),
                 true,

@@ -41,8 +41,8 @@ namespace Microsoft.NodeXL.Layouts
 /// <para>
 /// If the graph has a metadata key of <see
 /// cref="ReservedMetadataKeys.LayOutTheseVerticesOnly" />, only the vertices
-/// specified in the value's IVertex array are laid out and all other vertices
-/// are completely ignored.
+/// specified in the value's IVertex collection are laid out and all other
+/// vertices are completely ignored.
 /// </para>
 ///
 /// <para>
@@ -381,19 +381,39 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
             CalculateRepulsiveForces(verticesToLayOut, k);
             CalculateAttractiveForces(oEdgesToLayOut, k);
 
-            // Set the location of each vertex based on the vertex's current
-            // location and the calculated forces.
+            Single fNextTemperature = fTemperature - fTemperatureDecrement;
 
-            SetVertexLocations(verticesToLayOut, layoutContext, fTemperature);
+            // Set the unbounded location of each vertex based on the vertex's
+            // current location and the calculated forces.
+
+            SetUnboundedLocations(verticesToLayOut, layoutContext,
+                fTemperature, fNextTemperature > 0);
 
             // Decrease the temperature.
 
-            fTemperature -= fTemperatureDecrement;
+            fTemperature = fNextTemperature;
+
+            // For graphs with many edges, telling NodeXLControl to refresh
+            // its window (which is the end result of calling
+            // FireLayOutGraphIterationCompleted()) can significantly slow down
+            // performance, so don't do it.
+            //
+            // For example, a random graph with 1,000 vertices and 10,000 edges
+            // took 3.6 seconds to lay out when the window was repeatedly
+            // refreshed, but only 2.1 seconds with no refreshes.
+            //
+            // The performance improvement is much smaller for graphs with a
+            // large number of vertices, where the O(V-squared) behavior in
+            // CalculateRepulsiveForces() dominates the layout time.
+
+            #if false
 
             if (backgroundWorker != null)
             {
                 FireLayOutGraphIterationCompleted();
             }
+
+            #endif
         }
 
         RemoveMetadata(verticesToLayOut);
@@ -709,10 +729,10 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     }
 
     //*************************************************************************
-    //  Method: SetVertexLocations()
+    //  Method: SetUnboundedLocations()
     //
     /// <summary>
-    /// Sets the location of each vertex.
+    /// Sets the unbounded location of each vertex.
     /// </summary>
     ///
     /// <param name="verticesToLayOut">
@@ -730,22 +750,29 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
     /// Current temperature.  Must be greater than zero.
     /// </param>
     ///
+    /// <param name="bAlsoSetVertexLocations">
+    /// true to also set each vertex's <see cref="IVertex.Location" />
+    /// property.
+    /// </param>
+    ///
     /// <remarks>
     /// This method is called at the end of each layout iteration.  For each
     /// vertex, it modifies the vertex's location within an unbounded rectangle
     /// based on the repulsive and attractive forces that have been calculated
-    /// for the vertex, transforms that unbounded location to a point within
-    /// the bounded graph rectangle, and sets the vertex's <see
+    /// for the vertex.  If <paramref name="bAlsoSetVertexLocations" /> is
+    /// true, it also transforms that unbounded locations to a point within the
+    /// bounded graph rectangle, and sets each vertex's <see
     /// cref="IVertex.Location" /> property to that bounded point.
     /// </remarks>
     //*************************************************************************
 
     protected void
-    SetVertexLocations
+    SetUnboundedLocations
     (
         ICollection<IVertex> verticesToLayOut,
         LayoutContext layoutContext,
-        Single fTemperature
+        Single fTemperature,
+        Boolean bAlsoSetVertexLocations
     )
     {
         Debug.Assert(verticesToLayOut != null);
@@ -809,6 +836,11 @@ public class FruchtermanReingoldLayout : AsyncLayoutBase
 
             tMinLocationY = Math.Min(tUnboundedLocationY, tMinLocationY);
             tMaxLocationY = Math.Max(tUnboundedLocationY, tMaxLocationY);
+        }
+
+        if (!bAlsoSetVertexLocations)
+        {
+            return;
         }
 
         Debug.Assert(verticesToLayOut.Count != 0);

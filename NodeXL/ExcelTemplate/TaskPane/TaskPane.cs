@@ -437,9 +437,6 @@ public partial class TaskPane : UserControl
         oNodeXLControl.GraphMouseUp += new GraphMouseButtonEventHandler(
             this.oNodeXLControl_GraphMouseUp);
 
-        oNodeXLControl.VertexDoubleClick += new VertexEventHandler(
-            this.oNodeXLControl_VertexDoubleClick);
-
         oNodeXLControl.DrawingGraph += new System.EventHandler(
             this.oNodeXLControl_DrawingGraph);
 
@@ -664,7 +661,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        ForceLayoutTheseVerticesOnly(oNodeXLControl.SelectedVertices.ToArray(),
+        ForceLayoutTheseVerticesOnly(oNodeXLControl.SelectedVertices,
             "lay out the selected vertices again");
     }
 
@@ -711,7 +708,7 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         ForceLayoutTheseVerticesOnly(
-            NodeXLControlUtil.GetVisibleVerticesAsArray(oNodeXLControl),
+            NodeXLControlUtil.GetVisibleVertices(oNodeXLControl),
             "lay out the visible vertices again");
     }
 
@@ -723,7 +720,7 @@ public partial class TaskPane : UserControl
     /// again.
     /// </summary>
     ///
-    /// <param name="aoVerticesToLayOut">
+    /// <param name="oVerticesToLayOut">
     /// The vertices to lay out.
     /// </param>
     ///
@@ -735,11 +732,11 @@ public partial class TaskPane : UserControl
     protected void
     ForceLayoutTheseVerticesOnly
     (
-        IVertex[] aoVerticesToLayOut,
+        ICollection<IVertex> oVerticesToLayOut,
         String sLayoutTypeIsNoneWarning
     )
     {
-        Debug.Assert(aoVerticesToLayOut != null);
+        Debug.Assert(oVerticesToLayOut != null);
         Debug.Assert( !String.IsNullOrEmpty(sLayoutTypeIsNoneWarning) );
         AssertValid();
 
@@ -762,7 +759,7 @@ public partial class TaskPane : UserControl
         // oNodeXLControl_DrawGraphCompleted() removes the value.
 
         oNodeXLControl.Graph.SetValue(
-            ReservedMetadataKeys.LayOutTheseVerticesOnly, aoVerticesToLayOut);
+            ReservedMetadataKeys.LayOutTheseVerticesOnly, oVerticesToLayOut);
 
         ForceLayout();
     }
@@ -2616,7 +2613,7 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         oNodeXLControl.FilteredAlpha =
-            ( new AlphaConverter() ).WorkbookToGraph(
+            ( new AlphaConverter() ).WorkbookToGraphAsByte(
                 m_oDynamicFilterDialog.FilteredAlpha
                 );
 
@@ -3932,48 +3929,6 @@ public partial class TaskPane : UserControl
         // Excel window.
 
         cmsNodeXLControl.Focus();
-    }
-
-    //*************************************************************************
-    //  Method: oNodeXLControl_VertexDoubleClick()
-    //
-    /// <summary>
-    /// Handles the VertexDoubleClick event on the oNodeXLControl control.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    oNodeXLControl_VertexDoubleClick
-    (
-        object sender,
-        VertexEventArgs e
-    )
-    {
-        AssertValid();
-
-        switch (oNodeXLControl.MouseMode)
-        {
-            case MouseMode.Select:
-            case MouseMode.AddToSelection:
-
-                SelectAdjacentVertices(e.Vertex, true);
-                break;
-
-            default:
-
-                // Don't select adjacent vertices while in any other MouseMode,
-                // which could lead to confusing behavior.
-
-                break;
-        }
     }
 
     //*************************************************************************

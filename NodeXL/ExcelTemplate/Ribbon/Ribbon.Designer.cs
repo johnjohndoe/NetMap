@@ -52,6 +52,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnConvertNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mnuExport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.btnExportToUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnExportToGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnExportToPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator8 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnExportSelectionToNewNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -102,7 +103,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.sbCreateSubgraphImages = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
             this.btnCreateSubgraphImages = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnDeleteSubgraphThumbnails = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.sbCreateClusters = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
             this.btnCreateClusters = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.chkClausetNewmanMoore = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
+            this.chkWakitaTsurumi = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
+            this.chkGirvanNewman = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.grpShowHide = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
             this.mnuShowColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.chkShowVisualAttributeColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
@@ -128,7 +133,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnRegisterUser = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCheckForUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -301,6 +305,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnExportToUcinetFile.ShowImage = true;
             this.btnExportToUcinetFile.SuperTip = "Export the edges to a new UCINET full matrix DL file.";
             this.btnExportToUcinetFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportToUcinetFile_Click);
+            // 
+            // btnExportToGraphMLFile
+            // 
+            this.btnExportToGraphMLFile.Label = "To GraphML File...";
+            this.btnExportToGraphMLFile.Name = "btnExportToGraphMLFile";
+            this.btnExportToGraphMLFile.OfficeImageId = "ExportTextFile";
+            this.btnExportToGraphMLFile.ScreenTip = "Export to GraphML File";
+            this.btnExportToGraphMLFile.ShowImage = true;
+            this.btnExportToGraphMLFile.SuperTip = "Exports the edges and vertices to a new GraphML file.  All columns in the Edges a" +
+                "nd Vertices worksheet are exported.";
+            this.btnExportToGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportToGraphMLFile_Click);
             // 
             // btnExportToPajekFile
             // 
@@ -791,7 +806,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.grpAnalysis.Items.Add(this.btnShowDynamicFilters);
             this.grpAnalysis.Items.Add(this.btnShowGraphMetrics);
             this.grpAnalysis.Items.Add(this.sbCreateSubgraphImages);
-            this.grpAnalysis.Items.Add(this.btnCreateClusters);
+            this.grpAnalysis.Items.Add(this.sbCreateClusters);
             this.grpAnalysis.Label = "Analysis";
             this.grpAnalysis.Name = "grpAnalysis";
             // 
@@ -852,6 +867,19 @@ namespace Microsoft.NodeXL.ExcelTemplate
                 " any subgraph image files you saved in a folder.";
             this.btnDeleteSubgraphThumbnails.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnDeleteSubgraphThumbnails_Click);
             // 
+            // sbCreateClusters
+            // 
+            this.sbCreateClusters.Items.Add(this.btnCreateClusters);
+            this.sbCreateClusters.Items.Add(this.chkClausetNewmanMoore);
+            this.sbCreateClusters.Items.Add(this.chkWakitaTsurumi);
+            this.sbCreateClusters.Items.Add(this.chkGirvanNewman);
+            this.sbCreateClusters.Label = "Find Clusters";
+            this.sbCreateClusters.Name = "sbCreateClusters";
+            this.sbCreateClusters.OfficeImageId = "AppointmentColorDialog";
+            this.sbCreateClusters.ScreenTip = "Find Clusters";
+            this.sbCreateClusters.SuperTip = resources.GetString("sbCreateClusters.SuperTip");
+            this.sbCreateClusters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCreateClusters_Click);
+            // 
             // btnCreateClusters
             // 
             this.btnCreateClusters.Label = "Find Clusters";
@@ -861,6 +889,37 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnCreateClusters.ShowImage = true;
             this.btnCreateClusters.SuperTip = resources.GetString("btnCreateClusters.SuperTip");
             this.btnCreateClusters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCreateClusters_Click);
+            // 
+            // chkClausetNewmanMoore
+            // 
+            this.chkClausetNewmanMoore.Checked = true;
+            this.chkClausetNewmanMoore.Label = "Use Clauset-Newman-Moore";
+            this.chkClausetNewmanMoore.Name = "chkClausetNewmanMoore";
+            this.chkClausetNewmanMoore.ScreenTip = "Use Clauset-Newman-Moore ";
+            this.chkClausetNewmanMoore.SuperTip = "Use the algorithm descibed in \"Finding Community Structure in Very Large Networks" +
+                ",\" by Aaron Clauset, M. E. J. Newman, and Cristopher Moore.";
+            this.chkClausetNewmanMoore.Tag = Microsoft.NodeXL.Algorithms.ClusterAlgorithm.ClausetNewmanMoore;
+            this.chkClausetNewmanMoore.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkClusterAlgorithm_Click);
+            // 
+            // chkWakitaTsurumi
+            // 
+            this.chkWakitaTsurumi.Label = "Use Wakita-Tsurumi";
+            this.chkWakitaTsurumi.Name = "chkWakitaTsurumi";
+            this.chkWakitaTsurumi.ScreenTip = "Use Wakita-Tsurumi ";
+            this.chkWakitaTsurumi.SuperTip = "Use the algorithm described in \"Finding Community Structure in Mega-scale Social " +
+                "Networks,\" by Ken Wakita and Toshiyuki Tsurumi.";
+            this.chkWakitaTsurumi.Tag = Microsoft.NodeXL.Algorithms.ClusterAlgorithm.WakitaTsurumi;
+            this.chkWakitaTsurumi.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkClusterAlgorithm_Click);
+            // 
+            // chkGirvanNewman
+            // 
+            this.chkGirvanNewman.Label = "Use Girvan-Newman (Slower, for Small Graphs Only)";
+            this.chkGirvanNewman.Name = "chkGirvanNewman";
+            this.chkGirvanNewman.ScreenTip = "Use Girvan-Newman ";
+            this.chkGirvanNewman.SuperTip = "Use the algorithm described in \"Community Structure in Social and Biological Netw" +
+                "orks,\" by Michelle Girvan and M. E. J. Newman.";
+            this.chkGirvanNewman.Tag = Microsoft.NodeXL.Algorithms.ClusterAlgorithm.GirvanNewman;
+            this.chkGirvanNewman.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkClusterAlgorithm_Click);
             // 
             // grpShowHide
             // 
@@ -1094,16 +1153,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAbout.SuperTip = "View information about Microsoft NodeXL.";
             this.btnAbout.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAbout_Click);
             // 
-            // btnExportToGraphMLFile
-            // 
-            this.btnExportToGraphMLFile.Label = "To GraphML File...";
-            this.btnExportToGraphMLFile.Name = "btnExportToGraphMLFile";
-            this.btnExportToGraphMLFile.OfficeImageId = "ExportTextFile";
-            this.btnExportToGraphMLFile.ScreenTip = "Export to GraphML File";
-            this.btnExportToGraphMLFile.ShowImage = true;
-            this.btnExportToGraphMLFile.SuperTip = resources.GetString("btnExportToGraphMLFile.SuperTip");
-            this.btnExportToGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportToGraphMLFile_Click);
-            // 
             // Ribbon
             // 
             this.Name = "Ribbon";
@@ -1225,6 +1274,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetBackground;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnEditLayoutUserSettings;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToGraphMLFile;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSplitButton sbCreateClusters;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkGirvanNewman;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkClausetNewmanMoore;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkWakitaTsurumi;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

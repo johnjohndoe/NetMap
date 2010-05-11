@@ -30,9 +30,80 @@ public class GraphBinner : Object
 
     public GraphBinner()
     {
-        // (Do nothing.)
+        m_iMaximumVerticesPerBin = 3;
+        m_iBinLength = 16;
 
         AssertValid();
+    }
+
+    //*************************************************************************
+    //  Property: MaximumVerticesPerBin
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of vertices a binned component can
+    /// have.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of vertices a binned component can have.  The
+    /// default value is 3.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If a strongly connected component of the graph has <see
+    /// cref="MaximumVerticesPerBin" /> vertices or fewer, the component is
+    /// placed in a bin.
+    /// </remarks>
+    //*************************************************************************
+
+    public Int32
+    MaximumVerticesPerBin
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iMaximumVerticesPerBin);
+        }
+
+        set
+        {
+            m_iMaximumVerticesPerBin = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BinLength
+    //
+    /// <summary>
+    /// Gets or sets the height and width of each bin, in graph rectangle
+    /// units.
+    /// </summary>
+    ///
+    /// <value>
+    /// The height and width of each bin, in graph rectangle units.  The
+    /// default value is 16.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    BinLength
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iBinLength);
+        }
+
+        set
+        {
+            m_iBinLength = value;
+
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -104,10 +175,10 @@ public class GraphBinner : Object
         Boolean bOriginalGraphHasBeenLaidOut =
             LayoutMetadataUtil.GraphHasBeenLaidOut(graph);
 
-        IVertex [] oOriginalLayOutTheseVerticesOnly =
-            ( IVertex [] )graph.GetValue(
+        ICollection<IVertex> oOriginalLayOutTheseVerticesOnly =
+            ( ICollection<IVertex> )graph.GetValue(
                 ReservedMetadataKeys.LayOutTheseVerticesOnly,
-                typeof( IVertex [] ) );
+                typeof( ICollection<IVertex> ) );
 
         // Split the vertices into strongly connected components, sorted in
         // increasing order of vertex count.
@@ -121,7 +192,7 @@ public class GraphBinner : Object
         // This object will split the graph rectangle into bin rectangles.
 
         RectangleBinner oRectangleBinner = new RectangleBinner(
-            layoutContext.GraphRectangle, BinLength);
+            layoutContext.GraphRectangle, m_iBinLength);
 
         Int32 iComponent = 0;
 
@@ -130,7 +201,7 @@ public class GraphBinner : Object
             LinkedList<IVertex> oComponent = oComponents[iComponent];
             Int32 iVerticesInComponent = oComponent.Count;
 
-            if (iVerticesInComponent> MaximumVerticesPerBin)
+            if (iVerticesInComponent> m_iMaximumVerticesPerBin)
             {
                 // The vertices in the remaining components should not be
                 // binned.
@@ -149,12 +220,7 @@ public class GraphBinner : Object
 
             // Lay out the component within the bin rectangle.
 
-            IVertex [] aoVerticesInComponent =
-                new IVertex[iVerticesInComponent];
-
-            oComponent.CopyTo(aoVerticesInComponent, 0);
-
-            LayOutComponentInBin(graph, aoVerticesInComponent, oBinRectangle);
+            LayOutComponentInBin(graph, oComponent, oBinRectangle);
         }
 
         // Restore the original metadata on the graph.
@@ -200,7 +266,7 @@ public class GraphBinner : Object
     /// Graph being laid out.
     /// </param>
     ///
-    /// <param name="aoVerticesInComponent">
+    /// <param name="oVerticesInComponent">
     /// The vertices in the bin.
     /// </param>
     ///
@@ -213,16 +279,16 @@ public class GraphBinner : Object
     LayOutComponentInBin
     (
         IGraph oGraph,
-        IVertex [] aoVerticesInComponent,
+        ICollection<IVertex> oVerticesInComponent,
         Rectangle oBinRectangle
     )
     {
         Debug.Assert(oGraph != null);
-        Debug.Assert(aoVerticesInComponent != null);
+        Debug.Assert(oVerticesInComponent != null);
         AssertValid();
 
         oGraph.SetValue(ReservedMetadataKeys.LayOutTheseVerticesOnly,
-            aoVerticesInComponent);
+            oVerticesInComponent);
 
         // Force the FruchtermanReingoldLayout class to randomize the vertices.
 
@@ -303,23 +369,14 @@ public class GraphBinner : Object
     public void
     AssertValid()
     {
-        // (Do nothing.)
+        Debug.Assert(m_iMaximumVerticesPerBin >= 1);
+        Debug.Assert(m_iBinLength >= 1);
     }
 
 
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
-
-    /// If a strongly connected component of the graph has
-    /// MaximumVerticesPerBin vertices or fewer, the component is placed in a
-    /// bin.
-
-    protected const Int32 MaximumVerticesPerBin = 3;
-
-    /// Height and width of each bin, in graph rectangle units.
-
-    protected const Int32 BinLength = 16;
 
     /// Margin within each bin.
 
@@ -330,7 +387,13 @@ public class GraphBinner : Object
     //  Protected fields
     //*************************************************************************
 
-    // (None.)
+    /// The maximum number of vertices a binned component can have.
+
+    protected Int32 m_iMaximumVerticesPerBin;
+
+    /// Height and width of each bin, in graph rectangle units.
+
+    protected Int32 m_iBinLength;
 }
 
 }

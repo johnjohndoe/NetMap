@@ -3,7 +3,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
@@ -22,7 +21,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </remarks>
 //*****************************************************************************
 
-public class EigenvectorCentralityCalculator2 : GraphMetricCalculatorBase2
+public class EigenvectorCentralityCalculator2 :
+    OneDoubleGraphMetricCalculatorBase
 {
     //*************************************************************************
     //  Constructor: EigenvectorCentralityCalculator2()
@@ -98,59 +98,15 @@ public class EigenvectorCentralityCalculator2 : GraphMetricCalculatorBase2
         Debug.Assert(calculateGraphMetricsContext != null);
         AssertValid();
 
-        graphMetricColumns = new GraphMetricColumn[0];
+        return ( TryCalculateGraphMetrics(graph, calculateGraphMetricsContext,
+            new Algorithms.EigenvectorCentralityCalculator(),
 
-        if (!calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateEigenvectorCentrality)
-        {
-            return (true);
-        }
+            calculateGraphMetricsContext.GraphMetricUserSettings.
+                CalculateEigenvectorCentrality,
 
-        // Calculate the eigenvector centralities for each vertex using the
-        // EigenvectorCentralityCalculator class in the Algorithms namespace,
-        // which knows nothing about Excel.
-
-        Dictionary<Int32, Double> oEigenvectorCentralities;
-
-        if ( !( new Algorithms.EigenvectorCentralityCalculator() ).
-            TryCalculateGraphMetrics(graph,
-                calculateGraphMetricsContext.BackgroundWorker,
-                out oEigenvectorCentralities) )
-        {
-            // The user cancelled.
-
-            return (false);
-        }
-
-        // Transfer the eigenvector centralities to an array of
-        // GraphMetricValue objects.
-
-        List<GraphMetricValueWithID> oGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        foreach (IVertex oVertex in graph.Vertices)
-        {
-            // Try to get the row ID stored in the worksheet.
-
-            Int32 iRowID;
-
-            if ( TryGetRowID(oVertex, out iRowID) )
-            {
-                oGraphMetricValues.Add( new GraphMetricValueWithID(
-                    iRowID, oEigenvectorCentralities[oVertex.ID] ) );
-            }
-        }
-
-        graphMetricColumns = new GraphMetricColumn [] {
-            new GraphMetricColumnWithID( WorksheetNames.Vertices,
-                TableNames.Vertices,
-                VertexTableColumnNames.EigenvectorCentrality,
-                VertexTableColumnWidths.EigenvectorCentrality,
-                NumericFormat, CellStyleNames.GraphMetricGood,
-                oGraphMetricValues.ToArray()
-                ) };
-
-        return (true);
+            VertexTableColumnNames.EigenvectorCentrality,
+            VertexTableColumnWidths.EigenvectorCentrality,
+            CellStyleNames.GraphMetricGood, out graphMetricColumns) );
     }
 
 
@@ -171,15 +127,6 @@ public class EigenvectorCentralityCalculator2 : GraphMetricCalculatorBase2
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number format for the column.
-
-    protected const String NumericFormat = "0.000";
 
 
     //*************************************************************************

@@ -6,38 +6,42 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Algorithms;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//  Class: ClosenessCentralityCalculator2
+//  Class: OneDoubleGraphMetricCalculatorBase
 //
 /// <summary>
-/// Calculates the closeness centrality for each of the graph's vertices.
+/// Calculates one graph metric of type Double for each of the graph's
+/// vertices.
 /// </summary>
 ///
 /// <remarks>
-/// See <see cref="Algorithms.ClosenessCentralityCalculator" /> for details on
-/// how closeness centralities are calculated.
+/// This is the base class for several derived classes that calculate a graph
+/// metric of type Double.
 /// </remarks>
 //*****************************************************************************
 
-public class ClosenessCentralityCalculator2 : GraphMetricCalculatorBase2
+public abstract class OneDoubleGraphMetricCalculatorBase :
+    GraphMetricCalculatorBase2
 {
     //*************************************************************************
-    //  Constructor: ClosenessCentralityCalculator2()
+    //  Constructor: OneDoubleGraphMetricCalculatorBase()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="ClosenessCentralityCalculator2" /> class.
+    /// cref="OneDoubleGraphMetricCalculatorBase" /> class.
     /// </summary>
     //*************************************************************************
 
-    public ClosenessCentralityCalculator2()
+    public OneDoubleGraphMetricCalculatorBase()
     {
         // (Do nothing.)
 
-        AssertValid();
+        // AssertValid();
     }
 
     //*************************************************************************
@@ -54,6 +58,31 @@ public class ClosenessCentralityCalculator2 : GraphMetricCalculatorBase2
     ///
     /// <param name="calculateGraphMetricsContext">
     /// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
+    /// <param name="graphMetricCalculator">
+    /// Object whose <see
+    /// cref="IGraphMetricCalculator.TryCalculateGraphMetrics" />
+    /// implementation returns a Dictionary&lt;Int32, Double&gt;.
+    /// </param>
+    ///
+    /// <param name="calculateGraphMetric">
+    /// true to calculate the graph metric, false to skip it.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to write to in the vertex table.
+    /// </param>
+    ///
+    /// <param name="columnWidthChars">
+    /// Width of the column, in characters, or <see
+    /// cref="Microsoft.Research.CommunityTechnologies.AppLib.ExcelUtil.
+    /// AutoColumnWidth" /> to set the width automatically.
+    /// </param>
+    ///
+    /// <param name="style">
+    /// Style of the column, or null to apply Excel's normal style.  Sample:
+    /// "Bad".
     /// </param>
     ///
     /// <param name="graphMetricColumns">
@@ -86,44 +115,56 @@ public class ClosenessCentralityCalculator2 : GraphMetricCalculatorBase2
     /// </remarks>
     //*************************************************************************
 
-    public override Boolean
+    protected Boolean
     TryCalculateGraphMetrics
     (
         IGraph graph,
         CalculateGraphMetricsContext calculateGraphMetricsContext,
+        IGraphMetricCalculator graphMetricCalculator,
+        Boolean calculateGraphMetric,
+        String columnName,
+        Double columnWidthChars,
+        String style,
         out GraphMetricColumn [] graphMetricColumns
     )
     {
         Debug.Assert(graph != null);
         Debug.Assert(calculateGraphMetricsContext != null);
+        Debug.Assert(graphMetricCalculator != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        Debug.Assert(columnWidthChars == ExcelUtil.AutoColumnWidth ||
+            columnWidthChars > 0);
+
         AssertValid();
 
         graphMetricColumns = new GraphMetricColumn[0];
 
-        if (!calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateClosenessCentrality)
+        if (!calculateGraphMetric)
         {
             return (true);
         }
 
-        // Calculate the closeness centralities for each vertex using the
-        // ClosenessCentralityCalculator class in the Algorithms namespace,
-        // which knows nothing about Excel.
+        // Calculate the graph metrics for each vertex using the
+        // IGraphMetricCalculator object, which knows nothing about Excel.
 
-        Dictionary<Int32, Double> oClosenessCentralities;
+        Object oGraphMetricsAsObject;
 
-        if ( !( new Algorithms.ClosenessCentralityCalculator() ).
-            TryCalculateGraphMetrics(graph,
-                calculateGraphMetricsContext.BackgroundWorker,
-                out oClosenessCentralities) )
+        if ( !graphMetricCalculator.TryCalculateGraphMetrics(graph,
+            calculateGraphMetricsContext.BackgroundWorker,
+            out oGraphMetricsAsObject) )
         {
             // The user cancelled.
 
             return (false);
         }
 
-        // Transfer the closeness centralities to an array of GraphMetricValue
-        // objects.
+        Debug.Assert( oGraphMetricsAsObject is Dictionary<Int32, Double> );
+
+        Dictionary<Int32, Double> oGraphMetrics =
+            (Dictionary<Int32, Double>)oGraphMetricsAsObject;
+
+        // Transfer the graph metrics to an array of GraphMetricValue objects.
 
         List<GraphMetricValueWithID> oGraphMetricValues =
             new List<GraphMetricValueWithID>();
@@ -136,18 +177,15 @@ public class ClosenessCentralityCalculator2 : GraphMetricCalculatorBase2
 
             if ( TryGetRowID(oVertex, out iRowID) )
             {
-                oGraphMetricValues.Add( new GraphMetricValueWithID(iRowID,
-                    oClosenessCentralities[oVertex.ID] ) );
+                oGraphMetricValues.Add( new GraphMetricValueWithID(
+                    iRowID, oGraphMetrics[oVertex.ID] ) );
             }
         }
 
         graphMetricColumns = new GraphMetricColumn [] {
             new GraphMetricColumnWithID( WorksheetNames.Vertices,
-                TableNames.Vertices,
-                VertexTableColumnNames.ClosenessCentrality,
-                VertexTableColumnWidths.ClosenessCentrality,
-                NumericFormat, CellStyleNames.GraphMetricGood,
-                oGraphMetricValues.ToArray()
+                TableNames.Vertices, columnName, columnWidthChars,
+                NumericFormat, style, oGraphMetricValues.ToArray()
                 ) };
 
         return (true);

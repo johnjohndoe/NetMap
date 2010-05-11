@@ -460,15 +460,15 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
         // Alpha.
 
-        Nullable<Byte> btInitialAlpha = GetInitialAttributeValue<Byte>(
+        Nullable<Single> fInitialAlpha = GetInitialAttributeValue<Single>(
             ReservedMetadataKeys.PerAlpha);
 
-        if (btInitialAlpha.HasValue)
+        if (fInitialAlpha.HasValue)
         {
             AlphaConverter oAlphaConverter = new AlphaConverter();
 
             oInitialVertexAttributes.Alpha = oAlphaConverter.GraphToWorkbook(
-                btInitialAlpha.Value);
+                fInitialAlpha.Value);
         }
         else
         {

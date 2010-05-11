@@ -3,7 +3,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
@@ -22,7 +21,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </remarks>
 //*****************************************************************************
 
-public class ClusteringCoefficientCalculator2 : GraphMetricCalculatorBase2
+public class ClusteringCoefficientCalculator2 :
+    OneDoubleGraphMetricCalculatorBase
 {
     //*************************************************************************
     //  Constructor: ClusteringCoefficientCalculator2()
@@ -98,47 +98,6 @@ public class ClusteringCoefficientCalculator2 : GraphMetricCalculatorBase2
         Debug.Assert(calculateGraphMetricsContext != null);
         AssertValid();
 
-        graphMetricColumns = new GraphMetricColumn[0];
-
-        if (!calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateClusteringCoefficient)
-        {
-            return (true);
-        }
-
-        // Calculate the clustering coeffient for each vertex using the
-        // ClusteringCoefficientCalculator class in the Algorithms namespace,
-        // which knows nothing about Excel.
-
-        Dictionary<Int32, Double> oClusteringCoefficients;
-
-        if ( !( new Algorithms.ClusteringCoefficientCalculator() ).
-            TryCalculateGraphMetrics(graph,
-                calculateGraphMetricsContext.BackgroundWorker,
-                out oClusteringCoefficients) )
-        {
-            // The user cancelled.
-
-            return (false);
-        }
-
-        // Transfer the clustering coeffients to an array of GraphMetricValue
-        // objects.
-
-        List<GraphMetricValueWithID> oGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        foreach (IVertex oVertex in graph.Vertices)
-        {
-            Int32 iRowID;
-
-            if ( TryGetRowID(oVertex, out iRowID) )
-            {
-                oGraphMetricValues.Add( new GraphMetricValueWithID( iRowID,
-                    oClusteringCoefficients[oVertex.ID] ) );
-            }
-        }
-
         String sStyle = CellStyleNames.GraphMetricGood;
 
         if (calculateGraphMetricsContext.DuplicateEdgeDetector.
@@ -150,15 +109,15 @@ public class ClusteringCoefficientCalculator2 : GraphMetricCalculatorBase2
             sStyle = CellStyleNames.GraphMetricBad;
         }
 
-        graphMetricColumns = new GraphMetricColumn [] {
-            new GraphMetricColumnWithID( WorksheetNames.Vertices,
-                TableNames.Vertices,
-                VertexTableColumnNames.ClusteringCoefficient,
-                VertexTableColumnWidths.ClusteringCoefficient,
-                NumericFormat, sStyle, oGraphMetricValues.ToArray()
-                ) };
+        return ( TryCalculateGraphMetrics(graph, calculateGraphMetricsContext,
+            new Algorithms.ClusteringCoefficientCalculator(),
 
-        return (true);
+            calculateGraphMetricsContext.GraphMetricUserSettings.
+                CalculateClusteringCoefficient,
+
+            VertexTableColumnNames.ClusteringCoefficient,
+            VertexTableColumnWidths.ClusteringCoefficient,
+            sStyle, out graphMetricColumns) );
     }
 
 
@@ -179,15 +138,6 @@ public class ClusteringCoefficientCalculator2 : GraphMetricCalculatorBase2
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number format for the column.
-
-    protected const String NumericFormat = "0.000";
 
 
     //*************************************************************************

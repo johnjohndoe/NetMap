@@ -4,6 +4,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Algorithms;
@@ -43,6 +44,13 @@ public class GraphMetricCalculationManager : Object
     public GraphMetricCalculationManager()
     {
         m_oBackgroundWorker = null;
+
+        // Set the path to the executable that calculates graph metrics using
+        // the SNAP library.
+
+        GraphMetricCalculatorBase.SetSnapGraphMetricCalculatorPath(
+            Path.Combine(ApplicationUtil.GetApplicationFolder(),
+                SnapGraphMetricCalculatorFileName) );
 
         AssertValid();
     }
@@ -115,6 +123,7 @@ public class GraphMetricCalculationManager : Object
                 new VertexDegreeCalculator2(),
                 new BrandesFastCentralityCalculator2(),
                 new EigenvectorCentralityCalculator2(),
+                new PageRankCalculator2(),
                 new ClusteringCoefficientCalculator2(),
                 new OverallMetricCalculator2(),
                 };
@@ -680,6 +689,17 @@ public class GraphMetricCalculationManager : Object
     {
         // m_oBackgroundWorker
     }
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// File name of the executable that calculates graph metrics using the
+    /// SNAP library.
+
+    protected const String SnapGraphMetricCalculatorFileName =
+        "SnapGraphMetricCalculator.exe";
 
 
     //*************************************************************************

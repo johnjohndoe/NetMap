@@ -293,7 +293,7 @@ public partial class MainForm : Form
                         System.Windows.Media.Color.FromArgb(255, 200, 200,
                             200) );
 
-                oVertex.SetValue(ReservedMetadataKeys.PerAlpha, (Byte)128);
+                oVertex.SetValue(ReservedMetadataKeys.PerAlpha, (Single)128);
                 */
             }
             else
@@ -313,7 +313,7 @@ public partial class MainForm : Form
             #if false  // Vertex alpha.
 
             oVertex.SetValue(
-                ReservedMetadataKeys.PerAlpha, (Byte)oRandom.Next(256) );
+                ReservedMetadataKeys.PerAlpha, (Single)oRandom.Next(256) );
 
             #endif
 
@@ -366,7 +366,7 @@ public partial class MainForm : Form
             #if true  // Edge alpha.
 
             oEdge.SetValue( ReservedMetadataKeys.PerAlpha,
-                (Byte)oRandom.Next(256) );
+                (Single)oRandom.Next(256) );
 
             #endif
 

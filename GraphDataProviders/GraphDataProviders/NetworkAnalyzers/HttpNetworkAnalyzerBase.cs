@@ -712,8 +712,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
             oXmlNamespaceManager, out iAttributeValue) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oEdgeOrVertexXmlNode, sGraphMLAttributeID,
-                iAttributeValue.ToString() );
+                oEdgeOrVertexXmlNode, sGraphMLAttributeID, iAttributeValue);
 
             return (true);
         }
@@ -790,8 +789,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
             oXmlNamespaceManager, out dAttributeValue) )
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oEdgeOrVertexXmlNode, sGraphMLAttributeID,
-                dAttributeValue.ToString() );
+                oEdgeOrVertexXmlNode, sGraphMLAttributeID, dAttributeValue);
 
             return (true);
         }

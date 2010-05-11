@@ -134,6 +134,8 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
             m_oGraphMetricUserSettings.CalculateEigenvectorCentrality =
                 chkEigenvectorCentrality.Checked;
 
+            m_oGraphMetricUserSettings.CalculatePageRank = chkPageRank.Checked;
+
             m_oGraphMetricUserSettings.CalculateClusteringCoefficient =
                 chkClusteringCoefficient.Checked;
 
@@ -154,6 +156,8 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 
             chkEigenvectorCentrality.Checked =
                 m_oGraphMetricUserSettings.CalculateEigenvectorCentrality;
+
+            chkPageRank.Checked = m_oGraphMetricUserSettings.CalculatePageRank;
 
             chkClusteringCoefficient.Checked =
                 m_oGraphMetricUserSettings.CalculateClusteringCoefficient;
@@ -396,7 +400,7 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GraphMetricsDialog2") ]
+[ SettingsGroupNameAttribute("GraphMetricsDialog3") ]
 
 public class GraphMetricsDialogUserSettings : FormSettings
 {

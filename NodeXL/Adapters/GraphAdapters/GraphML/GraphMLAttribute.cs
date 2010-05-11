@@ -3,6 +3,7 @@
 
 using System;
 using System.Xml;
+using System.Globalization;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.XmlLib;
 
@@ -421,27 +422,29 @@ public class GraphMLAttribute : Object
         Debug.Assert(m_eType == AttributeType.String ||
             sAttributeValue.Length > 0);
 
+        IFormatProvider oFormatProvider = CultureInfo.InvariantCulture;
+
         switch (m_eType)
         {
             case AttributeType.Boolean:
 
-                return ( Convert.ToBoolean(sAttributeValue) );
+                return ( Convert.ToBoolean(sAttributeValue, oFormatProvider) );
             
             case AttributeType.Int:
 
-                return ( Convert.ToInt32(sAttributeValue) );
+                return ( Convert.ToInt32(sAttributeValue, oFormatProvider) );
             
             case AttributeType.Long:
 
-                return ( Convert.ToInt64(sAttributeValue) );
+                return ( Convert.ToInt64(sAttributeValue, oFormatProvider) );
             
             case AttributeType.Float:
 
-                return ( Convert.ToSingle(sAttributeValue) );
+                return ( Convert.ToSingle(sAttributeValue, oFormatProvider) );
             
             case AttributeType.Double:
 
-                return ( Convert.ToDouble(sAttributeValue) );
+                return ( Convert.ToDouble(sAttributeValue, oFormatProvider) );
             
             case AttributeType.String:
 

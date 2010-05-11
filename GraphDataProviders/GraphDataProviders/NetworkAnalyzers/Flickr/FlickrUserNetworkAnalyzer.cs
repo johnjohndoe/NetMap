@@ -636,15 +636,10 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
                     oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
                         sOtherScreenName, sScreenName, "Commenter");
 
-                    String sCommentDateUtc;
                     UInt32 uCommentDateUtc;
 
-                    if (
-                        XmlUtil2.TrySelectSingleNodeAsString(oChildXmlNode,
-                            "@datecreate", null, out sCommentDateUtc)
-                        &&
-                        UInt32.TryParse(sCommentDateUtc, out uCommentDateUtc)
-                        )
+                    if ( XmlUtil2.TrySelectSingleNodeAsUInt32(oChildXmlNode,
+                            "@datecreate", null, out uCommentDateUtc) )
                     {
                         DateTime oCommentDateUtc =
                             DateTimeUtil2.UnixTimestampToDateTimeUtc(

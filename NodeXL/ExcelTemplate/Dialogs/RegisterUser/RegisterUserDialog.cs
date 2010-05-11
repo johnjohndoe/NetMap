@@ -117,7 +117,7 @@ public partial class RegisterUserDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("RegisterUserDialog2") ]
+[ SettingsGroupNameAttribute("RegisterUserDialog3") ]
 
 public class RegisterUserDialogUserSettings : FormSettings
 {

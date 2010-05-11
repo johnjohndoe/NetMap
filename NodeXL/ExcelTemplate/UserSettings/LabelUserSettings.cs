@@ -37,7 +37,7 @@ public class LabelUserSettings : Object
             GeneralUserSettings.DefaultFont);
 
         m_oVertexLabelFillColor = Color.White;
-        m_eVertexLabelPosition = VertexLabelPosition.TopRight;
+        m_eVertexLabelPosition = VertexLabelPosition.BottomCenter;
 
         m_iVertexLabelMaximumLength = m_iEdgeLabelMaximumLength =
             Int32.MaxValue;
@@ -121,7 +121,7 @@ public class LabelUserSettings : Object
     /// <value>
     /// The position of a vertex label drawn as an annotation.  The
     /// default value is <see
-    /// cref="Visualization.Wpf.VertexLabelPosition.TopRight" />.
+    /// cref="Visualization.Wpf.VertexLabelPosition.BottomCenter" />.
     /// </value>
     //*************************************************************************
 
@@ -475,7 +475,7 @@ public class LabelUserSettingsTypeConverter : TypeConverter
 
         // Use a simple tab-delimited format.  Sample string:
         //
-        // "Microsoft Sans Serif, 8.25pt\tWhite\tTopRight\t2147483647\t
+        // "Microsoft Sans Serif, 8.25pt\tWhite\tBottomCenter\t2147483647\t
         // 4294967295";
 
         return ( String.Format(CultureInfo.InvariantCulture,

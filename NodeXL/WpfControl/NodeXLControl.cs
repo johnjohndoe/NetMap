@@ -21,6 +21,7 @@ using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Layouts;
+using Microsoft.NodeXL.Algorithms;
 using Microsoft.Research.CommunityTechnologies.GraphicsLib;
 using Microsoft.WpfGraphicsLib;
 
@@ -490,6 +491,7 @@ public partial class NodeXLControl : FrameworkElement
 
         m_oSelectedVertices = new HashSet<IVertex>();
         m_oSelectedEdges = new HashSet<IEdge>();
+        m_oDoubleClickedVertexInfo = null;
 
         m_bShowVertexToolTips = false;
         m_oLastMouseMoveLocation = new Point(-1, -1);
@@ -5439,6 +5441,8 @@ public partial class NodeXLControl : FrameworkElement
         {
             // The user clicked on part of the graph not covered by a vertex.
 
+            m_oDoubleClickedVertexInfo = null;
+
             if (m_eMouseMode == MouseMode.Select)
             {
                 DeselectAll();
@@ -5495,6 +5499,34 @@ public partial class NodeXLControl : FrameworkElement
 
         SetVertexSelected(oClickedVertex, bSelectClickedVertex,
             m_bMouseAlsoSelectsIncidentEdges);
+
+        // In Select and AddToSelection mode, double-clicking a vertex provides
+        // special behavior.
+
+        if (
+            Keyboard.Modifiers != 0
+            ||
+            (m_eMouseMode != MouseMode.Select &&
+                m_eMouseMode != MouseMode.AddToSelection)
+            )
+        {
+            m_oDoubleClickedVertexInfo = null;
+        }
+        else if (e.ClickCount == 2)
+        {
+            OnVertexDoubleClickLeft(oClickedVertex);
+        }
+        else if (m_oDoubleClickedVertexInfo != null &&
+            m_oDoubleClickedVertexInfo.Vertex != oClickedVertex)
+        {
+            // (The above "else if" test is required because double-clicking a
+            // vertex results in this method being called twice: once with
+            // e.ClickCount = 1, and again with e.ClickCount = 2.  We don't
+            // want to clear m_oDoubleClickedVertexInfo unnecessarily during
+            // this sequence.)
+
+            m_oDoubleClickedVertexInfo = null;
+        }
 
         if (
             m_bAllowVertexDrag
@@ -5757,6 +5789,63 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
+    //  Method: OnVertexDoubleClickLeft()
+    //
+    /// <summary>
+    /// Performs tasks required when a vertex is double-clicked with the left
+    /// mouse button.
+    /// </summary>
+    ///
+    /// <param name="oDoubleClickedVertex">
+    /// The vertex that was double-clicked.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnVertexDoubleClickLeft
+    (
+        IVertex oDoubleClickedVertex
+    )
+    {
+        Debug.Assert(oDoubleClickedVertex != null);
+        AssertValid();
+
+        // Double-clicking a vertex the first time should select the vertex's
+        // level-1 subgraph, double-clicking it again should select its level-2
+        // subgraph, and so on.
+
+        if (m_oDoubleClickedVertexInfo == null ||
+            m_oDoubleClickedVertexInfo.Vertex != oDoubleClickedVertex)
+        {
+            // Note that the DoubleClickedVertexInfo constructor sets the
+            // Levels property to 0.
+
+            m_oDoubleClickedVertexInfo = new DoubleClickedVertexInfo(
+                oDoubleClickedVertex);
+        }
+
+        m_oDoubleClickedVertexInfo.Levels++;
+
+        Dictionary<IVertex, Int32> oSubgraphVertices;
+        HashSet<IEdge> oSubgraphEdges;
+
+        SubgraphCalculator.GetSubgraph(oDoubleClickedVertex,
+            m_oDoubleClickedVertexInfo.Levels,
+            m_bMouseAlsoSelectsIncidentEdges, out oSubgraphVertices,
+            out oSubgraphEdges);
+
+        foreach (IVertex oSubgraphVertex in oSubgraphVertices.Keys)
+        {
+            SetVertexSelectedInternal(oSubgraphVertex, true);
+        }
+
+        foreach (IEdge oSubgraphEdge in oSubgraphEdges)
+        {
+            SetEdgeSelectedInternal(oSubgraphEdge, true);
+        }
+    }
+
+    //*************************************************************************
     //  Method: AsyncLayout_LayOutGraphIterationCompleted()
     //
     /// <summary>
@@ -5992,6 +6081,7 @@ public partial class NodeXLControl : FrameworkElement
         // m_oTranslationBeingDragged
         Debug.Assert(m_oSelectedVertices != null);
         Debug.Assert(m_oSelectedEdges != null);
+        // m_oDoubleClickedVertexInfo
         // m_bShowVertexToolTips
         // m_oLastMouseMoveLocation
         Debug.Assert(m_oVertexToolTipTracker != null);
@@ -6107,9 +6197,14 @@ public partial class NodeXLControl : FrameworkElement
     /// arrays to prevent the same vertex or edge from being added twice.  The
     /// keys are IVertex or IEdge.
 
-    HashSet<IVertex> m_oSelectedVertices;
+    protected HashSet<IVertex> m_oSelectedVertices;
     ///
-    HashSet<IEdge> m_oSelectedEdges;
+    protected HashSet<IEdge> m_oSelectedEdges;
+
+    /// Information about the vertex that was just double-clicked, or null if
+    /// a vertex wasn't just double-clicked.
+
+    protected DoubleClickedVertexInfo m_oDoubleClickedVertexInfo;
 
     /// true to show vertex tooltips.
 

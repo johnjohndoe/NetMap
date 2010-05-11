@@ -141,6 +141,76 @@ public class LayoutUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: MaximumVerticesPerBin
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of vertices a binned component can
+    /// have.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of vertices a binned component can have.  The
+    /// default value is 3.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("3") ]
+
+    public Int32
+    MaximumVerticesPerBin
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Int32)this[MaximumVerticesPerBinKey] );
+        }
+
+        set
+        {
+            this[MaximumVerticesPerBinKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BinLength
+    //
+    /// <summary>
+    /// Gets or sets the height and width of each bin, in graph rectangle
+    /// units.
+    /// </summary>
+    ///
+    /// <value>
+    /// The height and width of each bin, in graph rectangle units.  The
+    /// default value is 16.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("16") ]
+
+    public Int32
+    BinLength
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Int32)this[BinLengthKey] );
+        }
+
+        set
+        {
+            this[BinLengthKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: FruchtermanReingoldC
     //
     /// <summary>
@@ -236,6 +306,8 @@ public class LayoutUserSettings : ApplicationSettingsBase
 
         asyncLayout.Margin = this.Margin;
         asyncLayout.UseBinning = this.UseBinning;
+        asyncLayout.MaximumVerticesPerBin = this.MaximumVerticesPerBin;
+        asyncLayout.BinLength = this.BinLength;
 
         if (asyncLayout is FruchtermanReingoldLayout)
         {
@@ -282,6 +354,14 @@ public class LayoutUserSettings : ApplicationSettingsBase
     /// Name of the settings key for the UseBinning property.
 
     protected const String UseBinningKey = "UseBinning";
+
+    /// Name of the settings key for the MaximumVerticesPerBin property.
+
+    protected const String MaximumVerticesPerBinKey = "MaximumVerticesPerBin";
+
+    /// Name of the settings key for the BinLength property.
+
+    protected const String BinLengthKey = "BinLength";
 
     /// Name of the settings key for the FruchtermanReingoldC property.
 

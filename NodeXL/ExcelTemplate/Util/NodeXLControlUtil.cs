@@ -260,10 +260,10 @@ public static class NodeXLControlUtil
     }
 
     //*************************************************************************
-    //  Method: GetVisibleVerticesAsArray()
+    //  Method: GetVisibleVertices()
     //
     /// <summary>
-    /// Gets the collection of visible vertices as an array.
+    /// Gets a collection of visible vertices.
     /// </summary>
     ///
     /// <param name="nodeXLControl">
@@ -271,21 +271,17 @@ public static class NodeXLControlUtil
     /// </param>
     ///
     /// <returns>
-    /// An array of visible vertices.  The array may be empty.
+    /// A collection of visible vertices.  The collection may be empty.
     /// </returns>
     //*************************************************************************
 
-    public static IVertex []
-    GetVisibleVerticesAsArray
+    public static ICollection<IVertex>
+    GetVisibleVertices
     (
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(nodeXLControl != null);
-
-        // Note: This method is inefficient.  A future refactoring should
-        // replace most IVertex[] parameters with ICollection<IVertex>,
-        // eliminating the need to convert collections to arrays.
 
         List<IVertex> oVisibleVertices = new List<IVertex>();
 
@@ -305,7 +301,7 @@ public static class NodeXLControlUtil
             }
         }
 
-        return ( oVisibleVertices.ToArray() );
+        return (oVisibleVertices);
     }
 
     //*************************************************************************

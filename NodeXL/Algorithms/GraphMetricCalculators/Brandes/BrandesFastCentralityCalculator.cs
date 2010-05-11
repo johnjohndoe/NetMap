@@ -3,6 +3,7 @@
 
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
@@ -18,8 +19,10 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The betweenness and closeness centralities are provided as a <see
-/// cref="BrandesCentralities" /> object.
+/// The betweenness and closeness centralities are provided as a 
+/// Dictionary&lt;Int32, BrandesVertexCentralities&gt;.  There is one key/value
+/// pair for each vertex in the graph.  The key is the IVertex.ID and the value
+/// is a <see cref="BrandesVertexCentralities" /> object.
 ///
 /// <para>
 /// If a vertex is isolated, its betweenness and closeness centralities are
@@ -27,9 +30,10 @@ namespace Microsoft.NodeXL.Algorithms
 /// </para>
 ///
 /// <para>
-/// The algorithm used to calculate betweenness centrality is taken from the
-/// paper "A Faster Algorithm for Betweenness Centrality," by Ulrik Brandes.
-/// The paper can be found here:
+/// In a previous version, the centralities were calculated simultaneously by
+/// this class using the algorithm described in the paper "A Faster Algorithm
+/// for Betweenness Centrality," by Ulrik Brandes.  The paper can be found
+/// here:
 /// </para>
 ///
 /// <para>
@@ -39,12 +43,16 @@ namespace Microsoft.NodeXL.Algorithms
 /// <para>
 /// Section 4 of the paper explains how other centrality measures can be
 /// computed within the same algorithm at little additional cost.  That is why
-/// closeness centrality is calculated by this class along with betweenness.
+/// closeness centrality was calculated by this class along with betweenness.
 /// </para>
 ///
 /// <para>
-/// According to the paper, the algorithm works even if the graph has
-/// self-loops and duplicate edges.
+/// Starting with version 1.0.1.122 of NodeXL, the centralities are calculated
+/// using the SNAP graph library, which is much faster than the previous NodeXL
+/// code.  SNAP calculates betweenness and closeness centralities separately,
+/// so it might make sense to split this class in two in a future release.  Or
+/// would it make more sense to modify SNAP to calculate the two
+/// simultaneously, as suggested by Brandes?
 /// </para>
 ///
 /// </remarks>
@@ -112,7 +120,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     /// the method is being called by some other thread.
     /// </param>
     ///
-    /// <param name="brandesCentralities">
+    /// <param name="graphMetrics">
     /// Where the graph metrics get stored if true is returned.  See the class
     /// notes for details on the type.
     /// </param>
@@ -128,7 +136,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out BrandesCentralities brandesCentralities
+        out Dictionary<Int32, BrandesVertexCentralities> graphMetrics
     )
     {
         Debug.Assert(graph != null);
@@ -138,7 +146,8 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
         Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
             out oGraphMetricsAsObject);
 
-        brandesCentralities = (BrandesCentralities)oGraphMetricsAsObject;
+        graphMetrics = ( Dictionary<Int32, BrandesVertexCentralities> )
+            oGraphMetricsAsObject;
 
         return (bReturn);
     }
@@ -183,233 +192,88 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
-        oGraphMetrics = null;
+        Stopwatch oStopwatch = Stopwatch.StartNew();
 
         IVertexCollection oVertices = oGraph.Vertices;
-        Int32 iVertices = oVertices.Count;
-
-        Boolean bGraphIsDirected =
-            (oGraph.Directedness == GraphDirectedness.Directed);
-
-        // Note: The variable names and some of the comments below are those
-        // used in Algorithm 1 of the Brandes paper mentioned in the class
-        // comments.
 
         // The key is an IVertex.ID and the value is the corresponding
-        // betweenness centrality.
+        // BrandesVertexCentralities object.
 
-        Dictionary<Int32, BrandesVertexCentralities> Cb =
-            new Dictionary<Int32, BrandesVertexCentralities>(iVertices);
+        Dictionary<Int32, BrandesVertexCentralities>
+            oBrandesVertexCentralities =
+            new Dictionary<Int32, BrandesVertexCentralities>(oVertices.Count);
+
+        oGraphMetrics = oBrandesVertexCentralities;
+
+        // The code below doesn't calculate metric values for isolates, so
+        // start with zero for each vertex.  Values for non-isolate vertices
+        // will get overwritten later.
 
         foreach (IVertex oVertex in oVertices)
         {
-            Cb.Add( oVertex.ID, new BrandesVertexCentralities() );
+            oBrandesVertexCentralities.Add(
+                oVertex.ID, new BrandesVertexCentralities() );
         }
 
-        // These objects are created once and cleared before the betweenness
-        // centrality for each vertex is calculated.  For the dictionaries, the
-        // key is an IVertex.ID.
-
-        Stack<IVertex> S = new Stack<IVertex>();
-
-        // The LinkedList elements within P are created on demand.
-
-        Dictionary< Int32, LinkedList<IVertex> > P =
-            new Dictionary< Int32, LinkedList<IVertex> >();
-
-        Dictionary<Int32, Int32> sigma = new Dictionary<Int32, Int32>();
-        Dictionary<Int32, Int32> d = new Dictionary<Int32, Int32>();
-        Queue<IVertex> Q = new Queue<IVertex>();
-        Dictionary<Int32, Double> delta = new Dictionary<Int32, Double>();
-
-        Int32 iCalculations = 0;
-        Double MaximumCb = 0;
-
-        // These are for calculating geodesic distances.
-
-        Int64 lGeodesicDistanceSum = 0;
-        Int32 iGeodesicDistanceCount = 0;
-        Int32 iMaximumGeodesicDistance = Int32.MinValue;
-
-        foreach (IVertex s in oVertices)
+        if (oBackgroundWorker != null)
         {
-            // Check for cancellation and report progress every
-            // VerticesPerProgressReport calculations.
-
-            if (oBackgroundWorker != null &&
-                iCalculations % VerticesPerProgressReport == 0)
+            if (oBackgroundWorker.CancellationPending)
             {
-                if (oBackgroundWorker.CancellationPending)
-                {
-                    return (false);
-                }
-
-                ReportProgress(iCalculations, iVertices, oBackgroundWorker);
+                return (false);
             }
 
-            S.Clear();
-            P.Clear();
-            sigma.Clear();
-            d.Clear();
-            Q.Clear();
-            delta.Clear();
+            ReportProgress(1, 3, oBackgroundWorker);
+        }
 
-            foreach (IVertex oVertex in oVertices)
+        String sOutputFilePath = CalculateSnapGraphMetrics(oGraph,
+            SnapGraphMetrics.ClosenessCentrality |
+            SnapGraphMetrics.BetweennessCentrality
+            );
+
+        if (oBackgroundWorker != null)
+        {
+            ReportProgress(2, 3, oBackgroundWorker);
+        }
+
+        using ( StreamReader oStreamReader = new StreamReader(
+            sOutputFilePath) ) 
+        {
+            // The first line is a header.
+
+            String sLine = oStreamReader.ReadLine();
+
+            Debug.Assert(sLine ==
+                "Vertex ID\tCloseness Centrality\tBetweenness Centrality");
+
+            // The remaining lines are the centralities, one line per vertex.
+
+            while (oStreamReader.Peek() >= 0)
             {
-                sigma.Add(oVertex.ID, 0);
-                d.Add(oVertex.ID, -1);
-                delta.Add(oVertex.ID, 0);
-            }
+                // The line has three fields: The vertex ID, the closeness
+                // centrality, and the betweenness centrality.
 
-            sigma[s.ID] = 1;
-            d[s.ID] = 0;
-            Q.Enqueue(s);
+                sLine = oStreamReader.ReadLine();
+                String [] asFields = sLine.Split('\t');
+                Debug.Assert(asFields.Length == 3);
 
-            while (Q.Count > 0)
-            {
-                IVertex v = Q.Dequeue();
-                S.Push(v);
-
-                foreach (IVertex w in v.AdjacentVertices)
-                {
-                    // w found for the first time?
-
-                    if (d[w.ID] < 0)
-                    {
-                        Q.Enqueue(w);
-                        d[w.ID] = d[v.ID] + 1;
-                    }
-
-                    // Shortest path to w via v?
-
-                    if (d[w.ID] == d[v.ID] + 1)
-                    {
-                        sigma[w.ID] += sigma[v.ID];
-
-                        LinkedList<IVertex> PofW;
-
-                        if ( !P.TryGetValue(w.ID, out PofW) )
-                        {
-                            PofW = new LinkedList<IVertex>();
-                            P.Add(w.ID, PofW);
-                        }
-
-                        PofW.AddLast(v);
-                    }
-                }
-            }
-
-            // These are for calculating closeness centrality.
-
-            Int64 lClosenessSum = 0;
-            Int32 iClosenessOtherVertices = 0;
-
-            // S returns vertices in order of non-increasing distance from s.
-
-            while (S.Count > 0)
-            {
-                IVertex w = S.Pop();
-
-                LinkedList<IVertex> PofW;
-
-                if ( P.TryGetValue(w.ID, out PofW) )
-                {
-                    foreach (IVertex v in PofW)
-                    {
-                        Debug.Assert(sigma[w.ID] != 0);
-
-                        delta[v.ID] +=
-                            ( (Double)sigma[v.ID] / (Double)sigma[w.ID] )
-                            * ( 1.0 + delta[w.ID] );
-                    }
-                }
-
-                if (w.ID != s.ID)
-                {
-                    BrandesVertexCentralities oCentralities = Cb[w.ID];
-
-                    Double CbOfW =
-                        oCentralities.BetweennessCentrality + delta[w.ID];
-
-                    MaximumCb = Math.Max(MaximumCb, CbOfW);
-                    oCentralities.BetweennessCentrality = CbOfW;
-
-                    Int32 iDistance = d[w.ID];
-
-                    lClosenessSum += iDistance;
-                    iClosenessOtherVertices++;
-
-                    lGeodesicDistanceSum += iDistance;
-                    iGeodesicDistanceCount++;
-
-                    iMaximumGeodesicDistance =
-                        Math.Max(iMaximumGeodesicDistance, iDistance);
-                }
-            }
-
-            if (iClosenessOtherVertices > 0)
-            {
-                BrandesVertexCentralities oCentralities = Cb[s.ID];
+                BrandesVertexCentralities oCentralities =
+                    oBrandesVertexCentralities[
+                        ParseSnapInt32GraphMetricValue(asFields, 0) ];
 
                 oCentralities.ClosenessCentrality =
-                    (Double)lClosenessSum / (Double)iClosenessOtherVertices;
+                    ParseSnapDoubleGraphMetricValue(asFields, 1);
+
+                oCentralities.BetweennessCentrality =
+                    ParseSnapDoubleGraphMetricValue(asFields, 2);
             }
-
-            iCalculations++;
         }
 
-        // As noted in the Brandes paper, "the centrality scores need to be
-        // divided by two if the graph is undirected, since all shortest paths
-        // are considered twice."
-        //
-        // (Because the calculated centralities are normalized below, this
-        // actually has no effect.  The divide-by-two code is included in case
-        // normalization is removed in the future.)
+        File.Delete(sOutputFilePath);
 
-        if (!bGraphIsDirected)
-        {
-            MaximumCb /= 2.0;
-        }
-
-        // Adjust the final values.
-
-        foreach (BrandesVertexCentralities oCentralities in Cb.Values)
-        {
-            Double ThisCb = oCentralities.BetweennessCentrality;
-
-            if (!bGraphIsDirected)
-            {
-                ThisCb /= 2.0;
-            }
-
-            if (MaximumCb != 0)
-            {
-                // Normalize the value.
-
-                ThisCb /= MaximumCb;
-            }
-
-            oCentralities.BetweennessCentrality = ThisCb;
-        }
-
-        if (iGeodesicDistanceCount > 0)
-        {
-            oGraphMetrics = new BrandesCentralities(Cb,
-
-                new Nullable<Int32>(iMaximumGeodesicDistance),
-
-                new Nullable<Single>( (Single)(
-                    (Double)lGeodesicDistanceSum /
-                    (Double)iGeodesicDistanceCount)
-                    )
-                );
-        }
-        else
-        {
-            oGraphMetrics = new BrandesCentralities( Cb,
-                new Nullable<Int32>(),
-                new Nullable<Single>() );
-        }
+        Debug.WriteLine(
+            "Time spent calculating closeness and betweenness centralities"
+            + " using the SNAP library, in ms: " +
+            oStopwatch.ElapsedMilliseconds);
 
         return (true);
     }
@@ -432,16 +296,6 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number of vertices that are processed before progress is reported and
-    /// the cancellation flag is checked.
-
-    protected const Int32 VerticesPerProgressReport = 100;
 
 
     //*************************************************************************

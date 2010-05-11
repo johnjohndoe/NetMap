@@ -24,8 +24,8 @@ namespace Microsoft.NodeXL.Layouts
 /// <para>
 /// If the graph has a metadata key of <see
 /// cref="ReservedMetadataKeys.LayOutTheseVerticesOnly" />, only the vertices
-/// specified in the value's IVertex array are laid out and all other vertices
-/// are completely ignored.
+/// specified in the value's IVertex collection are laid out and all other
+/// vertices are completely ignored.
 /// </para>
 ///
 /// <para>

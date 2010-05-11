@@ -132,7 +132,6 @@
     <Compile Include="Util\LayoutUtil.cs" />
     <Compile Include="Util\NodeXLBase.cs" />
     <Compile Include="Util\ReservedMetadataKeys.cs" />
-    <Compile Include="Util\SimpleGraphMatrix.cs" />
     <Compile Include="VertexSorters\ByDelegateVertexSorter.cs" />
     <Compile Include="VertexSorters\ByMetadataVertexSorter.cs" />
     <Compile Include="VertexSorters\VertexSorterBase.cs" />

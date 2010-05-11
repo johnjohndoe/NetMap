@@ -23,7 +23,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.121</ApplicationVersion>
+    <ApplicationVersion>1.0.1.123</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>false</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -220,9 +220,6 @@
     </Compile>
     <Compile Include="..\Common\ProjectInformation.cs">
       <Link>Util\ProjectInformation.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\RegisterUser\UserRegisterer.cs">
-      <Link>Util\RegisterUser\UserRegisterer.cs</Link>
     </Compile>
     <Compile Include="Controls\AutoFill\AutoFillColumnComboBox.cs">
       <SubType>Component</SubType>
@@ -479,7 +476,9 @@
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\EigenvectorCentralityCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\OneDoubleGraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\OverallMetricCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\PageRankCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumnOrdered.cs" />

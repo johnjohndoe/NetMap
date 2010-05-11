@@ -116,12 +116,20 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
     {
         if (bFromControls)
         {
-            Int32 iMargin, iFruchtermanReingoldIterations;
+            Int32 iMargin, iMaximumVerticesPerBin, iBinLength,
+                iFruchtermanReingoldIterations;
+
             Single fFruchtermanReingoldC;
 
             if (
                 !ValidateNumericUpDown(nudMargin,
                     "a graph margin", out iMargin)
+                ||
+                !ValidateNumericUpDown(nudMaximumVerticesPerBin,
+                    "a maximum component size", out iMaximumVerticesPerBin)
+                ||
+                !ValidateNumericUpDown(nudBinLength,
+                    "a box size", out iBinLength)
                 ||
                 !ValidateNumericUpDown(nudFruchtermanReingoldC,
                     "a strength", out fFruchtermanReingoldC)
@@ -135,6 +143,11 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
 
             m_oLayoutUserSettings.Margin = iMargin;
             m_oLayoutUserSettings.UseBinning = chkUseBinning.Checked;
+
+            m_oLayoutUserSettings.MaximumVerticesPerBin =
+                iMaximumVerticesPerBin;
+
+            m_oLayoutUserSettings.BinLength = iBinLength;
             m_oLayoutUserSettings.FruchtermanReingoldC = fFruchtermanReingoldC;
 
             m_oLayoutUserSettings.FruchtermanReingoldIterations =
@@ -145,14 +158,94 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
             nudMargin.Value = m_oLayoutUserSettings.Margin;
             chkUseBinning.Checked = m_oLayoutUserSettings.UseBinning;
 
+            nudMaximumVerticesPerBin.Value =
+                m_oLayoutUserSettings.MaximumVerticesPerBin;
+
+            nudBinLength.Value = m_oLayoutUserSettings.BinLength;
+
             nudFruchtermanReingoldC.Value = (Decimal)
                 m_oLayoutUserSettings.FruchtermanReingoldC;
 
             nudFruchtermanReingoldIterations.Value =
                 m_oLayoutUserSettings.FruchtermanReingoldIterations;
+
+            EnableControls();
         }
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: EnableControls()
+    //
+    /// <summary>
+    /// Enables or disables the dialog's controls.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    EnableControls()
+    {
+        AssertValid();
+
+        pnlUseBinning.Enabled = chkUseBinning.Checked;
+    }
+
+    //*************************************************************************
+    //  Method: btnUseBinning_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnUseBinning button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    chkUseBinning_CheckedChanged
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        EnableControls();
+    }
+
+    //*************************************************************************
+    //  Method: btnResetAll_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnResetAll button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnResetAll_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        m_oLayoutUserSettings.Reset();
+        DoDataExchange(false);
     }
 
     //*************************************************************************
@@ -233,7 +326,7 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("LayoutUserSettingsDialog2") ]
+[ SettingsGroupNameAttribute("LayoutUserSettingsDialog3") ]
 
 public class LayoutUserSettingsDialogUserSettings : FormSettings
 {

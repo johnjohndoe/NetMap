@@ -132,8 +132,6 @@ The closeness centrality of a vertex is the average distance (along the shortest
 
 http://en.wikipedia.org/wiki/Centrality#Closeness_centrality
 
-The betweenness and closeness centralities are computed simultaneously within the Brandes algorithm mentioned above.
-
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>
   <data name="lnkEigenvectorCentrality.Tag" xml:space="preserve">
@@ -144,12 +142,6 @@ http://en.wikipedia.org/wiki/Eigenvector_centrality#Eigenvector_centrality
 From the article:
 
 "Eigenvector centrality is a measure of the importance of a node in a network. It assigns relative scores to all nodes in the network based on the principle that connections to high-scoring nodes contribute more to the score of the node in question than equal connections to low-scoring nodes."
-
-The dominant eigenvector required to compute eigenvector centrality is found using the "accelerated power method" outlined here:
-
-http://www.analytictech.com/networks/centaids.htm
-
-Self-loops and duplicate edges are skipped when calculating eigenvector centrality.
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>
@@ -178,6 +170,13 @@ From the article:
 "The clustering coefficient of a vertex in a graph quantifies how close the vertex and its neighbors are to being a clique (complete graph)."
 
 Self-loops, which would render the clustering coefficients invalid, are skipped.  Duplicate edges cause the clustering coefficients to be inaccurate.  Inaccurate clustering coefficients are highlighted.
+
+(You can press Ctrl-C to copy these details to the clipboard.)</value>
+  </data>
+  <data name="lnkPageRank.Tag" xml:space="preserve">
+    <value>PageRank measures the importance of each vertex within the graph using a link analysis algorithm developed by Larry Page.  It is described here:
+
+http://en.wikipedia.org/wiki/PageRank
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>

@@ -36,13 +36,13 @@ public static class VertexTableColumnWidths
     /// Width of the custom menu item text columns, in characters.
     /// </summary>
 
-    public const Single CustomMenuItemText = 14.8F;
+    public const Single CustomMenuItemText = 25.6F;
 
     /// <summary>
     /// Width of the custom menu item action columns, in characters.
     /// </summary>
 
-    public const Single CustomMenuItemAction = 14.8F;
+    public const Single CustomMenuItemAction = 27.6F;
 
     /// <summary>
     /// Width of the betweenness centrality column, in characters.
@@ -55,6 +55,12 @@ public static class VertexTableColumnWidths
     /// </summary>
 
     public const Single EigenvectorCentrality = 13.6F;
+
+    /// <summary>
+    /// Width of the PageRank column, in characters.
+    /// </summary>
+
+    public const Single PageRank = 13.6F;
 
     /// <summary>
     /// Width of the closeness centrality column, in characters.

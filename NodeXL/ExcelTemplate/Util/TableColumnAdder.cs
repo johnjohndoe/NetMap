@@ -154,17 +154,12 @@ public class TableColumnAdder : Object
         ListColumn oListColumn1, oListColumn2;
 
         if (
-            ExcelUtil.TryAddTableColumn(oTable, column1NameBase,
+            !ExcelUtil.TryAddTableColumn(oTable, column1NameBase,
                 column1WidthChars, null, out oListColumn1)
-            &&
-            ExcelUtil.TryAddTableColumn(oTable, column2NameBase,
+            ||
+            !ExcelUtil.TryAddTableColumn(oTable, column2NameBase,
                 column2WidthChars, null, out oListColumn2)
             )
-        {
-            oListColumn1.Range.WrapText = true;
-            oListColumn2.Range.WrapText = true;
-        }
-        else
         {
             FormUtil.ShowWarning("The columns weren't added.");
         }

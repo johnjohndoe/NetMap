@@ -617,14 +617,14 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         AssertValid();
 
         // If the LayOutTheseVerticesOnly key is present on the graph, its
-        // value is an IVertex array of vertices to lay out.
+        // value is an ICollection<IVertex> of vertices to lay out.
 
         Object oVerticesToLayOut;
 
         if ( graph.TryGetValue(ReservedMetadataKeys.LayOutTheseVerticesOnly,
-            typeof( IVertex [] ), out oVerticesToLayOut) )
+            typeof( ICollection<IVertex> ), out oVerticesToLayOut) )
         {
-            return ( (IVertex [] )oVerticesToLayOut );
+            return ( ( ICollection<IVertex> )oVerticesToLayOut );
         }
 
         // The key isn't present.  Use the graph's entire vertex collection.

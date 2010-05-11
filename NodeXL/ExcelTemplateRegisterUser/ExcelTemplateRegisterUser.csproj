@@ -73,9 +73,6 @@
     <Compile Include="..\Common\ProjectInformation.cs">
       <Link>Util\ProjectInformation.cs</Link>
     </Compile>
-    <Compile Include="..\Common\RegisterUser\UserRegisterer.cs">
-      <Link>Util\RegisterUser\UserRegisterer.cs</Link>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

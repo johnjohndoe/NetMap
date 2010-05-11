@@ -1,10 +1,8 @@
 
-
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
 using System.Windows.Forms;
-using System.Net;
 using System.Diagnostics;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -14,12 +12,11 @@ namespace Microsoft.NodeXL.Common
 //  Class: RegisterUserControl
 //
 /// <summary>
-/// Registers a user by creating an email.
+/// Registers a user.
 /// </summary>
 ///
 /// <remarks>
-/// The dialog includes a button for creating a registration email via the
-/// mailto protocol.
+/// The dialog includes a link for taking the user to a registration Web page.
 ///
 /// <para>
 /// The parent form should handle the <see cref="Done" /> event and close
@@ -43,9 +40,6 @@ public partial class RegisterUserControl : UserControl
     public RegisterUserControl()
     {
         InitializeComponent();
-
-        this.grpCreateRegistrationEmail.Enabled =
-            UserRegisterer.CanCreateRegistrationEmail();
 
         AssertValid();
     }
@@ -87,6 +81,34 @@ public partial class RegisterUserControl : UserControl
     }
 
     //*************************************************************************
+    //  Method: lnkRegister_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkRegister LinkButton.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    lnkRegister_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
+    {
+        AssertValid();
+
+        Process.Start(ProjectInformation.RegistrationUrl);
+    }
+
+    //*************************************************************************
     //  Method: lnkPrivacy_LinkClicked()
     //
     /// <summary>
@@ -120,78 +142,16 @@ public partial class RegisterUserControl : UserControl
             + " NodeXL and to inform you about updates, success"
             + " stories, related publications, bugs, and so on."
             + "\r\n\r\n"
-            + "We will not sell or share this email list with other"
-            + " individuals or organizations.  This list is only for the"
+            + "We will not sell or share the NodeXL email list with other"
+            + " individuals or organizations.  The list is only for the"
             + " NodeXL project."
             + "\r\n\r\n"
             + "If you have questions or comments, please go to {0}."
             + "\r\n\r\n"
-            + "(Last updated February 17, 2010.)"
+            + "(Last updated April 26, 2010.)"
             ,
             ProjectInformation.DiscussionUrl
             ) );
-    }
-
-    //*************************************************************************
-    //  Method: btnCreateRegistrationEmail_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnCreateRegistrationEmail button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnCreateRegistrationEmail_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        if (!UserRegisterer.TryCreateRegistrationEmail())
-        {
-            FormUtil.ShowWarning(
-                "The email couldn't be created.  There might not be an email"
-                + " program installed on this computer."
-                );
-        }
-    }
-
-    //*************************************************************************
-    //  Method: btnCopyRegistrationAddress_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnCopyRegistrationAddress button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnCopyRegistrationAddress_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        Clipboard.SetText(ProjectInformation.RegistrationEmailAddress);
     }
 
     //*************************************************************************

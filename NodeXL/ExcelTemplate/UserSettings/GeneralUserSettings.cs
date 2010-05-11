@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Configuration;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.WpfGraphicsLib;
 
@@ -68,6 +69,40 @@ public class GeneralUserSettings : ApplicationSettingsBase
         set
         {
             this[NewWorkbookGraphDirectednessKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: ClusterAlgorithm
+    //
+    /// <summary>
+    /// Gets or sets the algorithm used to partition a graph into clusters.
+    /// </summary>
+    ///
+    /// <value>
+    /// The algorithm used to partition a graph into clusters.  The default
+    /// value is ClusterAlgorithm.ClausetNewmanMoore.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("ClausetNewmanMoore") ]
+
+    public ClusterAlgorithm
+    ClusterAlgorithm
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (ClusterAlgorithm)this[ClusterAlgorithmKey] );
+        }
+
+        set
+        {
+            this[ClusterAlgorithmKey] = value;
 
             AssertValid();
         }
@@ -829,7 +864,8 @@ public class GeneralUserSettings : ApplicationSettingsBase
     [ UserScopedSettingAttribute() ]
 
     [ DefaultSettingValueAttribute(
-        "Microsoft Sans Serif, 8.25pt\tWhite\tTopRight\t2147483647\t2147483647"
+        "Microsoft Sans Serif, 8.25pt\tWhite\tBottomCenter\t2147483647"
+        + "\t2147483647"
         ) ]
 
     public LabelUserSettings
@@ -1018,9 +1054,12 @@ public class GeneralUserSettings : ApplicationSettingsBase
             oEdgeWidthConverter.WorkbookToGraph(this.SelectedEdgeWidth);
 
         oEdgeDrawer.Color = WpfGraphicsUtil.ColorToWpfColor(
-            Color.FromArgb(oAlphaConverter.WorkbookToGraph(this.EdgeAlpha),
-                this.EdgeColor)
-                );
+
+            Color.FromArgb(oAlphaConverter.WorkbookToGraphAsByte(
+                this.EdgeAlpha),
+
+            this.EdgeColor)
+            );
 
         oEdgeDrawer.SelectedColor = WpfGraphicsUtil.ColorToWpfColor(
             this.SelectedEdgeColor);
@@ -1033,9 +1072,12 @@ public class GeneralUserSettings : ApplicationSettingsBase
             this.VertexRadius);
 
         oVertexDrawer.Color = WpfGraphicsUtil.ColorToWpfColor(
-            Color.FromArgb(oAlphaConverter.WorkbookToGraph(this.VertexAlpha),
-                this.VertexColor)
-                );
+
+            Color.FromArgb(oAlphaConverter.WorkbookToGraphAsByte(
+                this.VertexAlpha),
+
+            this.VertexColor)
+            );
 
         oVertexDrawer.SelectedColor = WpfGraphicsUtil.ColorToWpfColor(
             this.SelectedVertexColor);
@@ -1092,6 +1134,11 @@ public class GeneralUserSettings : ApplicationSettingsBase
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
+
+    /// Name of the settings key for the ClusterAlgorithm property.
+
+    protected const String ClusterAlgorithmKey =
+        "ClusterAlgorithm";
 
     /// Name of the settings key for the ReadClusters property.
 

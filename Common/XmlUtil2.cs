@@ -4,6 +4,7 @@
 using System;
 using System.Xml;
 using System.Diagnostics;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.Research.CommunityTechnologies.XmlLib
 {
@@ -418,7 +419,58 @@ public static class XmlUtil2
             TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
                 out sValue)
             &&
-            Int32.TryParse(sValue, out value)
+            MathUtil.TryParseCultureInvariantInt32(sValue, out value)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TrySelectSingleNodeAsUInt32()
+    //
+    /// <summary>
+    /// Attempts to select an XML node and get its UInt32 value.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// Where the selected node's UInt32 value gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified node was found and its value was a UInt32.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TrySelectSingleNodeAsUInt32
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager,
+        out UInt32 value
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        value = UInt32.MinValue;
+        String sValue;
+
+        return (
+            TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
+                out sValue)
+            &&
+            MathUtil.TryParseCultureInvariantUInt32(sValue, out value)
             );
     }
 
@@ -469,7 +521,7 @@ public static class XmlUtil2
             TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
                 out sValue)
             &&
-            Double.TryParse(sValue, out value)
+            MathUtil.TryParseCultureInvariantDouble(sValue, out value)
             );
     }
 

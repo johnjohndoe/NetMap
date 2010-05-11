@@ -175,7 +175,10 @@ public static class ReservedMetadataKeys : Object
     /// </summary>
     ///
     /// <remarks>
-    /// The key's value is a Byte between 0 (transparent) and 255 (opaque).
+    /// The key's value is a Single between 0 (transparent) and 255 (opaque).
+    /// (It's a Single instead of a Byte to reduce rounding errors when alpha
+    /// values are converted to and from alpha ranges that don't run from 0 to
+    /// 255.)
     ///
     /// <para>
     /// If the <see cref="Visibility" /> key is present and its value is <see
@@ -422,9 +425,10 @@ public static class ReservedMetadataKeys : Object
     /// </summary>
     ///
     /// <remarks>
-    /// The key's value is an IVertex array containing the vertices to lay out.
-    /// When this key is present on the graph, the layout completely ignores
-    /// the graph's vertices that are not in the specified array.
+    /// The key's value is an ICollection&lt;IVertex&gt; containing the
+    /// vertices to lay out.  When this key is present on the graph, the layout
+    /// completely ignores the graph's vertices that are not in the specified
+    /// collection.
     ///
     /// <para>
     /// By default, the specified vertices are laid out within the full graph
@@ -449,6 +453,12 @@ public static class ReservedMetadataKeys : Object
     /// is also added to the graph.  If both keys are present, the specified
     /// vertices are laid out within the rectangle defined by the current
     /// locations of the outermost vertices in the set.
+    ///
+    /// <para>
+    /// The value of the <see cref="LayOutTheseVerticesWithinBounds" /> key is
+    /// null.
+    /// </para>
+    ///
     /// </remarks>
 
     public static readonly String LayOutTheseVerticesWithinBounds =

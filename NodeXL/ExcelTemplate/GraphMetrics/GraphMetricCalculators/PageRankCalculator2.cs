@@ -3,37 +3,36 @@
 
 using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
 //*****************************************************************************
-//  Class: BetweennessCentralityCalculator2
+//  Class: PageRankCalculator2
 //
 /// <summary>
-/// Calculates the betweenness centrality for each of the graph's vertices.
+/// Calculates the PageRanks for each of the graph's vertices.
 /// </summary>
 ///
 /// <remarks>
-/// See <see cref="Algorithms.BetweennessCentralityCalculator" /> for details
-/// on how betweenness centralities are calculated.
+/// See <see cref="Algorithms.PageRankCalculator" /> for details on how
+/// PageRanks are calculated.
 /// </remarks>
 //*****************************************************************************
 
-public class BetweennessCentralityCalculator2 : GraphMetricCalculatorBase2
+public class PageRankCalculator2 : OneDoubleGraphMetricCalculatorBase
 {
     //*************************************************************************
-    //  Constructor: BetweennessCentralityCalculator2()
+    //  Constructor: PageRankCalculator2()
     //
     /// <summary>
-    /// Initializes a new instance of the <see
-    /// cref="BetweennessCentralityCalculator2" /> class.
+    /// Initializes a new instance of the <see cref="PageRankCalculator2" />
+    /// class.
     /// </summary>
     //*************************************************************************
 
-    public BetweennessCentralityCalculator2()
+    public PageRankCalculator2()
     {
         // (Do nothing.)
 
@@ -98,59 +97,15 @@ public class BetweennessCentralityCalculator2 : GraphMetricCalculatorBase2
         Debug.Assert(calculateGraphMetricsContext != null);
         AssertValid();
 
-        graphMetricColumns = new GraphMetricColumn[0];
+        return ( TryCalculateGraphMetrics(graph, calculateGraphMetricsContext,
+            new Algorithms.PageRankCalculator(),
 
-        if (!calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateBetweennessCentrality)
-        {
-            return (true);
-        }
+            calculateGraphMetricsContext.GraphMetricUserSettings.
+                CalculatePageRank,
 
-        // Calculate the betweenness centrality for each vertex using the
-        // BetweennessCentralityCalculator class in the Algorithms namespace,
-        // which knows nothing about Excel.
-
-        Dictionary<Int32, Single> oBetweennessCentralities;
-
-        if ( !( new Algorithms.BetweennessCentralityCalculator() ).
-            TryCalculateGraphMetrics(graph,
-                calculateGraphMetricsContext.BackgroundWorker,
-                out oBetweennessCentralities) )
-        {
-            // The user cancelled.
-
-            return (false);
-        }
-
-        // Transfer the betweenness centralities to an array of
-        // GraphMetricValue objects.
-
-        List<GraphMetricValueWithID> oGraphMetricValues =
-            new List<GraphMetricValueWithID>();
-
-        foreach (IVertex oVertex in graph.Vertices)
-        {
-            // Try to get the row ID stored in the worksheet.
-
-            Int32 iRowID;
-
-            if ( TryGetRowID(oVertex, out iRowID) )
-            {
-                oGraphMetricValues.Add( new GraphMetricValueWithID(iRowID,
-                    oBetweennessCentralities[oVertex.ID] ) );
-            }
-        }
-
-        graphMetricColumns = new GraphMetricColumn [] {
-            new GraphMetricColumnWithID( WorksheetNames.Vertices,
-                TableNames.Vertices,
-                VertexTableColumnNames.BetweennessCentrality,
-                VertexTableColumnWidths.BetweennessCentrality,
-                NumericFormat, CellStyleNames.GraphMetricGood,
-                oGraphMetricValues.ToArray()
-                ) };
-
-        return (true);
+            VertexTableColumnNames.PageRank,
+            VertexTableColumnWidths.PageRank,
+            CellStyleNames.GraphMetricGood, out graphMetricColumns) );
     }
 
 
@@ -171,15 +126,6 @@ public class BetweennessCentralityCalculator2 : GraphMetricCalculatorBase2
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Number format for the column.
-
-    protected const String NumericFormat = "0.000";
 
 
     //*************************************************************************

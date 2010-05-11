@@ -488,15 +488,27 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         foreach ( XmlNode oEdgeXmlNode in oGraphXmlNode.SelectNodes(
             GraphMLPrefix + ":edge", oXmlNamespaceManager) )
         {
-            IEdge oEdge = oEdges.Add(
-                GraphMLNodeIDToVertex(oEdgeXmlNode, "source",
-                    oVertexDictionary),
+            IVertex oVertex1, oVertex2;
 
-                GraphMLNodeIDToVertex(oEdgeXmlNode, "target",
-                    oVertexDictionary),
+            if (
+                !TryGraphMLNodeIDToVertex(oEdgeXmlNode, "source",
+                    oVertexDictionary, out oVertex1)
+                ||
+                !TryGraphMLNodeIDToVertex(oEdgeXmlNode, "target",
+                    oVertexDictionary, out oVertex2)
+                )
+            {
+                // From the GraphML Primer:
+                //
+                // For applications which can not handle nested graphs the
+                // fall-back behaviour is to ignore nodes which are not
+                // contained in the top-level graph and to ignore edges which
+                // have do not have both endpoints in the top-level graph. 
 
-                bGraphIsDirected
-                );
+                continue;
+            }
+
+            IEdge oEdge = oEdges.Add(oVertex1, oVertex2, bGraphIsDirected);
 
             String sID;
 
@@ -605,11 +617,11 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
-    //  Method: GraphMLNodeIDToVertex()
+    //  Method: TryGraphMLNodeIDToVertex()
     //
     /// <summary>
-    /// Retrieves the vertex referenced by the source or target attribute of
-    /// an "edge" XML node.
+    /// Attempts to retrieve the vertex referenced by the source or target
+    /// attribute of an "edge" XML node.
     /// </summary>
     ///
     /// <param name="oEdgeXmlNode">
@@ -625,17 +637,22 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// the corresponding IVertex.
     /// </param>
     ///
+    /// <param name="oVertex">
+    /// Where the referenced vertex gets stored if true is returned.
+    /// </param>
+    ///
     /// <returns>
-    /// The referenced vertex.
+    /// true if the vertex was retrieved.
     /// </returns>
     //*************************************************************************
 
-    protected IVertex
-    GraphMLNodeIDToVertex
+    protected Boolean
+    TryGraphMLNodeIDToVertex
     (
         XmlNode oEdgeXmlNode,
         String sSourceOrTarget,
-        Dictionary<String, IVertex> oVertexDictionary
+        Dictionary<String, IVertex> oVertexDictionary,
+        out IVertex oVertex
     )
     {
         Debug.Assert(oEdgeXmlNode != null);
@@ -646,17 +663,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         String sID = XmlUtil2.SelectRequiredSingleNodeAsString(oEdgeXmlNode,
             "@" + sSourceOrTarget, null);
 
-        try
-        {
-            return ( oVertexDictionary[sID] );
-        }
-        catch (KeyNotFoundException)
-        {
-            throw new XmlException(
-                "An \"edge\" XML node references the node id \"" + sID + "\","
-                + " for which there is no corresponding \"node\" XML node."
-                );
-        }
+        return ( oVertexDictionary.TryGetValue(sID, out oVertex) );
     }
 
     //*************************************************************************

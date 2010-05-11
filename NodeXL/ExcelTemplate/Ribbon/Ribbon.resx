@@ -127,9 +127,6 @@ This imports the "edge" and "node" elements from a GraphML file, along with any 
 
 This imports the "vertices," "edges," "edgeslist," "arcs," and "arcslist" sections of a Pajek text file into the workbook.  Only the vertex names are imported; all edge and vertex properties are ignored.</value>
   </data>
-  <data name="btnExportToGraphMLFile.SuperTip" xml:space="preserve">
-    <value>Exports the edges and vertices to a new GraphML file.  All columns in the Edges and Vertices worksheet are exported.</value>
-  </data>
   <data name="btnImportFromEdgeWorkbook.SuperTip" xml:space="preserve">
     <value>Optionally clear the NodeXL workbook, then import edges from another open workbook that contains at least two columns, one for Vertex 1 and one for Vertex 2.  You can import additional edge columns as well.
 
@@ -438,8 +435,17 @@ The clusters are indicated by vertex color and shape when the workbook is read i
 The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Find Clusters will clear any manually-entered clusters.
 
 The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be read when the workbook is read into the graph.
+</value>
+  </data>
+  <data name="sbCreateClusters.SuperTip" xml:space="preserve">
+    <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
+	
+The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.
 
-Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
+The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Find Clusters will clear any manually-entered clusters.
+
+The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be read when the workbook is read into the graph.
+</value>
   </data>
   <data name="mnuShowGraphElements.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

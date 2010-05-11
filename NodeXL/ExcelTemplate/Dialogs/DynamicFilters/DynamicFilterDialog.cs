@@ -182,8 +182,9 @@ public partial class DynamicFilterDialog : ExcelTemplateForm
     /// The value is in workbook units, between
     /// <see cref="AlphaConverter.MinimumAlphaWorkbook" /> and <see
     /// cref="AlphaConverter.MaximumAlphaWorkbook" />.  The value must be
-    /// converted using <see cref="AlphaConverter.WorkbookToGraph" /> before
-    /// applying it to a graph.
+    /// converted using <see
+    /// cref="NumericValueConverterBase.WorkbookToGraph" /> before applying it
+    /// to a graph.
     /// </value>
     ///
     /// <remarks>

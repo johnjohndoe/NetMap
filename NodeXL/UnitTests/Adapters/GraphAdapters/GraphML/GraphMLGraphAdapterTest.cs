@@ -554,6 +554,131 @@ public class GraphMLGraphAdapterTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestLoadGraphFromStream4()
+    //
+    /// <summary>
+    /// Tests the LoadGraphFromStream() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestLoadGraphFromStream4()
+    {
+        // Nested graph, using sample XML from the GraphML Primer.
+        // GraphMLGraphAdapter should, according to the Primer, "ignore nodes
+        // which are not contained in the top-level graph and to ignore edges
+        // which have do not have both endpoints in the top-level graph."
+
+        const String XmlString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        + "<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+        + " xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">"
+        + "  <graph id=\"G\" edgedefault=\"undirected\">"
+        + "    <node id=\"n0\"/>"
+        + "    <node id=\"n1\"/>"
+        + "    <node id=\"n2\"/>"
+        + "    <node id=\"n3\"/>"
+        + "    <node id=\"n4\"/>"
+        + "    <node id=\"n5\">"
+        + "        <graph id=\"n5:\" edgedefault=\"undirected\">"
+        + "          <node id=\"n5::n0\"/>"
+        + "          <node id=\"n5::n1\"/>"
+        + "          <node id=\"n5::n2\"/>"
+        + "          <edge id=\"e0\" source=\"n5::n0\" target=\"n5::n2\"/>"
+        + "          <edge id=\"e1\" source=\"n5::n1\" target=\"n5::n2\"/>"
+        + "        </graph>"
+        + "    </node>"
+        + "    <node id=\"n6\">"
+        + "        <graph id=\"n6:\" edgedefault=\"undirected\">"
+        + "          <node id=\"n6::n0\">"
+        + "              <graph id=\"n6::n0:\" edgedefault=\"undirected\">"
+        + "                <node id=\"n6::n0::n0\"/>"
+        + "               </graph>"
+        + "          </node>"
+        + "          <node id=\"n6::n1\"/>"
+        + "          <node id=\"n6::n2\"/>"
+        + "          <edge id=\"e10\" source=\"n6::n1\" target=\"n6::n0::n0\"/>"
+        + "          <edge id=\"e11\" source=\"n6::n1\" target=\"n6::n2\"/>"
+        + "        </graph>"
+        + "    </node>"
+        + "    <edge id=\"e2\" source=\"n5::n2\" target=\"n0\"/>"
+        + "    <edge id=\"e3\" source=\"n0\" target=\"n2\"/>"
+        + "    <edge id=\"e4\" source=\"n0\" target=\"n1\"/>"
+        + "    <edge id=\"e5\" source=\"n1\" target=\"n3\"/>"
+        + "    <edge id=\"e6\" source=\"n3\" target=\"n2\"/>"
+        + "    <edge id=\"e7\" source=\"n2\" target=\"n4\"/>"
+        + "    <edge id=\"e8\" source=\"n3\" target=\"n6::n1\"/>"
+        + "    <edge id=\"e9\" source=\"n6::n1\" target=\"n4\"/>"
+        + "  </graph>"
+        + "</graphml>"
+        ;
+
+        Stream oXmlStream = new StringStream(XmlString);
+
+        IGraph oGraph = m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
+
+        Assert.AreEqual(GraphDirectedness.Undirected, oGraph.Directedness);
+
+        IVertexCollection oVertices = oGraph.Vertices;
+        IEdgeCollection oEdges = oGraph.Edges;
+        Boolean bFound;
+        IVertex oVertex;
+
+        Assert.AreEqual(7, oVertices.Count);
+
+        bFound = oVertices.Find("n0", out oVertex);
+        Assert.IsTrue(bFound);
+
+        bFound = oVertices.Find("n1", out oVertex);
+        Assert.IsTrue(bFound);
+
+        bFound = oVertices.Find("n2", out oVertex);
+        Assert.IsTrue(bFound);
+
+        bFound = oVertices.Find("n3", out oVertex);
+        Assert.IsTrue(bFound);
+
+        bFound = oVertices.Find("n4", out oVertex);
+        Assert.IsTrue(bFound);
+
+        bFound = oVertices.Find("n5", out oVertex);
+        Assert.IsTrue(bFound);
+
+        bFound = oVertices.Find("n6", out oVertex);
+        Assert.IsTrue(bFound);
+
+        IEdge oEdge;
+
+        bFound = oEdges.Find("e3", out oEdge);
+        Assert.IsTrue(bFound);
+        Assert.AreEqual("n0", oEdge.Vertices[0].Name);
+        Assert.AreEqual("n2", oEdge.Vertices[1].Name);
+
+        bFound = oEdges.Find("e4", out oEdge);
+        Assert.IsTrue(bFound);
+        Assert.AreEqual("n0", oEdge.Vertices[0].Name);
+        Assert.AreEqual("n1", oEdge.Vertices[1].Name);
+
+        bFound = oEdges.Find("e5", out oEdge);
+        Assert.IsTrue(bFound);
+        Assert.AreEqual("n1", oEdge.Vertices[0].Name);
+        Assert.AreEqual("n3", oEdge.Vertices[1].Name);
+
+        bFound = oEdges.Find("e6", out oEdge);
+        Assert.IsTrue(bFound);
+        Assert.AreEqual("n3", oEdge.Vertices[0].Name);
+        Assert.AreEqual("n2", oEdge.Vertices[1].Name);
+        Assert.IsFalse( oEdge.ContainsKey("weight") );
+
+        bFound = oEdges.Find("e7", out oEdge);
+        Assert.IsTrue(bFound);
+        Assert.AreEqual("n2", oEdge.Vertices[0].Name);
+        Assert.AreEqual("n4", oEdge.Vertices[1].Name);
+    }
+
+    //*************************************************************************
     //  Method: TestLoadGraphFromStreamBad()
     //
     /// <summary>
@@ -826,77 +951,6 @@ public class GraphMLGraphAdapterTest : Object
             Assert.AreEqual(
                 "The id \"V5\" exists for two \"node\" XML nodes.  Node id"
                 + " values must be unique."
-                ,
-                oXmlException.Message
-                );
-
-            throw oXmlException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestLoadGraphFromStreamBad5()
-    //
-    /// <summary>
-    /// Tests the LoadGraphFromStream() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(XmlException) ) ]
-
-    public void
-    TestLoadGraphFromStreamBad5()
-    {
-        // Edge specifies vertex that doesn't exist.
-
-        const String XmlString =
-
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-+ " <graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\">"
-+ "            "
-+ "  <key id=\"VertexColor\" for=\"node\" attr.name=\"Color\" attr.type=\"string\" />"
-+ "  <key id=\"VertexLatestPostDate\" for=\"node\" attr.name=\"Latest Post Date\""
-+ "      attr.type=\"string\" />"
-+ "  <key id=\"EdgeWidth\" for=\"edge\" attr.name=\"Width\" attr.type=\"double\">"
-+ "      <default>1.5</default>"
-+ "  </key>"
-+ "  <graph edgedefault=\"undirected\">"
-+ "      <node id=\"V1\">"
-+ "          <data key=\"VertexColor\">red</data>"
-+ "          <data key=\"VertexLatestPostDate\">2009/07/05</data>"
-+ "      </node>"
-+ "      <node id=\"V2\">"
-+ "          <data key=\"VertexColor\">orange</data>"
-+ "          <data key=\"VertexLatestPostDate\">2009/07/12</data>"
-+ "      </node>"
-+ "      <node id=\"V3\">"
-+ "          <data key=\"VertexColor\">blue</data>"
-+ "      </node>"
-+ "      <node id=\"V4\">"
-+ "          <data key=\"VertexColor\">128,0,128</data>"
-+ "      </node>"
-+ "      <node id=\"V5\" />"
-+ "      <edge id=\"E1\" source=\"V1\" target=\"V2\" />"
-+ "      <edge id=\"E2\" source=\"V3\" target=\"V2\">"
-+ "          <data key=\"EdgeWidth\">2.5</data>"
-+ "      </edge>"
-+ "      <edge id=\"E3\" source=\"V3\" target=\"NoSuchVertex\" />"
-+ "  </graph>"
-+ " </graphml>"
-        ;
-
-        Stream oXmlStream = new StringStream(XmlString);
-
-        try
-        {
-            m_oGraphAdapter.LoadGraphFromStream(oXmlStream);
-        }
-        catch (XmlException oXmlException)
-        {
-            Assert.AreEqual(
-                "An \"edge\" XML node references the node id \"NoSuchVertex\""
-                + ", for which there is no corresponding \"node\" XML node."
                 ,
                 oXmlException.Message
                 );

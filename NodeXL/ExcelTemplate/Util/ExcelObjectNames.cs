@@ -393,6 +393,14 @@ public static class VertexTableColumnNames
         "Eigenvector Centrality";
 
     /// <summary>
+    /// Name of the optional table column containing the vertex's PageRank.
+    /// This gets added to the table on demand by <see
+    /// cref="PageRankCalculator2" />.
+    /// </summary>
+
+    public const String PageRank = "PageRank";
+
+    /// <summary>
     /// Name of the optional table column containing the vertex's clustering
     /// coefficient.  This gets added to the table on demand by <see
     /// cref="ClusteringCoefficientCalculator2" />.

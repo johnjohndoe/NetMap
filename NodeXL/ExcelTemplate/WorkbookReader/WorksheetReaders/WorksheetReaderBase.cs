@@ -284,11 +284,11 @@ public class WorksheetReaderBase : NodeXLBase
             );
         }
 
-        Byte btAlpha = m_oAlphaConverter.WorkbookToGraph(fAlpha);
+        fAlpha = m_oAlphaConverter.WorkbookToGraph(fAlpha);
 
-        oEdgeOrVertex.SetValue(ReservedMetadataKeys.PerAlpha, btAlpha);
+        oEdgeOrVertex.SetValue(ReservedMetadataKeys.PerAlpha, fAlpha);
 
-        return (btAlpha == 0);
+        return (fAlpha == 0);
     }
 
     //*************************************************************************

@@ -67,6 +67,14 @@ public class OverallMetrics : Object
     /// <param name="maximumConnectedComponentEdges">
     /// The maximum number of edges in a connected component.
     /// </param>
+    ///
+    /// <param name="maximumGeodesicDistance">
+    /// The maximum geodesic distance in the graph, or null if not available.
+    /// </param>
+    ///
+    /// <param name="averageGeodesicDistance">
+    /// The average geodesic distance in the graph, or null if not available.
+    /// </param>
     //*************************************************************************
 
     public OverallMetrics
@@ -81,7 +89,9 @@ public class OverallMetrics : Object
         Int32 connectedComponents,
         Int32 singleVertexConnectedComponents,
         Int32 maximumConnectedComponentVertices,
-        Int32 maximumConnectedComponentEdges
+        Int32 maximumConnectedComponentEdges,
+        Nullable<Int32> maximumGeodesicDistance,
+        Nullable<Double> averageGeodesicDistance
     )
     {
         m_eDirectedness = directedness;
@@ -98,6 +108,8 @@ public class OverallMetrics : Object
             maximumConnectedComponentVertices;
 
         m_iMaximumConnectedComponentEdges = maximumConnectedComponentEdges;
+        m_iMaximumGeodesicDistance = maximumGeodesicDistance;
+        m_dAverageGeodesicDistance = averageGeodesicDistance;
 
         AssertValid();
     }
@@ -358,6 +370,52 @@ public class OverallMetrics : Object
         }
     }
 
+    //*************************************************************************
+    //  Property: MaximumGeodesicDistance
+    //
+    /// <summary>
+    /// Gets the maximum geodesic distance in the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum geodesic distance in the graph, or null if not available.
+    /// </value>
+    //*************************************************************************
+
+    public Nullable<Int32>
+    MaximumGeodesicDistance
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iMaximumGeodesicDistance);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AverageGeodesicDistance
+    //
+    /// <summary>
+    /// Gets the average geodesic distance in the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The average geodesic distance in the graph, or null if not available.
+    /// </value>
+    //*************************************************************************
+
+    public Nullable<Double>
+    AverageGeodesicDistance
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_dAverageGeodesicDistance);
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -383,6 +441,12 @@ public class OverallMetrics : Object
         Debug.Assert(m_iSingleVertexConnectedComponents >= 0);
         Debug.Assert(m_iMaximumConnectedComponentVertices >= 0);
         Debug.Assert(m_iMaximumConnectedComponentEdges >= 0);
+
+        Debug.Assert(!m_iMaximumGeodesicDistance.HasValue ||
+            m_iMaximumGeodesicDistance.Value >= 0);
+
+        Debug.Assert(!m_dAverageGeodesicDistance.HasValue ||
+            m_dAverageGeodesicDistance.Value >= 0);
     }
 
 
@@ -433,6 +497,14 @@ public class OverallMetrics : Object
     /// The maximum number of edges in a connected component.
 
     protected Int32 m_iMaximumConnectedComponentEdges;
+
+    /// The maximum geodesic distance in the graph, or null if not available.
+
+    protected Nullable<Int32> m_iMaximumGeodesicDistance;
+
+    /// The average geodesic distance in the graph, or null if not available.
+
+    protected Nullable<Double> m_dAverageGeodesicDistance;
 }
 
 }

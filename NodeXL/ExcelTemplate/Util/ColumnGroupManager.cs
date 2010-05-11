@@ -420,6 +420,7 @@ public static class ColumnGroupManager
                     VertexTableColumnNames.BetweennessCentrality,
                     VertexTableColumnNames.ClosenessCentrality,
                     VertexTableColumnNames.EigenvectorCentrality,
+                    VertexTableColumnNames.PageRank,
                     VertexTableColumnNames.ClusteringCoefficient,
                     };
 

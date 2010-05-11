@@ -515,8 +515,8 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="oScreenNameDictionary">
-    /// The key is the screen name and the value is the corresponding
-    /// TwitterVertex.
+    /// The key is the screen name in lower case and the value is the
+    /// corresponding TwitterVertex.
     /// </param>
     ///
     /// <param name="oRequestStatistics">

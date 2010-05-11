@@ -22,8 +22,14 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
+/// Use the <see cref="Algorithm" /> property to specify the clustering
+/// algorithm to use.
+///
+/// <para>
 /// See <see cref="Algorithms.ClusterCalculator" /> for details on how the
 /// graph is partitioned into clusters.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -40,9 +46,40 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
 
     public ClusterCalculator2()
     {
-        // (Do nothing.)
+        m_eAlgorithm = ClusterAlgorithm.ClausetNewmanMoore;
 
         AssertValid();
+    }
+
+    //*************************************************************************
+    //  Property: Algorithm
+    //
+    /// <summary>
+    /// Gets or sets the algorithm to use to partition the graph into clusters.
+    /// </summary>
+    ///
+    /// <value>
+    /// The algorithm to use, as a <see cref="ClusterAlgorithm" />.  The
+    /// default is <see cref="ClusterAlgorithm.ClausetNewmanMoore" />.
+    /// </value>
+    //*************************************************************************
+
+    public ClusterAlgorithm
+    Algorithm
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_eAlgorithm);
+        }
+
+        set
+        {
+            m_eAlgorithm = value;
+
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -108,10 +145,14 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
         // Partition the graph into clusters using the ClusterCalculator class
         // in the Algorithms namespace, which knows nothing about Excel.
 
-        LinkedList<Community> oCommunities;
+        ICollection<Community> oCommunities;
 
-        if ( !( new Algorithms.ClusterCalculator() ).
-            TryCalculateGraphMetrics(graph,
+        Algorithms.ClusterCalculator oClusterCalculator =
+            new Algorithms.ClusterCalculator();
+
+        oClusterCalculator.Algorithm = m_eAlgorithm;
+
+        if ( !oClusterCalculator.TryCalculateGraphMetrics(graph,
                 calculateGraphMetricsContext.BackgroundWorker,
                 out oCommunities) )
         {
@@ -120,8 +161,8 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
             return (false);
         }
 
-        // Convert the list of communities to an array of GraphMetricColumn
-        // objects.
+        // Convert the collection of communities to an array of
+        // GraphMetricColumn objects.
 
         graphMetricColumns = CommunitiesToGraphMetricColumns(oCommunities);
 
@@ -148,7 +189,7 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
     protected GraphMetricColumn []
     CommunitiesToGraphMetricColumns
     (
-        LinkedList<Community> oCommunities
+        ICollection<Community> oCommunities
     )
     {
         Debug.Assert(oCommunities != null);
@@ -386,7 +427,7 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
     {
         base.AssertValid();
 
-        // (Do nothing else.)
+        // m_eAlgorithm
     }
 
 
@@ -441,7 +482,9 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
     //  Protected fields
     //*************************************************************************
 
-    // (None.)
+    /// The algorithm to use.
+
+    protected ClusterAlgorithm m_eAlgorithm;
 }
 
 }

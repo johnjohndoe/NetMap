@@ -39,6 +39,8 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     public AsyncLayoutBase()
     {
         m_bUseBinning = false;
+        m_iMaximumVerticesPerBin = 3;
+        m_iBinLength = 16;
 
         // Create the BackgroundWorker used by LayOutGraphAsync() and handle
         // its DoWork event.
@@ -146,6 +148,80 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
             m_bUseBinning = value;
 
             FireLayoutRequired();
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: MaximumVerticesPerBin
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of vertices a binned component can
+    /// have.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of vertices a binned component can have.  The
+    /// default value is 3.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If <see cref="UseBinning" /> is true and a strongly connected component
+    /// of the graph has <see cref="MaximumVerticesPerBin" /> vertices or
+    /// fewer, the component is placed in a bin.
+    /// </remarks>
+    //*************************************************************************
+
+    public Int32
+    MaximumVerticesPerBin
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iMaximumVerticesPerBin);
+        }
+
+        set
+        {
+            m_iMaximumVerticesPerBin = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BinLength
+    //
+    /// <summary>
+    /// Gets or sets the height and width of each bin, in graph rectangle
+    /// units.
+    /// </summary>
+    ///
+    /// <value>
+    /// The height and width of each bin, in graph rectangle units.  The
+    /// default value is 16.
+    /// </value>
+    ///
+    /// <remarks>
+    /// This property is ignored if <see cref="UseBinning" /> is false.
+    /// </remarks>
+    //*************************************************************************
+
+    public Int32
+    BinLength
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iBinLength);
+        }
+
+        set
+        {
+            m_iBinLength = value;
 
             AssertValid();
         }
@@ -525,6 +601,8 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
             // Lay out the graph's smaller components in bins.
 
             GraphBinner oGraphBinner = new GraphBinner();
+            oGraphBinner.MaximumVerticesPerBin = m_iMaximumVerticesPerBin;
+            oGraphBinner.BinLength = m_iBinLength;
 
             ICollection<IVertex> oRemainingVertices;
             Rectangle oRemainingRectangle;
@@ -759,6 +837,8 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
         base.AssertValid();
 
         // m_bUseBinning
+        Debug.Assert(m_iMaximumVerticesPerBin >= 1);
+        Debug.Assert(m_iBinLength >= 1);
         Debug.Assert(m_oBackgroundWorker != null);
         // m_oSynchronizationContext
     }
@@ -771,6 +851,14 @@ public abstract class AsyncLayoutBase : LayoutBase, IAsyncLayout
     /// true to use binning.
 
     protected Boolean m_bUseBinning;
+
+    /// The maximum number of vertices a binned component can have.
+
+    protected Int32 m_iMaximumVerticesPerBin;
+
+    /// Height and width of each bin, in graph rectangle units.
+
+    protected Int32 m_iBinLength;
 
     /// BackgroundWorker used by LayOutGraphAsync().
 

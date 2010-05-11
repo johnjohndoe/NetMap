@@ -111,21 +111,18 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
         // BrandesFastCalculator class in the Algorithms namespace, which knows
         // nothing about Excel.
 
-        Algorithms.BrandesCentralities oBrandesCentralities;
+        Dictionary<Int32, Algorithms.BrandesVertexCentralities>
+            oVertexCentralitiesDictionary;
 
         if ( !( new Algorithms.BrandesFastCentralityCalculator() ).
             TryCalculateGraphMetrics(graph,
                 calculateGraphMetricsContext.BackgroundWorker,
-                out oBrandesCentralities) )
+                out oVertexCentralitiesDictionary) )
         {
             // The user cancelled.
 
             return (false);
         }
-
-        Dictionary<Int32, Algorithms.BrandesVertexCentralities>
-            oVertexCentralitiesDictionary =
-            oBrandesCentralities.VertexCentralities;
 
         // Transfer the centralities to arrays of GraphMetricValue objects.
 
@@ -176,14 +173,6 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
                 oClosenessCentralityValues.ToArray()
                 )
                 };
-
-        // See the comments in the
-        // CalculateGraphMetricsContext.BrandesCentralities property for
-        // details on why the BrandesCentralities object is stored in the
-        // context object.
-
-        calculateGraphMetricsContext.BrandesCentralities =
-            oBrandesCentralities;
 
         return (true);
     }

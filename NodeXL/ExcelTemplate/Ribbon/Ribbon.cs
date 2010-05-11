@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.NodeXL.ApplicationUtil;
 using Microsoft.NodeXL.ExcelTemplatePlugIns;
@@ -56,6 +57,7 @@ public partial class Ribbon : OfficeRibbon
 
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
+        this.ClusterAlgorithm = oGeneralUserSettings.ClusterAlgorithm;
         this.ReadClusters = oGeneralUserSettings.ReadClusters;
         this.ReadVertexLabels = oGeneralUserSettings.ReadVertexLabels;
         this.ReadEdgeLabels = oGeneralUserSettings.ReadEdgeLabels;
@@ -487,6 +489,68 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Property: ClusterAlgorithm
+    //
+    /// <summary>
+    /// Gets or sets the algorithm used to to partition the graph into
+    /// clusters.
+    /// </summary>
+    ///
+    /// <value>
+    /// The algorithm used to to partition the graph into clusters.
+    /// </value>
+    //*************************************************************************
+
+    protected ClusterAlgorithm
+    ClusterAlgorithm
+    {
+        get
+        {
+            AssertValid();
+
+            // The cluster algorithm is selected with a set of RibbonCheckBox
+            // controls that are children of sbCreateClusters.
+
+            foreach (RibbonControl oControl in sbCreateClusters.Items)
+            {
+                if (oControl is RibbonCheckBox)
+                {
+                    RibbonCheckBox oRibbonCheckBox = (RibbonCheckBox)oControl;
+
+                    if (oRibbonCheckBox.Checked &&
+                        oRibbonCheckBox.Tag is ClusterAlgorithm)
+                    {
+                        return ( (ClusterAlgorithm)oRibbonCheckBox.Tag );
+                    }
+                }
+            }
+
+            Debug.Assert(false);
+            return (ClusterAlgorithm.GirvanNewman);
+        }
+
+        set
+        {
+            foreach (RibbonControl oControl in sbCreateClusters.Items)
+            {
+                if (oControl is RibbonCheckBox)
+                {
+                    RibbonCheckBox oRibbonCheckBox = (RibbonCheckBox)oControl;
+
+                    if (oRibbonCheckBox.Tag is ClusterAlgorithm)
+                    {
+                        oRibbonCheckBox.Checked =
+                            ( ( (ClusterAlgorithm)oRibbonCheckBox.Tag ) ==
+                                value );
+                    }
+                }
+            }
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: GetPerWorkbookSettings()
     //
     /// <summary>
@@ -660,6 +724,7 @@ public partial class Ribbon : OfficeRibbon
 
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
+        oGeneralUserSettings.ClusterAlgorithm = this.ClusterAlgorithm;
         oGeneralUserSettings.ReadClusters = this.ReadClusters;
         oGeneralUserSettings.ReadVertexLabels = this.ReadVertexLabels;
         oGeneralUserSettings.ReadEdgeLabels = this.ReadEdgeLabels;
@@ -1289,7 +1354,42 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.CreateClusters();
+        this.ThisWorkbook.CreateClusters(this.ClusterAlgorithm);
+    }
+
+    //*************************************************************************
+    //  Method: chkClusterAlgorithm_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the RibbonCheckBox controls that select the
+    /// cluster algorithm to use.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    chkClusterAlgorithm_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // The ClusterAlgorithm value is stored in the RibbonCheckBox's Tag.
+
+        Debug.Assert(sender is RibbonCheckBox);
+        RibbonCheckBox oRibbonCheckBox = (RibbonCheckBox)sender;
+
+        Debug.Assert(oRibbonCheckBox.Tag is ClusterAlgorithm);
+        this.ClusterAlgorithm = (ClusterAlgorithm)oRibbonCheckBox.Tag;
     }
 
     //*************************************************************************

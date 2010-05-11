@@ -611,16 +611,11 @@ public class VertexAndEdgeDrawerBase : DrawerBase
         Object oPerAlphaAsObject;
 
         if ( oVertexOrEdge.TryGetValue(ReservedMetadataKeys.PerAlpha,
-            typeof(Byte), out oPerAlphaAsObject) )
+            typeof(Single), out oPerAlphaAsObject) )
         {
-            Byte btPerAlpha = (Byte)oPerAlphaAsObject;
+            Single fPerAlpha = (Single)oPerAlphaAsObject;
 
-            // The following test isn't necessary (a Byte can't be less than 0
-            // or greater than 255), but the PerAlpha value type has been
-            // changed several times and this code is left here as a reminder
-            // to check limits if the type changes again.
-
-            if (btPerAlpha < 0 || btPerAlpha > 255)
+            if (fPerAlpha < 0F || fPerAlpha > 255F)
             {
                 Debug.Assert(oVertexOrEdge is IIdentityProvider);
 
@@ -636,7 +631,7 @@ public class VertexAndEdgeDrawerBase : DrawerBase
                     ) );
             }
 
-            return (btPerAlpha);
+            return ( (Byte)fPerAlpha );
         }
 
         return (btDefaultAlpha);

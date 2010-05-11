@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml;
+using System.Globalization;
 using System.Diagnostics;
 
 namespace Microsoft.Research.CommunityTechnologies.XmlLib
@@ -23,8 +24,8 @@ namespace Microsoft.Research.CommunityTechnologies.XmlLib
 /// declaration, a root "graphml" XML node, and a "graph" child XML node.  Use
 /// <see cref="DefineGraphMLAttribute" />, <see cref="AppendVertexXmlNode" />,
 /// <see cref="AppendEdgeXmlNode" />, and <see
-/// cref="AppendGraphMLAttributeValue" /> to populate the document with
-/// vertices, edges, and vertex/edge attributes.
+/// cref="AppendGraphMLAttributeValue(XmlNode, String, String)" /> to populate
+/// the document with vertices, edges, and vertex/edge attributes.
 /// </para>
 ///
 /// </remarks>
@@ -236,8 +237,13 @@ public class GraphMLXmlDocument : XmlDocument
     //*************************************************************************
     //  Method: AppendGraphMLAttributeValue()
     //
-    /// <summary>
+    /// <overloads>
     /// Appends a GraphML-Attribute value to an edge or vertex XML node. 
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Appends a GraphML-Attribute value of type "string" to an edge or vertex
+    /// XML node. 
     /// </summary>
     ///
     /// <param name="edgeOrVertexXmlNode">
@@ -271,6 +277,80 @@ public class GraphMLXmlDocument : XmlDocument
 
         SetXmlNodeAttributes(oGraphMLAttributeValueXmlNode, "key",
             attributeID);
+    }
+
+    //*************************************************************************
+    //  Method: AppendGraphMLAttributeValue()
+    //
+    /// <summary>
+    /// Appends a GraphML-Attribute value of type "int" to an edge or vertex
+    /// XML node. 
+    /// </summary>
+    ///
+    /// <param name="edgeOrVertexXmlNode">
+    /// The edge or vertex XML node to add the attribute value to.
+    /// </param>
+    /// 
+    /// <param name="attributeID">
+    /// The attribute's ID.
+    /// </param>
+    /// 
+    /// <param name="attributeValue">
+    /// The attribute's value.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    AppendGraphMLAttributeValue
+    (
+        XmlNode edgeOrVertexXmlNode,
+        String attributeID,
+        Int32 attributeValue
+    )
+    {
+        Debug.Assert(edgeOrVertexXmlNode != null);
+        Debug.Assert( !String.IsNullOrEmpty(attributeID) );
+        AssertValid();
+
+        AppendGraphMLAttributeValue( edgeOrVertexXmlNode, attributeID,
+            attributeValue.ToString(CultureInfo.InvariantCulture) );
+    }
+
+    //*************************************************************************
+    //  Method: AppendGraphMLAttributeValue()
+    //
+    /// <summary>
+    /// Appends a GraphML-Attribute value of type "double" to an edge or vertex
+    /// XML node. 
+    /// </summary>
+    ///
+    /// <param name="edgeOrVertexXmlNode">
+    /// The edge or vertex XML node to add the attribute value to.
+    /// </param>
+    /// 
+    /// <param name="attributeID">
+    /// The attribute's ID.
+    /// </param>
+    /// 
+    /// <param name="attributeValue">
+    /// The attribute's value.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    AppendGraphMLAttributeValue
+    (
+        XmlNode edgeOrVertexXmlNode,
+        String attributeID,
+        Double attributeValue
+    )
+    {
+        Debug.Assert(edgeOrVertexXmlNode != null);
+        Debug.Assert( !String.IsNullOrEmpty(attributeID) );
+        AssertValid();
+
+        AppendGraphMLAttributeValue( edgeOrVertexXmlNode, attributeID,
+            attributeValue.ToString(CultureInfo.InvariantCulture) );
     }
 
     //*************************************************************************

@@ -215,21 +215,18 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
         // Geodesic distances
         //*********************************
 
-        String sMaximumGeodesicDistance, sAverageGeodesicDistance,
-            sGeodesicDistanceComments;
+        String sMaximumGeodesicDistance, sAverageGeodesicDistance;
 
-        GetGeodesicDistanceStrings(calculateGraphMetricsContext,
-            out sMaximumGeodesicDistance, out sAverageGeodesicDistance,
-            out sGeodesicDistanceComments);
+        GetGeodesicDistanceStrings(oOverallMetrics,
+            out sMaximumGeodesicDistance, out sAverageGeodesicDistance);
 
         AddRow(oOverallMetricRows);
 
         AddRow("Maximum Geodesic Distance (Diameter)",
-            sMaximumGeodesicDistance, sGeodesicDistanceComments, null,
-            oOverallMetricRows);
+            sMaximumGeodesicDistance, oOverallMetricRows);
 
         AddRow("Average Geodesic Distance", sAverageGeodesicDistance,
-            sGeodesicDistanceComments, null, oOverallMetricRows);
+            oOverallMetricRows);
 
 
         //*********************************
@@ -280,8 +277,8 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
     /// Gets strings that describe the geodesic distances.
     /// </summary>
     ///
-    /// <param name="oCalculateGraphMetricsContext">
-    /// Provides access to objects needed for calculating graph metrics.
+    /// <param name="oOverallMetrics">
+    /// Contains the graph's overall metrics.
     /// </param>
     ///
     /// <param name="sMaximumGeodesicDistance">
@@ -291,59 +288,35 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
     /// <param name="sAverageGeodesicDistance">
     /// Where a string describing the average geodesic distance gets stored.
     /// </param>
-    ///
-    /// <param name="sGeodesicDistanceComments">
-    /// Where the geodesic comments get stored.
-    /// </param>
     //*************************************************************************
 
     protected void
     GetGeodesicDistanceStrings
     (
-        CalculateGraphMetricsContext oCalculateGraphMetricsContext,
+        OverallMetrics oOverallMetrics,
         out String sMaximumGeodesicDistance,
-        out String sAverageGeodesicDistance,
-        out String sGeodesicDistanceComments
+        out String sAverageGeodesicDistance
     )
     {
-        Debug.Assert(oCalculateGraphMetricsContext != null);
+        Debug.Assert(oOverallMetrics != null);
         AssertValid();
 
-        // The graph's geodesic distances may have been calculated by
-        // BrandesFastCentralityCalculator2.  (If not, the BrandesCentralities
-        // property on the context object is null.)
-
-        BrandesCentralities oBrandesCentralities =
-            oCalculateGraphMetricsContext.BrandesCentralities;
-
-        if (oBrandesCentralities != null)
+        if (oOverallMetrics.MaximumGeodesicDistance.HasValue)
         {
-            if (oBrandesCentralities.MaximumGeodesicDistance.HasValue)
-            {
-                sMaximumGeodesicDistance = FormatInt32(
-                    oBrandesCentralities.MaximumGeodesicDistance.Value);
+            sMaximumGeodesicDistance = FormatInt32(
+                oOverallMetrics.MaximumGeodesicDistance.Value);
 
-                sAverageGeodesicDistance = FormatDouble(
-                    oBrandesCentralities.AverageGeodesicDistance.Value);
+            // The maximum and average are computed together.
 
-                sGeodesicDistanceComments = String.Empty;
-            }
-            else
-            {
-                sMaximumGeodesicDistance = sAverageGeodesicDistance =
-                    NotApplicableMessage;
+            Debug.Assert(oOverallMetrics.AverageGeodesicDistance.HasValue);
 
-                sGeodesicDistanceComments = String.Empty;
-            }
+            sAverageGeodesicDistance = FormatDouble(
+                oOverallMetrics.AverageGeodesicDistance.Value);
         }
         else
         {
-                sMaximumGeodesicDistance = sAverageGeodesicDistance =
-                    "Not Available";
-
-                sGeodesicDistanceComments = 
-                    "Available only when betweenness and closeness"
-                    + " centralities are computed";
+            sMaximumGeodesicDistance = sAverageGeodesicDistance =
+                NotApplicableMessage;
         }
     }
 

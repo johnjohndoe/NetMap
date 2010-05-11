@@ -258,34 +258,51 @@ public static class ApplicationUtil
     public static String
     GetPlugInFolder()
     {
+        return ( Path.Combine(GetApplicationFolder(), PlugInSubfolder) );
+    }
+
+    //*************************************************************************
+    //  Method: GetApplicationFolder()
+    //
+    /// <summary>
+    /// Gets the full path to folder where the application is installed.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The full path to folder where the application is installed.
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    GetApplicationFolder()
+    {
         #if false  // For testing only.
 
-        return (@"E:\NodeXL\ExcelTemplate\bin\Debug\PlugIns");
+        return (@"E:\NodeXL\ExcelTemplate\bin\Debug");
 
         #endif
 
         // For versions 1.0.1.113 and earlier, the setup program installed
-        // NodeXL into a standard Program Files folder and the program was run
-        // from there.  The application folder could then be obtained as
-        // follows:
+        // NodeXL into a subfolder of the standard Program Files folder and the
+        // program was run from there.  The application folder could then be
+        // obtained as follows:
         //
         //
         // String sApplicationFolder = Path.GetDirectoryName(
         //     Assembly.GetExecutingAssembly().CodeBase);
         //
         // Versions since then have continued to install NodeXL into that
-        // folder, but ClickOnce is now called at the end of the setup to
+        // subfolder, but ClickOnce is now called at the end of the setup to
         // install the application in the ClickOnce cache, and that is where
         // the application actually runs from.  That means that the location of
         // the executing assembly is now in some obscure location, far from the
         // plug-in folder.  The following code is now used to get the
-        // application folder:
+        // application folder.  There is no UI in the setup program to select
+        // another folder, so this will always be the correct one.
 
-        String sApplicationFolder = Path.Combine(
+        return ( Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-            ApplicationSubFolder);
-
-        return ( Path.Combine(sApplicationFolder, PlugInSubfolder) );
+            ProgramFilesSubfolder) );
     }
 
     //*************************************************************************
@@ -374,7 +391,7 @@ public static class ApplicationUtil
     /// UI in the setup program to select another folder, so this will always
     /// be the correct subfolder.
 
-    private const String ApplicationSubFolder =
+    private const String ProgramFilesSubfolder =
         @"Microsoft Research\Microsoft NodeXL Excel Template";
 
     /// Subfolder under the application folder where plug-in assemblies are

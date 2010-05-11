@@ -34,10 +34,11 @@ public static class ProjectInformation
     public const String DownloadPageUrl =
         "http://www.codeplex.com/NodeXL/Release/ProjectReleases.aspx";
 
-    /// Email address to send user registration requests to.
+    /// URL of the project's registration page.
 
-    public const String RegistrationEmailAddress =
-        "registration@nodexl.org";
+    public const String RegistrationUrl =
+        "https://spreadsheets.google.com/viewform?formkey="
+            + "dGo5QWQ2d1liVURfZVlIWjItZVBreUE6MQ&ifq";
 
     /// Project's team members, separated by line breaks, ordered by last name.
 

@@ -58,7 +58,7 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
                 this.CalculateDegree || this.CalculateClusteringCoefficient ||
                 this.CalculateBrandesFastCentralities ||
                 this.CalculateEigenvectorCentrality ||
-                this.CalculateOverallMetrics
+                this.CalculatePageRank || this.CalculateOverallMetrics
                 );
         }
     }
@@ -268,6 +268,39 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: CalculatePageRank
+    //
+    /// <summary>
+    /// Gets or sets a flag specifying whether PageRanks should be calculated.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to calculate PageRanks.  The default is false.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public Boolean
+    CalculatePageRank
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (Boolean)this[CalculatePageRankKey] );
+        }
+
+        set
+        {
+            this[CalculatePageRankKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: CalculateOverallMetrics
     //
     /// <summary>
@@ -355,6 +388,11 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
 
     protected const String CalculateEigenvectorCentralityKey =
         "CalculateEigenvectorCentrality";
+
+    /// Name of the settings key for the CalculatePageRank property.
+
+    protected const String CalculatePageRankKey =
+        "CalculatePageRank";
 
     /// Name of the settings key for the CalculateOverallMetrics property.
 

@@ -36,7 +36,7 @@ public class AlphaConverter : NumericValueConverterBase
     }
 
     //*************************************************************************
-    //  Method: WorkbookToGraph()
+    //  Method: WorkbookToGraphAsByte()
     //
     /// <summary>
     /// Converts an alpha value from an Excel workbook value to a value
@@ -55,8 +55,8 @@ public class AlphaConverter : NumericValueConverterBase
     /// </returns>
     //*************************************************************************
 
-    public new Byte
-    WorkbookToGraph
+    public Byte
+    WorkbookToGraphAsByte
     (
         Single workbookValue
     )
@@ -108,13 +108,13 @@ public class AlphaConverter : NumericValueConverterBase
     /// Minimum alpha value in the NodeXL graph.  Represents "transparent."
     /// </summary>
 
-    public static readonly Byte MinimumAlphaGraph = 0;
+    public static readonly Single MinimumAlphaGraph = 0;
 
     /// <summary>
     /// Maximum alpha value in the NodeXL graph.  Represents "opaque."
     /// </summary>
 
-    public static readonly Byte MaximumAlphaGraph = 255;
+    public static readonly Single MaximumAlphaGraph = 255;
 
 
     //*************************************************************************

@@ -86,10 +86,10 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GraphMetricCalculators\Brandes\BrandesCentralities.cs" />
     <Compile Include="GraphMetricCalculators\Brandes\BrandesFastCentralityCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Brandes\BrandesVertexCentralities.cs" />
     <Compile Include="GraphMetricCalculators\ClusteringCoefficientCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Cluster\ClusterAlgorithm.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\ClusterCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\Community.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\CommunityPair.cs" />
@@ -98,8 +98,10 @@
     <Compile Include="GraphMetricCalculators\GraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetricCalculators\GraphMetricException.cs" />
     <Compile Include="GraphMetricCalculators\IGraphMetricCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\OneSnapGraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetricCalculators\Overall\OverallMetricCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Overall\OverallMetrics.cs" />
+    <Compile Include="GraphMetricCalculators\PageRankCalculator.cs" />
     <Compile Include="GraphMetricCalculators\VertexDegreeCalculator.cs" />
     <Compile Include="Miscellaneous\ConnectedComponentCalculator.cs" />
     <Compile Include="Miscellaneous\DuplicateEdgeDetector.cs" />
@@ -114,6 +116,11 @@
       <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
       <Name>Util</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SnapGraphMetricCalculator.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

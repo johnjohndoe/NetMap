@@ -243,6 +243,39 @@ public static class MathUtil
     }
 
     //*************************************************************************
+    //  Method: TryParseCultureInvariantUInt32()
+    //
+    /// <summary>
+    /// Attempts to parse a string containing a UInt32 using the invariant
+    /// culture.
+    /// </summary>
+    ///
+    /// <param name="s">
+    /// String that might contain a UInt32, formatted with the invariant
+    /// culture.
+    /// </param>
+    ///
+    /// <param name="result">
+    /// Where the parsed UInt32 gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the string was successfully parsed.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TryParseCultureInvariantUInt32
+    (
+        String s,
+        out UInt32 result
+    )
+    {
+        return ( UInt32.TryParse(s, NumberStyles.Integer,
+            CultureInfo.InvariantCulture, out result) );
+    }
+
+    //*************************************************************************
     //  Method: TryParseCultureInvariantSingle()
     //
     /// <summary>

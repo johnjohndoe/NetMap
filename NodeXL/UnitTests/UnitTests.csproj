@@ -64,7 +64,6 @@
     <Compile Include="Core\Util\EdgeUtilTest.cs" />
     <Compile Include="Core\Util\IDGeneratorTest.cs" />
     <Compile Include="Core\Util\NodeXLBaseTest.cs" />
-    <Compile Include="Core\Util\SimpleGraphMatrixTest.cs" />
     <Compile Include="Core\VertexSorters\ByDelegateVertexSorterTest.cs" />
     <Compile Include="Core\VertexSorters\ByMetadataVertexSorterTest.cs" />
     <Compile Include="ExcelTemplate\Util\DynamicFilters\DateTimeFilterParametersTest.cs" />

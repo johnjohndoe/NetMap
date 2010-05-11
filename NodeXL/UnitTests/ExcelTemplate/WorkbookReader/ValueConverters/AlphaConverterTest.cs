@@ -67,17 +67,17 @@ public class AlphaConverterTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestWorkbookToGraph()
+    //  Method: TestWorkbookToGraphAsByte()
     //
     /// <summary>
-    /// Tests the WorkbookToGraph() method.
+    /// Tests the WorkbookToGraphAsByte() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestWorkbookToGraph()
+    TestWorkbookToGraphAsByte()
     {
         // Minimum.
 
@@ -85,23 +85,24 @@ public class AlphaConverterTest : Object
 
         Byte btExpectedAlphaGraph = 0;
 
-        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph =
+            m_oAlphaConverter.WorkbookToGraphAsByte(fAlphaWorkbook);
 
         Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
-    //  Method: TestWorkbookToGraph2()
+    //  Method: TestWorkbookToGraphAsByte2()
     //
     /// <summary>
-    /// Tests the WorkbookToGraph() method.
+    /// Tests the WorkbookToGraphAsByte() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestWorkbookToGraph2()
+    TestWorkbookToGraphAsByte2()
     {
         // Maximum.
 
@@ -109,23 +110,24 @@ public class AlphaConverterTest : Object
 
         Byte btExpectedAlphaGraph = 255;
 
-        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph =
+            m_oAlphaConverter.WorkbookToGraphAsByte(fAlphaWorkbook);
 
         Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
-    //  Method: TestWorkbookToGraph3()
+    //  Method: TestWorkbookToGraphAsByte3()
     //
     /// <summary>
-    /// Tests the WorkbookToGraph() method.
+    /// Tests the WorkbookToGraphAsByte() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestWorkbookToGraph3()
+    TestWorkbookToGraphAsByte3()
     {
         // Midpoint.
 
@@ -135,23 +137,24 @@ public class AlphaConverterTest : Object
 
         Byte btExpectedAlphaGraph = (Byte)(0 + (255 - 0) / 2);
 
-        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph =
+            m_oAlphaConverter.WorkbookToGraphAsByte(fAlphaWorkbook);
 
         Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
-    //  Method: TestWorkbookToGraph4()
+    //  Method: TestWorkbookToGraphAsByte4()
     //
     /// <summary>
-    /// Tests the WorkbookToGraph() method.
+    /// Tests the WorkbookToGraphAsByte() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestWorkbookToGraph4()
+    TestWorkbookToGraphAsByte4()
     {
         // Below minimum.
 
@@ -159,23 +162,24 @@ public class AlphaConverterTest : Object
 
         Byte btExpectedAlphaGraph = 0;
 
-        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph =
+            m_oAlphaConverter.WorkbookToGraphAsByte(fAlphaWorkbook);
 
         Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }
 
     //*************************************************************************
-    //  Method: TestWorkbookToGraph5()
+    //  Method: TestWorkbookToGraphAsByte5()
     //
     /// <summary>
-    /// Tests the WorkbookToGraph() method.
+    /// Tests the WorkbookToGraphAsByte() method.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestWorkbookToGraph5()
+    TestWorkbookToGraphAsByte5()
     {
         // Above maximum.
 
@@ -183,7 +187,8 @@ public class AlphaConverterTest : Object
 
         Byte btExpectedAlphaGraph = 255;
 
-        Byte btAlphaGraph = m_oAlphaConverter.WorkbookToGraph(fAlphaWorkbook);
+        Byte btAlphaGraph =
+            m_oAlphaConverter.WorkbookToGraphAsByte(fAlphaWorkbook);
 
         Assert.AreEqual(btExpectedAlphaGraph, btAlphaGraph);
     }

@@ -660,11 +660,11 @@ public partial class AutoFillResultsLegendControl : LegendControlBase
 
         AlphaConverter oAlphaConverter = new AlphaConverter();
 
-        Int32 iDestinationAlpha1 =
-            oAlphaConverter.WorkbookToGraph( (Single)dDestinationNumber1 );
+        Int32 iDestinationAlpha1 = (Int32)oAlphaConverter.WorkbookToGraph(
+            (Single)dDestinationNumber1 );
 
-        Int32 iDestinationAlpha2 =
-            oAlphaConverter.WorkbookToGraph( (Single)dDestinationNumber2 );
+        Int32 iDestinationAlpha2 = (Int32)oAlphaConverter.WorkbookToGraph(
+            (Single)dDestinationNumber2 );
 
         Color oDestinationColor1 =
             Color.FromArgb(iDestinationAlpha1, SystemColors.WindowText);

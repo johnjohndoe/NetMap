@@ -550,6 +550,39 @@ public class GraphMLAttributeTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestGetAttributeValue13()
+    //
+    /// <summary>
+    /// Tests the GetAttributeValue() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetAttributeValue13()
+    {
+        // String, has default node with missing default text.  This was found
+        // in a file exported by yED.
+
+        m_oGraphMLAttribute = CreateGraphMLAttribute(false, "string",
+            String.Empty);
+
+        XmlElement oDataXmlNode = CreateDataXmlNode("the value");
+
+        Object oAttributeValue =
+            m_oGraphMLAttribute.GetAttributeValue(oDataXmlNode);
+
+        Assert.IsTrue(oAttributeValue is String);
+        Assert.AreEqual("the value", (String)oAttributeValue);
+
+        Object oDefaultAttributeValue;
+
+        Assert.IsFalse( m_oGraphMLAttribute.TryGetDefaultAttributeValue(
+            out oDefaultAttributeValue) );
+    }
+
+    //*************************************************************************
     //  Method: TestGetAttributeValueBad()
     //
     /// <summary>

@@ -437,11 +437,11 @@ public partial class TaskPane : UserControl
         oNodeXLControl.GraphMouseUp += new GraphMouseButtonEventHandler(
             this.oNodeXLControl_GraphMouseUp);
 
-        oNodeXLControl.DrawingGraph += new System.EventHandler(
-            this.oNodeXLControl_DrawingGraph);
+        oNodeXLControl.LayingOutGraph += new System.EventHandler(
+            this.oNodeXLControl_LayingOutGraph);
 
-        oNodeXLControl.DrawGraphCompleted += new AsyncCompletedEventHandler(
-            this.oNodeXLControl_DrawGraphCompleted);
+        oNodeXLControl.GraphLaidOut += new AsyncCompletedEventHandler(
+            this.oNodeXLControl_GraphLaidOut);
 
         ehNodeXLControlHost.Child = m_oNodeXLWithAxesControl;
     }
@@ -512,7 +512,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -590,7 +590,7 @@ public partial class TaskPane : UserControl
                 ReadFilteredAlpha(false);
             }
 
-            oNodeXLControl.DrawGraphAsync(bLayOutGraph);
+            oNodeXLControl.DrawGraph(bLayOutGraph);
 
             PerWorkbookSettings oPerWorkbookSettings =
                 this.PerWorkbookSettings;
@@ -633,7 +633,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -644,7 +644,7 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        oNodeXLControl.DrawGraphAsync(true);
+        oNodeXLControl.DrawGraph(true);
     }
 
     //*************************************************************************
@@ -684,8 +684,8 @@ public partial class TaskPane : UserControl
         // later cause the selected vertices to be laid out within their
         // bounding box.
         //
-        // When the graph completes drawing (which happens asynchronously),
-        // oNodeXLControl_DrawGraphCompleted() removes both keys.
+        // When the graph layout completes (which happens asynchronously),
+        // oNodeXLControl_GraphLaidOut() removes both keys.
 
         oNodeXLControl.Graph.SetValue(
             ReservedMetadataKeys.LayOutTheseVerticesWithinBounds, null);
@@ -740,7 +740,7 @@ public partial class TaskPane : UserControl
         Debug.Assert( !String.IsNullOrEmpty(sLayoutTypeIsNoneWarning) );
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -755,8 +755,8 @@ public partial class TaskPane : UserControl
         // only the specified vertices should be laid out and all other
         // vertices should be completely ignored.
         //
-        // When the graph completes drawing (which happens asynchronously),
-        // oNodeXLControl_DrawGraphCompleted() removes the value.
+        // When the graph layout completes (which happens asynchronously),
+        // oNodeXLControl_GraphLaidOut() removes the value.
 
         oNodeXLControl.Graph.SetValue(
             ReservedMetadataKeys.LayOutTheseVerticesOnly, oVerticesToLayOut);
@@ -777,7 +777,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -791,7 +791,7 @@ public partial class TaskPane : UserControl
         {
             oGeneralUserSettings.Save();
             ApplyGeneralUserSettings(oGeneralUserSettings);
-            oNodeXLControl.DrawGraphAsync();
+            oNodeXLControl.DrawGraph();
         }
     }
 
@@ -808,7 +808,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -822,7 +822,7 @@ public partial class TaskPane : UserControl
         {
             oLayoutUserSettings.Save();
             ApplyLayoutUserSettings(oLayoutUserSettings);
-            oNodeXLControl.DrawGraphAsync();
+            oNodeXLControl.DrawGraph();
         }
     }
 
@@ -1308,7 +1308,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             bEnableSelectAllVertices = bEnableDeselectAllVertices =
                 bEnableSelectAdjacentVertices =
@@ -1375,7 +1375,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             bEnableSelectAllEdges = bEnableDeselectAllEdges =
                 bEnableSelectAdjacentVertices =
@@ -1408,7 +1408,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -1456,7 +1456,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -1493,7 +1493,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -1887,7 +1887,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing || !this.WorkbookRead)
+        if (oNodeXLControl.IsLayingOutGraph || !this.WorkbookRead)
         {
             // The control is busy, or the workbook hasn't been read yet, or
             // the graph is empty.
@@ -2497,7 +2497,7 @@ public partial class TaskPane : UserControl
         Debug.Assert(oOnEdgeOrVertexFiltered != null);
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -2587,7 +2587,7 @@ public partial class TaskPane : UserControl
 
         if (bForceRedraw)
         {
-            oNodeXLControl.DrawGraphAsync();
+            oNodeXLControl.DrawGraph();
         }
     }
 
@@ -2619,7 +2619,7 @@ public partial class TaskPane : UserControl
 
         if (bForceRedraw)
         {
-            oNodeXLControl.DrawGraphAsync();
+            oNodeXLControl.DrawGraph();
         }
     }
 
@@ -3263,7 +3263,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -3273,7 +3273,7 @@ public partial class TaskPane : UserControl
         VertexGridSnapper.SnapVerticesToGrid(oNodeXLControl.Graph,
             ( new VertexGridSnapperUserSettings() ).GridSize);
 
-        oNodeXLControl.DrawGraphAsync(false);
+        oNodeXLControl.DrawGraph(false);
 
         this.UseWaitCursor = false;
     }
@@ -3303,7 +3303,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -3932,10 +3932,10 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: oNodeXLControl_DrawingGraph()
+    //  Method: oNodeXLControl_LayingOutGraph()
     //
     /// <summary>
-    /// Handles the DrawingGraph event on the oNodeXLControl control.
+    /// Handles the LayingOutGraph event on the oNodeXLControl control.
     /// </summary>
     ///
     /// <param name="sender">
@@ -3948,7 +3948,7 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     private void
-    oNodeXLControl_DrawingGraph
+    oNodeXLControl_LayingOutGraph
     (
         object sender,
         EventArgs e
@@ -3960,10 +3960,10 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: oNodeXLControl_DrawGraphCompleted()
+    //  Method: oNodeXLControl_GraphLaidOut()
     //
     /// <summary>
-    /// Handles the DrawGraphCompleted event on the oNodeXLControl control.
+    /// Handles the GraphLaidOut event on the oNodeXLControl control.
     /// </summary>
     ///
     /// <param name="sender">
@@ -3976,7 +3976,7 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     private void
-    oNodeXLControl_DrawGraphCompleted
+    oNodeXLControl_GraphLaidOut
     (
         object sender,
         AsyncCompletedEventArgs e
@@ -4201,7 +4201,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -4249,7 +4249,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -4312,7 +4312,7 @@ public partial class TaskPane : UserControl
         Debug.Assert(e != null);
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -4461,7 +4461,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing)
+        if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
         }
@@ -4510,7 +4510,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsDrawing ||
+        if (oNodeXLControl.IsLayingOutGraph ||
             !( new GeneralUserSettings() ).AutoReadWorkbook)
         {
             return;

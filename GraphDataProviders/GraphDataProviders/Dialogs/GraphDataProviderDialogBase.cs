@@ -370,8 +370,9 @@ public class GraphDataProviderDialogBase : FormPlus
 
                 new PartialNetworkDialog(oPartialNetworkException,
 
-                    ExceptionToMessage(oPartialNetworkException.
-                        RequestStatistics.LastUnexpectedException)
+                    m_oHttpNetworkAnalyzer.ExceptionToMessage(
+                        oPartialNetworkException.RequestStatistics.
+                        LastUnexpectedException)
                 );
 
             if (oPartialNetworkDialog.ShowDialog() == DialogResult.Yes)
@@ -384,37 +385,9 @@ public class GraphDataProviderDialogBase : FormPlus
             this.ShowWarning(
                 "The network couldn't be obtained.  Details:"
                 + "\r\n\r\n"
-                + ExceptionToMessage(oException)
+                + m_oHttpNetworkAnalyzer.ExceptionToMessage(oException)
                 );
         }
-    }
-
-    //*************************************************************************
-    //  Method: ExceptionToMessage()
-    //
-    /// <summary>
-    /// Converts an exception to an error message appropriate for the UI.
-    /// </summary>
-    ///
-    /// <param name="oException">
-    /// The exception that occurred.
-    /// </param>
-    ///
-    /// <returns>
-    /// An error message appropriate for the UI.
-    /// </returns>
-    //*************************************************************************
-
-    protected virtual String
-    ExceptionToMessage
-    (
-        Exception oException
-    )
-    {
-        Debug.Assert(oException != null);
-        AssertValid();
-
-        return (oException.Message);
     }
 
     //*************************************************************************

@@ -310,7 +310,8 @@ public class GraphImporter : Object
                 if ( oEdge.TryGetValue(asEdgeAttributes[i],
                     out oEdgeAttribute) )
                 {
-                    aaoEdgeAttributeValues[i][iEdge, 1] = oEdgeAttribute;
+                    aaoEdgeAttributeValues[i][iEdge, 1] =
+                        RemoveFormulaFromAttribute(oEdgeAttribute);
                 }
             }
 
@@ -572,7 +573,7 @@ public class GraphImporter : Object
                         aaoVertexAttributeValues[i].GetUpperBound(0) );
 
                     aaoVertexAttributeValues[i][iOneBasedRowOffset, 1] =
-                        oVertexAttribute;
+                        RemoveFormulaFromAttribute(oVertexAttribute);
                 }
             }
         }
@@ -582,6 +583,49 @@ public class GraphImporter : Object
             aoVertexAttributeColumnData[i].set_Value( Missing.Value,
                 aaoVertexAttributeValues[i] );
         }
+    }
+
+    //*************************************************************************
+    //  Method: RemoveFormulaFromAttribute()
+    //
+    /// <summary>
+    /// Removes any formula from an edge or vertex attribute.
+    /// </summary>
+    ///
+    /// <param name="oAttribute">
+    /// The attribute to remove the formula from.
+    /// </param>
+    ///
+    /// <returns>
+    /// The attribute with any formula removed.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="oAttribute" /> is a String that starts with "=",
+    /// which Excel would interpret as a formula, this method prepends the "="
+    /// with a single quote.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Object
+    RemoveFormulaFromAttribute
+    (
+        Object oAttribute
+    )
+    {
+        Debug.Assert(oAttribute != null);
+
+        if (oAttribute is String)
+        {
+            String sAttribute = (String)oAttribute;
+
+            if ( sAttribute.StartsWith("=") )
+            {
+                oAttribute = "'" + sAttribute;
+            }
+        }
+
+        return (oAttribute);
     }
 
 

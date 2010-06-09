@@ -373,15 +373,18 @@ public class GraphMLAttribute : Object
 
         m_oDefaultAttributeValue = null;
 
+        String sDefaultAttributeValue;
+
         XmlNode oDefaultXmlNode = oKeyXmlNode.SelectSingleNode(
             sGraphMLPrefix + ":default", oXmlNamespaceManager);
 
-        if (oDefaultXmlNode != null)
+        if (
+            oDefaultXmlNode != null
+            &&
+            XmlUtil2.TrySelectSingleNodeAsString(oDefaultXmlNode, "text()",
+                null, out sDefaultAttributeValue)
+            )
         {
-            String sDefaultAttributeValue =
-               XmlUtil2.SelectRequiredSingleNodeAsString(oDefaultXmlNode,
-                "text()", null);
-
             try
             {
                 m_oDefaultAttributeValue =

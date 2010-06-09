@@ -408,6 +408,17 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
         }
 
         oColor = ColorUtil.HsbToRgb(fHue, fSaturation, Brightness);
+
+        if ( oColor == Color.FromArgb(255, 172, 0) )
+        {
+            // Due to rounding errors, the above code produces (255,172,0) for
+            // orange, which should actually be (255,165,0).
+            // ColorConverter2.GraphToWorkbook() converts (255,165,0) to the
+            // string "Orange", so use the correct RGB values.
+
+            oColor = Color.FromArgb(255, 165, 0);
+        }
+
         eShape = Shapes[iShapeIndex];
     }
 
@@ -442,7 +453,7 @@ public class ClusterCalculator2 : GraphMetricCalculatorBase2
         240F,  // Red
         0F,    // Blue
         200F,  // Orange
-        120F,  // Green
+        120F,  // Lime
         300F,  // Magenta
         180F,  // Yellow
         60F,   // Cyan

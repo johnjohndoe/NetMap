@@ -61,7 +61,7 @@ namespace Microsoft.NodeXL.Visualization.Wpf
 /// <para>
 /// To use <see cref="NodeXLControl" />, populate the graph exposed by the <see
 /// cref="NodeXLControl.Graph" /> property, then call <see
-/// cref="DrawGraphAsync(Boolean)" />.  See the sample code below.
+/// cref="DrawGraph(Boolean)" />.  See the sample code below.
 /// </para>
 ///
 /// <h3>Vertex and Edge Appearance</h3>
@@ -309,7 +309,7 @@ public partial class Window1 : Window
         oEdge3.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 0, 255, 0));
 
-        nodeXLControl1.DrawGraphAsync(true);
+        nodeXLControl1.DrawGraph(true);
     }
 }
 }
@@ -417,7 +417,7 @@ public partial class Form1 : Form
         oEdge3.SetValue(ReservedMetadataKeys.PerColor,
             Color.FromArgb(255, 0, 255, 0));
 
-        nodeXLControl1.DrawGraphAsync(true);
+        nodeXLControl1.DrawGraph(true);
     }
 }
 }
@@ -555,12 +555,12 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// <remarks>
     /// After the graph is populated or modified, you must call <see
-    /// cref="DrawGraphAsync(Boolean)" /> to draw it.
+    /// cref="DrawGraph(Boolean)" /> to draw it.
     ///
     /// <para>
     /// An exception is thrown if this property is set while an asynchronous
-    /// drawing is in progress.  Check <see cref="IsDrawing" /> before using
-    /// this property.
+    /// layout is in progress.  Check <see cref="IsLayingOutGraph" /> before
+    /// using this property.
     /// </para>
     ///
     /// <para>
@@ -591,7 +591,7 @@ public partial class NodeXLControl : FrameworkElement
             const String PropertyName = "Graph";
 
             this.ArgumentChecker.CheckPropertyNotNull(PropertyName, value);
-            CheckIfDrawing(PropertyName);
+            CheckIfLayingOutGraph(PropertyName);
 
             DeselectAll();
 
@@ -616,8 +616,8 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// <remarks>
     /// An exception is thrown if this property is set while an asynchronous
-    /// drawing is in progress.  Check <see cref="IsDrawing" /> before using
-    /// this property.
+    /// layout is in progress.  Check <see cref="IsLayingOutGraph" /> before
+    /// using this property.
     ///
     /// <para>
     /// This property can be set to any object that implements <see
@@ -632,7 +632,7 @@ public partial class NodeXLControl : FrameworkElement
     /// The example shows how to lay out the graph as a grid:
     ///
     /// <code>
-    /// Debug.Assert(!nodeXLControl.IsDrawing);
+    /// Debug.Assert(!nodeXLControl.IsLayingOutGraph);
     /// nodeXLControl.Layout = new GridLayout();
     /// </code>
     ///
@@ -657,7 +657,7 @@ public partial class NodeXLControl : FrameworkElement
             const String PropertyName = "AsyncLayout";
 
             this.ArgumentChecker.CheckPropertyNotNull(PropertyName, value);
-            CheckIfDrawing(PropertyName);
+            CheckIfLayingOutGraph(PropertyName);
 
             m_oAsyncLayout = value;
 
@@ -1586,7 +1586,7 @@ public partial class NodeXLControl : FrameworkElement
 
             m_oGraphDrawer.GraphScale = value;
 
-            DrawGraphAsync(false);
+            DrawGraph(false);
 
             AssertValid();
         }
@@ -1745,44 +1745,43 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Property: IsDrawing
+    //  Property: IsLayingOutGraph
     //
     /// <summary>
-    /// Gets a value indicating whether the graph is being drawn.
+    /// Gets a value indicating whether the graph is being laid out.
     /// </summary>
     ///
     /// <value>
-    /// true if the graph is being drawn.
+    /// true if the graph is being laid out.
     /// </value>
     ///
     /// <remarks>
-    /// Graph drawing, which may include an interative graph layout stage,
-    /// occurs asynchronously after <see cref="DrawGraphAsync()" /> is called. 
-    /// Several properties and methods, such as <see cref="Graph" />, <see
-    /// cref="Layout" />, and <see cref="SetSelected" />, cannot be accessed
-    /// while the graph is being drawn.  Check <see cref="IsDrawing" /> or
-    /// monitor the <see cref="DrawingGraph" /> and <see
-    /// cref="DrawGraphCompleted" /> events before accessing those properties
-    /// and methods.
+    /// If you call <see cref="DrawGraph(Boolean)" /> with a layOutGraphFirst
+    /// argument of true, the graph is laid out asynchronously before being
+    /// drawn.  Several properties and methods, such as <see cref="Graph" />
+    /// and <see cref="Layout" />, cannot be accessed while the graph is being
+    /// laid out.  Check <see cref="IsLayingOutGraph" /> or monitor the <see
+    /// cref="LayingOutGraph" /> and <see cref="GraphLaidOut" /> events before
+    /// accessing those properties and methods.
     ///
     /// <para>
-    /// The <see cref="DrawingGraph" /> event fires before graph drawing
-    /// begins.  The <see cref="DrawGraphCompleted" /> event fires after graph
-    /// drawing completes.
+    /// The <see cref="LayingOutGraph" /> event fires before the graph layout
+    /// begins.  The <see cref="GraphLaidOut" /> event fires after the graph
+    /// layout completes.
     /// </para>
     ///
     /// <para>
-    /// Typically, an application will populate and draw the graph in the
-    /// load event of the Window or Form, and use the <see
-    /// cref="DrawingGraph" /> and <see cref="DrawGraphCompleted" /> events to
-    /// disable and enable any controls that might be used to redraw the graph.
+    /// Typically, an application will populate and draw the graph in the load
+    /// event of the Window or Form, and use the <see cref="LayingOutGraph" />
+    /// and <see cref="GraphLaidOut" /> events to disable and enable any
+    /// controls that might be used to lay out and draw the graph again.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
     public Boolean
-    IsDrawing
+    IsLayingOutGraph
     {
         get
         {
@@ -1883,9 +1882,9 @@ public partial class NodeXLControl : FrameworkElement
     /// </para>
     ///
     /// <para>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     /// </para>
     ///
     /// <para>
@@ -1927,15 +1926,15 @@ public partial class NodeXLControl : FrameworkElement
             MethodName, "vertex", vertex);
 
         // The reason that vertices and edges can't be selected while the graph
-        // is being drawn is that selecting them edges involves modifying their
-        // metadata.  The graph layout code, which runs on a worker thread, is
-        // allowed to modify metadata during the layout, so having the worker
-        // thread and this foreground thread modify metadata simultaneously
-        // would lead to synchronization clashes.
+        // is being laid out is that selecting them edges involves modifying
+        // their metadata.  The graph layout code, which runs on a worker
+        // thread, is allowed to modify metadata during the layout, so having
+        // the worker thread and this foreground thread modify metadata
+        // simultaneously would lead to synchronization clashes.
         //
         // A solution would be to make the metadata implementation thread-safe.
 
-        CheckIfDrawing(MethodName);
+        CheckIfLayingOutGraph(MethodName);
 
         // Update the selected state of the vertex and its incident edges.
 
@@ -1982,9 +1981,9 @@ public partial class NodeXLControl : FrameworkElement
     /// </para>
     ///
     /// <para>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     /// </para>
     ///
     /// <para>
@@ -2023,7 +2022,7 @@ public partial class NodeXLControl : FrameworkElement
         const String MethodName = "SetEdgeSelected";
 
         this.ArgumentChecker.CheckArgumentNotNull(MethodName, "edge", edge);
-        CheckIfDrawing(MethodName);
+        CheckIfLayingOutGraph(MethodName);
 
         // Update the selected state of the edge and its adjacent vertices.
 
@@ -2061,9 +2060,9 @@ public partial class NodeXLControl : FrameworkElement
     /// cref="SetEdgeSelected" />.
     ///
     /// <para>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     /// </para>
     ///
     /// <para>
@@ -2105,7 +2104,7 @@ public partial class NodeXLControl : FrameworkElement
         this.ArgumentChecker.CheckArgumentNotNull(
             MethodName, "edges", edges);
 
-        CheckIfDrawing(MethodName);
+        CheckIfLayingOutGraph(MethodName);
 
         // Clear the selection.
 
@@ -2135,9 +2134,9 @@ public partial class NodeXLControl : FrameworkElement
     /// </summary>
     ///
     /// <remarks>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     ///
     /// <para>
     /// <b>Important Note:</b>
@@ -2169,7 +2168,7 @@ public partial class NodeXLControl : FrameworkElement
 
         const String MethodName = "SelectAll";
 
-        CheckIfDrawing(MethodName);
+        CheckIfLayingOutGraph(MethodName);
 
         SetAllSelected(true);
     }
@@ -2182,9 +2181,9 @@ public partial class NodeXLControl : FrameworkElement
     /// </summary>
     ///
     /// <remarks>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     ///
     /// <para>
     /// <b>Important Note:</b>
@@ -2216,7 +2215,7 @@ public partial class NodeXLControl : FrameworkElement
 
         const String MethodName = "DeselectAll";
 
-        CheckIfDrawing(MethodName);
+        CheckIfLayingOutGraph(MethodName);
 
         // Do nothing if nothing is selected.
 
@@ -2256,7 +2255,7 @@ public partial class NodeXLControl : FrameworkElement
     ///
     /// <para>
     /// false is returned if an asynchronous drawing is in progress.  Check
-    /// <see cref="IsDrawing" /> before calling this method.
+    /// <see cref="IsLayingOutGraph" /> before calling this method.
     /// </para>
     ///
     /// </remarks>
@@ -2273,7 +2272,7 @@ public partial class NodeXLControl : FrameworkElement
 
         vertex = null;
 
-        if (this.IsDrawing)
+        if (this.IsLayingOutGraph)
         {
             return false;
         }
@@ -2302,9 +2301,9 @@ public partial class NodeXLControl : FrameworkElement
     /// </returns>
     ///
     /// <remarks>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     /// </remarks>
     //*************************************************************************
 
@@ -2325,7 +2324,7 @@ public partial class NodeXLControl : FrameworkElement
         this.ArgumentChecker.CheckArgumentPositive(MethodName, "bitmapHeightPx",
             bitmapHeightPx);
 
-        CheckIfDrawing(MethodName);
+        CheckIfLayingOutGraph(MethodName);
 
         // Save the current vertex locations.
 
@@ -2380,40 +2379,30 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: DrawGraphAsync()
+    //  Method: DrawGraph()
     //
     /// <overloads>
-    /// Asynchronously draws the graph.
+    /// Draws the graph.
     /// </overloads>
     ///
     /// <summary>
     /// Draws the graph without laying it out first.
     /// </summary>
-    ///
-    /// <remarks>
-    /// Graph drawing occurs asynchronously after this method is called.  See
-    /// the <see cref="IsDrawing" /> property for details.
-    ///
-    /// <para>
-    /// If the graph is currently being drawn, this method does nothing.
-    /// </para>
-    ///
-    /// </remarks>
     //*************************************************************************
 
     public void
-    DrawGraphAsync()
+    DrawGraph()
     {
         AssertValid();
 
-        DrawGraphAsync(false);
+        DrawGraph(false);
     }
 
     //*************************************************************************
-    //  Method: DrawGraphAsync()
+    //  Method: DrawGraph()
     //
     /// <summary>
-    /// Asynchronously draws the graph after optionally laying it out.
+    /// Draws the graph after optionally laying it out.
     /// </summary>
     ///
     /// <param name="layOutGraphFirst">
@@ -2422,25 +2411,26 @@ public partial class NodeXLControl : FrameworkElement
     /// </param>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously after this method is called.  See
-    /// the <see cref="IsDrawing" /> property for details.
+    /// Graph layout occurs asynchronously after this method is called with a
+    /// <paramref name="layOutGraphFirst" /> argument of true.  See the <see
+    /// cref="IsLayingOutGraph" /> property for details.
     ///
     /// <para>
-    /// If the graph is currently being drawn, this method does nothing.
+    /// If the graph is currently being laid out, this method does nothing.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
     public void
-    DrawGraphAsync
+    DrawGraph
     (
         Boolean layOutGraphFirst
     )
     {
         AssertValid();
 
-        if (this.IsDrawing)
+        if (this.IsLayingOutGraph)
         {
             return;
         }
@@ -2484,9 +2474,9 @@ public partial class NodeXLControl : FrameworkElement
     /// </para>
     ///
     /// <para>
-    /// An exception is thrown if the graph is being drawn when this method is
-    /// called.  Check the <see cref="IsDrawing" /> property before calling
-    /// this.
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
     /// </para>
     ///
     /// </remarks>
@@ -2723,24 +2713,24 @@ public partial class NodeXLControl : FrameworkElement
 
 
     //*************************************************************************
-    //  Event: DrawingGraph
+    //  Event: LayingOutGraph
     //
     /// <summary>
-    /// Occurs before graph drawing begins.
+    /// Occurs before graph layout begins.
     /// </summary>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously.  This event fires before graph
-    /// drawing begins.
+    /// Graph layout occurs asynchronously.  This event fires before graph
+    /// layout begins.
     ///
     /// <para>
-    /// The <see cref="DrawGraphCompleted" /> event fires after drawing is
+    /// The <see cref="GraphLaidOut" /> event fires after the graph layout is
     /// complete.
     /// </para>
     ///
     /// <para>
-    /// The <see cref="IsDrawing" /> property can also be used to determine
-    /// whether a graph is being drawn.
+    /// The <see cref="IsLayingOutGraph" /> property can also be used to
+    /// determine whether the graph is being laid out.
     /// </para>
     ///
     /// </remarks>
@@ -2748,34 +2738,33 @@ public partial class NodeXLControl : FrameworkElement
 
     [Category("Action")]
 
-    public event EventHandler DrawingGraph;
+    public event EventHandler LayingOutGraph;
 
 
     //*************************************************************************
-    //  Event: DrawGraphCompleted
+    //  Event: GraphLaidOut
     //
     /// <summary>
-    /// Occurs after graph drawing completes.
+    /// Occurs after graph layout completes.
     /// </summary>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously.  This event fires when the graph
-    /// is successfully drawn or an error occurs.
+    /// Graph layout occurs asynchronously.  This event fires when the graph
+    /// is successfully laid out or an error occurs.
     ///
     /// <para>
     /// Check the <see cref="AsyncCompletedEventArgs.Error" /> property to
-    /// determine whether an error occurred while laying out or drawing the
-    /// graph.
+    /// determine whether an error occurred while laying out the graph.
     /// </para>
     ///
     /// <para>
-    /// The <see cref="DrawingGraph" /> event fires before graph drawing
+    /// The <see cref="LayingOutGraph" /> event fires before graph layout
     /// begins.
     /// </para>
     ///
     /// <para>
-    /// The <see cref="IsDrawing" /> property can also be used to determine
-    /// whether a graph is being drawn.
+    /// The <see cref="IsLayingOutGraph" /> property can also be used to
+    /// determine whether the graph is being laid out.
     /// </para>
     ///
     /// </remarks>
@@ -2783,7 +2772,7 @@ public partial class NodeXLControl : FrameworkElement
 
     [Category("Action")]
 
-    public event AsyncCompletedEventHandler DrawGraphCompleted;
+    public event AsyncCompletedEventHandler GraphLaidOut;
 
 
     //*************************************************************************
@@ -3448,7 +3437,7 @@ public partial class NodeXLControl : FrameworkElement
 
                 Debug.Assert(!m_oAsyncLayout.IsBusy);
 
-                FireDrawingGraph();
+                FireLayingOutGraph();
 
                 m_oLastLayoutContext = new LayoutContext(oGraphRectangle2);
 
@@ -3920,10 +3909,10 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: CheckIfDrawing()
+    //  Method: CheckIfLayingOutGraph()
     //
     /// <summary>
-    /// Throws an exception if a drawing is in progress.
+    /// Throws an exception if a layout is in progress.
     /// </summary>
     ///
     /// <param name="sMethodOrPropertyName">
@@ -3932,7 +3921,7 @@ public partial class NodeXLControl : FrameworkElement
     //*************************************************************************
 
     protected void
-    CheckIfDrawing
+    CheckIfLayingOutGraph
     (
         String sMethodOrPropertyName
     )
@@ -3940,12 +3929,12 @@ public partial class NodeXLControl : FrameworkElement
         Debug.Assert( !String.IsNullOrEmpty(sMethodOrPropertyName) );
         AssertValid();
 
-        if (this.IsDrawing)
+        if (this.IsLayingOutGraph)
         {
             throw new InvalidOperationException(String.Format(
 
-                "{0}.{1}: An asynchronous drawing is in progress.  Check the"
-                + " IsDrawing property before calling this."
+                "{0}.{1}: An asynchronous layout is in progress.  Check the"
+                + " IsLayingOutGraph property before calling this."
                 ,
                 this.ClassName,
                 sMethodOrPropertyName
@@ -4042,7 +4031,7 @@ public partial class NodeXLControl : FrameworkElement
             // m_oVerticesBeingDragged may have moved the selected vertices, so
             // redraw the graph.
 
-            DrawGraphAsync();
+            DrawGraph();
         }
 
         m_oVerticesBeingDragged = null;
@@ -4595,7 +4584,7 @@ public partial class NodeXLControl : FrameworkElement
         // Do nothing if the drawing isn't in a stable state or a drag is in
         // progress.
 
-        if ( this.IsDrawing || DragMightBeInProgress() )
+        if ( this.IsLayingOutGraph || DragMightBeInProgress() )
         {
             return;
         }
@@ -4869,26 +4858,26 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
-    //  Method: FireDrawingGraph()
+    //  Method: FireLayingOutGraph()
     //
     /// <summary>
-    /// Fires the <see cref="DrawingGraph" /> event if appropriate.
+    /// Fires the <see cref="LayingOutGraph" /> event if appropriate.
     /// </summary>
     //*************************************************************************
 
     protected void
-    FireDrawingGraph()
+    FireLayingOutGraph()
     {
         AssertValid();
 
-        EventUtil.FireEvent(this, this.DrawingGraph);
+        EventUtil.FireEvent(this, this.LayingOutGraph);
     }
 
     //*************************************************************************
-    //  Method: FireDrawGraphCompleted()
+    //  Method: FireGraphLaidOut()
     //
     /// <summary>
-    /// Fires the <see cref="DrawGraphCompleted" /> event if appropriate.
+    /// Fires the <see cref="GraphLaidOut" /> event if appropriate.
     /// </summary>
     ///
     /// <param name="oAsyncCompletedEventArgs">
@@ -4897,7 +4886,7 @@ public partial class NodeXLControl : FrameworkElement
     //*************************************************************************
 
     protected void
-    FireDrawGraphCompleted
+    FireGraphLaidOut
     (
         AsyncCompletedEventArgs oAsyncCompletedEventArgs
     )
@@ -4905,12 +4894,11 @@ public partial class NodeXLControl : FrameworkElement
         Debug.Assert(oAsyncCompletedEventArgs != null);
         AssertValid();
 
-        AsyncCompletedEventHandler oDrawGraphCompleted =
-            this.DrawGraphCompleted;
+        AsyncCompletedEventHandler oGraphLaidOut = this.GraphLaidOut;
 
-        if (oDrawGraphCompleted != null)
+        if (oGraphLaidOut != null)
         {
-            oDrawGraphCompleted(this, oAsyncCompletedEventArgs);
+            oGraphLaidOut(this, oAsyncCompletedEventArgs);
         }
     }
 
@@ -5313,7 +5301,7 @@ public partial class NodeXLControl : FrameworkElement
 
         // Do nothing if the drawing isn't in a stable state.
 
-        if (this.IsDrawing)
+        if (this.IsLayingOutGraph)
         {
             return;
         }
@@ -5662,7 +5650,7 @@ public partial class NodeXLControl : FrameworkElement
 
         // Do nothing if the drawing isn't in a stable state.
 
-        if (this.IsDrawing)
+        if (this.IsLayingOutGraph)
         {
             return;
         }
@@ -5705,7 +5693,7 @@ public partial class NodeXLControl : FrameworkElement
 
         // Do nothing if the drawing isn't in a stable state.
 
-        if (this.IsDrawing)
+        if (this.IsLayingOutGraph)
         {
             return;
         }
@@ -5928,7 +5916,7 @@ public partial class NodeXLControl : FrameworkElement
             m_eLayoutState = LayoutState.Stable;
         }
 
-        FireDrawGraphCompleted(oAsyncCompletedEventArgs);
+        FireGraphLaidOut(oAsyncCompletedEventArgs);
     }
 
     //*************************************************************************

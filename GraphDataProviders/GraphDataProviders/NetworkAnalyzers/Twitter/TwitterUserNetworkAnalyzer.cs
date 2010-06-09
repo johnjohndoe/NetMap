@@ -21,7 +21,7 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 ///
 /// <remarks>
 /// Use <see cref="GetNetworkAsync" /> to asynchronously get a directed network
-/// of Twitter users.
+/// of Twitter users, or <see cref="GetNetwork" /> to do it synchronously.
 /// </remarks>
 //*****************************************************************************
 
@@ -197,6 +197,84 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         oGetNetworkAsyncArgs.CredentialsPassword = credentialsPassword;
 
         m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
+    }
+
+    //*************************************************************************
+    //  Method: GetNetwork()
+    //
+    /// <summary>
+    /// Synchronously gets a directed network of Twitter users.
+    /// </summary>
+    ///
+    /// <param name="screenNameToAnalyze">
+    /// The screen name of the Twitter user whose network should be analyzed.
+    /// </param>
+    ///
+    /// <param name="whatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="networkLevel">
+    /// Network level to include.
+    /// </param>
+    ///
+    /// <param name="maximumPeoplePerRequest">
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+    /// </param>
+    ///
+    /// <param name="credentialsScreenName">
+    /// The screen name of the Twitter user whose credentials should be used,
+    /// or null to not use credentials.
+    /// </param>
+    ///
+    /// <param name="credentialsPassword">
+    /// The password of the Twitter user whose credentials should be used.
+    /// Used only if <paramref name="credentialsScreenName" /> is specified.
+    /// </param>
+    ///
+    /// <returns>
+    /// An XmlDocument containing the network as GraphML.
+    /// </returns>
+    //*************************************************************************
+
+    public XmlDocument
+    GetNetwork
+    (
+        String screenNameToAnalyze,
+        WhatToInclude whatToInclude,
+        NetworkLevel networkLevel,
+        Int32 maximumPeoplePerRequest,
+        String credentialsScreenName,
+        String credentialsPassword
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(screenNameToAnalyze) );
+
+        Debug.Assert(networkLevel == NetworkLevel.One ||
+            networkLevel == NetworkLevel.OnePointFive ||
+            networkLevel == NetworkLevel.Two);
+
+        Debug.Assert(maximumPeoplePerRequest > 0);
+
+        Debug.Assert( credentialsScreenName == null ||
+            ( credentialsScreenName.Length > 0 &&
+                !String.IsNullOrEmpty(credentialsPassword) ) );
+
+        AssertValid();
+
+        XmlDocument oXmlDocument;
+
+        Boolean bCancelled = !TryGetUserNetworkInternal(screenNameToAnalyze,
+            whatToInclude, networkLevel, maximumPeoplePerRequest,
+            credentialsScreenName, credentialsPassword, null, null,
+            out oXmlDocument);
+
+        // Cancelling can occur only in the asynchronous case.
+
+        Debug.Assert(!bCancelled);
+
+        return (oXmlDocument);
     }
 
     //*************************************************************************
@@ -409,6 +487,16 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.RepliesToEdges | WhatToInclude.MentionsEdges) )
+        {
+            // Replies-to and mentions edges get the date of the tweet in which
+            // the replies-to or mentions occurs.
+
+            this.DefineRepliesToOrMentionsDateGraphMLAttribute(
+                oGraphMLXmlDocument);
+        }
 
         // The key is the screen name and the value is the corresponding
         // TwitterVertex.  This is used to prevent the same screen name from

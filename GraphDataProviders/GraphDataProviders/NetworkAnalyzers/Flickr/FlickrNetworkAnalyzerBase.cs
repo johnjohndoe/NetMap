@@ -39,6 +39,86 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
+    //  Method: ExceptionToMessage()
+    //
+    /// <summary>
+    /// Converts an exception to an error message appropriate for a user
+    /// interface.
+    /// </summary>
+    ///
+    /// <param name="oException">
+    /// The exception that occurred.
+    /// </param>
+    ///
+    /// <returns>
+    /// An error message appropriate for a user interface.
+    /// </returns>
+    //*************************************************************************
+
+    public override String
+    ExceptionToMessage
+    (
+        Exception oException
+    )
+    {
+        Debug.Assert(oException != null);
+        AssertValid();
+
+        String sMessage = null;
+
+        const String TimeoutMessage =
+            "The Flickr Web service didn't respond.";
+
+        if (oException is FlickrException)
+        {
+            sMessage = oException.Message;
+        }
+        else if (oException is WebException)
+        {
+            WebException oWebException = (WebException)oException;
+
+            if (oWebException.Response is HttpWebResponse)
+            {
+                HttpWebResponse oHttpWebResponse =
+                    (HttpWebResponse)oWebException.Response;
+
+                switch (oHttpWebResponse.StatusCode)
+                {
+                    case HttpStatusCode.RequestTimeout:  // HTTP 408.
+
+                        sMessage = TimeoutMessage;
+                        break;
+
+                    default:
+
+                        break;
+                }
+            }
+            else
+            {
+                switch (oWebException.Status)
+                {
+                    case WebExceptionStatus.Timeout:
+
+                        sMessage = TimeoutMessage;
+                        break;
+
+                    default:
+
+                        break;
+                }
+            }
+        }
+
+        if (sMessage == null)
+        {
+            sMessage = ExceptionUtil.GetMessageTrace(oException);
+        }
+
+        return (sMessage);
+    }
+
+    //*************************************************************************
     //  Method: GetFlickrMethodUrl()
     //
     /// <summary>

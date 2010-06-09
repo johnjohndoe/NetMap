@@ -22,7 +22,8 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
 ///
 /// <remarks>
 /// Use <see cref="GetNetworkAsync" /> to asynchronously get a directed network
-/// of people who have tweeted a specified search term.
+/// of people who have tweeted a specified search term, or <see
+/// cref="GetNetwork" /> to do it synchronously.
 /// </remarks>
 //*****************************************************************************
 
@@ -180,6 +181,74 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         oGetNetworkAsyncArgs.CredentialsPassword = credentialsPassword;
 
         m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
+    }
+
+    //*************************************************************************
+    //  Method: GetNetwork()
+    //
+    /// <summary>
+    /// Synchronously gets a directed network of people who have tweeted a
+    /// specified search term.
+    /// </summary>
+    ///
+    /// <param name="searchTerm">
+    /// The term to search for.
+    /// </param>
+    ///
+    /// <param name="whatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="maximumPeoplePerRequest">
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+    /// </param>
+    ///
+    /// <param name="credentialsScreenName">
+    /// The screen name of the Twitter user whose credentials should be used,
+    /// or null to not use credentials.
+    /// </param>
+    ///
+    /// <param name="credentialsPassword">
+    /// The password of the Twitter user whose credentials should be used.
+    /// Used only if <paramref name="credentialsScreenName" /> is specified.
+    /// </param>
+    ///
+    /// <returns>
+    /// An XmlDocument containing the network as GraphML.
+    /// </returns>
+    //*************************************************************************
+
+    public XmlDocument
+    GetNetwork
+    (
+        String searchTerm,
+        WhatToInclude whatToInclude,
+        Int32 maximumPeoplePerRequest,
+        String credentialsScreenName,
+        String credentialsPassword
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
+        Debug.Assert(maximumPeoplePerRequest > 0);
+
+        Debug.Assert( credentialsScreenName == null ||
+            ( credentialsScreenName.Length > 0 &&
+                !String.IsNullOrEmpty(credentialsPassword) ) );
+
+        AssertValid();
+
+        XmlDocument oXmlDocument;
+
+        Boolean bCancelled = !TryGetSearchNetworkInternal(searchTerm,
+            whatToInclude, maximumPeoplePerRequest, credentialsScreenName,
+            credentialsPassword, null, null, out oXmlDocument);
+
+        // Cancelling can occur only in the asynchronous case.
+
+        Debug.Assert(!bCancelled);
+
+        return (oXmlDocument);
     }
 
     //*************************************************************************
@@ -380,6 +449,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             oGraphMLXmlDocument.DefineGraphMLAttribute(false, StatusDateID,
                 "Tweet Date", "string", null);
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.RepliesToEdges | WhatToInclude.MentionsEdges) )
+        {
+            // Replies-to and mentions edges get the date of the tweet in which
+            // the replies-to or mentions occurs.
+
+            this.DefineRepliesToOrMentionsDateGraphMLAttribute(
+                oGraphMLXmlDocument);
         }
 
         // The key is the screen name and the value is the corresponding
@@ -618,16 +697,25 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             if ( XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
                 "a:title/text()", oXmlNamespaceManager, out sStatus) )
             {
+                String sStatusDate;
+
+                XmlUtil2.TrySelectSingleNodeAsString(oEntryXmlNode,
+                    "a:published/text()", oXmlNamespaceManager,
+                    out sStatusDate);
+
                 oTwitterVertex.StatusForAnalysis = sStatus;
+                oTwitterVertex.StatusForAnalysisDate = sStatusDate;
 
                 if (bIncludeStatuses)
                 {
                     oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                         oVertexXmlNode, StatusID, sStatus);
 
-                    AppendStringGraphMLAttributeValue(oEntryXmlNode,
-                        "a:published/text()", oXmlNamespaceManager,
-                        oGraphMLXmlDocument, oVertexXmlNode, StatusDateID);
+                    if ( !String.IsNullOrEmpty(sStatusDate) )
+                    {
+                        oGraphMLXmlDocument.AppendGraphMLAttributeValue(
+                            oVertexXmlNode, StatusDateID, sStatusDate);
+                    }
                 }
             }
         }

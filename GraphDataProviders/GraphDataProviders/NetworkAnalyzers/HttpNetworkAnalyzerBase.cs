@@ -171,6 +171,30 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
 
     //*************************************************************************
+    //  Method: ExceptionToMessage()
+    //
+    /// <summary>
+    /// Converts an exception to an error message appropriate for a user
+    /// interface.
+    /// </summary>
+    ///
+    /// <param name="oException">
+    /// The exception that occurred.
+    /// </param>
+    ///
+    /// <returns>
+    /// An error message appropriate for a user interface.
+    /// </returns>
+    //*************************************************************************
+
+    public abstract String
+    ExceptionToMessage
+    (
+        Exception oException
+    );
+
+
+    //*************************************************************************
     //  Property: ClassName
     //
     /// <summary>

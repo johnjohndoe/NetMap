@@ -3,10 +3,8 @@
 
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
@@ -44,6 +42,29 @@ public class ColorConverter2 : Object
     public ColorConverter2()
     {
         m_oColorConverter = new System.Drawing.ColorConverter();
+
+        // System.Drawing.ColorConverter.ConvertToString() converts a common
+        // Color, such as (255,0,0), to its common name, such as "Red", only if
+        // the Color was originally created from a name.  Otherwise, it
+        // converts the color to the string "255, 0, 0".  To make colors more
+        // readable, this class explicitly converts common colors to their
+        // names using a dictionary lookup.
+
+        m_oCommonColorNames = new Dictionary<Color, String>();
+
+        m_oCommonColorNames.Add(Color.FromArgb(  0,   0,   0), "Black");
+        m_oCommonColorNames.Add(Color.FromArgb(255, 255, 255), "White");
+
+        m_oCommonColorNames.Add(Color.FromArgb(  0,   0, 255), "Blue");
+        m_oCommonColorNames.Add(Color.FromArgb(  0, 255,   0), "Lime");
+        m_oCommonColorNames.Add(Color.FromArgb(255,   0,   0), "Red");
+
+        m_oCommonColorNames.Add(Color.FromArgb(0,   255, 255), "Cyan");
+        m_oCommonColorNames.Add(Color.FromArgb(255, 255,   0), "Yellow");
+        m_oCommonColorNames.Add(Color.FromArgb(255,   0, 255), "Magenta");
+
+        m_oCommonColorNames.Add(Color.FromArgb(255, 165,   0), "Orange");
+        m_oCommonColorNames.Add(Color.FromArgb(0,   128,   0), "Green");
 
         AssertValid();
     }
@@ -145,7 +166,16 @@ public class ColorConverter2 : Object
     {
         AssertValid();
 
-        return ( m_oColorConverter.ConvertToString(graphValue) );
+        String sWorkbookValue;
+
+        // For common colors, use the color name.
+
+        if ( !m_oCommonColorNames.TryGetValue(graphValue, out sWorkbookValue) )
+        {
+            sWorkbookValue = m_oColorConverter.ConvertToString(graphValue);
+        }
+
+        return (sWorkbookValue);
     }
 
 
@@ -163,6 +193,7 @@ public class ColorConverter2 : Object
     AssertValid()
     {
         Debug.Assert(m_oColorConverter != null);
+        Debug.Assert(m_oCommonColorNames != null);
     }
 
 
@@ -173,6 +204,10 @@ public class ColorConverter2 : Object
     /// Object that does most of the work.
 
     protected System.Drawing.ColorConverter m_oColorConverter;
+
+    /// Maps common colors to their names.
+
+    protected Dictionary<Color, String> m_oCommonColorNames;
 }
 
 }

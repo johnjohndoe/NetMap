@@ -26,103 +26,103 @@ public class ExceptionUtilTest : Object
 
     public ExceptionUtilTest()
     {
-		// (Do nothing.)
+        // (Do nothing.)
     }
 
-	//*************************************************************************
-	//	Method: SetUp()
-	//
-	/// <summary>
-	/// Gets run before each test.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: SetUp()
+    //
+    /// <summary>
+    /// Gets run before each test.
+    /// </summary>
+    //*************************************************************************
 
-	[TestInitializeAttribute]
+    [TestInitializeAttribute]
 
-	public void
-	SetUp()
-	{
-		// (Do nothing.)
-	}
+    public void
+    SetUp()
+    {
+        // (Do nothing.)
+    }
 
-	//*************************************************************************
-	//	Method: TearDown()
-	//
-	/// <summary>
-	/// Gets run after each test.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: TearDown()
+    //
+    /// <summary>
+    /// Gets run after each test.
+    /// </summary>
+    //*************************************************************************
 
-	[TestCleanupAttribute]
+    [TestCleanupAttribute]
 
-	public void
-	TearDown()
-	{
-		// (Do nothing.)
-	}
+    public void
+    TearDown()
+    {
+        // (Do nothing.)
+    }
 
-	//*************************************************************************
-	//	Method: TestGetMessageTrace()
-	//
-	/// <summary>
-	/// Tests the GetMessageTrace method.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: TestGetMessageTrace()
+    //
+    /// <summary>
+    /// Tests the GetMessageTrace method.
+    /// </summary>
+    //*************************************************************************
 
-	[TestMethodAttribute]
+    [TestMethodAttribute]
 
-	public void
-	TestGetMessageTrace()
-	{
-		const String Message = "jkfdjkr3uirjker";
+    public void
+    TestGetMessageTrace()
+    {
+        const String Message = "jkfdjkr3uirjker";
 
-		Exception oException = new Exception(Message);
-		String sMessageTrace = ExceptionUtil.GetMessageTrace(oException);
+        Exception oException = new Exception(Message);
+        String sMessageTrace = ExceptionUtil.GetMessageTrace(oException);
 
-		Assert.AreEqual("[Exception]: " + Message, sMessageTrace);
-	}
+        Assert.AreEqual("[Exception]: " + Message, sMessageTrace);
+    }
 
-	//*************************************************************************
-	//	Method: TestGetMessageTrace2()
-	//
-	/// <summary>
-	/// Tests the GetMessageTrace method.
-	/// </summary>
-	//*************************************************************************
+    //*************************************************************************
+    //  Method: TestGetMessageTrace2()
+    //
+    /// <summary>
+    /// Tests the GetMessageTrace method.
+    /// </summary>
+    //*************************************************************************
 
-	[TestMethodAttribute]
+    [TestMethodAttribute]
 
-	public void
-	TestGetMessageTrace2()
-	{
-		const String Message1 = "jfdjk388d8d8";
-		const String Message2 = "jkfd jkdf jkfd jk\r\njkfjkfdjkfd";
-		const String Message3 = "jkfdjkfdjei32i3i3i";
+    public void
+    TestGetMessageTrace2()
+    {
+        const String Message1 = "jfdjk388d8d8";
+        const String Message2 = "jkfd jkdf jkfd jk\r\njkfjkfdjkfd";
+        const String Message3 = "jkfdjkfdjei32i3i3i";
 
-		Exception oException3 = new ArgumentException(Message3);
+        Exception oException3 = new ArgumentException(Message3);
 
-		Exception oException2 = new InvalidOperationException(
-			Message2, oException3);
+        Exception oException2 = new InvalidOperationException(
+            Message2, oException3);
 
-		Exception oException1 = new Exception(Message1, oException2);
+        Exception oException1 = new Exception(Message1, oException2);
 
-		String sMessageTrace = ExceptionUtil.GetMessageTrace(oException1);
+        String sMessageTrace = ExceptionUtil.GetMessageTrace(oException1);
 
-		Assert.AreEqual(
+        Assert.AreEqual(
 
-			"[Exception]: " + Message1 + "\r\n"
-			+ "[InvalidOperationException]: " + Message2 + "\r\n"
-			+ "[ArgumentException]: " + Message3
-			,
-			sMessageTrace);
-	}
+            "[Exception]: " + Message1 + "\r\n"
+            + "[InvalidOperationException]: " + Message2 + "\r\n"
+            + "[ArgumentException]: " + Message3
+            ,
+            sMessageTrace);
+    }
 
 
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-	// (None.)
+    // (None.)
 }
 
 }

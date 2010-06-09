@@ -91,7 +91,7 @@ public abstract class GraphMetricCalculatorBase :
     /// and is provided with the NodeXL source code, uses the SNAP library
     /// created by Jure Leskovec at Stanford.  The SNAP code is written in C++
     /// and is optimized for speed and scalability, so it can calculate certain
-    /// graph much faster than could be done in C# code.
+    /// graph metrics much faster than could be done in C# code.
     ///
     /// <para>
     /// By default, the NodeXL build process copies the executable, which is

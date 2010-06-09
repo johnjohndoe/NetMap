@@ -42,6 +42,132 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
+    //  Method: ExceptionToMessage()
+    //
+    /// <summary>
+    /// Converts an exception to an error message appropriate for a user
+    /// interface.
+    /// </summary>
+    ///
+    /// <param name="oException">
+    /// The exception that occurred.
+    /// </param>
+    ///
+    /// <returns>
+    /// An error message appropriate for a user interface.
+    /// </returns>
+    //*************************************************************************
+
+    public override String
+    ExceptionToMessage
+    (
+        Exception oException
+    )
+    {
+        Debug.Assert(oException != null);
+        AssertValid();
+
+        String sMessage = null;
+
+        const String TimeoutMessage =
+            "The Twitter Web service didn't respond.";
+
+        const String RefusedMessage =
+            "The Twitter Web service refused to provide the requested"
+            + " information."
+            ;
+
+        if (oException is WebException)
+        {
+            WebException oWebException = (WebException)oException;
+
+            if (oWebException.Response is HttpWebResponse)
+            {
+                HttpWebResponse oHttpWebResponse =
+                    (HttpWebResponse)oWebException.Response;
+
+                switch (oHttpWebResponse.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:  // HTTP 401.
+
+                        sMessage =
+                            RefusedMessage
+                            + "  One possible cause is that the Twitter user"
+                            + " has protected her tweets."
+                            ;
+
+                        break;
+
+                    case HttpStatusCode.NotFound:  // HTTP 404.
+
+                        sMessage =
+                            "There is no Twitter user with that screen name."
+                            ;
+
+                        break;
+
+                    case HttpStatusCode.RequestTimeout:  // HTTP 408.
+
+                        sMessage = TimeoutMessage;
+                        break;
+
+                    case HttpStatusCode.BadRequest:  // HTTP 400.
+                    case (HttpStatusCode)420:
+
+                        // See TwitterNetworkAnalyzerBase for an explanation of
+                        // why there are two status codes for this case.
+
+                        sMessage = String.Format(
+
+                            RefusedMessage 
+                            + "  A likely cause is that you have made too many"
+                            + " requests in the last hour.  (Twitter limits"
+                            + " information requests to prevent its service"
+                            + " from being attacked.  Click the '{0}' link for"
+                            + " details.)"
+                            + "\r\n\r\n"
+                            + "Wait 60 minutes and try again."
+                            ,
+                            TwitterCredentialsControl.RateLimitingLinkText
+                            );
+
+                        break;
+
+                    case HttpStatusCode.Forbidden:  // HTTP 403.
+
+                        sMessage = RefusedMessage;
+                        break;
+
+                    default:
+
+                        break;
+                }
+            }
+            else
+            {
+                switch (oWebException.Status)
+                {
+                    case WebExceptionStatus.Timeout:
+
+                        sMessage = TimeoutMessage;
+                        break;
+
+                    default:
+
+                        break;
+                }
+            }
+        }
+
+        if (sMessage == null)
+        {
+            sMessage = ExceptionUtil.GetMessageTrace(oException);
+        }
+
+        return (sMessage);
+    }
+
+    //*************************************************************************
     //  Method: CreateGraphMLXmlDocument()
     //
     /// <summary>
@@ -717,6 +843,32 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
+    //  Method: DefineRepliesToOrMentionsDateGraphMLAttribute()
+    //
+    /// <summary>
+    /// Defines a GraphML-Attribute for replies-to and mentions dates on edges.
+    /// </summary>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    DefineRepliesToOrMentionsDateGraphMLAttribute
+    (
+        GraphMLXmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
+        oGraphMLXmlDocument.DefineGraphMLAttribute(true,
+            RepliesToOrMentionsDateID, "Replies To or Mentions Date", "string",
+            null);
+    }
+
+    //*************************************************************************
     //  Method: AppendFromUserXmlNode()
     //
     /// <summary>
@@ -809,12 +961,18 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         if ( XmlUtil2.TrySelectSingleNodeAsString(oUserXmlNode,
             "status/text/text()", null, out sLatestStatus) )
         {
+            String sLatestStatusDate;
+
+            XmlUtil2.TrySelectSingleNodeAsString(oUserXmlNode,
+                "status/created_at/text()", null, out sLatestStatusDate);
+
             // Don't overwrite any status the derived class may have already
             // stored on the TwitterVertex object.
 
             if (oTwitterVertex.StatusForAnalysis == null)
             {
                 oTwitterVertex.StatusForAnalysis = sLatestStatus;
+                oTwitterVertex.StatusForAnalysisDate = sLatestStatusDate;
             }
 
             if (bIncludeLatestStatus)
@@ -822,9 +980,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
                     LatestStatusID, sLatestStatus);
 
-                AppendStringGraphMLAttributeValue(oUserXmlNode,
-                    "status/created_at/text()", null, oGraphMLXmlDocument,
-                    oVertexXmlNode, LatestStatusDateID);
+                if ( !String.IsNullOrEmpty(sLatestStatusDate) )
+                {
+                    oGraphMLXmlDocument.AppendGraphMLAttributeValue(
+                        oVertexXmlNode, LatestStatusDateID, sLatestStatusDate);
+                }
             }
         }
 
@@ -1101,6 +1261,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             return;
         }
 
+        XmlNamespaceManager oGraphMLXmlNamespaceManager =
+            oGraphMLXmlDocument.CreateXmlNamespaceManager("g");
+
         ReportProgress("Examining relationships");
 
         // "Starts with a screen name," which means it's a "reply-to".
@@ -1117,9 +1280,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             oScreenNameDictionary)
         {
             String sScreenName = oKeyValuePair.Key;
+            TwitterVertex oTwitterVertex = oKeyValuePair.Value;
+            String sStatusForAnalysis = oTwitterVertex.StatusForAnalysis;
 
-            String sStatusForAnalysis =
-                oKeyValuePair.Value.StatusForAnalysis;
+            String sStatusForAnalysisDate =
+                oTwitterVertex.StatusForAnalysisDate;
 
             if ( String.IsNullOrEmpty(sStatusForAnalysis) )
             {
@@ -1141,8 +1306,16 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                         oScreenNameDictionary.ContainsKey(sReplyToScreenName)
                         )
                     {
-                        AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName,
+                        XmlNode oEdgeXmlNode = AppendEdgeXmlNode(
+                            oGraphMLXmlDocument, sScreenName,
                             sReplyToScreenName, "Replies to");
+
+                        if ( !String.IsNullOrEmpty(sStatusForAnalysisDate) )
+                        {
+                            oGraphMLXmlDocument.AppendGraphMLAttributeValue(
+                                oEdgeXmlNode, RepliesToOrMentionsDateID,
+                                sStatusForAnalysisDate);
+                        }
                     }
                 }
             }
@@ -1163,8 +1336,16 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                         oScreenNameDictionary.ContainsKey(sMentionsScreenName)
                         )
                     {
-                        AppendEdgeXmlNode(oGraphMLXmlDocument, sScreenName,
+                        XmlNode oEdgeXmlNode = AppendEdgeXmlNode(
+                            oGraphMLXmlDocument, sScreenName,
                             sMentionsScreenName, "Mentions");
+
+                        if ( !String.IsNullOrEmpty(sStatusForAnalysisDate) )
+                        {
+                            oGraphMLXmlDocument.AppendGraphMLAttributeValue(
+                                oEdgeXmlNode, RepliesToOrMentionsDateID,
+                                sStatusForAnalysisDate);
+                        }
                     }
 
                     oMentionsMatch = oMentionsMatch.NextMatch();
@@ -1251,6 +1432,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     protected const String UtcOffsetID = "UtcOffset";
     ///
     protected const String JoinedDateID = "JoinedDate";
+    ///
+    protected const String RepliesToOrMentionsDateID =
+        "RepliesToOrMentionsDate";
 
     /// Format pattern for the URL of the Twitter Web page for a person.  The
     /// {0} argument must be replaced with a Twitter screen name.

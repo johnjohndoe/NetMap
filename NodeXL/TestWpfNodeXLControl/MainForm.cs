@@ -95,12 +95,11 @@ public partial class MainForm : Form
         m_oNodeXLControl.GraphZoomChanged +=
             new System.EventHandler(this.m_oNodeXLControl_GraphZoomChanged);
 
-        m_oNodeXLControl.DrawingGraph +=
-            new System.EventHandler(this.m_oNodeXLControl_DrawingGraph);
+        m_oNodeXLControl.LayingOutGraph +=
+            new System.EventHandler(this.m_oNodeXLControl_LayingOutGraph);
 
-        m_oNodeXLControl.DrawGraphCompleted +=
-            new AsyncCompletedEventHandler(
-                this.m_oNodeXLControl_DrawGraphCompleted);
+        m_oNodeXLControl.GraphLaidOut +=
+            new AsyncCompletedEventHandler(this.m_oNodeXLControl_GraphLaidOut);
 
         ehElementHost.Child = m_oNodeXLWithAxesControl;
     }
@@ -120,7 +119,7 @@ public partial class MainForm : Form
 
         AddToolTipsToVertices();
 
-        m_oNodeXLControl.DrawGraphAsync(true);
+        m_oNodeXLControl.DrawGraph(true);
     }
 
     protected void
@@ -166,7 +165,7 @@ public partial class MainForm : Form
 
         // oEdge.SetValue(ReservedMetadataKeys.PerEdgeWidth, 20F);
 
-        m_oNodeXLControl.DrawGraphAsync(true);
+        m_oNodeXLControl.DrawGraph(true);
 
         return;
 
@@ -200,7 +199,7 @@ public partial class MainForm : Form
 
         oEdges.Add(oVertex1, oVertex2, true);
 
-        m_oNodeXLControl.DrawGraphAsync(true);
+        m_oNodeXLControl.DrawGraph(true);
 
         return;
 
@@ -397,7 +396,7 @@ public partial class MainForm : Form
         AddToolTipsToVertices();
         SetBackgroundImage();
 
-        m_oNodeXLControl.DrawGraphAsync(true);
+        m_oNodeXLControl.DrawGraph(true);
     }
 
     protected void
@@ -513,23 +512,23 @@ public partial class MainForm : Form
     }
 
     private void
-    m_oNodeXLControl_DrawingGraph
+    m_oNodeXLControl_LayingOutGraph
     (
         object sender,
         EventArgs e
     )
     {
-        AddToStatus("DrawingGraph");
+        AddToStatus("LayingOutGraph");
     }
 
     private void
-    m_oNodeXLControl_DrawGraphCompleted
+    m_oNodeXLControl_GraphLaidOut
     (
         object sender,
         AsyncCompletedEventArgs e
     )
     {
-        AddToStatus("DrawGraphCompleted");
+        AddToStatus("GraphLaidOut");
     }
 
     private void
@@ -705,7 +704,7 @@ public partial class MainForm : Form
     )
     {
         SetBackgroundImage();
-        m_oNodeXLControl.DrawGraphAsync(false);
+        m_oNodeXLControl.DrawGraph(false);
     }
 
     private void
@@ -814,7 +813,7 @@ public partial class MainForm : Form
                 VisibilityKeyValue.Hidden);
         }
 
-        m_oNodeXLControl.DrawGraphAsync();
+        m_oNodeXLControl.DrawGraph();
     }
 
     private void
@@ -834,7 +833,7 @@ public partial class MainForm : Form
             oSelectedEdge.RemoveKey(ReservedMetadataKeys.Visibility);
         }
 
-        m_oNodeXLControl.DrawGraphAsync();
+        m_oNodeXLControl.DrawGraph();
     }
 
     protected const String LongLabel =

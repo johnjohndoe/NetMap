@@ -165,6 +165,8 @@ public class ColorConverter2Test : Object
     public void
     TestGraphToWorkbook()
     {
+        // Colors created from Color properties, like Color.AliceBlue.
+
         Assert.AreEqual( "AliceBlue",
             m_oColorConverter2.GraphToWorkbook(Color.AliceBlue) );
 
@@ -173,6 +175,76 @@ public class ColorConverter2Test : Object
 
         Assert.AreEqual( "Orange",
             m_oColorConverter2.GraphToWorkbook(Color.Orange) );
+    }
+
+    //*************************************************************************
+    //  Method: TestGraphToWorkbook2()
+    //
+    /// <summary>
+    /// Tests the GraphToWorkbook() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGraphToWorkbook2()
+    {
+        // Colors created from Color.FromArgb(), not treated specially by
+        // GraphToWorkbook().
+
+        Assert.AreEqual( "1, 2, 3", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(1, 2, 3) ) );
+
+        Assert.AreEqual( "254, 253, 1", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(254, 253, 1) ) );
+    }
+
+    //*************************************************************************
+    //  Method: TestGraphToWorkbook3()
+    //
+    /// <summary>
+    /// Tests the GraphToWorkbook() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGraphToWorkbook3()
+    {
+        // Colors created from Color.FromArgb(), treated specially by
+        // GraphToWorkbook().
+
+        Assert.AreEqual( "Black", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(0, 0, 0) ) );
+
+        Assert.AreEqual( "White", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(255, 255, 255) ) );
+
+        Assert.AreEqual( "Blue", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(0, 0, 255) ) );
+
+        Assert.AreEqual( "Lime", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(0, 255, 0) ) );
+
+        Assert.AreEqual( "Red", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(255, 0, 0) ) );
+
+        Assert.AreEqual( "Cyan", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(0, 255, 255) ) );
+
+        Assert.AreEqual( "Yellow", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(255, 255, 0) ) );
+
+        Assert.AreEqual( "Magenta", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(255, 0, 255) ) );
+
+        Assert.AreEqual( "Orange", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(255, 165, 0) ) );
+
+        Assert.AreEqual( "Green", m_oColorConverter2.GraphToWorkbook(
+            Color.FromArgb(0, 128, 0) ) );
     }
 
 

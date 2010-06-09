@@ -188,7 +188,7 @@ public class ClusterWorksheetReader : WorksheetReaderBase
         // name and the value is a ClusterInformation object for the cluster.
 
         Dictionary<String, ClusterInformation> oClusterNameDictionary =
-            ReadClusterTable(oClusterTable);
+            ReadClusterTable(oClusterTable, oReadWorkbookContext);
 
         // Read the cluster vertex table and add the cluster vertex information
         // to the graph.
@@ -208,6 +208,11 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     /// The cluster table.
     /// </param>
     ///
+    /// <param name="oReadWorkbookContext">
+    /// Provides access to objects needed for converting an Excel workbook to a
+    /// NodeXL graph.
+    /// </param>
+    ///
     /// <returns>
     /// A dictionary.  The key is the cluster name and the value is a
     /// ClusterInformation object for the cluster.
@@ -217,16 +222,19 @@ public class ClusterWorksheetReader : WorksheetReaderBase
     protected Dictionary<String, ClusterInformation>
     ReadClusterTable
     (
-        ListObject oClusterTable
+        ListObject oClusterTable,
+        ReadWorkbookContext oReadWorkbookContext
     )
     {
         Debug.Assert(oClusterTable != null);
+        Debug.Assert(oReadWorkbookContext != null);
         AssertValid();
 
         Dictionary<String, ClusterInformation> oClusterNameDictionary =
             new Dictionary<String, ClusterInformation>();
 
-        ColorConverter2 oColorConverter2 = new ColorConverter2();
+        ColorConverter2 oColorConverter2 =
+            oReadWorkbookContext.ColorConverter2;
 
         ExcelTableReader oExcelTableReader =
             new ExcelTableReader(oClusterTable);

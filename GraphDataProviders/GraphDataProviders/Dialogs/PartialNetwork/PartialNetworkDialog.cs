@@ -111,35 +111,8 @@ public partial class PartialNetworkDialog : FormPlus
     {
         AssertValid();
 
-        RequestStatistics oRequestStatistics =
-            m_oPartialNetworkException.RequestStatistics;
-
-        Int32 iUnexpectedExceptions = oRequestStatistics.UnexpectedExceptions;
-
-        const String Int32Format = "N0";
-
-        this.ShowInformation( String.Format(
-
-            "Getting a network can involve many information requests to a Web"
-            + " service.  In this case, {0} requests were made and {1} of them"
-            + " {2} unsuccessful."
-            + "\r\n\r\n"
-            + "(Note that unsuccessful requests might have led to additional"
-            + " requests if they had succeeded, so it is not possible to"
-            + " calculate the percentage of the complete network that was"
-            + " actually obtained.)"
-            + "\r\n\r\n"
-            + "Here are details for the most recent unsuccessful request:"
-            + "\r\n\r\n"
-            + "{3}"
-            ,
-            (oRequestStatistics.SuccessfulRequests +
-                iUnexpectedExceptions).ToString(Int32Format),
-
-            iUnexpectedExceptions.ToString(Int32Format),
-            (iUnexpectedExceptions == 1) ? "was" : "were",
-            m_sLastUnexpectedExceptionMessage
-            ) );
+        this.ShowInformation(m_oPartialNetworkException.ToMessage(
+            m_sLastUnexpectedExceptionMessage) );
     }
 
 

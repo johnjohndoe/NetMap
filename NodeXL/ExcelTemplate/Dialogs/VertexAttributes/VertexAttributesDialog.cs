@@ -756,7 +756,7 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                 }
             }
 
-            m_oNodeXLControl.DrawGraphAsync();
+            m_oNodeXLControl.DrawGraph();
 
             this.UseWaitCursor = false;
         }

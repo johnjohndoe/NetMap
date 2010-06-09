@@ -43,6 +43,7 @@ public class TwitterVertex : Object
     {
         m_oVertexXmlNode = vertexXmlNode;
         m_sStatusForAnalysis = null;
+        m_sStatusForAnalysisDate = null;
 
         AssertValid();
     }
@@ -93,7 +94,8 @@ public class TwitterVertex : Object
     ///
     /// <para>
     /// When a network analyzer class stores a status on the vertex XML node,
-    /// it should also set this property.
+    /// it should also set this property and <see
+    /// cref="StatusForAnalysisDate" />.
     /// </para>
     ///
     /// </remarks>
@@ -117,6 +119,41 @@ public class TwitterVertex : Object
         }
     }
 
+    //*************************************************************************
+    //  Property: StatusForAnalysisDate
+    //
+    /// <summary>
+    /// Gets or sets the date of <see cref="StatusForAnalysis" />.
+    /// </summary>
+    ///
+    /// <value>
+    /// The date of the status text to use for relationship analysis.  Can be
+    /// null or empty.  The default value is null.
+    /// </value>
+    ///
+    /// <remarks>
+    /// See <see cref="StatusForAnalysis" /> for more details.
+    /// </remarks>
+    //*************************************************************************
+
+    public String
+    StatusForAnalysisDate
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_sStatusForAnalysisDate);
+        }
+
+        set
+        {
+            m_sStatusForAnalysisDate = value;
+
+            AssertValid();
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -133,6 +170,7 @@ public class TwitterVertex : Object
     {
         Debug.Assert(m_oVertexXmlNode != null);
         // m_sStatusForAnalysis
+        // m_sStatusForAnalysisDate
     }
 
 
@@ -149,6 +187,10 @@ public class TwitterVertex : Object
     /// empty.
 
     protected String m_sStatusForAnalysis;
+
+    /// The date of m_sStatusForAnalysis.  Can be null or empty.
+
+    protected String m_sStatusForAnalysisDate;
 }
 
 }

@@ -109,6 +109,60 @@ public class PartialNetworkException : Exception
         }
     }
 
+    //*************************************************************************
+    //  Method: ToMessage()
+    //
+    /// <summary>
+    /// Converts the exception to a message suitable for use in a user
+    /// interface.
+    /// </summary>
+    ///
+    /// <param name="lastUnexpectedExceptionMessage">
+    /// The most recent unexpected exception (after retries) that occurred
+    /// while getting the network, converted to a message by the caller.  The
+    /// most recent unexpected exception can be obtained from <see
+    /// cref="RequestStatistics" />.LastUnexpectedException.
+    /// </param>
+    //*************************************************************************
+
+    public String
+    ToMessage
+    (
+        String lastUnexpectedExceptionMessage
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(lastUnexpectedExceptionMessage) );
+        AssertValid();
+
+        Int32 iUnexpectedExceptions = 
+            m_oRequestStatistics.UnexpectedExceptions;
+
+        const String Int32Format = "N0";
+
+        return ( String.Format(
+
+            "Getting a network can involve many information requests to a Web"
+            + " service.  In this case, {0} requests were made and {1} of them"
+            + " {2} unsuccessful."
+            + "\r\n\r\n"
+            + "(Note that unsuccessful requests might have led to additional"
+            + " requests if they had succeeded, so it is not possible to"
+            + " calculate the percentage of the complete network that was"
+            + " actually obtained.)"
+            + "\r\n\r\n"
+            + "Here are details for the most recent unsuccessful request:"
+            + "\r\n\r\n"
+            + "{3}"
+            ,
+            (m_oRequestStatistics.SuccessfulRequests +
+                iUnexpectedExceptions).ToString(Int32Format),
+
+            iUnexpectedExceptions.ToString(Int32Format),
+            (iUnexpectedExceptions == 1) ? "was" : "were",
+            lastUnexpectedExceptionMessage
+            ) );
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()

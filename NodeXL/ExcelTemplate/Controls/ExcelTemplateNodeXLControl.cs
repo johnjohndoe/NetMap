@@ -77,7 +77,7 @@ public class ExcelTemplateNodeXLControl : NodeXLControl
         Debug.Assert( !String.IsNullOrEmpty(fileName) );
         AssertValid();
 
-        CheckIfDrawing("SaveToXps");
+        CheckIfLayingOutGraph("SaveToXps");
 
         // This control will be rehosted by a FixedPage.  It can't be a child
         // of logical trees, so disconnect it from its parent after saving the
@@ -155,7 +155,7 @@ public class ExcelTemplateNodeXLControl : NodeXLControl
 
             this.UpdateLayout();
             oLayoutSaver.RestoreLayout();
-            this.DrawGraphAsync(false);
+            this.DrawGraph(false);
         }
     }
 

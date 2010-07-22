@@ -61,17 +61,26 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     /// Array of zero or more vertex names corresponding to the selected rows
     /// in the vertex worksheet.  Can't be null.
     /// </param>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the dialog is being used.
+    /// </param>
     //*************************************************************************
 
     public CreateSubgraphImagesDialog
     (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-        String [] selectedVertexNames
+        String [] selectedVertexNames,
+        DialogMode mode
     )
     : this()
     {
         Debug.Assert(workbook != null);
         Debug.Assert(selectedVertexNames != null);
+
+        m_oWorkbook = workbook;
+        m_asSelectedVertexNames = selectedVertexNames;
+        m_eMode = mode;
 
         // Instantiate an object that saves and retrieves the user settings for
         // this dialog.  Note that the object automatically saves the settings
@@ -79,9 +88,6 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
 
         m_oCreateSubgraphImagesDialogUserSettings =
             new CreateSubgraphImagesDialogUserSettings(this);
-
-        m_oWorkbook = workbook;
-        m_asSelectedVertexNames = selectedVertexNames;
 
         m_oSubgraphImageCreator = new SubgraphImageCreator();
 
@@ -94,8 +100,6 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
                 SubgraphImageCreator_ImageCreationCompleted);
 
         m_eState = DialogState.Idle;
-
-        SaveableImageFormats.InitializeListControl(cbxImageFormat);
 
         DoDataExchange(false);
 
@@ -122,6 +126,33 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         InitializeComponent();
 
         // AssertValid();
+    }
+
+    //*************************************************************************
+    //  Enum: DialogMode
+    //
+    /// <summary>
+    /// Indicates the mode in which the dialog is being used.
+    /// </summary>
+    //*************************************************************************
+
+    public enum
+    DialogMode
+    {
+        /// The user can edit the dialog settings and then create subgraph
+        /// images.
+
+        Normal,
+
+        /// The user can edit the dialog settings but cannot create subgraph
+        /// images.
+
+        EditOnly,
+
+        /// Subgraph images are created as soon as the dialog opens, and the
+        /// dialog closes after the images are created.
+
+        Automate,
     }
 
     //*************************************************************************
@@ -206,23 +237,13 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         if (bFromControls)
         {
             Boolean bSaveToFolder = chkSaveToFolder.Checked;
-            String sFolder = null;
-            Int32 iImageWidthPx = Int32.MinValue;
-            Int32 iImageHeightPx = Int32.MinValue;
 
             if (bSaveToFolder)
             {
                 if (
-                    !ValidateDirectoryTextBox(txbFolder,
-                        "Enter or browse for an existing folder where the"
-                        + " subgraph images will be saved.",
-                        out sFolder)
+                    !usrFolder.Validate()
                     ||
-                    !ValidateNumericUpDown(nudImageWidthPx, "image width",
-                        out iImageWidthPx)
-                    ||
-                    !ValidateNumericUpDown(nudImageHeightPx, "image height",
-                        out iImageHeightPx)
+                    !usrImageFormat.Validate()
                     )
                 {
                     return (false);
@@ -251,13 +272,14 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
 
             if (bSaveToFolder)
             {
-                m_oCreateSubgraphImagesDialogUserSettings.Folder = sFolder;
+                m_oCreateSubgraphImagesDialogUserSettings.Folder =
+                    usrFolder.FolderPath;
 
                 m_oCreateSubgraphImagesDialogUserSettings.ImageSizePx =
-                    new Size(iImageWidthPx, iImageHeightPx);
+                    usrImageFormat.ImageSizePx;
 
                 m_oCreateSubgraphImagesDialogUserSettings.ImageFormat =
-                    (ImageFormat)cbxImageFormat.SelectedValue;
+                    usrImageFormat.ImageFormat;
             }
 
             if (bInsertThumbnails)
@@ -292,15 +314,13 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
             chkSaveToFolder.Checked =
                 m_oCreateSubgraphImagesDialogUserSettings.SaveToFolder;
 
-            txbFolder.Text = m_oCreateSubgraphImagesDialogUserSettings.Folder;
+            usrFolder.FolderPath =
+                m_oCreateSubgraphImagesDialogUserSettings.Folder;
 
-            Size oImageSizePx =
+            usrImageFormat.ImageSizePx = 
                 m_oCreateSubgraphImagesDialogUserSettings.ImageSizePx;
 
-            nudImageWidthPx.Value = oImageSizePx.Width;
-            nudImageHeightPx.Value = oImageSizePx.Height;
-
-            cbxImageFormat.SelectedValue = 
+            usrImageFormat.ImageFormat = 
                 m_oCreateSubgraphImagesDialogUserSettings.ImageFormat;
 
             chkInsertThumbnails.Checked =
@@ -348,7 +368,10 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
 
                 pnlDisableWhileCreating.Enabled = true;
                 btnCreate.Enabled = true;
-                btnCreate.Text = "Create";
+
+                btnCreate.Text = (m_eMode == DialogMode.EditOnly) ?
+                    "OK" : "Create";
+
                 btnClose.Enabled = true;
                 this.UseWaitCursor = false;
 
@@ -423,6 +446,7 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         catch (Exception oException)
         {
             ErrorUtil.OnException(oException);
+            this.State = DialogState.Idle;
 
             return;
         }
@@ -559,6 +583,41 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: OnLoad()
+    //
+    /// <summary>
+    /// Handles the OnLoad event.
+    /// </summary>
+    ///
+    /// <param name="e">
+    /// Standard event arguments.
+    /// </param>
+    //*************************************************************************
+
+    protected override void
+    OnLoad
+    (
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        base.OnLoad(e);
+
+        if (m_eMode == DialogMode.Automate)
+        {
+            // Automatically start image creation.
+
+            btnCreate.PerformClick();
+        }
+        else if (m_eMode == DialogMode.EditOnly)
+        {
+            this.Text += " Options";
+            btnClose.Text = "Cancel";
+        }
+    }
+
+    //*************************************************************************
     //  Method: OnImageCreationCompleted()
     //
     /// <summary>
@@ -633,6 +692,11 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
             }
 
             this.State = DialogState.Idle;
+
+            if (m_eMode == DialogMode.Automate)
+            {
+                this.Close();
+            }
         }
     }
 
@@ -700,46 +764,6 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         AssertValid();
 
         EnableControls();
-    }
-
-    //*************************************************************************
-    //  Method: btnBrowse_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnBrowse button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnBrowse_Click
-    (
-        object sender,
-        System.EventArgs e
-    )
-    {
-        // Show the folder browser dialog.
-
-        FolderBrowserDialog oFolderBrowserDialog =
-            new FolderBrowserDialog();
-
-        oFolderBrowserDialog.Description =
-            "Browse for the folder where the subgraph image files will be"
-            + " saved.";
-
-        oFolderBrowserDialog.SelectedPath = txbFolder.Text;
-
-        if (oFolderBrowserDialog.ShowDialog() == DialogResult.OK)
-        {
-            txbFolder.Text = oFolderBrowserDialog.SelectedPath;
-        }
     }
 
     //*************************************************************************
@@ -843,9 +867,16 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
                 {
                     if ( DoDataExchange(true) )
                     {
-                        this.State = DialogState.CreatingSubgraphImages;
-
-                        StartImageCreation();
+                        if (m_eMode == DialogMode.EditOnly)
+                        {
+                            this.Close();
+                            return;
+                        }
+                        else
+                        {
+                            this.State = DialogState.CreatingSubgraphImages;
+                            StartImageCreation();
+                        }
                     }
                 }
 
@@ -952,9 +983,10 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     {
         base.AssertValid();
 
-        Debug.Assert(m_oCreateSubgraphImagesDialogUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_asSelectedVertexNames != null);
+        // m_eMode
+        Debug.Assert(m_oCreateSubgraphImagesDialogUserSettings != null);
         Debug.Assert(m_oSubgraphImageCreator != null);
         // m_eState
     }
@@ -964,11 +996,6 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-    /// User settings for this dialog.
-
-    protected CreateSubgraphImagesDialogUserSettings
-        m_oCreateSubgraphImagesDialogUserSettings;
-
     /// Workbook containing the graph data.
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
@@ -977,6 +1004,15 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     /// in the vertex worksheet.
 
     protected String [] m_asSelectedVertexNames;
+
+    /// Indicates the mode in which the dialog is being used.
+
+    protected DialogMode m_eMode;
+
+    /// User settings for this dialog.
+
+    protected CreateSubgraphImagesDialogUserSettings
+        m_oCreateSubgraphImagesDialogUserSettings;
 
     /// Object that does most of the work.
 

@@ -26,7 +26,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 [ SettingsProviderAttribute(typeof(
     Microsoft.NodeXL.ExcelTemplate.AutoFillSettingsProvider) ) ]
 
-public class AutoFillUserSettings : ApplicationSettingsBase
+public class AutoFillUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: AutoFillUserSettings()
@@ -1273,11 +1273,13 @@ public class AutoFillUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
+        base.AssertValid();
+
         Debug.Assert(m_oWorkbook != null);
     }
 
@@ -1637,11 +1639,7 @@ public class AutoFillSettingsProvider : LocalFileSettingsProvider
                     String sName = asNameValuePairs[i + 0];
                     String sValue = asNameValuePairs[i + 1];
 
-                    if (
-                        !String.IsNullOrEmpty(sName)
-                        &&
-                        !String.IsNullOrEmpty(sValue)
-                        )
+                    if ( !String.IsNullOrEmpty(sName) )
                     {
                         SettingsPropertyValue oSettingsPropertyValue =
                             oValues[sName];

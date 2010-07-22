@@ -103,21 +103,26 @@ public partial class Sheet2
 
 
     //*************************************************************************
-    //  Method: OnGraphDrawn()
+    //  Method: OnGraphLaidOut()
     //
     /// <summary>
-    /// Handles the GraphDrawn event on ThisWorkbook.
+    /// Handles the GraphLaidOut event on ThisWorkbook.
     /// </summary>
     ///
     /// <param name="e">
     /// Standard event argument.
     /// </param>
+    ///
+    /// <remarks>
+    /// Graph layout occurs asynchronously.  This event fires when the graph
+    /// is successfully laid out.
+    /// </remarks>
     //*************************************************************************
 
     private void
-    OnGraphDrawn
+    OnGraphLaidOut
     (
-        GraphDrawnEventArgs e
+        GraphLaidOutEventArgs e
     )
     {
         Debug.Assert(e != null);
@@ -187,8 +192,8 @@ public partial class Sheet2
 
         try
         {
-            OnGraphDrawn(e, oVertexTable, oDataBodyRange, oVisibleDataBodyRange,
-                oIDColumnData, oXColumn, oYColumn);
+            OnGraphLaidOut(e, oVertexTable, oDataBodyRange,
+                oVisibleDataBodyRange, oIDColumnData, oXColumn, oYColumn);
         }
         finally
         {
@@ -197,10 +202,10 @@ public partial class Sheet2
     }
 
     //*************************************************************************
-    //  Method: OnGraphDrawn()
+    //  Method: OnGraphLaidOut()
     //
     /// <summary>
-    /// Handles the GraphDrawn event on ThisWorkbook.
+    /// Handles the GraphLaidOut event on ThisWorkbook.
     /// </summary>
     ///
     /// <param name="e">
@@ -235,9 +240,9 @@ public partial class Sheet2
     //*************************************************************************
 
     private void
-    OnGraphDrawn
+    OnGraphLaidOut
     (
-        GraphDrawnEventArgs e,
+        GraphLaidOutEventArgs e,
         Microsoft.Office.Interop.Excel.ListObject oVertexTable,
         Microsoft.Office.Interop.Excel.Range oDataBodyRange,
         Microsoft.Office.Interop.Excel.Range oVisibleDataBodyRange,
@@ -889,8 +894,8 @@ public partial class Sheet2
     {
         ThisWorkbook oThisWorkbook = Globals.ThisWorkbook;
 
-        oThisWorkbook.GraphDrawn += new GraphDrawnEventHandler(
-            this.ThisWorkbook_GraphDrawn);
+        oThisWorkbook.GraphLaidOut += new GraphLaidOutEventHandler(
+            this.ThisWorkbook_GraphLaidOut);
 
         oThisWorkbook.VerticesMoved += new VerticesMovedEventHandler2(
             this.ThisWorkbook_VerticesMoved);
@@ -974,10 +979,10 @@ public partial class Sheet2
     }
 
     //*************************************************************************
-    //  Method: ThisWorkbook_GraphDrawn()
+    //  Method: ThisWorkbook_GraphLaidOut()
     //
     /// <summary>
-    /// Handles the GraphDrawn event on ThisWorkbook.
+    /// Handles the GraphLaidOut event on ThisWorkbook.
     /// </summary>
     ///
     /// <param name="sender">
@@ -989,16 +994,16 @@ public partial class Sheet2
     /// </param>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously.  This event fires when the graph
-    /// is completely drawn.
+    /// Graph layout occurs asynchronously.  This event fires when the graph
+    /// is successfully laid out.
     /// </remarks>
     //*************************************************************************
 
     private void
-    ThisWorkbook_GraphDrawn
+    ThisWorkbook_GraphLaidOut
     (
         Object sender,
-        GraphDrawnEventArgs e
+        GraphLaidOutEventArgs e
     )
     {
         Debug.Assert(e != null);
@@ -1006,7 +1011,7 @@ public partial class Sheet2
 
         if (m_oSheets1And2Helper.TableExists)
         {
-            OnGraphDrawn(e);
+            OnGraphLaidOut(e);
         }
     }
 

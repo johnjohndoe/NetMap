@@ -113,7 +113,7 @@ public class ClusteringCoefficientCalculator2 :
             new Algorithms.ClusteringCoefficientCalculator(),
 
             calculateGraphMetricsContext.GraphMetricUserSettings.
-                CalculateClusteringCoefficient,
+                CalculateGraphMetrics(GraphMetrics.ClusteringCoefficient),
 
             VertexTableColumnNames.ClusteringCoefficient,
             VertexTableColumnWidths.ClusteringCoefficient,

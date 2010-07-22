@@ -51,12 +51,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkInDegree = new System.Windows.Forms.LinkLabel();
             this.chkInDegree = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lnkPageRank = new System.Windows.Forms.LinkLabel();
+            this.chkPageRank = new System.Windows.Forms.CheckBox();
             this.chkOverallMetrics = new System.Windows.Forms.CheckBox();
             this.lnkOverallMetrics = new System.Windows.Forms.LinkLabel();
             this.chkClusteringCoefficient = new System.Windows.Forms.CheckBox();
             this.lnkClusteringCoefficient = new System.Windows.Forms.LinkLabel();
-            this.chkPageRank = new System.Windows.Forms.CheckBox();
-            this.lnkPageRank = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -78,7 +78,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(106, 23);
             this.btnOK.TabIndex = 6;
-            this.btnOK.Text = "Compute Metrics";
+            this.btnOK.Text = "Calculate Metrics";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -88,7 +88,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(251, 40);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Select the metrics to compute and insert into the workbook:";
+            this.label1.Text = "Select the metrics to calculate and insert into the workbook:";
             // 
             // btnCheckAll
             // 
@@ -129,6 +129,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkBrandesFastCentralities.Name = "chkBrandesFastCentralities";
             this.chkBrandesFastCentralities.Size = new System.Drawing.Size(174, 39);
             this.chkBrandesFastCentralities.TabIndex = 0;
+            this.chkBrandesFastCentralities.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.BrandesFastCentralities;
             this.chkBrandesFastCentralities.Text = "&Betweenness and closeness centralities";
             this.chkBrandesFastCentralities.UseVisualStyleBackColor = true;
             // 
@@ -163,6 +164,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkEigenvectorCentrality.Name = "chkEigenvectorCentrality";
             this.chkEigenvectorCentrality.Size = new System.Drawing.Size(128, 17);
             this.chkEigenvectorCentrality.TabIndex = 2;
+            this.chkEigenvectorCentrality.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.EigenvectorCentrality;
             this.chkEigenvectorCentrality.Text = "&Eigenvector centrality";
             this.chkEigenvectorCentrality.UseVisualStyleBackColor = true;
             // 
@@ -200,6 +202,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkDegree.Name = "chkDegree";
             this.chkDegree.Size = new System.Drawing.Size(61, 17);
             this.chkDegree.TabIndex = 0;
+            this.chkDegree.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.Degree;
             this.chkDegree.Text = "De&gree";
             this.chkDegree.UseVisualStyleBackColor = true;
             // 
@@ -222,6 +225,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkOutDegree.Name = "chkOutDegree";
             this.chkOutDegree.Size = new System.Drawing.Size(81, 17);
             this.chkOutDegree.TabIndex = 4;
+            this.chkOutDegree.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.OutDegree;
             this.chkOutDegree.Text = "&Out-Degree";
             this.chkOutDegree.UseVisualStyleBackColor = true;
             // 
@@ -244,6 +248,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkInDegree.Name = "chkInDegree";
             this.chkInDegree.Size = new System.Drawing.Size(73, 17);
             this.chkInDegree.TabIndex = 2;
+            this.chkInDegree.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.InDegree;
             this.chkInDegree.Text = "&In-Degree";
             this.chkInDegree.UseVisualStyleBackColor = true;
             // 
@@ -262,6 +267,29 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Miscellaneous";
             // 
+            // lnkPageRank
+            // 
+            this.lnkPageRank.AutoSize = true;
+            this.lnkPageRank.Location = new System.Drawing.Point(193, 22);
+            this.lnkPageRank.Name = "lnkPageRank";
+            this.lnkPageRank.Size = new System.Drawing.Size(39, 13);
+            this.lnkPageRank.TabIndex = 1;
+            this.lnkPageRank.TabStop = true;
+            this.lnkPageRank.Tag = resources.GetString("lnkPageRank.Tag");
+            this.lnkPageRank.Text = "Details";
+            this.lnkPageRank.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
+            // 
+            // chkPageRank
+            // 
+            this.chkPageRank.AutoSize = true;
+            this.chkPageRank.Location = new System.Drawing.Point(13, 21);
+            this.chkPageRank.Name = "chkPageRank";
+            this.chkPageRank.Size = new System.Drawing.Size(77, 17);
+            this.chkPageRank.TabIndex = 0;
+            this.chkPageRank.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.PageRank;
+            this.chkPageRank.Text = "&PageRank";
+            this.chkPageRank.UseVisualStyleBackColor = true;
+            // 
             // chkOverallMetrics
             // 
             this.chkOverallMetrics.AutoSize = true;
@@ -269,6 +297,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkOverallMetrics.Name = "chkOverallMetrics";
             this.chkOverallMetrics.Size = new System.Drawing.Size(95, 17);
             this.chkOverallMetrics.TabIndex = 4;
+            this.chkOverallMetrics.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.OverallMetrics;
             this.chkOverallMetrics.Text = "Overall &metrics";
             this.chkOverallMetrics.UseVisualStyleBackColor = true;
             // 
@@ -292,6 +321,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkClusteringCoefficient.Name = "chkClusteringCoefficient";
             this.chkClusteringCoefficient.Size = new System.Drawing.Size(124, 17);
             this.chkClusteringCoefficient.TabIndex = 2;
+            this.chkClusteringCoefficient.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.ClusteringCoefficient;
             this.chkClusteringCoefficient.Text = "Cl&ustering coefficient";
             this.chkClusteringCoefficient.UseVisualStyleBackColor = true;
             // 
@@ -306,29 +336,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkClusteringCoefficient.Tag = resources.GetString("lnkClusteringCoefficient.Tag");
             this.lnkClusteringCoefficient.Text = "Details";
             this.lnkClusteringCoefficient.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
-            // 
-            // chkPageRank
-            // 
-            this.chkPageRank.AutoSize = true;
-            this.chkPageRank.Location = new System.Drawing.Point(13, 21);
-            this.chkPageRank.Name = "chkPageRank";
-            this.chkPageRank.Size = new System.Drawing.Size(77, 17);
-            this.chkPageRank.TabIndex = 0;
-            this.chkPageRank.Text = "&PageRank";
-            this.chkPageRank.UseVisualStyleBackColor = true;
-            // 
-            // lnkPageRank
-            // 
-            this.lnkPageRank.AutoSize = true;
-            this.lnkPageRank.Location = new System.Drawing.Point(193, 22);
-            this.lnkPageRank.Name = "lnkPageRank";
-            this.lnkPageRank.Size = new System.Drawing.Size(39, 13);
-            this.lnkPageRank.TabIndex = 1;
-            this.lnkPageRank.TabStop = true;
-            this.lnkPageRank.Tag = resources.GetString("lnkPageRank.Tag");
-            this.lnkPageRank.Text = "Details";
-            this.lnkPageRank.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
-            // 
             // 
             // GraphMetricsDialog
             // 

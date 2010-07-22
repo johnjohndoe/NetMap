@@ -2,6 +2,8 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.Core
@@ -164,8 +166,10 @@ public static class EdgeUtil
         // Get the edges that connect the two vertices.  This includes all
         // connecting edges and does not take directedness into account.
 
-        IEdge [] aoConnectingEdges = vertex1.GetConnectingEdges(vertex2);
-        Int32 iConnectingEdges = aoConnectingEdges.Length;
+        ICollection<IEdge> oConnectingEdges =
+            vertex1.GetConnectingEdges(vertex2);
+
+        Int32 iConnectingEdges = oConnectingEdges.Count;
         IEdge oConnectingEdgeWithEdgeWeight = null;
 
         switch (vertex1.ParentGraph.Directedness)
@@ -177,7 +181,7 @@ public static class EdgeUtil
 
                 Debug.Assert(iConnectingEdges <= 2);
 
-                foreach (IEdge oConnectingEdge in aoConnectingEdges)
+                foreach (IEdge oConnectingEdge in oConnectingEdges)
                 {
                     if (oConnectingEdge.BackVertex == vertex1)
                     {
@@ -198,7 +202,7 @@ public static class EdgeUtil
 
                 if (iConnectingEdges == 1)
                 {
-                    oConnectingEdgeWithEdgeWeight = aoConnectingEdges[0];
+                    oConnectingEdgeWithEdgeWeight = oConnectingEdges.First();
                 }
 
                 break;

@@ -20,7 +20,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("LayoutUserSettings") ]
 
-public class LayoutUserSettings : ApplicationSettingsBase
+public class LayoutUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: LayoutUserSettings()
@@ -330,12 +330,14 @@ public class LayoutUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 

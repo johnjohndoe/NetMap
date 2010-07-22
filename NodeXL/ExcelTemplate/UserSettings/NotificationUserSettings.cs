@@ -18,7 +18,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("NotificationUserSettings") ]
 
-public class NotificationUserSettings : ApplicationSettingsBase
+public class NotificationUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: NotificationUserSettings()
@@ -70,11 +70,11 @@ public class NotificationUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: LayoutTypeIsNone
+    //  Property: LayoutTypeIsNull
     //
     /// <summary>
     /// Gets or sets a flag specifying whether the user should be warned that
-    /// the layout type is set to NoneLayout when the workbook is read.
+    /// the layout type is set to LayoutType.Null when the workbook is read.
     /// </summary>
     ///
     /// <value>
@@ -86,18 +86,18 @@ public class NotificationUserSettings : ApplicationSettingsBase
     [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
-    LayoutTypeIsNone
+    LayoutTypeIsNull
     {
         get
         {
             AssertValid();
 
-            return ( (Boolean)this[LayoutTypeIsNoneKey] );
+            return ( (Boolean)this[LayoutTypeIsNullKey] );
         }
 
         set
         {
-            this[LayoutTypeIsNoneKey] = value;
+            this[LayoutTypeIsNullKey] = value;
 
             AssertValid();
         }
@@ -115,7 +115,7 @@ public class NotificationUserSettings : ApplicationSettingsBase
     EnableAllNotifications()
     {
         this.GraphHasDuplicateEdge = true;
-        this.LayoutTypeIsNone = true;
+        this.LayoutTypeIsNull = true;
     }
 
 
@@ -127,12 +127,14 @@ public class NotificationUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 
@@ -145,10 +147,10 @@ public class NotificationUserSettings : ApplicationSettingsBase
     protected const String GraphHasDuplicateEdgeKey =
         "GraphHasDuplicateEdge";
 
-    /// Name of the settings key for the LayoutTypeIsNone property.
+    /// Name of the settings key for the LayoutTypeIsNull property.
 
-    protected const String LayoutTypeIsNoneKey =
-        "LayoutTypeIsNone";
+    protected const String LayoutTypeIsNullKey =
+        "LayoutTypeIsNull";
 
 
     //*************************************************************************

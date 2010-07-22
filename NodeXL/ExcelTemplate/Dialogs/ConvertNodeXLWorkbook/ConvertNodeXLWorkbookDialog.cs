@@ -368,10 +368,8 @@ public partial class ConvertNodeXLWorkbookDialog : ExcelTemplateForm
         {
             try
             {
-                m_oApplication.Workbooks.Open(m_sConvertedWorkbookFile, 1,
-                    false, Missing.Value, Missing.Value, Missing.Value, false,
-                    Missing.Value, Missing.Value, false, Missing.Value,
-                    Missing.Value, false, true, Missing.Value);
+                ExcelUtil.OpenWorkbook(m_sConvertedWorkbookFile,
+                    m_oApplication);
             }
             catch (Exception)
             {

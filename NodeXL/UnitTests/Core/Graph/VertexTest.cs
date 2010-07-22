@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -82,30 +83,30 @@ public class VertexTest : Object
     TestConstructor()
     {
         Assert.IsNotNull(m_oVertex.AdjacentVertices);
-        Assert.AreEqual(0, m_oVertex.AdjacentVertices.Length);
+        Assert.AreEqual(0, m_oVertex.AdjacentVertices.Count);
 
         Assert.AreEqual(0, m_oVertex.Degree);
 
         Assert.IsNotNull(m_oVertex.IncidentEdges);
-        Assert.AreEqual(0, m_oVertex.IncidentEdges.Length);
+        Assert.AreEqual(0, m_oVertex.IncidentEdges.Count);
 
         Assert.IsNotNull(m_oVertex.IncomingEdges);
-        Assert.AreEqual(0, m_oVertex.IncomingEdges.Length);
+        Assert.AreEqual(0, m_oVertex.IncomingEdges.Count);
 
         Assert.AreEqual(PointF.Empty, m_oVertex.Location);
 
         Assert.IsNull(m_oVertex.Name);
 
         Assert.IsNotNull(m_oVertex.OutgoingEdges);
-        Assert.AreEqual(0, m_oVertex.OutgoingEdges.Length);
+        Assert.AreEqual(0, m_oVertex.OutgoingEdges.Count);
 
         Assert.IsNull(m_oVertex.ParentGraph);
 
         Assert.IsNotNull(m_oVertex.PredecessorVertices);
-        Assert.AreEqual(0, m_oVertex.PredecessorVertices.Length);
+        Assert.AreEqual(0, m_oVertex.PredecessorVertices.Count);
 
         Assert.IsNotNull(m_oVertex.SuccessorVertices);
-        Assert.AreEqual(0, m_oVertex.SuccessorVertices.Length);
+        Assert.AreEqual(0, m_oVertex.SuccessorVertices.Count);
 
         Assert.IsNull(m_oVertex.Tag);
     }
@@ -367,13 +368,16 @@ public class VertexTest : Object
         {
             // Loop through the vertex's incident edges.
 
-            IEdge [] aoIncidentEdges = oVertex.IncidentEdges;
+            ICollection<IEdge> oIncidentEdges = oVertex.IncidentEdges;
 
-            Assert.IsNotNull(aoIncidentEdges);
+            Assert.IsNotNull(oIncidentEdges);
 
-            Assert.AreEqual(aoIncidentEdges.Length, oVertex.Degree);
+            Assert.AreEqual(oIncidentEdges.Count, oVertex.Degree);
 
-            foreach (IEdge oEdge in aoIncidentEdges)
+            HashSet<IEdge> oIncidentEdgesHashSet = new HashSet<IEdge>(
+                oIncidentEdges);
+
+            foreach (IEdge oEdge in oIncidentEdges)
             {
                 // Verify that the edge is incident to the vertex.
 
@@ -398,8 +402,7 @@ public class VertexTest : Object
 
                 if (aoVertices[0] == oVertex || aoVertices[1] == oVertex)
                 {
-                    Assert.IsTrue(
-                        Array.IndexOf(aoIncidentEdges, oEdge) >= 0);
+                    Assert.IsTrue( oIncidentEdgesHashSet.Contains(oEdge) );
                 }
             }
         }
@@ -432,40 +435,49 @@ public class VertexTest : Object
         {
             // Get the vertex's incoming, outgoing, and incident edges.
 
-            IEdge [] aoIncomingEdges = oVertex.IncomingEdges;
-            IEdge [] aoOutgoingEdges = oVertex.OutgoingEdges;
-            IEdge [] aoIncidentEdges = oVertex.IncidentEdges;
+            ICollection<IEdge> oIncomingEdges = oVertex.IncomingEdges;
+            ICollection<IEdge> oOutgoingEdges = oVertex.OutgoingEdges;
+            ICollection<IEdge> oIncidentEdges = oVertex.IncidentEdges;
 
-            Assert.IsTrue(aoIncomingEdges.Length +
-                aoOutgoingEdges.Length >= aoIncidentEdges.Length);
+            Assert.IsTrue(oIncomingEdges.Count +
+                oOutgoingEdges.Count >= oIncidentEdges.Count);
+
+            HashSet<IEdge> oIncidentEdgesHashSet = new HashSet<IEdge>(
+                oIncidentEdges);
 
             // Verify that each incoming edge is an incident edge.
 
-            foreach (IEdge oEdge in aoIncomingEdges)
+            foreach (IEdge oEdge in oIncomingEdges)
             {
-                Assert.IsTrue(Array.IndexOf(aoIncidentEdges, oEdge) >= 0);
+                Assert.IsTrue( oIncidentEdgesHashSet.Contains(oEdge) );
             }
 
             // Verify that each outgoing edge is an incident edge.
 
-            foreach (IEdge oEdge in aoOutgoingEdges)
+            foreach (IEdge oEdge in oOutgoingEdges)
             {
-                Assert.IsTrue(Array.IndexOf(aoIncidentEdges, oEdge) >= 0);
+                Assert.IsTrue( oIncidentEdgesHashSet.Contains(oEdge) );
             }
 
             // Verify that each incident edge is either an incoming edge or an
             // outgoing edge.
 
-            foreach (IEdge oEdge in aoIncidentEdges)
+            HashSet<IEdge> oIncomingEdgesHashSet = new HashSet<IEdge>(
+                oIncomingEdges);
+
+            HashSet<IEdge> oOutgoingEdgesHashSet = new HashSet<IEdge>(
+                oOutgoingEdges);
+
+            foreach (IEdge oEdge in oIncidentEdges)
             {
                 Assert.IsTrue(
-                    Array.IndexOf(aoIncomingEdges, oEdge) >= 0
+                    oIncomingEdgesHashSet.Contains(oEdge)
                     ||
-                    Array.IndexOf(aoOutgoingEdges, oEdge) >= 0
+                    oOutgoingEdgesHashSet.Contains(oEdge)
                     );
             }
 
-            Assert.AreEqual(aoIncidentEdges.Length, oVertex.Degree);
+            Assert.AreEqual(oIncidentEdges.Count, oVertex.Degree);
         }
     }
 
@@ -520,12 +532,12 @@ public class VertexTest : Object
 
                 // Get oVertex1's connecting edges.
 
-                IEdge [] aoConnectingEdges =
+                ICollection<IEdge> oConnectingEdges =
                     oVertex1.GetConnectingEdges(oVertex2);
 
-                Assert.IsNotNull(aoConnectingEdges);
+                Assert.IsNotNull(oConnectingEdges);
 
-                foreach (IEdge oConnectingEdge in aoConnectingEdges)
+                foreach (IEdge oConnectingEdge in oConnectingEdges)
                 {
                     // Verify that the edge connects the two vertices.
 
@@ -543,6 +555,9 @@ public class VertexTest : Object
 
                     Assert.IsTrue( oGraph.Edges.Contains(oConnectingEdge) );
                 }
+
+                HashSet<IEdge> oConnectingEdgesHashSet = new HashSet<IEdge>(
+                    oConnectingEdges);
 
                 // Loop through the graph's edges.
 
@@ -562,7 +577,7 @@ public class VertexTest : Object
                         )
                     {
                         Assert.IsTrue(
-                            Array.IndexOf(aoConnectingEdges, oEdge) >= 0);
+                            oConnectingEdgesHashSet.Contains(oEdge) );
                     }
                 }
             }
@@ -610,22 +625,23 @@ public class VertexTest : Object
         // If GetConnectingEdges() is passed its own vertex, it should return
         // self-loops.
 
-        IEdge [] aoConnectingEdges = oVertex.GetConnectingEdges(oVertex);
+        ICollection<IEdge> oConnectingEdges =
+            oVertex.GetConnectingEdges(oVertex);
 
-        Assert.IsNotNull(aoConnectingEdges);
+        Assert.IsNotNull(oConnectingEdges);
 
-        Assert.AreEqual(4, aoConnectingEdges.Length);
+        Assert.AreEqual(4, oConnectingEdges.Count);
 
         // If GetConnectingEdges() is not passed its own vertex, it should not
         // return self-loops.
 
-        aoConnectingEdges = oVertex.GetConnectingEdges( aoVertices[1] );
+        oConnectingEdges = oVertex.GetConnectingEdges( aoVertices[1] );
 
-        Assert.IsNotNull(aoConnectingEdges);
+        Assert.IsNotNull(oConnectingEdges);
 
-        Assert.AreEqual(1, aoConnectingEdges.Length);
+        Assert.AreEqual(1, oConnectingEdges.Count);
 
-        Assert.AreEqual( oNonSelfLoopEdge, aoConnectingEdges[0] );
+        Assert.AreEqual( oNonSelfLoopEdge, oConnectingEdges.First() );
     }
 
     //*************************************************************************
@@ -650,7 +666,7 @@ public class VertexTest : Object
 
             IVertex [] aoVertices = TestGraphUtil.AddVertices(oGraph, 1);
 
-            IEdge [] aoConnectingEdges =
+            ICollection<IEdge> oConnectingEdges =
                 aoVertices[0].GetConnectingEdges(null);
         }
         catch (ArgumentNullException oArgumentNullException)
@@ -948,7 +964,7 @@ public class VertexTest : Object
         {
             // Get the vertex's adjacent vertices.
 
-            IVertex [] aoAdjacentVertices = oVertex.AdjacentVertices;
+            ICollection<IVertex> oAdjacentVertices = oVertex.AdjacentVertices;
 
             // Loop through the graph's edges.
 
@@ -1018,18 +1034,20 @@ public class VertexTest : Object
             }
 
             // Verify that each vertex in oCountedVertices is included in
-            // aoAdjacentVertices.
+            // oAdjacentVertices.
+
+            HashSet<IVertex> oAdjacentVerticesHashSet = new HashSet<IVertex>(
+                oAdjacentVertices);
 
             foreach (IVertex oVertexA in oCountedVertices.Values)
             {
-                Assert.IsTrue(Array.IndexOf(
-                    aoAdjacentVertices, oVertexA) >= 0);
+                Assert.IsTrue(oAdjacentVerticesHashSet.Contains(oVertexA) );
             }
 
             // Verify that each vertex in aoAdjacentVertices is
             // in oCountedVertices.
 
-            foreach (IVertex oVertexA in aoAdjacentVertices)
+            foreach (IVertex oVertexA in oAdjacentVertices)
             {
                 Assert.IsTrue( oCountedVertices.ContainsValue(oVertexA) );
             }
@@ -1037,7 +1055,7 @@ public class VertexTest : Object
             // Verify that the number of vertices in aoAdjacentVertices is the
             // same as the number of vertices that were just counted.
 
-            Assert.AreEqual(oCountedVertices.Count, aoAdjacentVertices.Length);
+            Assert.AreEqual(oCountedVertices.Count, oAdjacentVertices.Count);
 
             oCountedVertices.Clear();
         }
@@ -1067,41 +1085,52 @@ public class VertexTest : Object
         {
             // Get the vertex's predecessor, successor, and adjacent vertices.
 
-            IVertex [] aoPredecessorVertices = oVertex.PredecessorVertices;
-            IVertex [] aoSuccessorVertices = oVertex.SuccessorVertices;
-            IVertex [] aoAdjacentVertices = oVertex.AdjacentVertices;
+            ICollection<IVertex> oPredecessorVertices =
+                oVertex.PredecessorVertices;
 
-            Assert.IsTrue(aoPredecessorVertices.Length +
-                aoSuccessorVertices.Length >= aoAdjacentVertices.Length);
+            ICollection<IVertex> oSuccessorVertices =
+                oVertex.SuccessorVertices;
+
+            ICollection<IVertex> oAdjacentVertices = oVertex.AdjacentVertices;
+
+            Assert.IsTrue(oPredecessorVertices.Count +
+                oSuccessorVertices.Count >= oAdjacentVertices.Count);
 
             // The adjacent vertices must be the union of the predecessor and
             // successor vertices.
 
             // Verify that each predecessor vertex is an adjacent vertex.
 
-            foreach (IVertex oVertexA in aoPredecessorVertices)
+            HashSet<IVertex> oAdjacentVerticesHashSet = new HashSet<IVertex>(
+                oAdjacentVertices);
+
+            foreach (IVertex oVertexA in oPredecessorVertices)
             {
-                Assert.IsTrue(Array.IndexOf(
-                    aoAdjacentVertices, oVertexA) >= 0);
+                Assert.IsTrue( oAdjacentVerticesHashSet.Contains(oVertexA) );
             }
 
             // Verify that each successor vertex is an adjacent vertex.
 
-            foreach (IVertex oVertexA in aoSuccessorVertices)
+            foreach (IVertex oVertexA in oSuccessorVertices)
             {
-                Assert.IsTrue(Array.IndexOf(
-                    aoAdjacentVertices, oVertexA) >= 0);
+                Assert.IsTrue( oAdjacentVerticesHashSet.Contains(oVertexA) );
             }
 
             // Verify that each adjacent vertex is either a predecessor vertex
             // or a successor vertex.
 
-            foreach (IVertex oVertexA in aoAdjacentVertices)
+            HashSet<IVertex> oPredecessorVerticesHashSet = new HashSet<IVertex>(
+                oPredecessorVertices);
+
+            HashSet<IVertex> oSuccessorVerticesHashSet = new HashSet<IVertex>(
+                oSuccessorVertices);
+
+            foreach (IVertex oVertexA in oAdjacentVertices)
             {
                 Assert.IsTrue(
-                    Array.IndexOf(aoPredecessorVertices, oVertexA) >= 0
+                    oPredecessorVerticesHashSet.Contains(oVertexA)
                     ||
-                    Array.IndexOf(aoSuccessorVertices, oVertexA) >= 0
+                    oSuccessorVerticesHashSet.Contains(oVertexA)
                     );
             }
         }
@@ -1237,12 +1266,12 @@ public class VertexTest : Object
         {
             // Loop through the vertex's incoming or outgoing edges.
 
-            IEdge [] aoIncomingOrOutgoingEdges =
+            ICollection<IEdge> oIncomingOrOutgoingEdges =
                 bIncoming ? oVertex.IncomingEdges : oVertex.OutgoingEdges;
 
-            Assert.IsNotNull(aoIncomingOrOutgoingEdges);
+            Assert.IsNotNull(oIncomingOrOutgoingEdges);
 
-            foreach (IEdge oEdge in aoIncomingOrOutgoingEdges)
+            foreach (IEdge oEdge in oIncomingOrOutgoingEdges)
             {
                 // An incoming edge is either a directed edge that has this
                 // vertex at its front, or an undirected edge connected to this
@@ -1271,6 +1300,9 @@ public class VertexTest : Object
 
                 Assert.IsTrue( oGraph.Edges.Contains(oEdge) );
             }
+
+            HashSet<IEdge> oIncomingOrOutgoingEdgesHashSet =
+                new HashSet<IEdge>(oIncomingOrOutgoingEdges);
 
             // Loop through the graph's edges.
 
@@ -1301,8 +1333,8 @@ public class VertexTest : Object
 
                 if (bShouldBeInArray)
                 {
-                    Assert.IsTrue(
-                        Array.IndexOf(aoIncomingOrOutgoingEdges, oEdge) >= 0);
+                    Assert.IsTrue( oIncomingOrOutgoingEdgesHashSet.Contains(
+                        oEdge) );
                 }
             }
         }
@@ -1347,7 +1379,8 @@ public class VertexTest : Object
         {
             // Get the vertex's predecessor or successor vertices.
 
-            IVertex [] aoPredecessorOrSuccessorVertices = bPredecessor ?
+            ICollection<IVertex> oPredecessorOrSuccessorVertices =
+                bPredecessor ?
                 oVertex.PredecessorVertices : oVertex.SuccessorVertices;
 
             // Loop through the graph's edges.
@@ -1434,18 +1467,22 @@ public class VertexTest : Object
             }
 
             // Verify that each vertex in oCountedVertices is included in
-            // aoPredecessorOrSuccessorVertices.
+            // oPredecessorOrSuccessorVertices.
+
+            HashSet<IVertex> oPredecessorOrSuccessorVerticesHashSet =
+                new HashSet<IVertex>(oPredecessorOrSuccessorVertices);
 
             foreach (IVertex oVertexA in oCountedVertices.Values)
             {
-                Assert.IsTrue(Array.IndexOf(
-                    aoPredecessorOrSuccessorVertices, oVertexA) >= 0);
+                Assert.IsTrue(
+                    oPredecessorOrSuccessorVerticesHashSet.Contains(oVertexA)
+                    );
             }
 
             // Verify that each vertex in aoPredecessorOrSuccessorVertices is
             // in oCountedVertices.
 
-            foreach (IVertex oVertexA in aoPredecessorOrSuccessorVertices)
+            foreach (IVertex oVertexA in oPredecessorOrSuccessorVertices)
             {
                 Assert.IsTrue( oCountedVertices.ContainsValue(oVertexA) );
             }
@@ -1455,7 +1492,7 @@ public class VertexTest : Object
             // vertices that were just counted.
 
             Assert.AreEqual(oCountedVertices.Count,
-                aoPredecessorOrSuccessorVertices.Length);
+                oPredecessorOrSuccessorVertices.Count);
 
             oCountedVertices.Clear();
         }
@@ -1562,34 +1599,36 @@ public class VertexTest : Object
         IEdge oDirectedEdge1 = oEdgeCollection.Add(oVertex, oVertex, true);
         IEdge oDirectedEdge2 = oEdgeCollection.Add(oVertex, oVertex, true);
 
-        IEdge [] aoEdges = null;
+        ICollection<IEdge> oEdges = null;
 
         if (bTestIncomingEdges)
         {
-            aoEdges = oVertex.IncomingEdges;
+            oEdges = oVertex.IncomingEdges;
         }
         else if (bTestOutgoingEdges)
         {
-            aoEdges = oVertex.OutgoingEdges;
+            oEdges = oVertex.OutgoingEdges;
         }
         else if (bTestIncidentEdges)
         {
-            aoEdges = oVertex.IncidentEdges;
+            oEdges = oVertex.IncidentEdges;
 
-            Assert.AreEqual(aoEdges.Length, oVertex.Degree);
+            Assert.AreEqual(oEdges.Count, oVertex.Degree);
         }
         else
         {
             Debug.Assert(false);
         }
 
-        Assert.AreEqual(4, aoEdges.Length);
+        Assert.AreEqual(4, oEdges.Count);
 
-        Assert.IsTrue(Array.IndexOf(aoEdges, oUndirectedEdge1) >= 0);
-        Assert.IsTrue(Array.IndexOf(aoEdges, oUndirectedEdge2) >= 0);
+        HashSet<IEdge> oEdgesHashSet = new HashSet<IEdge>(oEdges);
 
-        Assert.IsTrue(Array.IndexOf(aoEdges, oDirectedEdge1) >= 0);
-        Assert.IsTrue(Array.IndexOf(aoEdges, oDirectedEdge2) >= 0);
+        Assert.IsTrue( oEdgesHashSet.Contains(oUndirectedEdge1) );
+        Assert.IsTrue( oEdgesHashSet.Contains(oUndirectedEdge2) );
+
+        Assert.IsTrue( oEdgesHashSet.Contains(oDirectedEdge1) );
+        Assert.IsTrue( oEdgesHashSet.Contains(oDirectedEdge2) );
     }
 
     //*************************************************************************
@@ -1640,28 +1679,30 @@ public class VertexTest : Object
         IEdge oDirectedEdge1 = oEdgeCollection.Add(oVertex, oVertex, true);
         IEdge oDirectedEdge2 = oEdgeCollection.Add(oVertex, oVertex, true);
 
-        IVertex [] aoVerticesA = null;
+        ICollection<IVertex> oVerticesA = null;
 
         if (bTestPredecessorVertices)
         {
-            aoVerticesA = oVertex.PredecessorVertices;
+            oVerticesA = oVertex.PredecessorVertices;
         }
         else if (bTestSuccessorVertices)
         {
-            aoVerticesA = oVertex.SuccessorVertices;
+            oVerticesA = oVertex.SuccessorVertices;
         }
         else if (bTestAdjacentVertices)
         {
-            aoVerticesA = oVertex.AdjacentVertices;
+            oVerticesA = oVertex.AdjacentVertices;
         }
         else
         {
             Debug.Assert(false);
         }
 
-        Assert.AreEqual(1, aoVerticesA.Length);
+        Assert.AreEqual(1, oVerticesA.Count);
 
-        Assert.IsTrue(Array.IndexOf(aoVerticesA, oVertex) >= 0);
+        HashSet<IVertex> oVerticesAHashSet = new HashSet<IVertex>(oVerticesA);
+
+        Assert.IsTrue( oVerticesAHashSet.Contains(oVertex) );
     }
 
     //*************************************************************************

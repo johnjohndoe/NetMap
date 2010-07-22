@@ -97,10 +97,6 @@ public class WorkbookExporter
                 ApplicationUtil.GetMissingTemplateMessage(oApplication) );
         }
 
-        #if false  // For development only.
-        sTemplatePath = @"E:\NodeXL\ExcelTemplate\bin\Debug\NodeXLGraph.xltx";
-        #endif
-
         Workbook oNewNodeXLWorkbook = null;
 
         CopyTableToNewNodeXLWorkbook(WorksheetNames.Edges,

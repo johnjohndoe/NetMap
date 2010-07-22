@@ -106,9 +106,11 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
         GraphMetricUserSettings oGraphMetricUserSettings =
             calculateGraphMetricsContext.GraphMetricUserSettings;
 
-        if (!oGraphMetricUserSettings.CalculateDegree &&
-            !oGraphMetricUserSettings.CalculateInDegree &&
-            !oGraphMetricUserSettings.CalculateOutDegree)
+        if ( !oGraphMetricUserSettings.CalculateGraphMetrics(
+                GraphMetrics.Degree |
+                GraphMetrics.InDegree |
+                GraphMetrics.OutDegree
+            ) )
         {
             return (true);
         }
@@ -257,13 +259,16 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
             (oGraph.Directedness == GraphDirectedness.Directed);
 
         Boolean bCalculateInDegree = bGraphIsDirected &&
-            oGraphMetricUserSettings.CalculateInDegree;
+            oGraphMetricUserSettings.CalculateGraphMetrics(
+                GraphMetrics.InDegree);
 
         Boolean bCalculateOutDegree = bGraphIsDirected &&
-            oGraphMetricUserSettings.CalculateOutDegree;
+            oGraphMetricUserSettings.CalculateGraphMetrics(
+                GraphMetrics.OutDegree);
 
         Boolean bCalculateDegree = !bGraphIsDirected &&
-            oGraphMetricUserSettings.CalculateDegree;
+            oGraphMetricUserSettings.CalculateGraphMetrics(
+                GraphMetrics.Degree);
 
         String sStyle = CellStyleNames.GraphMetricGood;
 

@@ -200,12 +200,12 @@ public class CreateSubgraphImagesDialogUserSettings : FormSettings
     ///
     /// <value>
     /// The format of each subgraph image saved to a folder.  The default is
-    /// ImageFormat.Jpeg.
+    /// ImageFormat.Png.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("Jpeg") ]
+    [ DefaultSettingValueAttribute("Png") ]
 
     public ImageFormat
     ImageFormat

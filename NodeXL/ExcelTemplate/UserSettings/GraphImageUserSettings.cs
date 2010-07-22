@@ -3,6 +3,7 @@
 
 using System;
 using System.Configuration;
+using System.Drawing;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -17,7 +18,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("GraphImageUserSettings2") ]
 
-public class GraphImageUserSettings : ApplicationSettingsBase
+public class GraphImageUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: GraphImageUserSettings()
@@ -43,8 +44,8 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// true to use the NodeXLControl size, false to use <see cref="Width" />
-    /// and <see cref="Height" />.  The default is true.
+    /// true to use the NodeXLControl size, false to use <see
+    /// cref="ImageSize" />.  The default is true.
     /// </value>
     //*************************************************************************
 
@@ -70,14 +71,14 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: Width
+    //  Property: ImageSize
     //
     /// <summary>
-    /// Gets or sets the width to use when saving a graph image.
+    /// Gets or sets the size to use when saving a graph image.
     /// </summary>
     ///
     /// <value>
-    /// The width to use when saving a graph image.  The default is 400.
+    /// The size to use when saving a graph image.  The default is 400,200.
     /// </value>
     ///
     /// <remarks>
@@ -92,64 +93,21 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("400") ]
+    [ DefaultSettingValueAttribute("400, 200") ]
 
-    public Int32
-    Width
+    public Size
+    ImageSize
     {
         get
         {
             AssertValid();
 
-            return ( (Int32)this[WidthKey] );
+            return ( (Size)this[ImageSizeKey] );
         }
 
         set
         {
-            this[WidthKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: Height
-    //
-    /// <summary>
-    /// Gets or sets the height to use when saving a graph image.
-    /// </summary>
-    ///
-    /// <value>
-    /// The height to use when saving a graph image.  The default is 200.
-    /// </value>
-    ///
-    /// <remarks>
-    /// This is used only if <see cref="UseControlSize" /> is false.
-    ///
-    /// <para>
-    /// If saving to XPS, the units are 1/100 of an inch.  Otherwise, the units
-    /// are pixels.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("200") ]
-
-    public Int32
-    Height
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Int32)this[HeightKey] );
-        }
-
-        set
-        {
-            this[HeightKey] = value;
+            this[ImageSizeKey] = value;
 
             AssertValid();
         }
@@ -164,12 +122,14 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 
@@ -182,15 +142,9 @@ public class GraphImageUserSettings : ApplicationSettingsBase
     protected const String UseControlSizeKey =
         "UseControlSize";
 
-    /// Name of the settings key for the Width property.
+    /// Name of the settings key for the ImageSize property.
 
-    protected const String WidthKey =
-        "Width";
-
-    /// Name of the settings key for the Height property.
-
-    protected const String HeightKey =
-        "Height";
+    protected const String ImageSizeKey = "ImageSize";
 
 
     //*************************************************************************

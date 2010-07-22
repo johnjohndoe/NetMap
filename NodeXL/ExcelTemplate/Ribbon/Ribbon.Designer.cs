@@ -67,8 +67,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnEditLayoutUserSettings = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.grpVisualAttributes = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
             this.btnAutoFillWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetColor = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetAlpha = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mnuSetVisibility = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.btnSetEdgeVisibilityShow = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnSetEdgeVisibilitySkip = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -93,9 +91,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.separator11 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnSetVertexShapeLabel = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnSetVertexShapeImage = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexRadius = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetEdgeWidth = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetBackground = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAutoFillWorkbookWithScheme = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.grpAnalysis = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
             this.btnShowDynamicFilters = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -103,8 +98,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.sbCreateSubgraphImages = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
             this.btnCreateSubgraphImages = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnDeleteSubgraphThumbnails = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.sbCreateClusters = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
-            this.btnCreateClusters = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.sbCalculateClusters = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
+            this.btnCalculateClusters = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.chkClausetNewmanMoore = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.chkWakitaTsurumi = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
             this.chkGirvanNewman = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
@@ -133,6 +128,12 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnRegisterUser = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCheckForUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnAutomateTasks = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnSetColor = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnSetAlpha = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnSetVertexRadius = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnSetEdgeWidth = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnSetBackground = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -388,6 +389,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.grpGraph.Items.Add(this.btnReadWorkbook);
             this.grpGraph.Items.Add(this.rddGraphDirectedness);
             this.grpGraph.Items.Add(this.rddLayout);
+            this.grpGraph.Items.Add(this.btnAutomateTasks);
             this.grpGraph.Label = "Graph";
             this.grpGraph.Name = "grpGraph";
             // 
@@ -467,32 +469,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAutoFillWorkbook.SuperTip = "Calculate and fill in the graph\'s visual property columns, such as edge width and" +
                 " vertex shape, using values from other columns.";
             this.btnAutoFillWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAutoFillWorkbook_Click);
-            // 
-            // btnSetColor
-            // 
-            this.btnSetColor.Enabled = false;
-            this.btnSetColor.Label = "Color";
-            this.btnSetColor.Name = "btnSetColor";
-            this.btnSetColor.OfficeImageId = "SmartArtChangeColorsGallery";
-            this.btnSetColor.ScreenTip = "Color ";
-            this.btnSetColor.ShowImage = true;
-            this.btnSetColor.SuperTip = "Set the color of the selected edges, vertices, or clusters.\r\n\r\nThe Edges, Vertice" +
-                "s, or Clusters worksheet must be selected before this can be used.";
-            this.btnSetColor.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.Color;
-            this.btnSetColor.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
-            // 
-            // btnSetAlpha
-            // 
-            this.btnSetAlpha.Enabled = false;
-            this.btnSetAlpha.Label = "Opacity";
-            this.btnSetAlpha.Name = "btnSetAlpha";
-            this.btnSetAlpha.OfficeImageId = "BrightnessAndContrastEdit";
-            this.btnSetAlpha.ScreenTip = "Opacity";
-            this.btnSetAlpha.ShowImage = true;
-            this.btnSetAlpha.SuperTip = "Set the opacity of the selected edges or vertices.\r\n\r\nThe Edges or Vertices works" +
-                "heet must be selected before this can be used.";
-            this.btnSetAlpha.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.Alpha;
-            this.btnSetAlpha.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
             // 
             // mnuSetVisibility
             // 
@@ -754,43 +730,6 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnSetVertexShapeImage.Tag = Microsoft.NodeXL.Visualization.Wpf.VertexShape.Image;
             this.btnSetVertexShapeImage.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
             // 
-            // btnSetVertexRadius
-            // 
-            this.btnSetVertexRadius.Enabled = false;
-            this.btnSetVertexRadius.Label = "Vertex Size";
-            this.btnSetVertexRadius.Name = "btnSetVertexRadius";
-            this.btnSetVertexRadius.OfficeImageId = "SizeToControlWidth";
-            this.btnSetVertexRadius.ScreenTip = "Vertex Size";
-            this.btnSetVertexRadius.ShowImage = true;
-            this.btnSetVertexRadius.SuperTip = "Set the size of the selected vertices.\r\n\r\nThe Vertices worksheet must be selected" +
-                " before this can be used.";
-            this.btnSetVertexRadius.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.VertexRadius;
-            this.btnSetVertexRadius.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
-            // 
-            // btnSetEdgeWidth
-            // 
-            this.btnSetEdgeWidth.Enabled = false;
-            this.btnSetEdgeWidth.Label = "Edge Width";
-            this.btnSetEdgeWidth.Name = "btnSetEdgeWidth";
-            this.btnSetEdgeWidth.OfficeImageId = "OutlineWeightGallery";
-            this.btnSetEdgeWidth.ScreenTip = "Edge Width";
-            this.btnSetEdgeWidth.ShowImage = true;
-            this.btnSetEdgeWidth.SuperTip = "Set the width of the selected edges.\r\n\r\nThe Edges worksheet must be selected befo" +
-                "re this can be used.";
-            this.btnSetEdgeWidth.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.EdgeWidth;
-            this.btnSetEdgeWidth.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
-            // 
-            // btnSetBackground
-            // 
-            this.btnSetBackground.Label = "Background";
-            this.btnSetBackground.Name = "btnSetBackground";
-            this.btnSetBackground.OfficeImageId = "SheetBackground";
-            this.btnSetBackground.ScreenTip = "Graph Background";
-            this.btnSetBackground.ShowImage = true;
-            this.btnSetBackground.SuperTip = "Set the graph\'s background";
-            this.btnSetBackground.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.GraphBackground;
-            this.btnSetBackground.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
-            // 
             // btnAutoFillWorkbookWithScheme
             // 
             this.btnAutoFillWorkbookWithScheme.Image = ((System.Drawing.Image)(resources.GetObject("btnAutoFillWorkbookWithScheme.Image")));
@@ -806,7 +745,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.grpAnalysis.Items.Add(this.btnShowDynamicFilters);
             this.grpAnalysis.Items.Add(this.btnShowGraphMetrics);
             this.grpAnalysis.Items.Add(this.sbCreateSubgraphImages);
-            this.grpAnalysis.Items.Add(this.sbCreateClusters);
+            this.grpAnalysis.Items.Add(this.sbCalculateClusters);
             this.grpAnalysis.Label = "Analysis";
             this.grpAnalysis.Name = "grpAnalysis";
             // 
@@ -830,7 +769,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnShowGraphMetrics.OfficeImageId = "Calculator";
             this.btnShowGraphMetrics.ScreenTip = "Graph Metrics";
             this.btnShowGraphMetrics.ShowImage = true;
-            this.btnShowGraphMetrics.SuperTip = "Compute selected graph metrics and insert the results into the workbook.";
+            this.btnShowGraphMetrics.SuperTip = "Calculate selected graph metrics and insert the results into the workbook.";
             this.btnShowGraphMetrics.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowGraphMetrics_Click);
             // 
             // sbCreateSubgraphImages
@@ -867,28 +806,28 @@ namespace Microsoft.NodeXL.ExcelTemplate
                 " any subgraph image files you saved in a folder.";
             this.btnDeleteSubgraphThumbnails.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnDeleteSubgraphThumbnails_Click);
             // 
-            // sbCreateClusters
+            // sbCalculateClusters
             // 
-            this.sbCreateClusters.Items.Add(this.btnCreateClusters);
-            this.sbCreateClusters.Items.Add(this.chkClausetNewmanMoore);
-            this.sbCreateClusters.Items.Add(this.chkWakitaTsurumi);
-            this.sbCreateClusters.Items.Add(this.chkGirvanNewman);
-            this.sbCreateClusters.Label = "Find Clusters";
-            this.sbCreateClusters.Name = "sbCreateClusters";
-            this.sbCreateClusters.OfficeImageId = "AppointmentColorDialog";
-            this.sbCreateClusters.ScreenTip = "Find Clusters";
-            this.sbCreateClusters.SuperTip = resources.GetString("sbCreateClusters.SuperTip");
-            this.sbCreateClusters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCreateClusters_Click);
+            this.sbCalculateClusters.Items.Add(this.btnCalculateClusters);
+            this.sbCalculateClusters.Items.Add(this.chkClausetNewmanMoore);
+            this.sbCalculateClusters.Items.Add(this.chkWakitaTsurumi);
+            this.sbCalculateClusters.Items.Add(this.chkGirvanNewman);
+            this.sbCalculateClusters.Label = "Find Clusters";
+            this.sbCalculateClusters.Name = "sbCalculateClusters";
+            this.sbCalculateClusters.OfficeImageId = "AppointmentColorDialog";
+            this.sbCalculateClusters.ScreenTip = "Find Clusters";
+            this.sbCalculateClusters.SuperTip = resources.GetString("sbCalculateClusters.SuperTip");
+            this.sbCalculateClusters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCalculateClusters_Click);
             // 
-            // btnCreateClusters
+            // btnCalculateClusters
             // 
-            this.btnCreateClusters.Label = "Find Clusters";
-            this.btnCreateClusters.Name = "btnCreateClusters";
-            this.btnCreateClusters.OfficeImageId = "AppointmentColorDialog";
-            this.btnCreateClusters.ScreenTip = "Find Clusters";
-            this.btnCreateClusters.ShowImage = true;
-            this.btnCreateClusters.SuperTip = resources.GetString("btnCreateClusters.SuperTip");
-            this.btnCreateClusters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCreateClusters_Click);
+            this.btnCalculateClusters.Label = "Find Clusters";
+            this.btnCalculateClusters.Name = "btnCalculateClusters";
+            this.btnCalculateClusters.OfficeImageId = "AppointmentColorDialog";
+            this.btnCalculateClusters.ScreenTip = "Find Clusters";
+            this.btnCalculateClusters.ShowImage = true;
+            this.btnCalculateClusters.SuperTip = resources.GetString("btnCalculateClusters.SuperTip");
+            this.btnCalculateClusters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCalculateClusters_Click);
             // 
             // chkClausetNewmanMoore
             // 
@@ -980,7 +919,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.chkShowVertexGraphMetricsColumnGroup.Name = "chkShowVertexGraphMetricsColumnGroup";
             this.chkShowVertexGraphMetricsColumnGroup.ScreenTip = "Show/Hide Graph Metric Columns";
             this.chkShowVertexGraphMetricsColumnGroup.SuperTip = "Show or hide the graph metric columns in the Vertices worksheet.\r\n\r\nGraph metrics" +
-                " can be computed with the Graph Metrics button in the Analysis ribbon group.";
+                " can be calculated with the Graph Metrics button in the Analysis ribbon group.";
             this.chkShowVertexGraphMetricsColumnGroup.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowVertexGraphMetricsColumnGroup_Click);
             // 
             // chkShowOtherColumns
@@ -1153,6 +1092,79 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.btnAbout.SuperTip = "View information about Microsoft NodeXL.";
             this.btnAbout.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAbout_Click);
             // 
+            // btnAutomateTasks
+            // 
+            this.btnAutomateTasks.Label = "Automate";
+            this.btnAutomateTasks.Name = "btnAutomateTasks";
+            this.btnAutomateTasks.OfficeImageId = "FileStartWorkflow";
+            this.btnAutomateTasks.ScreenTip = "Automate";
+            this.btnAutomateTasks.ShowImage = true;
+            this.btnAutomateTasks.SuperTip = "Run multiple tasks with one button click.";
+            this.btnAutomateTasks.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAutomateTasks_Click);
+            // 
+            // btnSetColor
+            // 
+            this.btnSetColor.Enabled = false;
+            this.btnSetColor.Label = "Color";
+            this.btnSetColor.Name = "btnSetColor";
+            this.btnSetColor.OfficeImageId = "SmartArtChangeColorsGallery";
+            this.btnSetColor.ScreenTip = "Color ";
+            this.btnSetColor.ShowImage = true;
+            this.btnSetColor.SuperTip = "Set the color of the selected edges, vertices, or clusters.\r\n\r\nThe Edges, Vertice" +
+                "s, or Clusters worksheet must be selected before this can be used.";
+            this.btnSetColor.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.Color;
+            this.btnSetColor.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            // 
+            // btnSetAlpha
+            // 
+            this.btnSetAlpha.Enabled = false;
+            this.btnSetAlpha.Label = "Opacity";
+            this.btnSetAlpha.Name = "btnSetAlpha";
+            this.btnSetAlpha.OfficeImageId = "BrightnessAndContrastEdit";
+            this.btnSetAlpha.ScreenTip = "Opacity";
+            this.btnSetAlpha.ShowImage = true;
+            this.btnSetAlpha.SuperTip = "Set the opacity of the selected edges or vertices.\r\n\r\nThe Edges or Vertices works" +
+                "heet must be selected before this can be used.";
+            this.btnSetAlpha.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.Alpha;
+            this.btnSetAlpha.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            // 
+            // btnSetVertexRadius
+            // 
+            this.btnSetVertexRadius.Enabled = false;
+            this.btnSetVertexRadius.Label = "Vertex Size";
+            this.btnSetVertexRadius.Name = "btnSetVertexRadius";
+            this.btnSetVertexRadius.OfficeImageId = "SizeToControlWidth";
+            this.btnSetVertexRadius.ScreenTip = "Vertex Size";
+            this.btnSetVertexRadius.ShowImage = true;
+            this.btnSetVertexRadius.SuperTip = "Set the size of the selected vertices.\r\n\r\nThe Vertices worksheet must be selected" +
+                " before this can be used.";
+            this.btnSetVertexRadius.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.VertexRadius;
+            this.btnSetVertexRadius.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            // 
+            // btnSetEdgeWidth
+            // 
+            this.btnSetEdgeWidth.Enabled = false;
+            this.btnSetEdgeWidth.Label = "Edge Width";
+            this.btnSetEdgeWidth.Name = "btnSetEdgeWidth";
+            this.btnSetEdgeWidth.OfficeImageId = "OutlineWeightGallery";
+            this.btnSetEdgeWidth.ScreenTip = "Edge Width";
+            this.btnSetEdgeWidth.ShowImage = true;
+            this.btnSetEdgeWidth.SuperTip = "Set the width of the selected edges.\r\n\r\nThe Edges worksheet must be selected befo" +
+                "re this can be used.";
+            this.btnSetEdgeWidth.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.EdgeWidth;
+            this.btnSetEdgeWidth.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            // 
+            // btnSetBackground
+            // 
+            this.btnSetBackground.Label = "Background";
+            this.btnSetBackground.Name = "btnSetBackground";
+            this.btnSetBackground.OfficeImageId = "SheetBackground";
+            this.btnSetBackground.ScreenTip = "Graph Background";
+            this.btnSetBackground.ShowImage = true;
+            this.btnSetBackground.SuperTip = "Set the graph\'s background";
+            this.btnSetBackground.Tag = Microsoft.NodeXL.ExcelTemplate.VisualAttributes.GraphBackground;
+            this.btnSetBackground.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            // 
             // Ribbon
             // 
             this.Name = "Ribbon";
@@ -1191,7 +1203,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnMergeDuplicateEdges;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromEdgeWorkbook;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup grpGraph;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCreateClusters;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCalculateClusters;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkReadClusters;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromPajekFile;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCheckForUpdate;
@@ -1274,10 +1286,11 @@ namespace Microsoft.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetBackground;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnEditLayoutUserSettings;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToGraphMLFile;
-        internal Microsoft.Office.Tools.Ribbon.RibbonSplitButton sbCreateClusters;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSplitButton sbCalculateClusters;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkGirvanNewman;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkClausetNewmanMoore;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox chkWakitaTsurumi;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAutomateTasks;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

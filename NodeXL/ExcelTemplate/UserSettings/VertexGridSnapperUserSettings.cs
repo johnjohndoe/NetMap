@@ -18,7 +18,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("VertexGridSnapperUserSettings") ]
 
-public class VertexGridSnapperUserSettings : ApplicationSettingsBase
+public class VertexGridSnapperUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: VertexGridSnapperUserSettings()
@@ -77,12 +77,14 @@ public class VertexGridSnapperUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 

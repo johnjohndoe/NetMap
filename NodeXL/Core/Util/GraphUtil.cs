@@ -49,7 +49,7 @@ public static class GraphUtil
 
         foreach (IVertex oVertex in graph.Vertices)
         {
-            if (oVertex.IncidentEdges.Length > 0)
+            if (oVertex.IncidentEdges.Count > 0)
             {
                 oNonIsolatedVertices.Add(oVertex);
             }

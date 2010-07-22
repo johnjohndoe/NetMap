@@ -22,7 +22,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("GeneralUserSettings4") ]
 
-public class GeneralUserSettings : ApplicationSettingsBase
+public class GeneralUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: GeneralUserSettings()
@@ -1113,12 +1113,14 @@ public class GeneralUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 

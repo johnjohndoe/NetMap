@@ -119,12 +119,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Property: IncomingEdges
     //
     /// <summary>
-    /// Gets an array of the vertex's incoming edges.
+    /// Gets a collection of the vertex's incoming edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more incoming edges, as an array of
-    /// <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more incoming edges, as a
+    /// collection of <see cref="IEdge" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -137,7 +137,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </para>
     ///
     /// <para>
-    /// If there are no incoming edges, the returned array is empty.  The
+    /// If there are no incoming edges, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -154,7 +154,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    public IEdge []
+    public ICollection<IEdge>
     IncomingEdges
     {
         get
@@ -169,12 +169,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Property: OutgoingEdges
     //
     /// <summary>
-    /// Gets an array of the vertex's outgoing edges.
+    /// Gets a collection of the vertex's outgoing edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more outgoing edges, as an array of
-    /// <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more outgoing edges, as a
+    /// collection of <see cref="IEdge" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -187,7 +187,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </para>
     ///
     /// <para>
-    /// If there are no outgoing edges, the returned array is empty.  The
+    /// If there are no outgoing edges, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -204,7 +204,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    public IEdge []
+    public ICollection<IEdge>
     OutgoingEdges
     {
         get
@@ -219,20 +219,20 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Property: IncidentEdges
     //
     /// <summary>
-    /// Gets an array of the vertex's incident edges.
+    /// Gets a collection of the vertex's incident edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more incident edges, as an array of
-    /// <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more incident edges, as a
+    /// collection of <see cref="IEdge" /> objects.
     /// </value>
     ///
     /// <remarks>
     /// An incident edge is an edge that is connected to the vertex.
     ///
     /// <para>
-    /// The returned array is the union of the <see cref="IncomingEdges" /> and
-    /// <see cref="OutgoingEdges" /> arrays.
+    /// The returned collection is the union of the <see
+    /// cref="IncomingEdges" /> and <see cref="OutgoingEdges" /> collections.
     /// </para>
     ///
     /// <para>
@@ -241,7 +241,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </para>
     ///
     /// <para>
-    /// If there are no incident edges, the returned array is empty.  The
+    /// If there are no incident edges, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -258,7 +258,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    public IEdge []
+    public ICollection<IEdge>
     IncidentEdges
     {
         get
@@ -278,12 +278,16 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     ///
     /// <value>
     /// The vertex's location as a <see cref="PointF" />.  The default value is
-    /// cref="PointF.Empty" />.
+    /// <see cref="PointF.Empty" />.
     /// </value>
     ///
     /// <remarks>
-    /// This property is set when the graph is laid out by
-    /// ILayout.LayOutGraph and is read when the graph is drawn.
+    /// Typically, this property is set when the graph is laid out by
+    /// ILayout.LayOutGraph and is read when the graph is drawn.  It's also
+    /// possible to explicitly set all of the graph's vertex locations using
+    /// this property and then bypass the layout stage.  You might do this
+    /// when you want to restore vertex locations that have been saved from a
+    /// previous layout, for example.
     /// </remarks>
     //*************************************************************************
 
@@ -366,12 +370,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Property: PredecessorVertices
     //
     /// <summary>
-    /// Gets an array of the vertex's predecessor vertices.
+    /// Gets a collection of the vertex's predecessor vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more predecessor vertices, as an array
-    /// of <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more predecessor vertices, as a
+    /// collection of <see cref="IVertex" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -383,18 +387,18 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// A self-loop (an edge that connects a vertex to itself) is always
     /// considered an incoming edge.  Therefore, if there is an edge that
     /// connects this vertex to itself, then this vertex is included in the
-    /// returned array.
+    /// returned collection.
     /// </para>
     ///
     /// <para>
-    /// The predecessor vertices in the returned array are unique.  If two or
-    /// more incoming edges connect this vertex with another vertex, the other
-    /// vertex is included once only.
+    /// The predecessor vertices in the returned collection are unique.  If two
+    /// or more incoming edges connect this vertex with another vertex, the
+    /// other vertex is included once only.
     /// </para>
     ///
     /// <para>
-    /// If there are no predecessor vertices, the returned array is empty.  The
-    /// returned value is never null.
+    /// If there are no predecessor vertices, the returned collection is empty.
+    /// The returned value is never null.
     /// </para>
     ///
     /// <para>
@@ -410,7 +414,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    public IVertex []
+    public ICollection<IVertex>
     PredecessorVertices
     {
         get
@@ -425,12 +429,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Property: SuccessorVertices
     //
     /// <summary>
-    /// Gets an array of the vertex's successor vertices.
+    /// Gets a collection of the vertex's successor vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more successor vertices, as an array
-    /// of <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more successor vertices, as a
+    /// collection of <see cref="IVertex" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -442,18 +446,18 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// A self-loop (an edge that connects a vertex to itself) is always
     /// considered an outgoing edge.  Therefore, if there is an edge that
     /// connects this vertex to itself, then this vertex is included in the
-    /// returned array.
+    /// returned collection.
     /// </para>
     ///
     /// <para>
-    /// The successor vertices in the returned array are unique.  If two or
-    /// more outgoing edges connect this vertex with another vertex, the other
-    /// vertex is included once only.
+    /// The successor vertices in the returned collection are unique.  If two
+    /// or more outgoing edges connect this vertex with another vertex, the
+    /// other vertex is included once only.
     /// </para>
     ///
     /// <para>
-    /// If there are no successor vertices, the returned array is empty.  The
-    /// returned value is never null.
+    /// If there are no successor vertices, the returned collection is empty.
+    /// The returned value is never null.
     /// </para>
     ///
     /// <para>
@@ -469,7 +473,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    public IVertex []
+    public ICollection<IVertex>
     SuccessorVertices
     {
         get
@@ -484,12 +488,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Property: AdjacentVertices
     //
     /// <summary>
-    /// Gets an array of the vertex's adjacent vertices.
+    /// Gets a collection of the vertex's adjacent vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more adjacent vertices, as an array of
-    /// <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more adjacent vertices, as a
+    /// collection of <see cref="IVertex" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -506,18 +510,18 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// A self-loop (an edge that connects a vertex to itself) is always
     /// considered an incident edge.  Therefore, if there is an edge that
     /// connects this vertex to itself, then this vertex is included in the
-    /// returned array.
+    /// returned collection.
     /// </para>
     ///
     /// <para>
-    /// The adjacent vertices in the returned array are unique.  If two or
+    /// The adjacent vertices in the returned collection are unique.  If two or
     /// more edges connect this vertex with another vertex, the other vertex is
     /// included once only.
     /// </para>
     ///
     /// <para>
-    /// If there are no adjacent vertices, the returned array is empty.  The
-    /// returned value is never null.
+    /// If there are no adjacent vertices, the returned collection is empty.
+    /// The returned value is never null.
     /// </para>
     ///
     /// <para>
@@ -533,7 +537,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    public IVertex []
+    public ICollection<IVertex>
     AdjacentVertices
     {
         get
@@ -608,7 +612,8 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Method: GetConnectingEdges()
     //
     /// <summary>
-    /// Gets an array of edges that connect this vertex to a specified vertex.
+    /// Gets a collection of edges that connect this vertex to a specified
+    /// vertex.
     /// </summary>
     ///
     /// <param name="otherVertex">
@@ -616,17 +621,18 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </param>
     ///
     /// <returns>
-    /// An array of zero or more edges that connect this vertex to <paramref
-    /// name="otherVertex" />, as an array of <see cref="IEdge" /> objects.
+    /// A collection of zero or more edges that connect this vertex to
+    /// <paramref name="otherVertex" />, as a collection of <see
+    /// cref="IEdge" /> objects.
     /// </returns>
     ///
     /// <remarks>
-    /// If there are no such edges, the returned array is empty.  The returned
-    /// value is never null.
+    /// If there are no such edges, the returned collection is empty.  The
+    /// returned value is never null.
     ///
     /// <para>
     /// A self-loop (an edge that connects a vertex to itself) is returned in
-    /// the array only if <paramref name="otherVertex" /> is this vertex.
+    /// the collection only if <paramref name="otherVertex" /> is this vertex.
     /// </para>
     ///
     /// <para>
@@ -637,7 +643,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </remarks>
     //*************************************************************************
 
-    public IEdge []
+    public ICollection<IEdge>
     GetConnectingEdges
     (
         IVertex otherVertex
@@ -985,7 +991,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Method: GetIncomingOrOutgoingEdges()
     //
     /// <summary>
-    /// Gets an array of the vertex's incoming or outgoing edges.
+    /// Gets a collection of the vertex's incoming or outgoing edges.
     /// </summary>
     ///
     /// <param name="bIncludeIncoming">
@@ -997,12 +1003,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </param>
     ///
     /// <returns>
-    /// An array of the vertex's zero or more incoming or outgoing edges (or
-    /// both), as an array of <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more incoming or outgoing edges (or
+    /// both), as a collection of <see cref="IEdge" /> objects.
     /// </returns>
     //*************************************************************************
 
-    protected IEdge []
+    protected ICollection<IEdge>
     GetIncomingOrOutgoingEdges
     (
         Boolean bIncludeIncoming,
@@ -1028,7 +1034,7 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     //  Method: GetPredecessorOrSuccessorVertices()
     //
     /// <summary>
-    /// Gets an array of the vertex's predecessor or successor vertices, or
+    /// Gets a collection of the vertex's predecessor or successor vertices, or
     /// both.
     /// </summary>
     ///
@@ -1041,12 +1047,12 @@ public class Vertex : GraphVertexEdgeBase, IVertex
     /// </param>
     ///
     /// <returns>
-    /// An array of the vertex's zero or more predecessor or successor
-    /// vertices, as an array of <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more predecessor or successor
+    /// vertices, as a collection of <see cref="IVertex" /> objects.
     /// </returns>
     //*************************************************************************
 
-    protected IVertex []
+    protected ICollection<IVertex>
     GetPredecessorOrSuccessorVertices
     (
         Boolean bIncludePredecessor,

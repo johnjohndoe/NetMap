@@ -16,12 +16,17 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: AutoFillWorkbookDialog
 //
 /// <summary>
-/// Runs the application's AutoFill feature on a workbook.
+/// Edits an <see cref="AutoFillUserSettings" /> object and autofills the
+/// workbook using those user settings.
 /// </summary>
 ///
 /// <remarks>
-/// This is a modeless dialog.  To show it, call its <see
-/// cref="Form.Show(IWin32Window)" /> method.
+/// This dialog can run in either of two modes.  If the <see
+/// cref="DialogMode" /> argument passed to the constructor is <see
+/// cref="DialogMode.Normal" />, it should be opened with <see
+/// cref="Form.Show(IWin32Window)" /> to make it modeless.  If the argument is
+/// <see cref="DialogMode.EditOnly" />, it should be opened with <see
+/// cref="Form.ShowDialog()" /> to make it modal.
 ///
 /// <para>
 /// The AutoFill feature automatically fills edge and vertex attribute columns
@@ -52,19 +57,38 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     /// <param name="workbook">
     /// Workbook containing the graph data.
     /// </param>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the dialog is being used.
+    /// </param>
     //*************************************************************************
 
     public AutoFillWorkbookDialog
     (
-        Microsoft.Office.Interop.Excel.Workbook workbook
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        DialogMode mode
     )
     : this()
     {
         Debug.Assert(workbook != null);
 
         m_oWorkbook = workbook;
+        m_eMode = mode;
 
         m_oAutoFillUserSettings = new AutoFillUserSettings(workbook);
+
+        if (m_eMode == DialogMode.EditOnly)
+        {
+            this.Text += " Options";
+            btnAutoFill.Text = "OK";
+            btnClose.Text = "Cancel";
+
+            // The column header text "When Autofill is clicked..." makes no
+            // sense when the "Autofill" button text has been changed to "OK".
+
+            lblSourceColumnHeader.Text =
+                lblSourceColumnHeader.Text.Replace("clicked", "run");
+        }
 
         // Instantiate an object that retrieves and saves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -103,6 +127,28 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         InitializeComponent();
 
         // AssertValid();
+    }
+
+    //*************************************************************************
+    //  Enum: DialogMode
+    //
+    /// <summary>
+    /// Indicates the mode in which the dialog is being used.
+    /// </summary>
+    //*************************************************************************
+
+    public enum
+    DialogMode
+    {
+        /// The user can edit the autofill settings and then autofill the
+        /// workbook.  The dialog should be opened as modeless.
+
+        Normal,
+
+        /// The user can edit the autofill settings but cannot autofill the
+        /// workbook.  The dialog should be opened as modal.
+
+        EditOnly,
     }
 
     //*************************************************************************
@@ -756,6 +802,15 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         FormClosingEventArgs e
     )
     {
+        if (m_eMode == DialogMode.EditOnly &&
+            this.DialogResult == DialogResult.Cancel)
+        {
+            // The user clicked Cancel while editing the user settings.  Don't
+            // save the edited settings.
+
+            return;
+        }
+
         if ( DoDataExchange(true) )
         {
             m_oAutoFillUserSettings.Save();
@@ -1700,6 +1755,16 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     {
         if ( DoDataExchange(true) )
         {
+            if (m_eMode == DialogMode.EditOnly)
+            {
+                // The dialog is modal, and btnAutoFill is an "OK" button that
+                // should close the dialog.
+
+                DialogResult = DialogResult.OK;
+                this.Close();
+                return;
+            }
+
             try
             {
                 WorkbookAutoFiller.AutoFillWorkbook(
@@ -1759,6 +1824,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oWorkbook != null);
+        // m_eMode
         Debug.Assert(m_oAutoFillUserSettings != null);
         Debug.Assert(m_oAutoFillWorkbookDialogUserSettings != null);
         Debug.Assert(m_aoEdgeSourceColumnNameComboBoxes != null);
@@ -1815,6 +1881,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
     /// Workbook containing the graph data.
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
+
+    /// Indicates the mode in which the dialog is being used.
+
+    protected DialogMode m_eMode;
 
     /// AutoFill user settings edited by this dialog.
 

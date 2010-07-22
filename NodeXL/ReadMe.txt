@@ -11,21 +11,19 @@ listed in alphabetical order.
 
 Adapters
 --------
-Visual Studio project, contains graph adapters that read and write graphs to
+Class library project.  Contains graph adapters that read and write graphs to
 various file formats.
 
 
 Algorithms
 ----------
-Visual Studio project, contains classes that implement graph algorithms.  As of
-June 2007, most of the classes have not been implemented.  Graph algorithms are
-implemented in ExcelTemplate, which is the wrong place.  ExcelTemplate's graph
-algorithms need to be refactored to make them available to other applications.
+Class library project.  Contains classes that implement graph algorithms.
 
 
 ApplicationUtil
 ---------------
-Visual Studio project, contains classes useful to graphing applications.
+Class library project.  Contains classes useful to graphing applications,
+including ExcelTemplate.
 
 
 BuildTools
@@ -35,15 +33,15 @@ Tools needed by the build process, but not needed on client machines.
 
 Common
 ------
-Contains classes that are used by two or more Visual Studio projects but not
-contained in a shared assembly.  The classes are linked to the projects via the
-Add as Link option in Visual Studio's Add Existing Item dialog.
+Classes that are used by two or more projects but not compiled into a shared
+assembly.  The classes are linked to the projects via the Add as Link option in
+Visual Studio's Add Existing Item dialog.
 
 
 Core
 ----
-Visual Studio project, contains core classes representing graphs, vertices, and
-edges.
+Class library project.  Contains core classes representing graphs, vertices,
+and edges.
 
 
 Documents
@@ -53,73 +51,94 @@ NodeXL documentation.
 
 ExcelTemplate
 -------------
-Visual Studio project.  Contains a VSTO-based Excel 2007 document customization
-that displays a graph within an Excel workbook.  This replaces
-DesktopApplication.
+VSTO-based Excel 2007 template project that displays a graph within an Excel
+workbook.
 
 
 ExcelTemplatePlugIns
 --------------------
-Visual Studio project, contains interface definitions for plug-ins used by
+Class library project.  Contains interface definitions for plug-ins used by
 ExcelTemplate.
 
 
 ExcelTemplateRegisterUser
 -------------------------
-Visual Studio project, contains a Windows Forms application that registers a
-user of the ExcelTemplate.  This gets run from within ExcelTemplateSetup.
+Windows Forms project.  Registers a user of the ExcelTemplate from within
+ExcelTemplateSetup and ExcelTemplate.
 
 
 ExcelTemplateSetup
 ------------------
-Visual Studio deployment project, installs ExcelTemplate.
+Deployment project.  Installs ExcelTemplate.
 
 
 ExcelTemplateSetupClickOnceInstaller
 ------------------------------------
-Custom action class used by ExcelTemplateSetup.
+Class library project.  Contains custom action class used by
+ExcelTemplateSetup.
 
 
 ExcelTemplateSetupStarter
 -------------------------
-Console application for starting the Excel Template setup process on a client
-machine.
+Console project.  Starts the Excel Template setup process on a client machine.
 
 
 ExcelTemplateSetupTrustInstaller
 --------------------------------
-Custom action class used by ExcelTemplateSetup.
+Class library project.  Contains custom action class used by
+ExcelTemplateSetup.
+
+
+GraphDataProviders
+------------------
+Class library project.  Contains several classes that implement the
+Microsoft.NodeXL.ExcelTemplatePlugIns.IGraphDataProvider interface.   These
+classes are plugins for the ExcelTemplate project.  They import graph data into
+the template from data sources that the template doesn't know about, such as
+Twitter, YouTube, and Flickr.
 
 
 Layouts
 -------------
-Visual Studio project, contains classes that lay out graphs.
+Class library project.  Contains classes that lay out graphs.
+
+
+NetworkServer
+-------------
+Console project.  Gets graph data using the classes in GraphDataProviders and
+stores it in a variety of file formats.  This is a console-based alternative to
+getting the same graph data from within the ExcelTemplate.
+
+
+TestGraphDataProviders
+----------------------
+Windows Forms project.  Tests the IGraphDataProvider classes in
+GraphDataProviders.
 
 
 TestWpfNodeXLControl
 --------------------
-Visual Studio project, contains a WPF application for testing the WPF
-NodeXLControl.
+Windows Forms project.  Tests the NodeXLControl.
 
 
 UnitTests
 ---------
-Visual Studio project, contains unit tests for testing classes in the other
-projects.
+Unit test project.  Tests classes in the other projects.
 
 
 Util
 ----
-Visual Studio project, contains classes used by two or more Visual Studio
+Class library project.  Contains classes used by two or more of the other
 projects.
 
 
 WpfControl
 ----------
-Visual Studio project, contains a WPF control that draws graphs.
+WPF custom control library project.  Contains NodeXLControl, a WPF control that
+draws graphs.
 
 
 WpfVisualization
 ----------------
-Visual Studio project, contains classes used to draw graphs in the WPF
+Class library project.  Contains classes used to draw graphs in the WPF
 environment.

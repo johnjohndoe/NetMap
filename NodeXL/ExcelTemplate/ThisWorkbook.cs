@@ -13,6 +13,7 @@ using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.Adapters;
+using Microsoft.NodeXL.ApplicationUtil;
 using Microsoft.NodeXL.ExcelTemplatePlugIns;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -562,20 +563,34 @@ public partial class ThisWorkbook
     /// <summary>
     /// Merges duplicate edges in the edge worksheet.
     /// </summary>
+    ///
+    /// <param name="requestMergeApproval">
+    /// true to request approval from the user to merge duplicate edges.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the duplicate edges were successfully merged.
+    /// </returns>
     //*************************************************************************
 
-    public void
-    MergeDuplicateEdges()
+    public Boolean
+    MergeDuplicateEdges
+    (
+        Boolean requestMergeApproval
+    )
     {
         AssertValid();
 
         if (
             !this.ExcelApplicationIsReady(true)
             ||
-            !MergeIsApproved("and add an Edge Weight column.")
+                (
+                requestMergeApproval &&
+                !MergeIsApproved("and add an Edge Weight column.")
+                )
             )
         {
-            return;
+            return (false);
         }
 
         // Create and use the object that merges duplicate edges.
@@ -589,19 +604,101 @@ public partial class ThisWorkbook
         try
         {
             oDuplicateEdgeMerger.MergeDuplicateEdges(this.InnerObject);
-
             this.ScreenUpdating = true;
+
+            return (true);
         }
         catch (Exception oException)
         {
             // Don't let Excel handle unhandled exceptions.
 
             this.ScreenUpdating = true;
-
             ErrorUtil.OnException(oException);
+
+            return (false);
+        }
+        finally
+        {
+            ShowWaitCursor = false;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AutomateTasks()
+    //
+    /// <summary>
+    /// Opens a dialog box that lets the user run multiple tasks.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    AutomateTasks()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
         }
 
-        ShowWaitCursor = false;
+        AutomateTasksDialog oAutomateTasksDialog =
+            new AutomateTasksDialog(this, this.Ribbon);
+
+        oAutomateTasksDialog.ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: AutomateTasksOnOpen()
+    //
+    /// <summary>
+    /// Runs task automation on the workbook immediately after it is opened.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    AutomateTasksOnOpen()
+    {
+        AssertValid();
+
+        AutomateTasksUserSettings oAutomateTasksUserSettings =
+            new AutomateTasksUserSettings();
+
+        try
+        {
+            TaskAutomator.AutomateThisWorkbook(this,
+                oAutomateTasksUserSettings.TasksToRun, this.Ribbon);
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+            return;
+        }
+
+        if ( (oAutomateTasksUserSettings.TasksToRun &
+            AutomationTasks.ReadWorkbook) != 0 )
+        {
+            // The graph is being asynchronously laid out in the graph pane.
+            // Wait for the layout to complete.
+
+            GraphLaidOutEventHandler oGraphLaidOutEventHandler = null;
+
+            oGraphLaidOutEventHandler =
+                delegate(Object sender, GraphLaidOutEventArgs e)
+            {
+                // In case something went wrong while automating this workbook,
+                // prevent this delegate from being called again.
+
+                this.GraphLaidOut -= oGraphLaidOutEventHandler;
+
+                OnTasksAutomatedOnOpen();
+            };
+
+            this.GraphLaidOut += oGraphLaidOutEventHandler;
+        }
+        else
+        {
+            OnTasksAutomatedOnOpen();
+        }
     }
 
     //*************************************************************************
@@ -682,10 +779,18 @@ public partial class ThisWorkbook
     /// Creates a subgraph of each of the graph's vertices and saves the images
     /// to disk or the workbook.
     /// </summary>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the CreateSubgraphImagesDialog is being
+    /// used.
+    /// </param>
     //*************************************************************************
 
     public void
-    CreateSubgraphImages()
+    CreateSubgraphImages
+    (
+        CreateSubgraphImagesDialog.DialogMode mode
+    )
     {
         AssertValid();
 
@@ -696,35 +801,38 @@ public partial class ThisWorkbook
 
         // Populate the vertex worksheet.  This is necessary in case the user
         // opts to insert images into the vertex worksheet.  Note that
-        // PopulateVertexWorksheet() returns false if the vertex worksheet or
-        // table is missing, and that it activates the vertex worksheet.
+        // PopulateVertexWorksheet() returns false if the vertex worksheet
+        // or table is missing, and that it activates the vertex worksheet.
 
         if ( !PopulateVertexWorksheet(true, true) )
         {
             return;
         }
 
-        // Get an array of vertex names that are selected in the vertex
-        // worksheet.
-
         String [] asSelectedVertexNames = new String[0];
 
-        Debug.Assert(this.Application.ActiveSheet is Worksheet);
-
-        Debug.Assert( ( (Worksheet)this.Application.ActiveSheet ).Name ==
-            WorksheetNames.Vertices);
-
-        Object oSelection = this.Application.Selection;
-
-        if (oSelection != null && oSelection is Range)
+        if (mode == CreateSubgraphImagesDialog.DialogMode.Normal)
         {
-            asSelectedVertexNames =
-                Globals.Sheet2.GetSelectedVertexNames( (Range)oSelection );
+            // Get an array of vertex names that are selected in the vertex
+            // worksheet.
+
+            Debug.Assert(this.Application.ActiveSheet is Worksheet);
+
+            Debug.Assert( ( (Worksheet)this.Application.ActiveSheet ).Name ==
+                WorksheetNames.Vertices);
+
+            Object oSelection = this.Application.Selection;
+
+            if (oSelection != null && oSelection is Range)
+            {
+                asSelectedVertexNames =
+                    Globals.Sheet2.GetSelectedVertexNames( (Range)oSelection );
+            }
         }
 
         CreateSubgraphImagesDialog oCreateSubgraphImagesDialog =
             new CreateSubgraphImagesDialog(this.InnerObject,
-                asSelectedVertexNames);
+                asSelectedVertexNames, mode);
 
         oCreateSubgraphImagesDialog.ShowDialog();
     }
@@ -795,10 +903,17 @@ public partial class ThisWorkbook
     /// Shows the dialog that fills edge and vertex attribute columns using
     /// values from user-specified source columns.
     /// </summary>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the AutoFillWorkbookDialog is being used.
+    /// </param>
     //*************************************************************************
 
     public void
-    AutoFillWorkbook()
+    AutoFillWorkbook
+    (
+        AutoFillWorkbookDialog.DialogMode mode
+    )
     {
         AssertValid();
 
@@ -808,13 +923,14 @@ public partial class ThisWorkbook
         }
 
         AutoFillWorkbookDialog oAutoFillWorkbookDialog =
-            new AutoFillWorkbookDialog(this.InnerObject);
+            new AutoFillWorkbookDialog(this.InnerObject, mode);
 
         Int32 iHwnd = this.Application.Hwnd;
 
         oAutoFillWorkbookDialog.WorkbookAutoFilled += delegate
         {
-            FireWorkbookAutoFilled();
+            this.Ribbon.OnWorkbookAutoFilled(
+                ( new GeneralUserSettings() ).AutoReadWorkbook );
         };
 
         oAutoFillWorkbookDialog.Closed += delegate
@@ -822,11 +938,11 @@ public partial class ThisWorkbook
             // Activate the Excel window.
             //
             // This is a workaround for an annoying and frustrating bug
-            // involving the modeless AutoFillWorkbookDialog.  If the user
-            // takes no action in AutoFillWorkbookDialog before closing it, the
-            // Excel window gets activated when AutoFillWorkbookDialog closes,
-            // as expected.  However, if he opens one of
-            // AutoFillWorkbookDialog's modal dialogs, such as
+            // involving the AutoFillWorkbookDialog when it runs modeless.  If
+            // the user takes no action in AutoFillWorkbookDialog before
+            // closing it, the Excel window gets activated when
+            // AutoFillWorkbookDialog closes, as expected.  However, if he
+            // opens one of AutoFillWorkbookDialog's modal dialogs, such as
             // NumericRangeColumnAutoFillUserSettingsDialog, and then closes
             // the modal dialog and AutoFillWorkbookDialog, some other
             // application besides Excel gets activated.
@@ -840,7 +956,14 @@ public partial class ThisWorkbook
             Win32Functions.SetForegroundWindow( new IntPtr(iHwnd) );
         };
 
-        oAutoFillWorkbookDialog.Show( new Win32Window(iHwnd) );
+        if (mode == AutoFillWorkbookDialog.DialogMode.Normal)
+        {
+            oAutoFillWorkbookDialog.Show( new Win32Window(iHwnd) );
+        }
+        else
+        {
+            oAutoFillWorkbookDialog.ShowDialog();
+        }
     }
 
     //*************************************************************************
@@ -864,9 +987,13 @@ public partial class ThisWorkbook
         AutoFillWorkbookWithSchemeDialog oAutoFillWorkbookWithSchemeDialog =
             new AutoFillWorkbookWithSchemeDialog(this.InnerObject);
 
-        if (oAutoFillWorkbookWithSchemeDialog.ShowDialog() == DialogResult.OK)
+        if (
+            oAutoFillWorkbookWithSchemeDialog.ShowDialog() == DialogResult.OK
+            &&
+            ( new GeneralUserSettings() ).AutoReadWorkbook
+            )
         {
-            FireWorkbookAutoFilled();
+            this.Ribbon.OnReadWorkbookClick();
         }
     }
 
@@ -999,10 +1126,17 @@ public partial class ThisWorkbook
     /// Shows the dialog that lists available graph metrics and calculates them
     /// if requested by the user.
     /// </summary>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the GraphMetricsDialog is being used.
+    /// </param>
     //*************************************************************************
 
     public void
-    ShowGraphMetrics()
+    ShowGraphMetrics
+    (
+        GraphMetricsDialog.DialogMode mode
+    )
     {
         AssertValid();
 
@@ -1016,8 +1150,8 @@ public partial class ThisWorkbook
         GraphMetricUserSettings oGraphMetricUserSettings =
             new GraphMetricUserSettings();
 
-        GraphMetricsDialog oGraphMetricsDialog =
-            new GraphMetricsDialog(this.InnerObject, oGraphMetricUserSettings);
+        GraphMetricsDialog oGraphMetricsDialog = new GraphMetricsDialog(
+            this.InnerObject, oGraphMetricUserSettings, mode);
 
         if (oGraphMetricsDialog.ShowDialog() == DialogResult.OK)
         {
@@ -1028,7 +1162,7 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: CreateClusters()
+    //  Method: CalculateClusters()
     //
     /// <summary>
     /// Partitions the graph into clusters.
@@ -1037,10 +1171,14 @@ public partial class ThisWorkbook
     /// <param name="clusterAlgorithm">
     /// The cluster algorithm to use.
     /// </param>
+    ///
+    /// <returns>
+    /// true if the graph was successfully partitioned into clusters.
+    /// </returns>
     //*************************************************************************
 
-    public void
-    CreateClusters
+    public Boolean
+    CalculateClusters
     (
         ClusterAlgorithm clusterAlgorithm
     )
@@ -1049,7 +1187,7 @@ public partial class ThisWorkbook
 
         if ( !this.ExcelApplicationIsReady(true) )
         {
-            return;
+            return (false);
         }
 
         ClusterCalculator2 oClusterCalculator2 = new ClusterCalculator2();
@@ -1060,12 +1198,13 @@ public partial class ThisWorkbook
         // accepts a list of graph metric calculators.
 
         CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
-            new CalculateGraphMetricsDialog( this.InnerObject,
-                new IGraphMetricCalculator2 [] {oClusterCalculator2},
+            new CalculateGraphMetricsDialog(
+                this.InnerObject,
                 new GraphMetricUserSettings(),
                 new NotificationUserSettings(),
+                new IGraphMetricCalculator2 [] {oClusterCalculator2},
                 true,
-                "Create Clusters"
+                "Finding Clusters"
                 );
 
         if (oCalculateGraphMetricsDialog.ShowDialog() == DialogResult.OK)
@@ -1083,7 +1222,11 @@ public partial class ThisWorkbook
 
                 ExcelUtil.ActivateWorksheet(oClusterWorksheet);
             }
+
+            return (true);
         }
+
+        return (false);
     }
 
     //*************************************************************************
@@ -1346,19 +1489,19 @@ public partial class ThisWorkbook
 
 
     //*************************************************************************
-    //  Event: GraphDrawn
+    //  Event: GraphLaidOut
     //
     /// <summary>
-    /// Occurs after graph drawing completes.
+    /// Occurs after graph layout completes.
     /// </summary>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously.  This event fires when the graph
-    /// is completely drawn.
+    /// Graph layout occurs asynchronously.  This event fires when the graph
+    /// is successfully laid out.
     /// </remarks>
     //*************************************************************************
 
-    public event GraphDrawnEventHandler GraphDrawn;
+    public event GraphLaidOutEventHandler GraphLaidOut;
 
 
     //*************************************************************************
@@ -1376,19 +1519,6 @@ public partial class ThisWorkbook
     //*************************************************************************
 
     public event VerticesMovedEventHandler2 VerticesMoved;
-
-
-    //*************************************************************************
-    //  Event: WorkbookAutoFilled
-    //
-    /// <summary>
-    /// Occurs when the workbook is autofilled by the <see
-    /// cref="AutoFillWorkbookDialog" /> or <see
-    /// cref="AutoFillWorkbookWithSchemeDialog" />.
-    /// </summary>
-    //*************************************************************************
-
-    public event EventHandler WorkbookAutoFilled;
 
 
     //*************************************************************************
@@ -1475,8 +1605,8 @@ public partial class ThisWorkbook
                     new VertexAttributesEditedEventHandler(
                         this.TaskPane_VertexAttributesEditedInGraph);
 
-                oTaskPane.GraphDrawn += new GraphDrawnEventHandler(
-                    this.TaskPane_GraphDrawn);
+                oTaskPane.GraphLaidOut += new GraphLaidOutEventHandler(
+                    this.TaskPane_GraphLaidOut);
 
                 oTaskPane.VerticesMoved += new VerticesMovedEventHandler2(
                     this.TaskPane_VerticesMoved);
@@ -1858,6 +1988,62 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: OnTasksAutomatedOnOpen()
+    //
+    /// <summary>
+    /// Gets called after task automation has been run on the workbook
+    /// immediately after it was opened.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    OnTasksAutomatedOnOpen()
+    {
+        AssertValid();
+
+        // Prevent the workbook from being automated the next time it is
+        // opened.
+
+        PerWorkbookSettings oPerWorkbookSettings = this.PerWorkbookSettings;
+        oPerWorkbookSettings.AutomateTasksOnOpen = false;
+        this.Save();
+
+        // The workbook and Excel need to be closed.  If this method is being
+        // called from the GraphLaidOut event, that shouldn't be done before
+        // the event completes.  Use a timer to delay the closing.
+        //
+        // The timer interval isn't critical, because Windows gives low
+        // priority to timer events in its message queue, allowing the event
+        // to complete before the timer is serviced.
+
+        Timer oTimer = new Timer();
+        oTimer.Interval = 1;
+
+        oTimer.Tick += delegate(Object sender2, EventArgs e2)
+        {
+            oTimer.Stop();
+            oTimer = null;
+
+            // Unfortunately, calling Application.Quit() directly after closing
+            // the workbook doesn't do anything -- an empty Excel window
+            // remains.  It does close the application if done in the
+            // workbook's Shutdown event, however, so set a flag that the
+            // Shutdown event handler will detect.
+            //
+            // (This could be implemented inline using another delegate, this
+            // one on the Shutdown event, but the flag makes things more
+            // explicit.)
+
+            m_bCloseExcelWhenWorkbookCloses = true;
+
+            this.Close(false, System.Reflection.Missing.Value,
+                System.Reflection.Missing.Value);
+        };
+
+        oTimer.Start();
+    }
+
+    //*************************************************************************
     //  Method: FireSelectionChangedInWorkbook()
     //
     /// <summary>
@@ -1940,22 +2126,6 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: FireWorkbookAutoFilled()
-    //
-    /// <summary>
-    /// Fires the <see cref="WorkbookAutoFilled" /> event if appropriate.
-    /// </summary>
-    //*************************************************************************
-
-    private void
-    FireWorkbookAutoFilled()
-    {
-        AssertValid();
-
-        EventUtil.FireEvent(this, this.WorkbookAutoFilled);
-    }
-
-    //*************************************************************************
     //  Method: Workbook_Startup()
     //
     /// <summary>
@@ -1980,6 +2150,7 @@ public partial class ThisWorkbook
     {
         m_bTaskPaneCreated = false;
         m_bIgnoreSelectionChangedInGraph = false;
+        m_bCloseExcelWhenWorkbookCloses = false;
 
         Sheet1 oSheet1 = Globals.Sheet1;
         Sheet2 oSheet2 = Globals.Sheet2;
@@ -2117,7 +2288,10 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        // (Do nothing.)
+        if (m_bCloseExcelWhenWorkbookCloses)
+        {
+            this.Application.Quit();
+        }
     }
 
     //*************************************************************************
@@ -2358,10 +2532,10 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: TaskPane_GraphDrawn()
+    //  Method: TaskPane_GraphLaidOut()
     //
     /// <summary>
-    /// Handles the GraphDrawn event on the TaskPane.
+    /// Handles the GraphLaidOut event on the TaskPane.
     /// </summary>
     ///
     /// <param name="sender">
@@ -2373,16 +2547,16 @@ public partial class ThisWorkbook
     /// </param>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously.  This event fires when the graph
-    /// is completely drawn.
+    /// Graph layout occurs asynchronously.  This event fires when the graph
+    /// is successfully laid out.
     /// </remarks>
     //*************************************************************************
 
     private void
-    TaskPane_GraphDrawn
+    TaskPane_GraphLaidOut
     (
         Object sender,
-        GraphDrawnEventArgs e
+        GraphLaidOutEventArgs e
     )
     {
         Debug.Assert(e != null);
@@ -2395,13 +2569,13 @@ public partial class ThisWorkbook
 
         // Forward the event.
 
-        GraphDrawnEventHandler oGraphDrawn = this.GraphDrawn;
+        GraphLaidOutEventHandler oGraphLaidOut = this.GraphLaidOut;
 
-        if (oGraphDrawn != null)
+        if (oGraphLaidOut != null)
         {
             try
             {
-                oGraphDrawn(this, e);
+                oGraphLaidOut(this, e);
             }
             catch (Exception oException)
             {
@@ -2490,6 +2664,8 @@ public partial class ThisWorkbook
     {
         Debug.Assert(m_oWorksheetContextMenuManager != null);
         // m_bTaskPaneCreated
+        // m_bIgnoreSelectionChangedInGraph
+        // m_bCloseExcelWhenWorkbookCloses
     }
 
 
@@ -2509,6 +2685,10 @@ public partial class ThisWorkbook
     /// true to ignore the TaskPane.SelectionChangedInGraph event.
 
     private Boolean m_bIgnoreSelectionChangedInGraph;
+
+    /// true to close Excel when the workbook closes.
+
+    private Boolean m_bCloseExcelWhenWorkbookCloses;
 }
 
 }

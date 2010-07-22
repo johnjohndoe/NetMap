@@ -520,7 +520,7 @@ internal class MockVertex : IVertex
         }
     }
 
-    public IEdge []
+    public ICollection<IEdge>
     IncomingEdges
     {
         get
@@ -529,7 +529,7 @@ internal class MockVertex : IVertex
         }
     }
 
-    public IEdge []
+    public ICollection<IEdge>
     OutgoingEdges
     {
         get
@@ -538,7 +538,7 @@ internal class MockVertex : IVertex
         }
     }
 
-    public IEdge []
+    public ICollection<IEdge>
     IncidentEdges
     {
         get
@@ -556,7 +556,7 @@ internal class MockVertex : IVertex
         }
     }
 
-    public IVertex []
+    public ICollection<IVertex>
     PredecessorVertices
     {
         get
@@ -565,7 +565,7 @@ internal class MockVertex : IVertex
         }
     }
 
-    public IVertex []
+    public ICollection<IVertex>
     SuccessorVertices
     {
         get
@@ -574,7 +574,7 @@ internal class MockVertex : IVertex
         }
     }
 
-    public IVertex []
+    public ICollection<IVertex>
     AdjacentVertices
     {
         get
@@ -606,7 +606,7 @@ internal class MockVertex : IVertex
         return (null);
     }
 
-    public IEdge []
+    public ICollection<IEdge>
     GetConnectingEdges
     (
         IVertex otherVertex

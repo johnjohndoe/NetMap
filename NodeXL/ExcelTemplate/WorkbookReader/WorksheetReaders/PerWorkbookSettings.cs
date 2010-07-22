@@ -297,6 +297,55 @@ public class PerWorkbookSettings : WorksheetReaderBase
     }
 
     //*************************************************************************
+    //  Property: AutomateTasksOnOpen
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether task automation should be run on
+    /// the workbook when it is opened.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if task automation should be run on the workbook when it is
+    /// opened.
+    /// </value>
+    ///
+    /// <value>
+    /// If this returns true, the tasks specified by the <see
+    /// cref="AutomateTasksUserSettings" /> class should be run on the workbook
+    /// when it is opened.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    AutomateTasksOnOpen
+    {
+        get
+        {
+            AssertValid();
+
+            // The flag is stored in the workbook as a Boolean.  Sample:
+            // "TRUE".
+
+            Object oAutomateTasksOnOpen;
+
+            if ( TryGetValue(AutomateTasksOnOpenSettingName, typeof(Boolean),
+                out oAutomateTasksOnOpen) )
+            {
+                return ( (Boolean)oAutomateTasksOnOpen );
+            }
+
+            return (false);
+        }
+
+        set
+        {
+            SetValue(AutomateTasksOnOpenSettingName, value);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: FilteredAlpha
     //
     /// <summary>
@@ -1037,6 +1086,11 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
     protected const String AutoLayoutOnOpenSettingName =
         "Auto Layout on Open";
+
+    /// Name of the AutomateTasksOnOpen setting.
+
+    protected const String AutomateTasksOnOpenSettingName =
+        "Automate Tasks on Open";
 
     /// Name of the FilteredAlpha setting.
 

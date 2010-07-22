@@ -56,11 +56,6 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     /// Workbook containing the graph contents.
     /// </param>
     ///
-    /// <param name="graphMetricCalculators">
-    /// An array of <see cref="IGraphMetricCalculator" /> implementations, one
-    /// for each set of graph metrics that should be calculated.
-    /// </param>
-    ///
     /// <param name="graphMetricUserSettings">
     /// User settings for calculating graph metrics.
     /// </param>
@@ -69,32 +64,39 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     /// User settings for notifications.
     /// </param>
     ///
+    /// <param name="graphMetricCalculators">
+    /// An array of <see cref="IGraphMetricCalculator" /> implementations, one
+    /// for each set of graph metrics that should be calculated, or null to use
+    /// a default list of graph metric calculators.
+    /// </param>
+    ///
     /// <param name="ignoreDuplicateEdges">
     /// true to ignore duplicate edges in the graph.
     /// </param>
     ///
     /// <param name="dialogTitle">
-    /// Title for the dialog.
+    /// Title for the dialog, or null to use a default title.
     /// </param>
     //*************************************************************************
 
     public CalculateGraphMetricsDialog
     (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-        IGraphMetricCalculator2 [] graphMetricCalculators,
         GraphMetricUserSettings graphMetricUserSettings,
         NotificationUserSettings notificationUserSettings,
+        IGraphMetricCalculator2 [] graphMetricCalculators,
         Boolean ignoreDuplicateEdges,
         String dialogTitle
     )
     : this(workbook, graphMetricUserSettings, notificationUserSettings)
     {
-        Debug.Assert(graphMetricCalculators != null);
-        Debug.Assert( !String.IsNullOrEmpty(dialogTitle) );
-
         m_oGraphMetricCalculators = graphMetricCalculators;
         m_bIgnoreDuplicateEdges = ignoreDuplicateEdges;
-        this.Text = dialogTitle;
+
+        if (dialogTitle != null)
+        {
+            this.Text = dialogTitle;
+        }
 
         AssertValid();
     }

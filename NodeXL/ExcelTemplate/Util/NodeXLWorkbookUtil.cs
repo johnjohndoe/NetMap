@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications;
 using System.Diagnostics;
 using Microsoft.SocialNetworkLib;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -25,6 +26,52 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 public static class NodeXLWorkbookUtil
 {
+    //*************************************************************************
+    //  Method: FileIsNodeXLWorkbook()
+    //
+    /// <summary>
+    /// Gets a flag indicating whether a file is a NodeXL workbook.
+    /// </summary>
+    ///
+    /// <param name="filePath">
+    /// Path to the file.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="filePath" /> is a NodeXL workbook.
+    /// </returns>
+    ///
+    /// <exception cref="System.IO.IOException">
+    /// Occurs when a workbook is open in Excel, or has any other problem that
+    /// prevents it from being opened.
+    /// </exception>
+    //*************************************************************************
+
+    public static Boolean
+    FileIsNodeXLWorkbook
+    (
+        String filePath
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(filePath) );
+
+        if ( ServerDocument.IsCustomized(filePath) )
+        {
+            Guid oSolutionID = new Guid(ApplicationUtil.SolutionID);
+
+            using ( ServerDocument oServerDocument =
+                new ServerDocument(filePath) )
+            {
+                if (oServerDocument.SolutionId == oSolutionID)
+                {
+                    return (true);
+                }
+            }
+        }
+
+        return (false);
+    }
+
     //*************************************************************************
     //  Method: ClearTables()
     //

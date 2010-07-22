@@ -163,16 +163,16 @@ public class Community : NodeXLBase
     //  Property: Vertices
     //
     /// <summary>
-    /// Gets a linked list of the vertices that this community contains.
+    /// Gets a collection of the vertices that this community contains.
     /// </summary>
     ///
     /// <value>
-    /// A LinkedList of <see cref="IVertex" /> objects.  The default is an
-    /// empty LinkedList.
+    /// A collection of <see cref="IVertex" /> objects.  The default is an
+    /// empty collection.
     /// </value>
     //*************************************************************************
 
-    public LinkedList<IVertex>
+    public ICollection<IVertex>
     Vertices
     {
         get

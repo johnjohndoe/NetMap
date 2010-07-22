@@ -101,7 +101,7 @@ public class PageRankCalculator2 : OneDoubleGraphMetricCalculatorBase
             new Algorithms.PageRankCalculator(),
 
             calculateGraphMetricsContext.GraphMetricUserSettings.
-                CalculatePageRank,
+                CalculateGraphMetrics(GraphMetrics.PageRank),
 
             VertexTableColumnNames.PageRank,
             VertexTableColumnWidths.PageRank,

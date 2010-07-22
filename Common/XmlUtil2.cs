@@ -264,6 +264,65 @@ public static class XmlUtil2
     }
 
     //*************************************************************************
+    //  Method: SelectRequiredSingleNodeAsBoolean()
+    //
+    /// <summary>
+    /// Selects a required XML node and gets its Boolean value.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
+    /// </param>
+    ///
+    /// <returns>
+    /// The selected node's Boolean value.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified node is missing or its value isn't a Boolean, an
+    /// XmlException is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    SelectRequiredSingleNodeAsBoolean
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        Boolean bValue;
+
+        if ( !TrySelectSingleNodeAsBoolean(node, xPath, xmlNamespaceManager,
+            out bValue) )
+        {
+            throw new XmlException( String.Format(
+
+                "An XML node with the name \"{0}\" is missing a required"
+                + " descendent node whose value must be a Boolean.  The XPath"
+                + " is \"{1}\"."
+                ,
+                node.Name,
+                xPath
+                ) );
+        }
+
+        return (bValue);
+    }
+
+    //*************************************************************************
     //  Method: TrySelectSingleNode()
     //
     /// <summary>
@@ -338,6 +397,7 @@ public static class XmlUtil2
     ///
     /// <param name="value">
     /// Where the selected node's String value gets stored if true is returned.
+    /// If false is returned, this gets set to null.
     /// </param>
     ///
     /// <returns>
@@ -522,6 +582,58 @@ public static class XmlUtil2
                 out sValue)
             &&
             MathUtil.TryParseCultureInvariantDouble(sValue, out value)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TrySelectSingleNodeAsBoolean()
+    //
+    /// <summary>
+    /// Attempts to select an XML node and get its Boolean value.
+    /// </summary>
+    ///
+    /// <param name="node">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="xPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <param name="xmlNamespaceManager">
+    /// NamespaceManager to use, or null to not use one.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// Where the selected node's Boolean value gets stored if true is
+    /// returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified node was found and its value was a Boolean.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TrySelectSingleNodeAsBoolean
+    (
+        XmlNode node,
+        String xPath,
+        XmlNamespaceManager xmlNamespaceManager,
+        out Boolean value
+    )
+    {
+        Debug.Assert(node != null);
+        Debug.Assert( !String.IsNullOrEmpty(xPath) );
+
+        value = false;
+        String sValue;
+
+        return (
+            TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
+                out sValue)
+            &&
+            Boolean.TryParse(sValue, out value)
             );
     }
 

@@ -282,7 +282,7 @@ public interface IEdgeCollection : ICollection<IEdge>
     //  Method: GetConnectingEdges()
     //
     /// <summary>
-    /// Gets an array of edges that connect two specified vertices.
+    /// Gets a collection of edges that connect two specified vertices.
     /// </summary>
     ///
     /// <param name="vertex1">
@@ -294,25 +294,25 @@ public interface IEdgeCollection : ICollection<IEdge>
     /// </param>
     ///
     /// <returns>
-    /// An array of zero or more edges that connect <paramref name="vertex1" />
-    /// to <paramref name="vertex2" />, as an array of <see cref="IEdge" />
-    /// objects.
+    /// A collection of zero or more edges that connect <paramref
+    /// name="vertex1" /> to <paramref name="vertex2" />, as a collection of
+    /// <see cref="IEdge" /> objects.
     /// </returns>
     ///
     /// <remarks>
-    /// This method returns an array of all edges that connect <paramref
+    /// This method returns a collection of all edges that connect <paramref
     /// name="vertex1" /> to <paramref name="vertex2" />.  The directedness of
     /// the edges is not considered.
     ///
     /// <para>
-    /// If there are no such edges, the returned array is empty.  The returned
-    /// value is never null.
+    /// If there are no such edges, the returned collection is empty.  The
+    /// returned value is never null.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
-    IEdge []
+    ICollection<IEdge>
     GetConnectingEdges
     (
         IVertex vertex1,

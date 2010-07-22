@@ -102,7 +102,7 @@ public class EigenvectorCentralityCalculator2 :
             new Algorithms.EigenvectorCentralityCalculator(),
 
             calculateGraphMetricsContext.GraphMetricUserSettings.
-                CalculateEigenvectorCentrality,
+                CalculateGraphMetrics(GraphMetrics.EigenvectorCentrality),
 
             VertexTableColumnNames.EigenvectorCentrality,
             VertexTableColumnWidths.EigenvectorCentrality,

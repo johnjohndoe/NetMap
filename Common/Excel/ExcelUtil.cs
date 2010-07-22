@@ -130,6 +130,41 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: OpenWorkbook()
+    //
+    /// <summary>
+    /// Opens a workbook using default arguments.
+    /// </summary>
+    ///
+    /// <param name="filePath">
+    /// Path to the workbook to open.
+    /// </param>
+    ///
+    /// <param name="application">
+    /// Excel Application object.
+    /// </param>
+    ///
+    /// <returns>
+    /// A Workbook object for the opened workbook.
+    /// </returns>
+    //*************************************************************************
+
+    public static Microsoft.Office.Interop.Excel.Workbook
+    OpenWorkbook
+    (
+        String filePath,
+        Microsoft.Office.Interop.Excel.Application application
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(filePath) );
+        Debug.Assert(application != null);
+
+        return ( application.Workbooks.Open(filePath, 1, false, Missing.Value,
+            Missing.Value, Missing.Value, false, Missing.Value, Missing.Value,
+            false, Missing.Value, Missing.Value, false, true, Missing.Value) );
+    }
+
+    //*************************************************************************
     //  Method: TryGetWorksheet()
     //
     /// <summary>

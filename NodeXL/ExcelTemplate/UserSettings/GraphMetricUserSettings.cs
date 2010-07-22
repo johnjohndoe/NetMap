@@ -17,7 +17,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("GraphMetricUserSettings") ]
 
-public class GraphMetricUserSettings : ApplicationSettingsBase
+public class GraphMetricUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: GraphMetricUserSettings()
@@ -35,303 +35,66 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: AtLeastOneMetricSelected
+    //  Property: GraphMetricsToCalculate
     //
     /// <summary>
-    /// Gets a flag indicating whether at least one set of graph metrics should
-    /// be calculated.
+    /// Gets or sets the graph metrics to calculate.
     /// </summary>
     ///
     /// <value>
-    /// true if at least one set of graph metrics should be calculated.
-    /// </value>
-    //*************************************************************************
-
-    public Boolean
-    AtLeastOneMetricSelected
-    {
-        get
-        {
-            AssertValid();
-
-            return(this.CalculateInDegree || this.CalculateOutDegree ||
-                this.CalculateDegree || this.CalculateClusteringCoefficient ||
-                this.CalculateBrandesFastCentralities ||
-                this.CalculateEigenvectorCentrality ||
-                this.CalculatePageRank || this.CalculateOverallMetrics
-                );
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateInDegree
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether vertex in-degrees should be
-    /// calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate vertex in-degrees.  The default is false.
+    /// The graph metrics to calculate, as an ORed combination of <see
+    /// cref="GraphMetrics" /> flags.  The default value is GraphMetrics.None.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
+    [ DefaultSettingValueAttribute("None") ]
 
-    public Boolean
-    CalculateInDegree
+    public GraphMetrics
+    GraphMetricsToCalculate
     {
         get
         {
             AssertValid();
 
-            return ( (Boolean)this[CalculateInDegreeKey] );
+            return ( (GraphMetrics)this[GraphMetricsToCalculateKey] );
         }
 
         set
         {
-            this[CalculateInDegreeKey] = value;
+            this[GraphMetricsToCalculateKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: CalculateOutDegree
+    //  Method: CalculateGraphMetrics
     //
     /// <summary>
-    /// Gets or sets a flag specifying whether vertex out-degrees should be
-    /// calculated.
+    /// Gets a flag specifying whether any one of a set of specified graph
+    /// metrics should be calculated.
     /// </summary>
     ///
-    /// <value>
-    /// true to calculate vertex out-degrees.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculateOutDegree
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculateOutDegreeKey] );
-        }
-
-        set
-        {
-            this[CalculateOutDegreeKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateDegree
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether vertex degrees should be
-    /// calculated.
-    /// </summary>
+    /// <param name="graphMetrics">
+    /// An ORed combination of GraphMetrics flags.  If any of the flags are
+    /// set, true is returned.
+    /// </param>
     ///
-    /// <value>
-    /// true to calculate vertex degrees.  The default is false.
-    /// </value>
+    /// <returns>
+    /// true if any of the specified graph metrics should be calculated.
+    /// </returns>
     //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
 
     public Boolean
-    CalculateDegree
+    CalculateGraphMetrics
+    (
+        GraphMetrics graphMetrics
+    )
     {
-        get
-        {
-            AssertValid();
+        AssertValid();
 
-            return ( (Boolean)this[CalculateDegreeKey] );
-        }
-
-        set
-        {
-            this[CalculateDegreeKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateClusteringCoefficient
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether clustering coefficients should
-    /// be calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate clustering coefficients.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculateClusteringCoefficient
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculateClusteringCoefficientKey] );
-        }
-
-        set
-        {
-            this[CalculateClusteringCoefficientKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateBrandesFastCentralities
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether the Brandes fast centralities
-    /// should be calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate the Brandes fast centralities.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculateBrandesFastCentralities
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculateBrandesFastCentralitiesKey] );
-        }
-
-        set
-        {
-            this[CalculateBrandesFastCentralitiesKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateEigenvectorCentrality
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether eigenvector centralities should
-    /// be calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate eigenvector centralities.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculateEigenvectorCentrality
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculateEigenvectorCentralityKey] );
-        }
-
-        set
-        {
-            this[CalculateEigenvectorCentralityKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculatePageRank
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether PageRanks should be calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate PageRanks.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculatePageRank
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculatePageRankKey] );
-        }
-
-        set
-        {
-            this[CalculatePageRankKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: CalculateOverallMetrics
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether overall graph metrics should be
-    /// calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to calculate overall graph metrics.  The default is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    CalculateOverallMetrics
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[CalculateOverallMetricsKey] );
-        }
-
-        set
-        {
-            this[CalculateOverallMetricsKey] = value;
-
-            AssertValid();
-        }
+        return ( (this.GraphMetricsToCalculate & graphMetrics) != 0 );
     }
 
 
@@ -343,12 +106,14 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 
@@ -356,48 +121,10 @@ public class GraphMetricUserSettings : ApplicationSettingsBase
     //  Protected constants
     //*************************************************************************
 
-    /// Name of the settings key for the CalculateInDegree property.
+    /// Name of the settings key for the GraphMetricsToCalculate property.
 
-    protected const String CalculateInDegreeKey =
-        "CalculateInDegree";
-
-    /// Name of the settings key for the CalculateOutDegree property.
-
-    protected const String CalculateOutDegreeKey =
-        "CalculateOutDegree";
-
-    /// Name of the settings key for the CalculateDegree property.
-
-    protected const String CalculateDegreeKey =
-        "CalculateDegree";
-
-    /// Name of the settings key for the CalculateClusteringCoefficient
-    /// property.
-
-    protected const String CalculateClusteringCoefficientKey =
-        "CalculateClusteringCoefficient";
-
-    /// Name of the settings key for the CalculateBrandesFastCentralities
-    /// property.
-
-    protected const String CalculateBrandesFastCentralitiesKey =
-        "CalculateBrandesFastCentralities";
-
-    /// Name of the settings key for the CalculateEigenvectorCentrality
-    /// property.
-
-    protected const String CalculateEigenvectorCentralityKey =
-        "CalculateEigenvectorCentrality";
-
-    /// Name of the settings key for the CalculatePageRank property.
-
-    protected const String CalculatePageRankKey =
-        "CalculatePageRank";
-
-    /// Name of the settings key for the CalculateOverallMetrics property.
-
-    protected const String CalculateOverallMetricsKey =
-        "CalculateOverallMetrics";
+    protected const String GraphMetricsToCalculateKey =
+        "GraphMetricsToCalculate";
 
 
     //*************************************************************************

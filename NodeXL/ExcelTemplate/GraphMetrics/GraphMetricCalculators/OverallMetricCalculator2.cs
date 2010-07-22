@@ -103,8 +103,8 @@ public class OverallMetricCalculator2 : GraphMetricCalculatorBase2
 
         graphMetricColumns = new GraphMetricColumn[0];
 
-        if (!calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateOverallMetrics)
+        if ( !calculateGraphMetricsContext.GraphMetricUserSettings.
+            CalculateGraphMetrics(GraphMetrics.OverallMetrics) )
         {
             return (true);
         }

@@ -147,8 +147,8 @@ public partial class GraphImageUserSettingsDialog : ExcelTemplateForm
                     return (false);
                 }
 
-                m_oGraphImageUserSettings.Width = iWidth;
-                m_oGraphImageUserSettings.Height = iHeight;
+                m_oGraphImageUserSettings.ImageSize =
+                    new Size(iWidth, iHeight);
             }
 
             m_oGraphImageUserSettings.UseControlSize = bUseControlSize;
@@ -158,8 +158,9 @@ public partial class GraphImageUserSettingsDialog : ExcelTemplateForm
             radThisSize.Checked = !(radUseControlSize.Checked =
                 m_oGraphImageUserSettings.UseControlSize);
 
-            nudWidth.Value = m_oGraphImageUserSettings.Width;
-            nudHeight.Value = m_oGraphImageUserSettings.Height;
+            Size oImageSize = m_oGraphImageUserSettings.ImageSize;
+            nudWidth.Value = oImageSize.Width;
+            nudHeight.Value = oImageSize.Height;
 
             EnableControls();
         }

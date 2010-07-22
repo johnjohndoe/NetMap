@@ -242,7 +242,7 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
         Debug.Assert(oVertex != null);
         AssertValid();
 
-        IVertex [] aoAdjacentVertices = oVertex.AdjacentVertices;
+        ICollection<IVertex> oAdjacentVertices = oVertex.AdjacentVertices;
         Int32 iAdjacentVertices = 0;
         Int32 iVertexID = oVertex.ID;
 
@@ -252,7 +252,7 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
         Dictionary<Int32, Char> oAdjacentVertexIDDictionary =
             new Dictionary<Int32, Char>();
 
-        foreach (IVertex oAdjacentVertex in aoAdjacentVertices)
+        foreach (IVertex oAdjacentVertex in oAdjacentVertices)
         {
             Int32 iAdjacentVertexID = oAdjacentVertex.ID;
 
@@ -283,7 +283,7 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
 
         // Loop through the vertex's adjacent vertices.
 
-        foreach (IVertex oAdjacentVertex in aoAdjacentVertices)
+        foreach (IVertex oAdjacentVertex in oAdjacentVertices)
         {
             // Skip self-loops.
 

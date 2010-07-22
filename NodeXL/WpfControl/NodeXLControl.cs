@@ -5831,6 +5831,8 @@ public partial class NodeXLControl : FrameworkElement
         {
             SetEdgeSelectedInternal(oSubgraphEdge, true);
         }
+
+        FireSelectionChanged();
     }
 
     //*************************************************************************

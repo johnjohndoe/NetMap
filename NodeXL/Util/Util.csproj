@@ -58,6 +58,9 @@
     <Compile Include="..\..\Common\EnumUtil.cs">
       <Link>EnumUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Excel\ExcelColumnFormat.cs">
+      <Link>Excel\ExcelColumnFormat.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>GraphicsUtil.cs</Link>
     </Compile>

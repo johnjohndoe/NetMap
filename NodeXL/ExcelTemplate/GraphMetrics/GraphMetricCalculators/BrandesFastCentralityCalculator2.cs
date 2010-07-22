@@ -101,8 +101,8 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
 
         graphMetricColumns = new GraphMetricColumn[0];
 
-        if (!calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateBrandesFastCentralities)
+        if ( !calculateGraphMetricsContext.GraphMetricUserSettings.
+            CalculateGraphMetrics(GraphMetrics.BrandesFastCentralities) )
         {
             return (true);
         }

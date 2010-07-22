@@ -38,10 +38,6 @@ public partial class Ribbon : OfficeRibbon
     {
         InitializeComponent();
 
-        // Initialize the application's user settings.
-
-        UserSettingsManager.Initialize();
-
         // Populate the rddLayout RibbonDropDown.
 
         m_oLayoutManagerForRibbonDropDown =
@@ -354,6 +350,30 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Property: EnableShowDynamicFilters
+    //
+    /// <summary>
+    /// Sets a flag indicating whether the "show dynamic filters" button should
+    /// be enabled.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to enable the dynamic filters button.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    EnableShowDynamicFilters
+    {
+        set
+        {
+            btnShowDynamicFilters.Enabled = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: EnableSetVisualAttributes
     //
     /// <summary>
@@ -414,26 +434,223 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Property: EnableShowDynamicFilters
+    //  Method: AutomateTasksOnOpen()
     //
     /// <summary>
-    /// Sets a flag indicating whether the "show dynamic filters" button should
-    /// be enabled.
+    /// Runs task automation on the workbook immediately after it is opened.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    AutomateTasksOnOpen()
+    {
+        AssertValid();
+
+        // TaskAutomator.AutomateFolder() is automating this workbook.
+
+        this.ThisWorkbook.AutomateTasksOnOpen();
+    }
+
+    //*************************************************************************
+    //  Method: OnMergeDuplicateEdgesClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnMergeDuplicateEdges button.
     /// </summary>
     ///
-    /// <value>
-    /// true to enable the dynamic filters button.
-    /// </value>
+    /// <param name="requestMergeApproval">
+    /// true to request approval from the user to merge duplicate edges.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the duplicate edges were successfully merged.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method can be called from outside the class to simulate a button
+    /// click.
+    /// </remarks>
     //*************************************************************************
 
     public Boolean
-    EnableShowDynamicFilters
+    OnMergeDuplicateEdgesClick
+    (
+        Boolean requestMergeApproval
+    )
     {
-        set
-        {
-            btnShowDynamicFilters.Enabled = value;
+        AssertValid();
 
-            AssertValid();
+        return ( this.ThisWorkbook.MergeDuplicateEdges(requestMergeApproval) );
+    }
+
+    //*************************************************************************
+    //  Method: OnReadWorkbookClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnReadWorkbook button.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This method can be called from outside the class to simulate a button
+    /// click.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    OnReadWorkbookClick()
+    {
+        AssertValid();
+
+        // Make sure the graph is showing, then tell the TaskPane to read the
+        // workbook.
+
+        this.ThisWorkbook.ShowGraph();
+
+        FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
+    }
+
+    //*************************************************************************
+    //  Method: OnCalculateClustersClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCalculateClusters button.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if the graph was successfully partitioned into clusters.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method can be called from outside the class to simulate a button
+    /// click.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    OnCalculateClustersClick()
+    {
+        AssertValid();
+
+        return ( this.ThisWorkbook.CalculateClusters(this.ClusterAlgorithm) );
+    }
+
+    //*************************************************************************
+    //  Method: OnCreateSubgraphImagesClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCreateSubgraphImages button.
+    /// </summary>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the CreateSubgraphImagesDialog is being
+    /// used.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method can be called from outside the class to simulate a button
+    /// click.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    OnCreateSubgraphImagesClick
+    (
+        CreateSubgraphImagesDialog.DialogMode mode
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.CreateSubgraphImages(mode);
+    }
+
+    //*************************************************************************
+    //  Method: OnShowGraphMetricsClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnShowGraphMetrics button.
+    /// </summary>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the GraphMetricsDialog is being used.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method can be called from outside the class to simulate a button
+    /// click.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    OnShowGraphMetricsClick
+    (
+        GraphMetricsDialog.DialogMode mode
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.ShowGraphMetrics(mode);
+    }
+
+    //*************************************************************************
+    //  Method: OnAutoFillWorkbookClick()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnAutoFillWorkbook button.
+    /// </summary>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the AutoFillWorkbookDialog is being used.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method can be called from outside the class to simulate a button
+    /// click.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    OnAutoFillWorkbookClick
+    (
+        AutoFillWorkbookDialog.DialogMode mode
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.AutoFillWorkbook(mode);
+    }
+
+    //*************************************************************************
+    //  Method: OnWorkbookAutoFilled()
+    //
+    /// <summary>
+    /// Performs tasks required after the workbook is autofilled.
+    /// </summary>
+    ///
+    /// <param name="readWorkbook">
+    /// true to read the workbook.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    OnWorkbookAutoFilled
+    (
+        Boolean readWorkbook
+    )
+    {
+        AssertValid();
+
+        if (GetPerWorkbookSettings().AutoFillWorkbookResults.VertexXResults
+            .ColumnAutoFilled )
+        {
+            // When the X and Y columns are autofilled, the graph shouldn't be
+            // laid out again.
+
+            this.Layout = LayoutType.Null;
+        }
+
+        if (readWorkbook)
+        {
+            OnReadWorkbookClick();
         }
     }
 
@@ -509,9 +726,9 @@ public partial class Ribbon : OfficeRibbon
             AssertValid();
 
             // The cluster algorithm is selected with a set of RibbonCheckBox
-            // controls that are children of sbCreateClusters.
+            // controls that are children of sbCalculateClusters.
 
-            foreach (RibbonControl oControl in sbCreateClusters.Items)
+            foreach (RibbonControl oControl in sbCalculateClusters.Items)
             {
                 if (oControl is RibbonCheckBox)
                 {
@@ -531,7 +748,7 @@ public partial class Ribbon : OfficeRibbon
 
         set
         {
-            foreach (RibbonControl oControl in sbCreateClusters.Items)
+            foreach (RibbonControl oControl in sbCalculateClusters.Items)
             {
                 if (oControl is RibbonCheckBox)
                 {
@@ -670,7 +887,7 @@ public partial class Ribbon : OfficeRibbon
 
         // The ability to create clusters depends on the template version.
 
-        btnCreateClusters.Enabled = (iTemplateVersion >= 54);
+        btnCalculateClusters.Enabled = (iTemplateVersion >= 54);
 
         // Should the layout automatically be set and the workbook read?  (This
         // feature was added in January 2010 for the Microsoft Biology
@@ -692,6 +909,15 @@ public partial class Ribbon : OfficeRibbon
             // RibbonButton.  Simulate a click.
 
             OnReadWorkbookClick();
+        }
+
+        // Should task automation be run on the workbook when it is opened?
+
+        if (oPerWorkbookSettings.AutomateTasksOnOpen)
+        {
+            // Yes.
+
+            AutomateTasksOnOpen();
         }
     }
 
@@ -736,30 +962,9 @@ public partial class Ribbon : OfficeRibbon
 
         oGeneralUserSettings.Save();
 
-        // Close the application's user settings.
+        // Clean up the application's user settings.
 
-        UserSettingsManager.Close();
-    }
-
-    //*************************************************************************
-    //  Method: OnReadWorkbookClick()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnReadWorkbook button.
-    /// </summary>
-    //*************************************************************************
-
-    protected void
-    OnReadWorkbookClick()
-    {
-        AssertValid();
-
-        // Make sure the graph is showing, then tell the TaskPane to read the
-        // workbook.
-
-        this.ThisWorkbook.ShowGraph();
-
-        FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
+        NodeXLApplicationSettingsBase.OnWorkbookShutdown();
     }
 
     //*************************************************************************
@@ -1218,6 +1423,34 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: btnAutomateTasks_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnAutomateTasks button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnAutomateTasks_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.AutomateTasks();
+    }
+
+    //*************************************************************************
     //  Method: btnShowDynamicFilters_Click()
     //
     /// <summary>
@@ -1270,7 +1503,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.MergeDuplicateEdges();
+        OnMergeDuplicateEdgesClick(true);
     }
 
     //*************************************************************************
@@ -1326,14 +1559,14 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.ShowGraphMetrics();
+        OnShowGraphMetricsClick(GraphMetricsDialog.DialogMode.Normal);
     }
 
     //*************************************************************************
-    //  Method: btnCreateClusters_Click()
+    //  Method: btnCalculateClusters_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnCreateClusters button.
+    /// Handles the Click event on the btnCalculateClusters button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -1346,7 +1579,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    btnCreateClusters_Click
+    btnCalculateClusters_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -1354,7 +1587,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.CreateClusters(this.ClusterAlgorithm);
+        OnCalculateClustersClick();
     }
 
     //*************************************************************************
@@ -1417,7 +1650,8 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.CreateSubgraphImages();
+        OnCreateSubgraphImagesClick(
+            CreateSubgraphImagesDialog.DialogMode.Normal);
     }
 
     //*************************************************************************
@@ -1515,7 +1749,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        this.ThisWorkbook.AutoFillWorkbook();
+        OnAutoFillWorkbookClick(AutoFillWorkbookDialog.DialogMode.Normal);
     }
 
     //*************************************************************************

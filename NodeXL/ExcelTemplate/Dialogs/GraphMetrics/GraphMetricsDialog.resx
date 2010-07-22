@@ -160,6 +160,13 @@ Self-loops are counted in degree metrics.  Duplicate edges cause the degree metr
 
 Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
   </data>
+  <data name="lnkPageRank.Tag" xml:space="preserve">
+    <value>PageRank measures the importance of each vertex within the graph using a link analysis algorithm developed by Larry Page.  It is described here:
+
+http://en.wikipedia.org/wiki/PageRank
+
+(You can press Ctrl-C to copy these details to the clipboard.)</value>
+  </data>
   <data name="lnkClusteringCoefficient.Tag" xml:space="preserve">
     <value>Clustering coefficient is defined in this article:
 
@@ -170,13 +177,6 @@ From the article:
 "The clustering coefficient of a vertex in a graph quantifies how close the vertex and its neighbors are to being a clique (complete graph)."
 
 Self-loops, which would render the clustering coefficients invalid, are skipped.  Duplicate edges cause the clustering coefficients to be inaccurate.  Inaccurate clustering coefficients are highlighted.
-
-(You can press Ctrl-C to copy these details to the clipboard.)</value>
-  </data>
-  <data name="lnkPageRank.Tag" xml:space="preserve">
-    <value>PageRank measures the importance of each vertex within the graph using a link analysis algorithm developed by Larry Page.  It is described here:
-
-http://en.wikipedia.org/wiki/PageRank
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>

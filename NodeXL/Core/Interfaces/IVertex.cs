@@ -3,6 +3,7 @@
 
 using System;
 using System.Drawing;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Microsoft.NodeXL.Core
@@ -67,12 +68,12 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Property: IncomingEdges
     //
     /// <summary>
-    /// Gets an array of the vertex's incoming edges.
+    /// Gets a collection of the vertex's incoming edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more incoming edges, as an array of
-    /// <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more incoming edges, as a
+    /// collection of <see cref="IEdge" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -85,7 +86,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// </para>
     ///
     /// <para>
-    /// If there are no incoming edges, the returned array is empty.  The
+    /// If there are no incoming edges, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -97,7 +98,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    IEdge []
+    ICollection<IEdge>
     IncomingEdges
     {
         get;
@@ -107,12 +108,12 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Property: OutgoingEdges
     //
     /// <summary>
-    /// Gets an array of the vertex's outgoing edges.
+    /// Gets a collection of the vertex's outgoing edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more outgoing edges, as an array of
-    /// <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more outgoing edges, as a
+    /// collection of <see cref="IEdge" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -125,7 +126,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// </para>
     ///
     /// <para>
-    /// If there are no outgoing edges, the returned array is empty.  The
+    /// If there are no outgoing edges, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -137,7 +138,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    IEdge []
+    ICollection<IEdge>
     OutgoingEdges
     {
         get;
@@ -147,20 +148,20 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Property: IncidentEdges
     //
     /// <summary>
-    /// Gets an array of the vertex's incident edges.
+    /// Gets a collection of the vertex's incident edges.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more incident edges, as an array of
-    /// <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more incident edges, as a
+    /// collection of <see cref="IEdge" /> objects.
     /// </value>
     ///
     /// <remarks>
     /// An incident edge is an edge that is connected to the vertex.
     ///
     /// <para>
-    /// The returned array is the union of the <see cref="IncomingEdges" /> and
-    /// <see cref="OutgoingEdges" /> arrays.
+    /// The returned collection is the union of the <see
+    /// cref="IncomingEdges" /> and <see cref="OutgoingEdges" /> collections.
     /// </para>
     ///
     /// <para>
@@ -169,7 +170,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// </para>
     ///
     /// <para>
-    /// If there are no incident edges, the returned array is empty.  The
+    /// If there are no incident edges, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -181,7 +182,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    IEdge []
+    ICollection<IEdge>
     IncidentEdges
     {
         get;
@@ -229,12 +230,12 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Property: PredecessorVertices
     //
     /// <summary>
-    /// Gets an array of the vertex's predecessor vertices.
+    /// Gets a collection of the vertex's predecessor vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more predecessor vertices, as an array
-    /// of <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more predecessor vertices, as a
+    /// collection of <see cref="IVertex" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -246,18 +247,18 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// A self-loop (an edge that connects a vertex to itself) is always
     /// considered an incoming edge.  Therefore, if there is an edge that
     /// connects this vertex to itself, then this vertex is included in the
-    /// returned array.
+    /// returned collection.
     /// </para>
     ///
     /// <para>
-    /// The predecessor vertices in the returned array are unique.  If two or
-    /// more edges connect this vertex with another vertex, the other vertex is
-    /// included once only.
+    /// The predecessor vertices in the returned collection are unique.  If two
+    /// or more edges connect this vertex with another vertex, the other vertex
+    /// is included once only.
     /// </para>
     ///
     /// <para>
-    /// If there are no predecessor vertices, the returned array is empty.  The
-    /// returned value is never null.
+    /// If there are no predecessor vertices, the returned collection is empty.
+    /// The returned value is never null.
     /// </para>
     ///
     /// </remarks>
@@ -268,7 +269,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    IVertex []
+    ICollection<IVertex>
     PredecessorVertices
     {
         get;
@@ -278,12 +279,12 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Property: SuccessorVertices
     //
     /// <summary>
-    /// Gets an array of the vertex's successor vertices.
+    /// Gets a collection of the vertex's successor vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more successor vertices, as an array
-    /// of <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more successor vertices, as a
+    /// collection of <see cref="IVertex" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -295,18 +296,18 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// A self-loop (an edge that connects a vertex to itself) is always
     /// considered an outgoing edge.  Therefore, if there is an edge that
     /// connects this vertex to itself, then this vertex is included in the
-    /// returned array.
+    /// returned collection.
     /// </para>
     ///
     /// <para>
-    /// The successor vertices in the returned array are unique.  If two or
-    /// more edges connect this vertex with another vertex, the other vertex is
-    /// included once only.
+    /// The successor vertices in the returned collection are unique.  If two
+    /// or more edges connect this vertex with another vertex, the other vertex
+    /// is included once only.
     /// </para>
     ///
     /// <para>
-    /// If there are no successor vertices, the returned array is empty.  The
-    /// returned value is never null.
+    /// If there are no successor vertices, the returned collection is empty.
+    /// The returned value is never null.
     /// </para>
     ///
     /// </remarks>
@@ -317,7 +318,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    IVertex []
+    ICollection<IVertex>
     SuccessorVertices
     {
         get;
@@ -327,12 +328,12 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Property: AdjacentVertices
     //
     /// <summary>
-    /// Gets an array of the vertex's adjacent vertices.
+    /// Gets a collection of the vertex's adjacent vertices.
     /// </summary>
     ///
     /// <value>
-    /// An array of the vertex's zero or more adjacent vertices, as an array of
-    /// <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more adjacent vertices, as a
+    /// collection of <see cref="IVertex" /> objects.
     /// </value>
     ///
     /// <remarks>
@@ -349,18 +350,18 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// A self-loop (an edge that connects a vertex to itself) is always
     /// considered an incident edge.  Therefore, if there is an edge that
     /// connects this vertex to itself, then this vertex is included in the
-    /// returned array.
+    /// returned collection.
     /// </para>
     ///
     /// <para>
-    /// The adjacent vertices in the returned array are unique.  If two or
+    /// The adjacent vertices in the returned collection are unique.  If two or
     /// more edges connect this vertex with another vertex, the other vertex is
     /// included once only.
     /// </para>
     ///
     /// <para>
-    /// If there are no adjacent vertices, the returned array is empty.  The
-    /// returned value is never null.
+    /// If there are no adjacent vertices, the returned collection is empty.
+    /// The returned value is never null.
     /// </para>
     ///
     /// </remarks>
@@ -371,7 +372,7 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
 
     [ DebuggerBrowsable(DebuggerBrowsableState.Never) ]
 
-    IVertex []
+    ICollection<IVertex>
     AdjacentVertices
     {
         get;
@@ -386,12 +387,16 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     ///
     /// <value>
     /// The vertex's location as a <see cref="PointF" />.  The default value is
-    /// cref="PointF.Empty" />.
+    /// <see cref="PointF.Empty" />.
     /// </value>
     ///
     /// <remarks>
-    /// This property is set when the graph is laid out by
-    /// ILayout.LayOutGraph and is read when the graph is drawn.
+    /// Typically, this property is set when the graph is laid out by
+    /// ILayout.LayOutGraph and is read when the graph is drawn.  It's also
+    /// possible to explicitly set all of the graph's vertex locations using
+    /// this property and then bypass the layout stage.  You might do this
+    /// when you want to restore vertex locations that have been saved from a
+    /// previous layout, for example.
     /// </remarks>
     //*************************************************************************
 
@@ -455,7 +460,8 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     //  Method: GetConnectingEdges()
     //
     /// <summary>
-    /// Gets an array of edges that connect this vertex to a specified vertex.
+    /// Gets a collection of edges that connect this vertex to a specified
+    /// vertex.
     /// </summary>
     ///
     /// <param name="otherVertex">
@@ -463,23 +469,24 @@ public interface IVertex : IIdentityProvider, IMetadataProvider
     /// </param>
     ///
     /// <returns>
-    /// An array of zero or more edges that connect this vertex to <paramref
-    /// name="otherVertex" />, as an array of <see cref="IEdge" /> objects.
+    /// A collection of zero or more edges that connect this vertex to
+    /// <paramref name="otherVertex" />, as a collection of <see
+    /// cref="IEdge" /> objects.
     /// </returns>
     ///
     /// <remarks>
-    /// If there are no such edges, the returned array is empty.  The returned
-    /// value is never null.
+    /// If there are no such edges, the returned collection is empty.  The
+    /// returned value is never null.
     ///
     /// <para>
     /// A self-loop (an edge that connects a vertex to itself) is returned in
-    /// the array only if <paramref name="otherVertex" /> is this vertex.
+    /// the collection only if <paramref name="otherVertex" /> is this vertex.
     /// </para>
     ///
     /// </remarks>
     //*************************************************************************
 
-    IEdge []
+    ICollection<IEdge>
     GetConnectingEdges
     (
         IVertex otherVertex

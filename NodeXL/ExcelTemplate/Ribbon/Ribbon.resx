@@ -427,7 +427,7 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
         kPr9bBvA6SCKnDyRZ78fuWQSSg/+aCEvPGQNTk/rF87Hzn8CiGBDXn1X4+YAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="btnCreateClusters.SuperTip" xml:space="preserve">
+  <data name="btnCalculateClusters.SuperTip" xml:space="preserve">
     <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
 	
 The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.
@@ -437,7 +437,7 @@ The clusters get written to the Clusters and Cluster Vertices worksheets.  You c
 The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be read when the workbook is read into the graph.
 </value>
   </data>
-  <data name="sbCreateClusters.SuperTip" xml:space="preserve">
+  <data name="sbCalculateClusters.SuperTip" xml:space="preserve">
     <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
 	
 The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.

@@ -503,7 +503,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
             if (eVertexShape == VertexShape.Image &&
                 oReadWorkbookContext.ReadVertexImages)
             {
-                ReadImageuri(oRow, oVertex,
+                ReadImageUri(oRow, oVertex,
                     oReadWorkbookContext.VertexRadiusConverter,
 
                     oRadiusWorkbook.HasValue ? oRadiusWorkbook :
@@ -707,7 +707,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
     }
 
     //*************************************************************************
-    //  Method: ReadImageuri()
+    //  Method: ReadImageUri()
     //
     /// <summary>
     /// If an image URI has been specified for a vertex, sets the vertex's
@@ -738,7 +738,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
     //*************************************************************************
 
     protected Boolean
-    ReadImageuri
+    ReadImageUri
     (
         ExcelTableReader.ExcelTableRow oRow,
         IVertex oVertex,

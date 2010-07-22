@@ -121,9 +121,6 @@ public partial class TaskPane : UserControl
         thisWorkbook.VisualAttributeSetInWorkbook +=
             new EventHandler(ThisWorkbook_VisualAttributeSetInWorkbook);
 
-        thisWorkbook.WorkbookAutoFilled +=
-            new EventHandler(ThisWorkbook_WorkbookAutoFilled);
-
         thisWorkbook.WorksheetContextMenuManager.RequestVertexCommandEnable +=
             new RequestVertexCommandEnableEventHandler(
                 WorksheetContextMenuManager_RequestVertexCommandEnable);
@@ -189,19 +186,19 @@ public partial class TaskPane : UserControl
 
 
     //*************************************************************************
-    //  Event: GraphDrawn
+    //  Event: GraphLaidOut
     //
     /// <summary>
     /// Occurs after graph drawing completes.
     /// </summary>
     ///
     /// <remarks>
-    /// Graph drawing occurs asynchronously.  This event fires when the graph
-    /// is completely drawn.
+    /// Graph layout occurs asynchronously.  This event fires when the graph
+    /// is successfully laid out.
     /// </remarks>
     //*************************************************************************
 
-    public event GraphDrawnEventHandler GraphDrawn;
+    public event GraphLaidOutEventHandler GraphLaidOut;
 
 
     //*************************************************************************
@@ -250,49 +247,25 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Property: VertexCount
+    //  Property: NonEmptyWorkbookRead
     //
     /// <summary>
-    /// Gets the number of vertices in the graph.
+    /// Gets a flag indicating whether a non-empty graph has been successfully
+    /// read from the workbook.
     /// </summary>
     ///
     /// <value>
-    /// The number of vertices in the graph.
-    /// </value>
-    ///
-    /// <remarks>
-    /// Zero is returned if the workbook hasn't been read yet.
-    /// </remarks>
-    //*************************************************************************
-
-    protected Int32
-    VertexCount
-    {
-        get
-        {
-            return (oNodeXLControl.Graph.Vertices.Count);
-        }
-    }
-
-    //*************************************************************************
-    //  Property: WorkbookRead
-    //
-    /// <summary>
-    /// Gets a flag indicating whether a non-empty graph has been read from the
-    /// workbook.
-    /// </summary>
-    ///
-    /// <value>
-    /// true if a non-empty graph has been read from the workbook.
+    /// true if a non-empty graph has been successfully read from the workbook.
     /// </value>
     //*************************************************************************
 
     protected Boolean
-    WorkbookRead
+    NonEmptyWorkbookRead
     {
         get
         {
-            return (this.VertexCount > 0);
+            return (m_oEdgeIDDictionary != null &&
+                oNodeXLControl.Graph.Vertices.Count > 0);
         }
     }
 
@@ -518,15 +491,20 @@ public partial class TaskPane : UserControl
         }
 
         if (
-            !this.WorkbookRead
+            !this.NonEmptyWorkbookRead
             && this.LayoutIsNull
-            && !ShowLayoutTypeIsNoneNotification()
+            && !ShowLayoutTypeIsNullNotification()
             )
         {
             return;
         }
 
+        // This is in case another open workbook has modified the user
+        // settings.
+
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
+        ApplyGeneralUserSettings(oGeneralUserSettings);
+        ApplyLayoutUserSettings( new LayoutUserSettings() );
 
         ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
 
@@ -640,9 +618,14 @@ public partial class TaskPane : UserControl
 
         if (LayoutIsNull)
         {
-            ShowLayoutTypeIsNoneWarning("lay out the graph again");
+            ShowLayoutTypeIsNullWarning("lay out the graph again");
             return;
         }
+
+        // This is in case another open workbook has modified the user
+        // settings.
+
+        ApplyLayoutUserSettings( new LayoutUserSettings() );
 
         oNodeXLControl.DrawGraph(true);
     }
@@ -724,7 +707,7 @@ public partial class TaskPane : UserControl
     /// The vertices to lay out.
     /// </param>
     ///
-    /// <param name="sLayoutTypeIsNoneWarning">
+    /// <param name="sLayoutTypeIsNullWarning">
     /// Warning to show if the layout is LayoutType.Null.
     /// </param>
     //*************************************************************************
@@ -733,11 +716,11 @@ public partial class TaskPane : UserControl
     ForceLayoutTheseVerticesOnly
     (
         ICollection<IVertex> oVerticesToLayOut,
-        String sLayoutTypeIsNoneWarning
+        String sLayoutTypeIsNullWarning
     )
     {
         Debug.Assert(oVerticesToLayOut != null);
-        Debug.Assert( !String.IsNullOrEmpty(sLayoutTypeIsNoneWarning) );
+        Debug.Assert( !String.IsNullOrEmpty(sLayoutTypeIsNullWarning) );
         AssertValid();
 
         if (oNodeXLControl.IsLayingOutGraph)
@@ -747,7 +730,7 @@ public partial class TaskPane : UserControl
 
         if (LayoutIsNull)
         {
-            ShowLayoutTypeIsNoneWarning(sLayoutTypeIsNoneWarning);
+            ShowLayoutTypeIsNullWarning(sLayoutTypeIsNullWarning);
             return;
         }
 
@@ -827,7 +810,7 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: ShowLayoutTypeIsNoneWarning()
+    //  Method: ShowLayoutTypeIsNullWarning()
     //
     /// <summary>
     /// Warns the user that the layout is LayoutType.Null.
@@ -844,7 +827,7 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     protected void
-    ShowLayoutTypeIsNoneWarning
+    ShowLayoutTypeIsNullWarning
     (
         String sAction
     )
@@ -860,7 +843,7 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: ShowLayoutTypeIsNoneNotification()
+    //  Method: ShowLayoutTypeIsNullNotification()
     //
     /// <summary>
     /// Notifies the user that the layout is LayoutType.Null.
@@ -878,14 +861,14 @@ public partial class TaskPane : UserControl
     //*************************************************************************
 
     protected Boolean
-    ShowLayoutTypeIsNoneNotification()
+    ShowLayoutTypeIsNullNotification()
     {
         AssertValid();
 
         NotificationUserSettings oNotificationUserSettings =
             new NotificationUserSettings();
 
-        if (!oNotificationUserSettings.LayoutTypeIsNone)
+        if (!oNotificationUserSettings.LayoutTypeIsNull)
         {
             // The user doesn't want to be notified.
 
@@ -916,7 +899,7 @@ public partial class TaskPane : UserControl
 
         if (oNotificationDialog.DisableFutureNotifications)
         {
-            oNotificationUserSettings.LayoutTypeIsNone = false;
+            oNotificationUserSettings.LayoutTypeIsNull = false;
             oNotificationUserSettings.Save();
         }
 
@@ -1020,14 +1003,14 @@ public partial class TaskPane : UserControl
 
         if (bEnable2)
         {
-            Int32 iVertices = this.VertexCount;
+            Boolean bNonEmptyWorkbookRead = this.NonEmptyWorkbookRead;
 
-            tssbForceLayout.Enabled = (iVertices > 0);
+            tssbForceLayout.Enabled = bNonEmptyWorkbookRead;
 
             tsbShowDynamicFilters.Enabled =
                 m_oRibbon.EnableShowDynamicFilters =
                 msiContextShowDynamicFilters.Enabled =
-                (iVertices > 0 && m_iTemplateVersion >= 58);
+                (bNonEmptyWorkbookRead && m_iTemplateVersion >= 58);
         }
 
         tsGeneral.Enabled = tsGraphNavigation.Enabled = bEnable2;
@@ -1081,7 +1064,7 @@ public partial class TaskPane : UserControl
             }
         }
 
-        Int32 iVertices = this.VertexCount;
+        Boolean bNonEmptyWorkbookRead = this.NonEmptyWorkbookRead;
 
         ICollection<IVertex> oSelectedVertices =
             oNodeXLControl.SelectedVertices;
@@ -1137,12 +1120,12 @@ public partial class TaskPane : UserControl
         msiContextSelectSubgraphs.Enabled = bEnableSelectSubgraphs;
 
         MenuUtil.EnableToolStripMenuItems(
-            iSelectedVertices > 0,
+            bNonEmptyWorkbookRead && iSelectedVertices > 0,
             msiContextForceLayoutSelected
             );
 
         MenuUtil.EnableToolStripMenuItems(
-            iVertices > 0,
+            bNonEmptyWorkbookRead,
             msiContextForceLayout,
             msiContextForceLayoutVisible,
             msiContextSelectAll,
@@ -1150,7 +1133,7 @@ public partial class TaskPane : UserControl
             );
 
         MenuUtil.EnableToolStripMenuItems(
-            iSelectedVertices > 1,
+            bNonEmptyWorkbookRead && iSelectedVertices > 1,
             msiContextForceLayoutSelectedWithinBounds
             );
 
@@ -1308,7 +1291,7 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsLayingOutGraph)
+        if (oNodeXLControl.IsLayingOutGraph || !this.NonEmptyWorkbookRead)
         {
             bEnableSelectAllVertices = bEnableDeselectAllVertices =
                 bEnableSelectAdjacentVertices =
@@ -1320,11 +1303,10 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        Int32 iVertices = this.VertexCount;
         Int32 iSelectedVertices = oNodeXLControl.SelectedVertices.Count;
         Boolean bVertexClicked = (oClickedVertex != null);
 
-        bEnableSelectAllVertices = (iVertices > 0);
+        bEnableSelectAllVertices = true;
         bEnableDeselectAllVertices = (iSelectedVertices > 0);
         bEnableSelectAdjacentVertices = bVertexClicked;
         bEnableDeselectAdjacentVertices = bVertexClicked;
@@ -1525,8 +1507,9 @@ public partial class TaskPane : UserControl
         }
         else
         {
-            iWidth = oGraphImageUserSettings.Width;
-            iHeight = oGraphImageUserSettings.Height;
+            Size oImageSize = oGraphImageUserSettings.ImageSize;
+            iWidth = oImageSize.Width;
+            iHeight = oImageSize.Height;
         }
 
         if (m_oSaveGraphImageFileDialog == null)
@@ -1887,11 +1870,8 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        if (oNodeXLControl.IsLayingOutGraph || !this.WorkbookRead)
+        if (oNodeXLControl.IsLayingOutGraph || !this.NonEmptyWorkbookRead)
         {
-            // The control is busy, or the workbook hasn't been read yet, or
-            // the graph is empty.
-
             return;
         }
 
@@ -3993,24 +3973,21 @@ public partial class TaskPane : UserControl
         oNodeXLControl.Graph.RemoveKey(
             ReservedMetadataKeys.LayOutTheseVerticesWithinBounds);
 
-        // If the edge and vertex dictionaries are null, NodeXLControl has
-        // drawn a default, empty graph.
-
         if (e.Error == null && m_oEdgeIDDictionary != null)
         {
             // Forward the event.
 
-            GraphDrawnEventHandler oGraphDrawn = this.GraphDrawn;
+            GraphLaidOutEventHandler oGraphLaidOut = this.GraphLaidOut;
 
-            if (oGraphDrawn != null)
+            if (oGraphLaidOut != null)
             {
                 Debug.Assert(m_oVertexIDDictionary != null);
 
                 try
                 {
-                    oGraphDrawn(this, new GraphDrawnEventArgs(
+                    oGraphLaidOut(this, new GraphLaidOutEventArgs(
                         this.GraphRectangle, m_oEdgeIDDictionary,
-                        m_oVertexIDDictionary
+                        m_oVertexIDDictionary, oNodeXLControl
                         ) );
                 }
                 catch (Exception oException)
@@ -4317,12 +4294,8 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        if (m_oEdgeIDDictionary == null)
+        if (!this.NonEmptyWorkbookRead)
         {
-            // ReadWorkbook() hasn't been called, so ignore the event.
-
-            Debug.Assert(m_oVertexIDDictionary == null);
-
             return;
         }
 
@@ -4437,54 +4410,6 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: ThisWorkbook_WorkbookAutoFilled()
-    //
-    /// <summary>
-    /// Handles the WorkbookAutoFilled event on the ThisWorkbook workbook.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ThisWorkbook_WorkbookAutoFilled
-    (
-        Object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        if (oNodeXLControl.IsLayingOutGraph)
-        {
-            return;
-        }
-
-        if (this.PerWorkbookSettings.AutoFillWorkbookResults.VertexXResults
-            .ColumnAutoFilled )
-        {
-            // When the X and Y columns are autofilled, the layout shouldn't
-            // be updated.
-            //
-            // (The user can clear the X and Y autofill results by changing the
-            // layout type.)
-
-            m_oLayoutManagerForToolStripSplitButton.Layout = LayoutType.Null;
-        }
-
-        if ( (new GeneralUserSettings() ).AutoReadWorkbook )
-        {
-            ReadWorkbook();
-        }
-    }
-
-    //*************************************************************************
     //  Method: ThisWorkbook_VisualAttributeSetInWorkbook()
     //
     /// <summary>
@@ -4519,7 +4444,7 @@ public partial class TaskPane : UserControl
         // If the workbook hasn't been read yet, read it and lay out the graph.
         // Otherwise, read it but don't lay it out again.
 
-        ReadWorkbook(!this.WorkbookRead);
+        ReadWorkbook(!this.NonEmptyWorkbookRead);
     }
 
     //*************************************************************************

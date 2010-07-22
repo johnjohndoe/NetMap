@@ -2,6 +2,8 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.Core;
@@ -1767,7 +1769,7 @@ public class EdgeCollectionTest : Object
 
         foreach (IVertex oVertex in m_oGraph.Vertices)
         {
-            Assert.IsTrue(oVertex.IncidentEdges.Length > 0);
+            Assert.IsTrue(oVertex.IncidentEdges.Count > 0);
 
             Assert.AreEqual(oVertex.ParentGraph, m_oGraph);
         }
@@ -1785,7 +1787,7 @@ public class EdgeCollectionTest : Object
 
         foreach (IVertex oVertex in m_oGraph.Vertices)
         {
-            Assert.IsTrue(oVertex.IncidentEdges.Length == 0);
+            Assert.IsTrue(oVertex.IncidentEdges.Count == 0);
 
             Assert.AreEqual(oVertex.ParentGraph, m_oGraph);
         }
@@ -2677,29 +2679,30 @@ public class EdgeCollectionTest : Object
 
         IVertex [] aoVertices = AddVertices(2);
 
-        IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-            aoVertices[0], aoVertices[1] );
+        ICollection<IEdge> oConnectingEdges =
+            m_oEdgeCollection.GetConnectingEdges(
+                aoVertices[0], aoVertices[1] );
 
-        Assert.IsNotNull(aoConnectingEdges);
-        Assert.AreEqual(0, aoConnectingEdges.Length);
+        Assert.IsNotNull(oConnectingEdges);
+        Assert.AreEqual(0, oConnectingEdges.Count);
 
-        aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
+        oConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
             aoVertices[1], aoVertices[0] );
 
-        Assert.IsNotNull(aoConnectingEdges);
-        Assert.AreEqual(0, aoConnectingEdges.Length);
+        Assert.IsNotNull(oConnectingEdges);
+        Assert.AreEqual(0, oConnectingEdges.Count);
 
-        aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
+        oConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
             aoVertices[0], aoVertices[0] );
 
-        Assert.IsNotNull(aoConnectingEdges);
-        Assert.AreEqual(0, aoConnectingEdges.Length);
+        Assert.IsNotNull(oConnectingEdges);
+        Assert.AreEqual(0, oConnectingEdges.Count);
 
-        aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
+        oConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
             aoVertices[1], aoVertices[1] );
 
-        Assert.IsNotNull(aoConnectingEdges);
-        Assert.AreEqual(0, aoConnectingEdges.Length);
+        Assert.IsNotNull(oConnectingEdges);
+        Assert.AreEqual(0, oConnectingEdges.Count);
     }
 
     //*************************************************************************
@@ -2731,25 +2734,26 @@ public class EdgeCollectionTest : Object
         {
             // Vertex 0 is connected to vertex i.
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                aoVertices[0], aoVertices[i] );
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(
+                    aoVertices[0], aoVertices[i] );
 
-            Assert.IsNotNull(aoConnectingEdges);
+            Assert.IsNotNull(oConnectingEdges);
 
-            Assert.AreEqual(1, aoConnectingEdges.Length);
+            Assert.AreEqual(1, oConnectingEdges.Count);
 
-            Assert.AreEqual(aoEdges[i - 1].ID, aoConnectingEdges[0].ID);
+            Assert.AreEqual(aoEdges[i - 1].ID, oConnectingEdges.First().ID);
 
             // Vertex i is connected to vertex 0.
 
-            aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
+            oConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
                 aoVertices[i], aoVertices[0] );
 
-            Assert.IsNotNull(aoConnectingEdges);
+            Assert.IsNotNull(oConnectingEdges);
 
-            Assert.AreEqual(1, aoConnectingEdges.Length);
+            Assert.AreEqual(1, oConnectingEdges.Count);
 
-            Assert.AreEqual(aoEdges[i - 1].ID, aoConnectingEdges[0].ID);
+            Assert.AreEqual(aoEdges[i - 1].ID, oConnectingEdges.First().ID);
         }
     }
 
@@ -2780,21 +2784,22 @@ public class EdgeCollectionTest : Object
         {
             // Vertex i is not connected to vertex i + 1.
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                aoVertices[i], aoVertices[i + 1] );
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(
+                    aoVertices[i], aoVertices[i + 1] );
 
-            Assert.IsNotNull(aoConnectingEdges);
+            Assert.IsNotNull(oConnectingEdges);
 
-            Assert.AreEqual(0, aoConnectingEdges.Length);
+            Assert.AreEqual(0, oConnectingEdges.Count);
 
             // Vertex i + 1 is not connected to vertex i.
 
-            aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
+            oConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
                 aoVertices[i + 1], aoVertices[i] );
 
-            Assert.IsNotNull(aoConnectingEdges);
+            Assert.IsNotNull(oConnectingEdges);
 
-            Assert.AreEqual(0, aoConnectingEdges.Length);
+            Assert.AreEqual(0, oConnectingEdges.Count);
         }
     }
 
@@ -2824,34 +2829,34 @@ public class EdgeCollectionTest : Object
         {
             for (Int32 j = 0; j < Vertices; j++)
             {
-                IEdge [] aoConnectingEdgesForward =
+                ICollection<IEdge> oConnectingEdgesForward =
                     m_oEdgeCollection.GetConnectingEdges(
                         aoVertices[i], aoVertices[j] );
 
-                IEdge [] aoConnectingEdgesBackward =
+                ICollection<IEdge> oConnectingEdgesBackward =
                     m_oEdgeCollection.GetConnectingEdges(
                         aoVertices[j], aoVertices[i] );
 
-                Assert.IsNotNull(aoConnectingEdgesForward);
-                Assert.IsNotNull(aoConnectingEdgesBackward);
+                Assert.IsNotNull(oConnectingEdgesForward);
+                Assert.IsNotNull(oConnectingEdgesBackward);
 
                 if (i == j)
                 {
                     // There are no self-loops.
 
-                    Assert.AreEqual(0, aoConnectingEdgesForward.Length);
-                    Assert.AreEqual(0, aoConnectingEdgesBackward.Length);
+                    Assert.AreEqual(0, oConnectingEdgesForward.Count);
+                    Assert.AreEqual(0, oConnectingEdgesBackward.Count);
                 }
                 else
                 {
                     // The edge is connected once to every other vertex.
 
-                    Assert.AreEqual(1, aoConnectingEdgesForward.Length);
+                    Assert.AreEqual(1, oConnectingEdgesForward.Count);
 
-                    Assert.AreEqual(1, aoConnectingEdgesBackward.Length);
+                    Assert.AreEqual(1, oConnectingEdgesBackward.Count);
 
-                    Assert.AreEqual( aoConnectingEdgesForward[0],
-                        aoConnectingEdgesBackward[0] );
+                    Assert.AreEqual( oConnectingEdgesForward.First(),
+                        oConnectingEdgesBackward.First() );
                 }
             }
         }
@@ -2894,12 +2899,12 @@ public class EdgeCollectionTest : Object
         {
             IVertex oVertex = aoVertices[i];
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                oVertex, oVertex);
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(oVertex, oVertex);
 
-            Assert.AreEqual(1, aoConnectingEdges.Length);
+            Assert.AreEqual(1, oConnectingEdges.Count);
 
-            Assert.AreEqual( aoSelfLoopEdges[i], aoConnectingEdges[0] );
+            Assert.AreEqual( aoSelfLoopEdges[i], oConnectingEdges.First() );
         }
     }
 
@@ -2923,8 +2928,8 @@ public class EdgeCollectionTest : Object
         {
             IVertex [] aoVertices = AddVertices(1);
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                null, aoVertices[0] );
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(null, aoVertices[0] );
         }
         catch (ArgumentNullException oArgumentNullException)
         {
@@ -2962,8 +2967,8 @@ public class EdgeCollectionTest : Object
         {
             IVertex [] aoVertices = AddVertices(1);
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                aoVertices[0], null);
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(aoVertices[0], null);
         }
         catch (ArgumentNullException oArgumentNullException)
         {
@@ -3003,8 +3008,9 @@ public class EdgeCollectionTest : Object
 
             IVertex oNonContainedVertex = new Vertex();
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                oNonContainedVertex, aoVertices[0] );
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(
+                    oNonContainedVertex, aoVertices[0] );
         }
         catch (ArgumentException oArgumentException)
         {
@@ -3043,8 +3049,9 @@ public class EdgeCollectionTest : Object
 
             IVertex oNonContainedVertex = new Vertex();
 
-            IEdge [] aoConnectingEdges = m_oEdgeCollection.GetConnectingEdges(
-                aoVertices[0], oNonContainedVertex );
+            ICollection<IEdge> oConnectingEdges =
+                m_oEdgeCollection.GetConnectingEdges(
+                    aoVertices[0], oNonContainedVertex );
         }
         catch (ArgumentException oArgumentException)
         {

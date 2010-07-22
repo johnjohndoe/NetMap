@@ -1,0 +1,332 @@
+<!--
+This is a sample network configuration file for the NodeXL Network Server.  It
+specifies which network the NodeXL Network Server should download and how the
+network should be saved to disk.  A particular configuration file might specify
+"Get the Twitter search network for people whose tweets contain `Sociology,'
+add an edge for each `mentions' relationship, limit to 100 people, include
+tweets, include statistics, and store the network as a GraphML file in the
+C:\NodeXLNetworks folder", for example.
+
+To create your own network configuration file, make a copy of this file and
+edit the copy in Notepad or another text editor.
+
+You might find it useful to view your edited copy in Internet Explorer, which
+lets you collapse XML sections.  Internet Explorer will also pinpoint errors if
+you accidentally corrupt the XML structure.
+
+
+IMPORTANT NOTE Regarding Your Twitter Account
+
+If you want to authorize NodeXL to use your Twitter account, which will cause
+Twitter to use higher rate limits, you must do so through the NodeXL Excel
+Template.  Follow these steps:
+
+1. Open the NodeXL Excel Template.
+
+2. In the Excel ribbon, Go to NodeXL, Data, Import, From Twitter Search
+   Network.
+
+3. Select "I have a Twitter account, but I have not yet authorized NodeXL to
+   use my account..."
+
+4. Click OK.
+
+This only needs to be done once.  When you authorize NodeXL to use your
+Twitter account, both the NodeXL Excel Template and the NodeXL Network Server
+will remember the authorization and use your account for all network requests.
+-->
+
+<NetworkConfiguration>
+
+    <!--
+    ***************************************************************************
+    NetworkType
+    
+    Specifies the type of network to get.  Must be one of the following values:
+
+        TwitterSearch
+        TwitterUser
+    ***************************************************************************
+    -->>
+
+    <NetworkType>TwitterSearch</NetworkType>
+
+
+    <!--
+    ***************************************************************************
+    After setting NetworkType, you must also edit one of the following
+    sections:
+
+        TwitterSearchNetworkConfiguration
+        TwitterUserNetworkConfiguration
+    ***************************************************************************
+    -->>
+
+
+    <!--
+    ***************************************************************************
+    TwitterSearchNetworkConfiguration
+    
+    This section is used only if NetworkType is TwitterSearch.
+    ***************************************************************************
+    -->>
+
+    <TwitterSearchNetworkConfiguration>
+
+        <!--
+        ***********************************************************************
+        SearchTerm
+        
+        What to search for.
+        ***********************************************************************
+        -->>
+
+        <SearchTerm>Sociology</SearchTerm>
+
+        <!--
+        ***********************************************************************
+        WhatToInclude
+        
+        What to include in the network.  This must be a combination of the
+        following values, separated by commas:
+
+            Statuses
+
+                Include each person's status (tweet).
+
+            Statistics
+
+                Include each person's statistics.  Slower.
+
+            FollowedEdges
+
+                Include an edge for each followed relationship.  Slower.
+
+            RepliesToEdges
+
+                Include an edge from person A to person B if person A's tweet
+                is a reply to person B.
+
+            MentionsEdges
+
+                Include an edge from person A to person B if person A's tweet
+                mentions person B.
+
+        ***********************************************************************
+        -->>
+
+        <WhatToInclude>Statuses,MentionsEdges</WhatToInclude>
+
+        <!--
+        ***********************************************************************
+        MaximumPeoplePerRequest
+        
+        The maximum number of people to request for each query, or leave empty
+        for no limit.
+        ***********************************************************************
+        -->>
+
+        <MaximumPeoplePerRequest>100</MaximumPeoplePerRequest>
+
+        <!--
+        ***********************************************************************
+        NetworkFileFolder
+        
+        Full path to the folder where the network files should be stored.
+        ***********************************************************************
+        -->>
+
+        <NetworkFileFolder>C:\</NetworkFileFolder>
+
+        <!--
+        ***********************************************************************
+        NetworkFileFormats
+        
+        Specifies the file formats to save the network to.  This must be a
+        combination of the following values, separated by commas:
+
+            GraphML
+
+                Save the network to a GraphML file, which can be imported into
+                a NodeXL workbook.
+
+            NodeXLWorkbook
+
+                Save the network directly to a NodeXL workbook.  To use this
+                option, the NodeXL Excel Template must be installed on this
+                computer.
+
+        ***********************************************************************
+        -->>
+
+        <NetworkFileFormats>GraphML</NetworkFileFormats>
+
+        <!--
+        ***********************************************************************
+        AutomateNodeXLWorkbook
+        
+        Specifies whether the NodeXL Excel Template's automate feature should
+        be run on the workbook.  Must be true or false.  This is used only if
+        NetworkFileFormats (above) includes NodeXLWorkbook.
+
+        If true, the automate options you most recently set in the NodeXL Excel
+        Template are used to automate the workbook.  To set the automate
+        options, do the following:
+
+            1. Open the NodeXL Excel Template.
+
+            2. In the Excel ribbon, Go to NodeXL, Graph, Automate.
+
+        Note that the "On this workbook" and "On every NodeXL workbook in this
+        folder" selection in the Automate dialog box is ignored when automating
+        the workbook from the NodeXL Network Server.
+        ***********************************************************************
+        -->>
+
+        <AutomateNodeXLWorkbook>false</AutomateNodeXLWorkbook>
+
+    </TwitterSearchNetworkConfiguration>
+
+
+    <!--
+    ***************************************************************************
+    TwitterUserNetworkConfiguration
+    
+    This section is used only if NetworkType is TwitterUser.
+    ***************************************************************************
+    -->>
+
+    <TwitterUserNetworkConfiguration>
+
+        <!--
+        ***********************************************************************
+        ScreenNameToAnalyze
+        
+        The screen name of the Twitter user whose network should be analyzed.
+        ***********************************************************************
+        -->>
+
+        <ScreenNameToAnalyze>bob</ScreenNameToAnalyze>
+
+        <!--
+        ***********************************************************************
+        WhatToInclude
+        
+        What to include in the network.  This must be a combination of the
+        following values, separated by commas:
+
+            FollowedVertices
+
+                Include a vertex for each person followed by the user.
+
+            FollowerVertices
+
+                Include a vertex for each person following the user.
+
+            LatestStatuses
+
+                Include each person's latest status (tweet).
+
+            FollowedFollowerEdges
+
+                Include an edge for each followed relationship if
+                FollowedVertices is specified, and include an edge for each
+                follower relationship if FollowerVertices is specified,
+
+            RepliesToEdges
+
+                Include an edge from person A to person B if person A's latest
+                tweet is a reply to person B.
+
+            MentionsEdges
+
+                Include an edge from person A to person B if person A's latest
+                tweet mentions person B.
+
+        ***********************************************************************
+        -->>
+
+        <WhatToInclude>FollowedVertices,LatestStatuses</WhatToInclude>
+
+        <!--
+        ***********************************************************************
+        NetworkLevel
+        
+        Network level to include.  Must be One, OnePointFive, or Two.
+        ***********************************************************************
+        -->>
+
+        <NetworkLevel>One</NetworkLevel>
+
+        <!--
+        ***********************************************************************
+        MaximumPeoplePerRequest
+        
+        The maximum number of people to request for each query, or leave empty
+        for no limit.
+        ***********************************************************************
+        -->>
+
+        <MaximumPeoplePerRequest>100</MaximumPeoplePerRequest>
+
+        <!--
+        ***********************************************************************
+        NetworkFileFolder
+        
+        Full path to the folder where the network files should be stored.
+        ***********************************************************************
+        -->>
+
+        <NetworkFileFolder>C:\</NetworkFileFolder>
+
+        <!--
+        ***********************************************************************
+        NetworkFileFormats
+        
+        Specifies the file formats to save the network to.  This must be a
+        combination of the following values, separated by commas:
+
+            GraphML
+
+                Save the network to a GraphML file, which can be imported into
+                a NodeXL workbook.
+
+            NodeXLWorkbook
+
+                Save the network directly to a NodeXL workbook.  To use this
+                option, the NodeXL Excel Template must be installed on this
+                computer.
+
+        ***********************************************************************
+        -->>
+
+        <NetworkFileFormats>GraphML</NetworkFileFormats>
+
+        <!--
+        ***********************************************************************
+        AutomateNodeXLWorkbook
+        
+        Specifies whether the NodeXL Excel Template's automate feature should
+        be run on the workbook.  Must be true or false.  This is used only if
+        NetworkFileFormats (above) includes NodeXLWorkbook.
+
+        If true, the automate options you most recently set in the NodeXL Excel
+        Template are used to automate the workbook.  To set the automate
+        options, do the following:
+
+            1. Open the NodeXL Excel Template.
+
+            2. In the Excel ribbon, Go to NodeXL, Graph, Automate.
+
+        Note that the "On this workbook" and "On every NodeXL workbook in this
+        folder" selection in the Automate dialog box is ignored when automating
+        the workbook from the NodeXL Network Server.
+        ***********************************************************************
+        -->>
+
+        <AutomateNodeXLWorkbook>false</AutomateNodeXLWorkbook>
+
+    </TwitterUserNetworkConfiguration>
+
+
+</NetworkConfiguration>

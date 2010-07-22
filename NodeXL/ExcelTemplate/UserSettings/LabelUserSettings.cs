@@ -33,7 +33,7 @@ public class LabelUserSettings : Object
 
     public LabelUserSettings()
     {
-        m_oFont = (Font)( new FontConverter() ).ConvertFromString(
+        m_oFont = (Font)( new FontConverter() ).ConvertFromInvariantString(
             GeneralUserSettings.DefaultFont);
 
         m_oVertexLabelFillColor = Color.White;
@@ -482,7 +482,8 @@ public class LabelUserSettingsTypeConverter : TypeConverter
 
             "{0}\t{1}\t{2}\t{3}\t{4}"
             ,
-            ( new FontConverter() ).ConvertToString(oLabelUserSettings.Font),
+            ( new FontConverter() ).ConvertToInvariantString(
+                oLabelUserSettings.Font),
 
             ( new ColorConverter() ).ConvertToString(
                 oLabelUserSettings.VertexLabelFillColor),
@@ -537,7 +538,7 @@ public class LabelUserSettingsTypeConverter : TypeConverter
         Debug.Assert(asStrings.Length == 5);
 
         oLabelUserSettings.Font = (Font)
-            ( new FontConverter() ).ConvertFromString(asStrings[0] );
+            ( new FontConverter() ).ConvertFromInvariantString(asStrings[0] );
 
         oLabelUserSettings.VertexLabelFillColor = (Color)
             ( new ColorConverter() ).ConvertFromString(asStrings[1] );

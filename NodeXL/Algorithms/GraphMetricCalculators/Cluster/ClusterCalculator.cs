@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -467,7 +468,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
 
                 Debug.Assert(oCommunity != null);
 
-                oCommunity.Vertices.AddLast( oVertexIDDictionary[iVertexID] );
+                oCommunity.Vertices.Add( oVertexIDDictionary[iVertexID] );
             }
         }
 
@@ -530,14 +531,14 @@ public class ClusterCalculator : GraphMetricCalculatorBase
             Int32 iID = oIDGenerator.GetNextID();
 
             oCommunity.ID = iID;
-            oCommunity.Vertices.AddLast(oVertex);
+            oCommunity.Vertices.Add(oVertex);
 
             // TODO: IVertex.AdjacentVertices includes self-loops.  Should
             // self-loops be eliminated everywhere, including here and within
             // the graph's total edge count?  Not sure how self-loops are
             // affecting the algorithm used by this class...
 
-            oCommunity.Degree = oVertex.AdjacentVertices.Length;
+            oCommunity.Degree = oVertex.AdjacentVertices.Count;
 
             oCommunities.AddLast(oCommunity);
             oVertexIDDictionary.Add(oVertex.ID, oCommunity);
@@ -549,7 +550,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
         {
             Debug.Assert(oCommunity1.Vertices.Count == 1);
 
-            IVertex oVertex = oCommunity1.Vertices.First.Value;
+            IVertex oVertex = oCommunity1.Vertices.First();
 
             SortedList<Int32, CommunityPair> oCommunityPairs =
                 oCommunity1.CommunityPairs;
@@ -688,16 +689,16 @@ public class ClusterCalculator : GraphMetricCalculatorBase
         oNewCommunity.ID = oIDGenerator.GetNextID();
         oNewCommunity.Degree = oCommunity1.Degree + oCommunity2.Degree;
 
-        LinkedList<IVertex> oNewCommunityVertices = oNewCommunity.Vertices;
+        ICollection<IVertex> oNewCommunityVertices = oNewCommunity.Vertices;
 
         foreach (IVertex oVertex in oCommunity1.Vertices)
         {
-            oNewCommunityVertices.AddLast(oVertex);
+            oNewCommunityVertices.Add(oVertex);
         }
 
         foreach (IVertex oVertex in oCommunity2.Vertices)
         {
-            oNewCommunityVertices.AddLast(oVertex);
+            oNewCommunityVertices.Add(oVertex);
         }
 
         // In the following sorted lists, the sort key is the ID of

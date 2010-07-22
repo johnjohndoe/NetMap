@@ -3,6 +3,7 @@
 
 using System;
 using System.Configuration;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 using System.Diagnostics;
@@ -13,7 +14,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: GraphMetricsDialog
 //
 /// <summary>
-/// Edits a <see cref="GraphMetricUserSettings" /> object.
+/// Edits a <see cref="GraphMetricUserSettings" /> object and calculates the
+/// metrics specified in the object.
 /// </summary>
 ///
 /// <remarks>
@@ -46,12 +48,17 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
     /// <param name="graphMetricUserSettings">
     /// The object being edited.
     /// </param>
+    ///
+    /// <param name="mode">
+    /// Indicates the mode in which the dialog is being used.
+    /// </param>
     //*************************************************************************
 
     public GraphMetricsDialog
     (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-        GraphMetricUserSettings graphMetricUserSettings
+        GraphMetricUserSettings graphMetricUserSettings,
+        DialogMode mode
     )
     : this()
     {
@@ -60,6 +67,13 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 
         m_oWorkbook = workbook;
         m_oGraphMetricUserSettings = graphMetricUserSettings;
+        m_eMode = mode;
+
+        if (m_eMode == DialogMode.EditOnly)
+        {
+            this.Text += " Options";
+            btnOK.Text = "OK";
+        }
 
         // Instantiate an object that saves and retrieves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -95,6 +109,26 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Enum: DialogMode
+    //
+    /// <summary>
+    /// Indicates the mode in which the dialog is being used.
+    /// </summary>
+    //*************************************************************************
+
+    public enum
+    DialogMode
+    {
+        /// The user can edit the dialog settings and then calculate metrics.
+
+        Normal,
+
+        /// The user can edit the dialog settings but cannot calculate metrics.
+
+        EditOnly,
+    }
+
+    //*************************************************************************
     //  Method: DoDataExchange()
     //
     /// <summary>
@@ -119,91 +153,71 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
     {
         AssertValid();
 
+        GraphMetrics eGraphMetricsToCalculate;
+
         if (bFromControls)
         {
-            m_oGraphMetricUserSettings.CalculateInDegree = chkInDegree.Checked;
+            eGraphMetricsToCalculate = GraphMetrics.None;
 
-            m_oGraphMetricUserSettings.CalculateOutDegree =
-                chkOutDegree.Checked;
+            // An GraphMetrics flag is stored in the Tag of each CheckBox.
 
-            m_oGraphMetricUserSettings.CalculateDegree = chkDegree.Checked;
+            foreach ( CheckBox oCheckBox in GetGraphMetricCheckBoxes() )
+            {
+                if (oCheckBox.Checked)
+                {
+                    eGraphMetricsToCalculate |= (GraphMetrics)oCheckBox.Tag;
+                }
+            }
 
-            m_oGraphMetricUserSettings.CalculateBrandesFastCentralities =
-                chkBrandesFastCentralities.Checked;
-
-            m_oGraphMetricUserSettings.CalculateEigenvectorCentrality =
-                chkEigenvectorCentrality.Checked;
-
-            m_oGraphMetricUserSettings.CalculatePageRank = chkPageRank.Checked;
-
-            m_oGraphMetricUserSettings.CalculateClusteringCoefficient =
-                chkClusteringCoefficient.Checked;
-
-            m_oGraphMetricUserSettings.CalculateOverallMetrics =
-                chkOverallMetrics.Checked;
+            m_oGraphMetricUserSettings.GraphMetricsToCalculate =
+                eGraphMetricsToCalculate;
         }
         else
         {
-            chkInDegree.Checked = m_oGraphMetricUserSettings.CalculateInDegree;
+            eGraphMetricsToCalculate =
+                m_oGraphMetricUserSettings.GraphMetricsToCalculate;
 
-            chkOutDegree.Checked =
-                m_oGraphMetricUserSettings.CalculateOutDegree;
-
-            chkDegree.Checked = m_oGraphMetricUserSettings.CalculateDegree;
-
-            chkBrandesFastCentralities.Checked =
-                m_oGraphMetricUserSettings.CalculateBrandesFastCentralities;
-
-            chkEigenvectorCentrality.Checked =
-                m_oGraphMetricUserSettings.CalculateEigenvectorCentrality;
-
-            chkPageRank.Checked = m_oGraphMetricUserSettings.CalculatePageRank;
-
-            chkClusteringCoefficient.Checked =
-                m_oGraphMetricUserSettings.CalculateClusteringCoefficient;
-
-            chkOverallMetrics.Checked =
-                m_oGraphMetricUserSettings.CalculateOverallMetrics;
+            foreach ( CheckBox oCheckBox in GetGraphMetricCheckBoxes() )
+            {
+                oCheckBox.Checked =
+                    (eGraphMetricsToCalculate & (GraphMetrics)oCheckBox.Tag)
+                    != 0;
+            }
         }
 
         return (true);
     }
 
     //*************************************************************************
-    //  Method: CheckAllCheckBoxes()
+    //  Method: GetGraphMetricCheckBoxes()
     //
     /// <summary>
-    /// Checks or unchecks all the dialog's CheckBoxes.
+    /// Gets an enumerator for enumerating the CheckBox controls that represent
+    /// graph metrics.
     /// </summary>
     ///
-    /// <param name="oControl">
-    /// Control whose CheckBoxes should be checked or unchecked.
-    /// </param>
-    ///
-    /// <param name="bCheck">
-    /// true to check all CheckBoxes, false to uncheck them.
-    /// </param>
+    /// <returns>
+    /// An enumerator for enumerating the CheckBox controls.
+    /// </returns>
     //*************************************************************************
 
-    protected void
-    CheckAllCheckBoxes
-    (
-        Control oControl,
-        Boolean bCheck
-    )
+    protected IEnumerable<CheckBox>
+    GetGraphMetricCheckBoxes()
     {
-        Debug.Assert(oControl != null);
         AssertValid();
 
-        foreach (Control oChildControl in oControl.Controls)
+        foreach (Control oControl in this.Controls)
         {
-            if (oChildControl is CheckBox)
+            if (oControl is GroupBox)
             {
-                ( (CheckBox)oChildControl ).Checked = bCheck;
-            }
-            else
-            {
-                CheckAllCheckBoxes(oChildControl, bCheck);
+                foreach (Control oGroupBoxChild in oControl.Controls)
+                {
+                    if (oGroupBoxChild is CheckBox &&
+                        oGroupBoxChild.Tag is GraphMetrics)
+                    {
+                        yield return ( (CheckBox)oGroupBoxChild );
+                    }
+                }
             }
         }
     }
@@ -325,10 +339,17 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
             return;
         }
 
-        if (!m_oGraphMetricUserSettings.AtLeastOneMetricSelected)
+        if (m_oGraphMetricUserSettings.GraphMetricsToCalculate ==
+            GraphMetrics.None)
         {
             this.ShowInformation("No metrics have been selected.");
+            return;
+        }
 
+        if (m_eMode == DialogMode.EditOnly)
+        {
+            DialogResult = DialogResult.OK;
+            this.Close();
             return;
         }
 
@@ -367,6 +388,7 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oGraphMetricUserSettings != null);
         Debug.Assert(m_oGraphMetricsDialogUserSettings != null);
+        // m_eMode
     }
 
 
@@ -385,6 +407,10 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
     /// User settings for this dialog.
 
     protected GraphMetricsDialogUserSettings m_oGraphMetricsDialogUserSettings;
+
+    /// Indicates the mode in which the dialog is being used.
+
+    protected DialogMode m_eMode;
 }
 
 

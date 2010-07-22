@@ -798,7 +798,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     //  Method: GetConnectingEdges()
     //
     /// <summary>
-    /// Gets an array of edges that connect two specified vertices.
+    /// Gets a collection of edges that connect two specified vertices.
     /// </summary>
     ///
     /// <param name="vertex1">
@@ -811,12 +811,12 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     ///
     /// <returns>
     /// An array of zero or more edges that connect <paramref name="vertex1" />
-    /// to <paramref name="vertex2" />, as an array of <see cref="IEdge" />
+    /// to <paramref name="vertex2" />, as a collection of <see cref="IEdge" />
     /// objects.
     /// </returns>
     ///
     /// <remarks>
-    /// This method returns an array of all edges that connect <paramref
+    /// This method returns a collection of all edges that connect <paramref
     /// name="vertex1" /> to <paramref name="vertex2" />.  The directedness of
     /// the edges is not considered.
     ///
@@ -839,7 +839,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </remarks>
     //*************************************************************************
 
-    public IEdge []
+    public ICollection<IEdge>
     GetConnectingEdges
     (
         IVertex vertex1,
@@ -905,7 +905,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
             }
         }
 
-        return ( oConnectingEdges.ToArray() );
+        return (oConnectingEdges);
     }
 
     //*************************************************************************
@@ -1267,7 +1267,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     //  Method: GetIncomingOrOutgoingEdges()
     //
     /// <summary>
-    /// Gets an array of a vertex's incoming or outgoing edges.
+    /// Gets a collection of a vertex's incoming or outgoing edges.
     /// </summary>
     ///
     /// <param name="oVertex">
@@ -1283,8 +1283,8 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </param>
     ///
     /// <returns>
-    /// An array of the vertex's zero or more incoming or outgoing edges (or
-    /// both), as an array of <see cref="IEdge" /> objects.
+    /// A collection of the vertex's zero or more incoming or outgoing edges
+    /// (or both), as a collection of <see cref="IEdge" /> objects.
     /// </returns>
     ///
     /// <remarks>
@@ -1297,8 +1297,8 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </para>
     ///
     /// <para>
-    /// If there are no such edges, the returned array is empty.  The returned
-    /// value is never null.
+    /// If there are no such edges, the returned collection is empty.  The
+    /// returned value is never null.
     /// </para>
     ///
     /// <para>
@@ -1309,7 +1309,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </remarks>
     //*************************************************************************
 
-    protected internal IEdge []
+    protected internal ICollection<IEdge>
     GetIncomingOrOutgoingEdges
     (
         Vertex oVertex,
@@ -1384,14 +1384,14 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
             }
         }
 
-        return ( oEdges.ToArray() );
+        return (oEdges);
     }
 
     //*************************************************************************
     //  Method: GetPredecessorOrSuccessorVertices()
     //
     /// <summary>
-    /// Gets an array of a vertex's predecessor or successor vertices, or
+    /// Gets a collection of a vertex's predecessor or successor vertices, or
     /// both.
     /// </summary>
     ///
@@ -1408,8 +1408,8 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </param>
     ///
     /// <returns>
-    /// An array of the vertex's zero or more predecessor or successor
-    /// vertices, as an array of <see cref="IVertex" /> objects.
+    /// A collection of the vertex's zero or more predecessor or successor
+    /// vertices, as a collection of <see cref="IVertex" /> objects.
     /// </returns>
     ///
     /// <remarks>
@@ -1424,7 +1424,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </para>
     ///
     /// <para>
-    /// If there are no such vertices, the returned array is empty.  The
+    /// If there are no such vertices, the returned collection is empty.  The
     /// returned value is never null.
     /// </para>
     ///
@@ -1436,7 +1436,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// </remarks>
     //*************************************************************************
 
-    protected internal IVertex []
+    protected internal ICollection<IVertex>
     GetPredecessorOrSuccessorVertices
     (
         Vertex oVertex,
@@ -2345,10 +2345,10 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
 
         IVertex [] aoVertices = oEdge.Vertices;
 
-        IEdge [] aoConnectingEdges =
+        ICollection<IEdge> oConnectingEdges =
             GetConnectingEdges( aoVertices[0], aoVertices[1] );
 
-        foreach (IEdge oConnectingEdge in aoConnectingEdges)
+        foreach (IEdge oConnectingEdge in oConnectingEdges)
         {
             if ( oEdge.IsParallelTo(oConnectingEdge) )
             {

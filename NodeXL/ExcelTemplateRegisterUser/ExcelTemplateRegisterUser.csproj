@@ -52,12 +52,12 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\Controls\FormPlus.cs">
+      <Link>Controls\FormPlus.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="..\..\Common\ExceptionUtil.cs">
       <Link>Util\ExceptionUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\FormPlus.cs">
-      <Link>Util\FormPlus.cs</Link>
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\Common\AssemblyUtil2.cs">
       <Link>Util\AssemblyUtil2.cs</Link>
@@ -81,10 +81,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="..\..\Common\FormPlus.resx">
-      <Link>Util\FormPlus.resx</Link>
-      <DependentUpon>FormPlus.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUserControl.resx">
       <Link>Controls\RegisterUser\RegisterUserControl.resx</Link>
       <DependentUpon>RegisterUserControl.cs</DependentUpon>

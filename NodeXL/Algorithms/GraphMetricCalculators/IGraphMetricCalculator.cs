@@ -2,9 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using Microsoft.NodeXL.Core;
 
 namespace Microsoft.NodeXL.Algorithms
 {
@@ -43,83 +41,6 @@ public interface IGraphMetricCalculator
     {
         get;
     }
-
-    //*************************************************************************
-    //  Method: CalculateGraphMetrics()
-    //
-    /// <summary>
-    /// Calculate a set of one or more related metrics.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <returns>
-    /// The graph metrics.  The return type must be defined and documented by
-    /// each implementation.
-    /// </returns>
-    //*************************************************************************
-
-    Object
-    CalculateGraphMetrics
-    (
-        IGraph graph
-    );
-
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetrics()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="graph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="backgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method.
-    /// </param>
-    ///
-    /// <param name="graphMetrics">
-    /// Where the graph metrics get stored if true is returned.  The type must
-    /// be defined and documented by each implementation.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// This method should periodically check <paramref
-    /// name="backgroundWorker" />.<see
-    /// cref="BackgroundWorker.CancellationPending" />.  If true, the method
-    /// should immediately return false.
-    ///
-    /// <para>
-    /// It should also periodically report progress by calling the
-    /// BackgroundWorker.<see
-    /// cref="BackgroundWorker.ReportProgress(Int32, Object)" /> method.  The
-    /// second argument must be a string in the format "Calculating
-    /// [GraphMetricDescription]."
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    Boolean
-    TryCalculateGraphMetrics
-    (
-        IGraph graph,
-        BackgroundWorker backgroundWorker,
-        out Object graphMetrics
-    );
 }
 
 }

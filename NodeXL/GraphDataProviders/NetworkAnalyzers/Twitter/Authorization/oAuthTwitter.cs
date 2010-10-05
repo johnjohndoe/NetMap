@@ -49,8 +49,8 @@ namespace Microsoft.NodeXL.GraphDataProviders.Twitter
         public const string AUTHORIZE = "http://twitter.com/oauth/authorize";
         public const string ACCESS_TOKEN = "http://twitter.com/oauth/access_token";
 
-        private string _consumerKey = "k3j8yuEkPGvbehgJJh526A";
-        private string _consumerSecret = "jkn3ud93urfhfsdlk32j8sJE3kJeLejWWkJeejEjeh";
+        private string _consumerKey = "jI85gVFwpefGUI85BxXcfd";
+        private string _consumerSecret = "jei9HBnfT54lKjbaSaSd65R67090fHytG54EDSfeft";
         private string _token = "";
         private string _tokenSecret = "";
         private string _verifier = "";

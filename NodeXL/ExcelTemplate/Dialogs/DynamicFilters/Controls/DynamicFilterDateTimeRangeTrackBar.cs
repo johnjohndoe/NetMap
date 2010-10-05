@@ -333,8 +333,8 @@ public class DynamicFilterDateTimeRangeTrackBar :
         // Set the format of the wrapped control based on the Excel column
         // format.
 
-        DateTimeRangeTrackBarFormat eDateTimeRangeTrackBarFormat =
-            DateTimeRangeTrackBarFormat.Date;
+        SimpleDateTimeFormat eDateTimeRangeTrackBarFormat =
+            SimpleDateTimeFormat.Date;
 
         switch (oDateTimeFilterParameters.Format)
         {
@@ -344,15 +344,13 @@ public class DynamicFilterDateTimeRangeTrackBar :
 
             case ExcelColumnFormat.Time:
 
-                eDateTimeRangeTrackBarFormat =
-                    DateTimeRangeTrackBarFormat.Time;
-
+                eDateTimeRangeTrackBarFormat = SimpleDateTimeFormat.Time;
                 break;
 
             case ExcelColumnFormat.DateAndTime:
 
                 eDateTimeRangeTrackBarFormat =
-                    DateTimeRangeTrackBarFormat.DateAndTime;
+                    SimpleDateTimeFormat.DateAndTime;
 
                 break;
 
@@ -403,17 +401,17 @@ public class DynamicFilterDateTimeRangeTrackBar :
 
         switch (this.Format)
         {
-            case DateTimeRangeTrackBarFormat.Date:
+            case SimpleDateTimeFormat.Date:
 
                 eExcelColumnFormat = ExcelColumnFormat.Date;
                 break;
 
-            case DateTimeRangeTrackBarFormat.Time:
+            case SimpleDateTimeFormat.Time:
 
                 eExcelColumnFormat = ExcelColumnFormat.Time;
                 break;
 
-            case DateTimeRangeTrackBarFormat.DateAndTime:
+            case SimpleDateTimeFormat.DateAndTime:
 
                 eExcelColumnFormat = ExcelColumnFormat.DateAndTime;
                 break;

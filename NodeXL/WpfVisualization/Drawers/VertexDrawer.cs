@@ -745,6 +745,13 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                 CreateFormattedText(sAnnotation, oColor) );
         }
 
+        if ( oVertex.ContainsKey(ReservedMetadataKeys.PerVertexDrawPlusSign) )
+        {
+            DrawPlusSign(eShape, oVertexLocation, oVertexBounds, oColor,
+                oGraphDrawingContext, oDrawingContext, oVertexLabelDrawer,
+                oVertexDrawingHistory);
+        }
+
         Debug.Assert(oVertexDrawingHistory != null);
 
         return (oVertexDrawingHistory);
@@ -1059,6 +1066,102 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
         return ( new LabelVertexDrawingHistory(oVertex, oDrawingVisual,
             bDrawAsSelected, oVertexRectangleWithPadding) );
+    }
+
+    //*************************************************************************
+    //  Method: DrawPlusSign()
+    //
+    /// <summary>
+    /// Draws a plus sign on top of the vertex.
+    /// </summary>
+    ///
+    /// <param name="eShape">
+    /// The simple vertex shape.
+    /// </param>
+    ///
+    /// <param name="oGraphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.
+    /// </param>
+    ///
+    /// <param name="oVertexLocation">
+    /// The location of the vertex.
+    /// </param>
+    ///
+    /// <param name="oDrawingContext">
+    /// The DrawingContext to use.
+    /// </param>
+    ///
+    /// <param name="oVertexColor">
+    /// The color of the vertex.
+    /// </param>
+    ///
+    /// <param name="oVertexLabelDrawer">
+    /// Object that draws a vertex label as an annotation.
+    /// </param>
+    ///
+    /// <param name="oVertexDrawingHistory">
+    /// A <see cref="VertexDrawingHistory" /> object that retains information
+    /// about how the vertex was drawn.
+    /// </param>
+    ///
+    /// <param name="oVertexBounds">
+    /// The rectangle defining the bounds of the vertex.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    DrawPlusSign
+    (
+        VertexShape eShape,
+        Point oVertexLocation,
+        Rect oVertexBounds,
+        Color oVertexColor,
+        GraphDrawingContext oGraphDrawingContext,
+        DrawingContext oDrawingContext,
+        VertexLabelDrawer oVertexLabelDrawer,
+        VertexDrawingHistory oVertexDrawingHistory
+    )
+    {
+        Debug.Assert(oGraphDrawingContext != null);
+        Debug.Assert(oDrawingContext != null);
+        Debug.Assert(oVertexLabelDrawer != null);
+        Debug.Assert(oVertexDrawingHistory != null);
+        AssertValid();
+
+        Color oFillColor;
+
+        switch (eShape)
+        {
+            case VertexShape.Circle:
+            case VertexShape.Square:
+            case VertexShape.Diamond:
+            case VertexShape.Triangle:
+
+                // The fill color is the color of the background.  Adjust the
+                // fill color for the opacity of the vertex.
+
+                oFillColor = WpfGraphicsUtil.SetWpfColorAlpha(
+                    oGraphDrawingContext.BackColor, oVertexColor.A);
+
+                break;
+
+            default:
+
+                oFillColor = oVertexColor;
+                break;
+        }
+
+        Color oContrastingColor =
+            WpfGraphicsUtil.GetContrastingColor(oFillColor);
+
+        // The font size used below was chosen so that it is large enough to be
+        // easily readable, but small enough to fit within the smallest
+        // collapsed group vertex created by the NodeXLControl.
+
+        oVertexLabelDrawer.DrawLabel( oDrawingContext, oGraphDrawingContext,
+            oVertexDrawingHistory, oVertexBounds,
+            VertexLabelPosition.MiddleCenter,
+            CreateFormattedText("+", oContrastingColor, 15.0) );
     }
 
     //*************************************************************************

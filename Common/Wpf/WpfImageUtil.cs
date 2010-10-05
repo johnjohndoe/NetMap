@@ -133,14 +133,58 @@ public class WpfImageUtil
                     // (These empty catch blocks cause an error image to be
                     // returned.)
                 }
+                catch (ArgumentException)
+                {
+                    /*
+                    Attempting to download a possibly corrupt image from this
+                    Twitter URL:
+
+                    http://a1.twimg.com/profile_images/1112245377/
+                        Photo_on_2010-08-27_at_18.51_normal.jpg
+
+                    raised the following exception:
+
+                    [ArgumentException]: An invalid character was found in text
+                        content.
+                    at System.Windows.Media.Imaging.BitmapFrameDecode.
+                        get_ColorContexts()
+                    at System.Windows.Media.Imaging.BitmapImage.
+                        FinalizeCreation()
+                    at System.Windows.Media.Imaging.BitmapImage.EndInit()
+                    */
+                }
+                catch (IOException)
+                {
+                    /*
+                    Attempting to download a possibly corrupt image from this
+                    Twitter URL:
+
+                    http://a2.twimg.com/profile_images/1126755034/
+                    8FjbVD_normal.gif
+
+                    raised the following exception:
+
+                    [IOException]: Cannot read from the stream.
+                    [COMException]: Exception from HRESULT: 0x88982F72
+                    at System.Windows.Media.Imaging.BitmapDecoder.
+                    SetupDecoderFromUriOrStream(Uri uri, Stream stream,
+                    BitmapCacheOption cacheOption, Guid& clsId, Boolean&
+                    isOriginalWritable, Stream& uriStream,
+                    UnmanagedMemoryStream& unmanagedMemoryStream,
+                    SafeFileHandle& safeFilehandle)
+                    ...
+                    */
+                }
                 catch (NotSupportedException)
                 {
-                    // Attempting to download a corrupt image raises the
-                    // following exception.  (This was discovered while
-                    // downloading images from Twitter.)
-                    //
-                    // "[NotSupportedException]: No imaging component suitable
-                    // to complete this operation was found."
+                    /*
+                    Attempting to download a possibly corrupt image from a
+                    Twitter URL (didn't record the URL) raised the following
+                    exception:
+                    
+                   [NotSupportedException]: No imaging component suitable
+                       to complete this operation was found.
+                   */
                 }
             }
             else if (oUri.Scheme == Uri.UriSchemeFile)

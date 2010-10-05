@@ -33,16 +33,16 @@ public static class WorksheetNames
     public const String Vertices = "Vertices";
 
     /// <summary>
-    /// Name of the optional worksheet that contains cluster data.
+    /// Name of the optional worksheet that contains group data.
     /// </summary>
 
-    public const String Clusters = "Clusters";
+    public const String Groups = "Groups";
 
     /// <summary>
-    /// Name of the optional worksheet that contains cluster-vertex data.
+    /// Name of the optional worksheet that contains group-vertex data.
     /// </summary>
 
-    public const String ClusterVertices = "Cluster Vertices";
+    public const String GroupVertices = "Group Vertices";
 
     /// <summary>
     /// Name of the optional worksheet that contains overall graph metrics.
@@ -85,16 +85,16 @@ public static class TableNames
     public const String Vertices = "Vertices";
 
     /// <summary>
-    /// Name of the optional table that contains cluster data.
+    /// Name of the optional table that contains group data.
     /// </summary>
 
-    public const String Clusters = "Clusters";
+    public const String Groups = "Groups";
 
     /// <summary>
-    /// Name of the optional table that contains vertex-to-cluster data.
+    /// Name of the optional table that contains group-vertex data.
     /// </summary>
 
-    public const String ClusterVertices = "ClusterVertices";
+    public const String GroupVertices = "GroupVertices";
 
     /// <summary>
     /// Name of the optional table that contains overall graph metrics.
@@ -224,14 +224,6 @@ public static class VertexTableColumnNames
     /// </summary>
 
     public const String Radius = "Size";
-
-    /// <summary>
-    /// Old name of the radius column.  When an old workbook is opened, the
-    /// old name gets changed to the new name.  Therefore, the old name doesn't
-    /// need to be used anywhere outside of the workbook opening code.
-    /// </summary>
-
-    public const String RadiusOld = "Radius";
 
     /// <summary>
     /// Name of the optional table column containing the URI of the image file.
@@ -420,10 +412,10 @@ public static class VertexTableColumnNames
 
 
 //*****************************************************************************
-//  Class: ClusterTableColumnNames
+//  Class: GroupTableColumnNames
 //
 /// <summary>
-/// Provides the names of the columns in the cluster table.
+/// Provides the names of the columns in the group table.
 /// </summary>
 ///
 /// <remarks>
@@ -431,35 +423,135 @@ public static class VertexTableColumnNames
 /// </remarks>
 //*****************************************************************************
 
-public static class ClusterTableColumnNames
+public static class GroupTableColumnNames
 {
     /// <summary>
-    /// Name of the optional table column containing the cluster name.
+    /// Name of the optional table column containing the group name.
     /// </summary>
 
-    public const String Name = "Cluster";
+    public const String Name = "Group";
 
     /// <summary>
     /// Name of the optional table column containing the color of the vertices
-    /// in the cluster.
+    /// in the group.
     /// </summary>
 
     public const String VertexColor = "Vertex Color";
 
     /// <summary>
     /// Name of the optional table column containing the shape of the vertices
-    /// in the cluster.
+    /// in the group.
     /// </summary>
 
     public const String VertexShape = "Vertex Shape";
+
+    /// <summary>
+    /// Name of the optional table column containing a flag indicating whether
+    /// the group is collapsed.
+    /// </summary>
+
+    public const String Collapsed = "Collapsed?";
+
+    /// <summary>
+    /// Name of the optional table column containing the number of vertices in
+    /// the group.
+    /// </summary>
+
+    public const String Vertices = "Vertices";
+
+    /// <summary>
+    /// Name of the optional table column containing the number of unique edges
+    /// in the group.
+    /// </summary>
+
+    public const String UniqueEdges = "Unique Edges";
+
+    /// <summary>
+    /// Name of the optional table column containing the number of edges in the
+    /// group that have duplicates.
+    /// </summary>
+
+    public const String EdgesWithDuplicates = "Edges With Duplicates";
+
+    /// <summary>
+    /// Name of the optional table column containing the total number of edges
+    /// in the group.
+    /// </summary>
+
+    public const String TotalEdges = "Total Edges";
+
+    /// <summary>
+    /// Name of the optional table column containing the number of self-loops
+    /// in the group.
+    /// </summary>
+
+    public const String SelfLoops = "Self-Loops";
+
+    /// <summary>
+    /// Name of the optional table column containing the number of connected
+    /// components in the group.
+    /// </summary>
+
+    public const String ConnectedComponents = "Connected Components";
+
+    /// <summary>
+    /// Name of the optional table column containing the number of connected
+    /// components in the group that have one vertex.
+    /// </summary>
+
+    public const String SingleVertexConnectedComponents =
+        "Single-Vertex Connected Components";
+
+    /// <summary>
+    /// Name of the optional table column containing the maximum number of
+    /// vertices in the group's connected components.
+    /// </summary>
+
+    public const String MaximumConnectedComponentVertices =
+        "Maximum Vertices in a Connected Component";
+
+    /// <summary>
+    /// Name of the optional table column containing the maximum number of
+    /// edges in the group's connected components.
+    /// </summary>
+
+    public const String MaximumConnectedComponentEdges =
+        "Maximum Edges in a Connected Component";
+
+    /// <summary>
+    /// Name of the optional table column containing the maximum geodesic
+    /// distance in the group.
+    /// </summary>
+
+    public const String MaximumGeodesicDistance =
+        "Maximum Geodesic Distance (Diameter)";
+
+    /// <summary>
+    /// Name of the optional table column containing the average geodesic
+    /// distance in the group.
+    /// </summary>
+
+    public const String AverageGeodesicDistance =
+        "Average Geodesic Distance";
+
+    /// <summary>
+    /// Name of the optional table column containing the group's graph density.
+    /// </summary>
+
+    public const String GraphDensity = "Graph Density";
+
+    // IMPORTANT NOTES:
+    //
+    // 1. If a new column is part of a column group, ColumnGroupManager must be
+    //    modified.
 }
 
 
 //*****************************************************************************
-//  Class: ClusterVertexTableColumnNames
+//  Class: GroupVertexTableColumnNames
 //
 /// <summary>
-/// Provides the names of the columns in the cluster-vertex table.
+/// Provides the names of the columns in the group-vertex table.
 /// </summary>
 ///
 /// <remarks>
@@ -467,19 +559,26 @@ public static class ClusterTableColumnNames
 /// </remarks>
 //*****************************************************************************
 
-public static class ClusterVertexTableColumnNames
+public static class GroupVertexTableColumnNames
 {
     /// <summary>
-    /// Name of the optional table column containing the cluster name.
+    /// Name of the optional table column containing the group name.
     /// </summary>
 
-    public const String ClusterName = "Cluster";
+    public const String GroupName = "Group";
 
     /// <summary>
     /// Name of the optional table column containing the vertex name.
     /// </summary>
 
     public const String VertexName = "Vertex";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex ID from the
+    /// vertex table.
+    /// </summary>
+
+    public const String VertexID = "Vertex ID";
 }
 
 
@@ -677,6 +776,20 @@ public static class NamedRangeNames
 
 public static class CellStyleNames
 {
+    /// <summary>
+    /// Style applied to cells that are required.  This is a custom NodeXL
+    /// style.
+    /// </summary>
+
+    public const String Required = "NodeXL Required";
+
+    /// <summary>
+    /// Style applied to cells that store visual properties of the graph.  This
+    /// is a custom NodeXL style.
+    /// </summary>
+
+    public const String VisualProperty = "NodeXL Visual Property";
+
     /// <summary>
     /// Style applied to graph metric cells for which graph metric values were
     /// successfully calculated.  This is a custom NodeXL style.

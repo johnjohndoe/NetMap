@@ -53,8 +53,6 @@ public class EdgeCollectionEnumeratorTest : Object
     {
         m_oGraph = new Graph();
 
-        m_oGraph.PerformExtraValidations = true;
-
         Debug.Assert(m_oGraph.Edges is EdgeCollection);
 
         IEdgeCollection oEdgeCollection = m_oGraph.Edges;

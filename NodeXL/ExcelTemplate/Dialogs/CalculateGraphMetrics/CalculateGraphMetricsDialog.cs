@@ -30,7 +30,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
 ///
 /// <para>
 /// If graph metrics are successfully calculated, <see
-/// cref="Form.ShowDialog()" /> returns DialogResult.OK.
+/// cref="Form.ShowDialog()" /> returns DialogResult.OK.  If graph metrics are
+/// cancelled, <see cref="Form.ShowDialog()" /> returns DialogResult.Cancel.
 /// </para>
 ///
 /// </remarks>
@@ -60,18 +61,10 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     /// User settings for calculating graph metrics.
     /// </param>
     ///
-    /// <param name="notificationUserSettings">
-    /// User settings for notifications.
-    /// </param>
-    ///
     /// <param name="graphMetricCalculators">
-    /// An array of <see cref="IGraphMetricCalculator" /> implementations, one
+    /// An array of <see cref="IGraphMetricCalculator2" /> implementations, one
     /// for each set of graph metrics that should be calculated, or null to use
     /// a default list of graph metric calculators.
-    /// </param>
-    ///
-    /// <param name="ignoreDuplicateEdges">
-    /// true to ignore duplicate edges in the graph.
     /// </param>
     ///
     /// <param name="dialogTitle">
@@ -83,15 +76,12 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     (
         Microsoft.Office.Interop.Excel.Workbook workbook,
         GraphMetricUserSettings graphMetricUserSettings,
-        NotificationUserSettings notificationUserSettings,
         IGraphMetricCalculator2 [] graphMetricCalculators,
-        Boolean ignoreDuplicateEdges,
         String dialogTitle
     )
-    : this(workbook, graphMetricUserSettings, notificationUserSettings)
+    : this(workbook, graphMetricUserSettings)
     {
         m_oGraphMetricCalculators = graphMetricCalculators;
-        m_bIgnoreDuplicateEdges = ignoreDuplicateEdges;
 
         if (dialogTitle != null)
         {
@@ -117,17 +107,12 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     /// <param name="graphMetricUserSettings">
     /// User settings for calculating graph metrics.
     /// </param>
-    ///
-    /// <param name="notificationUserSettings">
-    /// User settings for notifications.
-    /// </param>
     //*************************************************************************
 
     public CalculateGraphMetricsDialog
     (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-        GraphMetricUserSettings graphMetricUserSettings,
-        NotificationUserSettings notificationUserSettings
+        GraphMetricUserSettings graphMetricUserSettings
     )
     : this()
     {
@@ -140,15 +125,9 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 
         m_oWorkbook = workbook;
         m_oGraphMetricCalculators = null;
-        m_bIgnoreDuplicateEdges = false;
         m_oGraphMetricUserSettings = graphMetricUserSettings;
-        m_oNotificationUserSettings = notificationUserSettings;
 
         m_oGraphMetricCalculationManager = new GraphMetricCalculationManager();
-
-        m_oGraphMetricCalculationManager.DuplicateEdgeDetected +=
-            new CancelEventHandler(
-                GraphMetricCalculationManager_DuplicateEdgeDetected);
 
         m_oGraphMetricCalculationManager.GraphMetricCalculationProgressChanged
             += new ProgressChangedEventHandler(
@@ -370,63 +349,6 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: GraphMetricCalculationManager_DuplicateEdgeDetected()
-    //
-    /// <summary>
-    /// Handles the DuplicateEdgeDetected event on the
-    /// GraphMetricCalculationManager object.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    GraphMetricCalculationManager_DuplicateEdgeDetected
-    (
-        object sender,
-        CancelEventArgs e
-    )
-    {
-        AssertValid();
-
-        if (m_bIgnoreDuplicateEdges ||
-            !m_oNotificationUserSettings.GraphHasDuplicateEdge)
-        {
-            return;
-        }
-
-        const String Message =
-            "The workbook contains duplicate edges that may cause some of"
-            + " the graph metrics to be inaccurate.  Do you want to compute"
-            + " graph metrics anyway?"
-            + "\r\n\r\n"
-            + "If you answer Yes, any inaccurate metrics will be highlighted"
-            + " with Excel's \"Bad\" style, which is usually red."
-            ;
-
-        NotificationDialog oNotificationDialog = new NotificationDialog(
-            "Duplicate Edges", SystemIcons.Warning, Message);
-
-        if (oNotificationDialog.ShowDialog() != DialogResult.Yes)
-        {
-            e.Cancel = true;
-            this.Close();
-        }
-
-        if (oNotificationDialog.DisableFutureNotifications)
-        {
-            m_oNotificationUserSettings.GraphHasDuplicateEdge = false;
-            m_oNotificationUserSettings.Save();
-        }
-    }
-
-    //*************************************************************************
     //  Method: GraphMetricCalculationManager_
     //          GraphMetricCalculationProgressChanged()
     //
@@ -475,8 +397,7 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
     //
     /// <summary>
     /// Handles the GraphMetricCalculationCompleted event on the
-    /// GraphMetricCalculationManager
-    /// object.
+    /// GraphMetricCalculationManager object.
     /// </summary>
     ///
     /// <param name="sender">
@@ -578,9 +499,7 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
         Debug.Assert(m_oCalculateGraphMetricsDialogUserSettings != null);
         Debug.Assert(m_oWorkbook != null);
         // m_oGraphMetricCalculators
-        // m_bIgnoreDuplicateEdges
         Debug.Assert(m_oGraphMetricUserSettings != null);
-        Debug.Assert(m_oNotificationUserSettings != null);
         Debug.Assert(m_oGraphMetricCalculationManager != null);
     }
 
@@ -598,23 +517,15 @@ public partial class CalculateGraphMetricsDialog : ExcelTemplateForm
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
 
-    /// An array of IGraphMetricCalculator implementations, one
+    /// An array of IGraphMetricCalculator2 implementations, one
     /// for each set of graph metrics that should be calculated, or null to use
     /// a default list of implementations.
 
     protected IGraphMetricCalculator2 [] m_oGraphMetricCalculators;
 
-    /// true to ignore duplicate edges in the graph.
-
-    protected Boolean m_bIgnoreDuplicateEdges;
-
     /// User settings for calculating graph metrics.
 
     protected GraphMetricUserSettings m_oGraphMetricUserSettings;
-
-    /// User settings for notifications.
-
-    protected NotificationUserSettings m_oNotificationUserSettings;
 
     /// Object that does most of the work.
 

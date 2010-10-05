@@ -13,14 +13,7 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The eigenvector centralities are provided as a
-/// Dictionary&lt;Int32, Double&gt;.  There is one key/value pair for each
-/// vertex in the graph.  The key is the IVertex.ID and the value is the
-/// vertex's eigenvector centrality, as a Double.
-///
-/// <para>
 /// If a vertex is isolated, its eigenvector centrality is zero.
-/// </para>
 ///
 /// <para>
 /// Eigenvector centrality is defined in this article:

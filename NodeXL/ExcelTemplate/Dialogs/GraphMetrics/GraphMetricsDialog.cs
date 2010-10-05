@@ -312,6 +312,41 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: lnkDuplicateEdges_LinkClicked()
+    //
+    /// <summary>
+    /// Handles the LinkClicked event on the lnkDuplicateEdge LinkLabel.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    lnkDuplicateEdges_LinkClicked
+    (
+        object sender,
+        LinkLabelLinkClickedEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ShowInformation(
+            "Duplicate edges are skipped when graph metrics are calculated,"
+            + " except for the edge counts within the overall metrics."
+            + "\r\n\r\n"
+            + "If you want to permanently merge duplicate edges within the"
+            + " workbook, use NodeXL, Data, Prepare Data, Merge Duplicate"
+            + " Edges."
+            );
+    }
+
+    //*************************************************************************
     //  Method: btnOK_Click()
     //
     /// <summary>
@@ -359,8 +394,7 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 
         CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
             new CalculateGraphMetricsDialog(m_oWorkbook,
-                m_oGraphMetricUserSettings, new NotificationUserSettings()
-                );
+                m_oGraphMetricUserSettings);
 
         if (oCalculateGraphMetricsDialog.ShowDialog() == DialogResult.OK)
         {
@@ -426,7 +460,7 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
 /// </remarks>
 //*****************************************************************************
 
-[ SettingsGroupNameAttribute("GraphMetricsDialog3") ]
+[ SettingsGroupNameAttribute("GraphMetricsDialog5") ]
 
 public class GraphMetricsDialogUserSettings : FormSettings
 {

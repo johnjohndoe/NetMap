@@ -94,16 +94,17 @@
     <Compile Include="GraphMetricCalculators\Cluster\Community.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\CommunityPair.cs" />
     <Compile Include="GraphMetricCalculators\Cluster\DeltaQMaxHeap.cs" />
+    <Compile Include="GraphMetricCalculators\ConnectedComponentCalculator.cs" />
     <Compile Include="GraphMetricCalculators\EigenvectorCentralityCalculator.cs" />
     <Compile Include="GraphMetricCalculators\GraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetricCalculators\GraphMetricException.cs" />
     <Compile Include="GraphMetricCalculators\IGraphMetricCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\OneDoubleGraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetricCalculators\OneSnapGraphMetricCalculatorBase.cs" />
     <Compile Include="GraphMetricCalculators\Overall\OverallMetricCalculator.cs" />
     <Compile Include="GraphMetricCalculators\Overall\OverallMetrics.cs" />
     <Compile Include="GraphMetricCalculators\PageRankCalculator.cs" />
     <Compile Include="GraphMetricCalculators\VertexDegreeCalculator.cs" />
-    <Compile Include="Miscellaneous\ConnectedComponentCalculator.cs" />
     <Compile Include="Miscellaneous\DuplicateEdgeDetector.cs" />
     <Compile Include="Miscellaneous\SubgraphCalculator.cs" />
   </ItemGroup>

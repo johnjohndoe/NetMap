@@ -4,6 +4,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.VisualStudio.Tools.Applications;
 using System.Diagnostics;
@@ -73,7 +74,7 @@ public static class NodeXLWorkbookUtil
     }
 
     //*************************************************************************
-    //  Method: ClearTables()
+    //  Method: ClearAllNodeXLTables()
     //
     /// <summary>
     /// Clears all the tables in the specified NodeXL workbook.
@@ -96,7 +97,7 @@ public static class NodeXLWorkbookUtil
     //*************************************************************************
 
     public static void
-    ClearTables
+    ClearAllNodeXLTables
     (
         Microsoft.Office.Interop.Excel.Workbook workbook
     )
@@ -109,12 +110,50 @@ public static class NodeXLWorkbookUtil
         ExcelUtil.ClearTables(workbook,
             WorksheetNames.Edges, TableNames.Edges,
             WorksheetNames.Vertices, TableNames.Vertices,
-            WorksheetNames.Clusters, TableNames.Clusters,
-            WorksheetNames.ClusterVertices, TableNames.ClusterVertices,
-            WorksheetNames.OverallMetrics, TableNames.OverallMetrics
+            WorksheetNames.OverallMetrics, TableNames.OverallMetrics,
+            WorksheetNames.Miscellaneous, TableNames.DynamicFilterSettings
             );
 
+        ClearGroupTables(workbook);
+
         ( new PerWorkbookSettings(workbook) ).OnWorkbookTablesCleared();
+    }
+
+    //*************************************************************************
+    //  Method: ClearGroupTables()
+    //
+    /// <summary>
+    /// Clears the group tables in the specified NodeXL workbook.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// NodeXL workbook.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method reduces the group and group-vertex NodeXL tables to their
+    /// header row and one data body row.  The data body row contains the
+    /// original formatting and data validation, but its contents are cleared.
+    ///
+    /// <para>
+    /// If a table doesn't exist, this method skips it.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    ClearGroupTables
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook
+    )
+    {
+        Debug.Assert(workbook != null);
+
+        ExcelUtil.ClearTables(workbook,
+            WorksheetNames.Groups, TableNames.Groups,
+            WorksheetNames.GroupVertices, TableNames.GroupVertices
+            );
     }
 
     //*************************************************************************
@@ -201,6 +240,140 @@ public static class NodeXLWorkbookUtil
                     aoVertex1Names : aoVertex2Names);
             }
         }
+    }
+
+    //*************************************************************************
+    //  Method: GetVertexIDsInGroup()
+    //
+    /// <summary>
+    /// Gets the row IDs of the vertices in a specified group.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// NodeXL workbook.
+    /// </param>
+    ///
+    /// <param name="groupName">
+    /// Name of the group to get the IDs for.
+    /// </param>
+    ///
+    /// <returns>
+    /// A collection of vertex row IDs for the specified group.  The collection
+    /// can be empty but is never null.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned IDs are the vertex IDs from the vertex table for the
+    /// vertices in the specified group.
+    /// </remarks>
+    //*************************************************************************
+
+    public static ICollection<Int32>
+    GetVertexIDsInGroup
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        String groupName
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+
+        ListObject oGroupVertexTable;
+        LinkedList<Int32> oVertexIDsInGroup = new LinkedList<Int32>();
+
+        if ( ExcelUtil.TryGetTable(workbook, WorksheetNames.GroupVertices,
+                TableNames.GroupVertices, out oGroupVertexTable) )
+        {
+            foreach ( ExcelTableReader.ExcelTableRow oRow in
+                ( new ExcelTableReader(oGroupVertexTable) ).GetRows() )
+            {
+                String sGroupName;
+                Int32 iVertexID;
+
+                if (
+                    oRow.TryGetNonEmptyStringFromCell(
+                        GroupVertexTableColumnNames.GroupName, out sGroupName)
+                    &&
+                    sGroupName == groupName
+                    &&
+                    oRow.TryGetInt32FromCell(
+                        GroupVertexTableColumnNames.VertexID, out iVertexID)
+                    )
+                {
+                    oVertexIDsInGroup.AddLast(iVertexID);
+                }
+            }
+        }
+
+        return (oVertexIDsInGroup);
+    }
+
+    //*************************************************************************
+    //  Method: GetGroupNamesByVertexName()
+    //
+    /// <summary>
+    /// Gets the names of the groups containing a specified collection of
+    /// vertex names.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// NodeXL workbook.
+    /// </param>
+    ///
+    /// <param name="vertexNames">
+    /// A collection of vertex names.
+    /// </param>
+    ///
+    /// <returns>
+    /// A collection of unique group names, one for each group that contains a
+    /// vertex in <paramref name="vertexNames"/>.  The collection can be empty
+    /// but is never null.
+    /// </returns>
+    //*************************************************************************
+
+    public static ICollection<String>
+    GetGroupNamesByVertexName
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        ICollection<String> vertexNames
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert(vertexNames != null);
+
+        // Store the vertex names in a HashSet for quick lookup.
+
+        HashSet<String> oVertexNames = new HashSet<String>(vertexNames);
+
+        HashSet<String> oGroupNames = new HashSet<String>();
+
+        ListObject oGroupVertexTable;
+
+        if ( ExcelUtil.TryGetTable(workbook, WorksheetNames.GroupVertices,
+                TableNames.GroupVertices, out oGroupVertexTable) )
+        {
+            foreach ( ExcelTableReader.ExcelTableRow oRow in
+                ( new ExcelTableReader(oGroupVertexTable) ).GetRows() )
+            {
+                String sGroupName, sVertexName;
+
+                if (
+                    oRow.TryGetNonEmptyStringFromCell(
+                        GroupVertexTableColumnNames.VertexName,
+                        out sVertexName)
+                    &&
+                    oVertexNames.Contains(sVertexName)
+                    &&
+                    oRow.TryGetNonEmptyStringFromCell(
+                        GroupVertexTableColumnNames.GroupName, out sGroupName)
+                    )
+                {
+                    oGroupNames.Add(sGroupName);
+                }
+            }
+        }
+
+        return (oGroupNames);
     }
 
     //*************************************************************************

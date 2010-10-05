@@ -25,11 +25,11 @@ public class RunVertexCommandEventArgs : EventArgs
     /// cref="RunVertexCommandEventArgs" /> class.
     /// </summary>
     ///
-    /// <param name="vertexID">
-    /// ID of the vertex that was right-clicked in the vertex table in the
-    /// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
-    /// a vertex wasn't right-clicked.  This is an ID that is stored in the
-    /// worksheet, NOT an IEdge.ID value.
+    /// <param name="vertexRowID">
+    /// Row ID of the vertex that was right-clicked in the vertex table in the
+    /// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoRowID" />
+    /// if a vertex wasn't right-clicked.  This is a row ID that is stored in
+    /// the worksheet, NOT an IEdge.ID value.
     /// </param>
     ///
     /// <param name="vertexCommand">
@@ -39,40 +39,40 @@ public class RunVertexCommandEventArgs : EventArgs
 
     public RunVertexCommandEventArgs
     (
-        Int32 vertexID,
+        Int32 vertexRowID,
         WorksheetContextMenuManager.VertexCommand vertexCommand
     )
     {
-        m_iVertexID = vertexID;
+        m_iVertexRowID = vertexRowID;
         m_eVertexCommand = vertexCommand;
 
         AssertValid();
     }
 
     //*************************************************************************
-    //  Property: VertexID
+    //  Property: VertexRowID
     //
     /// <summary>
-    /// Gets the ID of the vertex that was right-clicked in the vertex table in
-    /// the vertex worksheet.
+    /// Gets the row ID of the vertex that was right-clicked in the vertex
+    /// table in the vertex worksheet.
     /// </summary>
     ///
     /// <value>
-    /// The ID of the right-clicked vertex, or <see
-    /// cref="WorksheetContextMenuManager.NoID" /> if a vertex wasn't right-
-    /// clicked.  This is an ID that is stored in the worksheet, NOT an
+    /// The row ID of the right-clicked vertex, or <see
+    /// cref="WorksheetContextMenuManager.NoRowID" /> if a vertex wasn't right-
+    /// clicked.  This is a row ID that is stored in the worksheet, NOT an
     /// IEdge.ID value.
     /// </value>
     //*************************************************************************
 
     public Int32
-    VertexID
+    VertexRowID
     {
         get
         {
             AssertValid();
 
-            return (m_iVertexID);
+            return (m_iVertexRowID);
         }
     }
 
@@ -113,8 +113,8 @@ public class RunVertexCommandEventArgs : EventArgs
     public void
     AssertValid()
     {
-        Debug.Assert(m_iVertexID == WorksheetContextMenuManager.NoID ||
-            m_iVertexID > 0);
+        Debug.Assert(m_iVertexRowID == WorksheetContextMenuManager.NoRowID ||
+            m_iVertexRowID > 0);
 
         // m_eVertexCommand
     }
@@ -124,11 +124,11 @@ public class RunVertexCommandEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-    /// ID of the vertex that was right-clicked in the vertex table in the
-    /// vertex worksheet, or WorksheetContextMenuManager.NoID if a vertex
+    /// Row ID of the vertex that was right-clicked in the vertex table in the
+    /// vertex worksheet, or WorksheetContextMenuManager.NoRowID if a vertex
     /// wasn't right-clicked.
 
-    protected Int32 m_iVertexID;
+    protected Int32 m_iVertexRowID;
 
     /// The command to run.
 

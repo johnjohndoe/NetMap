@@ -51,12 +51,15 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkInDegree = new System.Windows.Forms.LinkLabel();
             this.chkInDegree = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lnkGroupMetrics = new System.Windows.Forms.LinkLabel();
+            this.chkGroupMetrics = new System.Windows.Forms.CheckBox();
             this.lnkPageRank = new System.Windows.Forms.LinkLabel();
             this.chkPageRank = new System.Windows.Forms.CheckBox();
             this.chkOverallMetrics = new System.Windows.Forms.CheckBox();
             this.lnkOverallMetrics = new System.Windows.Forms.LinkLabel();
             this.chkClusteringCoefficient = new System.Windows.Forms.CheckBox();
             this.lnkClusteringCoefficient = new System.Windows.Forms.LinkLabel();
+            this.lnkDuplicateEdges = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -65,19 +68,19 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(183, 398);
+            this.btnCancel.Location = new System.Drawing.Point(183, 426);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 7;
+            this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(71, 398);
+            this.btnOK.Location = new System.Drawing.Point(71, 426);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(106, 23);
-            this.btnOK.TabIndex = 6;
+            this.btnOK.TabIndex = 5;
             this.btnOK.Text = "Calculate Metrics";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -86,26 +89,26 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(251, 40);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Select the metrics to calculate and insert into the workbook:";
+            this.label1.Size = new System.Drawing.Size(251, 32);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Select the metrics to calculate and insert into the workbook";
             // 
             // btnCheckAll
             // 
-            this.btnCheckAll.Location = new System.Drawing.Point(15, 356);
+            this.btnCheckAll.Location = new System.Drawing.Point(15, 391);
             this.btnCheckAll.Name = "btnCheckAll";
             this.btnCheckAll.Size = new System.Drawing.Size(75, 23);
-            this.btnCheckAll.TabIndex = 4;
+            this.btnCheckAll.TabIndex = 3;
             this.btnCheckAll.Text = "&Select All";
             this.btnCheckAll.UseVisualStyleBackColor = true;
             this.btnCheckAll.Click += new System.EventHandler(this.btnCheckAll_Click);
             // 
             // btnUncheckAll
             // 
-            this.btnUncheckAll.Location = new System.Drawing.Point(96, 356);
+            this.btnUncheckAll.Location = new System.Drawing.Point(96, 391);
             this.btnUncheckAll.Name = "btnUncheckAll";
             this.btnUncheckAll.Size = new System.Drawing.Size(75, 23);
-            this.btnUncheckAll.TabIndex = 5;
+            this.btnUncheckAll.TabIndex = 4;
             this.btnUncheckAll.Text = "&Deselect All";
             this.btnUncheckAll.UseVisualStyleBackColor = true;
             this.btnUncheckAll.Click += new System.EventHandler(this.btnUncheckAll_Click);
@@ -116,10 +119,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox1.Controls.Add(this.lnkBrandesFastCentralities);
             this.groupBox1.Controls.Add(this.lnkEigenvectorCentrality);
             this.groupBox1.Controls.Add(this.chkEigenvectorCentrality);
-            this.groupBox1.Location = new System.Drawing.Point(15, 150);
+            this.groupBox1.Location = new System.Drawing.Point(15, 165);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(248, 88);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Centrality";
             // 
@@ -176,7 +179,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox2.Controls.Add(this.chkOutDegree);
             this.groupBox2.Controls.Add(this.lnkInDegree);
             this.groupBox2.Controls.Add(this.chkInDegree);
-            this.groupBox2.Location = new System.Drawing.Point(15, 47);
+            this.groupBox2.Location = new System.Drawing.Point(15, 62);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(248, 96);
             this.groupBox2.TabIndex = 0;
@@ -191,7 +194,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkDegree.Size = new System.Drawing.Size(39, 13);
             this.lnkDegree.TabIndex = 1;
             this.lnkDegree.TabStop = true;
-            this.lnkDegree.Tag = resources.GetString("lnkDegree.Tag");
+            this.lnkDegree.Tag = "In an undirected graph, a vertex\'s degree is the number of edges incident to the " +
+                "vertex.  In a directed graph, degree is undefined and is not computed.\r\n\r\nSelf-l" +
+                "oops are counted in degree metrics.";
             this.lnkDegree.Text = "Details";
             this.lnkDegree.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
@@ -254,18 +259,43 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.lnkGroupMetrics);
+            this.groupBox3.Controls.Add(this.chkGroupMetrics);
             this.groupBox3.Controls.Add(this.lnkPageRank);
             this.groupBox3.Controls.Add(this.chkPageRank);
             this.groupBox3.Controls.Add(this.chkOverallMetrics);
             this.groupBox3.Controls.Add(this.lnkOverallMetrics);
             this.groupBox3.Controls.Add(this.chkClusteringCoefficient);
             this.groupBox3.Controls.Add(this.lnkClusteringCoefficient);
-            this.groupBox3.Location = new System.Drawing.Point(15, 245);
+            this.groupBox3.Location = new System.Drawing.Point(15, 260);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(248, 96);
-            this.groupBox3.TabIndex = 3;
+            this.groupBox3.Size = new System.Drawing.Size(248, 119);
+            this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Miscellaneous";
+            // 
+            // lnkGroupMetrics
+            // 
+            this.lnkGroupMetrics.AutoSize = true;
+            this.lnkGroupMetrics.Location = new System.Drawing.Point(193, 68);
+            this.lnkGroupMetrics.Name = "lnkGroupMetrics";
+            this.lnkGroupMetrics.Size = new System.Drawing.Size(39, 13);
+            this.lnkGroupMetrics.TabIndex = 5;
+            this.lnkGroupMetrics.TabStop = true;
+            this.lnkGroupMetrics.Tag = resources.GetString("lnkGroupMetrics.Tag");
+            this.lnkGroupMetrics.Text = "Details";
+            this.lnkGroupMetrics.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
+            // 
+            // chkGroupMetrics
+            // 
+            this.chkGroupMetrics.AutoSize = true;
+            this.chkGroupMetrics.Location = new System.Drawing.Point(13, 67);
+            this.chkGroupMetrics.Name = "chkGroupMetrics";
+            this.chkGroupMetrics.Size = new System.Drawing.Size(91, 17);
+            this.chkGroupMetrics.TabIndex = 4;
+            this.chkGroupMetrics.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.GroupMetrics;
+            this.chkGroupMetrics.Text = "Group me&trics";
+            this.chkGroupMetrics.UseVisualStyleBackColor = true;
             // 
             // lnkPageRank
             // 
@@ -293,10 +323,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // chkOverallMetrics
             // 
             this.chkOverallMetrics.AutoSize = true;
-            this.chkOverallMetrics.Location = new System.Drawing.Point(13, 67);
+            this.chkOverallMetrics.Location = new System.Drawing.Point(13, 90);
             this.chkOverallMetrics.Name = "chkOverallMetrics";
             this.chkOverallMetrics.Size = new System.Drawing.Size(95, 17);
-            this.chkOverallMetrics.TabIndex = 4;
+            this.chkOverallMetrics.TabIndex = 6;
             this.chkOverallMetrics.Tag = Microsoft.NodeXL.ExcelTemplate.GraphMetrics.OverallMetrics;
             this.chkOverallMetrics.Text = "Overall &metrics";
             this.chkOverallMetrics.UseVisualStyleBackColor = true;
@@ -304,10 +334,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
             // lnkOverallMetrics
             // 
             this.lnkOverallMetrics.AutoSize = true;
-            this.lnkOverallMetrics.Location = new System.Drawing.Point(193, 68);
+            this.lnkOverallMetrics.Location = new System.Drawing.Point(193, 91);
             this.lnkOverallMetrics.Name = "lnkOverallMetrics";
             this.lnkOverallMetrics.Size = new System.Drawing.Size(39, 13);
-            this.lnkOverallMetrics.TabIndex = 5;
+            this.lnkOverallMetrics.TabIndex = 7;
             this.lnkOverallMetrics.TabStop = true;
             this.lnkOverallMetrics.Tag = "Overall metrics include vertex counts, edge counts, geodesic distances, and graph" +
                 " density.  They get inserted into the Overall Metrics worksheet.";
@@ -337,13 +367,25 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.lnkClusteringCoefficient.Text = "Details";
             this.lnkClusteringCoefficient.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelpLink_LinkClicked);
             // 
+            // lnkDuplicateEdges
+            // 
+            this.lnkDuplicateEdges.AutoSize = true;
+            this.lnkDuplicateEdges.Location = new System.Drawing.Point(12, 41);
+            this.lnkDuplicateEdges.Name = "lnkDuplicateEdges";
+            this.lnkDuplicateEdges.Size = new System.Drawing.Size(113, 13);
+            this.lnkDuplicateEdges.TabIndex = 8;
+            this.lnkDuplicateEdges.TabStop = true;
+            this.lnkDuplicateEdges.Text = "About duplicate edges";
+            this.lnkDuplicateEdges.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkDuplicateEdges_LinkClicked);
+            // 
             // GraphMetricsDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(280, 440);
+            this.ClientSize = new System.Drawing.Size(280, 465);
+            this.Controls.Add(this.lnkDuplicateEdges);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -364,6 +406,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -393,5 +436,8 @@ namespace Microsoft.NodeXL.ExcelTemplate
         private System.Windows.Forms.CheckBox chkBrandesFastCentralities;
         private System.Windows.Forms.CheckBox chkPageRank;
         private System.Windows.Forms.LinkLabel lnkPageRank;
+        private System.Windows.Forms.LinkLabel lnkDuplicateEdges;
+        private System.Windows.Forms.LinkLabel lnkGroupMetrics;
+        private System.Windows.Forms.CheckBox chkGroupMetrics;
     }
 }

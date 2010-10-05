@@ -58,8 +58,6 @@ public class VertexCollectionTest : Object
     {
         m_oGraph = new Graph();
 
-        m_oGraph.PerformExtraValidations = true;
-
         Debug.Assert(m_oGraph.Vertices is VertexCollection);
 
         m_oVertexCollection = m_oGraph.Vertices;
@@ -150,8 +148,6 @@ public class VertexCollectionTest : Object
     TestAdd2()
     {
         // Add N vertices.
-
-        m_oGraph.PerformExtraValidations = false;
 
         const Int32 Vertices = 1000;
 
@@ -276,8 +272,6 @@ public class VertexCollectionTest : Object
     {
         // Add N vertices.
 
-        m_oGraph.PerformExtraValidations = false;
-
         const Int32 Vertices = 1000;
 
         for (Int32 i = 0; i < Vertices; i++)
@@ -367,8 +361,6 @@ public class VertexCollectionTest : Object
     {
         // Add N vertices, then call Clear().
 
-        m_oGraph.PerformExtraValidations = false;
-
         const Int32 Vertices = 867;
 
         TestClear(Vertices, false);
@@ -428,8 +420,6 @@ public class VertexCollectionTest : Object
         // Add N vertices.
 
         const Int32 Vertices = 6512;
-
-        m_oGraph.PerformExtraValidations = false;
 
         TestContainsAndFind(Vertices);
     }

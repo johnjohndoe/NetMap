@@ -204,7 +204,30 @@ public static class TableImagePopulator : Object
 
         // Delete the entire temporary folder.
 
-        Directory.Delete(sFolder, true);
+        try
+        {
+            Directory.Delete(sFolder, true);
+        }
+        catch (IOException)
+        {
+            // A user reported the following exception thrown from the above
+            // Directory.Delete() call:
+            //
+            // "System.IO.IOException: The directory is not empty.:
+            //
+            // Others have reported this happenning at random times.  For
+            // example:
+            //
+            // http://forums.asp.net/p/1114215/1722498.aspx
+            //
+            // I have also seen it happen from the command line outside of
+            // .NET.  When it occurs, the directory IS empty but cannot be
+            // accessed in any way.  The directory disappears when the machine
+            // is rebooted.
+            //
+            // I can't figure out the cause or the fix.  Ignore the problem,
+            // which seems to be benign.
+        }
     }
 
     //*************************************************************************

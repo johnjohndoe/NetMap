@@ -148,7 +148,7 @@ public class DynamicFilterSettings : WorksheetReaderBase
                     out sTableName)
                 &&
                 ExcelUtil.TryGetNonEmptyStringFromCell(aoValues, iRowOneBased,
-                    oDynamicFilterSettingsTableColumnIndexes.ColumnName,
+                    oDynamicFilterSettingsTableColumnIndexes.ColumnName, false,
                     out sColumnName)
                 &&
                 ExcelUtil.TryGetDoubleFromCell(aoValues, iRowOneBased,
@@ -180,8 +180,7 @@ public class DynamicFilterSettings : WorksheetReaderBase
 
                 m_oDynamicFilterSettingsDictionary.Add(
                     GetDictionaryKey(sTableName, sColumnName),
-                    oSettingsForOneFilter
-                    );
+                        oSettingsForOneFilter);
             }
 
             oSelectedMinimumCell = oSelectedMinimumCell.get_Offset(1, 0);

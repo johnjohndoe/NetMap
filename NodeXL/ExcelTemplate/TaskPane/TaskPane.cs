@@ -81,8 +81,8 @@ public partial class TaskPane : UserControl
 
         m_bHandlingLayoutChanged = false;
         m_iEnableGraphControlsCount = 0;
-        m_oEdgeIDDictionary = null;
-        m_oVertexIDDictionary = null;
+        m_oEdgeRowIDDictionary = null;
+        m_oVertexRowIDDictionary = null;
         m_oSaveGraphImageFileDialog = null;
         m_oDynamicFilterDialog = null;
 
@@ -114,12 +114,12 @@ public partial class TaskPane : UserControl
             new EventHandler(this.LayoutManager_LayoutChanged);
 
 
-        thisWorkbook.SelectionChangedInWorkbook +=
-            new SelectionChangedEventHandler(
-                ThisWorkbook_SelectionChangedInWorkbook);
-
         thisWorkbook.VisualAttributeSetInWorkbook +=
             new EventHandler(ThisWorkbook_VisualAttributeSetInWorkbook);
+
+        thisWorkbook.CollapseOrExpandGroups +=
+            new CollapseOrExpandGroupsEventHandler(
+                ThisWorkbook_CollapseOrExpandGroups);
 
         thisWorkbook.WorksheetContextMenuManager.RequestVertexCommandEnable +=
             new RequestVertexCommandEnableEventHandler(
@@ -137,6 +137,11 @@ public partial class TaskPane : UserControl
             new RunEdgeCommandEventHandler(
                 WorksheetContextMenuManager_RunEdgeCommand);
 
+        // There is no Closing event on the TaskPane and no parent form whose
+        // Closing event can be handled.  Instead, using the Shutdown event on
+        // the workbook to perform closing tasks.
+
+        thisWorkbook.Shutdown += new EventHandler(ThisWorkbook_Shutdown);
 
         m_oRibbon.Layout = eInitialLayout;
 
@@ -149,6 +154,9 @@ public partial class TaskPane : UserControl
 
         CreateNodeXLControl(oGeneralUserSettings);
         CreateGraphZoomAndScaleControl();
+
+        oNodeXLControl.GraphScale =
+            ( new GraphZoomAndScaleUserSettings() ).GraphScale;
 
         ApplyGeneralUserSettings(oGeneralUserSettings);
         ApplyLayoutUserSettings(oLayoutUserSettings);
@@ -163,6 +171,177 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: SetSelectedEdgesByRowID()
+    //
+    /// <summary>
+    /// Sets which edges are selected given a collection of row IDs.
+    /// </summary>
+    ///
+    /// <param name="rowIDs">
+    /// Collection of IDs of the edges to select.  These are the IDs stored in
+    /// the edge worksheet, not IEdge.ID values.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    SetSelectedEdgesByRowID
+    (
+        ICollection<Int32> rowIDs
+    )
+    {
+        Debug.Assert(rowIDs != null);
+        AssertValid();
+
+        SetSelectionByRowIDs(rowIDs, null);
+    }
+
+    //*************************************************************************
+    //  Method: SetSelectedVerticesByRowID()
+    //
+    /// <summary>
+    /// Sets which vertices are selected given a collection of row IDs.
+    /// </summary>
+    ///
+    /// <param name="rowIDs">
+    /// Collection of IDs of the vertices to select.  These are the IDs stored
+    /// in the vertex worksheet, not IVertex.ID values.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    SetSelectedVerticesByRowID
+    (
+        ICollection<Int32> rowIDs
+    )
+    {
+        Debug.Assert(rowIDs != null);
+        AssertValid();
+
+        SetSelectionByRowIDs(null, rowIDs);
+    }
+
+    //*************************************************************************
+    //  Method: GetSelectedEdgeRowIDs()
+    //
+    /// <summary>
+    /// Gets the row IDs of the edges that are selected.
+    /// </summary>
+    ///
+    /// <returns>
+    /// Collection of row IDs of the edges that are selected.  These are the
+    /// row IDs stored in the edge worksheet, not IEdge.ID values.
+    /// </returns>
+    //*************************************************************************
+
+    public ICollection<Int32>
+    GetSelectedEdgeRowIDs()
+    {
+        AssertValid();
+
+        return ( NodeXLControlUtil.GetSelectedEdgeRowIDs(oNodeXLControl) );
+    }
+
+    //*************************************************************************
+    //  Method: GetSelectedVertexRowIDs()
+    //
+    /// <summary>
+    /// Gets the row IDs of the vertices that are selected.
+    /// </summary>
+    ///
+    /// <returns>
+    /// Collection of IDs of the vertices that are selected.  These are the IDs
+    /// stored in the vertex worksheet, not IVertex.ID values.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned collection does not include selected vertices that
+    /// represent collapsed groups.  Use <see
+    /// cref="GetSelectedCollapsedGroupNames" /> to get those.
+    /// </remarks>
+    //*************************************************************************
+
+    public ICollection<Int32>
+    GetSelectedVertexRowIDs()
+    {
+        AssertValid();
+
+        return ( NodeXLControlUtil.GetSelectedVertexRowIDs(oNodeXLControl) );
+    }
+
+    //*************************************************************************
+    //  Method: IsCollapsedGroup()
+    //
+    /// <summary>
+    /// Determines whether a group is collapsed.
+    /// </summary>
+    ///
+    /// <param name="groupName">
+    /// The name of the group to check.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified group is collapsed.
+    /// </returns>
+    //*************************************************************************
+
+    public Boolean
+    IsCollapsedGroup
+    (
+        String groupName
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+        AssertValid();
+
+        return ( oNodeXLControl.IsCollapsedGroup(groupName) );
+    }
+
+    //*************************************************************************
+    //  Method: SelectCollapsedGroup()
+    //
+    /// <summary>
+    /// Selects the vertex that represents a collapsed group.
+    /// </summary>
+    ///
+    /// <param name="groupName">
+    /// The name of the group to select.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    SelectCollapsedGroup
+    (
+        String groupName
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+        AssertValid();
+
+        oNodeXLControl.SelectCollapsedGroup(groupName);
+    }
+
+    //*************************************************************************
+    //  Method: GetSelectedCollapsedGroupNames()
+    //
+    /// <summary>
+    /// Gets the names of the collapsed groups that are selected.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The names of the collapsed groups.  The names are the group names
+    /// stored in the group worksheet.
+    /// </returns>
+    //*************************************************************************
+
+    public ICollection<String>
+    GetSelectedCollapsedGroupNames()
+    {
+        AssertValid();
+
+        return ( oNodeXLControl.GetSelectedCollapsedGroupNames() );
+    }
+
+    //*************************************************************************
     //  Event: SelectionChangedInGraph
     //
     /// <summary>
@@ -170,7 +349,7 @@ public partial class TaskPane : UserControl
     /// </summary>
     //*************************************************************************
 
-    public event SelectionChangedEventHandler SelectionChangedInGraph;
+    public event EventHandler SelectionChangedInGraph;
 
 
     //*************************************************************************
@@ -264,7 +443,7 @@ public partial class TaskPane : UserControl
     {
         get
         {
-            return (m_oEdgeIDDictionary != null &&
+            return (m_oEdgeRowIDDictionary != null &&
                 oNodeXLControl.Graph.Vertices.Count > 0);
         }
     }
@@ -511,7 +690,7 @@ public partial class TaskPane : UserControl
         oReadWorkbookContext.IgnoreVertexLocations = false;
         oReadWorkbookContext.GraphRectangle = this.GraphRectangle;
         oReadWorkbookContext.FillIDColumns = true;
-        oReadWorkbookContext.ReadClusters = m_oRibbon.ReadClusters;
+        oReadWorkbookContext.ReadGroups = m_oRibbon.ReadGroups;
         oReadWorkbookContext.ReadVertexLabels = m_oRibbon.ReadVertexLabels;
         oReadWorkbookContext.ReadEdgeLabels = m_oRibbon.ReadEdgeLabels;
         oReadWorkbookContext.ReadVertexImages = true;
@@ -532,8 +711,8 @@ public partial class TaskPane : UserControl
 
         WorkbookReader oWorkbookReader = new WorkbookReader();
 
-        m_oEdgeIDDictionary = null;
-        m_oVertexIDDictionary = null;
+        m_oEdgeRowIDDictionary = null;
+        m_oVertexRowIDDictionary = null;
 
         EnableGraphControls(false);
 
@@ -547,17 +726,24 @@ public partial class TaskPane : UserControl
             // Save the edge and vertex dictionaries that were created by
             // WorkbookReader.
 
-            m_oEdgeIDDictionary = oReadWorkbookContext.EdgeIDDictionary;
-            m_oVertexIDDictionary = oReadWorkbookContext.VertexIDDictionary;
+            m_oEdgeRowIDDictionary = oReadWorkbookContext.EdgeRowIDDictionary;
+
+            m_oVertexRowIDDictionary =
+                oReadWorkbookContext.VertexRowIDDictionary;
 
             // Load the NodeXLControl with the resulting graph.
 
             oNodeXLControl.Graph = oGraph;
 
+            // Collapse any groups that are supposed to be collapsed.
+
+            CollapseOrExpandGroups(GetGroupNamesToCollapse(oGraph), true,
+                false);
+
             // Enable tooltips only if tooltips were specified in the workbook.
 
-            oNodeXLControl.ShowVertexToolTips =
-                oReadWorkbookContext.ToolTipsUsed;
+            oNodeXLControl.ShowVertexToolTips = oGraph.ContainsKey(
+                ReservedMetadataKeys.ToolTipSet);
 
             // If the dynamic filter dialog is open, read the dynamic filter
             // columns it filled in.
@@ -596,6 +782,174 @@ public partial class TaskPane : UserControl
         tsbReadWorkbook.Text = msiContextReadWorkbook.Text =
             m_oRibbon.ReadWorkbookButtonText =
             "Refresh Graph";
+    }
+
+    //*************************************************************************
+    //  Method: GetGroupNamesToCollapse()
+    //
+    /// <summary>
+    /// Gets the names of groups that should be collapsed.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph that was read from the workbook.
+    /// </param>
+    ///
+    /// <returns>
+    /// A collection of the names of groups that should be collapsed.  The
+    /// collection can be empty but is never null.
+    /// </returns>
+    //*************************************************************************
+
+    protected ICollection<String>
+    GetGroupNamesToCollapse
+    (
+        IGraph oGraph
+    )
+    {
+        Debug.Assert(oGraph != null);
+
+        LinkedList<String> oGroupNamesToCollapse = new LinkedList<String>();
+        Object oGroupInformationAsObject;
+
+        // The WorkbookReader object may have stored group information as
+        // metadata on the graph.
+
+        if ( oGraph.TryGetValue(ReservedMetadataKeys.GroupInformation,
+            typeof( ICollection<GroupInformation> ),
+            out oGroupInformationAsObject) )
+        {
+            foreach (GroupInformation oGroupInformation in
+                ( ICollection<GroupInformation> )oGroupInformationAsObject)
+            {
+                if (oGroupInformation.IsCollapsed)
+                {
+                    oGroupNamesToCollapse.AddLast(oGroupInformation.Name);
+                }
+            }
+        }
+
+        return (oGroupNamesToCollapse);
+    }
+
+    //*************************************************************************
+    //  Method: CollapseOrExpandGroups()
+    //
+    /// <summary>
+    /// Collapses or expands one or more vertex groups.
+    /// </summary>
+    ///
+    /// <param name="oGroupNames">
+    /// Collection of the names of groups that should be collapsed or expanded.
+    /// </param>
+    ///
+    /// <param name="bCollapse">
+    /// true to collapse the groups, false to expand them.
+    /// </param>
+    ///
+    /// <param name="bRedrawGroupImmediately">
+    /// true to redraw the collapsed or expanded group immediately.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    CollapseOrExpandGroups
+    (
+        ICollection<String> oGroupNames,
+        Boolean bCollapse,
+        Boolean bRedrawGroupImmediately
+    )
+    {
+        Debug.Assert(oGroupNames != null);
+        AssertValid();
+
+        if (oGroupNames.Count == 0)
+        {
+            return;
+        }
+
+        // Should the following event handlers be permanent?  Right now, edges
+        // and vertices are removed and added only when groups are collapsed
+        // and expanded.  For now, keep the event handlers local and temporary.
+
+        EdgeEventHandler oEdgeAddedEventHandler =
+        delegate(Object sender, EdgeEventArgs e)
+        {
+            IEdge oAddedEdge = e.Edge;
+
+            if (oAddedEdge.Tag is Int32)
+            {
+                m_oEdgeRowIDDictionary.Add( (Int32)oAddedEdge.Tag,
+                    oAddedEdge );
+            }
+        };
+
+        EdgeEventHandler oEdgeRemovedEventHandler =
+        delegate(Object sender, EdgeEventArgs e)
+        {
+            IEdge oRemovedEdge = e.Edge;
+
+            if (oRemovedEdge.Tag is Int32)
+            {
+                m_oEdgeRowIDDictionary.Remove( (Int32)oRemovedEdge.Tag );
+            }
+        };
+
+        VertexEventHandler oVertexAddedEventHandler =
+        delegate(Object sender, VertexEventArgs e)
+        {
+            IVertex oAddedVertex = e.Vertex;
+
+            if ( !GroupWorksheetReader.VertexIsCollapsedGroup(oAddedVertex) )
+            {
+                m_oVertexRowIDDictionary.Add( (Int32)oAddedVertex.Tag,
+                    oAddedVertex );
+            }
+        };
+
+        VertexEventHandler oVertexRemovedEventHandler =
+        delegate(Object sender, VertexEventArgs e)
+        {
+            IVertex oRemovedVertex = e.Vertex;
+
+            if ( !GroupWorksheetReader.VertexIsCollapsedGroup(oRemovedVertex) )
+            {
+                m_oVertexRowIDDictionary.Remove( (Int32)oRemovedVertex.Tag );
+            }
+        };
+
+        IGraph oGraph = oNodeXLControl.Graph;
+        IEdgeCollection oEdges = oGraph.Edges;
+        IVertexCollection oVertices = oGraph.Vertices;
+
+        oEdges.EdgeAdded += oEdgeAddedEventHandler;
+        oEdges.EdgeRemoved += oEdgeRemovedEventHandler;
+        oVertices.VertexAdded += oVertexAddedEventHandler;
+        oVertices.VertexRemoved += oVertexRemovedEventHandler;
+
+        foreach (String sGroupName in oGroupNames)
+        {
+            if (bCollapse)
+            {
+                oNodeXLControl.CollapseGroup(sGroupName,
+
+                    VertexRowIDsToVertices(
+                        NodeXLWorkbookUtil.GetVertexIDsInGroup(m_oWorkbook,
+                            sGroupName) ),
+
+                    bRedrawGroupImmediately);
+            }
+            else
+            {
+                oNodeXLControl.ExpandGroup(sGroupName,
+                    bRedrawGroupImmediately);
+            }
+        }
+
+        oEdges.EdgeAdded -= oEdgeAddedEventHandler;
+        oEdges.EdgeRemoved -= oEdgeRemovedEventHandler;
+        oVertices.VertexAdded -= oVertexAddedEventHandler;
+        oVertices.VertexRemoved -= oVertexRemovedEventHandler;
     }
 
     //*************************************************************************
@@ -1637,21 +1991,20 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        // Copy the selected edges to a dictionary.  The key is the IEdge and
-        // the value isn't used.  A dictionary is used to prevent the same edge
-        // from being selected twice.
+        // Copy the selected edges to a HashSet.  The key is the IEdge.  A
+        // HashSet is used to prevent the same edge from being selected twice.
 
-        Dictionary<IEdge, Char> oSelectedEdges =
-            NodeXLControlUtil.GetSelectedEdgesAsDictionary(oNodeXLControl);
+        HashSet<IEdge> oSelectedEdges =
+            NodeXLControlUtil.GetSelectedEdgesAsHashSet(oNodeXLControl);
 
         // Add or subtract the specified vertex's incident edges from the
-        // dictionary of selected edges.
+        // HashSet of selected edges.
 
         foreach (IEdge oIncidentEdge in oVertex.IncidentEdges)
         {
             if (bSelect)
             {
-                oSelectedEdges[oIncidentEdge] = ' ';
+                oSelectedEdges.Add(oIncidentEdge);
             }
             else
             {
@@ -1662,7 +2015,7 @@ public partial class TaskPane : UserControl
         // Replace the selection.
 
         oNodeXLControl.SetSelected(oNodeXLControl.SelectedVertices,
-            oSelectedEdges.Keys);
+            oSelectedEdges);
     }
 
     //*************************************************************************
@@ -1691,21 +2044,21 @@ public partial class TaskPane : UserControl
         Debug.Assert(oVertex != null);
         AssertValid();
 
-        // Copy the selected vertices to a dictionary.  The key is the IVertex
-        // and the value isn't used.  A dictionary is used to prevent the same
-        // vertex from being selected twice.
+        // Copy the selected vertices to a HashSet.  The key is the IVertex.
+        // A HashSet is used to prevent the same vertex from being selected
+        // twice.
 
-        Dictionary<IVertex, Char> oSelectedVertices =
-            NodeXLControlUtil.GetSelectedVerticesAsDictionary(oNodeXLControl);
+        HashSet<IVertex> oSelectedVertices =
+            NodeXLControlUtil.GetSelectedVerticesAsHashSet(oNodeXLControl);
 
         // Add or subtract the specified vertex's adjacent vertices from the
-        // dictionary of selected vertices.
+        // HashSet of selected vertices.
 
         foreach (IVertex oAdjacentVertex in oVertex.AdjacentVertices)
         {
             if (bSelect)
             {
-                oSelectedVertices[oAdjacentVertex] = ' ';
+                oSelectedVertices.Add(oAdjacentVertex);
             }
             else
             {
@@ -1715,7 +2068,7 @@ public partial class TaskPane : UserControl
 
         // Replace the selection.
 
-        oNodeXLControl.SetSelected(oSelectedVertices.Keys,
+        oNodeXLControl.SetSelected(oSelectedVertices,
             oNodeXLControl.SelectedEdges);
     }
 
@@ -1745,21 +2098,21 @@ public partial class TaskPane : UserControl
         Debug.Assert(oEdge != null);
         AssertValid();
 
-        // Copy the selected vertices to a dictionary.  The key is the IVertex
-        // and the value isn't used.  A dictionary is used to prevent the same
-        // vertex from being selected twice.
+        // Copy the selected vertices to a HashSet.  The key is the IVertex.
+        // A HashSet is used to prevent the same vertex from being selected
+        // twice.
 
-        Dictionary<IVertex, Char> oSelectedVertices =
-            NodeXLControlUtil.GetSelectedVerticesAsDictionary(oNodeXLControl);
+        HashSet<IVertex> oSelectedVertices =
+            NodeXLControlUtil.GetSelectedVerticesAsHashSet(oNodeXLControl);
 
         // Add or subtract the specified edge's adjacent vertices from the
-        // dictionary of selected vertices.
+        // HashSet of selected vertices.
 
         foreach (IVertex oAdjacentVertex in oEdge.Vertices)
         {
             if (bSelect)
             {
-                oSelectedVertices[oAdjacentVertex] = ' ';
+                oSelectedVertices.Add(oAdjacentVertex);
             }
             else
             {
@@ -1769,7 +2122,7 @@ public partial class TaskPane : UserControl
 
         // Replace the selection.
 
-        oNodeXLControl.SetSelected(oSelectedVertices.Keys,
+        oNodeXLControl.SetSelected(oSelectedVertices,
             oNodeXLControl.SelectedEdges);
     }
 
@@ -1830,13 +2183,13 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        // Get a list of the IDs of the selected vertices.  These IDs came from
-        // the vertex worksheet's ID column.
+        // Get a collection of the row IDs of the selected vertices.  These row IDs
+        // came from the vertex worksheet's ID column.
 
-        List<Int32> oSelectedVertexIDs =
-            NodeXLControlUtil.GetSelectedVertexIDsAsList(oNodeXLControl);
+        ICollection<Int32> oSelectedVertexRowIDs =
+            NodeXLControlUtil.GetSelectedVertexRowIDs(oNodeXLControl);
 
-        if (oSelectedVertexIDs.Count == 0)
+        if (oSelectedVertexRowIDs.Count == 0)
         {
             return;
         }
@@ -1849,7 +2202,7 @@ public partial class TaskPane : UserControl
 
         oVertexAttributesEditedInGraph( this,
             new VertexAttributesEditedEventArgs(
-                oSelectedVertexIDs.ToArray(), oEditedVertexAttributes ) );
+                oSelectedVertexRowIDs.ToArray(), oEditedVertexAttributes ) );
 
         if (oEditedVertexAttributes.WorkbookMustBeReread)
         {
@@ -2210,46 +2563,46 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: WorksheetContextMenuManagerIDToVertex()
+    //  Method: WorksheetContextMenuManagerRowIDToVertex()
     //
     /// <summary>
-    /// Converts a vertex ID received from the WorksheetContextMenuManager to
-    /// an IVertex.
+    /// Converts a vertex row ID received from the WorksheetContextMenuManager
+    /// to an IVertex.
     /// </summary>
     ///
-    /// <param name="iVertexID">
-    /// Vertex ID received from the WorksheetContextMenuManager.  This is
-    /// either WorksheetContextMenuManager.NoID or a vertex ID stored in the
-    /// vertex worksheet.
+    /// <param name="iVertexRowID">
+    /// Vertex row ID received from the WorksheetContextMenuManager.  This is
+    /// either WorksheetContextMenuManager.NoRowID or a vertex row ID stored in
+    /// the vertex worksheet.
     /// </param>
     ///
     /// <returns>
-    /// The IVertex corresponding to the ID, or null if the ID is
-    /// WorksheetContextMenuManager.NoID.
+    /// The IVertex corresponding to the row ID, or null if the row ID is
+    /// WorksheetContextMenuManager.NoRowID.
     /// </returns>
     //*************************************************************************
 
     protected IVertex
-    WorksheetContextMenuManagerIDToVertex
+    WorksheetContextMenuManagerRowIDToVertex
     (
-        Int32 iVertexID
+        Int32 iVertexRowID
     )
     {
-        Debug.Assert(iVertexID == WorksheetContextMenuManager.NoID ||
-            iVertexID > 0);
+        Debug.Assert(iVertexRowID == WorksheetContextMenuManager.NoRowID ||
+            iVertexRowID > 0);
 
         AssertValid();
 
         IVertex oVertex = null;
 
-        if (iVertexID != WorksheetContextMenuManager.NoID &&
-            m_oVertexIDDictionary != null)
+        if (iVertexRowID != WorksheetContextMenuManager.NoRowID &&
+            m_oVertexRowIDDictionary != null)
         {
-            // Convert the worksheet ID to an IVertex.
+            // Convert the row ID to an IVertex.
 
             IIdentityProvider oVertexAsIdentityProvider;
 
-            if ( m_oVertexIDDictionary.TryGetValue(iVertexID,
+            if ( m_oVertexRowIDDictionary.TryGetValue(iVertexRowID,
                 out oVertexAsIdentityProvider) )
             {
                 Debug.Assert(oVertexAsIdentityProvider is IVertex);
@@ -2262,46 +2615,46 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: WorksheetContextMenuManagerIDToEdge()
+    //  Method: WorksheetContextMenuManagerRowIDToEdge()
     //
     /// <summary>
-    /// Converts an edge ID received from the WorksheetContextMenuManager to
-    /// an IEdge.
+    /// Converts an edge row ID received from the WorksheetContextMenuManager
+    /// to an IEdge.
     /// </summary>
     ///
-    /// <param name="iEdgeID">
-    /// Edge ID received from the WorksheetContextMenuManager.  This is either
-    /// WorksheetContextMenuManager.NoID or an edge ID stored in the edge
-    /// worksheet.
+    /// <param name="iEdgeRowID">
+    /// Edge row ID received from the WorksheetContextMenuManager.  This is
+    /// either WorksheetContextMenuManager.NoRowID or an edge row ID stored in
+    /// the edge worksheet.
     /// </param>
     ///
     /// <returns>
-    /// The IEdge corresponding to the ID, or null if the ID is
-    /// WorksheetContextMenuManager.NoID.
+    /// The IEdge corresponding to the row ID, or null if the row ID is
+    /// WorksheetContextMenuManager.NoRowID.
     /// </returns>
     //*************************************************************************
 
     protected IEdge
-    WorksheetContextMenuManagerIDToEdge
+    WorksheetContextMenuManagerRowIDToEdge
     (
-        Int32 iEdgeID
+        Int32 iEdgeRowID
     )
     {
-        Debug.Assert(iEdgeID == WorksheetContextMenuManager.NoID ||
-            iEdgeID > 0);
+        Debug.Assert(iEdgeRowID == WorksheetContextMenuManager.NoRowID ||
+            iEdgeRowID > 0);
 
         AssertValid();
 
         IEdge oEdge = null;
 
-        if (iEdgeID != WorksheetContextMenuManager.NoID &&
-            m_oEdgeIDDictionary != null)
+        if (iEdgeRowID != WorksheetContextMenuManager.NoRowID &&
+            m_oEdgeRowIDDictionary != null)
         {
-            // Convert the worksheet ID to an IEdge.
+            // Convert the row ID to an IEdge.
 
             IIdentityProvider oEdgeAsIdentityProvider;
 
-            if ( m_oEdgeIDDictionary.TryGetValue(iEdgeID,
+            if ( m_oEdgeRowIDDictionary.TryGetValue(iEdgeRowID,
                 out oEdgeAsIdentityProvider) )
             {
                 Debug.Assert(oEdgeAsIdentityProvider is IEdge);
@@ -2393,7 +2746,7 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         ReadDynamicFilterColumn(WorksheetNames.Edges, TableNames.Edges,
-            m_oEdgeIDDictionary, GetFilteredEdgeIDDictionary(),
+            m_oEdgeRowIDDictionary, GetFilteredEdgeIDDictionary(),
             this.OnEdgeFiltered, bForceRedraw);
     }
 
@@ -2419,7 +2772,7 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         ReadDynamicFilterColumn(WorksheetNames.Vertices, TableNames.Vertices,
-            m_oVertexIDDictionary, GetFilteredVertexIDDictionary(),
+            m_oVertexRowIDDictionary, GetFilteredVertexIDDictionary(),
             this.OnVertexFiltered, bForceRedraw);
     }
 
@@ -2915,6 +3268,193 @@ public partial class TaskPane : UserControl
         return (
             ( ( Dictionary<Int32, Char>[] )m_oDynamicFilterDialog.Tag )[1]
             );
+    }
+
+    //*************************************************************************
+    //  Method: SetSelectionByRowIDs()
+    //
+    /// <summary>
+    /// Sets which edges and vertices are selected given a collection of row
+    /// IDs from either the edge or vertex worksheet.
+    /// </summary>
+    ///
+    /// <param name="oEdgeRowIDs">
+    /// Collection of row IDs for the edges to select, or null.
+    /// </param>
+    ///
+    /// <param name="oVertexRowIDs">
+    /// Collection of row IDs for the vertices to select, or null.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method gets called when the selection is changed in either the
+    /// edge or vertex worksheet.  One or the other parameter must be null.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    SetSelectionByRowIDs
+    (
+        ICollection<Int32> oEdgeRowIDs,
+        ICollection<Int32> oVertexRowIDs
+    )
+    {
+        Debug.Assert( (oEdgeRowIDs == null) != (oVertexRowIDs == null) );
+
+        AssertValid();
+
+        if (oNodeXLControl.IsLayingOutGraph || !this.NonEmptyWorkbookRead)
+        {
+            return;
+        }
+
+        Boolean bAutoSelect = ( new GeneralUserSettings() ).AutoSelect;
+
+        // The row IDs get converted below to dictionaries of IEdge and IVertex
+        // objects.  Dictionaries are used to prevent duplicates.  The key is
+        // the IEdge.ID or IVertex.ID (NOT the row IDs) and the value is the
+        // IEdge or IVertex.
+
+        Dictionary<Int32, IEdge> oEdgesToSelect =
+            new Dictionary<Int32, IEdge>();
+
+        Dictionary<Int32, IVertex> oVerticesToSelect =
+            new Dictionary<Int32, IVertex>();
+
+        if (bAutoSelect)
+        {
+            // In AutoSelect mode, the selection in one or the other worksheet
+            // determines the entire selection state.  For example, selecting a
+            // vertex in the vertices worksheet selects the vertex and its
+            // incident edges, but ignores any other edges that may have
+            // already been selected in the edges worksheet.
+        }
+        else
+        {
+            // In manual mode, when a vertex is selected in the vertex
+            // worksheet, the selection in the vertex worksheet determines
+            // which vertices are selected, but the selected edges are left
+            // alone.  Similiarly, when an edge is selected in the edge
+            // worksheet, the selection in the edge worksheet determines which
+            // edges are selected, but the selected vertices are left alone.
+
+            if (oVertexRowIDs != null)
+            {
+                oEdgesToSelect =
+                    NodeXLControlUtil.GetSelectedEdgesAsDictionary(
+                        oNodeXLControl);
+            }
+            else if (oEdgeRowIDs != null)
+            {
+                oVerticesToSelect =
+                    NodeXLControlUtil.GetSelectedVerticesAsDictionary(
+                        oNodeXLControl);
+            }
+            else
+            {
+                Debug.Assert(false);
+            }
+        }
+
+        if (oEdgeRowIDs != null)
+        {
+            foreach (Int32 iEdgeRowID in oEdgeRowIDs)
+            {
+                IIdentityProvider oEdge;
+
+                if ( m_oEdgeRowIDDictionary.TryGetValue(iEdgeRowID,
+                    out oEdge) )
+                {
+                    Debug.Assert(oEdge is IEdge);
+
+                    IEdge oEdgeAsEdge = (IEdge)oEdge;
+
+                    oEdgesToSelect[oEdgeAsEdge.ID] = oEdgeAsEdge;
+
+                    if (bAutoSelect)
+                    {
+                        IVertex [] aoAdjacentVertices = oEdgeAsEdge.Vertices;
+
+                        oVerticesToSelect[aoAdjacentVertices[0].ID]
+                            = aoAdjacentVertices[0];
+
+                        oVerticesToSelect[aoAdjacentVertices[1].ID]
+                            = aoAdjacentVertices[1];
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (Int32 iVertexRowID in oVertexRowIDs)
+            {
+                IIdentityProvider oVertex;
+
+                if ( m_oVertexRowIDDictionary.TryGetValue(iVertexRowID,
+                    out oVertex) )
+                {
+                    Debug.Assert(oVertex is IVertex);
+
+                    IVertex oVertexAsVertex = (IVertex)oVertex;
+
+                    oVerticesToSelect[oVertexAsVertex.ID] = oVertexAsVertex;
+
+                    if (bAutoSelect)
+                    {
+                        foreach (IEdge oIncidentEdge in
+                            oVertexAsVertex.IncidentEdges)
+                        {
+                            oEdgesToSelect[oIncidentEdge.ID] = oIncidentEdge;
+                        }
+                    }
+                }
+            }
+        }
+
+        oNodeXLControl.SetSelected(oVerticesToSelect.Values,
+            oEdgesToSelect.Values);
+    }
+
+    //*************************************************************************
+    //  Method: VertexRowIDsToVertices()
+    //
+    /// <summary>
+    /// Creates a collection of vertices from a collection of vertex row IDs.
+    /// </summary>
+    ///
+    /// <param name="oVertexRowIDs">
+    /// Collection of vertex row IDs from the vertex worksheet.
+    /// </param>
+    ///
+    /// <returns>
+    /// A collection of the corresponding IVertex objects.
+    /// </returns>
+    //*************************************************************************
+
+    protected ICollection<IVertex>
+    VertexRowIDsToVertices
+    (
+        IEnumerable<Int32> oVertexRowIDs
+    )
+    {
+        Debug.Assert(oVertexRowIDs != null);
+        AssertValid();
+
+        LinkedList<IVertex> oVertices = new LinkedList<IVertex>();
+        IIdentityProvider oVertexAsIdentityProvider;
+
+        foreach (Int32 iVertexRowID in oVertexRowIDs)
+        {
+            if ( m_oVertexRowIDDictionary.TryGetValue(iVertexRowID,
+                out oVertexAsIdentityProvider) )
+            {
+                Debug.Assert(oVertexAsIdentityProvider is IVertex);
+
+                oVertices.AddLast( (IVertex)oVertexAsIdentityProvider );
+            }
+        }
+
+        return (oVertices);
     }
 
     //*************************************************************************
@@ -3973,7 +4513,7 @@ public partial class TaskPane : UserControl
         oNodeXLControl.Graph.RemoveKey(
             ReservedMetadataKeys.LayOutTheseVerticesWithinBounds);
 
-        if (e.Error == null && m_oEdgeIDDictionary != null)
+        if (e.Error == null && m_oEdgeRowIDDictionary != null)
         {
             // Forward the event.
 
@@ -3981,13 +4521,13 @@ public partial class TaskPane : UserControl
 
             if (oGraphLaidOut != null)
             {
-                Debug.Assert(m_oVertexIDDictionary != null);
+                Debug.Assert(m_oVertexRowIDDictionary != null);
 
                 try
                 {
                     oGraphLaidOut(this, new GraphLaidOutEventArgs(
-                        this.GraphRectangle, m_oEdgeIDDictionary,
-                        m_oVertexIDDictionary, oNodeXLControl
+                        this.GraphRectangle, m_oEdgeRowIDDictionary,
+                        m_oVertexRowIDDictionary, oNodeXLControl
                         ) );
                 }
                 catch (Exception oException)
@@ -4054,25 +4594,16 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        // Create an array of vertex IDs with a one-to-one correspondence to
-        // e.MovedVertices.  Note that the vertex worksheet is optional, so
-        // vertices may not have their tags set.  If that is the case, ignore
-        // the event.
+        LinkedList<VertexAndRowID> oVerticesAndRowIDs =
+            new LinkedList<VertexAndRowID>();
 
-        IVertex [] aoMovedVertices = e.MovedVertices;
-        Int32 iMovedVertices = aoMovedVertices.Length;
-        Int32 [] aiMovedVertexIDs = new Int32[iMovedVertices];
-
-        for (Int32 i = 0; i < iMovedVertices; i++)
+        foreach (IVertex oMovedVertex in e.MovedVertices)
         {
-            IVertex oVertex = aoMovedVertices[i];
-
-            if ( !(oVertex.Tag is Int32) )
+            if ( !GroupWorksheetReader.VertexIsCollapsedGroup(oMovedVertex) )
             {
-                return;
+                oVerticesAndRowIDs.AddLast( new VertexAndRowID(
+                    oMovedVertex, (Int32)oMovedVertex.Tag ) );
             }
-
-            aiMovedVertexIDs[i] = (Int32)oVertex.Tag;
         }
 
         this.UseWaitCursor = true;
@@ -4080,7 +4611,7 @@ public partial class TaskPane : UserControl
         try
         {
             oVerticesMoved( this, new VerticesMovedEventArgs2(
-                e, aiMovedVertexIDs, this.GraphRectangle) );
+                oVerticesAndRowIDs, this.GraphRectangle));
         }
         catch (Exception oException)
         {
@@ -4118,37 +4649,18 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        SelectionChangedEventHandler oSelectionChangedInGraph =
-            this.SelectionChangedInGraph;
+        EventHandler oSelectionChangedInGraph = this.SelectionChangedInGraph;
 
-        if (oSelectionChangedInGraph == null)
+        if (oSelectionChangedInGraph != null)
         {
-            // Do nothing else.
-
-            return;
-        }
-
-        // Get lists of the IDs of the selected vertices and edges.  These IDs
-        // came from the edge and vertex worksheets' ID columns.  (These are 
-        // not the IEdge.ID and IVertex.ID values, which the worksheets know
-        // nothing about.)
-
-        List<Int32> oSelectedEdgeIDs =
-            NodeXLControlUtil.GetSelectedEdgeIDsAsList(oNodeXLControl);
-
-        List<Int32> oSelectedVertexIDs =
-            NodeXLControlUtil.GetSelectedVertexIDsAsList(oNodeXLControl);
-
-        Debug.Assert(oSelectionChangedInGraph != null);
-
-        try
-        {
-            oSelectionChangedInGraph(this, new SelectionChangedEventArgs(
-                oSelectedEdgeIDs.ToArray(), oSelectedVertexIDs.ToArray() ) );
-        }
-        catch (Exception oException)
-        {
-            ErrorUtil.OnException(oException);
+            try
+            {
+                oSelectionChangedInGraph(this, EventArgs.Empty);
+            }
+            catch (Exception oException)
+            {
+                ErrorUtil.OnException(oException);
+            }
         }
     }
 
@@ -4263,153 +4775,6 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: ThisWorkbook_SelectionChangedInWorkbook()
-    //
-    /// <summary>
-    /// Handles the SelectionChangedInWorkbook event on the ThisWorkbook
-    /// workbook.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ThisWorkbook_SelectionChangedInWorkbook
-    (
-        Object sender,
-        SelectionChangedEventArgs e
-    )
-    {
-        Debug.Assert(e != null);
-        AssertValid();
-
-        if (oNodeXLControl.IsLayingOutGraph)
-        {
-            return;
-        }
-
-        if (!this.NonEmptyWorkbookRead)
-        {
-            return;
-        }
-
-        Boolean bAutoSelect = ( new GeneralUserSettings() ).AutoSelect;
-
-        // The event argument "e" contains the worksheet IDs of either the
-        // edges (if the selection changed in the edges worksheet) or vertices
-        // (if the selection changed in the vertices worksheet) that should be
-        // selected.  (Note that the worksheet IDs are different from IEdge.ID
-        // and IVertex.ID, which the worksheets know nothing about.)  The
-        // worksheet IDs get converted below to dictionaries of IEdge and
-        // IVertex objects.  Dictionaries are used to prevent duplicates.  The
-        // key is the IEdge.ID or IVertex.ID (NOT the worksheet IDs) and the
-        // value is the IEdge or IVertex.
-
-        Dictionary<Int32, IEdge> oEdgesToSelect =
-            new Dictionary<Int32, IEdge>();
-
-        Dictionary<Int32, IVertex> oVerticesToSelect =
-            new Dictionary<Int32, IVertex>();
-
-        if (bAutoSelect)
-        {
-            // In AutoSelect mode, the selection in one or the other worksheet
-            // determines the entire selection state.  For example, selecting a
-            // vertex in the vertices worksheet selects the vertex and its
-            // incident edges, but ignores any other edges that may have
-            // already been selected in the edges worksheet.
-        }
-        else
-        {
-            // In manual mode, when a vertex is selected in the vertex
-            // worksheet, the selection in the vertex worksheet determines
-            // which vertices are selected, but the selected edges are left
-            // alone.  Similiarly, when an edge is selected in the edge
-            // worksheet, the selection in the edge worksheet determines which
-            // edges are selected, but the selected vertices are left alone.
-
-            if (e.SelectedVertexIDs.Length > 0)
-            {
-                oEdgesToSelect =
-                    NodeXLControlUtil.GetSelectedEdgesAsDictionary2(
-                        oNodeXLControl);
-            }
-            else if (e.SelectedEdgeIDs.Length > 0)
-            {
-                oVerticesToSelect =
-                    NodeXLControlUtil.GetSelectedVerticesAsDictionary2(
-                        oNodeXLControl);
-            }
-            else
-            {
-                // Don't do this.  Although only one of the e.SelectedVertexIDs
-                // and e.SelectedEdgeIDs arrays can be non-empty, it's possible
-                // for both of them to be empty.
-
-                // Debug.Assert(false);
-            }
-        }
-
-        foreach (Int32 iSelectedEdgeID in e.SelectedEdgeIDs)
-        {
-            IIdentityProvider oEdge;
-
-            if ( m_oEdgeIDDictionary.TryGetValue(iSelectedEdgeID, out oEdge) )
-            {
-                Debug.Assert(oEdge is IEdge);
-
-                IEdge oEdgeAsEdge = (IEdge)oEdge;
-
-                oEdgesToSelect[oEdgeAsEdge.ID] = oEdgeAsEdge;
-
-                if (bAutoSelect)
-                {
-                    IVertex [] aoAdjacentVertices = oEdgeAsEdge.Vertices;
-
-                    oVerticesToSelect[aoAdjacentVertices[0].ID]
-                        = aoAdjacentVertices[0];
-
-                    oVerticesToSelect[aoAdjacentVertices[1].ID]
-                        = aoAdjacentVertices[1];
-                }
-            }
-        }
-
-        foreach (Int32 iSelectedVertexID in e.SelectedVertexIDs)
-        {
-            IIdentityProvider oVertex;
-
-            if ( m_oVertexIDDictionary.TryGetValue(
-                iSelectedVertexID, out oVertex) )
-            {
-                Debug.Assert(oVertex is IVertex);
-
-                IVertex oVertexAsVertex = (IVertex)oVertex;
-
-                oVerticesToSelect[oVertexAsVertex.ID] = oVertexAsVertex;
-
-                if (bAutoSelect)
-                {
-                    foreach (IEdge oIncidentEdge in
-                        oVertexAsVertex.IncidentEdges)
-                    {
-                        oEdgesToSelect[oIncidentEdge.ID] = oIncidentEdge;
-                    }
-                }
-            }
-        }
-
-        oNodeXLControl.SetSelected(oVerticesToSelect.Values,
-            oEdgesToSelect.Values);
-    }
-
-    //*************************************************************************
     //  Method: ThisWorkbook_VisualAttributeSetInWorkbook()
     //
     /// <summary>
@@ -4448,6 +4813,73 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: ThisWorkbook_CollapseOrExpandGroups()
+    //
+    /// <summary>
+    /// Handles the CollapseOrExpandGroups event on the ThisWorkbook workbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ThisWorkbook_CollapseOrExpandGroups
+    (
+        Object sender,
+        CollapseOrExpandGroupsEventArgs e
+    )
+    {
+        AssertValid();
+
+        if (oNodeXLControl.IsLayingOutGraph || !this.NonEmptyWorkbookRead)
+        {
+            return;
+        }
+
+        CollapseOrExpandGroups(e.GroupNames, e.Collapse, true);
+    }
+
+    //*************************************************************************
+    //  Method: ThisWorkbook_Shutdown()
+    //
+    /// <summary>
+    /// Handles the Shutdown event on the ThisWorkbook workbook.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ThisWorkbook_Shutdown
+    (
+        Object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        GraphZoomAndScaleUserSettings oGraphZoomAndScaleUserSettings =
+            new GraphZoomAndScaleUserSettings();
+
+        oGraphZoomAndScaleUserSettings.GraphScale =
+            oNodeXLControl.GraphScale;
+
+        oGraphZoomAndScaleUserSettings.Save();
+    }
+
+    //*************************************************************************
     //  Method: WorksheetContextMenuManager_RequestVertexCommandEnable()
     //
     /// <summary>
@@ -4473,11 +4905,11 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        // Get the vertex corresponding to the row the user right-clicked in the
-        // vertex worksheet.  This can be null.
+        // Get the vertex corresponding to the row the user right-clicked in
+        // the vertex worksheet.  This can be null.
 
         IVertex oClickedVertex =
-            WorksheetContextMenuManagerIDToVertex(e.VertexID);
+            WorksheetContextMenuManagerRowIDToVertex(e.VertexRowID);
 
         Boolean bEnableSelectAllVertices, bEnableDeselectAllVertices,
             bEnableSelectAdjacentVertices, bEnableDeselectAdjacentVertices,
@@ -4534,7 +4966,8 @@ public partial class TaskPane : UserControl
         // Get the edge corresponding to the row the user right-clicked in the
         // edge worksheet.  This can be null.
 
-        IEdge oClickedEdge = WorksheetContextMenuManagerIDToEdge(e.EdgeID);
+        IEdge oClickedEdge =
+            WorksheetContextMenuManagerRowIDToEdge(e.EdgeRowID);
 
         Boolean bEnableSelectAllEdges, bEnableDeselectAllEdges,
             bEnableSelectAdjacentVertices, bEnableDeselectAdjacentVertices;
@@ -4582,7 +5015,7 @@ public partial class TaskPane : UserControl
         // vertex worksheet.  This can be null.
 
         IVertex oClickedVertex =
-            WorksheetContextMenuManagerIDToVertex(e.VertexID);
+            WorksheetContextMenuManagerRowIDToVertex(e.VertexRowID);
 
         WorksheetContextMenuManager.VertexCommand eVertexCommand =
             e.VertexCommand;
@@ -4674,7 +5107,8 @@ public partial class TaskPane : UserControl
         // Ge the edge corresponding to the row the user right-clicked in the
         // edge worksheet.  This can be null.
 
-        IEdge oClickedEdge = WorksheetContextMenuManagerIDToEdge(e.EdgeID);
+        IEdge oClickedEdge = WorksheetContextMenuManagerRowIDToEdge(
+            e.EdgeRowID);
 
         WorksheetContextMenuManager.EdgeCommand eEdgeCommand = e.EdgeCommand;
 
@@ -5061,8 +5495,8 @@ public partial class TaskPane : UserControl
         // m_bHandlingLayoutChanged
 
         // m_iEnableGraphControlsCount
-        // m_oEdgeIDDictionary
-        // m_oVertexIDDictionary
+        // m_oEdgeRowIDDictionary
+        // m_oVertexRowIDDictionary
         // m_oSaveGraphImageFileDialog
 
         if (m_oDynamicFilterDialog != null)
@@ -5125,16 +5559,16 @@ public partial class TaskPane : UserControl
 
     protected Int32 m_iEnableGraphControlsCount;
 
-    /// Dictionary that maps edge IDs stored in the edge worksheet to edge
+    /// Dictionary that maps edge row IDs stored in the edge worksheet to edge
     /// objects in the graph, or null if ReadWorkbook() hasn't been called.
-    /// The edge IDs stored in the worksheet are different from IEdge.ID, which
-    /// the edge worksheet knows nothing about.
+    /// The edge row IDs stored in the worksheet are different from IEdge.ID,
+    /// which the edge worksheet knows nothing about.
 
-    protected Dictionary<Int32, IIdentityProvider> m_oEdgeIDDictionary;
+    protected Dictionary<Int32, IIdentityProvider> m_oEdgeRowIDDictionary;
 
     /// Ditto for vertices.
 
-    protected Dictionary<Int32, IIdentityProvider> m_oVertexIDDictionary;
+    protected Dictionary<Int32, IIdentityProvider> m_oVertexRowIDDictionary;
 
     /// Dialog for saving images, or null if an image hasn't been saved yet.
     /// This is kept as a field instead of being created each time an image is

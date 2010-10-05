@@ -2,9 +2,9 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
-using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
 
 namespace Microsoft.NodeXL.ExcelTemplate
@@ -18,7 +18,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </summary>
 //*****************************************************************************
 
-public class VerticesMovedEventArgs2 : VerticesMovedEventArgs
+public class VerticesMovedEventArgs2 : EventArgs
 {
     //*************************************************************************
     //  Constructor: VerticesMovedEventArgs2()
@@ -28,59 +28,49 @@ public class VerticesMovedEventArgs2 : VerticesMovedEventArgs
     /// cref="VerticesMovedEventArgs2" /> class.
     /// </summary>
     ///
-    /// <param name="verticesMovedEventArgs">
-    /// Event arguments from the <see cref="NodeXLControl.VerticesMoved" />
-    /// event.
-    /// </param>
-    ///
-    /// <param name="movedVertexIDs">
-    /// Array of the IDs of the vertices that were moved.  The IDs are from the
-    /// vertex table.  There must be a one-to-one correspondence between these
-    /// IDs and the vertices in <paramref name="verticesMovedEventArgs" />.
+    /// <param name="verticesAndRowIDs">
+    /// Collection of <see cref="VertexAndRowID" /> objects, one for each
+    /// vertex that was moved.
     /// </param>
     ///
     /// <param name="graphRectangle">
-    /// The rectange the graph was drawn within.
+    /// The rectangle the graph was drawn within.
     /// </param>
     //*************************************************************************
 
     public VerticesMovedEventArgs2
     (
-        VerticesMovedEventArgs verticesMovedEventArgs,
-        Int32 [] movedVertexIDs,
+        ICollection<VertexAndRowID> verticesAndRowIDs,
         Rectangle graphRectangle
     )
-    : base (verticesMovedEventArgs.MovedVertices)
     {
-        m_aiMovedVertexIDs = movedVertexIDs;
+        m_oVerticesAndRowIDs = verticesAndRowIDs;
         m_oGraphRectangle = graphRectangle;
 
         AssertValid();
     }
 
     //*************************************************************************
-    //  Property: MovedVertexIDs
+    //  Property: VerticesAndRowIDs
     //
     /// <summary>
-    /// Gets an array of the IDs of the vertices that were moved.
+    /// Gets the vertices that were moved.
     /// </summary>
     ///
     /// <value>
-    /// The IDs of the vertices that were moved.  The IDs are from the
-    /// vertices' rows in the vertex table.  There is a one-to-one
-    /// correspondence between these IDs and the vertices in <see
-    /// cref="VerticesMovedEventArgs.MovedVertices" />.
+    /// Collection of <see cref="VertexAndRowID" /> objects, one for each
+    /// vertex that was moved.
     /// </value>
     //*************************************************************************
 
-    public Int32 []
-    MovedVertexIDs
+    public ICollection<VertexAndRowID>
+    VerticesAndRowIDs
     {
         get
         {
             AssertValid();
 
-            return (m_aiMovedVertexIDs);
+            return (m_oVerticesAndRowIDs);
         }
     }
 
@@ -116,16 +106,12 @@ public class VerticesMovedEventArgs2 : VerticesMovedEventArgs
     /// </summary>
     //*************************************************************************
 
-    // [Conditional("DEBUG")]
+    [Conditional("DEBUG")]
 
-    public override void
+    public void
     AssertValid()
     {
-        base.AssertValid();
-
-        Debug.Assert(m_aiMovedVertexIDs != null);
-        Debug.Assert(m_aiMovedVertexIDs.Length > 0);
-        Debug.Assert(m_aiMovedVertexIDs.Length == m_aoMovedVertices.Length);
+        Debug.Assert(m_oVerticesAndRowIDs != null);
         // m_oGraphRectangle
     }
 
@@ -134,9 +120,10 @@ public class VerticesMovedEventArgs2 : VerticesMovedEventArgs
     //  Protected fields
     //*************************************************************************
 
-    /// Vertex IDs from the vertex table.
+    /// Collection of VertexAndRowID objects, one for each vertex that was
+    /// moved.
 
-    protected Int32 [] m_aiMovedVertexIDs;
+    protected ICollection<VertexAndRowID> m_oVerticesAndRowIDs;
 
     /// The rectangle the graph was drawn within.
 

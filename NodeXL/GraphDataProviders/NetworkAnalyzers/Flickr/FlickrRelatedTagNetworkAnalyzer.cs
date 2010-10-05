@@ -148,14 +148,14 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: TryGetRelatedTagsInternal()
+    //  Method: GetRelatedTagsInternal()
     //
     /// <overloads>
-    /// Attempts to gets the Flickr tags related to a specified tag.
+    /// Gets the Flickr tags related to a specified tag.
     /// </overloads>
     ///
     /// <summary>
-    /// Attempts to gets the Flickr tags related to a specified tag.
+    /// Gets the Flickr tags related to a specified tag.
     /// </summary>
     ///
     /// <param name="sTag">
@@ -175,37 +175,18 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// Flickr API key.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
     /// <returns>
-    /// true if the related Flickr tags were obtained, or false if the user
-    /// cancelled.
+    /// An XmlDocument containing the network as GraphML.
     /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetRelatedTagsInternal
+    protected XmlDocument
+    GetRelatedTagsInternal
     (
         String sTag,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
-        String sApiKey,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
-        out XmlDocument oXmlDocument
+        String sApiKey
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sTag) );
@@ -215,10 +196,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
             eNetworkLevel == NetworkLevel.Two);
 
         Debug.Assert( !String.IsNullOrEmpty(sApiKey) );
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
-
-        oXmlDocument = null;
 
         GraphMLXmlDocument oGraphMLXmlDocument = CreateGraphMLXmlDocument(
             WhatToIncludeFlagIsSet(eWhatToInclude,
@@ -228,29 +206,25 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         try
         {
-            if ( !TryGetRelatedTagsInternal(sTag, eWhatToInclude,
-                eNetworkLevel, sApiKey, oRequestStatistics, oBackgroundWorker,
-                oDoWorkEventArgs, oGraphMLXmlDocument) )
-            {
-                // The user cancelled.
-
-                return (false);
-            }
+            GetRelatedTagsInternal(sTag, eWhatToInclude, eNetworkLevel,
+                sApiKey, oRequestStatistics, oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
             OnTerminatingException(oException);
         }
 
-        return ( OnNetworkObtainedWithoutTerminatingException(
-            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+        OnNetworkObtainedWithoutTerminatingException(oGraphMLXmlDocument,
+            oRequestStatistics);
+
+        return (oGraphMLXmlDocument);
     }
 
     //*************************************************************************
-    //  Method: TryGetRelatedTagsInternal()
+    //  Method: GetRelatedTagsInternal()
     //
     /// <summary>
-    /// Attempts to gets the Flickr tags related to a specified tag, given a
+    /// Gets the Flickr tags related to a specified tag, given a
     /// GraphXMLXmlDocument.
     /// </summary>
     ///
@@ -276,36 +250,19 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument to populate with the requested network.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the related Flickr tags were obtained, or false if the user
-    /// cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetRelatedTagsInternal
+    protected void
+    GetRelatedTagsInternal
     (
         String sTag,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
         String sApiKey,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
@@ -317,7 +274,6 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         Debug.Assert( !String.IsNullOrEmpty(sApiKey) );
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -328,32 +284,22 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Dictionary<String, XmlNode> oTagDictionary =
             new Dictionary<String, XmlNode>();
 
-        if ( !TryGetRelatedTagsRecursive(sTag, eWhatToInclude, eNetworkLevel,
-            sApiKey, 1, oGraphMLXmlDocument, oTagDictionary,
-            oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs) )
-        {
-            return (false);
-        }
+        GetRelatedTagsRecursive(sTag, eWhatToInclude, eNetworkLevel, sApiKey,
+            1, oGraphMLXmlDocument, oTagDictionary, oRequestStatistics);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SampleThumbnails) )
         {
-            if ( !TryAppendSampleThumbnails(oTagDictionary,
-                oGraphMLXmlDocument, sApiKey, oRequestStatistics,
-                oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
+            AppendSampleThumbnails(oTagDictionary, oGraphMLXmlDocument,
+                sApiKey, oRequestStatistics);
         }
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryGetRelatedTagsRecursive()
+    //  Method: GetRelatedTagsRecursive()
     //
     /// <summary>
-    /// Attempts to recursively get a tag's related tags.
+    /// Recursively gets a tag's related tags.
     /// </summary>
     ///
     /// <param name="sTag">
@@ -391,25 +337,10 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the related Flickr tags were obtained, or false if the user
-    /// cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetRelatedTagsRecursive
+    protected void
+    GetRelatedTagsRecursive
     (
         String sTag,
         WhatToInclude eWhatToInclude,
@@ -418,9 +349,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Int32 iRecursionLevel,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, XmlNode> oTagDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sTag) );
@@ -434,7 +363,6 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oTagDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         /*
@@ -464,18 +392,13 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
             ---|------------------|-------------------|------------------
         */
 
-        if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-        {
-            return (false);
-        }
-
         Boolean bNeedToRecurse = GetNeedToRecurse(eNetworkLevel,
             iRecursionLevel);
 
         Boolean bNeedToAppendVertices = GetNeedToAppendVertices(
             eNetworkLevel, iRecursionLevel);
 
-        ReportProgress("Getting tags related to \"" + sTag + "\"");
+        ReportProgress("Getting tags related to \"" + sTag + "\".");
 
         String sUrl = GetFlickrMethodUrl( "flickr.tags.getRelated", sApiKey,
             "&tag=" + UrlUtil.EncodeUrlParameter(sTag) );
@@ -489,8 +412,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         catch (Exception oException)
         {
             // If the exception is not a WebException or XmlException, or if
-            // the none of the network has been obtained yet, throw the
-            // exception.
+            // none of the network has been obtained yet, throw the exception.
 
             if (!ExceptionIsWebOrXml(oException) ||
                 !oGraphMLXmlDocument.HasVertexXmlNode)
@@ -498,7 +420,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 throw oException;
             }
 
-            return (true);
+            return;
         }
 
         // The document consists of a single "tags" node with zero or more
@@ -539,25 +461,18 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 sOtherTag = XmlUtil2.SelectRequiredSingleNodeAsString(oTagNode,
                     "text()", null);
 
-                if ( !TryGetRelatedTagsRecursive(sOtherTag, eWhatToInclude,
+                GetRelatedTagsRecursive(sOtherTag, eWhatToInclude,
                     eNetworkLevel, sApiKey, 2, oGraphMLXmlDocument,
-                    oTagDictionary, oRequestStatistics, oBackgroundWorker,
-                    oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                    oTagDictionary, oRequestStatistics);
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryAppendSampleThumbnails()
+    //  Method: AppendSampleThumbnails()
     //
     /// <summary>
-    /// Attempts to append sample thumbnails to the GraphMLXmlDocument being
-    /// populated.
+    /// Appends sample thumbnails to the GraphMLXmlDocument being populated.
     /// </summary>
     ///
     /// <param name="oTagDictionary">
@@ -577,50 +492,28 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the thumbnails were appended, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryAppendSampleThumbnails
+    protected void
+    AppendSampleThumbnails
     (
         Dictionary<String, XmlNode> oTagDictionary,
         GraphMLXmlDocument oGraphMLXmlDocument,
         String sApiKey,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(oTagDictionary != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert( !String.IsNullOrEmpty(sApiKey) );
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         foreach (KeyValuePair<String, XmlNode> oKeyValuePair in oTagDictionary)
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             String sTag = oKeyValuePair.Key;
 
-            ReportProgress("Getting sample image file for \"" + sTag + "\"");
+            ReportProgress("Getting sample image file for \"" + sTag + "\".");
 
             String sSampleImageUrl;
 
@@ -631,8 +524,6 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
                     oKeyValuePair.Value, ImageFileID, sSampleImageUrl);
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -877,15 +768,16 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs =
             (GetNetworkAsyncArgs)e.Argument;
 
-        XmlDocument oGraphMLDocument;
-        
-        if ( TryGetRelatedTagsInternal(oGetNetworkAsyncArgs.Tag,
-            oGetNetworkAsyncArgs.WhatToInclude,
-            oGetNetworkAsyncArgs.NetworkLevel,
-            oGetNetworkAsyncArgs.ApiKey, oBackgroundWorker, e,
-            out oGraphMLDocument) )
+        try
         {
-            e.Result = oGraphMLDocument;
+            e.Result = GetRelatedTagsInternal(oGetNetworkAsyncArgs.Tag,
+                oGetNetworkAsyncArgs.WhatToInclude,
+                oGetNetworkAsyncArgs.NetworkLevel,
+                oGetNetworkAsyncArgs.ApiKey);
+        }
+        catch (CancellationPendingException)
+        {
+            e.Cancel = true;
         }
     }
 

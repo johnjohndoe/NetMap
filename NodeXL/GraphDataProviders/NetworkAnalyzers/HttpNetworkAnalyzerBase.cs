@@ -292,7 +292,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
         {
             if (iRetriesSoFar > 0)
             {
-                ReportProgress("Retrying request");
+                ReportProgress("Retrying request.");
             }
 
             // Important Note: You cannot use the same HttpWebRequest object
@@ -407,6 +407,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
     {
         Debug.Assert(oHttpWebRequest != null);
         AssertValid();
+
+        CheckCancellationPending();
 
         oHttpWebRequest.Timeout = HttpWebRequestTimeoutMs;
 
@@ -1043,47 +1045,29 @@ public abstract class HttpNetworkAnalyzerBase : Object
     }
 
     //*************************************************************************
-    //  Method: CancelIfRequested()
+    //  Method: CheckCancellationPending()
     //
     /// <summary>
-    /// Cancels the asynchronous operation if requested.
+    /// Checks whether a cancellation is pending.
     /// </summary>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if an asynchronous operation was cancelled.  If true, the caller
-    /// should stop what it is doing and return.
-    /// </returns>
+    /// <remarks>
+    /// If an asynchronous operation is in progress and a cancellation is
+    /// pending, this method throws a <see
+    /// cref="CancellationPendingException" />.  When the asynchronous method
+    /// catches this exception, it should set the DoWorkEventArgs.Cancel
+    /// property to true and then return.
+    /// </remarks>
     //*************************************************************************
 
-    protected Boolean
-    CancelIfRequested
-    (
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
-    )
+    protected void
+    CheckCancellationPending()
     {
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
-        AssertValid();
-
-        if (oBackgroundWorker != null && oBackgroundWorker.CancellationPending)
+        if (m_oBackgroundWorker.IsBusy &&
+            m_oBackgroundWorker.CancellationPending)
         {
-            Debug.Assert(oDoWorkEventArgs != null);
-
-            oDoWorkEventArgs.Cancel = true;
-            return (true);
+            throw new CancellationPendingException();
         }
-
-        return (false);
     }
 
     //*************************************************************************
@@ -1131,48 +1115,30 @@ public abstract class HttpNetworkAnalyzerBase : Object
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the entire network was obtained.
-    /// </returns>
-    ///
     /// <remarks>
-    /// If the entire network has been obtained, <paramref
-    /// name="oGraphMLXmlDocument" /> gets stored at <paramref
-    /// name="oXmlDocument" /> and true is returned.  Otherise, a
-    /// PartialNetworkException is thrown.
+    /// If the entire network has been obtained, this method does nothing.
+    /// Otherwise, a PartialNetworkException is thrown.
     /// </remarks>
     //*************************************************************************
 
-    protected Boolean
+    protected void
     OnNetworkObtainedWithoutTerminatingException
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
-        RequestStatistics oRequestStatistics,
-        out XmlDocument oXmlDocument
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
-        if (oRequestStatistics.UnexpectedExceptions == 0)
+        if (oRequestStatistics.UnexpectedExceptions > 0)
         {
-            // The entire document was obtained without any unexpected
-            // exceptions.
+            // The network is partial.
 
-            oXmlDocument = oGraphMLXmlDocument;
-            return (true);
+            throw new PartialNetworkException(oGraphMLXmlDocument,
+                oRequestStatistics);
         }
-
-        // The network is partial.
-
-        throw new PartialNetworkException(oGraphMLXmlDocument,
-            oRequestStatistics);
     }
 
     //*************************************************************************

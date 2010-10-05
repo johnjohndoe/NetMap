@@ -184,13 +184,13 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         Debug.Assert(oWorkbook != null);
 
         m_aoEdgeSourceColumnNameComboBoxes =
-            new AutoFillEdgeColumnComboBox []
+            new EdgeColumnComboBox[]
             {
-            cbxEdgeColorSourceColumnName,
-            cbxEdgeWidthSourceColumnName,
-            cbxEdgeAlphaSourceColumnName,
-            cbxEdgeVisibilitySourceColumnName,
-            cbxEdgeLabelSourceColumnName,
+                cbxEdgeColorSourceColumnName,
+                cbxEdgeWidthSourceColumnName,
+                cbxEdgeAlphaSourceColumnName,
+                cbxEdgeVisibilitySourceColumnName,
+                cbxEdgeLabelSourceColumnName,
             };
 
         ListObject oEdgeTable;
@@ -201,10 +201,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             // Populate the edge table column ComboBoxes with the source column
             // names.
 
-            foreach (AutoFillEdgeColumnComboBox oComboBox in
+            foreach (EdgeColumnComboBox oComboBox in
                 m_aoEdgeSourceColumnNameComboBoxes)
             {
-                oComboBox.PopulateWithSourceColumnNames(oEdgeTable);
+                oComboBox.PopulateWithTableColumnNames(oEdgeTable);
             }
         }
 
@@ -244,21 +244,21 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         Debug.Assert(oWorkbook != null);
 
         m_aoVertexSourceColumnNameComboBoxes =
-            new AutoFillVertexColumnComboBox []
+            new VertexColumnComboBox[]
             {
-            cbxVertexColorSourceColumnName,
-            cbxVertexShapeSourceColumnName,
-            cbxVertexRadiusSourceColumnName,
-            cbxVertexAlphaSourceColumnName,
-            cbxVertexVisibilitySourceColumnName,
-            cbxVertexLabelSourceColumnName,
-            cbxVertexLabelFillColorSourceColumnName,
-            cbxVertexToolTipSourceColumnName,
-            cbxVertexLayoutOrderSourceColumnName,
-            cbxVertexXSourceColumnName,
-            cbxVertexYSourceColumnName,
-            cbxVertexPolarRSourceColumnName,
-            cbxVertexPolarAngleSourceColumnName,
+                cbxVertexColorSourceColumnName,
+                cbxVertexShapeSourceColumnName,
+                cbxVertexRadiusSourceColumnName,
+                cbxVertexAlphaSourceColumnName,
+                cbxVertexVisibilitySourceColumnName,
+                cbxVertexLabelSourceColumnName,
+                cbxVertexLabelFillColorSourceColumnName,
+                cbxVertexToolTipSourceColumnName,
+                cbxVertexLayoutOrderSourceColumnName,
+                cbxVertexXSourceColumnName,
+                cbxVertexYSourceColumnName,
+                cbxVertexPolarRSourceColumnName,
+                cbxVertexPolarAngleSourceColumnName,
             };
 
         ListObject oVertexTable;
@@ -269,10 +269,10 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
             // Populate the vertex table column ComboBoxes with the source
             // column names.
 
-            foreach (AutoFillVertexColumnComboBox oComboBox in
+            foreach (VertexColumnComboBox oComboBox in
                 m_aoVertexSourceColumnNameComboBoxes)
             {
-                oComboBox.PopulateWithSourceColumnNames(oVertexTable);
+                oComboBox.PopulateWithTableColumnNames(oVertexTable);
             }
 
             // Insert a few special items.
@@ -1897,12 +1897,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
     /// Array of ComboBoxes for the edge source column names.
 
-    protected AutoFillEdgeColumnComboBox [] m_aoEdgeSourceColumnNameComboBoxes;
+    protected EdgeColumnComboBox [] m_aoEdgeSourceColumnNameComboBoxes;
 
     /// Array of ComboBoxes for the vertex source column names.
 
-    protected AutoFillVertexColumnComboBox []
-        m_aoVertexSourceColumnNameComboBoxes;
+    protected VertexColumnComboBox [] m_aoVertexSourceColumnNameComboBoxes;
 }
 
 

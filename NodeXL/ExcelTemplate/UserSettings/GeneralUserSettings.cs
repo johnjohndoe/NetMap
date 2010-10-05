@@ -109,15 +109,15 @@ public class GeneralUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: ReadClusters
+    //  Property: ReadGroups
     //
     /// <summary>
-    /// Gets or sets a flag indicating whether the cluster worksheets should be
+    /// Gets or sets a flag indicating whether the group worksheets should be
     /// read when the workbook is read into the graph.
     /// </summary>
     ///
     /// <value>
-    /// true to read the cluster worksheets.  The default value is true.
+    /// true to read the group worksheets.  The default value is true.
     /// </value>
     //*************************************************************************
 
@@ -125,18 +125,18 @@ public class GeneralUserSettings : NodeXLApplicationSettingsBase
     [ DefaultSettingValueAttribute("true") ]
 
     public Boolean
-    ReadClusters
+    ReadGroups
     {
         get
         {
             AssertValid();
 
-            return ( (Boolean)this[ReadClustersKey] );
+            return ( (Boolean)this[ReadGroupsKey] );
         }
 
         set
         {
-            this[ReadClustersKey] = value;
+            this[ReadGroupsKey] = value;
 
             AssertValid();
         }
@@ -1142,10 +1142,10 @@ public class GeneralUserSettings : NodeXLApplicationSettingsBase
     protected const String ClusterAlgorithmKey =
         "ClusterAlgorithm";
 
-    /// Name of the settings key for the ReadClusters property.
+    /// Name of the settings key for the ReadGroups property.
 
-    protected const String ReadClustersKey =
-        "ReadClusters";
+    protected const String ReadGroupsKey =
+        "ReadGroups";
 
     /// Name of the settings key for the ReadVertexLabels property.
 

@@ -160,27 +160,6 @@ public partial class VertexCollection : NodeXLBase, IVertexCollection
                 );
         }
 
-        if (m_oParentGraph.PerformExtraValidations)
-        {
-            // Check whether the vertex's ID is already used in the collection.
-
-            Int32 iID = vertex.ID;
-
-            if ( this.Contains(iID) )
-            {
-                oArgumentChecker.ThrowArgumentException(
-                    MethodName, ArgumentName,
-
-                    String.Format(
-
-                        "A vertex with the ID {0} already exists in the"
-                        + " collection."
-                        ,
-                        iID
-                    ) );
-            }
-        }
-
         // The vertex is valid.  Add it to the collection.
 
         m_oLinkedList.AddLast(vertex);

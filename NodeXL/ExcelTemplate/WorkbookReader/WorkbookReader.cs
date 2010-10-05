@@ -157,8 +157,7 @@ public class WorkbookReader : Object
         Debug.Assert(workbook != null);
         AssertValid();
 
-        if (readWorkbookContext.PopulateVertexWorksheet &&
-            !readWorkbookContext.ReadAllEdgeAndVertexColumns)
+        if (readWorkbookContext.PopulateVertexWorksheet)
         {
             // Create and use the object that fills in the vertex worksheet.
 
@@ -217,18 +216,18 @@ public class WorkbookReader : Object
             return (oGraph);
         }
 
-        if (readWorkbookContext.ReadClusters)
+        if (readWorkbookContext.ReadGroups)
         {
-            // Read the cluster worksheets.  This add metadata to the vertices
-            // in oGraph.
+            // Read the group worksheets.  This adds metadata to the vertices
+            // in oGraph and to oGraph itself.
 
-            ClusterWorksheetReader oClusterWorksheetReader =
-                new ClusterWorksheetReader();
+            GroupWorksheetReader oGroupWorksheetReader =
+                new GroupWorksheetReader();
 
-            oClusterWorksheetReader.ReadWorksheet(workbook,
+            oGroupWorksheetReader.ReadWorksheet(workbook,
                 readWorkbookContext, oGraph);
 
-            oClusterWorksheetReader = null;
+            oGroupWorksheetReader = null;
         }
 
         // Read the per-workbook settings that are stored directly on the

@@ -11,6 +11,7 @@ using Microsoft.Office.Interop.Excel;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Adapters;
 using Microsoft.NodeXL.ExcelTemplate;
+using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.NetworkServer
 {
@@ -87,7 +88,10 @@ class NodeXLWorkbookSaver
                 );
         }
 
-        // oExcelApplication.Visible = true;
+        oExcelApplication.Visible = true;
+
+        ExcelApplicationKiller oExcelApplicationKiller =
+            new ExcelApplicationKiller(oExcelApplication);
 
         String sWorkbookPath;
 
@@ -104,6 +108,16 @@ class NodeXLWorkbookSaver
             oExcelApplication.DisplayAlerts = false;
 
             oExcelApplication.Quit();
+
+            // Make sure the Excel application is removed from memory.
+            //
+            // (On development machines, the Excel application's process is
+            // killed when this executable closes.  Bugs reported by others,
+            // however, suggest that the Excel instance can remain in memory
+            // even after this executable closes.  Work around this apparent
+            // bug.)
+
+            oExcelApplicationKiller.KillExcelApplication();
         }
 
         if (automate)
@@ -196,7 +210,7 @@ class NodeXLWorkbookSaver
         String sNodeXLTemplatePath;
 
         if ( !ExcelTemplate.ApplicationUtil.TryGetTemplatePath(
-            oExcelApplication, out sNodeXLTemplatePath) )
+            out sNodeXLTemplatePath) )
         {
             throw new SaveGraphToNodeXLWorkbookException(
                 ExitCode.CouldNotFindNodeXLTemplate, String.Format(
@@ -288,6 +302,12 @@ class NodeXLWorkbookSaver
             sNetworkConfigurationFilePath, sNetworkFileFolderPath,
             String.Empty, "xlsx");
 
+        Console.WriteLine(
+            "Saving the network to the NodeXL workbook \"{0}\"."
+            ,
+            sWorkbookPath
+            );
+
         try
         {
             oNodeXLWorkbook.SaveAs(sWorkbookPath, Missing.Value,
@@ -299,6 +319,17 @@ class NodeXLWorkbookSaver
         {
             OnException(oException, ExitCode.SaveNetworkFileError,
                 "The NodeXL workbook couldn't be saved."
+                );
+        }
+
+        try
+        {
+            oNodeXLWorkbook.Close(false, Missing.Value, Missing.Value);
+        }
+        catch (Exception oException)
+        {
+            OnException(oException, ExitCode.SaveNetworkFileError,
+                "The NodeXL workbook couldn't be closed."
                 );
         }
     }

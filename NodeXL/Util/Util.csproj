@@ -55,8 +55,14 @@
     <Compile Include="..\..\Common\ColorUtil.cs">
       <Link>ColorUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\DateTimeUtil2.cs">
+      <Link>DateTimeUtil2.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\EnumUtil.cs">
       <Link>EnumUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\EventUtil.cs">
+      <Link>EventUtil.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Excel\ExcelColumnFormat.cs">
       <Link>Excel\ExcelColumnFormat.cs</Link>

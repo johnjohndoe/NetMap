@@ -23,9 +23,9 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.129</ApplicationVersion>
+    <ApplicationVersion>1.0.1.150</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
-    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
   </PropertyGroup>
@@ -234,13 +234,13 @@
     <Compile Include="..\Common\ProjectInformation.cs">
       <Link>Util\ProjectInformation.cs</Link>
     </Compile>
-    <Compile Include="Controls\AutoFill\AutoFillColumnComboBox.cs">
+    <Compile Include="Controls\ColumnComboBoxes\ColumnComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\AutoFill\AutoFillEdgeColumnComboBox.cs">
+    <Compile Include="Controls\ColumnComboBoxes\EdgeColumnComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\AutoFill\AutoFillVertexColumnComboBox.cs">
+    <Compile Include="Controls\ColumnComboBoxes\VertexColumnComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ExcelTemplateForm.cs">
@@ -276,6 +276,12 @@
     </Compile>
     <Compile Include="Dialogs\About\AboutDialog.designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AddSelectedVerticesToGroup\AddSelectedVerticesToGroupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AddSelectedVerticesToGroup\AddSelectedVerticesToGroupDialog.designer.cs">
+      <DependentUpon>AddSelectedVerticesToGroupDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Alpha\AlphaDialog.cs">
       <SubType>Form</SubType>
@@ -401,6 +407,15 @@
     <Compile Include="Dialogs\GraphMetrics\GraphMetricsDialog.designer.cs">
       <DependentUpon>GraphMetricsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\GroupByVertexAttribute\GroupByVertexAttributeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GroupByVertexAttribute\GroupByVertexAttributeDialog.designer.cs">
+      <DependentUpon>GroupByVertexAttributeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\GroupByVertexAttribute\MinimumValueListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Dialogs\ImportFromEdgeWorkbook\ImportFromEdgeWorkbookDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -481,6 +496,7 @@
     <Compile Include="Dialogs\VertexRadius\VertexRadiusDialog.designer.cs">
       <DependentUpon>VertexRadiusDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="EventArgs\CollapseOrExpandGroupsEventArgs.cs" />
     <Compile Include="EventArgs\DynamicFilterColumnsChangedEventArgs.cs" />
     <Compile Include="EventArgs\GraphLaidOutEventArgs.cs" />
     <Compile Include="EventArgs\RequestEdgeCommandEnableEventArgs.cs" />
@@ -489,9 +505,7 @@
     <Compile Include="EventArgs\RunEdgeCommandEventArgs.cs" />
     <Compile Include="EventArgs\RunRibbonCommandEventArgs.cs" />
     <Compile Include="EventArgs\RunVertexCommandEventArgs.cs" />
-    <Compile Include="EventArgs\SelectionChangedEventArgs.cs" />
     <Compile Include="EventArgs\SetVisualAttributeEventArgs.cs" />
-    <Compile Include="EventArgs\TableSelectionChangedEventArgs.cs" />
     <Compile Include="EventArgs\VertexAttributesEditedEventArgs.cs" />
     <Compile Include="EventArgs\VerticesMovedEventArgs2.cs" />
     <Compile Include="GraphMetrics\CalculateGraphMetricsContext.cs" />
@@ -499,10 +513,12 @@
     <Compile Include="GraphMetrics\GraphMetricCalculators\BrandesFastCentralityCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusterCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\ConnectedComponentCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\EigenvectorCentralityCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase2.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\OneDoubleGraphMetricCalculatorBase.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\OverallMetricCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\GroupMetricCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\OneDoubleGraphMetricCalculatorBase2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\Overall\OverallMetricCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\PageRankCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
@@ -515,6 +531,7 @@
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueOrdered.cs" />
     <Compile Include="GraphMetrics\GraphMetricValues\GraphMetricValueWithID.cs" />
     <Compile Include="GraphMetrics\GraphMetricWriter.cs" />
+    <Compile Include="GraphMetrics\GroupsToGraphMetricColumnsConverter.cs" />
     <Compile Include="GraphMetrics\IGraphMetricCalculator2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Dialogs\About\AboutDialog.resx">
@@ -644,6 +661,7 @@
     <Compile Include="UserSettings\GeneralUserSettings.cs" />
     <Compile Include="UserSettings\GraphImageUserSettings.cs" />
     <Compile Include="UserSettings\GraphMetricUserSettings.cs" />
+    <Compile Include="UserSettings\GraphZoomAndScaleUserSettings.cs" />
     <Compile Include="UserSettings\LabelUserSettings.cs" />
     <Compile Include="UserSettings\LayoutUserSettings.cs" />
     <Compile Include="UserSettings\NodeXLApplicationSettingsBase.cs" />
@@ -671,17 +689,24 @@
     <Compile Include="Util\ExcelColumnWidths.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
     <Compile Include="Util\GraphImporter.cs" />
+    <Compile Include="Util\Groups\GroupCommands.cs" />
+    <Compile Include="Util\Groups\GroupInformation.cs" />
+    <Compile Include="Util\Groups\GroupManager.cs" />
     <Compile Include="Util\NodeXLControlUtil.cs" />
     <Compile Include="Util\NodeXLWorkbookConversionException.cs" />
     <Compile Include="Util\NodeXLWorkbookConverter.cs" />
+    <Compile Include="Util\NodeXLWorkbookUpdater.cs" />
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
     <Compile Include="Util\PlugInManager.cs" />
+    <Compile Include="Util\SelectionCoordinator.cs" />
     <Compile Include="Util\SubgraphImageCreator.cs" />
     <Compile Include="Util\TableColumnAdder.cs" />
     <Compile Include="Util\TableImagePopulator.cs" />
     <Compile Include="Util\TaskAutomation\AutomationTasks.cs" />
     <Compile Include="Util\TaskAutomation\TaskAutomator.cs" />
     <Compile Include="Util\TemporaryImages.cs" />
+    <Compile Include="Util\VertexAndRowID.cs" />
+    <Compile Include="Util\VertexAttributeGrouper.cs" />
     <Compile Include="Util\VertexWorksheetPopulator.cs" />
     <Compile Include="Util\VisualAttributes.cs" />
     <Compile Include="Util\WorksheetContextMenuManager.cs" />
@@ -709,9 +734,9 @@
     <Compile Include="WorkbookReader\ValueConverters\VertexVisibilityConverter.cs" />
     <Compile Include="WorkbookReader\WorkbookFormatException.cs" />
     <Compile Include="WorkbookReader\WorkbookReader.cs" />
-    <Compile Include="WorkbookReader\WorksheetReaders\ClusterWorksheetReader.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\DynamicFilterSettings.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\EdgeWorksheetReader.cs" />
+    <Compile Include="WorkbookReader\WorksheetReaders\GroupWorksheetReader.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\PerWorkbookSettings.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\VertexWorksheetReader.cs" />
     <Compile Include="WorkbookReader\WorksheetReaders\WorksheetReaderBase.cs" />
@@ -800,6 +825,9 @@
       <DependentUpon>SubgraphLevelsControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AddSelectedVerticesToGroup\AddSelectedVerticesToGroupDialog.resx">
+      <DependentUpon>AddSelectedVerticesToGroupDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Alpha\AlphaDialog.resx">
       <DependentUpon>AlphaDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -849,6 +877,9 @@
     <EmbeddedResource Include="Dialogs\GraphMetrics\GraphMetricsDialog.resx">
       <DependentUpon>GraphMetricsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GroupByVertexAttribute\GroupByVertexAttributeDialog.resx">
+      <DependentUpon>GroupByVertexAttributeDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ImportFromEdgeWorkbook\ImportFromEdgeWorkbookDialog.resx">
       <DependentUpon>ImportFromEdgeWorkbookDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -895,6 +926,12 @@
       <DependentUpon>Sheet4.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Sheet5.resx">
+      <DependentUpon>Sheet5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sheet6.resx">
+      <DependentUpon>Sheet6.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Sheet5.Designer.xml">
@@ -928,8 +965,8 @@
           <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
           <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="04125E3672981A7C2AA07936FF737FD756F66CA4" CanActivate="false" DisplayName="Do Not Delete" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
           <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="9EE73D40BB7D145575B638D7A5861EFB589F4310" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
-          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="EC26F5300A312638C56042DE6ACEBCB63D72E48B" DisplayName="Clusters" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
-          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="E82EFC8FEA9B24281C1D102E0DEEC97416211009" DisplayName="Cluster Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
+          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="B9F9481DD9342D62DAAFD022A72DCB3E048E6185" DisplayName="Groups" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
+          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="8E55D4EEC9B06EB3369212C3F8D8B0755BF37057" DisplayName="Group Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
           <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="38D946713A47D3D95E270D765518A40A17CB2F97" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="D0EA144E67D552625DC149C1653F9B8844BAE80B" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
         </Host>

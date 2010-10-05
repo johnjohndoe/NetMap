@@ -87,14 +87,12 @@ public class WorkbookExporter
 
         // Get the path to the application's template.
 
-        Application oApplication = m_oWorkbookToExport.Application;
         String sTemplatePath;
 
-        if ( !ApplicationUtil.TryGetTemplatePath(oApplication,
-            out sTemplatePath) )
+        if ( !ApplicationUtil.TryGetTemplatePath(out sTemplatePath) )
         {
             throw new ExportWorkbookException(
-                ApplicationUtil.GetMissingTemplateMessage(oApplication) );
+                ApplicationUtil.GetMissingTemplateMessage() );
         }
 
         Workbook oNewNodeXLWorkbook = null;

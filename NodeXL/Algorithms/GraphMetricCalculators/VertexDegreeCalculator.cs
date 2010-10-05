@@ -19,17 +19,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The vertex degrees are provided as a
-/// Dictionary&lt;Int32, VertexDegrees&gt;.  There is one key/value pair for
-/// each vertex in the graph.  The key is the IVertex.ID and the value is a
-/// <see cref="VertexDegrees" /> object containing the degree metrics for the
-/// vertex.
-///
-/// <para>
 /// This calculator includes all self-loops in its calculations.  It also
 /// includes all parallel edges, which may not be expected by the user.
-/// </para>
-///
 /// </remarks>
 //*****************************************************************************
 
@@ -77,12 +68,47 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
+    //  Method: CalculateGraphMetrics()
+    //
+    /// <summary>
+    /// Calculate the graph metrics.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <returns>
+    /// The graph metrics.  There is one key/value pair for each vertex in the
+    /// graph.  The key is the IVertex.ID and the value is a <see
+    /// cref="VertexDegrees" /> object containing the degree metrics for the
+    /// vertex.
+    /// </returns>
+    //*************************************************************************
+
+    public Dictionary<Int32, VertexDegrees>
+    CalculateGraphMetrics
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        Dictionary<Int32, VertexDegrees> oGraphMetrics;
+
+        TryCalculateGraphMetrics(graph, null, out oGraphMetrics);
+
+        return (oGraphMetrics);
+    }
+
+    //*************************************************************************
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread, and provides the metrics in
-    /// a type-safe manner.
+    /// Attempts to calculate the graph metrics while optionally running on a
+    /// background thread.
     /// </summary>
     ///
     /// <param name="graph">
@@ -95,9 +121,11 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     /// the method is being called by some other thread.
     /// </param>
     ///
-    /// <param name="vertexDegrees">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
+    /// <param name="graphMetrics">
+    /// Where the graph metrics get stored if true is returned.  There is one
+    /// key/value pair for each vertex in the graph.  The key is the IVertex.ID
+    /// and the value is a <see cref="VertexDegrees" /> object containing the
+    /// degree metrics for the vertex.
     /// </param>
     ///
     /// <returns>
@@ -111,85 +139,35 @@ public class VertexDegreeCalculator : GraphMetricCalculatorBase
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out Dictionary<Int32, VertexDegrees> vertexDegrees
+        out Dictionary<Int32, VertexDegrees> graphMetrics
     )
     {
         Debug.Assert(graph != null);
-
-        Object oGraphMetricsAsObject;
-
-        Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
-            out oGraphMetricsAsObject);
-
-        vertexDegrees =
-            ( Dictionary<Int32, VertexDegrees> )oGraphMetricsAsObject;
-
-        return (bReturn);
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetricsCore()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method, or null if
-    /// the method is being called by some other thread.
-    /// </param>
-    ///
-    /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected override Boolean
-    TryCalculateGraphMetricsCore
-    (
-        IGraph oGraph,
-        BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
-    )
-    {
-        Debug.Assert(oGraph != null);
         AssertValid();
 
-        IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = graph.Vertices;
         Int32 iVertices = oVertices.Count;
         Int32 iCalculations = 0;
 
         Dictionary<Int32, VertexDegrees> oVertexIDDictionary =
             new Dictionary<Int32, VertexDegrees>(iVertices);
 
-        oGraphMetrics = oVertexIDDictionary;
+        graphMetrics = oVertexIDDictionary;
 
         foreach (IVertex oVertex in oVertices)
         {
             // Check for cancellation and report progress every
             // VerticesPerProgressReport calculations.
 
-            if ( oBackgroundWorker != null &&
+            if ( backgroundWorker != null &&
                 (iCalculations % VerticesPerProgressReport == 0) )
             {
-                if (oBackgroundWorker.CancellationPending)
+                if (backgroundWorker.CancellationPending)
                 {
                     return (false);
                 }
 
-                ReportProgress(iCalculations, iVertices, oBackgroundWorker);
+                ReportProgress(iCalculations, iVertices, backgroundWorker);
             }
 
             Int32 iInDegree, iOutDegree;

@@ -14,7 +14,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //
 /// <summary>
 /// Base class for classes that implement <see
-/// cref="IGraphMetricCalculator" />.
+/// cref="IGraphMetricCalculator2" />.
 /// </summary>
 //*****************************************************************************
 
@@ -59,8 +59,8 @@ public abstract class GraphMetricCalculatorBase2 :
     /// </param>
     ///
     /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
+    /// true if the graph metrics were calculated or don't need to be
+    /// calculated, false if the user wants to cancel.
     /// </returns>
     ///
     /// <remarks>
@@ -90,6 +90,33 @@ public abstract class GraphMetricCalculatorBase2 :
         CalculateGraphMetricsContext calculateGraphMetricsContext,
         out GraphMetricColumn [] graphMetricColumns
     );
+
+    //*************************************************************************
+    //  Property: HandlesDuplicateEdges
+    //
+    /// <summary>
+    /// Gets a flag indicating whether duplicate edges are properly handled.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the graph metric calculator handles duplicate edges, false if
+    /// duplicate edges should be removed from the graph before the
+    /// calculator's <see cref="TryCalculateGraphMetrics" /> method is called.
+    /// </value>
+    //*************************************************************************
+
+    public virtual Boolean
+    HandlesDuplicateEdges
+    {
+        get
+        {
+            AssertValid();
+
+            // Most graph metric calculators can't handle duplicate edges.
+
+            return (false);
+        }
+    }
 
     //*************************************************************************
     //  Method: TryGetRowID()

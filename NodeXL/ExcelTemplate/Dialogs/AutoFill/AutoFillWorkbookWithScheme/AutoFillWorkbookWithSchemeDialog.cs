@@ -70,8 +70,8 @@ public partial class AutoFillWorkbookWithSchemeDialog : ExcelTemplateForm
         if ( ExcelUtil.TryGetTable(m_oWorkbook, WorksheetNames.Vertices,
             TableNames.Vertices, out oTable) )
         {
-            cbxVertexCategoryColumnName.PopulateWithSourceColumnNames(oTable);
-            cbxVertexLabelColumnName.PopulateWithSourceColumnNames(oTable);
+            cbxVertexCategoryColumnName.PopulateWithTableColumnNames(oTable);
+            cbxVertexLabelColumnName.PopulateWithTableColumnNames(oTable);
 
             cbxVertexLabelColumnName.Items.Add(
                 VertexTableColumnNames.VertexName);
@@ -80,8 +80,8 @@ public partial class AutoFillWorkbookWithSchemeDialog : ExcelTemplateForm
         if ( ExcelUtil.TryGetTable(m_oWorkbook, WorksheetNames.Edges,
             TableNames.Edges, out oTable) )
         {
-            cbxEdgeWeightColumnName.PopulateWithSourceColumnNames(oTable);
-            cbxEdgeTimestampColumnName.PopulateWithSourceColumnNames(oTable);
+            cbxEdgeWeightColumnName.PopulateWithTableColumnNames(oTable);
+            cbxEdgeTimestampColumnName.PopulateWithTableColumnNames(oTable);
         }
 
         DoDataExchange(false);

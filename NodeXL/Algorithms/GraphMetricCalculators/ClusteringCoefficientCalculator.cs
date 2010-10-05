@@ -17,14 +17,7 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The clustering coefficients are provided as a
-/// Dictionary&lt;Int32, Double&gt;.  There is one key/value pair for each
-/// vertex in the graph.  The key is the IVertex.ID and the value is the
-/// vertex's clustering coefficient, as a Double.
-///
-/// <para>
 /// See this article for a definition of clustering coefficient:
-/// </para>
 ///
 /// <para>
 /// http://en.wikipedia.org/wiki/Clustering_coefficient
@@ -40,7 +33,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// </remarks>
 //*****************************************************************************
 
-public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
+public class ClusteringCoefficientCalculator :
+    OneDoubleGraphMetricCalculatorBase
 {
     //*************************************************************************
     //  Constructor: ClusteringCoefficientCalculator()
@@ -87,9 +81,8 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread, and provides the metrics in
-    /// a type-safe manner.
+    /// Attempts to calculate the graph metrics while optionally running on a
+    /// background thread.
     /// </summary>
     ///
     /// <param name="graph">
@@ -102,9 +95,10 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     /// the method is being called by some other thread.
     /// </param>
     ///
-    /// <param name="clusteringCoefficients">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
+    /// <param name="graphMetrics">
+    /// Where the graph metrics get stored if true is returned.  There is one
+    /// key/value pair for each vertex in the graph.  The key is the IVertex.ID
+    /// and the value is the vertex's metric, as a Double.
     /// </param>
     ///
     /// <returns>
@@ -113,77 +107,27 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
     /// </returns>
     //*************************************************************************
 
-    public Boolean
+    public override Boolean
     TryCalculateGraphMetrics
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out Dictionary<Int32, Double> clusteringCoefficients
+        out Dictionary<Int32, Double> graphMetrics
     )
     {
         Debug.Assert(graph != null);
-
-        Object oGraphMetricsAsObject;
-
-        Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
-            out oGraphMetricsAsObject);
-
-        clusteringCoefficients =
-            ( Dictionary<Int32, Double> )oGraphMetricsAsObject;
-
-        return (bReturn);
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetricsCore()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method, or null if
-    /// the method is being called by some other thread.
-    /// </param>
-    ///
-    /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected override Boolean
-    TryCalculateGraphMetricsCore
-    (
-        IGraph oGraph,
-        BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
-    )
-    {
-        Debug.Assert(oGraph != null);
         AssertValid();
 
-        IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = graph.Vertices;
         Int32 iVertices = oVertices.Count;
 
         Dictionary<Int32, Double> oClusteringCoefficients =
             new Dictionary<Int32, Double>(iVertices);
 
-        oGraphMetrics = oClusteringCoefficients;
+        graphMetrics = oClusteringCoefficients;
 
         Boolean bGraphIsDirected =
-            (oGraph.Directedness == GraphDirectedness.Directed);
+            (graph.Directedness == GraphDirectedness.Directed);
 
         Int32 iCalculations = 0;
 
@@ -192,15 +136,15 @@ public class ClusteringCoefficientCalculator : GraphMetricCalculatorBase
             // Check for cancellation and report progress every
             // VerticesPerProgressReport calculations.
 
-            if (oBackgroundWorker != null &&
+            if (backgroundWorker != null &&
                 iCalculations % VerticesPerProgressReport == 0)
             {
-                if (oBackgroundWorker.CancellationPending)
+                if (backgroundWorker.CancellationPending)
                 {
                     return (false);
                 }
 
-                ReportProgress(iCalculations, iVertices, oBackgroundWorker);
+                ReportProgress(iCalculations, iVertices, backgroundWorker);
             }
 
             oClusteringCoefficients.Add(oVertex.ID,

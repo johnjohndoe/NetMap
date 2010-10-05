@@ -3,11 +3,9 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 using Microsoft.NodeXL.Visualization.Wpf;
@@ -26,81 +24,51 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public partial class Sheet2
 {
     //*************************************************************************
-    //  Method: GetSelectedVertexNames()
+    //  Property: Sheets1And2Helper
     //
     /// <summary>
-    /// Gets an array of vertex names for all rows in the table that have at
-    /// least one cell selected.
+    /// Gets the object that does most of the work for this class.
     /// </summary>
     ///
-    /// <param name="oSelectedRange">
-    /// Range that contains the selected cells in the table.  The range may
-    /// contain multiple areas.
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of vertex names.
-    /// </returns>
+    /// <value>
+    /// A Sheets1And2Helper object.
+    /// </value>
     //*************************************************************************
 
-    public String []
-    GetSelectedVertexNames
-    (
-        Microsoft.Office.Interop.Excel.Range oSelectedRange
-    )
+    public Sheets1And2Helper
+    Sheets1And2Helper
     {
-        Debug.Assert(oSelectedRange != null);
-        AssertValid();
-
-        return ( m_oSheets1And2Helper.GetSelectedColumnValues(oSelectedRange,
-            VertexTableColumnNames.VertexName).Keys.ToArray() );
-    }
-
-    //*************************************************************************
-    //  Method: UpdateColumnNames()
-    //
-    /// <summary>
-    /// Updates any columns whose names have been changed since earlier NodeXL
-    /// versions.
-    /// </summary>
-    //*************************************************************************
-
-    public void
-    UpdateColumnNames()
-    {
-        // AssertValid();
-
-        Microsoft.Office.Interop.Excel.ListColumn oRadiusColumn;
-
-        if ( ExcelUtil.TryGetTableColumn(this.Vertices.InnerObject,
-            VertexTableColumnNames.RadiusOld, out oRadiusColumn) )
+        get
         {
-            oRadiusColumn.Name = VertexTableColumnNames.Radius;
+            AssertValid();
 
-            FormUtil.ShowInformation(String.Format(
-
-                "This workbook was created with an older version of NodeXL."
-                + "  To make the workbook compatible with this newer version,"
-                + " the {0} column in the {1} worksheet has been renamed to"
-                + " {2}."
-                ,
-                VertexTableColumnNames.RadiusOld,
-                WorksheetNames.Vertices,
-                VertexTableColumnNames.Radius
-                ) );
+            return (m_oSheets1And2Helper);
         }
     }
 
     //*************************************************************************
-    //  Event: VertexSelectionChanged
+    //  Method: GetSelectedVertexNames()
     //
     /// <summary>
-    /// Occurs when the selection state of the vertex table changes.
+    /// Gets a collection of vertex names for all rows in the table that have
+    /// at least one cell selected.
     /// </summary>
+    ///
+    /// <returns>
+    /// A collection of vertex names.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method activates the worksheet if it isn't activated already.
+    /// </remarks>
     //*************************************************************************
 
-    public event TableSelectionChangedEventHandler VertexSelectionChanged;
-
+    public ICollection<String>
+    GetSelectedVertexNames()
+    {
+        return ( m_oSheets1And2Helper.GetSelectedStringColumnValues(
+            VertexTableColumnNames.VertexName) );
+    }
 
     //*************************************************************************
     //  Method: OnGraphLaidOut()
@@ -341,7 +309,7 @@ public partial class Sheet2
 
                 Int32 iID;
 
-                if ( !m_oSheets1And2Helper.TryGetID(
+                if ( !m_oSheets1And2Helper.TryGetRowID(
                     aoIDValues, iIDRowOneBased, out iID) )
                 {
                     // The user may have added a row since the workbook was
@@ -417,7 +385,7 @@ public partial class Sheet2
         Microsoft.Office.Interop.Excel.ListColumn oXColumn, oYColumn;
 
         if ( 
-            !m_oSheets1And2Helper.TryGetIDsOfAllRows(out oRowIDDictionary)
+            !m_oSheets1And2Helper.TryGetAllRowIDs(out oRowIDDictionary)
             ||
             !ExcelUtil.TryGetTableColumn(oVertexTable,
                 VertexTableColumnNames.X, out oXColumn)
@@ -435,20 +403,14 @@ public partial class Sheet2
         VertexLocationConverter oVertexLocationConverter =
             new VertexLocationConverter(e.GraphRectangle);
 
-        IVertex [] aoMovedVertices = e.MovedVertices;
-        Int32 [] aiMovedVertexIDs = e.MovedVertexIDs;
-        Int32 iMovedVertices = aoMovedVertices.Length;
-
-        Debug.Assert(aiMovedVertexIDs.Length == iMovedVertices);
-
-        for (Int32 i = 0; i < iMovedVertices; i++)
+        foreach (VertexAndRowID oVertexAndRowID in e.VerticesAndRowIDs)
         {
             // Look for the cell in the ID column that contains the specified
             // ID.
 
             Int32 iRowOneBased;
 
-            if ( !oRowIDDictionary.TryGetValue(aiMovedVertexIDs[i],
+            if ( !oRowIDDictionary.TryGetValue(oVertexAndRowID.VertexRowID, 
                 out iRowOneBased) )
             {
                 continue;
@@ -459,7 +421,8 @@ public partial class Sheet2
             Single fWorkbookX, fWorkbookY;
 
             oVertexLocationConverter.GraphToWorkbook(
-                aoMovedVertices[i].Location, out fWorkbookX, out fWorkbookY);
+                oVertexAndRowID.Vertex.Location, out fWorkbookX,
+                out fWorkbookY);
 
             // Update the X and Y cells.
 
@@ -496,7 +459,7 @@ public partial class Sheet2
 
         Dictionary<Int32, Int32> oRowIDDictionary;
 
-        if ( !m_oSheets1And2Helper.TryGetIDsOfAllRows(out oRowIDDictionary) )
+        if ( !m_oSheets1And2Helper.TryGetAllRowIDs(out oRowIDDictionary) )
         {
             // Nothing can be done without the IDs.
 
@@ -830,46 +793,6 @@ public partial class Sheet2
     }
 
     //*************************************************************************
-    //  Method: FireVertexSelectionChanged()
-    //
-    /// <summary>
-    /// Fires the <see cref="VertexSelectionChanged" /> event if appropriate.
-    /// </summary>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    FireVertexSelectionChanged
-    (
-        TableSelectionChangedEventArgs e
-    )
-    {
-        Debug.Assert(e != null);
-        AssertValid();
-
-        TableSelectionChangedEventHandler oVertexSelectionChanged =
-            this.VertexSelectionChanged;
-
-        if (oVertexSelectionChanged != null)
-        {
-            try
-            {
-                oVertexSelectionChanged(this, e);
-            }
-            catch (Exception oException)
-            {
-                // If exceptions aren't caught here, Excel consumes them
-                // without indicating that anything is wrong.
-
-                ErrorUtil.OnException(oException);
-            }
-        }
-    }
-
-    //*************************************************************************
     //  Method: Sheet2_Startup()
     //
     /// <summary>
@@ -912,42 +835,7 @@ public partial class Sheet2
 
         m_oSheets1And2Helper = new Sheets1And2Helper(this, this.Vertices);
 
-        m_oSheets1And2Helper.TableSelectionChanged +=
-            new TableSelectionChangedEventHandler(
-                m_oSheets1And2Helper_TableSelectionChanged);
-
-        m_oSheets1And2Helper.Sheet_Startup(sender, e);
-
         AssertValid();
-    }
-
-    //*************************************************************************
-    //  Method: m_oSheets1And2Helper_TableSelectionChanged()
-    //
-    /// <summary>
-    /// Handles the TableSelectionChanged event on the m_oSheets1And2Helper
-    /// object.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    m_oSheets1And2Helper_TableSelectionChanged
-    (
-        object sender,
-        TableSelectionChangedEventArgs e
-    )
-    {
-        AssertValid();
-
-        FireVertexSelectionChanged(e);
     }
 
     //*************************************************************************

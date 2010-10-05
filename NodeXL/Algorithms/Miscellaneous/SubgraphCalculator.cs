@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
@@ -134,6 +135,116 @@ public static class SubgraphCalculator
             AddOuterEdgesToSubgraph(iOuterLevel, subgraphVertices,
                 subgraphEdges);
         }
+    }
+
+    //*************************************************************************
+    //  Method: GetSubgraphAsNewGraph()
+    //
+    /// <summary>
+    /// Creates a new graph containing copies of a specified set of vertices
+    /// and the edges that connect them.
+    /// </summary>
+    ///
+    /// <param name="verticesToInclude">
+    /// A collection of one or more vertices to copy into the new graph.  (The
+    /// vertices must all be from the same graph.)
+    /// </param>
+    ///
+    /// <returns>
+    /// A new graph that contains copies of the vertices in <paramref
+    /// name="verticesToInclude" />, along with copies of the edges that
+    /// connect them.
+    ///
+    /// <para>
+    /// No metadata is copied to the new graph, its vertices, or its edges.
+    /// </para>
+    ///
+    /// </returns>
+    //*************************************************************************
+
+    public static IGraph
+    GetSubgraphAsNewGraph
+    (
+        ICollection<IVertex> verticesToInclude
+    )
+    {
+        Debug.Assert(verticesToInclude != null);
+        Debug.Assert(verticesToInclude.Count > 0);
+
+        IVertex oFirstVertex = verticesToInclude.First();
+        IGraph oParentGraph = oFirstVertex.ParentGraph;
+
+        IGraph oNewGraph = new Graph(oParentGraph.Directedness);
+        IEdgeCollection oNewEdges = oNewGraph.Edges;
+        IVertexCollection oNewVertices = oNewGraph.Vertices;
+
+        // This maps vertex IDs in the original graph to the corresponding new
+        // vertices in the new graph.
+
+        Dictionary<Int32, IVertex> oVertexIDToNewVertexDictionary =
+            new Dictionary<Int32, IVertex>(verticesToInclude.Count);
+
+        // Copy the vertices into the new graph.
+
+        foreach (IVertex oVertex in verticesToInclude)
+        {
+            IVertex oNewVertex = oNewVertices.Add();
+            oNewVertex.Name = oVertex.Name;
+            oVertexIDToNewVertexDictionary.Add(oVertex.ID, oNewVertex);
+        }
+
+        // This contains the IDs of the original edges that have been copied
+        // into the new graph.
+
+        HashSet<Int32> oIDsOfCopiedEdges = new HashSet<Int32>();
+
+        // Copy the edges connecting the vertices into the new graph.
+
+        foreach (IVertex oVertex in verticesToInclude)
+        {
+            foreach (IEdge oIncidentEdge in oVertex.IncidentEdges)
+            {
+                IVertex oAdjacentVertex = oIncidentEdge.GetAdjacentVertex(
+                    oVertex);
+
+                IVertex oNewAdjacentVertex;
+
+                if (
+                    !oVertexIDToNewVertexDictionary.TryGetValue(
+                        oAdjacentVertex.ID, out oNewAdjacentVertex)
+                    ||
+                    oIDsOfCopiedEdges.Contains(oIncidentEdge.ID)
+                    )
+                {
+                    // The adjacent vertex is not in the set of vertices to
+                    // include, or the edge has already been copied into the
+                    // new graph.
+
+                    continue;
+                }
+
+                IVertex oNewVertex =
+                    oVertexIDToNewVertexDictionary[oVertex.ID];
+
+                IEdge oNewEdge;
+                Boolean bIncidentEdgeIsDirected = oIncidentEdge.IsDirected;
+
+                if ( oVertex == oIncidentEdge.Vertices[0] )
+                {
+                    oNewEdge = oNewEdges.Add(oNewVertex, oNewAdjacentVertex,
+                        bIncidentEdgeIsDirected);
+                }
+                else
+                {
+                    oNewEdge = oNewEdges.Add(oNewAdjacentVertex, oNewVertex,
+                        bIncidentEdgeIsDirected);
+                }
+
+                oIDsOfCopiedEdges.Add(oIncidentEdge.ID);
+            }
+        }
+
+        return (oNewGraph);
     }
 
     //*************************************************************************

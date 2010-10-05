@@ -136,6 +136,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3BC855357EBFD08A37B240B531D365B4"
+        "OwnerKey" = "8:_35B0BAD5D30C324FABB4A3A452EF5CDE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3BC855357EBFD08A37B240B531D365B4"
         "OwnerKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -275,12 +281,6 @@
         {
         "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
         "OwnerKey" = "8:_CFB4CE07CE9282744778769DB186A1B6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7E726C199B8AABAF49C92D8BF69B7496"
-        "OwnerKey" = "8:_6928A3C23638DD4BD3B7BE2725FEE4E9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1057,7 +1057,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.GraphDataProviders, Version=1.0.1.129, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.GraphDataProviders, Version=1.0.1.149, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_2784411CE6C34C9D8C39D3BE71E982EF"
@@ -1108,7 +1108,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Control.Wpf, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Control.Wpf, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_35B0BAD5D30C324FABB4A3A452EF5CDE"
@@ -1139,7 +1139,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Util, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Util, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_3BC855357EBFD08A37B240B531D365B4"
@@ -1252,7 +1252,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Algorithms, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Algorithms, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_5D96C1A3C205CF2B46F64DB6A406DFD5"
@@ -1303,7 +1303,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ApplicationUtil, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ApplicationUtil, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6928A3C23638DD4BD3B7BE2725FEE4E9"
@@ -1334,7 +1334,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Visualization.Wpf, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Visualization.Wpf, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6AEC068F1235A9ABF183289DA8B49D60"
@@ -1385,7 +1385,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.129, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.149, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_7924CFC6248C100F4482B5F3A835DE0C"
@@ -1416,7 +1416,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Core, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Core, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_7E726C199B8AABAF49C92D8BF69B7496"
@@ -1447,7 +1447,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Adapters, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Adapters, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_86E63028DE99EA01A1C23565AAA93835"
@@ -1561,7 +1561,7 @@
             "SourcePath" = "8:.\\TemplateModifiedForClickOnce\\NodeXLGraph.xltx"
             "TargetName" = "8:NodeXLGraph.xltx"
             "Tag" = "8:"
-            "Folder" = "8:_29D88DFD852342F6822D6C91F88A61FA"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1611,7 +1611,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.129, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.149, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_AD13B06AC547D893A40E43C53B2E9BA1"
@@ -1735,7 +1735,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.Research.WinFormsControls, Version=1.0.1.5, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Research.WinFormsControls, Version=1.0.1.6, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_C5188550FEDAAAED11160EA74CDBA874"
@@ -1766,7 +1766,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Layouts, Version=1.0.1.129, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.Layouts, Version=1.0.1.149, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_CFB4CE07CE9282744778769DB186A1B6"
@@ -1850,50 +1850,6 @@
         }
         "Folder"
         {
-            "{1525181F-901A-416C-8A58-119130FE478E}:_3A8BF12A91B747ADA5A2034CBCF2FC97"
-            {
-            "Name" = "8:#1916"
-            "AlwaysCreate" = "11:FALSE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Property" = "8:DesktopFolder"
-                "Folders"
-                {
-                }
-            }
-            "{1525181F-901A-416C-8A58-119130FE478E}:_7213E98049B84A19982618B2C6609709"
-            {
-            "Name" = "8:#1915"
-            "AlwaysCreate" = "11:FALSE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Property" = "8:AppDataFolder"
-                "Folders"
-                {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_A3072877AC954196B3395D4B08E5F29A"
-                    {
-                    "Name" = "8:Microsoft"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_6997153C9F05413F8F9F9204012B7DC3"
-                        "Folders"
-                        {
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_29D88DFD852342F6822D6C91F88A61FA"
-                            {
-                            "Name" = "8:Templates"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_82CFF96F21414C52BD1F0560B01DF692"
-                                "Folders"
-                                {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
             {
             "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
@@ -1955,14 +1911,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Microsoft NodeXL Excel Template"
-        "ProductCode" = "8:{C1FBE2A9-16A7-42A1-B6CD-E7102A2C75AB}"
-        "PackageCode" = "8:{ABAACF28-AC3F-4F87-933D-D7EC78348FA3}"
+        "ProductCode" = "8:{58FE5BFD-5921-493A-943A-36403DBAF46B}"
+        "PackageCode" = "8:{468F62DE-A295-46DE-8032-91E0EBD8777B}"
         "UpgradeCode" = "8:{87DDE855-47E5-48B2-9D6E-03B84139823A}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.129"
+        "ProductVersion" = "8:1.0.150"
         "Manufacturer" = "8:Microsoft Research"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1978,7 +1934,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"INSERT INTO Property(Property, Value) VALUES ('DISABLEADVTSHORTCUTS', '1')\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"INSERT INTO Property(Property, Value) VALUES ('REINSTALLMODE', 'amus')\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `CustomAction` SET `CustomAction`.`Type`='1025' WHERE `CustomAction`.`Action`='_AE0E13D9_C687_441D_9819_3FDABBC7F124.install'\" && ren \"$(ProjectDir)\\$(Configuration)\\Setup.exe\" \"Dnrd.exe\" && copy \"$(ProjectDir)\\..\\ExcelTemplateSetupStarter\\Bin\\$(Configuration)\\Setup.exe\""
+        "PostBuildEvent" = "8:cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"INSERT INTO Property(Property, Value) VALUES ('DISABLEADVTSHORTCUTS', '1')\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"INSERT INTO Property(Property, Value) VALUES ('REINSTALLMODE', 'amus')\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `CustomAction` SET `CustomAction`.`Type`='1025' WHERE `CustomAction`.`Action`='_AE0E13D9_C687_441D_9819_3FDABBC7F124.install'\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `Control` SET `Control`.`Attributes`='1' WHERE `Control`.`Dialog_`='FolderForm' AND `Control`.`Control`='FolderLabel'\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `Control` SET `Control`.`Attributes`='1' WHERE `Control`.`Dialog_`='FolderForm' AND `Control`.`Control`='DiskCostButton'\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `Control` SET `Control`.`Attributes`='1' WHERE `Control`.`Dialog_`='FolderForm' AND `Control`.`Control`='BrowseButton'\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `Control` SET `Control`.`Attributes`='5' WHERE `Control`.`Dialog_`='FolderForm' AND `Control`.`Control`='FolderEdit'\" && cscript $(ProjectDir)..\\BuildTools\\WiRunSQL.vbs \"$(BuiltOuputPath)\" \"UPDATE `Control` SET `Control`.`Text`='{\\VSI_MS_Sans_Serif13.0_0_0}The installer will install [ProductName] to the following folder.' WHERE `Control`.`Dialog_`='FolderForm' AND `Control`.`Control`='Body'\" && ren \"$(ProjectDir)\\$(Configuration)\\Setup.exe\" \"Dnrd.exe\" && copy \"$(ProjectDir)\\..\\ExcelTemplateSetupStarter\\Bin\\$(Configuration)\\Setup.exe\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
@@ -2075,17 +2031,17 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_32FD6085FC0A4766A58B6B718D4E4C8E"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C7AD2CDC5CB2496088F915B502134022"
             {
-            "Name" = "8:Excel 2007 Template"
+            "Name" = "8:Excel Template"
             "Arguments" = "8:"
-            "Description" = "8:Create an Excel 2007 workbook from the Microsoft NodeXL Excel Template."
+            "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
             "Target" = "8:_9DB47FE3D6584E85A949BD947C5F1D7A"
             "Folder" = "8:_74BE9EFEBB0B42179D5E2F1B4AFD60F4"
-            "WorkingFolder" = "8:_29D88DFD852342F6822D6C91F88A61FA"
+            "WorkingFolder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
             "Icon" = "8:"
             "Feature" = "8:"
             }
@@ -2186,6 +2142,42 @@
             "Attributes" = "3:1"
                 "Dialogs"
                 {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_2D88E68CCB974E73B978D1B91BD46343"
+                    {
+                    "Sequence" = "3:110"
+                    "DisplayName" = "8:Installation Folder"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:2"
+                            "Value" = "8:_DCEA35EA982149D2A68E1906F2EE8F1F"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "InstallAllUsersVisible"
+                            {
+                            "Name" = "8:InstallAllUsersVisible"
+                            "DisplayName" = "8:#1059"
+                            "Description" = "8:#1159"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:1"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_3C4F347B45AD4AE1825735FA1859A2EB"
                     {
                     "Sequence" = "3:100"
@@ -2237,7 +2229,7 @@
                     }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_DE2F0E39F650451A8BA6D79CDE738B9B"
                     {
-                    "Sequence" = "3:300"
+                    "Sequence" = "3:200"
                     "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"

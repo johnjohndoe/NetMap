@@ -126,7 +126,7 @@ NodeXL uses the algorithm described in the paper "A Faster Algorithm for Between
 
 http://www.inf.uni-konstanz.de/algo/publications/b-fabc-01.pdf
 
-The algorithm successfully handles self-loops and duplicate edges.
+The algorithm successfully handles self-loops.
 
 The closeness centrality of a vertex is the average distance (along the shortest path) between the vertex and all other vertices reachable from it.  It is defined in this article:
 
@@ -145,20 +145,18 @@ From the article:
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>
-  <data name="lnkDegree.Tag" xml:space="preserve">
-    <value>In an undirected graph, a vertex's degree is the number of edges incident to the vertex.  In a directed graph, degree is undefined and is not computed.
-
-Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
-  </data>
   <data name="lnkOutDegree.Tag" xml:space="preserve">
     <value>In a directed graph, a vertex's out-degree is the number of outgoing edges incident to the vertex.  In an undirected graph, out-degree is undefined and is not computed.
 
-Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
+Self-loops are counted in degree metrics.</value>
   </data>
   <data name="lnkInDegree.Tag" xml:space="preserve">
     <value>In a directed graph, a vertex's in-degree is the number of incoming edges incident to the vertex.  In an undirected graph, in-degree is undefined and is not computed.
 
-Self-loops are counted in degree metrics.  Duplicate edges cause the degree metrics to be inaccurate.  Inaccurate degree metrics are highlighted.</value>
+Self-loops are counted in degree metrics.</value>
+  </data>
+  <data name="lnkGroupMetrics.Tag" xml:space="preserve">
+    <value>Group metrics include vertex counts, edge counts, geodesic distances, and graph density for each of the graph's groups.  They are calculated as if the vertices and edges outside the group do not exist.  The metrics get inserted into the Groups worksheet.</value>
   </data>
   <data name="lnkPageRank.Tag" xml:space="preserve">
     <value>PageRank measures the importance of each vertex within the graph using a link analysis algorithm developed by Larry Page.  It is described here:
@@ -176,7 +174,7 @@ From the article:
 
 "The clustering coefficient of a vertex in a graph quantifies how close the vertex and its neighbors are to being a clique (complete graph)."
 
-Self-loops, which would render the clustering coefficients invalid, are skipped.  Duplicate edges cause the clustering coefficients to be inaccurate.  Inaccurate clustering coefficients are highlighted.
+Self-loops, which would render the clustering coefficients invalid, are skipped. 
 
 (You can press Ctrl-C to copy these details to the clipboard.)</value>
   </data>

@@ -405,6 +405,24 @@ public interface IEdgeCollection : ICollection<IEdge>
         String name
     );
 
+    //*************************************************************************
+    //  Method: RemoveDuplicates()
+    //
+    /// <summary>
+    /// Removes duplicate edges from the collection.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If the graph is directed, edges are considered duplicates if they
+    /// connect the same vertex pair in the same order.  If the graph is
+    /// undirected, edges are considered duplicates if they connect the same
+    /// vertex pair.
+    /// </remarks>
+    //*************************************************************************
+
+    void
+    RemoveDuplicates();
+
 
     //*************************************************************************
     //  Event: EdgeAdded

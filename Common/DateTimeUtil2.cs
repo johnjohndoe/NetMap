@@ -22,10 +22,10 @@ namespace Microsoft.Research.CommunityTechnologies.DateTimeLib
 public static class DateTimeUtil2
 {
     //*************************************************************************
-    //  Method: TruncateToMinutes()
+    //  Method: RemoveTime()
     //
     /// <summary>
-    /// Returns a new DateTime with the seconds and milliseconds set to 0.
+    /// Copies a DateTime and sets the copy's time to 12:00 AM.
     /// </summary>
     ///
     /// <param name="dateTime">
@@ -33,18 +33,12 @@ public static class DateTimeUtil2
     /// </param>
     ///
     /// <returns>
-    /// A copy of <paramref name="dateTime" /> with the seconds and
-    /// milliseconds set to 0.
+    /// A copy of <paramref name="dateTime" /> with the time set to 12:00 AM.
     /// </returns>
-    ///
-    /// <remarks>
-    /// This method can't be used in .NET 1.1 applications.  It uses
-    /// DateTimeKind, which was introduced in .NET 2.0.
-    /// </remarks>
     //*************************************************************************
 
     public static DateTime
-    TruncateToMinutes
+    RemoveTime
     (
         DateTime dateTime
     )
@@ -53,49 +47,11 @@ public static class DateTimeUtil2
             dateTime.Year,
             dateTime.Month,
             dateTime.Day,
-            dateTime.Hour,
-            dateTime.Minute,
+            0,
+            0,
             0,
             dateTime.Kind
             ) );
-    }
-
-    //*************************************************************************
-    //  Method: ForceUtc()
-    //
-    /// <summary>
-    /// Returns a new DateTime with the Kind property set to DateTimeKind.Utc.
-    /// </summary>
-    ///
-    /// <param name="dateTimeUtc">
-    /// DateTime to copy, in UTC.  Does not get modified.
-    /// </param>
-    ///
-    /// <returns>
-    /// A copy of <paramref name="dateTimeUtc" /> with the Kind property set
-    /// to DateTimeKind.Utc.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// Use this method to force a DateTime obtained via Remoting to be UTC.
-    /// (The Kind property does not seem to be properly transmitted via
-    /// Remoting.)
-    ///
-    /// <para>
-    /// This method can't be used in .NET 1.1 applications.  It uses
-    /// DateTimeKind, which was introduced in .NET 2.0.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    public static DateTime
-    ForceUtc
-    (
-        DateTime dateTimeUtc
-    )
-    {
-        return ( new DateTime(dateTimeUtc.Ticks, DateTimeKind.Utc) );
     }
 
     //*************************************************************************

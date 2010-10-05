@@ -62,8 +62,8 @@ public class ClusteringCoefficientCalculator2 :
     /// </param>
     ///
     /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
+    /// true if the graph metrics were calculated or don't need to be
+    /// calculated, false if the user wants to cancel.
     /// </returns>
     ///
     /// <remarks>
@@ -98,26 +98,15 @@ public class ClusteringCoefficientCalculator2 :
         Debug.Assert(calculateGraphMetricsContext != null);
         AssertValid();
 
-        String sStyle = CellStyleNames.GraphMetricGood;
-
-        if (calculateGraphMetricsContext.DuplicateEdgeDetector.
-            GraphContainsDuplicateEdges)
-        {
-            // The calculations are rendered invalid if the graph has duplicate
-            // edges, so warn the user with a "bad" cell style.
-
-            sStyle = CellStyleNames.GraphMetricBad;
-        }
-
         return ( TryCalculateGraphMetrics(graph, calculateGraphMetricsContext,
             new Algorithms.ClusteringCoefficientCalculator(),
 
             calculateGraphMetricsContext.GraphMetricUserSettings.
-                CalculateGraphMetrics(GraphMetrics.ClusteringCoefficient),
+                ShouldCalculateGraphMetrics(GraphMetrics.ClusteringCoefficient),
 
             VertexTableColumnNames.ClusteringCoefficient,
             VertexTableColumnWidths.ClusteringCoefficient,
-            sStyle, out graphMetricColumns) );
+            CellStyleNames.GraphMetricGood, out graphMetricColumns) );
     }
 
 

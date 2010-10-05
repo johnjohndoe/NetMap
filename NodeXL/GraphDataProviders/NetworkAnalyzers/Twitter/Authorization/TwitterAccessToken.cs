@@ -76,8 +76,13 @@ public class TwitterAccessToken : Object
         m_sToken = token;
         m_sSecret = secret;
 
+        String sAccessTokenFilePath = GetAccessTokenFilePath();
+
+        Directory.CreateDirectory( Path.GetDirectoryName(
+            sAccessTokenFilePath) );
+
         using ( StreamWriter oStreamWriter =
-            new StreamWriter( GetAccessTokenFilePath() ) )
+            new StreamWriter(sAccessTokenFilePath) )
         {
             oStreamWriter.Write(m_sToken + "\t" + m_sSecret);
         }

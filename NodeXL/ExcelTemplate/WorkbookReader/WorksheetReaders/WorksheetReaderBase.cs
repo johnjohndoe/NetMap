@@ -124,7 +124,7 @@ public class WorksheetReaderBase : NodeXLBase
     ///
     /// <remarks>
     /// If the table has no ID column, which is a column named
-    /// CommonTableColumnNames.ID, this method does nothing.
+    /// CommonTableColumnNames.ID, this method adds it.
     ///
     /// <para>
     /// Filtered rows are not filled.
@@ -146,27 +146,26 @@ public class WorksheetReaderBase : NodeXLBase
         // filtered, the range may contain multiple areas.
 
         Range oVisibleRange;
+        ListColumn oIDColumn;
 
         if (
-            !ExcelUtil.TryGetVisibleTableRange(oTable, out oVisibleRange) ||
+            !ExcelUtil.TryGetVisibleTableRange(oTable, out oVisibleRange)
+            ||
             ExcelUtil.VisibleTableRangeIsEmpty(oTable)
+            ||
+            !ExcelUtil.TryGetOrAddTableColumn(oTable,
+                CommonTableColumnNames.ID, ExcelUtil.AutoColumnWidth, null,
+                out oIDColumn)
             )
         {
             return;
         }
 
-        Int32 iIDColumnIndex = GetTableColumnIndex(oTable,
-            CommonTableColumnNames.ID, false);
-
-        if (iIDColumnIndex == NoSuchColumn)
-        {
-            return;
-        }
+        Int32 iIDColumnIndex = oIDColumn.Index;
 
         Range oDataBodyRange = oTable.DataBodyRange;
 
         Debug.Assert(oDataBodyRange != null);
-
         Debug.Assert(oTable.Parent is Worksheet);
 
         Worksheet oWorksheet = (Worksheet)oTable.Parent;
@@ -403,6 +402,71 @@ public class WorksheetReaderBase : NodeXLBase
     }
 
     //*************************************************************************
+    //  Method: TryGetBoolean()
+    //
+    /// <summary>
+    /// Attempts to get a Boolean value from a worksheet cell.
+    /// </summary>
+    ///
+    /// <param name="oRow">
+    /// Row containing the data.
+    /// </param>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the column containing the Boolean value.
+    /// </param>
+    ///
+    /// <param name="oBooleanConverter">
+    /// Object for converting the Boolean value from a string to a Boolean.
+    /// </param>
+    ///
+    /// <param name="bBoolean">
+    /// Where the Boolean value gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified cell contains a valid Boolean value.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified cell is empty, false is returned.  If the cell
+    /// contains a valid Boolean value, the value gets stored at <paramref
+    /// name="bBoolean" /> and true is returned.  If the cell contains an
+    /// invalid Boolean, a <see cref="WorkbookFormatException" /> is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetBoolean
+    (
+        ExcelTableReader.ExcelTableRow oRow,
+        String sColumnName,
+        BooleanConverter oBooleanConverter,
+        out Boolean bBoolean
+    )
+    {
+        Debug.Assert(oRow != null);
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
+        Debug.Assert(oBooleanConverter != null);
+        AssertValid();
+
+        bBoolean = false;
+        String sBoolean;
+
+        if ( !oRow.TryGetNonEmptyStringFromCell(sColumnName, out sBoolean) )
+        {
+            return (false);
+        }
+
+        if ( !oBooleanConverter.TryWorkbookToGraph(sBoolean, out bBoolean) )
+        {
+            OnWorkbookFormatErrorWithDropDown(oRow, sColumnName, "value");
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
     //  Method: TryGetColor()
     //
     /// <summary>
@@ -542,11 +606,11 @@ public class WorksheetReaderBase : NodeXLBase
     }
 
     //*************************************************************************
-    //  Method: AddToIDDictionary()
+    //  Method: AddToRowIDDictionary()
     //
     /// <summary>
     /// Adds an edge or vertex to a dictionary and sets the edge or vertex's
-    /// Tag to the ID.
+    /// Tag to the row ID.
     /// </summary>
     ///
     /// <param name="oRow">
@@ -554,50 +618,50 @@ public class WorksheetReaderBase : NodeXLBase
     /// </param>
     ///
     /// <param name="oEdgeOrVertex">
-    /// Edge or vertex to get the ID for.
+    /// Edge or vertex to get the row ID for.
     /// </param>
     ///
-    /// <param name="oDictionary">
+    /// <param name="oRowIDDictionary">
     /// Keeps track of the edges or vertices that have been added to the graph,
     /// depending on which derived class this method is being called from.  The
-    /// key is the edge or vertex ID read from the edge or vertex worksheet and
-    /// the value is the edge or vertex.
+    /// key is the edge or vertex row ID read from the edge or vertex worksheet
+    /// and the value is the edge or vertex.
     /// </param>
     //*************************************************************************
 
     protected void
-    AddToIDDictionary
+    AddToRowIDDictionary
     (
         ExcelTableReader.ExcelTableRow oRow,
         IIdentityProvider oEdgeOrVertex,
-        Dictionary<Int32, IIdentityProvider> oDictionary
+        Dictionary<Int32, IIdentityProvider> oRowIDDictionary
     )
     {
         Debug.Assert(oRow != null);
         Debug.Assert(oEdgeOrVertex != null);
-        Debug.Assert(oDictionary != null);
+        Debug.Assert(oRowIDDictionary != null);
         AssertValid();
 
         // Because the derived class fills in its ID column if the column
         // exists, each cell in the column should be valid.
 
-        String sID;
-        Int32 iID = Int32.MinValue;
+        String sRowID;
+        Int32 iRowID = Int32.MinValue;
 
         if (
             oRow.TryGetNonEmptyStringFromCell(CommonTableColumnNames.ID,
-                out sID)
+                out sRowID)
             &&
-            Int32.TryParse(sID, out iID)
+            Int32.TryParse(sRowID, out iRowID)
             )
         {
-            oDictionary.Add(iID, oEdgeOrVertex);
+            oRowIDDictionary.Add(iRowID, oEdgeOrVertex);
 
             Debug.Assert(oEdgeOrVertex is IMetadataProvider);
 
-            // Store the ID in the edge or vertex tag.
+            // Store the row ID in the edge or vertex tag.
 
-            ( (IMetadataProvider)oEdgeOrVertex ).Tag = iID;
+            ( (IMetadataProvider)oEdgeOrVertex ).Tag = iRowID;
         }
     }
 

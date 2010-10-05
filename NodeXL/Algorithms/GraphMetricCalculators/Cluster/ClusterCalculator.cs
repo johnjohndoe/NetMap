@@ -20,18 +20,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The clusters are provided as a ICollection&lt;Community&gt;.  There is one
-/// <see cref="Community" /> object in the ICollection for each calculated
-/// cluster.  The vertices in each cluster can be obtained via the
-/// Community.<see cref="Community.Vertices" /> property.  All the other
-/// properties and methods of the  <see cref="Community" /> class are meant for
-/// internal use and should be ignored.
-///
-/// <para>
 /// Use the <see cref="Algorithm" /> property to specify the clustering
 /// algorithm to use.
-/// </para>
-///
 /// </remarks>
 //*****************************************************************************
 
@@ -110,12 +100,48 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
+    //  Method: CalculateGraphMetrics()
+    //
+    /// <summary>
+    /// Calculate the graph metrics.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <returns>
+    /// There is one <see cref="Community" /> object in the ICollection for
+    /// each calculated cluster.  The vertices in each cluster can be obtained
+    /// via the Community.<see cref="Community.Vertices" /> property.  All the
+    /// other properties and methods of the  <see cref="Community" /> class are
+    /// meant for internal use and should be ignored.
+    /// </returns>
+    //*************************************************************************
+
+    public ICollection<Community>
+    CalculateGraphMetrics
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        ICollection<Community> oGraphMetrics;
+
+        TryCalculateGraphMetrics(graph, null, out oGraphMetrics);
+
+        return (oGraphMetrics);
+    }
+
+    //*************************************************************************
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread, and provides the metrics in
-    /// a type-safe manner.
+    /// Attempts to calculate the graph metrics while optionally running on a
+    /// background thread.
     /// </summary>
     ///
     /// <param name="graph">
@@ -128,9 +154,13 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     /// the method is being called by some other thread.
     /// </param>
     ///
-    /// <param name="communities">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
+    /// <param name="graphMetrics">
+    /// Where the graph metrics get stored if true is returned.  There is one
+    /// <see cref="Community" /> object in the ICollection for each calculated
+    /// cluster.  The vertices in each cluster can be obtained via the
+    /// Community.<see cref="Community.Vertices" /> property.  All the other
+    /// properties and methods of the  <see cref="Community" /> class are meant
+    /// for internal use and should be ignored.
     /// </param>
     ///
     /// <returns>
@@ -144,81 +174,32 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out ICollection<Community> communities
+        out ICollection<Community> graphMetrics
     )
     {
         Debug.Assert(graph != null);
-
-        Object oGraphMetricsAsObject;
-
-        Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
-            out oGraphMetricsAsObject);
-
-        communities = ( ICollection<Community> )oGraphMetricsAsObject;
-
-        return (bReturn);
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetricsCore()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method, or null if
-    /// the method is being called by some other thread.
-    /// </param>
-    ///
-    /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for the return type.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected override Boolean
-    TryCalculateGraphMetricsCore
-    (
-        IGraph oGraph,
-        BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
-    )
-    {
-        Debug.Assert(oGraph != null);
         AssertValid();
 
-        oGraphMetrics = null;
+        graphMetrics = null;
 
         switch (m_eAlgorithm)
         {
             case ClusterAlgorithm.WakitaTsurumi:
 
-                return ( TryCalculateClustersWakitaTsurumi(oGraph,
-                    oBackgroundWorker, out oGraphMetrics) );
+                return ( TryCalculateClustersWakitaTsurumi(graph,
+                    backgroundWorker, out graphMetrics) );
 
             case ClusterAlgorithm.GirvanNewman:
 
-                return ( TryCalculateClustersSnap(oGraph,
+                return (TryCalculateClustersSnap(graph,
                     SnapGraphMetrics.GirvanNewmanClusters,
-                    oBackgroundWorker, out oGraphMetrics) );
+                    backgroundWorker, out graphMetrics));
 
             case ClusterAlgorithm.ClausetNewmanMoore:
 
-                return ( TryCalculateClustersSnap(oGraph,
+                return (TryCalculateClustersSnap(graph,
                     SnapGraphMetrics.ClausetNewmanMooreClusters,
-                    oBackgroundWorker, out oGraphMetrics) );
+                    backgroundWorker, out graphMetrics));
 
             default:
 
@@ -245,8 +226,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for the return type.
+    /// Where the graph metrics get stored if true is returned.
     /// </param>
     ///
     /// <returns>
@@ -265,7 +245,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     (
         IGraph oGraph,
         BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
+        out ICollection<Community> oGraphMetrics
     )
     {
         Debug.Assert(oGraph != null);
@@ -378,8 +358,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for the return type.
+    /// Where the graph metrics get stored if true is returned.
     /// </param>
     ///
     /// <returns>
@@ -394,7 +373,7 @@ public class ClusterCalculator : GraphMetricCalculatorBase
         IGraph oGraph,
         SnapGraphMetrics eSnapGraphMetric,
         BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
+        out ICollection<Community> oGraphMetrics
     )
     {
         Debug.Assert(oGraph != null);

@@ -1,6 +1,6 @@
 
 This is a history of the ExcelTemplate setup process and an explanation of how
-setup works today (March 2010).
+setup works today (September 2010).
 
 
 Version 1
@@ -28,13 +28,12 @@ created on a 32-bit machine is guaranteed to be unopenable on a 64-bit machine.
 
 Version 3
 ---------
-The third and current version of the setup program uses the hybrid Windows
-Installer/ClickOnce technique described in "Deploying to the ClickOnce Cache"
-in the same article.  A Windows Installer setup copies the template and adds
-the shortcut, then calls a custom action to install the solution in the
-ClickOnce cache.  Because a file path is no longer embedded in the Excel
-template file, workbooks created from the template can be reliably exchanged
-with other users.
+The third version of the setup program uses the hybrid Windows /ClickOnce
+technique described in "Deploying to the ClickOnce Cache" in the same article.  
+A Windows Installer setup copies the template and adds the shortcut, then calls
+a custom action to install the solution in the ClickOnce cache.  Because a file
+path is no longer embedded in the Excel template file, workbooks created from
+the template can be reliably exchanged with other users.
 
 The following changes had to be made to the technique outline in the article:
 
@@ -76,3 +75,25 @@ It took about four days to get this to work, and I still don't understand all
 the interactions between ClickOnce, Windows Installer, and UAC.  It's one big,
 complicated nightmare.
 
+
+Version 4
+---------
+The fourth and current version of the setup program made a few changes to make
+it easier for an administrator to install NodeXL for multiple users:
+
+* An "Installation Folder" dialog was added to the setup program to allow the
+user to select an "install for everyone" option, which results in everyone
+getting a Start Menu item for NodeXL.  (Visual Studio puts the "install for"
+option on the Installation Folder dialog.)  The dialog's folder path controls
+were disabled (via PostBuildEvent calls to WiRunSQL.vbs script) to prevent the
+user from changing the installation folder, which would prevent the
+ExcelTemplate project from finding its PlugIns folder.
+
+* The Excel template file was moved from the user's profile folder to the
+Program Files subfolder, and the Start Menu shortcut that points to the
+template file was updated accordingly.  Now, each user can simply select the
+Start Menu shortcut to use the template.  The VSTO loader looks for (and finds)
+the Microsoft.NodeXL.ExcelTemplate.vsto manifest file in the same folder as the
+template file, and the loader installs NodeXL in the user's ClickOnce cache
+after asking the user for permission.  Prior to this change, each user had to
+double-click the manifest file to install NodeXL in his ClickOnce cache.

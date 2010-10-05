@@ -737,6 +737,72 @@ public class Edge : GraphVertexEdgeBase, IEdge
     }
 
     //*************************************************************************
+    //  Method: GetVertexNamePair()
+    //
+    /// <summary>
+    /// Combines the names of an edge's vertices into a name pair suitable for
+    /// use as a dictionary key.
+    /// </summary>
+    ///
+    /// <param name="vertex0Name">
+    /// Name of the edge's first vertex.  Can't be null or empty.
+    /// </param>
+    ///
+    /// <param name="vertex1Name">
+    /// Name of the edge's second vertex.  Can't be null or empty.
+    /// </param>
+    ///
+    /// <param name="graphIsDirected">
+    /// true if the graph is directed, false if it is undirected.
+    /// </param>
+    ///
+    /// <returns>
+    /// A name pair suitable for use as a dictionary key.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned string can be used as a key in a dictionary used to find
+    /// duplicate edges.
+    ///
+    /// <para>
+    /// This method uses <see cref="VertexNamePairSeparator" /> to separate the
+    /// vertex names.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    GetVertexNamePair
+    (
+        String vertex0Name,
+        String vertex1Name,
+        Boolean graphIsDirected
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(vertex0Name) );
+        Debug.Assert( !String.IsNullOrEmpty(vertex1Name) );
+
+        String sVertexNamePair;
+
+        // In the undirected case, guarantee that A,B and B,A are considered
+        // duplicates by always pairing them in the same order.
+
+        if (graphIsDirected || vertex0Name.CompareTo(vertex1Name) < 0)
+        {
+            sVertexNamePair = vertex0Name + VertexNamePairSeparator
+                + vertex1Name;
+        }
+        else
+        {
+            sVertexNamePair = vertex1Name + VertexNamePairSeparator
+                + vertex0Name;
+        }
+
+        return (sVertexNamePair);
+    }
+
+    //*************************************************************************
     //  Method: CheckVertexArgument()
     //
     /// <summary>
@@ -973,6 +1039,23 @@ public class Edge : GraphVertexEdgeBase, IEdge
         Debug.Assert(m_oVertex2 != null);
         // m_bIsDirected
     }
+
+
+    //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+    /// <remarks>
+    /// The separator character used by <see cref="GetVertexNamePair" />.
+    ///
+    /// <para>
+    /// This is a vertical tab, which is highly unlikely to be used in a vertex
+    /// name.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public const Char VertexNamePairSeparator = '\v';
 
 
     //*************************************************************************

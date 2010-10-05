@@ -29,7 +29,7 @@ namespace Microsoft.NodeXL.Core
 ///
 /// <code>
 ///
-/// // Create a graph with mixed directedness and no restrictions.
+/// // Create a graph with mixed directedness.
 /// 
 /// IGraph oGraph = new Graph();
 /// 
@@ -92,13 +92,12 @@ public class Graph : GraphVertexEdgeBase, IGraph
     ///
     /// <summary>
     /// Initializes a new instance of the <see cref="Graph" /> class with a
-    /// mixed directedness and no restrictions.
+    /// mixed directedness.
     /// </summary>
     ///
     /// <remarks>
     /// The <see cref="Directedness" /> property is set to <see
-    /// cref="GraphDirectedness.Mixed" />.  The <see cref="Restrictions" />
-    /// property is set to <see cref="GraphRestrictions.None" />.
+    /// cref="GraphDirectedness.Mixed" />.
     /// </remarks>
     //*************************************************************************
 
@@ -114,53 +113,19 @@ public class Graph : GraphVertexEdgeBase, IGraph
     //  Constructor: Graph()
     //
     /// <summary>
-    /// Initializes a new instance of the <see cref="Graph" /> class with a
-    /// specified directedness and no restrictions.
+    /// Initializes a new instance of the <see cref="Graph" /> class with
+    /// specified directedness.
     /// </summary>
     ///
     /// <param name="directedness">
     /// Specifies the type of edges that can be added to the graph.
     /// </param>
-    ///
-    /// <remarks>
-    /// The <see cref="Restrictions" /> property is set to <see
-    /// cref="GraphRestrictions.None" />.
-    /// </remarks>
     //*************************************************************************
 
     public
     Graph
     (
         GraphDirectedness directedness
-    )
-    :
-    this(directedness, GraphRestrictions.None)
-    {
-        AssertValid();
-    }
-
-    //*************************************************************************
-    //  Constructor: Graph()
-    //
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Graph" /> class with
-    /// specified directedness and restrictions.
-    /// </summary>
-    ///
-    /// <param name="directedness">
-    /// Specifies the type of edges that can be added to the graph.
-    /// </param>
-    ///
-    /// <param name="restrictions">
-    /// Specifies restrictions imposed by the graph.
-    /// </param>
-    //*************************************************************************
-
-    public
-    Graph
-    (
-        GraphDirectedness directedness,
-        GraphRestrictions restrictions
     )
     :
     base( m_oIDGenerator.GetNextID() )
@@ -171,21 +136,10 @@ public class Graph : GraphVertexEdgeBase, IGraph
             MethodName, "directedness", directedness,
             typeof(GraphDirectedness) );
 
-        CheckRestrictions(restrictions, MethodName, "restrictions");
-
-        m_bPerformExtraValidations = false;
         m_eDirectedness = directedness;
-        m_eRestrictions = restrictions;
 
         m_oVertexCollection = new VertexCollection(this);
-
-        m_oVertexCollection.VertexAdded +=
-            new VertexEventHandler(this.VertexCollection_VertexAdded);
-
         m_oEdgeCollection = new EdgeCollection(this);
-
-        m_oEdgeCollection.EdgeAdded +=
-            new EdgeEventHandler(this.EdgeCollection_EdgeAdded);
 
         AssertValid();
     }
@@ -270,160 +224,6 @@ public class Graph : GraphVertexEdgeBase, IGraph
     }
 
     //*************************************************************************
-    //  Property: Restrictions
-    //
-    /// <summary>
-    /// Gets an ORed set of flags that specify restrictions imposed by the
-    /// graph.
-    /// </summary>
-    ///
-    /// <value>
-    /// An ORed combination of <see cref="GraphRestrictions" /> flags.
-    /// </value>
-    ///
-    /// <remarks>
-    /// The graph's restrictions are specified when the graph is created and
-    /// cannot be changed.
-    ///
-    /// <para>
-    /// <see cref="HasRestrictions" /> can be used to determine whether the
-    /// graph imposes a specified restriction.
-    /// </para>
-    ///
-    /// </remarks>
-    ///
-    /// <seealso cref="HasRestrictions" />
-    //*************************************************************************
-
-    public GraphRestrictions
-    Restrictions
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_eRestrictions);
-        }
-    }
-
-    //*************************************************************************
-    //  Property: PerformExtraValidations
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether extra but possibly slow
-    /// validations are performed.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to perform extra validations, false otherwise.  The default value
-    /// is false.  A value of true can dramatically slow graph operations.
-    /// </value>
-    ///
-    /// <remarks>
-    /// When this property is set to true, the graph performs extra validations
-    /// during certain operations.  For example, when a vertex is added to the
-    /// <see cref="Vertices" /> collection, the graph checks whether the vertex
-    /// already exists in the collection and throws an exception if it does.
-    ///
-    /// <para>
-    /// Important note: The extra validations can be very slow, and therefore
-    /// this property should be set to true only during development or after an
-    /// unexpected problem occurs and the problem needs to be diagnosed.
-    /// For example, checking whether a vertex already exists in the <see
-    /// cref="Vertices" /> collection is an O(n) operation, where n is the
-    /// number of vertices in the graph.
-    /// </para>
-    ///
-    /// </remarks>
-    //*************************************************************************
-
-    public Boolean
-    PerformExtraValidations
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_bPerformExtraValidations);
-        }
-
-        set
-        {
-            m_bPerformExtraValidations = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Method: HasRestrictions
-    //
-    /// <summary>
-    /// Gets a flag that indicates whether the graph imposes specified
-    /// restrictions.
-    /// </summary>
-    ///
-    /// <param name="restrictions">
-    /// An ORed combination of one or more <see cref="GraphRestrictions" />
-    /// flags.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph imposes all of the restrictions specified by
-    /// <paramref name="restrictions" />.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The graph's restrictions are specified when the graph is created and
-    /// cannot be changed.
-    ///
-    /// <para>
-    /// Use <see cref="Restrictions" /> to return all of the graph's
-    /// restrictions.
-    /// </para>
-    ///
-    /// </remarks>
-    ///
-    /// <example>
-    /// The following code determines whether a graph prohibits parallel edges.
-    ///
-    /// <code>
-    /// Boolean bNoParallelEdges =
-    ///     oGraph.HasRestrictions(GraphRestrictions.NoParallelEdges);
-    /// </code>
-    ///
-    /// </example>
-    ///
-    /// <seealso cref="Restrictions" />
-    //*************************************************************************
-
-    public Boolean
-    HasRestrictions
-    (
-        GraphRestrictions restrictions
-    )
-    {
-        AssertValid();
-
-        const String MethodName = "HasRestrictions";
-        const String ParameterName = "restrictions";
-
-        CheckRestrictions(restrictions, MethodName, ParameterName);
-
-        Debug.Assert(GraphRestrictions.None == 0);
-
-        // GraphRestrictions.None is zero, so it has to be treated as a special
-        // case.
-
-        if (restrictions == GraphRestrictions.None)
-        {
-            return (m_eRestrictions == GraphRestrictions.None);
-        }
-
-        return ( (restrictions & m_eRestrictions) == restrictions );
-    }
-
-    //*************************************************************************
     //  Method: Clone()
     //
     /// <summary>
@@ -469,9 +269,7 @@ public class Graph : GraphVertexEdgeBase, IGraph
 
         const String MethodName = "Clone";
 
-        IGraph oNewGraph = new Graph(m_eDirectedness, m_eRestrictions);
-
-        oNewGraph.PerformExtraValidations = m_bPerformExtraValidations;
+        IGraph oNewGraph = new Graph(m_eDirectedness);
 
         // Copy the base-class fields to the new edge.
 
@@ -550,152 +348,6 @@ public class Graph : GraphVertexEdgeBase, IGraph
         return (oNewGraph);
     }
 
-    //*************************************************************************
-    //  Event: EdgeAdded
-    //
-    /// <summary>
-    /// Occurs when an edge is added to the <see cref="Edges" /> collection.
-    /// </summary>
-    //*************************************************************************
-
-    public event EdgeEventHandler
-    EdgeAdded;
-
-
-    //*************************************************************************
-    //  Event: VertexAdded
-    //
-    /// <summary>
-    /// Occurs when a vertex is added to the <see cref="Vertices" />
-    /// collection.
-    /// </summary>
-    //*************************************************************************
-
-    public event VertexEventHandler
-    VertexAdded;
-
-
-    //*************************************************************************
-    //  Method: CheckRestrictions()
-    //
-    /// <summary>
-    /// Checks whether a value contains only flags specified in the <see
-    /// cref="GraphRestrictions" /> enumeration.
-    /// </summary>
-    ///
-    /// <param name="eRestrictions">
-    /// Value to check.
-    /// </param>
-    ///
-    /// <param name="sMethodName">
-    /// Name of the method calling this method.
-    /// </param>
-    ///
-    /// <param name="sParameterName">
-    /// Name of the parameter to which <paramref name="eRestrictions" /> was
-    /// passed.
-    /// </param>
-    ///
-    /// <remarks>
-    /// An exception is thrown if <paramref name="eRestrictions" /> contains
-    /// flags not defined in the <see cref="GraphRestrictions" /> enumeration.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    CheckRestrictions
-    (
-        GraphRestrictions eRestrictions,
-        String sMethodName,
-        String sParameterName
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sMethodName) );
-        Debug.Assert( !String.IsNullOrEmpty(sParameterName) );
-
-        if ( (eRestrictions & ~GraphRestrictions.All) != 0 )
-        {
-            this.ArgumentChecker.ThrowArgumentException(
-                sMethodName, sParameterName,
-                
-                "Must be an ORed combination of the flags in the"
-                + " GraphRestrictions enumeration."
-                );
-        }
-    }
-
-    //*************************************************************************
-    //  Method: VertexCollection_VertexAdded()
-    //
-    /// <summary>
-    /// Handles the VertexAdded event on the m_oVertexCollection object.
-    /// </summary>
-    ///
-    /// <param name="oSender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="oVertexEventArgs">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    VertexCollection_VertexAdded
-    (
-        Object oSender,
-        VertexEventArgs oVertexEventArgs
-    )
-    {
-        Debug.Assert(oSender != null);
-        Debug.Assert(oVertexEventArgs != null);
-
-        // Forward the event.
-
-        VertexEventHandler oVertexAdded = this.VertexAdded;
-
-        if (oVertexAdded != null)
-        {
-            oVertexAdded(this, oVertexEventArgs);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: EdgeCollection_EdgeAdded()
-    //
-    /// <summary>
-    /// Handles the EdgeAdded event on the m_oEdgeCollection object.
-    /// </summary>
-    ///
-    /// <param name="oSender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="oEdgeEventArgs">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    EdgeCollection_EdgeAdded
-    (
-        Object oSender,
-        EdgeEventArgs oEdgeEventArgs
-    )
-    {
-        Debug.Assert(oSender != null);
-        Debug.Assert(oEdgeEventArgs != null);
-
-        // Forward the event.
-
-        EdgeEventHandler oEdgeAdded = this.EdgeAdded;
-
-        if (oEdgeAdded != null)
-        {
-            oEdgeAdded(this, oEdgeEventArgs);
-        }
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -712,11 +364,9 @@ public class Graph : GraphVertexEdgeBase, IGraph
     {
         base.AssertValid();
 
-        // m_bPerformExtraValidations
         Debug.Assert(m_oVertexCollection != null);
         Debug.Assert(m_oEdgeCollection != null);
         // m_eDirectedness
-        // m_eRestrictions
     }
 
 
@@ -733,10 +383,6 @@ public class Graph : GraphVertexEdgeBase, IGraph
     //  Protected fields
     //*************************************************************************
 
-    /// true to perform extra but possibly slow validations.
-
-    protected Boolean m_bPerformExtraValidations;
-
     /// The graph's collection of vertices.
 
     protected VertexCollection m_oVertexCollection;
@@ -748,10 +394,6 @@ public class Graph : GraphVertexEdgeBase, IGraph
     /// Indicates the type of edges that can be added to the graph.
 
     protected GraphDirectedness m_eDirectedness;
-
-    /// Specifies restrictions imposed by the graph.
-
-    protected GraphRestrictions m_eRestrictions;
 
 
     //*************************************************************************

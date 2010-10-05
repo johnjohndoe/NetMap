@@ -58,8 +58,8 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     /// </param>
     ///
     /// <param name="selectedVertexNames">
-    /// Array of zero or more vertex names corresponding to the selected rows
-    /// in the vertex worksheet.  Can't be null.
+    /// Collection of zero or more vertex names corresponding to the selected
+    /// rows in the vertex worksheet.  Can't be null.
     /// </param>
     ///
     /// <param name="mode">
@@ -70,7 +70,7 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     public CreateSubgraphImagesDialog
     (
         Microsoft.Office.Interop.Excel.Workbook workbook,
-        String [] selectedVertexNames,
+        ICollection<String> selectedVertexNames,
         DialogMode mode
     )
     : this()
@@ -79,7 +79,7 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         Debug.Assert(selectedVertexNames != null);
 
         m_oWorkbook = workbook;
-        m_asSelectedVertexNames = selectedVertexNames;
+        m_oSelectedVertexNames = selectedVertexNames;
         m_eMode = mode;
 
         // Instantiate an object that saves and retrieves the user settings for
@@ -378,7 +378,7 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
                 pnlSaveToFolder.Enabled = chkSaveToFolder.Checked;
                 grpThumbnailSize.Enabled = chkInsertThumbnails.Checked;
 
-                if (m_asSelectedVertexNames.Length > 0)
+                if (m_oSelectedVertexNames.Count > 0)
                 {
                     chkSelectedVerticesOnly.Enabled = true;
                 }
@@ -453,20 +453,20 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
 
         lblStatus.Text = "Creating subgraph images.";
 
-        IVertex [] aoSelectedVertices = new IVertex[0];
+        ICollection<IVertex> oSelectedVertices = new IVertex[0];
 
         if (m_oCreateSubgraphImagesDialogUserSettings.SelectedVerticesOnly)
         {
             // Get the vertices corresponding to the selected rows in the
             // vertex worksheet.
 
-            aoSelectedVertices =
-                GetSelectedVertices(oGraph, m_asSelectedVertexNames);
+            oSelectedVertices = GetSelectedVertices(
+                oGraph, m_oSelectedVertexNames);
         }
 
         m_oSubgraphImageCreator.CreateSubgraphImagesAsync(
             oGraph,
-            aoSelectedVertices,
+            oSelectedVertices,
             m_oCreateSubgraphImagesDialogUserSettings.Levels,
             m_oCreateSubgraphImagesDialogUserSettings.SaveToFolder,
             m_oCreateSubgraphImagesDialogUserSettings.Folder,
@@ -529,42 +529,35 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
     /// Graph created from the workbook.
     /// </param>
     ///
-    /// <param name="asSelectedVertexNames">
-    /// Array of zero or more vertex names corresponding to the selected rows
-    /// in the vertex worksheet.  Can't be null.
+    /// <param name="oSelectedVertexNames">
+    /// Collection of zero or more vertex names corresponding to the selected
+    /// rows in the vertex worksheet.  Can't be null.
     /// </param>
     ///
     /// <returns>
-    /// Array of vertices in <paramref name="oGraph" /> corresponding to the
-    /// vertex names in <paramref name="asSelectedVertexNames" />.
+    /// Collection of vertices in <paramref name="oGraph" /> corresponding to
+    /// the vertex names in <paramref name="oSelectedVertexNames" />.
     /// </returns>
     //*************************************************************************
 
-    protected IVertex []
+    protected ICollection<IVertex>
     GetSelectedVertices
     (
         IGraph oGraph,
-        String [] asSelectedVertexNames
+        ICollection<String> oSelectedVertexNames
     )
     {
         Debug.Assert(oGraph != null);
-        Debug.Assert(asSelectedVertexNames != null);
+        Debug.Assert(oSelectedVertexNames != null);
         AssertValid();
 
         List<IVertex> oSelectedVertices = new List<IVertex>();
 
-        // Store the selected vertex names in a dictionary for quick lookup.
-        // The key is the vertex name and the value isn't used.
+        // Store the selected vertex names in a HashSet for quick lookup.  The
+        // key is the vertex name.
 
-        Dictionary<String, Char> oSelectedVertexNames =
-            new Dictionary<String, Char>();
-
-        foreach (String sSelectedVertexName in asSelectedVertexNames)
-        {
-            Debug.Assert( !String.IsNullOrEmpty(sSelectedVertexName) );
-
-            oSelectedVertexNames[sSelectedVertexName] = ' ';
-        }
+        HashSet<String> oSelectedVertexNameHashSet =
+            new HashSet<String>(oSelectedVertexNames);
 
         // Loop through the graph's vertices, looking for vertex names that are
         // in the dictionary.
@@ -573,13 +566,13 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         {
             Debug.Assert( !String.IsNullOrEmpty(oVertex.Name) );
 
-            if (oSelectedVertexNames.ContainsKey(oVertex.Name) )
+            if (oSelectedVertexNames.Contains(oVertex.Name) )
             {
                 oSelectedVertices.Add(oVertex);
             }
         }
 
-        return ( oSelectedVertices.ToArray() );
+        return (oSelectedVertices);
     }
 
     //*************************************************************************
@@ -984,7 +977,7 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oWorkbook != null);
-        Debug.Assert(m_asSelectedVertexNames != null);
+        Debug.Assert(m_oSelectedVertexNames != null);
         // m_eMode
         Debug.Assert(m_oCreateSubgraphImagesDialogUserSettings != null);
         Debug.Assert(m_oSubgraphImageCreator != null);
@@ -1000,10 +993,10 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
 
-    /// Array of zero or more vertex names corresponding to the selected rows
-    /// in the vertex worksheet.
+    /// Collection of zero or more vertex names corresponding to the selected
+    /// rows in the vertex worksheet.
 
-    protected String [] m_asSelectedVertexNames;
+    protected ICollection<String> m_oSelectedVertexNames;
 
     /// Indicates the mode in which the dialog is being used.
 

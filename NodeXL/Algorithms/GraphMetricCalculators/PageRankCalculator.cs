@@ -13,13 +13,7 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The PageRanks are provided as a Dictionary&lt;Int32, Double&gt;.  There is
-/// one key/value pair for each vertex in the graph.  The key is the IVertex.ID
-/// and the value is the vertex's PageRank, as a Double.
-///
-/// <para>
 /// If a vertex is isolated, its PageRank is zero.
-/// </para>
 ///
 /// <para>
 /// The PageRanks are calculated using the SNAP graph library.

@@ -185,43 +185,8 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
         // Check whether the vertices are contained in the graph that owns this
         // edge collection.
 
-        Boolean bPerformExtraValidations =
-            m_oParentGraph.PerformExtraValidations;
-
-        CheckVertex(oVertex1, MethodName, ArgumentName,
-            bPerformExtraValidations);
-
-        CheckVertex(oVertex2, MethodName, ArgumentName,
-            bPerformExtraValidations);
-
-        // Check for an illegal self-loop.
-
-        CheckForSelfLoopBeforeAddingEdge(edge);
-
-        // Check for an illegal parallel edge.
-
-        CheckForParallelEdgeBeforeAddingEdge(edge);
-
-        if (bPerformExtraValidations)
-        {
-            // Check whether the edge's ID is already used in the collection.
-
-            Int32 iID = edge.ID;
-
-            if ( this.Contains(iID) )
-            {
-                oArgumentChecker.ThrowArgumentException(
-                    MethodName, ArgumentName,
-
-                    String.Format(
-
-                        "An edge with the ID {0} already exists in the"
-                        + " collection."
-                        ,
-                        iID
-                    ) );
-            }
-        }
+        CheckVertex(oVertex1, MethodName, ArgumentName);
+        CheckVertex(oVertex2, MethodName, ArgumentName);
 
         // Check whether the directedness of the edge is compatible with this
         // graph.
@@ -304,8 +269,8 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
         // the Edge constructor will throw an exception and the exact
         // source of the problem won't be obvious.
 
-        CheckVertex(vertex1, MethodName, "vertex1", false);
-        CheckVertex(vertex2, MethodName, "vertex2", false);
+        CheckVertex(vertex1, MethodName, "vertex1");
+        CheckVertex(vertex2, MethodName, "vertex2");
 
         IEdge oEdge = new Edge(vertex1, vertex2, isDirected);
         this.Add(oEdge);
@@ -407,6 +372,60 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     }
 
     //*************************************************************************
+    //  Method: RemoveDuplicates()
+    //
+    /// <summary>
+    /// Removes duplicate edges from the collection.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If the graph is directed, the edges (A,B) and (A,B) are duplicates, but
+    /// the edges (A,B) and (B,A) are not.
+    ///
+    /// <para>
+    /// If the graph is undirected, the edges (A,B) and (A,B) are duplicates,
+    /// and so are the edges (A,B) and (B,A).
+    /// </para>
+    ///
+    /// <para>
+    /// It is not possible to control or predict which of the duplicate edges
+    /// will be removed.
+    /// </para>
+    ///
+    /// <para>
+    /// This method is an O(n * e) operation, where n is the number of vertices
+    /// in the parent graph and e is the number of edges.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    RemoveDuplicates()
+    {
+        AssertValid();
+
+        HashSet<String> oVertexNamePairs = new HashSet<String>();
+
+        foreach (IVertex oVertex in m_oParentGraph.Vertices)
+        {
+            oVertexNamePairs.Clear();
+
+            foreach (IEdge oIncidentEdge in oVertex.IncidentEdges)
+            {
+                IVertex [] oVertices = oIncidentEdge.Vertices;
+
+                if ( !oVertexNamePairs.Add(
+                    Edge.GetVertexNamePair(oVertices[0].Name,
+                        oVertices[1].Name, oIncidentEdge.IsDirected) ) )
+                {
+                    Remove(oIncidentEdge);
+                }
+            }
+        }
+    }
+
+    //*************************************************************************
     //  Method: Contains()
     //
     /// <overloads>
@@ -478,35 +497,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
             {
                 // The edge was found.
 
-                if (!m_oParentGraph.PerformExtraValidations)
-                {
-                    return (true);
-                }
-
-                // Check the other vertex's group of incident edges.
-
-                for (
-                    oNode = oVertex2.FirstIncidentEdgeNode;
-                    oNode != null && oNode.Value != null;
-                    oNode = oNode.Next
-                    )
-                {
-                    if (oNode.Value == edge)
-                    {
-                        return (true);
-                    }
-                }
-
-                // This should never occur.
-
-                Debug.Assert(false);
-
-                oArgumentChecker.ThrowArgumentException(
-                    MethodName, ArgumentName,
-
-                    "The edge is contained in one vertex's group of incident"
-                    + " edges but not in the other vertex's group."
-                    );
+                return (true);
             }
         }
 
@@ -850,14 +841,9 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
 
         const String MethodName = "GetConnectingEdges";
 
-        Boolean bPerformExtraValidations =
-            m_oParentGraph.PerformExtraValidations;
+        CheckVertex(vertex1, MethodName, "vertex1");
 
-        CheckVertex(vertex1, MethodName, "vertex1",
-            bPerformExtraValidations);
-
-        CheckVertex(vertex2, MethodName, "vertex2",
-            bPerformExtraValidations);
+        CheckVertex(vertex2, MethodName, "vertex2");
 
         // Cast the IVertex interfaces to Vertex, checking the types in the
         // process.
@@ -1322,7 +1308,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
 
         const String MethodName = "GetIncomingOrOutgoingEdges";
 
-        List<IEdge> oEdges = new List<IEdge>();
+        LinkedList<IEdge> oEdges = new LinkedList<IEdge>();
 
         // Loop through the vertex's group of incident edges.
 
@@ -1380,7 +1366,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
 
             if (bIncludeEdge)
             {
-                oEdges.Add(oEdge);
+                oEdges.AddLast(oEdge);
             }
         }
 
@@ -1479,7 +1465,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
             Debug.Assert(oVertex1 == oVertex || oVertex2 == oVertex);
 
             // Determine whether the adjacent vertex should be included in the
-            // returned array.
+            // returned collection.
 
             IVertex oAdjacentVertex = null;
 
@@ -2260,114 +2246,6 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     }
 
     //*************************************************************************
-    //  Method: CheckForSelfLoopBeforeAddingEdge()
-    //
-    /// <summary>
-    /// Checks for an illegal self-loop before an edge is added to this
-    /// collection.
-    /// </summary>
-    ///
-    /// <param name="oEdge">
-    /// Edge to check.  Can't be null.  It's assumed that <see
-    /// cref="CheckVertex" /> has already been called on the edge's vertices.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This is meant to be called from the <see cref="Add(IEdge)" /> methods.
-    /// An exception is thrown if <paramref name="oEdge" /> is a self-loop and
-    /// the parent graph prohibits self-loops.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    CheckForSelfLoopBeforeAddingEdge
-    (
-        IEdge oEdge
-    )
-    {
-        AssertValid();
-        Debug.Assert(oEdge != null);
-
-        const String MethodName = "Add";
-        const String ArgumentName = "edge";
-
-        if ( oEdge.IsSelfLoop &&
-             m_oParentGraph.HasRestrictions(GraphRestrictions.NoSelfLoops) )
-        {
-            this.ArgumentChecker.ThrowArgumentException(
-                MethodName, ArgumentName,
-
-                 "The edge is a self-loop, and the parent graph's Restrictions"
-                 + " property includes the NoSelfLoops flag."
-                );
-        }
-
-    }
-
-    //*************************************************************************
-    //  Method: CheckForParallelEdgeBeforeAddingEdge()
-    //
-    /// <summary>
-    /// Checks for an illegal parallel edge before an edge is added to this
-    /// collection.
-    /// </summary>
-    ///
-    /// <param name="oEdge">
-    /// Edge to check.  Can't be null.  It's assumed that <see
-    /// cref="CheckVertex" /> has already been called on the edge's vertices.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This is meant to be called from the <see cref="Add(IEdge)" /> methods.
-    /// An exception is thrown if an edge parallel to <paramref name="oEdge" />
-    /// exists and the parent graph prohibits parallel edges.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    CheckForParallelEdgeBeforeAddingEdge
-    (
-        IEdge oEdge
-    )
-    {
-        const String MethodName = "Add";
-        const String ArgumentName = "edge";
-
-        if ( !m_oParentGraph.HasRestrictions(
-            GraphRestrictions.NoParallelEdges) )
-        {
-            // Parallel edges aren't prohibited.
-
-            return;
-        }
-
-        // Loop through the edges that connect the new edge's vertices.
-
-        IVertex [] aoVertices = oEdge.Vertices;
-
-        ICollection<IEdge> oConnectingEdges =
-            GetConnectingEdges( aoVertices[0], aoVertices[1] );
-
-        foreach (IEdge oConnectingEdge in oConnectingEdges)
-        {
-            if ( oEdge.IsParallelTo(oConnectingEdge) )
-            {
-                this.ArgumentChecker.ThrowArgumentException(
-                    MethodName, ArgumentName,
-
-                    String.Format(
-
-                         "The edge is parallel to the edge with the ID {0},"
-                         + " and the parent graph's Restrictions property"
-                         + " includes the NoParallelEdges flag."
-                         ,
-                         oConnectingEdge.ID
-                ) );
-            }
-        }
-    }
-
-    //*************************************************************************
     //  Method: CheckVertex()
     //
     /// <summary>
@@ -2387,11 +2265,6 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     /// Name of the argument to use in error messages.
     /// </param>
     ///
-    /// <param name="bPerformExtraValidations">
-    /// true to perform extra validations, false otherwise.  A value of true
-    /// can dramatically slow operations.
-    /// </param>
-    ///
     /// <remarks>
     /// An exception is thrown if <paramref name="oVertex" /> is null or is not
     /// contained in the graph that owns this edge collection.
@@ -2403,8 +2276,7 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
     (
         IVertex oVertex,
         String sMethodName,
-        String sArgumentName,
-        Boolean bPerformExtraValidations
+        String sArgumentName
     )
     {
         AssertValid();
@@ -2426,23 +2298,6 @@ public partial class EdgeCollection : NodeXLBase, IEdgeCollection
 
                 "One of the vertices is not contained in this graph."
                 );
-        }
-
-        // If extra validations are enabled, check via
-        // IVertexCollection.Contains() whether the vertex belongs to the
-        // parent graph.
-
-        if ( bPerformExtraValidations &&
-            !m_oParentGraph.Vertices.Contains(oVertex) )
-        {
-            oArgumentChecker.ThrowArgumentException(sMethodName, sArgumentName,
-
-                String.Format(
-
-                    "{0} is not contained in the graph."
-                    ,
-                    sArgumentName
-                ) );
         }
     }
 

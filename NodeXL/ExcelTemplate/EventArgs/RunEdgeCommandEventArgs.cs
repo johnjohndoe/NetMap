@@ -25,10 +25,10 @@ public class RunEdgeCommandEventArgs : EventArgs
     /// cref="RunEdgeCommandEventArgs" /> class.
     /// </summary>
     ///
-    /// <param name="edgeID">
-    /// ID of the edge that was right-clicked in the edge table in the edge
-    /// worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
-    /// an edge wasn't right-clicked.  This is an ID that is stored in the
+    /// <param name="edgeRowID">
+    /// Row ID of the edge that was right-clicked in the edge table in the edge
+    /// worksheet, or <see cref="WorksheetContextMenuManager.NoRowID" /> if
+    /// an edge wasn't right-clicked.  This is a row ID that is stored in the
     /// worksheet, NOT an IEdge.ID value.
     /// </param>
     ///
@@ -39,40 +39,40 @@ public class RunEdgeCommandEventArgs : EventArgs
 
     public RunEdgeCommandEventArgs
     (
-        Int32 edgeID,
+        Int32 edgeRowID,
         WorksheetContextMenuManager.EdgeCommand edgeCommand
     )
     {
-        m_iEdgeID = edgeID;
+        m_iEdgeRowID = edgeRowID;
         m_eEdgeCommand = edgeCommand;
 
         AssertValid();
     }
 
     //*************************************************************************
-    //  Property: EdgeID
+    //  Property: EdgeRowID
     //
     /// <summary>
-    /// Gets the ID of the edge that was right-clicked in the edge table in the
-    /// edge worksheet.
+    /// Gets the row ID of the edge that was right-clicked in the edge table in
+    /// the edge worksheet.
     /// </summary>
     ///
     /// <value>
-    /// The ID of the right-clicked edge, or <see
-    /// cref="WorksheetContextMenuManager.NoID" /> if an edge wasn't right-
-    /// clicked.  This is an ID that is stored in the worksheet, NOT an
+    /// The row ID of the right-clicked edge, or <see
+    /// cref="WorksheetContextMenuManager.NoRowID" /> if an edge wasn't right-
+    /// clicked.  This is a row ID that is stored in the worksheet, NOT an
     /// IEdge.ID value.
     /// </value>
     //*************************************************************************
 
     public Int32
-    EdgeID
+    EdgeRowID
     {
         get
         {
             AssertValid();
 
-            return (m_iEdgeID);
+            return (m_iEdgeRowID);
         }
     }
 
@@ -113,8 +113,8 @@ public class RunEdgeCommandEventArgs : EventArgs
     public void
     AssertValid()
     {
-        Debug.Assert(m_iEdgeID == WorksheetContextMenuManager.NoID ||
-            m_iEdgeID > 0);
+        Debug.Assert(m_iEdgeRowID == WorksheetContextMenuManager.NoRowID ||
+            m_iEdgeRowID > 0);
 
         // m_eEdgeCommand
     }
@@ -124,11 +124,11 @@ public class RunEdgeCommandEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-    /// ID of the edge that was right-clicked in the edge table in the edge
-    /// worksheet, or WorksheetContextMenuManager.NoID if an edge wasn't right-
-    /// clicked.
+    /// Row ID of the edge that was right-clicked in the edge table in the edge
+    /// worksheet, or WorksheetContextMenuManager.NoRowID if an edge wasn't
+    /// right-clicked.
 
-    protected Int32 m_iEdgeID;
+    protected Int32 m_iEdgeRowID;
 
     /// The command to run.
 

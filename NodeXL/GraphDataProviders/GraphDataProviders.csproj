@@ -58,9 +58,6 @@
     <Compile Include="..\..\Common\Controls\ListControlPlus.cs">
       <Link>Controls\ListControlPlus.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\DateTimeUtil2.cs">
-      <Link>Util\DateTimeUtil2.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
       <Link>Util\Excel\ExcelDateTimeUtil.cs</Link>
     </Compile>
@@ -171,12 +168,13 @@
     <Compile Include="GraphDataProviders\Twitter\TwitterUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeVideoNetworkGraphDataProvider.cs" />
+    <Compile Include="NetworkAnalyzers\Exceptions\CancellationPendingException.cs" />
+    <Compile Include="NetworkAnalyzers\Exceptions\PartialNetworkException.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrException.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrRelatedTagNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
-    <Compile Include="NetworkAnalyzers\PartialNetworkException.cs" />
     <Compile Include="NetworkAnalyzers\RequestStatistics.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\oAuth.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\oAuthTwitter.cs" />

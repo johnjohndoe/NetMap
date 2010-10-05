@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
@@ -12,61 +13,90 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: Sheet5
 //
 /// <summary>
-/// Represents the cluster worksheet.
+/// Represents the group worksheet.
 /// </summary>
 //*****************************************************************************
 
 public partial class Sheet5
 {
     //*************************************************************************
-    //  Event: ClusterSelectionChanged
+    //  Property: SheetHelper
     //
     /// <summary>
-    /// Occurs when the selection state of the cluster table changes.
-    /// </summary>
-    //*************************************************************************
-
-    public event TableSelectionChangedEventHandler ClusterSelectionChanged;
-
-
-    //*************************************************************************
-    //  Method: FireClusterSelectionChanged()
-    //
-    /// <summary>
-    /// Fires the <see cref="ClusterSelectionChanged" /> event if appropriate.
+    /// Gets the object that does most of the work for this class.
     /// </summary>
     ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
+    /// <value>
+    /// A SheetHelper object.
+    /// </value>
     //*************************************************************************
 
-    private void
-    FireClusterSelectionChanged
-    (
-        TableSelectionChangedEventArgs e
-    )
+    public SheetHelper
+    SheetHelper
     {
-        Debug.Assert(e != null);
+        get
+        {
+            AssertValid();
+
+            return (m_oSheetHelper);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetSelectedGroupNames()
+    //
+    /// <summary>
+    /// Gets the group names for the rows in the table that have at least one
+    /// cell selected.
+    /// </summary>
+    ///
+    /// <returns>
+    /// A collection of group names.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method activates the worksheet if it isn't already activated.
+    /// </remarks>
+    //*************************************************************************
+
+    public ICollection<String>
+    GetSelectedGroupNames()
+    {
         AssertValid();
 
-        TableSelectionChangedEventHandler oClusterSelectionChanged =
-            this.ClusterSelectionChanged;
+        return ( m_oSheetHelper.GetSelectedStringColumnValues(
+            GroupTableColumnNames.Name ) );
+    }
 
-        if (oClusterSelectionChanged != null)
-        {
-            try
-            {
-                oClusterSelectionChanged(this, e);
-            }
-            catch (Exception oException)
-            {
-                // If exceptions aren't caught here, Excel consumes them
-                // without indicating that anything is wrong.
+    //*************************************************************************
+    //  Method: SelectGroups()
+    //
+    /// <summary>
+    /// Selects a specified collection of groups.
+    /// </summary>
+    ///
+    /// <param name="groupNames">
+    /// Names of the groups to select.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method activates the worksheet if it isn't already activated.
+    /// </remarks>
+    //*************************************************************************
 
-                ErrorUtil.OnException(oException);
-            }
-        }
+    public void
+    SelectGroups
+    (
+        ICollection<String> groupNames
+    )
+    {
+        Debug.Assert(groupNames != null);
+        AssertValid();
+
+        m_oSheetHelper.SelectTableRowsByColumnValues<String>(
+            GroupTableColumnNames.Name, groupNames,
+            ExcelUtil.TryGetNonEmptyStringFromCell
+            );
     }
 
     //*************************************************************************
@@ -98,41 +128,7 @@ public partial class Sheet5
 
         // Create the helper object.
 
-        m_oSheetHelper = new SheetHelper(this, this.Clusters);
-
-        m_oSheetHelper.TableSelectionChanged +=
-            new TableSelectionChangedEventHandler(
-                m_oSheetHelper_TableSelectionChanged);
-
-        m_oSheetHelper.Sheet_Startup();
-    }
-
-    //*************************************************************************
-    //  Method: m_oSheetHelper_TableSelectionChanged()
-    //
-    /// <summary>
-    /// Handles the TableSelectionChanged event on the m_oSheetHelper object.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    m_oSheetHelper_TableSelectionChanged
-    (
-        object sender,
-        TableSelectionChangedEventArgs e
-    )
-    {
-        AssertValid();
-
-        FireClusterSelectionChanged(e);
+        m_oSheetHelper = new SheetHelper(this, this.Groups);
     }
 
     //*************************************************************************
@@ -200,7 +196,7 @@ public partial class Sheet5
         // See if the specified attribute is set by the helper class.
 
         m_oSheetHelper.SetVisualAttribute(e, oSelectedRange,
-            ClusterTableColumnNames.VertexColor, null);
+            GroupTableColumnNames.VertexColor, null);
 
         if (e.VisualAttributeSet)
         {
@@ -212,8 +208,8 @@ public partial class Sheet5
             Debug.Assert(e.AttributeValue is VertexShape);
 
             ExcelUtil.SetVisibleSelectedTableColumnData(
-                this.Clusters.InnerObject, oSelectedRange,
-                ClusterTableColumnNames.VertexShape,
+                this.Groups.InnerObject, oSelectedRange,
+                GroupTableColumnNames.VertexShape,
 
                 ( new VertexShapeConverter() ).GraphToWorkbook(
                     (VertexShape)e.AttributeValue)

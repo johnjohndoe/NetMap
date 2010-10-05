@@ -169,14 +169,14 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkInternal()
+    //  Method: GetUserNetworkInternal()
     //
     /// <overloads>
-    /// Attempts to get a network of Flickr users.
+    /// Gets a network of Flickr users.
     /// </overloads>
     ///
     /// <summary>
-    /// Attempts to get a network of Flickr users.
+    /// Gets a network of Flickr users.
     /// </summary>
     ///
     /// <param name="sScreenName">
@@ -201,37 +201,19 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// Flickr API key.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
     /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
+    /// An XmlDocument containing the network as GraphML.
     /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkInternal
+    protected XmlDocument
+    GetUserNetworkInternal
     (
         String sScreenName,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
         Int32 iMaximumPerRequest,
-        String sApiKey,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
-        out XmlDocument oXmlDocument
+        String sApiKey
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
@@ -243,10 +225,7 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Debug.Assert(iMaximumPerRequest > 0);
         Debug.Assert( !String.IsNullOrEmpty(sApiKey) );
 
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
-
-        oXmlDocument = null;
 
         GraphMLXmlDocument oGraphMLXmlDocument = CreateGraphMLXmlDocument(
 
@@ -261,29 +240,26 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         try
         {
-            if ( !TryGetUserNetworkInternal(sScreenName, eWhatToInclude,
-                eNetworkLevel, iMaximumPerRequest, sApiKey, oRequestStatistics,
-                oBackgroundWorker, oDoWorkEventArgs, oGraphMLXmlDocument) )
-            {
-                // The user cancelled.
-
-                return (false);
-            }
+            GetUserNetworkInternal(sScreenName, eWhatToInclude, eNetworkLevel,
+                iMaximumPerRequest, sApiKey, oRequestStatistics,
+                oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
             OnTerminatingException(oException);
         }
 
-        return ( OnNetworkObtainedWithoutTerminatingException(
-            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+        OnNetworkObtainedWithoutTerminatingException(oGraphMLXmlDocument,
+            oRequestStatistics);
+
+        return (oGraphMLXmlDocument);
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkInternal()
+    //  Method: GetUserNetworkInternal()
     //
     /// <summary>
-    /// Attempts to get a network of Flickr users, given a GraphMLXmlDocument.
+    /// Gets a network of Flickr users, given a GraphMLXmlDocument.
     /// </summary>
     ///
     /// <param name="sScreenName">
@@ -313,27 +289,13 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument to populate with the requested network.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkInternal
+    protected void
+    GetUserNetworkInternal
     (
         String sScreenName,
         WhatToInclude eWhatToInclude,
@@ -341,8 +303,6 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Int32 iMaximumPerRequest,
         String sApiKey,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
@@ -355,7 +315,6 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Debug.Assert(iMaximumPerRequest > 0);
         Debug.Assert( !String.IsNullOrEmpty(sApiKey) );
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -388,36 +347,26 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         {
             if ( abIncludes[i] )
             {
-                if ( !TryGetUserNetworkRecursive(sUserID, sScreenName,
-                    eWhatToInclude, (i == 0), eNetworkLevel,
-                    iMaximumPerRequest, sApiKey, 1, oGraphMLXmlDocument,
-                    oUserIDDictionary, oRequestStatistics, oBackgroundWorker,
-                    oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                GetUserNetworkRecursive(sUserID, sScreenName, eWhatToInclude,
+                    (i == 0), eNetworkLevel, iMaximumPerRequest, sApiKey, 1,
+                    oGraphMLXmlDocument, oUserIDDictionary,
+                    oRequestStatistics);
             }
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.UserInformation) )
         {
-            if ( !AppendUserInformationGraphMLAttributeValues(
-                oGraphMLXmlDocument, oUserIDDictionary, sApiKey,
-                oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
+            AppendUserInformationGraphMLAttributeValues(oGraphMLXmlDocument,
+                oUserIDDictionary, sApiKey, oRequestStatistics);
         }
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkRecursive()
+    //  Method: GetUserNetworkRecursive()
     //
     /// <summary>
-    /// Attempts to recursively get a network of Flickr users.
+    /// Recursively gets a network of Flickr users.
     /// </summary>
     ///
     /// <param name="sUserID">
@@ -469,24 +418,10 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkRecursive
+    protected void
+    GetUserNetworkRecursive
     (
         String sUserID,
         String sScreenName,
@@ -498,9 +433,7 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Int32 iRecursionLevel,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, XmlNode> oUserIDDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUserID) );
@@ -516,7 +449,6 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oUserIDDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         /*
@@ -563,11 +495,6 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
             sUserID, bIncludeContactsThisCall, iMaximumPerRequest,
             oGraphMLXmlDocument, sApiKey, oRequestStatistics) )
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             String sOtherScreenName, sOtherUserID;
 
             if (
@@ -669,19 +596,12 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 String sScreenNameToRecurse = GetScreenNameFromVertexXmlNode(
                     oVertexXmlNode);
 
-                if ( !TryGetUserNetworkRecursive(sUserIDToRecurse,
-                    sScreenNameToRecurse, eWhatToInclude,
-                    bIncludeContactsThisCall, eNetworkLevel,
+                GetUserNetworkRecursive(sUserIDToRecurse, sScreenNameToRecurse,
+                    eWhatToInclude, bIncludeContactsThisCall, eNetworkLevel,
                     iMaximumPerRequest, sApiKey, 2, oGraphMLXmlDocument,
-                    oUserIDDictionary, oRequestStatistics, oBackgroundWorker,
-                    oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                    oUserIDDictionary, oRequestStatistics);
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -928,7 +848,7 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
             ReportProgress( String.Format(
 
-                "Getting comments for the photo \"{0}\""
+                "Getting comments for the photo \"{0}\"."
                 ,
                 sPhotoID
                 ) );
@@ -980,7 +900,7 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         ReportProgress( String.Format(
 
-            "Getting {0} \"{1}\""
+            "Getting {0} \"{1}\"."
             ,
             bForContacts ? "contacts of" : "people who commented on",
             sScreenName
@@ -1104,54 +1024,32 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the information was appended, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
+    protected void
     AppendUserInformationGraphMLAttributeValues
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, XmlNode> oUserIDDictionary,
         String sApiKey,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oUserIDDictionary != null);
         Debug.Assert( !String.IsNullOrEmpty(sApiKey) );
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         foreach (KeyValuePair<String, XmlNode> oKeyValuePair in
             oUserIDDictionary)
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             String sUserID = oKeyValuePair.Key;
             XmlNode oVertexXmlNode = oKeyValuePair.Value;
 
             ReportProgress( String.Format(
 
-                "Getting information about \"{0}\""
+                "Getting information about \"{0}\"."
                 ,
                 GetScreenNameFromVertexXmlNode(oVertexXmlNode)
                 ) );
@@ -1160,8 +1058,6 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 oVertexXmlNode, oGraphMLXmlDocument, sApiKey,
                 oRequestStatistics);
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -1319,17 +1215,17 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs =
             (GetNetworkAsyncArgs)e.Argument;
 
-        XmlDocument oGraphMLDocument;
-        
-        if ( TryGetUserNetworkInternal(
-            oGetNetworkAsyncArgs.ScreenName,
-            oGetNetworkAsyncArgs.WhatToInclude,
-            oGetNetworkAsyncArgs.NetworkLevel,
-            oGetNetworkAsyncArgs.MaximumPerRequest,
-            oGetNetworkAsyncArgs.ApiKey,
-            oBackgroundWorker, e, out oGraphMLDocument) )
+        try
         {
-            e.Result = oGraphMLDocument;
+            e.Result = GetUserNetworkInternal(oGetNetworkAsyncArgs.ScreenName,
+                oGetNetworkAsyncArgs.WhatToInclude,
+                oGetNetworkAsyncArgs.NetworkLevel,
+                oGetNetworkAsyncArgs.MaximumPerRequest,
+                oGetNetworkAsyncArgs.ApiKey);
+        }
+        catch (CancellationPendingException)
+        {
+            e.Cancel = true;
         }
     }
 

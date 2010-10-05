@@ -62,8 +62,8 @@ public class EigenvectorCentralityCalculator2 :
     /// </param>
     ///
     /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
+    /// true if the graph metrics were calculated or don't need to be
+    /// calculated, false if the user wants to cancel.
     /// </returns>
     ///
     /// <remarks>
@@ -102,7 +102,7 @@ public class EigenvectorCentralityCalculator2 :
             new Algorithms.EigenvectorCentralityCalculator(),
 
             calculateGraphMetricsContext.GraphMetricUserSettings.
-                CalculateGraphMetrics(GraphMetrics.EigenvectorCentrality),
+                ShouldCalculateGraphMetrics(GraphMetrics.EigenvectorCentrality),
 
             VertexTableColumnNames.EigenvectorCentrality,
             VertexTableColumnWidths.EigenvectorCentrality,

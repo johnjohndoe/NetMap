@@ -294,7 +294,7 @@ public class TriangleVertexDrawingHistory : VertexDrawingHistory
         // calls and to make the labels look good.
 
         Double dCenterY = oVertexBounds.Top +
-            0.9 * (oVertexBounds.Height / 2.0);
+            1.2 * (oVertexBounds.Height / 2.0);
 
         Double dOffsetX = m_dHalfWidth * 0.7;
 

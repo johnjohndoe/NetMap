@@ -62,8 +62,8 @@ ColumnGroup
 
     // Important Note:
     //
-    // When a column group is added, every switch statement in the
-    // ColumnGroupManager class must be updated.
+    // When a column group is added, the methods in the ColumnGroupManager
+    // class must be updated.
 
 
     //*************************************************************************
@@ -120,8 +120,54 @@ ColumnGroup
 
     // Important Note:
     //
-    // When a column group is added, every switch statement in the
-    // ColumnGroupManager class must be updated.
+    // When a column group is added, the methods in the ColumnGroupManager
+    // class must be updated.
+
+
+    //*************************************************************************
+    //  Group table column groups
+    //
+    //  Important Note:
+    //
+    //  Column groups in the group table must start with "Group".
+    //*************************************************************************
+
+    /// <summary>
+    /// The columns in the group table that must always be visible.
+    /// </summary>
+
+    GroupDoNotHide,
+
+    /// <summary>
+    /// The visual attribute columns in the group table.
+    /// </summary>
+
+    GroupVisualAttributes,
+
+    /// <summary>
+    /// The graph metric columns in the group table.
+    /// </summary>
+
+    GroupGraphMetrics,
+
+    /// <summary>
+    /// The columns in the group table that are used only by NodeXL and should
+    /// not be edited by the user.
+    /// </summary>
+
+    GroupInternalUse,
+
+    /// <summary>
+    /// All columns in the group table that are not included in one of the
+    /// previous groups.
+    /// </summary>
+
+    GroupOtherColumns,
+
+    // Important Note:
+    //
+    // When a column group is added, the methods in the ColumnGroupManager
+    // class must be updated.
 }
 
 
@@ -324,6 +370,12 @@ public static class ColumnGroupManager
                 TableNames.Vertices, out oTable) );
         }
 
+        if ( sColumnGroup.StartsWith("Group") )
+        {
+            return ( ExcelUtil.TryGetTable(oWorkbook, WorksheetNames.Groups,
+                TableNames.Groups, out oTable) );
+        }
+
         Debug.Assert(false);
         return (false);
     }
@@ -462,8 +514,54 @@ public static class ColumnGroupManager
 
             case ColumnGroup.EdgeOtherColumns:
             case ColumnGroup.VertexOtherColumns:
+            case ColumnGroup.GroupOtherColumns:
 
                 asColumnNames = GetOtherColumnNames(oWorkbook, eColumnGroup);
+                break;
+
+            case ColumnGroup.GroupDoNotHide:
+
+                asColumnNames = new String [] {
+                    GroupTableColumnNames.Name,
+                    };
+
+                break;
+
+            case ColumnGroup.GroupVisualAttributes:
+
+                asColumnNames = new String [] {
+                    GroupTableColumnNames.VertexColor,
+                    GroupTableColumnNames.VertexShape,
+                    GroupTableColumnNames.Collapsed,
+                    };
+
+                break;
+
+            case ColumnGroup.GroupGraphMetrics:
+
+                asColumnNames = new String [] {
+                    GroupTableColumnNames.Vertices,
+                    GroupTableColumnNames.UniqueEdges,
+                    GroupTableColumnNames.EdgesWithDuplicates,
+                    GroupTableColumnNames.TotalEdges,
+                    GroupTableColumnNames.SelfLoops,
+                    GroupTableColumnNames.ConnectedComponents,
+                    GroupTableColumnNames.SingleVertexConnectedComponents,
+                    GroupTableColumnNames.MaximumConnectedComponentVertices,
+                    GroupTableColumnNames.MaximumConnectedComponentEdges,
+                    GroupTableColumnNames.MaximumGeodesicDistance,
+                    GroupTableColumnNames.AverageGeodesicDistance,
+                    GroupTableColumnNames.GraphDensity,
+                    };
+
+                break;
+
+            case ColumnGroup.GroupInternalUse:
+
+                asColumnNames = new String [] {
+                    CommonTableColumnNames.ID,
+                    };
+
                 break;
 
             default:
@@ -534,6 +632,11 @@ public static class ColumnGroupManager
                 case ColumnGroup.VertexOtherColumns:
 
                     sStartsWith = "Vertex";
+                    break;
+
+                case ColumnGroup.GroupOtherColumns:
+
+                    sStartsWith = "Group";
                     break;
 
                 default:

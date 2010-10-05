@@ -89,10 +89,8 @@ public static class TaskAutomator : Object
             // just use that dialog directly.
 
             CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
-                new CalculateGraphMetricsDialog(oWorkbook,
-                    new GraphMetricUserSettings(),
-                    new NotificationUserSettings(), null, true, null
-                    );
+                new CalculateGraphMetricsDialog( oWorkbook,
+                    new GraphMetricUserSettings() );
 
             if (oCalculateGraphMetricsDialog.ShowDialog() != DialogResult.OK)
             {
@@ -321,6 +319,7 @@ public static class TaskAutomator : Object
             "\"" + workbookPath + "\"");
 
         oProcess.WaitForExit();
+        oProcess.Close();
     }
 
     //*************************************************************************

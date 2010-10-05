@@ -149,7 +149,7 @@ This feature removes any filters that are applied to the Edges worksheet.</value
   <data name="btnPopulateVertexWorksheet.SuperTip" xml:space="preserve">
     <value>Copy each unique vertex name from the Edges worksheet to the Vertices worksheet.
 
-This occurs automatically when you read the workbook into the graph, but you can click this to copy the vertex names at any time.
+This occurs automatically when you refresh the graph, but you can click this to copy the vertex names at any time.
 
 Vertex names that are already in the Vertices worksheet do not get overwritten.</value>
   </data>
@@ -188,9 +188,9 @@ Vertex names that are already in the Vertices worksheet do not get overwritten.<
 </value>
   </data>
   <data name="btnReadWorkbook.SuperTip" xml:space="preserve">
-    <value>Read the workbook contents into the graph pane.
+    <value>Show or refresh the graph in the graph pane.
 
-The NodeXL graph pane appears at the right edge of the Excel window by default.  You can move it by clicking and dragging the pane's title bar.  (The title bar says "Document Actions," but that's only because Excel doesn't allow the title to be changed.)  The dragging behavior is finicky, so it might take some practice.</value>
+The NodeXL graph pane appears at the right edge of the Excel window by default.  You can move it by clicking and dragging the pane's title bar.  (The title bar says "Document Actions.")  The dragging behavior is finicky, so it might take some practice.</value>
   </data>
   <data name="rddGraphDirectedness.SuperTip" xml:space="preserve">
     <value>Specify whether the graph is directed or undirected.
@@ -427,24 +427,34 @@ Graph metrics are calculated differently for directed and undirected graphs.</va
         kPr9bBvA6SCKnDyRZ78fuWQSSg/+aCEvPGQNTk/rF87Hzn8CiGBDXn1X4+YAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="btnCalculateClusters.SuperTip" xml:space="preserve">
-    <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
+  <data name="btnGroupByVertexAttribute.SuperTip" xml:space="preserve">
+    <value>Group the graph's vertices using the values in a column on the Vertices worksheet.
 	
-The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.
+The groups are indicated by vertex color and shape when the graph is refreshed.  All the vertices in one group might be blue disks, for example.
 
-The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Find Clusters will clear any manually-entered clusters.
+The Groups checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the groups to be shown when the graph is refreshed.
 
-The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be read when the workbook is read into the graph.
+The group information is stored in the Groups and Group Vertices worksheets.
 </value>
   </data>
-  <data name="sbCalculateClusters.SuperTip" xml:space="preserve">
-    <value>Partition the graph into vertex clusters by looking at how the vertices are connected to one another.
+  <data name="btnCalculateConnectedComponents.SuperTip" xml:space="preserve">
+    <value>Group the graph's vertices into strongly connected components.
 	
-The clusters are indicated by vertex color and shape when the workbook is read into the graph.  All the vertices in one cluster might be red disks, for example.
+The components are indicated by vertex color and shape when the graph is refreshed.  All the vertices in one component might be blue disks, for example.
 
-The clusters get written to the Clusters and Cluster Vertices worksheets.  You can also fill in these worksheets manually, but note that Find Clusters will clear any manually-entered clusters.
+The Groups checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the components to be shown when the graph is refreshed.
 
-The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be read when the workbook is read into the graph.
+The component information is stored in the Groups and Group Vertices worksheets.
+</value>
+  </data>
+  <data name="btnCalculateClusters.SuperTip" xml:space="preserve">
+    <value>Group the graph's vertices into clusters using an algorithm that looks at how the vertices are connected to one another.
+	
+The clusters are indicated by vertex color and shape when the graph is refreshed.  All the vertices in one cluster might be blue disks, for example.
+
+The Groups checkbox in the Show/Hide, Graph Elements ribbon menu must be checked if you want the clusters to be shown when the graph is refreshed.
+
+The cluster information is stored in the Groups and Group Vertices worksheets.
 </value>
   </data>
   <data name="mnuShowGraphElements.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -461,19 +471,39 @@ The Clusters checkbox in the Show/Hide, Graph Elements ribbon menu must be check
         fgDHCDpzxal8ugAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="chkReadClusters.SuperTip" xml:space="preserve">
-    <value>Determine whether the Clusters and Cluster Vertices worksheets are read into the graph.
+  <data name="chkReadGroups.SuperTip" xml:space="preserve">
+    <value>Determine whether groups are shown in the graph.
 	
-When checked, the Clusters and Cluster Vertices worksheets are read when the workbook is read into the graph, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the Clusters and Cluster Vertices worksheets are ignored, and the Color and Shape columns on the Vertices worksheet are read.
+When checked, the groups in the Groups and Group Vertices worksheets are shown when the graph is refreshed, and the Color and Shape columns on the Vertices worksheet are ignored.  When unchecked, the groups are ignored and the Color and Shape columns on the Vertices worksheet are used.
 	
-You can fill in these worksheets manually, or click the Find Clusters button to fill them in automatically.  Find Clusters partitions the graph into vertex clusters by looking at how the vertices are connected to one another.
-
-Find Clusters uses the algorithm outlined in "Finding Community Structure in Mega-scale Social Networks," by Ken Wakita and Toshiyuki Tsurumi.</value>
+Use the NodeXL, Analysis, Groups menu to work with groups.</value>
   </data>
   <data name="chkShowGraphAxes.SuperTip" xml:space="preserve">
     <value>Show or hide the x- and y-axes in the graph pane.
 
 The axes initially show the numbers in the X and Y columns in the Vertices worksheet.  If you use Autofill Columns to autofill the X and Y columns using source columns, the axes will show the values in those source columns.
 </value>
+  </data>
+  <data name="CollapseGroups.SuperTip" xml:space="preserve">
+    <value>A collapsed group is shown as a vertex whose size is proportional to the number of vertices in the group.  It includes a plus sign to distinguish it from a normal vertex.</value>
+  </data>
+  <data name="btnAddSelectedVerticesToGroup.SuperTip" xml:space="preserve">
+    <value>Add the selected vertices to a new group or an existing group.
+	
+The vertices are automatically removed from any groups they already belong to.
+
+The group changes aren't shown until the graph is refreshed.</value>
+  </data>
+  <data name="btnRemoveSelectedVerticesFromGroups.SuperTip" xml:space="preserve">
+    <value>Remove the selected vertices from the groups they belong to.
+	
+This will not remove the vertices from the graph.
+
+The group changes aren't shown until the graph is refreshed.</value>
+  </data>
+  <data name="RemoveGroups.SuperTip" xml:space="preserve">
+    <value>Removing a group does not remove the group's vertices from the graph; it just causes those vertices to no longer be part of a group.
+	
+The group changes aren't shown until the graph is refreshed.</value>
   </data>
 </root>

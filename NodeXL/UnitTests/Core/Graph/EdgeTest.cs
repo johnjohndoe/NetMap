@@ -836,8 +836,6 @@ public class EdgeTest : Object
 
             IGraph oGraph2 = new Graph();
 
-            oGraph2.PerformExtraValidations = true;
-
             IVertex [] aoVertices2 = TestGraphUtil.AddVertices(oGraph2, 2);
 
             oEdge.Clone(true, true, oVertex1, aoVertices2[0], true);
@@ -923,6 +921,70 @@ public class EdgeTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestGetVertexNamePair()
+    //
+    /// <summary>
+    /// Tests the GetVertexNamePair() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetVertexNamePair()
+    {
+        Assert.AreEqual( "A\vB", Edge.GetVertexNamePair("A", "B", true) );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetVertexNamePair2()
+    //
+    /// <summary>
+    /// Tests the GetVertexNamePair() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetVertexNamePair2()
+    {
+        Assert.AreEqual( "B\vA", Edge.GetVertexNamePair("B", "A", true) );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetVertexNamePair3()
+    //
+    /// <summary>
+    /// Tests the GetVertexNamePair() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetVertexNamePair3()
+    {
+        Assert.AreEqual( "A\vB", Edge.GetVertexNamePair("A", "B", false) );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetVertexNamePair4()
+    //
+    /// <summary>
+    /// Tests the GetVertexNamePair() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetVertexNamePair4()
+    {
+        Assert.AreEqual( "A\vB", Edge.GetVertexNamePair("B", "A", false) );
+    }
+
+    //*************************************************************************
     //  Enum: CloneOverload
     //
     /// <summary>
@@ -1000,8 +1062,6 @@ public class EdgeTest : Object
         // CloneOverload.SpecifiedVertices case.
 
         IGraph oGraph2 = new Graph();
-
-        oGraph2.PerformExtraValidations = true;
 
         IVertex [] aoVertices2 = TestGraphUtil.AddVertices(oGraph2, 2);
 
@@ -1218,8 +1278,6 @@ public class EdgeTest : Object
         Debug.Assert(iVertices >= 0);
 
         m_oGraph = new Graph(eDirectedness);
-
-        m_oGraph.PerformExtraValidations = true;
 
         m_aoVertices = TestGraphUtil.AddVertices(m_oGraph, iVertices);
     }

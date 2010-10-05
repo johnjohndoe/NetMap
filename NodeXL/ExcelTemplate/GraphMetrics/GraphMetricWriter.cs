@@ -72,24 +72,17 @@ public partial class GraphMetricWriter : Object
         Debug.Assert(workbook != null);
         AssertValid();
 
-        // Show the graph metric column group.  If the graph metric columns
-        // aren't visible, this class won't write any of the graph metrics.
-
-        ColumnGroupManager.ShowOrHideColumnGroup(workbook,
-            ColumnGroup.VertexGraphMetrics, true, false);
-
         // (Note: Don't sort grapMetricColumns by worksheet name/table name in
         // an effort to minimize worksheet switches in the code below.  That
         // would interfere with the column order specified by the
-        // IGraphMetricCalculator implementations.
+        // IGraphMetricCalculator2 implementations.
 
-        // Create a dictionary of tables that have been cleared.  The key is
-        // the worksheet name + table name, and the value isn't used.
-        // (GraphMetricColumnOrdered columns require that the table be cleared
-        // before any graph metric values are written to it.)
+        // Create a dictionary of tables that have been written to.  The key is
+        // the worksheet name + table name, and the value is a WrittenTableInfo
+        // object that contains information about the table.
 
-        Dictionary<String, Char> oClearedTables =
-            new Dictionary<String, Char>();
+        Dictionary<String, WrittenTableInfo> oWrittenTables =
+            new Dictionary<String, WrittenTableInfo>();
 
         // Loop through the columns.
 
@@ -117,6 +110,25 @@ public partial class GraphMetricWriter : Object
                 sCurrentWorksheetPlusTable = sThisWorksheetPlusTable;
             }
 
+            WrittenTableInfo oWrittenTableInfo;
+
+            if ( !oWrittenTables.TryGetValue(sThisWorksheetPlusTable,
+                out oWrittenTableInfo) )
+            {
+                // Show all the table's columns.  If a graph metric column
+                // isn't visible, it can't be written to.
+
+                ExcelHiddenColumns oExcelHiddenColumns =
+                    ExcelColumnHider.ShowHiddenColumns(oTable);
+
+                oWrittenTableInfo = new WrittenTableInfo();
+                oWrittenTableInfo.Table = oTable;
+                oWrittenTableInfo.HiddenColumns = oExcelHiddenColumns;
+                oWrittenTableInfo.Cleared = false;
+
+                oWrittenTables.Add(sThisWorksheetPlusTable, oWrittenTableInfo);
+            }
+
             // Apparent Excel bug: Adding a column when the header row is not
             // the default row height increases the header row height.  Work
             // around this by saving the height and restoring it below.
@@ -134,13 +146,14 @@ public partial class GraphMetricWriter : Object
             }
             else if (oGraphMetricColumn is GraphMetricColumnOrdered)
             {
-                if ( !oClearedTables.ContainsKey(sThisWorksheetPlusTable) )
+                if (!oWrittenTableInfo.Cleared)
                 {
-                    // Clear the table.
+                    // GraphMetricColumnOrdered columns require that the table
+                    // be cleared before any graph metric values are written to
+                    // it.
 
                     ExcelUtil.ClearTable(oTable);
-
-                    oClearedTables.Add(sThisWorksheetPlusTable, ' ');
+                    oWrittenTableInfo.Cleared = true;
 
                     // Clear AutoFiltering, which interferes with writing an
                     // ordered list to the column.
@@ -157,6 +170,17 @@ public partial class GraphMetricWriter : Object
             }
 
             oTable.HeaderRowRange.RowHeight = dHeaderRowHeight;
+        }
+
+        // Restore any hidden columns in the tables that were written to.
+
+        foreach (KeyValuePair<String, WrittenTableInfo> oKeyValuePair in
+            oWrittenTables)
+        {
+            WrittenTableInfo oWrittenTableInfo = oKeyValuePair.Value;
+
+            ExcelColumnHider.RestoreHiddenColumns(oWrittenTableInfo.Table,
+                oWrittenTableInfo.HiddenColumns);
         }
     }
 
@@ -181,7 +205,7 @@ public partial class GraphMetricWriter : Object
     public void
     ActivateRelevantWorksheet
     (
-        GraphMetricColumn [] graphMetricColumns,
+        IEnumerable<GraphMetricColumn> graphMetricColumns,
         Microsoft.Office.Interop.Excel.Workbook workbook
     )
     {
@@ -191,6 +215,8 @@ public partial class GraphMetricWriter : Object
 
         Boolean bVertexMetricCalculated = false;
         Boolean bOverallMetricsCalculated = false;
+        Boolean bGroupsCalculated = false;
+        Boolean bGroupMetricCalculated = false;
 
         foreach (GraphMetricColumn oGraphMetricColumn in graphMetricColumns)
         {
@@ -206,6 +232,21 @@ public partial class GraphMetricWriter : Object
                     bOverallMetricsCalculated = true;
                     break;
 
+                case WorksheetNames.Groups:
+
+                    if (oGraphMetricColumn.ColumnName ==
+                        GroupTableColumnNames.Name)
+                    {
+                        bGroupsCalculated = true;
+                    }
+                    else if (oGraphMetricColumn.ColumnName ==
+                        GroupTableColumnNames.Vertices)
+                    {
+                        bGroupMetricCalculated = true;
+                    }
+
+                    break;
+
                 default:
 
                     break;
@@ -218,9 +259,22 @@ public partial class GraphMetricWriter : Object
         {
             sRelevantWorksheetName = WorksheetNames.Vertices;
         }
+        else if (bGroupsCalculated || bGroupMetricCalculated)
+        {
+            sRelevantWorksheetName = WorksheetNames.Groups;
+        }
         else if (bOverallMetricsCalculated)
         {
             sRelevantWorksheetName = WorksheetNames.OverallMetrics;
+        }
+
+        if (bVertexMetricCalculated || bGroupMetricCalculated)
+        {
+            ColumnGroupManager.ShowOrHideColumnGroup(workbook,
+                ColumnGroup.VertexGraphMetrics, true, false);
+
+            ColumnGroupManager.ShowOrHideColumnGroup(workbook,
+                ColumnGroup.GroupGraphMetrics, true, false);
         }
 
         Worksheet oRelevantWorksheet;
@@ -619,5 +673,30 @@ public partial class GraphMetricWriter : Object
     //*************************************************************************
 
     // (None.)
+
+
+    //*************************************************************************
+    //  Embedded class: WrittenTableInfo
+    //
+    /// <summary>
+    /// Contains information about a table that has been written to.
+    /// </summary>
+    //*************************************************************************
+
+    private class WrittenTableInfo
+    {
+        /// The table that was written to.
+
+        public ListObject Table;
+
+        /// Object that remembers which columns were hidden before the table
+        /// was written to.
+
+        public ExcelHiddenColumns HiddenColumns;
+
+        /// true if the table has been cleared.
+
+        public Boolean Cleared;
+    }
 }
 }

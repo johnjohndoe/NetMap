@@ -36,10 +36,6 @@ public class CalculateGraphMetricsContext : Object
     /// The user's settings for calculating graph metrics.
     /// </param>
     ///
-    /// <param name="duplicateEdgeDetector">
-    /// Object that counts duplicate and unique edges in the graph.
-    /// </param>
-    ///
     /// <param name="backgroundWorker">
     /// The BackgroundWorker object that is performing all graph metric
     /// calculations.
@@ -49,12 +45,10 @@ public class CalculateGraphMetricsContext : Object
     public CalculateGraphMetricsContext
     (
         GraphMetricUserSettings graphMetricUserSettings,
-        DuplicateEdgeDetector duplicateEdgeDetector,
         BackgroundWorker backgroundWorker
     )
     {
         m_oGraphMetricUserSettings = graphMetricUserSettings;
-        m_oDuplicateEdgeDetector = duplicateEdgeDetector;
         m_oBackgroundWorker = backgroundWorker;
 
         AssertValid();
@@ -80,29 +74,6 @@ public class CalculateGraphMetricsContext : Object
             AssertValid();
 
             return (m_oGraphMetricUserSettings);
-        }
-    }
-
-    //*************************************************************************
-    //  Property: DuplicateEdgeDetector
-    //
-    /// <summary>
-    /// Gets the object that counts duplicate and unique edges in the graph.
-    /// </summary>
-    ///
-    /// <value>
-    /// The object that counts duplicate and unique edges in the graph.
-    /// </value>
-    //*************************************************************************
-
-    public DuplicateEdgeDetector
-    DuplicateEdgeDetector
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_oDuplicateEdgeDetector);
         }
     }
 
@@ -146,7 +117,6 @@ public class CalculateGraphMetricsContext : Object
     AssertValid()
     {
         Debug.Assert(m_oGraphMetricUserSettings != null);
-        Debug.Assert(m_oDuplicateEdgeDetector != null);
         Debug.Assert(m_oBackgroundWorker != null);
     }
 
@@ -158,10 +128,6 @@ public class CalculateGraphMetricsContext : Object
     /// The user's settings for calculating graph metrics.
 
     protected GraphMetricUserSettings m_oGraphMetricUserSettings;
-
-    /// Object that counts duplicate and unique edges in the graph.
-
-    protected DuplicateEdgeDetector m_oDuplicateEdgeDetector;
 
     /// Object that is performing all graph metric calculations.
 

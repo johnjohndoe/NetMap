@@ -112,9 +112,8 @@ function Main()
     [String]$sPathRoot = "E:\"
     
     ProcessAssemblyInfoFiles ($sPathRoot + "NodeXL") $iRevision
-    ProcessAssemblyInfoFiles ($sPathRoot + "GraphDataProviders") $iRevision
 
 	ProcessExcelTemplateCsprojFile $sPathRoot $iRevision
 }
 
-Main(129)
+Main(150)

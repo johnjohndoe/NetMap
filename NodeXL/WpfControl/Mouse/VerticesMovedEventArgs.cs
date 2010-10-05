@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
@@ -26,16 +27,16 @@ public class VerticesMovedEventArgs : EventArgs
     /// </summary>
     ///
     /// <param name="movedVertices">
-    /// An array of one or more vertices that were moved.
+    /// Collection of one or more vertices that were moved.
     /// </param>
     //*************************************************************************
 
     public VerticesMovedEventArgs
     (
-        IVertex [] movedVertices
+        ICollection<IVertex> movedVertices
     )
     {
-        m_aoMovedVertices = movedVertices;
+        m_oMovedVertices = movedVertices;
 
         // AssertValid();
     }
@@ -44,22 +45,22 @@ public class VerticesMovedEventArgs : EventArgs
     //  Property: MovedVertices
     //
     /// <summary>
-    /// Gets an array of one or more vertices that were moved.
+    /// Gets a collection of one or more vertices that were moved.
     /// </summary>
     ///
     /// <value>
-    /// An array of one or more vertices that were moved.
+    /// A collection of one or more vertices that were moved.
     /// </value>
     //*************************************************************************
 
-    public IVertex []
+    public ICollection<IVertex>
     MovedVertices
     {
         get
         {
             AssertValid();
 
-            return (m_aoMovedVertices);
+            return (m_oMovedVertices);
         }
     }
 
@@ -77,8 +78,8 @@ public class VerticesMovedEventArgs : EventArgs
     public virtual void
     AssertValid()
     {
-        Debug.Assert(m_aoMovedVertices != null);
-        Debug.Assert(m_aoMovedVertices.Length > 0);
+        Debug.Assert(m_oMovedVertices != null);
+        Debug.Assert(m_oMovedVertices.Count > 0);
     }
 
 
@@ -86,9 +87,9 @@ public class VerticesMovedEventArgs : EventArgs
     //  Protected member data
     //*************************************************************************
 
-    /// Array of one or more vertices that were moved.
+    /// Collection of one or more vertices that were moved.
 
-    protected IVertex [] m_aoMovedVertices;
+    protected ICollection<IVertex> m_oMovedVertices;
 }
 
 

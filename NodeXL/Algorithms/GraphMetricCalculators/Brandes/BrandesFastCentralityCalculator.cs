@@ -3,8 +3,8 @@
 
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
@@ -19,15 +19,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The betweenness and closeness centralities are provided as a 
-/// Dictionary&lt;Int32, BrandesVertexCentralities&gt;.  There is one key/value
-/// pair for each vertex in the graph.  The key is the IVertex.ID and the value
-/// is a <see cref="BrandesVertexCentralities" /> object.
-///
-/// <para>
 /// If a vertex is isolated, its betweenness and closeness centralities are
 /// zero.
-/// </para>
 ///
 /// <para>
 /// In a previous version, the centralities were calculated simultaneously by
@@ -102,12 +95,46 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
+    //  Method: CalculateGraphMetrics()
+    //
+    /// <summary>
+    /// Calculate the graph metrics.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <returns>
+    /// The graph metrics.  There is one key/value pair for each vertex in the
+    /// graph.  The key is the IVertex.ID and the value is a <see
+    /// cref="BrandesVertexCentralities" /> object.
+    /// </returns>
+    //*************************************************************************
+
+    public Dictionary<Int32, BrandesVertexCentralities>
+    CalculateGraphMetrics
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        Dictionary<Int32, BrandesVertexCentralities> oGraphMetrics;
+
+        TryCalculateGraphMetrics(graph, null, out oGraphMetrics);
+
+        return (oGraphMetrics);
+    }
+
+    //*************************************************************************
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread, and provides the metrics in
-    /// a type-safe manner.
+    /// Attempts to calculate the graph metrics while optionally running on a
+    /// background thread.
     /// </summary>
     ///
     /// <param name="graph">
@@ -121,8 +148,9 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="graphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
+    /// Where the graph metrics get stored if true is returned.  There is one
+    /// key/value pair for each vertex in the graph.  The key is the IVertex.ID
+    /// and the value is a <see cref="BrandesVertexCentralities" /> object.
     /// </param>
     ///
     /// <returns>
@@ -140,61 +168,11 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
     )
     {
         Debug.Assert(graph != null);
-
-        Object oGraphMetricsAsObject;
-
-        Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
-            out oGraphMetricsAsObject);
-
-        graphMetrics = ( Dictionary<Int32, BrandesVertexCentralities> )
-            oGraphMetricsAsObject;
-
-        return (bReturn);
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetricsCore()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method, or null if
-    /// the method is being called by some other thread.
-    /// </param>
-    ///
-    /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for the return type.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected override Boolean
-    TryCalculateGraphMetricsCore
-    (
-        IGraph oGraph,
-        BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
-    )
-    {
-        Debug.Assert(oGraph != null);
         AssertValid();
 
         Stopwatch oStopwatch = Stopwatch.StartNew();
 
-        IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = graph.Vertices;
 
         // The key is an IVertex.ID and the value is the corresponding
         // BrandesVertexCentralities object.
@@ -203,7 +181,7 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
             oBrandesVertexCentralities =
             new Dictionary<Int32, BrandesVertexCentralities>(oVertices.Count);
 
-        oGraphMetrics = oBrandesVertexCentralities;
+        graphMetrics = oBrandesVertexCentralities;
 
         // The code below doesn't calculate metric values for isolates, so
         // start with zero for each vertex.  Values for non-isolate vertices
@@ -215,24 +193,24 @@ public class BrandesFastCentralityCalculator : GraphMetricCalculatorBase
                 oVertex.ID, new BrandesVertexCentralities() );
         }
 
-        if (oBackgroundWorker != null)
+        if (backgroundWorker != null)
         {
-            if (oBackgroundWorker.CancellationPending)
+            if (backgroundWorker.CancellationPending)
             {
                 return (false);
             }
 
-            ReportProgress(1, 3, oBackgroundWorker);
+            ReportProgress(1, 3, backgroundWorker);
         }
 
-        String sOutputFilePath = CalculateSnapGraphMetrics(oGraph,
+        String sOutputFilePath = CalculateSnapGraphMetrics(graph,
             SnapGraphMetrics.ClosenessCentrality |
             SnapGraphMetrics.BetweennessCentrality
             );
 
-        if (oBackgroundWorker != null)
+        if (backgroundWorker != null)
         {
-            ReportProgress(2, 3, oBackgroundWorker);
+            ReportProgress(2, 3, backgroundWorker);
         }
 
         using ( StreamReader oStreamReader = new StreamReader(

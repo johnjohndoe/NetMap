@@ -52,7 +52,7 @@ public class GraphTest : Object
     public void
     SetUp()
     {
-        InitializeGraph(GraphDirectedness.Mixed, GraphRestrictions.None);
+        InitializeGraph(GraphDirectedness.Mixed);
     }
 
     //*************************************************************************
@@ -94,15 +94,8 @@ public class GraphTest : Object
 
         Assert.IsNotNull(m_oGraph.Edges);
         Assert.AreEqual(0, m_oGraph.Edges.Count);
-
         Assert.IsNull(m_oGraph.Name);
-
-        Assert.IsFalse(m_oGraph.PerformExtraValidations);
-
-        Assert.AreEqual(GraphRestrictions.None, m_oGraph.Restrictions);
-
         Assert.IsNull(m_oGraph.Tag);
-
         Assert.IsNotNull(m_oGraph.Vertices);
         Assert.AreEqual(0, m_oGraph.Vertices.Count);
     }
@@ -126,48 +119,8 @@ public class GraphTest : Object
 
         Assert.IsNotNull(m_oGraph.Edges);
         Assert.AreEqual(0, m_oGraph.Edges.Count);
-
         Assert.IsNull(m_oGraph.Name);
-
-        Assert.IsFalse(m_oGraph.PerformExtraValidations);
-
-        Assert.AreEqual(GraphRestrictions.None, m_oGraph.Restrictions);
-
         Assert.IsNull(m_oGraph.Tag);
-
-        Assert.IsNotNull(m_oGraph.Vertices);
-        Assert.AreEqual(0, m_oGraph.Vertices.Count);
-    }
-
-    //*************************************************************************
-    //  Method: TestConstructor3()
-    //
-    /// <summary>
-    /// Tests the Graph(Directedness, Restrictions) constructor.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestConstructor3()
-    {
-        m_oGraph = new Graph(GraphDirectedness.Undirected,
-            GraphRestrictions.NoSelfLoops);
-
-        Assert.AreEqual(GraphDirectedness.Undirected, m_oGraph.Directedness);
-
-        Assert.IsNotNull(m_oGraph.Edges);
-        Assert.AreEqual(0, m_oGraph.Edges.Count);
-
-        Assert.IsNull(m_oGraph.Name);
-
-        Assert.IsFalse(m_oGraph.PerformExtraValidations);
-
-        Assert.AreEqual(GraphRestrictions.NoSelfLoops, m_oGraph.Restrictions);
-
-        Assert.IsNull(m_oGraph.Tag);
-
         Assert.IsNotNull(m_oGraph.Vertices);
         Assert.AreEqual(0, m_oGraph.Vertices.Count);
     }
@@ -190,8 +143,7 @@ public class GraphTest : Object
 
         try
         {
-            m_oGraph = new Graph(
-                (GraphDirectedness)(-1), GraphRestrictions.None);
+            m_oGraph = new Graph( (GraphDirectedness)(-1) );
         }
         catch (ArgumentException oArgumentException)
         {
@@ -246,43 +198,6 @@ public class GraphTest : Object
     }
  
     //*************************************************************************
-    //  Method: TestConstructorBad3()
-    //
-    /// <summary>
-    /// Tests the constructor.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentException) ) ]
-
-    public void
-    TestConstructorBad3()
-    {
-        // Invalid restrictions.
-
-        try
-        {
-            m_oGraph = new Graph(
-                GraphDirectedness.Mixed, (GraphRestrictions)(-1) );
-        }
-        catch (ArgumentException oArgumentException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Core."
-                + "Graph.Constructor: Must be an ORed combination of"
-                + " the flags in the GraphRestrictions enumeration.\r\n"
-                + "Parameter name: restrictions"
-                ,
-                oArgumentException.Message
-                );
-
-            throw oArgumentException;
-        }
-    }
- 
-    //*************************************************************************
     //  Method: TestDirectedness()
     //
     /// <summary>
@@ -298,120 +213,9 @@ public class GraphTest : Object
         foreach (GraphDirectedness eDirectedness in
             TestGraphUtil.AllGraphDirectedness)
         {
-            InitializeGraph(eDirectedness, GraphRestrictions.None);
+            InitializeGraph(eDirectedness);
 
             Assert.AreEqual(eDirectedness, m_oGraph.Directedness);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestRestrictions()
-    //
-    /// <summary>
-    /// Tests the Restrictions property and HasRestrictions() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestRestrictions()
-    {
-        foreach (GraphRestrictions eRestrictions in
-            TestGraphUtil.AllGraphRestrictions)
-        {
-            InitializeGraph(GraphDirectedness.Mixed, eRestrictions);
-
-            Assert.AreEqual(eRestrictions, m_oGraph.Restrictions);
-
-            foreach (GraphRestrictions eRestrictions2 in
-                TestGraphUtil.AllGraphRestrictions)
-            {
-                Boolean bHasRestrictions2 =
-                    m_oGraph.HasRestrictions(eRestrictions2);
-
-                if (eRestrictions2 == GraphRestrictions.None)
-                {
-                    if (eRestrictions == GraphRestrictions.None)
-                    {
-                        Assert.IsTrue(bHasRestrictions2);
-                    }
-                    else
-                    {
-                        Assert.IsFalse(bHasRestrictions2);
-                    }
-                }
-                else
-                {
-                    if ( (eRestrictions2 & eRestrictions) == eRestrictions2 )
-                    {
-                        Assert.IsTrue(bHasRestrictions2);
-                    }
-                    else
-                    {
-                        Assert.IsFalse(bHasRestrictions2);
-                    }
-                }
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestHasRestrictionsBad()
-    //
-    /// <summary>
-    /// Tests the HasRestrictions() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentException) ) ]
-
-    public void
-    TestHasRestrictionsBad()
-    {
-        // Invalid restrictions.
-
-        try
-        {
-            Boolean bHasRestrictions =
-                m_oGraph.HasRestrictions( (GraphRestrictions)(-1) );
-        }
-        catch (ArgumentException oArgumentException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Core."
-                + "Graph.HasRestrictions: Must be an ORed combination of the"
-                + " flags in the GraphRestrictions enumeration.\r\n"
-                + "Parameter name: restrictions"
-                ,
-                oArgumentException.Message
-                );
-
-            throw oArgumentException;
-        }
-    }
- 
-    //*************************************************************************
-    //  Method: TestPerformExtraValidations()
-    //
-    /// <summary>
-    /// Tests the PerformExtraValidations property.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestPerformExtraValidations()
-    {
-        foreach (Boolean bPerformExtraValidations in TestGraphUtil.AllBoolean)
-        {
-            m_oGraph.PerformExtraValidations = bPerformExtraValidations;
-
-            Assert.AreEqual(
-                bPerformExtraValidations, m_oGraph.PerformExtraValidations);
         }
     }
 
@@ -564,11 +368,6 @@ public class GraphTest : Object
         foreach (GraphDirectedness eDirectedness in
             TestGraphUtil.AllGraphDirectedness)
 
-        foreach (GraphRestrictions eRestrictions in
-            TestGraphUtil.AllGraphRestrictions)
-
-        foreach (Boolean bPerformExtraValidations in TestGraphUtil.AllBoolean)
-
         foreach (Int32 iVertices in aiVertices)
 
         foreach (Boolean bAddEdges in TestGraphUtil.AllBoolean)
@@ -577,11 +376,9 @@ public class GraphTest : Object
 
             // Prepare the graph to be cloned.
 
-            InitializeGraph(eDirectedness, eRestrictions);
+            InitializeGraph(eDirectedness);
 
             m_oGraph.Name = Name;
-
-            m_oGraph.PerformExtraValidations = bPerformExtraValidations;
 
             MetadataUtil.SetRandomMetadata(m_oGraph, true, true, m_oGraph.ID);
 
@@ -703,12 +500,7 @@ public class GraphTest : Object
 
             Assert.AreEqual(Name, oNewGraph.Name);
 
-            Assert.AreEqual(bPerformExtraValidations,
-                oNewGraph.PerformExtraValidations);
-
             Assert.AreEqual(eDirectedness, oNewGraph.Directedness);
-
-            Assert.AreEqual(eRestrictions, oNewGraph.Restrictions);
 
             Assert.AreNotEqual(m_oGraph.ID, oNewGraph.ID);
         }
@@ -752,8 +544,6 @@ public class GraphTest : Object
         const Int32 Vertices = 1000000;
 
         const Int32 Edges = 100000;
-
-        m_oGraph.PerformExtraValidations = false;
 
         IVertex [] aoVertices = TestGraphUtil.AddVertices(m_oGraph, Vertices);
 
@@ -829,30 +619,25 @@ public class GraphTest : Object
     /// <param name="eDirectedness">
     /// Directedness of m_oGraph.
     /// </param>
-    ///
-    /// <param name="eRestrictions">
-    /// Restrictions to apply to m_oGraph.
-    /// </param>
     //*************************************************************************
 
     protected void
     InitializeGraph
     (
-        GraphDirectedness eDirectedness,
-        GraphRestrictions eRestrictions
+        GraphDirectedness eDirectedness
     )
     {
-        m_oGraph = new Graph(eDirectedness, eRestrictions);
+        m_oGraph = new Graph(eDirectedness);
 
-        m_oGraph.PerformExtraValidations = true;
-
-        m_oGraph.EdgeAdded += new EdgeEventHandler(this.Graph_EdgeAdded);
+        m_oGraph.Edges.EdgeAdded += new EdgeEventHandler(
+            this.EdgeCollection_EdgeAdded);
 
         m_bEdgeAdded = false;
 
         m_oAddedEdge = null;
 
-        m_oGraph.VertexAdded += new VertexEventHandler(this.Graph_VertexAdded);
+        m_oGraph.Vertices.VertexAdded += new VertexEventHandler(
+            this.VertexCollection_VertexAdded);
 
         m_bVertexAdded = false;
 
@@ -925,28 +710,14 @@ public class GraphTest : Object
 
         List<IEdge> oActualEdges = new List<IEdge>();
 
-        // Create a graph with random directedness and restrictions.
+        // Create a graph with random directedness.
 
         GraphDirectedness eDirectedness = TestGraphUtil.AllGraphDirectedness[
             oRandom.Next(TestGraphUtil.AllGraphDirectedness.Length) ];
 
-        GraphRestrictions eRestrictions = GraphRestrictions.None;
-
-        if (oRandom.Next(2) % 2 == 0)
-        {
-            eRestrictions |= GraphRestrictions.NoSelfLoops;
-        }
-
-        if (oRandom.Next(2) % 2 == 0)
-        {
-            eRestrictions |= GraphRestrictions.NoParallelEdges;
-        }
-
-        InitializeGraph(eDirectedness, eRestrictions);
+        InitializeGraph(eDirectedness);
 
         // Add random vertices.
-
-        m_oGraph.PerformExtraValidations = false;
 
         IVertex [] aoVertices = TestGraphUtil.AddVertices(m_oGraph, iVertices);
 
@@ -988,44 +759,8 @@ public class GraphTest : Object
 
             IVertex oVertex1 = aoVertices[ oRandom.Next(iVertices) ];
             IVertex oVertex2 = aoVertices[ oRandom.Next(iVertices) ];
-
-            // EdgeCollection.Add() will throw an exception if one of the graph
-            // restrictions is violated, which can happen with random edges.
-
-            IEdge oEdge = null;
-
-            try
-            {
-                oEdge = oEdgeCollection.Add(oVertex1, oVertex2, bIsDirected);
-
-                oActualEdges.Add(oEdge);
-            }
-            catch (ArgumentException oArgumentException)
-            {
-                String sMessage = oArgumentException.Message;
-
-                if (
-                    sMessage.IndexOf("The edge is parallel") >= 0
-                    &&
-                    m_oGraph.HasRestrictions(GraphRestrictions.NoParallelEdges)
-                    )
-                {
-                    // Ignore the exception
-                }
-                else if
-                (
-                    sMessage.IndexOf("The edge is a self-loop") >= 0
-                    &&
-                    m_oGraph.HasRestrictions(GraphRestrictions.NoSelfLoops)
-                )
-                {
-                    // Ignore the exception
-                }
-                else
-                {
-                    throw oArgumentException;
-                }
-            }
+            IEdge oEdge = oEdgeCollection.Add(oVertex1, oVertex2, bIsDirected);
+            oActualEdges.Add(oEdge);
         }
 
         Assert.AreEqual(iVertices, m_oGraph.Vertices.Count);
@@ -1229,10 +964,10 @@ public class GraphTest : Object
     }
 
     //*************************************************************************
-    //  Method: Graph_EdgeAdded()
+    //  Method: EdgeCollection_EdgeAdded()
     //
     /// <summary>
-    /// Handles the EdgeAdded event on the m_oGraph object.
+    /// Handles the EdgeAdded event on the EdgeCollection object.
     /// </summary>
     ///
     /// <param name="oSender">
@@ -1245,13 +980,13 @@ public class GraphTest : Object
     //*************************************************************************
 
     protected void
-    Graph_EdgeAdded
+    EdgeCollection_EdgeAdded
     (
         Object oSender,
         EdgeEventArgs oEdgeEventArgs
     )
     {
-        if ( oSender == null || !(oSender is Graph) )
+        if ( oSender == null || !(oSender is IEdgeCollection) )
         {
             throw new ApplicationException(
                 "EdgeAdded event provided incorrect oSender argument."
@@ -1264,10 +999,10 @@ public class GraphTest : Object
     }
 
     //*************************************************************************
-    //  Method: Graph_VertexAdded()
+    //  Method: VertexCollection_VertexAdded()
     //
     /// <summary>
-    /// Handles the VertexAdded event on the m_oGraph object.
+    /// Handles the VertexAdded event on the VertexCollection object.
     /// </summary>
     ///
     /// <param name="oSender">
@@ -1280,13 +1015,13 @@ public class GraphTest : Object
     //*************************************************************************
 
     protected void
-    Graph_VertexAdded
+    VertexCollection_VertexAdded
     (
         Object oSender,
         VertexEventArgs oVertexEventArgs
     )
     {
-        if ( oSender == null || !(oSender is Graph) )
+        if ( oSender == null || !(oSender is IVertexCollection) )
         {
             throw new ApplicationException(
                 "VertexAdded event provided incorrect oSender argument."
@@ -1317,19 +1052,19 @@ public class GraphTest : Object
 
     protected IGraph m_oGraph;
 
-    /// Gets set by Graph_EdgeAdded().
+    /// Gets set by EdgeCollection_EdgeAdded().
 
     protected Boolean m_bEdgeAdded;
 
-    /// Gets set by Graph_EdgeAdded().
+    /// Gets set by EdgeCollection_EdgeAdded().
 
     protected IEdge m_oAddedEdge;
 
-    /// Gets set by Graph_VertexAdded().
+    /// Gets set by VertexCollection_VertexAdded().
 
     protected Boolean m_bVertexAdded;
 
-    /// Gets set by Graph_VertexAdded().
+    /// Gets set by VertexCollection_VertexAdded().
 
     protected IVertex m_oAddedVertex;
 }

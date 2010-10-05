@@ -491,6 +491,7 @@ public partial class NodeXLControl : FrameworkElement
 
         m_oSelectedVertices = new HashSet<IVertex>();
         m_oSelectedEdges = new HashSet<IEdge>();
+        m_oCollapsedGroups = new Dictionary<String, IVertex>();
         m_oDoubleClickedVertexInfo = null;
 
         m_bShowVertexToolTips = false;
@@ -594,6 +595,7 @@ public partial class NodeXLControl : FrameworkElement
             CheckIfLayingOutGraph(PropertyName);
 
             DeselectAll();
+            m_oCollapsedGroups.Clear();
 
             m_oGraph = value;
 
@@ -1560,6 +1562,12 @@ public partial class NodeXLControl : FrameworkElement
     /// for example, the vertices are half their normal size and the edges are
     /// half their normal width.  The overall size of the graph is not
     /// affected.
+    ///
+    /// <para>
+    /// The <see cref="GraphScaleChanged" /> event fires when this property is
+    /// changed.
+    /// </para>
+    ///
     /// </remarks>
     //*************************************************************************
 
@@ -1587,6 +1595,8 @@ public partial class NodeXLControl : FrameworkElement
             m_oGraphDrawer.GraphScale = value;
 
             DrawGraph(false);
+
+            FireGraphScaleChanged();
 
             AssertValid();
         }
@@ -1670,6 +1680,11 @@ public partial class NodeXLControl : FrameworkElement
     /// vertex, use <see cref="SetVertexSelected" /> or a related method.
     /// </para>
     ///
+    /// <para>
+    /// The returned collection includes vertices that represents groups that
+    /// have been collapsed using <see cref="CollapseGroup" />.
+    /// </para>
+    ///
     /// </remarks>
     ///
     /// <seealso cref="MouseMode" />
@@ -1692,6 +1707,11 @@ public partial class NodeXLControl : FrameworkElement
         get
         {
             AssertValid();
+
+            // Make a copy of the collection.  This allows the caller to pass
+            // the collection back to SetSelected(), for example, which clears
+            // m_oSelectedVertices before selecting the specified edges and
+            // vertices.
 
             return ( m_oSelectedVertices.ToArray() );
         }
@@ -1739,6 +1759,11 @@ public partial class NodeXLControl : FrameworkElement
         get
         {
             AssertValid();
+
+            // Make a copy of the collection.  This allows the caller to pass
+            // the collection back to SetSelected(), for example, which clears
+            // m_oSelectedEdges before selecting the specified edges and
+            // vertices.
 
             return ( m_oSelectedEdges.ToArray() );
         }
@@ -2281,6 +2306,435 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
+    //  Method: CollapseGroup()
+    //
+    /// <summary>
+    /// Collapses a group of vertices.
+    /// </summary>
+    ///
+    /// <param name="groupName">
+    /// The name to assign to the group.
+    /// </param>
+    ///
+    /// <param name="verticesToCollapse">
+    /// The vertices to collapse into a group.
+    /// </param>
+    ///
+    /// <param name="redrawGroupImmediately">
+    /// true to redraw the collapsed group immediately.  If false, the
+    /// collapsed group won't be redrawn until <see cref="DrawGraph()"/> is
+    /// called.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method replaces the group of vertices in <paramref
+    /// name="verticesToCollapse" /> with a new "group" vertex.  Internal edges
+    /// that connected the group's vertices to each other are removed, and
+    /// external edges that connected the group's vertices to vertices outside
+    /// the group are reconnected to the new group vertex.
+    ///
+    /// <para>
+    /// Call <see cref="ExpandGroup" /> to expand the group again.
+    /// </para>
+    ///
+    /// <para>
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="ExpandGroup" />
+    /// <seealso cref="IsCollapsedGroup" />
+    /// <seealso cref="SelectCollapsedGroup" />
+    /// <seealso cref="GetSelectedCollapsedGroupNames" />
+    //*************************************************************************
+
+    public void
+    CollapseGroup
+    (
+        String groupName,
+        ICollection<IVertex> verticesToCollapse,
+        Boolean redrawGroupImmediately
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+        Debug.Assert(verticesToCollapse != null);
+        AssertValid();
+
+        CheckIfLayingOutGraph("CollapseGroup");
+
+        if (IsCollapsedGroup(groupName) || verticesToCollapse.Count == 0)
+        {
+            return;
+        }
+
+        // Create a vertex that will represent the collapsed group.
+
+        IVertex oGroupVertex = m_oGraph.Vertices.Add();
+        SetGroupVertexVisualAttributes(oGroupVertex, verticesToCollapse);
+
+        // If the first vertex in the group is selected, select the group
+        // vertex.
+
+        if ( VertexOrEdgeIsSelected( verticesToCollapse.First() ) )
+        {
+            MarkVertexOrEdgeAsSelected(oGroupVertex, true);
+            m_oSelectedVertices.Add(oGroupVertex);
+        }
+
+        if (redrawGroupImmediately && m_oLastGraphDrawingContext != null)
+        {
+            m_oGraphDrawer.DrawNewVertex(oGroupVertex,
+                m_oLastGraphDrawingContext);
+        }
+
+        // Store the vertices in a HashSet that will allow the code below to
+        // quickly determine whether an edge is an internal edge, meaning that
+        // both its vertices are in the group.
+
+        HashSet<IVertex> oVerticesToCollapse =
+            new HashSet<IVertex>(verticesToCollapse);
+
+        LinkedList<IEdge> oCollapsedInternalEdges = new LinkedList<IEdge>();
+
+        Boolean bGraphIsDirected =
+            (m_oGraph.Directedness == GraphDirectedness.Directed);
+
+        foreach (IVertex oVertexToCollapse in verticesToCollapse)
+        {
+            foreach (IEdge oIncidentEdge in oVertexToCollapse.IncidentEdges)
+            {
+                IVertex oAdjacentVertex = oIncidentEdge.GetAdjacentVertex(
+                    oVertexToCollapse);
+
+                IEdge oClonedEdge = null;
+
+                if ( oVerticesToCollapse.Contains(oAdjacentVertex) )
+                {
+                    // The incident edge is internal.  Save the edge in
+                    // metadata on the group vertex so that ExpandGroup() can
+                    // restore the edge by adding it back to the graph.
+
+                    oCollapsedInternalEdges.AddLast(oIncidentEdge);
+                }
+                else
+                {
+                    // The incident edge connects to a vertex not in the group.
+                    // In NodeXL, an edge can't be given new vertices.
+                    // Instead, draw a cloned edge between the adjacent vertex
+                    // and oGroupVertex.
+
+                    if ( oAdjacentVertex == oIncidentEdge.Vertices[0] )
+                    {
+                        oClonedEdge = oIncidentEdge.Clone(true, true,
+                            oAdjacentVertex, oGroupVertex, bGraphIsDirected);
+
+                        // Save the collapsed vertex as metadata on the cloned
+                        // edge.  ExpandGroup() will use this to connect to
+                        // the collapsed vertex again.
+
+                        oClonedEdge.SetValue(
+                            ReservedMetadataKeys.OriginalVertex2InEdge
+                                + groupName,
+                            oVertexToCollapse);
+                    }
+                    else
+                    {
+                        oClonedEdge = oIncidentEdge.Clone(true, true,
+                            oGroupVertex, oAdjacentVertex, bGraphIsDirected);
+
+                        oClonedEdge.SetValue(
+                            ReservedMetadataKeys.OriginalVertex1InEdge
+                                + groupName,
+                            oVertexToCollapse);
+                    }
+                }
+
+                RemoveEdgeDuringGroupCollapseOrExpand(oIncidentEdge,
+                    redrawGroupImmediately);
+
+                if (oClonedEdge != null)
+                {
+                    AddEdgeDuringGroupCollapseOrExpand(oClonedEdge,
+                        redrawGroupImmediately);
+                }
+            }
+
+            RemoveVertexDuringGroupCollapseOrExpand(oVertexToCollapse,
+                redrawGroupImmediately);
+        }
+
+        // Save the collapsed vertices and internal edges on the new group
+        // vertex.  These will be used by ExpandGroup() if the group is later
+        // expanded.
+
+        oGroupVertex.SetValue(ReservedMetadataKeys.CollapsedVertices,
+            verticesToCollapse);
+
+        oGroupVertex.SetValue(ReservedMetadataKeys.CollapsedInternalEdges,
+            oCollapsedInternalEdges);
+
+        m_oCollapsedGroups.Add(groupName, oGroupVertex);
+    }
+
+    //*************************************************************************
+    //  Method: ExpandGroup()
+    //
+    /// <summary>
+    /// Expands a group of collapsed vertices.
+    /// </summary>
+    ///
+    /// <param name="groupName">
+    /// The name of the group.  This must be a name that was previously passed
+    /// to <see cref="CollapseGroup" />.
+    /// </param>
+    ///
+    /// <param name="redrawGroupImmediately">
+    /// true to redraw the expanded group immediately.  If false, the expanded
+    /// group won't be redrawn until <see cref="DrawGraph()"/> is called.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method restores the group of vertices that were collapsed with
+    /// <see cref="CollapseGroup" />.
+    ///
+    /// <para>
+    /// An exception is thrown if the graph is being laid out when this method
+    /// is called.  Check the <see cref="IsLayingOutGraph" /> property before
+    /// calling this.
+    /// </para>
+    ///
+    /// </remarks>
+    ///
+    /// <seealso cref="CollapseGroup" />
+    /// <seealso cref="IsCollapsedGroup" />
+    /// <seealso cref="SelectCollapsedGroup" />
+    /// <seealso cref="GetSelectedCollapsedGroupNames" />
+    //*************************************************************************
+
+    public void
+    ExpandGroup
+    (
+        String groupName,
+        Boolean redrawGroupImmediately
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+        AssertValid();
+
+        CheckIfLayingOutGraph("ExpandGroup");
+
+        IVertex oGroupVertex;
+
+        if ( !m_oCollapsedGroups.TryGetValue(groupName, out oGroupVertex) )
+        {
+            return;
+        }
+
+        // Retrieve the collapsed vertices and collapsed internal edges that
+        // were stored on the group vertex by CollapseGroup().
+
+        ICollection<IVertex> oCollapsedVertices =
+            ( ICollection<IVertex> )oGroupVertex.GetRequiredValue(
+                ReservedMetadataKeys.CollapsedVertices,
+                typeof( ICollection<IVertex> ) );
+
+        ICollection<IEdge> oCollapsedInternalEdges =
+            ( ICollection<IEdge> )oGroupVertex.GetRequiredValue(
+                ReservedMetadataKeys.CollapsedInternalEdges,
+                typeof( ICollection<IEdge> ) );
+
+        // Restore the collapsed vertices and internal edges.
+
+        Random oRandom = new Random();
+
+        foreach (IVertex oCollapsedVertex in oCollapsedVertices)
+        {
+            AddVertexDuringGroupCollapseOrExpand(oCollapsedVertex,
+                redrawGroupImmediately, oRandom);
+        }
+
+        foreach (IEdge oCollapsedInternalEdge in oCollapsedInternalEdges)
+        {
+            AddEdgeDuringGroupCollapseOrExpand(oCollapsedInternalEdge,
+                redrawGroupImmediately);
+        }
+
+        Boolean bGraphIsDirected =
+            (m_oGraph.Directedness == GraphDirectedness.Directed);
+
+        // Remove the group vertex's incident edges.
+
+        foreach (IEdge oIncidentEdge in oGroupVertex.IncidentEdges)
+        {
+            IVertex oAdjacentVertex = oIncidentEdge.GetAdjacentVertex(
+                oGroupVertex);
+
+            IEdge oClonedEdge = null;
+            Object oOriginalVertexAsObject;
+
+            if ( oIncidentEdge.TryGetValue(
+                ReservedMetadataKeys.OriginalVertex2InEdge + groupName,
+                typeof(IVertex), out oOriginalVertexAsObject) )
+            {
+                IVertex oOriginalVertex = (IVertex)oOriginalVertexAsObject;
+
+                // The incident edge is a clone of an original external edge.
+                // Clone it again, this time connecting it back to its original
+                // vertex.
+
+                oClonedEdge = oIncidentEdge.Clone(true, true,
+                    oAdjacentVertex, oOriginalVertex, bGraphIsDirected);
+
+                oClonedEdge.RemoveKey(
+                    ReservedMetadataKeys.OriginalVertex2InEdge + groupName);
+            }
+            else if ( oIncidentEdge.TryGetValue(
+                ReservedMetadataKeys.OriginalVertex1InEdge + groupName,
+                typeof(IVertex), out oOriginalVertexAsObject) )
+            {
+                IVertex oOriginalVertex = (IVertex)oOriginalVertexAsObject;
+
+                oClonedEdge = oIncidentEdge.Clone(true, true,
+                    oOriginalVertex, oAdjacentVertex, bGraphIsDirected);
+
+                oClonedEdge.RemoveKey(
+                    ReservedMetadataKeys.OriginalVertex1InEdge + groupName);
+            }
+
+            RemoveEdgeDuringGroupCollapseOrExpand(oIncidentEdge,
+                redrawGroupImmediately);
+
+            if (oClonedEdge != null)
+            {
+                AddEdgeDuringGroupCollapseOrExpand(oClonedEdge,
+                    redrawGroupImmediately);
+            }
+        }
+
+        // Remove the group vertex.
+
+        RemoveVertexDuringGroupCollapseOrExpand(oGroupVertex,
+            redrawGroupImmediately);
+
+        m_oCollapsedGroups.Remove(groupName);
+    }
+
+    //*************************************************************************
+    //  Method: IsCollapsedGroup()
+    //
+    /// <summary>
+    /// Determines whether a group is collapsed.
+    /// </summary>
+    ///
+    /// <param name="groupName">
+    /// The name of the group to check.  This must be a name that was
+    /// previously passed to <see cref="CollapseGroup" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified group is collapsed.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method returns true if the group with the name <paramref
+    /// name="groupName" /> has been collapsed by <see cref="CollapseGroup" />.
+    /// </remarks>
+    ///
+    /// <seealso cref="CollapseGroup" />
+    /// <seealso cref="ExpandGroup" />
+    /// <seealso cref="SelectCollapsedGroup" />
+    /// <seealso cref="GetSelectedCollapsedGroupNames" />
+    //*************************************************************************
+
+    public Boolean
+    IsCollapsedGroup
+    (
+        String groupName
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+        AssertValid();
+
+        return ( m_oCollapsedGroups.ContainsKey(groupName) );
+    }
+
+    //*************************************************************************
+    //  Method: SelectCollapsedGroup()
+    //
+    /// <summary>
+    /// Selects the vertex that represents a collapsed group.
+    /// </summary>
+    ///
+    /// <param name="groupName">
+    /// The name of the group to select.  This must be a name that was
+    /// previously passed to <see cref="CollapseGroup" />.
+    /// </param>
+    ///
+    /// <seealso cref="CollapseGroup" />
+    /// <seealso cref="ExpandGroup" />
+    /// <seealso cref="IsCollapsedGroup" />
+    /// <seealso cref="GetSelectedCollapsedGroupNames" />
+    //*************************************************************************
+
+    public void
+    SelectCollapsedGroup
+    (
+        String groupName
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(groupName) );
+        AssertValid();
+
+        IVertex oGroupVertex;
+
+        if ( m_oCollapsedGroups.TryGetValue(groupName, out oGroupVertex) )
+        {
+            SetVertexSelectedInternal(oGroupVertex, true);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetSelectedCollapsedGroupNames()
+    //
+    /// <summary>
+    /// Gets the names of the collapsed groups that are selected.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The names of the collapsed groups.  The names are those that were
+    /// passed to <see cref="CollapseGroup" />.
+    /// </returns>
+    ///
+    /// <seealso cref="CollapseGroup" />
+    /// <seealso cref="ExpandGroup" />
+    /// <seealso cref="IsCollapsedGroup" />
+    /// <seealso cref="SelectCollapsedGroup" />
+    //*************************************************************************
+
+    public ICollection<String>
+    GetSelectedCollapsedGroupNames()
+    {
+        AssertValid();
+
+        LinkedList<String> oSelectedCollapsedGroupNames =
+            new LinkedList<String>();
+
+        foreach (KeyValuePair<String, IVertex> oKeyValuePair in
+            m_oCollapsedGroups)
+        {
+            if ( VertexOrEdgeIsSelected(oKeyValuePair.Value) )
+            {
+                oSelectedCollapsedGroupNames.AddLast(oKeyValuePair.Key);
+            }
+        }
+
+        return (oSelectedCollapsedGroupNames);
+    }
+
+    //*************************************************************************
     //  Method: CopyGraphToBitmap()
     //
     /// <summary>
@@ -2700,6 +3154,23 @@ public partial class NodeXLControl : FrameworkElement
 
 
     //*************************************************************************
+    //  Event: GraphScaleChanged
+    //
+    /// <summary>
+    /// Occurs when the <see cref="GraphScale" /> property is changed.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This event occurs when <see cref="GraphScale" /> is changed.
+    /// </remarks>
+    //*************************************************************************
+
+    [Category("Mouse")]
+
+    public event EventHandler GraphScaleChanged;
+
+
+    //*************************************************************************
     //  Event: GraphTranslationChanged
     //
     /// <summary>
@@ -3051,6 +3522,264 @@ public partial class NodeXLControl : FrameworkElement
         {
             return (m_oGraphDrawer.VisualCollection.Count);
         }
+    }
+
+    //*************************************************************************
+    //  Method: SetGroupVertexVisualAttributes()
+    //
+    /// <summary>
+    /// Sets the visual attributes on the vertex that represents a collapsed
+    /// group.
+    /// </summary>
+    ///
+    /// <param name="oGroupVertex">
+    /// The vertex that represents a collapsed group.
+    /// </param>
+    ///
+    /// <param name="oVerticesToCollapse">
+    /// The vertices represented by <paramref name="oGroupVertex" />.  It's
+    /// assumed that the collection is not empty.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method gets called when a group of vertices is collapsed and
+    /// replaced with a group vertex.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    SetGroupVertexVisualAttributes
+    (
+        IVertex oGroupVertex,
+        ICollection<IVertex> oVerticesToCollapse
+    )
+    {
+        Debug.Assert(oGroupVertex != null);
+        Debug.Assert(oVerticesToCollapse != null);
+        Debug.Assert(oVerticesToCollapse.Count > 0);
+        AssertValid();
+
+        // Use the color, shape and location of the first vertex in the group.
+
+        IVertex oFirstVertexToCollapse = oVerticesToCollapse.First();
+
+        Object oColor;
+
+        if ( oFirstVertexToCollapse.TryGetValue(
+            ReservedMetadataKeys.PerColor, typeof(System.Drawing.Color),
+            out oColor) )
+        {
+            oGroupVertex.SetValue(ReservedMetadataKeys.PerColor,
+                (System.Drawing.Color)oColor);
+        }
+
+        Object oShape;
+
+        if ( oFirstVertexToCollapse.TryGetValue(
+            ReservedMetadataKeys.PerVertexShape, typeof(VertexShape),
+            out oShape) )
+        {
+            oGroupVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+                (VertexShape)oShape);
+        }
+
+        oGroupVertex.Location = oFirstVertexToCollapse.Location;
+
+        // Use a size determined by the number of collapsed vertices.
+
+        Single fRadius = (Single)Math.Min(
+            8F + oVerticesToCollapse.Count * 1F,
+            VertexDrawer.MaximumRadius / 12.0F);
+
+        oGroupVertex.SetValue(ReservedMetadataKeys.PerVertexRadius, fRadius);
+
+        // To distinguish the group vertex from a single vertex, draw a plus
+        // sign on top of it.
+
+        oGroupVertex.SetValue(ReservedMetadataKeys.PerVertexDrawPlusSign,
+            null);
+    }
+
+    //*************************************************************************
+    //  Method: AddEdgeDuringGroupCollapseOrExpand()
+    //
+    /// <summary>
+    /// Adds an edge to the graph while a group is being collapsed or expanded.
+    /// </summary>
+    ///
+    /// <param name="oEdge">
+    /// The edge to add to the graph.
+    /// </param>
+    ///
+    /// <param name="bDrawEdge">
+    /// true to draw the edge immediately.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddEdgeDuringGroupCollapseOrExpand
+    (
+        IEdge oEdge,
+        Boolean bDrawEdge
+    )
+    {
+        Debug.Assert(oEdge != null);
+        AssertValid();
+
+        m_oGraph.Edges.Add(oEdge);
+
+        if ( VertexOrEdgeIsSelected(oEdge) )
+        {
+            m_oSelectedEdges.Add(oEdge);
+        }
+
+        if (bDrawEdge && m_oLastGraphDrawingContext != null)
+        {
+            m_oGraphDrawer.DrawNewEdge(oEdge, m_oLastGraphDrawingContext);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AddVertexDuringGroupCollapseOrExpand()
+    //
+    /// <summary>
+    /// Adds a vertex to the graph while a group is being collapsed or
+    /// expanded.
+    /// </summary>
+    ///
+    /// <param name="oVertex">
+    /// The vertex to add to the graph.
+    /// </param>
+    ///
+    /// <param name="bDrawVertex">
+    /// true to draw the vertex immediately.
+    /// </param>
+    ///
+    /// <param name="oRandom">
+    /// If the added vertex has never been laid out and <paramref
+    /// name="bDrawVertex" /> is true, the vertex is given a random location
+    /// using this Random object.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddVertexDuringGroupCollapseOrExpand
+    (
+        IVertex oVertex,
+        Boolean bDrawVertex,
+        Random oRandom
+    )
+    {
+        Debug.Assert(oVertex != null);
+        Debug.Assert(oRandom != null);
+        AssertValid();
+
+        m_oGraph.Vertices.Add(oVertex);
+
+        if ( VertexOrEdgeIsSelected(oVertex) )
+        {
+            m_oSelectedVertices.Add(oVertex);
+        }
+
+        if (bDrawVertex && m_oLastGraphDrawingContext != null)
+        {
+            if (oVertex.Location == System.Drawing.PointF.Empty)
+            {
+                // The vertex has never been laid out.  This occurs when the
+                // vertex is in a group that was collapsed before the graph was
+                // drawn.  Give the vertex a random location.
+
+                Rect oGraphRectangleMinusMargin =
+                    m_oLastGraphDrawingContext.GraphRectangleMinusMargin;
+
+                oVertex.Location = new System.Drawing.PointF(
+
+                    oRandom.Next(
+                        (Int32)Math.Ceiling(oGraphRectangleMinusMargin.Left),
+                        (Int32)oGraphRectangleMinusMargin.Right
+                        ),
+
+                    oRandom.Next(
+                        (Int32)Math.Ceiling(oGraphRectangleMinusMargin.Top),
+                        (Int32)oGraphRectangleMinusMargin.Bottom
+                        )
+                    );
+            }
+
+            m_oGraphDrawer.DrawNewVertex(oVertex, m_oLastGraphDrawingContext);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: RemoveEdgeDuringGroupCollapseOrExpand()
+    //
+    /// <summary>
+    /// Removes an edge from the graph while a group is being collapsed or
+    /// expanded.
+    /// </summary>
+    ///
+    /// <param name="oEdge">
+    /// The edge to remove from the graph.
+    /// </param>
+    ///
+    /// <param name="bUndrawEdge">
+    /// true to undraw the edge immediately.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    RemoveEdgeDuringGroupCollapseOrExpand
+    (
+        IEdge oEdge,
+        Boolean bUndrawEdge
+    )
+    {
+        Debug.Assert(oEdge != null);
+        AssertValid();
+
+        if (bUndrawEdge && m_oLastGraphDrawingContext != null)
+        {
+            m_oGraphDrawer.UndrawEdge(oEdge, m_oLastGraphDrawingContext);
+        }
+
+        m_oGraph.Edges.Remove(oEdge);
+        m_oSelectedEdges.Remove(oEdge);
+    }
+
+    //*************************************************************************
+    //  Method: RemoveVertexDuringGroupCollapseOrExpand()
+    //
+    /// <summary>
+    /// Removes a vertex from the graph while a group is being collapsed or
+    /// expanded.
+    /// </summary>
+    ///
+    /// <param name="oVertex">
+    /// The vertex to remove from the graph.
+    /// </param>
+    ///
+    /// <param name="bUndrawVertex">
+    /// true to undraw the vertex immediately.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    RemoveVertexDuringGroupCollapseOrExpand
+    (
+        IVertex oVertex,
+        Boolean bUndrawVertex
+    )
+    {
+        Debug.Assert(oVertex != null);
+        AssertValid();
+
+        if (bUndrawVertex && m_oLastGraphDrawingContext != null)
+        {
+            m_oGraphDrawer.UndrawVertex(oVertex, m_oLastGraphDrawingContext);
+        }
+
+        m_oGraph.Vertices.Remove(oVertex);
+        m_oSelectedVertices.Remove(oVertex);
     }
 
     //*************************************************************************
@@ -3840,6 +4569,33 @@ public partial class NodeXLControl : FrameworkElement
         {
             oVertexOrEdge.RemoveKey(ReservedMetadataKeys.IsSelected);
         }
+    }
+
+    //*************************************************************************
+    //  Method: VertexOrEdgeIsSelected()
+    //
+    /// <summary>
+    /// Returns a flag indicating whether a vertex or edge is selected.
+    /// </summary>
+    ///
+    /// <param name="oVertexOrEdge">
+    /// Vertex or edge to check, as an <see cref="IMetadataProvider" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="oVertexOrEdge" /> is selected.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    VertexOrEdgeIsSelected
+    (
+        IMetadataProvider oVertexOrEdge
+    )
+    {
+        Debug.Assert(oVertexOrEdge != null);
+
+        return ( oVertexOrEdge.ContainsKey(ReservedMetadataKeys.IsSelected) );
     }
 
     //*************************************************************************
@@ -4812,6 +5568,22 @@ public partial class NodeXLControl : FrameworkElement
     }
 
     //*************************************************************************
+    //  Method: FireGraphScaleChanged()
+    //
+    /// <summary>
+    /// Fires the <see cref="GraphScaleChanged" /> event if appropriate.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    FireGraphScaleChanged()
+    {
+        AssertValid();
+
+        EventUtil.FireEvent(this, this.GraphScaleChanged);
+    }
+
+    //*************************************************************************
     //  Method: FireGraphTranslationChanged()
     //
     /// <summary>
@@ -5463,8 +6235,8 @@ public partial class NodeXLControl : FrameworkElement
         // In SubtractFromSelection mode, clicking a vertex should deselect
         // it.
 
-        Boolean bClickedVertexIsSelected =
-            oClickedVertex.ContainsKey(ReservedMetadataKeys.IsSelected);
+        Boolean bClickedVertexIsSelected = VertexOrEdgeIsSelected(
+            oClickedVertex);
 
         Boolean bSelectClickedVertex = true;
 
@@ -5617,7 +6389,7 @@ public partial class NodeXLControl : FrameworkElement
 
         if (
             m_eMouseMode == MouseMode.Select &&
-            !oClickedVertex.ContainsKey(ReservedMetadataKeys.IsSelected)
+            !VertexOrEdgeIsSelected(oClickedVertex)
             )
         {
             SetAllVerticesSelected(false);
@@ -6071,6 +6843,7 @@ public partial class NodeXLControl : FrameworkElement
         // m_oTranslationBeingDragged
         Debug.Assert(m_oSelectedVertices != null);
         Debug.Assert(m_oSelectedEdges != null);
+        Debug.Assert(m_oCollapsedGroups != null);
         // m_oDoubleClickedVertexInfo
         // m_bShowVertexToolTips
         // m_oLastMouseMoveLocation
@@ -6190,6 +6963,11 @@ public partial class NodeXLControl : FrameworkElement
     protected HashSet<IVertex> m_oSelectedVertices;
     ///
     protected HashSet<IEdge> m_oSelectedEdges;
+
+    /// Dictionary of the groups that are collapsed.  The key is the group name
+    /// and the value is the vertex that represents the collapsed group.
+
+    protected Dictionary<String, IVertex> m_oCollapsedGroups;
 
     /// Information about the vertex that was just double-clicked, or null if
     /// a vertex wasn't just double-clicked.

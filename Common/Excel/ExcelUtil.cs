@@ -1752,6 +1752,99 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: SelectAllTableRows()
+    //
+    /// <summary>
+    /// Selects all the data rows in a table.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook to get the table from.
+    /// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Name of the worksheet containing the table.
+    /// </param>
+    ///
+    /// <param name="tableName">
+    /// Name of the table to select the rows within.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method activates the worksheet before selecting the table rows.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    SelectAllTableRows
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        String worksheetName,
+        String tableName
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(tableName) );
+
+        ListObject oTable;
+
+        if ( ExcelUtil.TryGetTable(workbook, worksheetName, tableName,
+            out oTable) )
+        {
+            Range oDataBodyRange = oTable.DataBodyRange;
+
+            if (oDataBodyRange != null)
+            {
+                SelectRange(oDataBodyRange);
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Delegate: TryGetValueFromCell()
+    //
+    /// <summary>
+    /// Represents a method that attempts to get a value of a specified type
+    /// from a worksheet cell given an array of cell values read from the
+    /// worksheet.
+    /// </summary>
+    ///
+    /// <typeparam name="TValue">
+    /// The type of the value to get.
+    /// </typeparam>
+    ///
+    /// <param name="cellValues">
+    /// Two-dimensional array of values read from the worksheet.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number to read.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number to read.
+    /// </param>
+    ///
+    /// <param name="cellValue">
+    /// Where the value gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //*************************************************************************
+
+    public delegate Boolean
+    TryGetValueFromCell<TValue>
+    (
+        Object [,] cellValues,
+        Int32 rowOneBased,
+        Int32 columnOneBased,
+        out TValue cellValue
+    );
+
+    //*************************************************************************
     //  Method: TryGetNonEmptyStringFromCell()
     //
     /// <overloads>
@@ -1901,6 +1994,65 @@ public static class ExcelUtil
         Debug.Assert(rowOneBased >= 1);
         Debug.Assert(columnOneBased >= 1);
 
+        return ( TryGetNonEmptyStringFromCell(cellValues, rowOneBased,
+            columnOneBased, true, out nonEmptyString) );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetNonEmptyStringFromCell()
+    //
+    /// <summary>
+    /// Attempts to get a non-empty string from a worksheet cell given an array
+    /// of cell values read from the worksheet, with optional trimming.
+    /// </summary>
+    ///
+    /// <param name="cellValues">
+    /// Two-dimensional array of values read from the worksheet.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number to read.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number to read.
+    /// </param>
+    ///
+    /// <param name="trimCell">
+    /// true to trim leading and trailing spaces from the string before
+    /// returning it.
+    /// </param>
+    ///
+    /// <param name="nonEmptyString">
+    /// Where a string gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified cell value contains anything besides spaces, the cell
+    /// value is optionally trimmed and stored at <paramref
+    /// name="nonEmptyString" />, and true is returned.  false is returned
+    /// otherwise.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetNonEmptyStringFromCell
+    (
+        Object [,] cellValues,
+        Int32 rowOneBased,
+        Int32 columnOneBased,
+        Boolean trimCell,
+        out String nonEmptyString
+    )
+    {
+        Debug.Assert(cellValues != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+
         nonEmptyString = null;
 
         Object oObject = cellValues[rowOneBased, columnOneBased];
@@ -1910,16 +2062,89 @@ public static class ExcelUtil
             return (false);
         }
 
-        String sString = oObject.ToString().Trim();
+        String sString = oObject.ToString();
+        String sTrimmedString = oObject.ToString().Trim();
 
-        if (sString.Length == 0)
+        if (sTrimmedString.Length == 0)
         {
             return (false);
         }
 
-        nonEmptyString = sString;
+        nonEmptyString = trimCell ? sTrimmedString : sString;
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetInt32FromCell()
+    //
+    /// <summary>
+    /// Attempts to get an Int32 from a worksheet cell.
+    /// </summary>
+    ///
+    /// <param name="cellValues">
+    /// Two-dimensional array of values read from the worksheet.
+    /// </param>
+    ///
+    /// <param name="rowOneBased">
+    /// One-based row number to read.
+    /// </param>
+    ///
+    /// <param name="columnOneBased">
+    /// One-based column number to read.
+    /// </param>
+    ///
+    /// <param name="int32">
+    /// Where an Int32 gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified cell value contains a valid Double that can be cast to
+    /// an Int32, the Int32 is stored at <paramref name="int32" /> and true is
+    /// returned.  false is returned otherwise.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetInt32FromCell
+    (
+        Object [,] cellValues,
+        Int32 rowOneBased,
+        Int32 columnOneBased,
+        out Int32 int32
+    )
+    {
+        Debug.Assert(cellValues != null);
+        Debug.Assert(rowOneBased >= 1);
+        Debug.Assert(columnOneBased >= 1);
+
+        int32 = Int32.MinValue;
+
+        Double dDouble;
+
+        if (
+            TryGetDoubleFromCell(cellValues, rowOneBased, columnOneBased,
+                out dDouble)
+            &&
+            dDouble <= Int32.MaxValue
+            &&
+            dDouble >= Int32.MinValue
+            )
+        {
+            Double dInt32 = Math.Truncate(dDouble);
+
+            if (dInt32 == dDouble)
+            {
+                int32 = (Int32)dInt32;
+                return (true);
+            }
+        }
+
+        return (false);
     }
 
     //*************************************************************************
@@ -2389,7 +2614,8 @@ public static class ExcelUtil
     /// </param>
     ///
     /// <returns>
-    /// true if the current selected range intersects the table.
+    /// true if the table isn't empty and the current selected range intersects
+    /// the table.
     /// </returns>
     //*************************************************************************
 
@@ -2408,6 +2634,11 @@ public static class ExcelUtil
 
         selectedTableRange = null;
 
+        if ( VisibleTableRangeIsEmpty(table) )
+        {
+            return (false);
+        }
+
         Range oDataBodyRange = table.DataBodyRange;
 
         if (oDataBodyRange == null)
@@ -2420,6 +2651,104 @@ public static class ExcelUtil
 
         return ( ExcelUtil.TryIntersectRanges(selectedRange,
             oDataBodyRange, out selectedTableRange) );
+    }
+
+    //*************************************************************************
+    //  Method: TryAddTableRow()
+    //
+    /// <summary>
+    /// Attempts to add a row to the end of a table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table to add a row to.
+    /// </param>
+    ///
+    /// <param name="columnNameValuePairs">
+    /// Name/value pairs.  There is one name/value pair for each cell to fill
+    /// in in the new row.  The first element of each pair is the column name,
+    /// as a String, and the second element of each pair is the cell value, as
+    /// an Object.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the row was added.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method activates the table's worksheet if it isn't already
+    /// activated.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryAddTableRow
+    (
+        ListObject table,
+        params Object [] columnNameValuePairs
+    )
+    {
+        Debug.Assert(table!= null);
+        Debug.Assert(columnNameValuePairs != null);
+        Debug.Assert(columnNameValuePairs.Length % 2 == 0);
+
+        ActivateWorksheet(table);
+
+        ListRows oRows = table.ListRows;
+        Int32 iOriginalRows = oRows.Count;
+        Range oNewRowRange;
+
+        if ( iOriginalRows == 1 && VisibleTableRangeIsEmpty(table) )
+        {
+            // The table contains one empty row.  Use it.
+
+            oNewRowRange = oRows[1].Range;
+        }
+        else
+        {
+            oNewRowRange = oRows.Add(Missing.Value).Range;
+
+            if (iOriginalRows == 0 && oRows.Count == 2)
+            {
+                // Excel bug, as of 9/20/2010:
+                //
+                // Adding a row to an empty table adds an extra row after the
+                // desired row.  See this post:
+                //
+                // http://social.msdn.microsoft.com/Forums/en-US/vsto/thread/
+                // 99cedf41-f2ce-47a5-b698-b3c0b37c8dc5
+
+                oRows[2].Delete();
+            }
+        }
+
+        Int32 iColumns = oNewRowRange.Columns.Count;
+        Object [,] aoNewRowValues = GetRangeValues(oNewRowRange);
+        Int32 iColumnNamesAndValues = columnNameValuePairs.Length;
+
+        for (Int32 i = 0; i < iColumnNamesAndValues; i += 2)
+        {
+            Debug.Assert(columnNameValuePairs[i + 0] is String);
+            String sColumnName = (String)columnNameValuePairs[i + 0];
+            Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
+
+            ListColumn oColumn;
+
+            if ( TryGetTableColumn(table, sColumnName, out oColumn) )
+            {
+                Int32 iColumnIndexOneBased = oColumn.Index;
+
+                if (iColumnIndexOneBased <= iColumns)
+                {
+                    aoNewRowValues[1, iColumnIndexOneBased] = 
+                        columnNameValuePairs[i + 1];
+                }
+            }
+        }
+
+        oNewRowRange.set_Value(Missing.Value, aoNewRowValues);
+
+        return (true);
     }
 
     //*************************************************************************
@@ -2572,9 +2901,12 @@ public static class ExcelUtil
     /// name="tableColumnData" />, the values for the data range are stored at
     /// <paramref name="tableColumnDataValues" />, and true is returned.  false
     /// is returned otherwise.
+    ///
+    /// <para>
+    /// This method hasn't been tested with a totals row.
+    /// </para>
+    ///
     /// </remarks>
-    //
-    //  TODO: This hasn't been tested with a totals row.
     //*************************************************************************
 
     public static Boolean
@@ -2599,6 +2931,163 @@ public static class ExcelUtil
         }
 
         tableColumnDataValues = ExcelUtil.GetRangeValues(tableColumnData);
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetUniqueTableColumnStringValues()
+    //
+    /// <overloads>
+    /// Attempts to get the unique string values from one column of a table.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Attempts to get the unique string values from one column of a table,
+    /// given table information.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook to get the table from.
+    /// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Name of the worksheet containing the table.
+    /// </param>
+    ///
+    /// <param name="tableName">
+    /// Name of the table to remove rows from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to get the unique string values from.
+    /// </param>
+    ///
+    /// <param name="uniqueTableColumnStringValues">
+    /// Where the unique, non-empty string values get stored if true is
+    /// returned.  The collection can be empty but is never null.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the table contains a column named <paramref name="columnName" />,
+    /// each unique unique string value in the column is stored at <paramref
+    /// name="uniqueTableColumnStringValues" /> and true is returned.  false is
+    /// returned otherwise.
+    ///
+    /// <para>
+    /// This method hasn't been tested with a totals row.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetUniqueTableColumnStringValues
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        String worksheetName,
+        String tableName,
+        String columnName,
+        out ICollection<String> uniqueTableColumnStringValues
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(tableName) );
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        uniqueTableColumnStringValues = null;
+
+        ListObject oTable;
+
+        return (
+            ExcelUtil.TryGetTable(workbook, worksheetName, tableName,
+                out oTable)
+            &&
+            ExcelUtil.TryGetUniqueTableColumnStringValues(oTable, columnName,
+                out uniqueTableColumnStringValues)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TryGetUniqueTableColumnStringValues()
+    //
+    /// <summary>
+    /// Attempts to get the unique string values from one column of a table,
+    /// given the table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table to get the unique string values from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to get the unique string values from.
+    /// </param>
+    ///
+    /// <param name="uniqueTableColumnStringValues">
+    /// Where the unique, non-empty string values get stored if true is
+    /// returned.  The collection can be empty but is never null.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="table" /> contains a column named <paramref
+    /// name="columnName" />, each unique unique string value in the column is
+    /// stored at <paramref name="uniqueTableColumnStringValues" /> and true is
+    /// returned.  false is returned otherwise.
+    ///
+    /// <para>
+    /// This method hasn't been tested with a totals row.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetUniqueTableColumnStringValues
+    (
+        ListObject table,
+        String columnName,
+        out ICollection<String> uniqueTableColumnStringValues
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+        uniqueTableColumnStringValues = null;
+        Range oTableColumnData;
+        Object [,] aoTableColumnDataValues;
+
+        if ( !TryGetTableColumnDataAndValues(table, columnName,
+            out oTableColumnData, out aoTableColumnDataValues) )
+        {
+            return (false);
+        }
+
+        oTableColumnData = null;
+
+        HashSet<String> oUniqueTableColumnStringValues = new HashSet<String>();
+        uniqueTableColumnStringValues = oUniqueTableColumnStringValues;
+        Int32 iRows = aoTableColumnDataValues.GetUpperBound(0);
+
+        for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+        {
+            String sNonEmptyString;
+
+            if ( TryGetNonEmptyStringFromCell(aoTableColumnDataValues,
+                iRowOneBased, 1, out sNonEmptyString) )
+            {
+                oUniqueTableColumnStringValues.Add(sNonEmptyString);
+            }
+        }
 
         return (true);
     }
@@ -2638,9 +3127,12 @@ public static class ExcelUtil
     /// name="columnName" />, the column's data range is stored at <paramref
     /// name="tableColumnData" /> and true is returned.  false is returned
     /// otherwise.
+    ///
+    /// <para>
+    /// This method hasn't been tested with a totals row.
+    /// </para>
+    ///
     /// </remarks>
-    //
-    //  TODO: This hasn't been tested with a totals row.
     //*************************************************************************
 
     public static Boolean
@@ -2686,8 +3178,10 @@ public static class ExcelUtil
     /// <returns>
     /// true if successful.
     /// </returns>
-    //
-    //  TODO: This hasn't been tested with a totals row.
+    ///
+    /// <remarks>
+    /// This method hasn't been tested with a totals row.
+    /// </remarks>
     //*************************************************************************
 
     public static Boolean
@@ -2782,9 +3276,12 @@ public static class ExcelUtil
     /// name="columnName" />, the column's visible data range is stored at
     /// <paramref name="visibleTableColumnData" /> and true is returned.  false
     /// is returned otherwise.
+    ///
+    /// <para>
+    /// This method hasn't been tested with a totals row.
+    /// </para>
+    ///
     /// </remarks>
-    //
-    //  TODO: This hasn't been tested with a totals row.
     //*************************************************************************
 
     public static Boolean
@@ -2828,8 +3325,10 @@ public static class ExcelUtil
     /// <returns>
     /// true if successful.
     /// </returns>
-    //
-    //  TODO: This hasn't been tested with a totals row.
+    ///
+    /// <remarks>
+    /// This method hasn't been tested with a totals row.
+    /// </remarks>
     //*************************************************************************
 
     public static Boolean
@@ -3271,6 +3770,201 @@ public static class ExcelUtil
     }
 
     //*************************************************************************
+    //  Method: RemoveTableRowsByStringColumnValues()
+    //
+    /// <overloads>
+    /// Removes the rows in the table that contain one of a collection of
+    /// string values in a specified column.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Removes the rows in the table that contain one of a collection of
+    /// string values in a specified column, given table information.
+    /// </summary>
+    ///
+    /// <param name="workbook">
+    /// Workbook to get the table from.
+    /// </param>
+    ///
+    /// <param name="worksheetName">
+    /// Name of the worksheet containing the table.
+    /// </param>
+    ///
+    /// <param name="tableName">
+    /// Name of the table to remove rows from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to read.
+    /// </param>
+    ///
+    /// <param name="valuesToRemove">
+    /// Collection of values to look for.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method removes each row that contains one of the values in
+    /// <paramref name="valuesToRemove" /> in the column named <paramref
+    /// name="columnName" />.  The values are of type String.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    RemoveTableRowsByStringColumnValues
+    (
+        Microsoft.Office.Interop.Excel.Workbook workbook,
+        String worksheetName,
+        String tableName,
+        String columnName,
+        ICollection<String> valuesToRemove
+    )
+    {
+        Debug.Assert(workbook != null);
+        Debug.Assert( !String.IsNullOrEmpty(worksheetName) );
+        Debug.Assert( !String.IsNullOrEmpty(tableName) );
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        Debug.Assert(valuesToRemove != null);
+
+        ListObject oTable;
+
+        if ( ExcelUtil.TryGetTable(workbook, worksheetName, tableName,
+            out oTable) )
+        {
+            ExcelUtil.RemoveTableRowsByStringColumnValues(oTable, columnName,
+                valuesToRemove);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: RemoveTableRowsByStringColumnValues()
+    //
+    /// <summary>
+    /// Removes the rows in the table that contain one of a collection of
+    /// string values in a specified column, given a table.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table to remove rows from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to read.
+    /// </param>
+    ///
+    /// <param name="valuesToRemove">
+    /// Collection of values to look for.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method removes each row that contains one of the values in
+    /// <paramref name="valuesToRemove" /> in the column named <paramref
+    /// name="columnName" />.  The values are of type String.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    RemoveTableRowsByStringColumnValues
+    (
+        ListObject table,
+        String columnName,
+        ICollection<String> valuesToRemove
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        Debug.Assert(valuesToRemove != null);
+
+        RemoveTableRowsByColumnValues<String>(table, columnName,
+            valuesToRemove, TryGetNonEmptyStringFromCell);
+    }
+
+    //*************************************************************************
+    //  Method: RemoveTableRowsByColumnValues()
+    //
+    /// <summary>
+    /// Removes the rows in the table that contain one of a collection of
+    /// values in a specified column.
+    /// </summary>
+    ///
+    /// <typeparam name="TValue">
+    /// Type of the values in the specified column.
+    /// </typeparam>
+    ///
+    /// <param name="table">
+    /// Table to remove rows from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to read.
+    /// </param>
+    ///
+    /// <param name="valuesToRemove">
+    /// Collection of values to look for.
+    /// </param>
+    ///
+    /// <param name="tryGetValueFromCell">
+    /// Method that attempts to get a value of a specified type from a
+    /// worksheet cell given an array of cell values read from the worksheet.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method removes each row that contains one of the values in
+    /// <paramref name="valuesToRemove" /> in the column named <paramref
+    /// name="columnName" />.  The values are of type TValue.
+    /// </remarks>
+    //*************************************************************************
+
+    public static void
+    RemoveTableRowsByColumnValues<TValue>
+    (
+        ListObject table,
+        String columnName,
+        ICollection<TValue> valuesToRemove,
+        TryGetValueFromCell<TValue> tryGetValueFromCell
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        Debug.Assert(valuesToRemove != null);
+        Debug.Assert(tryGetValueFromCell != null);
+
+        Range oTableColumnData;
+        Object [,] aoTableColumnDataValues;
+
+        if ( !TryGetTableColumnDataAndValues(table, columnName,
+            out oTableColumnData, out aoTableColumnDataValues) )
+        {
+            return;
+        }
+
+        oTableColumnData = null;
+
+        // Store the values to remove in a HashSet for quick lookup.
+
+        HashSet<TValue> oValuesToRemove = new HashSet<TValue>(valuesToRemove);
+
+        Int32 iRows = aoTableColumnDataValues.GetUpperBound(0);
+        ListRows oRows = table.ListRows;
+
+        // Work from the bottom of the table up.
+
+        for (Int32 iRowOneBased = iRows; iRowOneBased >= 1; iRowOneBased--)
+        {
+            TValue tValue;
+
+            if (
+                tryGetValueFromCell(aoTableColumnDataValues, iRowOneBased, 1,
+                    out tValue)
+                &&
+                oValuesToRemove.Contains(tValue)
+                )
+            {
+                oRows[iRowOneBased].Delete();
+            }
+        }
+    }
+
+    //*************************************************************************
     //  Method: ClearTable()
     //
     /// <summary>
@@ -3610,7 +4304,8 @@ public static class ExcelUtil
     /// </param>
     ///
     /// <returns>
-    /// The column format.
+    /// The column format.  If the column is empty, ExcelColumnFormat.Other is
+    /// returned.
     /// </returns>
     //*************************************************************************
 
@@ -3633,8 +4328,6 @@ public static class ExcelUtil
 
         Range oFirstDataCell = (Range)oColumnData.Cells[1, 1];
         Object oFirstDataCellValue = oFirstDataCell.get_Value(Missing.Value);
-
-        Debug.Assert(oFirstDataCellValue != null);
 
         if (oFirstDataCellValue is DateTime)
         {

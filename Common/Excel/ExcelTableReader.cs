@@ -269,6 +269,56 @@ public class ExcelTableReader : Object
     }
 
     //*************************************************************************
+    //  Method: TryGetInt32FromCellInCurrentRow()
+    //
+    /// <summary>
+    /// Attempts to get an Int32 from one of the current row's cells.
+    /// </summary>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the cell's column.  The column does not have to exist.
+    /// </param>
+    ///
+    /// <param name="iInt32">
+    /// Where an Int32 gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified column exists and the cell in the current row and the
+    /// specified column contains a valid Int32, the Int32 is stored at
+    /// <paramref name="iInt32" /> and true is returned.  false is returned
+    /// otherwise.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetInt32FromCellInCurrentRow
+    (
+        String sColumnName,
+        out Int32 iInt32
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
+
+        iInt32 = Int32.MinValue;
+        Int32 iColumnOneBased;
+
+        if ( m_oColumnIndexesOneBased.TryGetValue(sColumnName,
+            out iColumnOneBased) )
+        {
+            return ( ExcelUtil.TryGetInt32FromCell(
+                m_aoCurrentSubrangeValues, m_iCurrentRowOneBased,
+                iColumnOneBased, out iInt32) );
+        }
+
+        return (false);
+    }
+
+    //*************************************************************************
     //  Method: GetRangeForCellInCurrentRow()
     //
     /// <summary>
@@ -493,6 +543,45 @@ public class ExcelTableReader : Object
 
             return ( m_oExcelTableReader.TryGetDoubleFromCellInCurrentRow(
                 columnName, out theDouble) );
+        }
+
+        //*********************************************************************
+        //  Method: TryGetInt32FromCell()
+        //
+        /// <summary>
+        /// Attempts to get an Int32 from one of the row's cells.
+        /// </summary>
+        ///
+        /// <param name="columnName">
+        /// Name of the cell's column.  The column does not have to exist.
+        /// </param>
+        ///
+        /// <param name="int32">
+        /// Where an Int32 gets stored if true is returned.
+        /// </param>
+        ///
+        /// <returns>
+        /// true if successful.
+        /// </returns>
+        ///
+        /// <remarks>
+        /// If the specified column exists and the cell in the specified column
+        /// contains a valid Int32, the Int32 is stored at <paramref
+        /// name="int32" /> and true is returned.  false is returned otherwise.
+        /// </remarks>
+        //*********************************************************************
+
+        public Boolean
+        TryGetInt32FromCell
+        (
+            String columnName,
+            out Int32 int32
+        )
+        {
+            Debug.Assert( !String.IsNullOrEmpty(columnName) );
+
+            return ( m_oExcelTableReader.TryGetInt32FromCellInCurrentRow(
+                columnName, out int32) );
         }
 
         //*********************************************************************

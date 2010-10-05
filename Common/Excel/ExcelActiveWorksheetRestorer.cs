@@ -28,6 +28,13 @@ namespace Microsoft.Research.CommunityTechnologies.AppLib
 /// done writing.
 /// </para>
 ///
+/// <para>
+/// If you activate a worksheet by other means but still want to use this class
+/// to save and restore the original active worksheet, call <see
+/// cref="GetActiveWorksheetState" /> to save the active worksheet state and
+/// call <see cref="Restore" /> when you're done writing.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -86,6 +93,36 @@ public class ExcelActiveWorksheetRestorer : Object
         Debug.Assert(worksheet != null);
         AssertValid();
 
+        ExcelActiveWorksheetState oExcelActiveWorksheetState =
+            GetActiveWorksheetState();
+
+        ExcelUtil.ActivateWorksheet(worksheet);
+
+        return (oExcelActiveWorksheetState);
+    }
+
+    //*************************************************************************
+    //  Method: GetActiveWorksheetState()
+    //
+    /// <summary>
+    /// Gets the current active worksheet state without activating a worksheet.
+    /// </summary>
+    ///
+    /// <returns>
+    /// An <see cref="ExcelActiveWorksheetState" /> object to pass to <see
+    /// cref="Restore" />.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// Excel's screen updating is turned off.
+    /// </remarks>
+    //*************************************************************************
+
+    public ExcelActiveWorksheetState
+    GetActiveWorksheetState()
+    {
+        AssertValid();
+
         Worksheet oActiveWorksheet = null;
 
         if (m_oWorkbook.ActiveSheet is Worksheet)
@@ -97,8 +134,6 @@ public class ExcelActiveWorksheetRestorer : Object
 
         m_oWorkbook.Application.ScreenUpdating = false;
 
-        ExcelUtil.ActivateWorksheet(worksheet);
-
         return ( new ExcelActiveWorksheetState(oActiveWorksheet, 
             bScreenUpdating) );
     }
@@ -108,7 +143,8 @@ public class ExcelActiveWorksheetRestorer : Object
     //
     /// <summary>
     /// Activates the worksheet that was active before <see
-    /// cref="ActivateWorksheet" /> was called.
+    /// cref="ActivateWorksheet" /> or <see cref="GetActiveWorksheetState" />
+    /// was called.
     /// </summary>
     ///
     /// <param name="excelActiveWorksheetState">

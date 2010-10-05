@@ -96,6 +96,9 @@ public partial class GraphZoomAndScaleControl : UserControl
             m_oNodeXLControl.GraphZoomChanged +=
                 new EventHandler(this.m_oNodeXLControl_GraphZoomChanged);
 
+            m_oNodeXLControl.GraphScaleChanged +=
+                new EventHandler(this.m_oNodeXLControl_GraphScaleChanged);
+
             tbGraphZoom.Value = NodeXLControlValueToTrackBarValue(
                 m_oNodeXLControl.GraphZoom);
 
@@ -238,6 +241,38 @@ public partial class GraphZoomAndScaleControl : UserControl
         {
             tbGraphZoom.Value =
                 NodeXLControlValueToTrackBarValue(m_oNodeXLControl.GraphZoom);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: m_oNodeXLControl_GraphScaleChanged()
+    //
+    /// <summary>
+    /// Handles the GraphScaleChanged event on the m_oNodeXLControl object.
+    /// </summary>
+    ///
+    /// <param name="oSender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="oEventArgs">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    m_oNodeXLControl_GraphScaleChanged
+    (
+        Object oSender,
+        EventArgs oEventArgs
+    )
+    {
+        AssertValid();
+
+        if (!m_bChangingNodeXLControlValue)
+        {
+            tbGraphScale.Value =
+                NodeXLControlValueToTrackBarValue(m_oNodeXLControl.GraphScale);
         }
     }
 

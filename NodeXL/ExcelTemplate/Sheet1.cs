@@ -20,15 +20,27 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public partial class Sheet1
 {
     //*************************************************************************
-    //  Event: EdgeSelectionChanged
+    //  Property: Sheets1And2Helper
     //
     /// <summary>
-    /// Occurs when the selection state of the edge table changes.
+    /// Gets the object that does most of the work for this class.
     /// </summary>
+    ///
+    /// <value>
+    /// A Sheets1And2Helper object.
+    /// </value>
     //*************************************************************************
 
-    public event TableSelectionChangedEventHandler EdgeSelectionChanged;
+    public Sheets1And2Helper
+    Sheets1And2Helper
+    {
+        get
+        {
+            AssertValid();
 
+            return (m_oSheets1And2Helper);
+        }
+    }
 
     //*************************************************************************
     //  Method: Sheet1_Startup()
@@ -57,46 +69,11 @@ public partial class Sheet1
 
         m_oSheets1And2Helper = new Sheets1And2Helper(this, this.Edges);
 
-        m_oSheets1And2Helper.TableSelectionChanged +=
-            new TableSelectionChangedEventHandler(
-                m_oSheets1And2Helper_TableSelectionChanged);
-
-        m_oSheets1And2Helper.Sheet_Startup(sender, e);
-
         Globals.ThisWorkbook.SetVisualAttribute2 +=
             new SetVisualAttributeEventHandler(
                 this.ThisWorkbook_SetVisualAttribute2);
 
         AssertValid();
-    }
-
-    //*************************************************************************
-    //  Method: m_oSheets1And2Helper_TableSelectionChanged()
-    //
-    /// <summary>
-    /// Handles the TableSelectionChanged event on the m_oSheets1And2Helper
-    /// object.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    m_oSheets1And2Helper_TableSelectionChanged
-    (
-        object sender,
-        TableSelectionChangedEventArgs e
-    )
-    {
-        AssertValid();
-
-        FireEdgeSelectionChanged(e);
     }
 
     //*************************************************************************
@@ -198,46 +175,6 @@ public partial class Sheet1
         AssertValid();
 
         // (Do nothing.)
-    }
-
-    //*************************************************************************
-    //  Method: FireEdgeSelectionChanged()
-    //
-    /// <summary>
-    /// Fires the <see cref="EdgeSelectionChanged" /> event if appropriate.
-    /// </summary>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    FireEdgeSelectionChanged
-    (
-        TableSelectionChangedEventArgs e
-    )
-    {
-        Debug.Assert(e != null);
-        AssertValid();
-
-        TableSelectionChangedEventHandler oEdgeSelectionChanged =
-            this.EdgeSelectionChanged;
-
-        if (oEdgeSelectionChanged != null)
-        {
-            try
-            {
-                oEdgeSelectionChanged(this, e);
-            }
-            catch (Exception oException)
-            {
-                // If exceptions aren't caught here, Excel consumes them
-                // without indicating that anything is wrong.
-
-                ErrorUtil.OnException(oException);
-            }
-        }
     }
 
 

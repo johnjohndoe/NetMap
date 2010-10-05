@@ -26,10 +26,10 @@ namespace Microsoft.NodeXL.ExcelTemplate
 public static class NodeXLControlUtil
 {
     //*************************************************************************
-    //  Method: GetSelectedEdgeIDs()
+    //  Method: GetSelectedEdgeRowIDs()
     //
     /// <summary>
-    /// Gets the IDs of the selected edges.
+    /// Gets the row IDs of the selected edges.
     /// </summary>
     ///
     /// <param name="nodeXLControl">
@@ -37,20 +37,21 @@ public static class NodeXLControlUtil
     /// </param>
     ///
     /// <returns>
-    /// A list of the IDs of the selected edges.  The IDs are those that came
-    /// from the edge worksheet's ID column.  They are NOT IEdge.ID values.
+    /// A collection of the row IDs of the selected edges.  The row IDs are
+    /// those that came from the edge worksheet's ID column.  They are NOT
+    /// IEdge.ID values.
     /// </returns>
     //*************************************************************************
 
-    public static List<Int32>
-    GetSelectedEdgeIDsAsList
+    public static ICollection<Int32>
+    GetSelectedEdgeRowIDs
     (
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(nodeXLControl != null);
 
-        List<Int32> oSelectedEdgeIDs = new List<Int32>();
+        LinkedList<Int32> oSelectedEdgeRowIDs = new LinkedList<Int32>();
 
         foreach (IEdge oSelectedEdge in nodeXLControl.SelectedEdges)
         {
@@ -64,17 +65,17 @@ public static class NodeXLControlUtil
                 continue;
             }
 
-            oSelectedEdgeIDs.Add( (Int32)oSelectedEdge.Tag );
+            oSelectedEdgeRowIDs.AddLast( (Int32)oSelectedEdge.Tag );
         }
 
-        return (oSelectedEdgeIDs);
+        return (oSelectedEdgeRowIDs);
     }
 
     //*************************************************************************
-    //  Method: GetSelectedVertexIDsAsList()
+    //  Method: GetSelectedVertexRowIDs()
     //
     /// <summary>
-    /// Gets the IDs of the selected vertices as a list.
+    /// Gets the row IDs of the selected vertices.
     /// </summary>
     ///
     /// <param name="nodeXLControl">
@@ -82,21 +83,21 @@ public static class NodeXLControlUtil
     /// </param>
     ///
     /// <returns>
-    /// A list of the IDs of the selected vertices.  The IDs are those that
-    /// came from the vertex worksheet's ID column.  They are NOT IVertex.ID
-    /// values.
+    /// A collection of the row IDs of the selected vertices.  The row IDs are
+    /// those that came from the vertex worksheet's ID column.  They are NOT
+    /// IVertex.ID values.
     /// </returns>
     //*************************************************************************
 
-    public static List<Int32>
-    GetSelectedVertexIDsAsList
+    public static ICollection<Int32>
+    GetSelectedVertexRowIDs
     (
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(nodeXLControl != null);
 
-        List<Int32> oSelectedVertexIDs = new List<Int32>();
+        LinkedList<Int32> oSelectedVertexIDs = new LinkedList<Int32>();
 
         foreach (IVertex oSelectedVertex in nodeXLControl.SelectedVertices)
         {
@@ -110,17 +111,17 @@ public static class NodeXLControlUtil
                 continue;
             }
 
-            oSelectedVertexIDs.Add( (Int32)oSelectedVertex.Tag );
+            oSelectedVertexIDs.AddLast( (Int32)oSelectedVertex.Tag );
         }
 
         return (oSelectedVertexIDs);
     }
 
     //*************************************************************************
-    //  Method: GetSelectedVerticesAsDictionary()
+    //  Method: GetSelectedVerticesAsHashSet()
     //
     /// <summary>
-    /// Gets the selected vertices as a dictionary.
+    /// Gets the selected vertices as a HashSet.
     /// </summary>
     ///
     /// <param name="nodeXLControl">
@@ -128,32 +129,30 @@ public static class NodeXLControlUtil
     /// </param>
     ///
     /// <returns>
-    /// A dictionary of selected vertices.  The key is the IVertex and the
-    /// value isn't used.
+    /// A HashSet of selected vertices.  The key is the IVertex.
     /// </returns>
     //*************************************************************************
 
-    public static Dictionary<IVertex, Char>
-    GetSelectedVerticesAsDictionary
+    public static HashSet<IVertex>
+    GetSelectedVerticesAsHashSet
     (
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(nodeXLControl != null);
 
-        Dictionary<IVertex, Char> oSelectedVertices =
-            new Dictionary<IVertex, Char>();
+        HashSet<IVertex> oSelectedVertices = new HashSet<IVertex>();
 
         foreach (IVertex oSelectedVertex in nodeXLControl.SelectedVertices)
         {
-            oSelectedVertices[oSelectedVertex] = ' ';
+            oSelectedVertices.Add(oSelectedVertex);
         }
 
         return (oSelectedVertices);
     }
 
     //*************************************************************************
-    //  Method: GetSelectedVerticesAsDictionary2()
+    //  Method: GetSelectedVerticesAsDictionary()
     //
     /// <summary>
     /// Gets the selected vertices as a dictionary.
@@ -170,7 +169,7 @@ public static class NodeXLControlUtil
     //*************************************************************************
 
     public static Dictionary<Int32, IVertex>
-    GetSelectedVerticesAsDictionary2
+    GetSelectedVerticesAsDictionary
     (
         NodeXLControl nodeXLControl
     )
@@ -189,10 +188,10 @@ public static class NodeXLControlUtil
     }
 
     //*************************************************************************
-    //  Method: GetSelectedEdgesAsDictionary()
+    //  Method: GetSelectedEdgesAsHashSet()
     //
     /// <summary>
-    /// Gets the selected edges as a dictionary.
+    /// Gets the selected edges as a HashSet.
     /// </summary>
     ///
     /// <param name="nodeXLControl">
@@ -200,31 +199,30 @@ public static class NodeXLControlUtil
     /// </param>
     ///
     /// <returns>
-    /// A dictionary of selected edges.  The key is the IEdge and the value
-    /// isn't used.
+    /// A HashSet of selected edges.  The key is the IEdge.
     /// </returns>
     //*************************************************************************
 
-    public static Dictionary<IEdge, Char>
-    GetSelectedEdgesAsDictionary
+    public static HashSet<IEdge>
+    GetSelectedEdgesAsHashSet
     (
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(nodeXLControl != null);
 
-        Dictionary<IEdge, Char> oSelectedEdges = new Dictionary<IEdge, Char>();
+        HashSet<IEdge> oSelectedEdges = new HashSet<IEdge>();
 
         foreach (IEdge oSelectedEdge in nodeXLControl.SelectedEdges)
         {
-            oSelectedEdges[oSelectedEdge] = ' ';
+            oSelectedEdges.Add(oSelectedEdge);
         }
 
         return (oSelectedEdges);
     }
 
     //*************************************************************************
-    //  Method: GetSelectedEdgesAsDictionary2()
+    //  Method: GetSelectedEdgesAsDictionary()
     //
     /// <summary>
     /// Gets the selected edges as a dictionary.
@@ -241,7 +239,7 @@ public static class NodeXLControlUtil
     //*************************************************************************
 
     public static Dictionary<Int32, IEdge>
-    GetSelectedEdgesAsDictionary2
+    GetSelectedEdgesAsDictionary
     (
         NodeXLControl nodeXLControl
     )

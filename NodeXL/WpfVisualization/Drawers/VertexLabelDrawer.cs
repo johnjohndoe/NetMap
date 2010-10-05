@@ -54,6 +54,11 @@ public class VertexLabelDrawer : Object
     /// Draws a vertex label as an annotation.
     /// </summary>
     ///
+    /// <summary>
+    /// Draws a vertex label as an annotation at a position determined by the
+    /// vertex's metadata.
+    /// </summary>
+    ///
     /// <param name="drawingContext">
     /// The DrawingContext to use.
     /// </param>
@@ -92,6 +97,61 @@ public class VertexLabelDrawer : Object
         Debug.Assert(formattedText != null);
         AssertValid();
 
+        DrawLabel(drawingContext, graphDrawingContext, vertexDrawingHistory,
+            vertexBounds, GetLabelPosition(vertexDrawingHistory.Vertex),
+            formattedText);
+    }
+
+    //*************************************************************************
+    //  Method: DrawLabel()
+    //
+    /// <summary>
+    /// Draws a vertex label as an annotation at a specified position.
+    /// </summary>
+    ///
+    /// <param name="drawingContext">
+    /// The DrawingContext to use.
+    /// </param>
+    ///
+    /// <param name="graphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.
+    /// </param>
+    ///
+    /// <param name="vertexDrawingHistory">
+    /// Describes how the vertex was drawn.
+    /// </param>
+    ///
+    /// <param name="vertexBounds">
+    /// The vertex's bounding rectangle.
+    /// </param>
+    ///
+    /// <param name="labelPosition">
+    /// The label's position.
+    /// </param>
+    ///
+    /// <param name="formattedText">
+    /// The FormattedText object to use.  Several properties get changed by
+    /// this method.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    DrawLabel
+    (
+        DrawingContext drawingContext,
+        GraphDrawingContext graphDrawingContext,
+        VertexDrawingHistory vertexDrawingHistory,
+        Rect vertexBounds,
+        VertexLabelPosition labelPosition,
+        FormattedText formattedText
+    )
+    {
+        Debug.Assert(drawingContext != null);
+        Debug.Assert(graphDrawingContext != null);
+        Debug.Assert(vertexDrawingHistory != null);
+        Debug.Assert(formattedText != null);
+        AssertValid();
+
         Double dHalfVertexBoundsWidth = vertexBounds.Width / 2.0;
         Double dHalfVertexBoundsHeight = vertexBounds.Height / 2.0;
         Double dLabelHeight = formattedText.Height;
@@ -102,14 +162,11 @@ public class VertexLabelDrawer : Object
 
         formattedText.MaxLineCount = 1;
 
-        VertexLabelPosition eLabelPosition =
-            GetLabelPosition(vertexDrawingHistory.Vertex);
-
         // This is the point where the label will be drawn.  It initially
         // assumes a text height of zero with no margin, but that will be
         // adjusted within the switch statement below.
 
-        Point oDraw = vertexDrawingHistory.GetLabelLocation(eLabelPosition);
+        Point oDraw = vertexDrawingHistory.GetLabelLocation(labelPosition);
         Double dDrawX = oDraw.X;
         Double dDrawY = oDraw.Y;
 
@@ -118,7 +175,7 @@ public class VertexLabelDrawer : Object
         Double dLabelBoundsLeft = 0;
         Double dLabelBoundsRight = 0;
 
-        switch (eLabelPosition)
+        switch (labelPosition)
         {
             case VertexLabelPosition.TopLeft:
 

@@ -88,6 +88,8 @@ public static class ApplicationUtil
         catch (Exception oException)
         {
             ErrorUtil.OnException(oException);
+
+            return;
         }
 
         if (
@@ -208,10 +210,10 @@ public static class ApplicationUtil
         // Use a regular expression to parse the response.  Look for the
         // version in this format, for example:
         //
-        // .NodeXL Excel 2007 Template, version 1.0.1.56
+        // NodeXL Excel Template, version 1.0.1.56
 
         const String Pattern =
-            ".NodeXL Excel 2007 Template, version "
+            "NodeXL Excel Template, version "
             + "(?<FileMajorPart>\\d+)"
             + "\\."
             + "(?<FileMinorPart>\\d+)"
@@ -226,7 +228,7 @@ public static class ApplicationUtil
 
         if (!oMatch.Success)
         {
-            throw new WebException(
+            throw new FormatException(
                 "The home page was found but it doesn't appear to contain the"
                 + " latest version number."
                 );
@@ -353,10 +355,6 @@ public static class ApplicationUtil
     /// Attempts to get the full path to the application's template file.
     /// </summary>
     ///
-    /// <param name="application">
-    /// The Excel application.
-    /// </param>
-    ///
     /// <param name="templatePath">
     /// Where the path to the template file gets stored regardless of the
     /// return value.
@@ -370,12 +368,9 @@ public static class ApplicationUtil
     public static Boolean
     TryGetTemplatePath
     (
-        Microsoft.Office.Interop.Excel.Application application,
         out String templatePath
     )
     {
-        Debug.Assert(application != null);
-
         String sTemplatesPath;
 
         if (RunningInDevelopmentEnvironment)
@@ -397,7 +392,10 @@ public static class ApplicationUtil
         }
         else
         {
-            sTemplatesPath = application.TemplatesPath;
+            // The setup program puts the template file in the application
+            // folder.
+
+            sTemplatesPath = GetApplicationFolder();
         }
 
         templatePath = Path.Combine(sTemplatesPath, TemplateName);
@@ -413,26 +411,17 @@ public static class ApplicationUtil
     /// file can't be found.
     /// </summary>
     ///
-    /// <param name="application">
-    /// The Excel application.
-    /// </param>
-    ///
     /// <returns>
     /// A user-friendly message.
     /// </returns>
     //*************************************************************************
 
     public static String
-    GetMissingTemplateMessage
-    (
-        Microsoft.Office.Interop.Excel.Application application
-    )
+    GetMissingTemplateMessage()
     {
-        Debug.Assert(application != null);
-
         String sTemplatePath;
 
-        ApplicationUtil.TryGetTemplatePath(application, out sTemplatePath);
+        ApplicationUtil.TryGetTemplatePath(out sTemplatePath);
 
         return ( String.Format(
 

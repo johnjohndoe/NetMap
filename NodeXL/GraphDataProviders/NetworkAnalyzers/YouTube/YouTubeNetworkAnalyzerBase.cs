@@ -245,7 +245,7 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             if (iStartIndex > 1)
             {
                 ReportProgress("Getting page starting with item "
-                    + iStartIndex);
+                    + iStartIndex + ".");
             }
 
             String sUrlWithPagination = String.Format(
@@ -459,7 +459,7 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             );
 
         XmlDocument oXmlDocument = GetXmlDocumentWithRetries(sUrlWithVersion,
-            SpecialHttpStatusCodes, oRequestStatistics, null);
+            HttpStatusCodesToFailImmediately, oRequestStatistics, null);
 
         oXmlNamespaceManager = CreateXmlNamespaceManager(oXmlDocument);
 
@@ -747,8 +747,8 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// HTTP status codes that have special meaning with YouTube.  When they
     /// occur, the requests are not retried.
 
-    protected static readonly HttpStatusCode [] SpecialHttpStatusCodes =
-        new HttpStatusCode[] {
+    protected static readonly HttpStatusCode []
+        HttpStatusCodesToFailImmediately = new HttpStatusCode[] {
 
             // Occurs when the a user or video isn't found.
 

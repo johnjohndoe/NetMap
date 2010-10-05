@@ -63,8 +63,8 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
     /// </param>
     ///
     /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
+    /// true if the graph metrics were calculated or don't need to be
+    /// calculated, false if the user wants to cancel.
     /// </returns>
     ///
     /// <remarks>
@@ -102,7 +102,7 @@ public class BrandesFastCentralityCalculator2 : GraphMetricCalculatorBase2
         graphMetricColumns = new GraphMetricColumn[0];
 
         if ( !calculateGraphMetricsContext.GraphMetricUserSettings.
-            CalculateGraphMetrics(GraphMetrics.BrandesFastCentralities) )
+            ShouldCalculateGraphMetrics(GraphMetrics.BrandesFastCentralities) )
         {
             return (true);
         }

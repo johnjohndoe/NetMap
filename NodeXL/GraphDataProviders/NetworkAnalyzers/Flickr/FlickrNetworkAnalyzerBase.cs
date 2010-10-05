@@ -303,7 +303,7 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         AssertValid();
 
         XmlDocument oXmlDocument = GetXmlDocumentWithRetries(sUrl,
-            SpecialHttpStatusCodes, oRequestStatistics);
+            HttpStatusCodesToFailImmediately, oRequestStatistics);
 
         String sStatus;
 
@@ -565,8 +565,8 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// HTTP status codes that have special meaning with Flickr.  When they
     /// occur, the requests are not retried.
 
-    protected static readonly HttpStatusCode [] SpecialHttpStatusCodes =
-        new HttpStatusCode[] {
+    protected static readonly HttpStatusCode []
+        HttpStatusCodesToFailImmediately = new HttpStatusCode[] {
 
             // (There are no such special status codes for Flickr, which
             // handles errors by returning an XML document containing error

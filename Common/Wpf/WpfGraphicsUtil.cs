@@ -142,6 +142,47 @@ public static class WpfGraphicsUtil
     }
 
     //*************************************************************************
+    //  Method: GetContrastingColor()
+    //
+    /// <summary>
+    /// Gets a color that contrasts with a specified color.
+    /// </summary>
+    ///
+    /// <param name="color">
+    /// The System.Windows.Media.Color to get a contrasting color for.
+    /// </param>
+    ///
+    /// <returns>
+    /// A color that contrasts with <paramref name="color" />.  The
+    /// contrasting color has the same alpha value as <paramref
+    /// name="color" />.
+    /// </returns>
+    //*************************************************************************
+
+    public static System.Windows.Media.Color
+    GetContrastingColor
+    (
+        System.Windows.Media.Color color
+    )
+    {
+        // This algorithm is based on the YIC color model used by televisions.
+        // If the calculated brightness is less than a constant threshold,
+        // white is used for the contrasting color.  Otherwise, black is used.
+        //
+        // See this thread:
+        //
+        // http://visual-c.itags.org/visual-c-c++/56778/
+
+        Double dBrightness = 0.299 * color.R + 0.587 * color.G +
+            0.114 * color.B;
+
+        Byte btComponent = (Byte)( (dBrightness < 127) ? 0xff : 0x00 );
+
+        return ( System.Windows.Media.Color.FromArgb(
+            color.A, btComponent, btComponent, btComponent) );
+    }
+
+    //*************************************************************************
     //  Method: FontToTypeface()
     //
     /// <summary>

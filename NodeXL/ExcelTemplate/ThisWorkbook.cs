@@ -4,6 +4,7 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
 using Microsoft.Office.Interop.Excel;
@@ -19,6 +20,14 @@ using Microsoft.Research.CommunityTechnologies.AppLib;
 
 namespace Microsoft.NodeXL.ExcelTemplate
 {
+//*****************************************************************************
+//  Class: ThisWorkbook
+//
+/// <summary>
+/// Represent's a workbook created from the template.
+/// </summary>
+//*****************************************************************************
+
 public partial class ThisWorkbook
 {
     //*************************************************************************
@@ -517,19 +526,24 @@ public partial class ThisWorkbook
     /// <summary>
     /// Shows the NodeXL graph.
     /// </summary>
+    ///
+    /// <returns>
+    /// true if the graph was shown, false if the application isn't ready.
+    /// </returns>
     //*************************************************************************
 
-    public void
+    public Boolean
     ShowGraph()
     {
         AssertValid();
 
         if ( !this.ExcelApplicationIsReady(true) )
         {
-            return;
+            return (false);
         }
 
         this.GraphVisibility = true;
+        return (true);
     }
 
     //*************************************************************************
@@ -809,30 +823,27 @@ public partial class ThisWorkbook
             return;
         }
 
-        String [] asSelectedVertexNames = new String[0];
+        ICollection<String> oSelectedVertexNames = new String[0];
 
         if (mode == CreateSubgraphImagesDialog.DialogMode.Normal)
         {
-            // Get an array of vertex names that are selected in the vertex
-            // worksheet.
+            // (PopulateVertexWorksheet() should have selected the vertex
+            // worksheet.)
 
             Debug.Assert(this.Application.ActiveSheet is Worksheet);
 
             Debug.Assert( ( (Worksheet)this.Application.ActiveSheet ).Name ==
                 WorksheetNames.Vertices);
 
-            Object oSelection = this.Application.Selection;
+            // Get an array of vertex names that are selected in the vertex
+            // worksheet.
 
-            if (oSelection != null && oSelection is Range)
-            {
-                asSelectedVertexNames =
-                    Globals.Sheet2.GetSelectedVertexNames( (Range)oSelection );
-            }
+            oSelectedVertexNames = Globals.Sheet2.GetSelectedVertexNames();
         }
 
         CreateSubgraphImagesDialog oCreateSubgraphImagesDialog =
             new CreateSubgraphImagesDialog(this.InnerObject,
-                asSelectedVertexNames, mode);
+                oSelectedVertexNames, mode);
 
         oCreateSubgraphImagesDialog.ShowDialog();
     }
@@ -1162,6 +1173,31 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: GroupByVertexAttribute()
+    //
+    /// <summary>
+    /// Partitions the graph into groups based on the values in a vertex
+    /// worksheet column.
+    /// </summary>
+    //*************************************************************************
+
+    public void
+    GroupByVertexAttribute()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return;
+        }
+
+        GroupByVertexAttributeDialog oGroupByVertexAttributeDialog =
+            new GroupByVertexAttributeDialog(this.InnerObject);
+
+        oGroupByVertexAttributeDialog.ShowDialog();
+    }
+
+    //*************************************************************************
     //  Method: CalculateClusters()
     //
     /// <summary>
@@ -1185,48 +1221,120 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        if ( !this.ExcelApplicationIsReady(true) )
-        {
-            return (false);
-        }
-
         ClusterCalculator2 oClusterCalculator2 = new ClusterCalculator2();
         oClusterCalculator2.Algorithm = clusterAlgorithm;
 
-        // The CalculateGraphMetricsDialog does the work.  (Clusters are just
-        // another set of graph metrics.)  Use the constructor overload that
-        // accepts a list of graph metric calculators.
+        return ( CalculateGroups(oClusterCalculator2, "Finding Clusters") );
+    }
 
-        CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
-            new CalculateGraphMetricsDialog(
-                this.InnerObject,
-                new GraphMetricUserSettings(),
-                new NotificationUserSettings(),
-                new IGraphMetricCalculator2 [] {oClusterCalculator2},
-                true,
-                "Finding Clusters"
-                );
+    //*************************************************************************
+    //  Method: CalculateConnectedComponents()
+    //
+    /// <summary>
+    /// Partitions the graph into connected components.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if the graph was successfully partitioned into connected
+    /// components.
+    /// </returns>
+    //*************************************************************************
 
-        if (oCalculateGraphMetricsDialog.ShowDialog() == DialogResult.OK)
+    public Boolean
+    CalculateConnectedComponents()
+    {
+        AssertValid();
+
+        return ( CalculateGroups(new ConnectedComponentCalculator2(),
+            "Finding Connected Components") );
+    }
+
+    //*************************************************************************
+    //  Method: RunGroupCommand()
+    //
+    /// <summary>
+    /// Runs a group command.
+    /// </summary>
+    ///
+    /// <param name="groupCommand">
+    /// One of the flags in the <see cref="GroupCommands" /> enumeration.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    RunGroupCommand
+    (
+        GroupCommands groupCommand
+    )
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
         {
-            // Check the "read clusters" checkbox in the ribbon.
-
-            this.Ribbon.ReadClusters = true;
-            
-            Worksheet oClusterWorksheet;
-
-            if ( ExcelUtil.TryGetWorksheet(this.InnerObject,
-                WorksheetNames.Clusters, out oClusterWorksheet) )
-            {
-                // Let the user know that something happened.
-
-                ExcelUtil.ActivateWorksheet(oClusterWorksheet);
-            }
-
-            return (true);
+            return;
         }
 
-        return (false);
+        // Various worksheets must be activated for reading and writing.  Save
+        // the active worksheet state.
+
+        ExcelActiveWorksheetRestorer oExcelActiveWorksheetRestorer =
+            new ExcelActiveWorksheetRestorer(this.InnerObject);
+
+        ExcelActiveWorksheetState oExcelActiveWorksheetState =
+            oExcelActiveWorksheetRestorer.GetActiveWorksheetState();
+
+        try
+        {
+            if ( !GroupManager.TryRunGroupCommand(groupCommand,
+                this.InnerObject, Globals.Sheet2, Globals.Sheet5) )
+            {
+                return;
+            }
+
+            switch (groupCommand)
+            {
+                case GroupCommands.CollapseSelectedGroups:
+                case GroupCommands.ExpandSelectedGroups:
+
+                    // Let the TaskPane know about the collapsed or expanded
+                    // groups.
+
+                    FireCollapseOrExpandGroups(
+                        groupCommand == GroupCommands.CollapseSelectedGroups,
+                        Globals.Sheet5.GetSelectedGroupNames() );
+
+                    break;
+
+                case GroupCommands.CollapseAllGroups:
+                case GroupCommands.ExpandAllGroups:
+
+                    ICollection<String> oUniqueGroupNames;
+
+                    if ( ExcelUtil.TryGetUniqueTableColumnStringValues(
+                            this.InnerObject, WorksheetNames.Groups,
+                            TableNames.Groups, GroupTableColumnNames.Name,
+                            out oUniqueGroupNames) )
+                    {
+                        FireCollapseOrExpandGroups(
+                            groupCommand == GroupCommands.CollapseAllGroups,
+                            oUniqueGroupNames);
+                    }
+
+                    break;
+
+                default:
+
+                    break;
+            }
+        }
+        catch (Exception oException)
+        {
+            ErrorUtil.OnException(oException);
+        }
+        finally
+        {
+            oExcelActiveWorksheetRestorer.Restore(oExcelActiveWorksheetState);
+        }
     }
 
     //*************************************************************************
@@ -1418,34 +1526,98 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Event: SelectionChangedInWorkbook
+    //  Method: EnableSetVisualAttributes
     //
     /// <summary>
-    /// Occurs when the selection state of the edge or vertex table changes.
+    /// Enables the "set visual attribute" buttons in the Ribbon.
     /// </summary>
     ///
     /// <remarks>
-    /// If the selection state of the edge table changes, the <see
-    /// cref="SelectionChangedEventArgs.SelectedEdgeIDs" /> property of the
-    /// <see cref="SelectionChangedEventArgs" /> object passed to the event
-    /// handler contains the IDs of the selected edges.  The <see
-    /// cref="SelectionChangedEventArgs.SelectedVertexIDs" /> property is an
-    /// empty array in this case.
-    ///
-    /// <para>
-    /// If the selection state of the vertex table changes, the <see
-    /// cref="SelectionChangedEventArgs.SelectedVertexIDs" /> property of the
-    /// <see cref="SelectionChangedEventArgs" /> object passed to the event
-    /// handler contains the IDs of the selected vertices.  The <see
-    /// cref="SelectionChangedEventArgs.SelectedEdgeIDs" /> property is an
-    /// empty array in this case.
-    /// </para>
-    ///
+    /// This method tells the Ribbon to enable or disable its visual attribute
+    /// buttons when something happens in the workbook that might change their
+    /// enabled state.  Note that this information is "pushed" into the Ribbon.
+    /// The Ribbon can't pull the information from the workbook when it needs
+    /// it because unlike menu items that appear only when a menu is opened,
+    /// the visual attribute buttons are visible in the Ribbon at all times.
     /// </remarks>
     //*************************************************************************
 
-    public event SelectionChangedEventHandler SelectionChangedInWorkbook;
+    public void
+    EnableSetVisualAttributes()
+    {
+        AssertValid();
 
+        VisualAttributes eVisualAttributes = VisualAttributes.None;
+        String sWorksheetName = null;
+        Object oActiveSheet = this.ActiveSheet;
+
+        if (oActiveSheet is Worksheet)
+        {
+            sWorksheetName = ( (Worksheet)oActiveSheet ).Name;
+        }
+
+        // Determine whether the active worksheet has a NodeXL table that
+        // includes a selection.
+
+        String sTableName = null;
+
+        switch (sWorksheetName)
+        {
+            case WorksheetNames.Edges:
+
+                sTableName = TableNames.Edges;
+                break;
+
+            case WorksheetNames.Vertices:
+
+                sTableName = TableNames.Vertices;
+                break;
+
+            case WorksheetNames.Groups:
+
+                sTableName = TableNames.Groups;
+                break;
+
+            default:
+
+                break;
+        }
+
+        ListObject oTable;
+        Range oSelectedTableRange;
+
+        if (
+            sTableName != null
+            &&
+            ExcelUtil.TryGetSelectedTableRange(this.InnerObject,
+                sWorksheetName, sTableName, out oTable,
+                out oSelectedTableRange)
+            )
+        {
+            if (sWorksheetName == WorksheetNames.Edges)
+            {
+                eVisualAttributes |= VisualAttributes.Color;
+                eVisualAttributes |= VisualAttributes.Alpha;
+                eVisualAttributes |= VisualAttributes.EdgeWidth;
+                eVisualAttributes |= VisualAttributes.EdgeVisibility;
+            }
+            else if (sWorksheetName == WorksheetNames.Vertices)
+            {
+                eVisualAttributes |= VisualAttributes.Color;
+                eVisualAttributes |= VisualAttributes.Alpha;
+                eVisualAttributes |= VisualAttributes.VertexShape;
+                eVisualAttributes |= VisualAttributes.VertexRadius;
+                eVisualAttributes |= VisualAttributes.VertexVisibility;
+            }
+            else if (sWorksheetName == WorksheetNames.Groups)
+            {
+                eVisualAttributes |= VisualAttributes.Color;
+                eVisualAttributes |= VisualAttributes.VertexShape;
+            }
+        }
+
+        this.Ribbon.EnableSetVisualAttributes(eVisualAttributes);
+    }
 
     //*************************************************************************
     //  Event: VisualAttributeSetInWorkbook
@@ -1457,23 +1629,6 @@ public partial class ThisWorkbook
     //*************************************************************************
 
     public event EventHandler VisualAttributeSetInWorkbook;
-
-
-    //*************************************************************************
-    //  Event: SelectionChangedInGraph
-    //
-    /// <summary>
-    /// Occurs when the selection state of the NodeXL graph changes.
-    /// </summary>
-    ///
-    /// <remarks>
-    /// The <see cref="SelectionChangedEventArgs" /> object passed to the event
-    /// handler contains the IDs of all vertices and edges that are currently
-    /// selected in the graph.
-    /// </remarks>
-    //*************************************************************************
-
-    public event SelectionChangedEventHandler SelectionChangedInGraph;
 
 
     //*************************************************************************
@@ -1539,6 +1694,17 @@ public partial class ThisWorkbook
 
 
     //*************************************************************************
+    //  Event: CollapseOrExpandGroups
+    //
+    /// <summary>
+    /// Occurs when one or more vertex groups should be collapsed or expanded.
+    /// </summary>
+    //*************************************************************************
+
+    public event CollapseOrExpandGroupsEventHandler CollapseOrExpandGroups;
+
+
+    //*************************************************************************
     //  Property: Ribbon
     //
     /// <summary>
@@ -1597,10 +1763,6 @@ public partial class ThisWorkbook
 
                 oTaskPane.Dock = DockStyle.Fill;
 
-                oTaskPane.SelectionChangedInGraph +=
-                    new SelectionChangedEventHandler(
-                        this.TaskPane_SelectionChangedInGraph);
-
                 oTaskPane.VertexAttributesEditedInGraph +=
                     new VertexAttributesEditedEventHandler(
                         this.TaskPane_VertexAttributesEditedInGraph);
@@ -1610,6 +1772,14 @@ public partial class ThisWorkbook
 
                 oTaskPane.VerticesMoved += new VerticesMovedEventHandler2(
                     this.TaskPane_VerticesMoved);
+
+                Sheet1 oSheet1 = Globals.Sheet1;
+                Sheet2 oSheet2 = Globals.Sheet2;
+                Sheet5 oSheet5 = Globals.Sheet5;
+
+                m_oSelectionCoordinator = new SelectionCoordinator(this,
+                    oSheet1, oSheet1.Edges, oSheet2, oSheet2.Vertices,
+                    oSheet5, oSheet5.Groups, Globals.Sheet6, oTaskPane);
 
                 m_bTaskPaneCreated = true;
             }
@@ -1696,91 +1866,6 @@ public partial class ThisWorkbook
 
             AssertValid();
         }
-    }
-
-    //*************************************************************************
-    //  Method: EnableSetVisualAttributes
-    //
-    /// <summary>
-    /// Enables the "set visual attribute" buttons in the Ribbon.
-    /// </summary>
-    //*************************************************************************
-
-    private void
-    EnableSetVisualAttributes()
-    {
-        AssertValid();
-
-        VisualAttributes eVisualAttributes = VisualAttributes.None;
-        String sWorksheetName = null;
-        Object oActiveSheet = this.ActiveSheet;
-
-        if (oActiveSheet is Worksheet)
-        {
-            sWorksheetName = ( (Worksheet)oActiveSheet ).Name;
-        }
-
-        // Determine whether the active worksheet has a NodeXL table that
-        // includes a selection.
-
-        String sTableName = null;
-
-        switch (sWorksheetName)
-        {
-            case WorksheetNames.Edges:
-
-                sTableName = TableNames.Edges;
-                break;
-
-            case WorksheetNames.Vertices:
-
-                sTableName = TableNames.Vertices;
-                break;
-
-            case WorksheetNames.Clusters:
-
-                sTableName = TableNames.Clusters;
-                break;
-
-            default:
-
-                break;
-        }
-
-        ListObject oTable;
-        Range oSelectedTableRange;
-
-        if (
-            sTableName != null
-            &&
-            ExcelUtil.TryGetSelectedTableRange(this.InnerObject,
-                sWorksheetName, sTableName, out oTable,
-                out oSelectedTableRange)
-            )
-        {
-            if (sWorksheetName == WorksheetNames.Edges)
-            {
-                eVisualAttributes |= VisualAttributes.Color;
-                eVisualAttributes |= VisualAttributes.Alpha;
-                eVisualAttributes |= VisualAttributes.EdgeWidth;
-                eVisualAttributes |= VisualAttributes.EdgeVisibility;
-            }
-            else if (sWorksheetName == WorksheetNames.Vertices)
-            {
-                eVisualAttributes |= VisualAttributes.Color;
-                eVisualAttributes |= VisualAttributes.Alpha;
-                eVisualAttributes |= VisualAttributes.VertexShape;
-                eVisualAttributes |= VisualAttributes.VertexRadius;
-                eVisualAttributes |= VisualAttributes.VertexVisibility;
-            }
-            else if (sWorksheetName == WorksheetNames.Clusters)
-            {
-                eVisualAttributes |= VisualAttributes.Color;
-                eVisualAttributes |= VisualAttributes.VertexShape;
-            }
-        }
-
-        this.Ribbon.EnableSetVisualAttributes(eVisualAttributes);
     }
 
     //*************************************************************************
@@ -1933,20 +2018,63 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: UpdateColumnNames()
+    //  Method: CalculateGroups()
     //
     /// <summary>
-    /// Updates any columns whose names have been changed since earlier NodeXL
-    /// versions.
+    /// Group's the graph's vertices using a graph metric calculator.
     /// </summary>
+    ///
+    /// <param name="oGraphMetricCalculator">
+    /// The IGraphMetricCalculator2 to use.
+    /// </param>
+    ///
+    /// <param name="sDialogTitle">
+    /// Title for the CalculateGraphMetricsDialog, or null to use a default
+    /// title.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph metrics were successfully calculated, or false if
+    /// they were cancelled or the application isn't ready.
+    /// </returns>
     //*************************************************************************
 
-    private void
-    UpdateColumnNames()
+    private Boolean
+    CalculateGroups
+    (
+        IGraphMetricCalculator2 oGraphMetricCalculator,
+        String sDialogTitle
+    )
     {
+        Debug.Assert(oGraphMetricCalculator != null);
+        Debug.Assert( !String.IsNullOrEmpty(sDialogTitle) );
         AssertValid();
 
-        Globals.Sheet2.UpdateColumnNames();
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return (false);
+        }
+
+        // The CalculateGraphMetricsDialog does the work.
+
+        CalculateGraphMetricsDialog oCalculateGraphMetricsDialog =
+            new CalculateGraphMetricsDialog(
+                this.InnerObject,
+                new GraphMetricUserSettings(),
+                new IGraphMetricCalculator2[] {oGraphMetricCalculator},
+                sDialogTitle
+                );
+
+        if (oCalculateGraphMetricsDialog.ShowDialog() == DialogResult.OK)
+        {
+            // Check the "read groups" checkbox in the ribbon.
+
+            this.Ribbon.ReadGroups = true;
+
+            return (true);
+        }
+
+        return (false);
     }
 
     //*************************************************************************
@@ -2044,57 +2172,6 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: FireSelectionChangedInWorkbook()
-    //
-    /// <summary>
-    /// Fires the <see cref="SelectionChangedInWorkbook" /> event if
-    /// appropriate.
-    /// </summary>
-    ///
-    /// <param name="aiSelectedEdgeIDs">
-    /// Array of unique IDs of edges that have at least one selected cell.  Can
-    /// be empty but not null.
-    /// </param>
-    ///
-    /// <param name="aiSelectedVertexIDs">
-    /// Array of unique IDs of vertices that have at least one selected cell.
-    /// Can be empty but not null.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    FireSelectionChangedInWorkbook
-    (
-        Int32 [] aiSelectedEdgeIDs,
-        Int32 [] aiSelectedVertexIDs
-    )
-    {
-        Debug.Assert(aiSelectedEdgeIDs != null);
-        Debug.Assert(aiSelectedVertexIDs != null);
-        AssertValid();
-
-        SelectionChangedEventHandler oSelectionChangedInWorkbook =
-            this.SelectionChangedInWorkbook;
-
-        if (oSelectionChangedInWorkbook != null)
-        {
-            try
-            {
-                oSelectionChangedInWorkbook(this,
-                    new SelectionChangedEventArgs(
-                        aiSelectedEdgeIDs, aiSelectedVertexIDs) );
-            }
-            catch (Exception oException)
-            {
-                // If exceptions aren't caught here, Excel consumes them
-                // without indicating that anything is wrong.
-
-                ErrorUtil.OnException(oException);
-            }
-        }
-    }
-
-    //*************************************************************************
     //  Method: FireVisualAttributeSetInWorkbook()
     //
     /// <summary>
@@ -2110,20 +2187,68 @@ public partial class ThisWorkbook
 
         // The TaskPane handles this event by reading the workbook, which
         // clears the selection in the graph.  That fires the TaskPane's
-        // SelectionChangedInGraph event, which this class handles by clearing
-        // the selection in the workbook.  That can be jarring to the user, who
-        // just made a selection, set a visual attribute on the selection, and
-        // then saw the selection disappear.
+        // SelectionChangedInGraph event, which SelectionCoorindator handles by
+        // clearing the selection in the workbook.  That can be jarring to the
+        // user, who just made a selection, set a visual attribute on the
+        // selection, and then saw the selection disappear.
         //
         // Fix this by temporarily igoring the SelectionChangedInGraph event,
         // which causes the selection in the workbook to be retained.  The
         // selection in the graph (which is empty) will then be out of sync
         // with the selection in the workbook, but I think that is tolerable.
 
-        m_bIgnoreSelectionChangedInGraph = true;
+        if (m_oSelectionCoordinator != null)
+        {
+            m_oSelectionCoordinator.IgnoreSelectionEvents = true;
+        }
+
         EventUtil.FireEvent(this, this.VisualAttributeSetInWorkbook);
-        m_bIgnoreSelectionChangedInGraph = false;
+
+        if (m_oSelectionCoordinator != null)
+        {
+            m_oSelectionCoordinator.IgnoreSelectionEvents = false;
+        }
     }
+
+    //*************************************************************************
+    //  Method: FireCollapseOrExpandGroups()
+    //
+    /// <summary>
+    /// Fires the <see cref="CollapseOrExpandGroups" /> event if appropriate.
+    /// </summary>
+    ///
+    /// <param name="bCollapse">
+    /// true to collapse the groups, false to expand them.
+    /// </param>
+    ///
+    /// <param name="oGroupNames">
+    /// Collection of group names, one for each group that needs to be
+    /// collapsed or expanded.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    FireCollapseOrExpandGroups
+    (
+        Boolean bCollapse,
+        ICollection<String> oGroupNames
+    )
+    {
+        Debug.Assert(oGroupNames != null);
+        AssertValid();
+
+        CollapseOrExpandGroupsEventHandler oCollapseOrExpandGroups =
+            this.CollapseOrExpandGroups;
+
+        if (oCollapseOrExpandGroups != null)
+        {
+            // Let the TaskPane know about the collapsed or expanded groups.
+
+            oCollapseOrExpandGroups( this,
+                new CollapseOrExpandGroupsEventArgs(bCollapse, oGroupNames) );
+        }
+    }
+
 
     //*************************************************************************
     //  Method: Workbook_Startup()
@@ -2149,8 +2274,12 @@ public partial class ThisWorkbook
     )
     {
         m_bTaskPaneCreated = false;
-        m_bIgnoreSelectionChangedInGraph = false;
         m_bCloseExcelWhenWorkbookCloses = false;
+
+        // If this is an older NodeXL workbook, update the worksheet, table,
+        // and column names if neccessary.
+
+        NodeXLWorkbookUpdater.UpdateNames(this.InnerObject);
 
         Sheet1 oSheet1 = Globals.Sheet1;
         Sheet2 oSheet2 = Globals.Sheet2;
@@ -2158,22 +2287,12 @@ public partial class ThisWorkbook
 
         m_oWorksheetContextMenuManager = new WorksheetContextMenuManager(
             this, oSheet1, oSheet1.Edges, oSheet2, oSheet2.Vertices, oSheet5,
-            oSheet5.Clusters);
+            oSheet5.Groups);
 
         // In message boxes, show the name of this document customization
         // instead of the default, which is the name of the Excel application.
 
         FormUtil.ApplicationName = ApplicationUtil.ApplicationName;
-
-        oSheet1.EdgeSelectionChanged += new TableSelectionChangedEventHandler(
-            this.Sheet1_EdgeSelectionChanged);
-
-        oSheet2.VertexSelectionChanged += new TableSelectionChangedEventHandler(
-            this.Sheet2_VertexSelectionChanged);
-
-        oSheet5.ClusterSelectionChanged +=
-            new TableSelectionChangedEventHandler(
-                this.Sheet5_ClusterSelectionChanged);
 
         this.New += new
             Microsoft.Office.Tools.Excel.WorkbookEvents_NewEventHandler(
@@ -2189,11 +2308,6 @@ public partial class ThisWorkbook
         // Show the NodeXL graph by default.
 
         this.GraphVisibility = true;
-
-        // Update any columns whose names have been changed since earlier
-        // NodeXL versions.
-
-        UpdateColumnNames();
 
         AssertValid();
     }
@@ -2292,189 +2406,6 @@ public partial class ThisWorkbook
         {
             this.Application.Quit();
         }
-    }
-
-    //*************************************************************************
-    //  Method: Sheet1_EdgeSelectionChanged()
-    //
-    /// <summary>
-    /// Handles the EdgeSelectionChanged event on the Sheet1 (edge) worksheet.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    Sheet1_EdgeSelectionChanged
-    (
-        Object sender,
-        TableSelectionChangedEventArgs e
-    )
-    {
-        Debug.Assert(e != null);
-        Debug.Assert(e.SelectedIDs != null);
-        AssertValid();
-
-        if ( !this.ExcelApplicationIsReady(false) )
-        {
-            return;
-        }
-
-        // If the event was caused by the user selecting edges in the edge
-        // worksheet, forward the event to the TaskPane.  Otherwise, avoid an
-        // endless loop by doing nothing.
-
-        if (e.EventOrigin ==
-            TableSelectionChangedEventOrigin.SelectionChangedInTable)
-        {
-            FireSelectionChangedInWorkbook(e.SelectedIDs,
-                WorksheetReaderBase.EmptyIDArray);
-        }
-
-        EnableSetVisualAttributes();
-    }
-
-    //*************************************************************************
-    //  Method: Sheet2_VertexSelectionChanged()
-    //
-    /// <summary>
-    /// Handles the VertexSelectionChanged event on the Sheet2 (vertex)
-    /// worksheet.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    Sheet2_VertexSelectionChanged
-    (
-        Object sender,
-        TableSelectionChangedEventArgs e
-    )
-    {
-        Debug.Assert(e != null);
-        Debug.Assert(e.SelectedIDs != null);
-        AssertValid();
-
-        if ( !this.ExcelApplicationIsReady(false) )
-        {
-            return;
-        }
-
-        // If the event was caused by the user selecting vertices in the vertex
-        // worksheet, forward the event to the TaskPane.  Otherwise, avoid an
-        // endless loop and do nothing.
-
-        if (e.EventOrigin == TableSelectionChangedEventOrigin.
-            SelectionChangedInTable)
-        {
-            FireSelectionChangedInWorkbook(WorksheetReaderBase.EmptyIDArray,
-                e.SelectedIDs);
-        }
-
-        EnableSetVisualAttributes();
-    }
-
-    //*************************************************************************
-    //  Method: Sheet5_ClusterSelectionChanged()
-    //
-    /// <summary>
-    /// Handles the ClusterSelectionChanged event on the Sheet5 (cluster)
-    /// worksheet.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    Sheet5_ClusterSelectionChanged
-    (
-        Object sender,
-        TableSelectionChangedEventArgs e
-    )
-    {
-        AssertValid();
-
-        if ( !this.ExcelApplicationIsReady(false) )
-        {
-            return;
-        }
-
-        EnableSetVisualAttributes();
-    }
-
-    //*************************************************************************
-    //  Method: TaskPane_SelectionChangedInGraph()
-    //
-    /// <summary>
-    /// Handles the SelectionChangedInGraph event on the TaskPane.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This event is fired when the user clicks on the NodeXL graph.
-    /// </remarks>
-    //*************************************************************************
-
-    private void
-    TaskPane_SelectionChangedInGraph
-    (
-        Object sender,
-        SelectionChangedEventArgs e
-    )
-    {
-        Debug.Assert(e != null);
-        AssertValid();
-
-        if (!this.ExcelApplicationIsReady(false) ||
-            m_bIgnoreSelectionChangedInGraph)
-        {
-            return;
-        }
-
-        // Forward the event.
-
-        SelectionChangedEventHandler oSelectionChangedInGraph =
-            this.SelectionChangedInGraph;
-
-        if (oSelectionChangedInGraph != null)
-        {
-            try
-            {
-                oSelectionChangedInGraph(this, e);
-            }
-            catch (Exception oException)
-            {
-                ErrorUtil.OnException(oException);
-            }
-        }
-
-        EnableSetVisualAttributes();
     }
 
     //*************************************************************************
@@ -2664,7 +2595,7 @@ public partial class ThisWorkbook
     {
         Debug.Assert(m_oWorksheetContextMenuManager != null);
         // m_bTaskPaneCreated
-        // m_bIgnoreSelectionChangedInGraph
+        Debug.Assert(!m_bTaskPaneCreated || m_oSelectionCoordinator != null);
         // m_bCloseExcelWhenWorkbookCloses
     }
 
@@ -2682,9 +2613,11 @@ public partial class ThisWorkbook
 
     private Boolean m_bTaskPaneCreated;
 
-    /// true to ignore the TaskPane.SelectionChangedInGraph event.
+    /// If m_bTaskPaneCreated is true, this is the object that coordinates the
+    /// edge and vertex selection between the workbook and the TaskPane.  It is
+    /// null otherwise.
 
-    private Boolean m_bIgnoreSelectionChangedInGraph;
+    private SelectionCoordinator m_oSelectionCoordinator;
 
     /// true to close Excel when the workbook closes.
 

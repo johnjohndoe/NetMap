@@ -65,8 +65,8 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
     /// </param>
     ///
     /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
+    /// true if the graph metrics were calculated or don't need to be
+    /// calculated, false if the user wants to cancel.
     /// </returns>
     ///
     /// <remarks>
@@ -106,7 +106,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
         GraphMetricUserSettings oGraphMetricUserSettings =
             calculateGraphMetricsContext.GraphMetricUserSettings;
 
-        if ( !oGraphMetricUserSettings.CalculateGraphMetrics(
+        if ( !oGraphMetricUserSettings.ShouldCalculateGraphMetrics(
                 GraphMetrics.Degree |
                 GraphMetrics.InDegree |
                 GraphMetrics.OutDegree
@@ -259,28 +259,16 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
             (oGraph.Directedness == GraphDirectedness.Directed);
 
         Boolean bCalculateInDegree = bGraphIsDirected &&
-            oGraphMetricUserSettings.CalculateGraphMetrics(
+            oGraphMetricUserSettings.ShouldCalculateGraphMetrics(
                 GraphMetrics.InDegree);
 
         Boolean bCalculateOutDegree = bGraphIsDirected &&
-            oGraphMetricUserSettings.CalculateGraphMetrics(
+            oGraphMetricUserSettings.ShouldCalculateGraphMetrics(
                 GraphMetrics.OutDegree);
 
         Boolean bCalculateDegree = !bGraphIsDirected &&
-            oGraphMetricUserSettings.CalculateGraphMetrics(
+            oGraphMetricUserSettings.ShouldCalculateGraphMetrics(
                 GraphMetrics.Degree);
-
-        String sStyle = CellStyleNames.GraphMetricGood;
-
-        if (oCalculateGraphMetricsContext.DuplicateEdgeDetector.
-            GraphContainsDuplicateEdges)
-        {
-            // The calculations include duplicate edges, which may not be
-            // expected by the user.  Warn her with the "bad" cell
-            // style.
-
-            sStyle = CellStyleNames.GraphMetricBad;
-        }
 
         // Figure out which columns to add.
 
@@ -293,7 +281,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
                 WorksheetNames.Vertices, TableNames.Vertices,
                 VertexTableColumnNames.InDegree,
                 VertexTableColumnWidths.InDegree,
-                NumericFormat, sStyle,
+                NumericFormat, CellStyleNames.GraphMetricGood,
                 oInDegreeGraphMetricValues.ToArray() ) );
         }
 
@@ -303,7 +291,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
                 WorksheetNames.Vertices, TableNames.Vertices,
                 VertexTableColumnNames.OutDegree,
                 ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
+                NumericFormat, CellStyleNames.GraphMetricGood,
                 oOutDegreeGraphMetricValues.ToArray() ) );
         }
 
@@ -313,7 +301,7 @@ public class VertexDegreeCalculator2 : GraphMetricCalculatorBase2
                 WorksheetNames.Vertices, TableNames.Vertices,
                 VertexTableColumnNames.Degree,
                 ExcelUtil.AutoColumnWidth,
-                NumericFormat, sStyle,
+                NumericFormat, CellStyleNames.GraphMetricGood,
                 oDegreeGraphMetricValues.ToArray() ) );
         }
 

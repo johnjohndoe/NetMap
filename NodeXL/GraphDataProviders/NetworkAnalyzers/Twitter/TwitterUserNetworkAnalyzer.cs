@@ -227,28 +227,19 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(maximumPeoplePerRequest > 0);
         AssertValid();
 
-        XmlDocument oXmlDocument;
-
-        Boolean bCancelled = !TryGetUserNetworkInternal(screenNameToAnalyze,
-            whatToInclude, networkLevel, maximumPeoplePerRequest, null, null,
-            out oXmlDocument);
-
-        // Cancelling can occur only in the asynchronous case.
-
-        Debug.Assert(!bCancelled);
-
-        return (oXmlDocument);
+        return ( GetUserNetworkInternal(screenNameToAnalyze, whatToInclude,
+            networkLevel, maximumPeoplePerRequest) );
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkInternal()
+    //  Method: GetUserNetworkInternal()
     //
     /// <overloads>
-    /// Attempts to get a network of Twitter users.
+    /// Gets a network of Twitter users.
     /// </overloads>
     ///
     /// <summary>
-    /// Attempts to get a network of Twitter users.
+    /// Gets a network of Twitter users.
     /// </summary>
     ///
     /// <param name="sScreenNameToAnalyze">
@@ -269,36 +260,18 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// for no limit.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
     /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
+    /// An XmlDocument containing the network as GraphML.
     /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkInternal
+    protected XmlDocument
+    GetUserNetworkInternal
     (
         String sScreenNameToAnalyze,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
-        Int32 iMaximumPeoplePerRequest,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
-        out XmlDocument oXmlDocument
+        Int32 iMaximumPeoplePerRequest
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sScreenNameToAnalyze) );
@@ -308,10 +281,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
             eNetworkLevel == NetworkLevel.Two);
 
         Debug.Assert(iMaximumPeoplePerRequest > 0);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
-
-        oXmlDocument = null;
 
         BeforeGetNetwork();
 
@@ -325,30 +295,26 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         try
         {
-            if ( !TryGetUserNetworkInternal(sScreenNameToAnalyze,
-                eWhatToInclude, eNetworkLevel, iMaximumPeoplePerRequest,
-                oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs,
-                oGraphMLXmlDocument) )
-            {
-                // The user cancelled.
-
-                return (false);
-            }
+            GetUserNetworkInternal(sScreenNameToAnalyze, eWhatToInclude,
+                eNetworkLevel, iMaximumPeoplePerRequest, oRequestStatistics,
+                oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
             OnTerminatingException(oException);
         }
 
-        return ( OnNetworkObtainedWithoutTerminatingException(
-            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+        OnNetworkObtainedWithoutTerminatingException(oGraphMLXmlDocument,
+            oRequestStatistics);
+
+        return (oGraphMLXmlDocument);
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkInternal()
+    //  Method: GetUserNetworkInternal()
     //
     /// <summary>
-    /// Attempts to get a network of Twitter users, given a GraphMLXmlDocument.
+    /// Gets a network of Twitter users, given a GraphMLXmlDocument.
     /// </summary>
     ///
     /// <param name="sScreenNameToAnalyze">
@@ -374,35 +340,19 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument to populate with the requested network.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkInternal
+    protected void
+    GetUserNetworkInternal
     (
         String sScreenNameToAnalyze,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
         Int32 iMaximumPeoplePerRequest,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
@@ -414,7 +364,6 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         Debug.Assert(iMaximumPeoplePerRequest > 0);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -440,14 +389,10 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         {
             if ( abIncludes[i] )
             {
-                if ( !TryGetUserNetworkRecursive(sScreenNameToAnalyze,
-                    eWhatToInclude, (i == 0), eNetworkLevel,
-                    iMaximumPeoplePerRequest, 1, oGraphMLXmlDocument,
-                    oScreenNameDictionary, oRequestStatistics,
-                    oBackgroundWorker, oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                GetUserNetworkRecursive(sScreenNameToAnalyze, eWhatToInclude,
+                    (i == 0), eNetworkLevel, iMaximumPeoplePerRequest, 1,
+                    oGraphMLXmlDocument, oScreenNameDictionary,
+                    oRequestStatistics);
             }
         }
 
@@ -456,7 +401,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AppendMissingGraphMLAttributeValues(oGraphMLXmlDocument,
             oScreenNameDictionary, true, bIncludeLatestStatus,
-            oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs);
+            oRequestStatistics);
 
         AppendRepliesToAndMentionsXmlNodes(oGraphMLXmlDocument,
             oScreenNameDictionary,
@@ -467,15 +412,13 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
             WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.MentionsEdges)
             );
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkRecursive()
+    //  Method: GetUserNetworkRecursive()
     //
     /// <summary>
-    /// Attempts to recursively get a network of Twitter users.
+    /// Recursively gets a network of Twitter users.
     /// </summary>
     ///
     /// <param name="sScreenName">
@@ -519,24 +462,10 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkRecursive
+    protected void
+    GetUserNetworkRecursive
     (
         String sScreenName,
         WhatToInclude eWhatToInclude,
@@ -546,9 +475,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Int32 iRecursionLevel,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
@@ -562,7 +489,6 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         /*
@@ -623,11 +549,6 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
             iMaximumPeoplePerRequest, false, bSkipMostPage1Errors,
             oRequestStatistics) )
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             String sOtherScreenName;
 
             if ( !TryGetScreenName(oUserXmlNode, out sOtherScreenName) )
@@ -703,18 +624,12 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         {
             foreach (String sScreenNameToRecurse in oScreenNamesToRecurse)
             {
-                if ( !TryGetUserNetworkRecursive(sScreenNameToRecurse,
-                    eWhatToInclude, bIncludeFollowedThisCall, eNetworkLevel,
+                GetUserNetworkRecursive(sScreenNameToRecurse, eWhatToInclude,
+                    bIncludeFollowedThisCall, eNetworkLevel,
                     iMaximumPeoplePerRequest, 2, oGraphMLXmlDocument,
-                    oScreenNameDictionary, oRequestStatistics,
-                    oBackgroundWorker, oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                    oScreenNameDictionary, oRequestStatistics);
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -781,16 +696,17 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs =
             (GetNetworkAsyncArgs)e.Argument;
 
-        XmlDocument oGraphMLDocument;
-        
-        if ( TryGetUserNetworkInternal(
-            oGetNetworkAsyncArgs.ScreenNameToAnalyze,
-            oGetNetworkAsyncArgs.WhatToInclude,
-            oGetNetworkAsyncArgs.NetworkLevel,
-            oGetNetworkAsyncArgs.MaximumPeoplePerRequest,
-            oBackgroundWorker, e, out oGraphMLDocument) )
+        try
         {
-            e.Result = oGraphMLDocument;
+            e.Result = GetUserNetworkInternal(
+                oGetNetworkAsyncArgs.ScreenNameToAnalyze,
+                oGetNetworkAsyncArgs.WhatToInclude,
+                oGetNetworkAsyncArgs.NetworkLevel,
+                oGetNetworkAsyncArgs.MaximumPeoplePerRequest);
+        }
+        catch (CancellationPendingException)
+        {
+            e.Cancel = true;
         }
     }
 

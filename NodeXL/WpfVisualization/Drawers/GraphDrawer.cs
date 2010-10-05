@@ -579,35 +579,7 @@ public class GraphDrawer : DrawerBase
         Debug.Assert(graphDrawingContext != null);
         AssertValid();
 
-        // Retrieve the VertexDrawingHistory object for the vertex, if one
-        // exists.  (If the vertex was previously hidden, there won't be a
-        // VertexDrawingHistory object for it.)
-
-        Dictionary<Int32, VertexDrawingHistory> oVertexDrawingHistories =
-            graphDrawingContext.VertexDrawingHistories;
-
-        Int32 iVertexID = vertex.ID;
-        VertexDrawingHistory oVertexDrawingHistory;
-
-        if ( oVertexDrawingHistories.TryGetValue(
-            iVertexID, out oVertexDrawingHistory) )
-        {
-            // Remove the VertexDrawingHistory object from the dictionary.
-
-            oVertexDrawingHistories.Remove(iVertexID);
-
-            // Remove the vertex's DrawingVisual object, which will cause the
-            // vertex to disappear.
-
-            m_oAllVertexDrawingVisuals.Children.Remove(
-                oVertexDrawingHistory.DrawingVisual);
-        }
-
-        // Redraw the vertex.  This adds a replacement DrawingVisual object to
-        // m_oAllVertexDrawingVisuals and adds a replacement
-        // VertexDrawingHistory object to the
-        // graphDrawingContext.VertexDrawingHistories dictionary.
-
+        UndrawVertex(vertex, graphDrawingContext);
         DrawVertex(vertex, graphDrawingContext);
     }
 
@@ -646,6 +618,179 @@ public class GraphDrawer : DrawerBase
         Debug.Assert(graphDrawingContext != null);
         AssertValid();
 
+        UndrawEdge(edge, graphDrawingContext);
+        DrawEdge(edge, graphDrawingContext);
+    }
+
+    //*************************************************************************
+    //  Method: DrawNewVertex()
+    //
+    /// <summary>
+    /// Draws a vertex that has been added to the graph but not yet drawn by
+    /// <see cref="DrawGraph" />.
+    /// </summary>
+    ///
+    /// <param name="newVertex">
+    /// The new vertex to draw onto the contained collection of Visual objects.
+    /// </param>
+    ///
+    /// <param name="graphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.  This
+    /// must be the same object that was passed to <see cref="DrawGraph" /> the
+    /// last time the entire graph was drawn.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Use this method to draw a new vertex without incurring the overhead of
+    /// redrawing the entire graph.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    DrawNewVertex
+    (
+        IVertex newVertex,
+        GraphDrawingContext graphDrawingContext
+    )
+    {
+        Debug.Assert(newVertex != null);
+        Debug.Assert(graphDrawingContext != null);
+        AssertValid();
+
+        DrawVertex(newVertex, graphDrawingContext);
+    }
+
+    //*************************************************************************
+    //  Method: DrawNewEdge()
+    //
+    /// <summary>
+    /// Draws an edge that has been added to the graph but not yet drawn by
+    /// <see cref="DrawGraph" />.
+    /// </summary>
+    ///
+    /// <param name="newEdge">
+    /// The new edge to draw onto the contained collection of Visual objects.
+    /// </param>
+    ///
+    /// <param name="graphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.  This
+    /// must be the same object that was passed to <see cref="DrawGraph" /> the
+    /// last time the entire graph was drawn.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Use this method to draw a new edge without incurring the overhead of
+    /// redrawing the entire graph.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    DrawNewEdge
+    (
+        IEdge newEdge,
+        GraphDrawingContext graphDrawingContext
+    )
+    {
+        Debug.Assert(newEdge != null);
+        Debug.Assert(graphDrawingContext != null);
+        AssertValid();
+
+        DrawEdge(newEdge, graphDrawingContext);
+    }
+
+    //*************************************************************************
+    //  Method: UndrawVertex()
+    //
+    /// <summary>
+    /// "Undraws" a vertex that was drawn by <see cref="DrawGraph" />.
+    /// </summary>
+    ///
+    /// <param name="vertex">
+    /// The vertex to remove from the contained collection of Visual objects.
+    /// </param>
+    ///
+    /// <param name="graphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.  This
+    /// must be the same object that was passed to <see cref="DrawGraph" /> the
+    /// last time the entire graph was drawn.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Use this method to undraw a vertex without incurring the overhead of
+    /// redrawing the entire graph.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    UndrawVertex
+    (
+        IVertex vertex,
+        GraphDrawingContext graphDrawingContext
+    )
+    {
+        Debug.Assert(vertex != null);
+        Debug.Assert(graphDrawingContext != null);
+        AssertValid();
+
+        // Retrieve the VertexDrawingHistory object for the vertex, if one
+        // exists.  (If the vertex was previously hidden, there won't be a
+        // VertexDrawingHistory object for it.)
+
+        Dictionary<Int32, VertexDrawingHistory> oVertexDrawingHistories =
+            graphDrawingContext.VertexDrawingHistories;
+
+        Int32 iVertexID = vertex.ID;
+        VertexDrawingHistory oVertexDrawingHistory;
+
+        if ( oVertexDrawingHistories.TryGetValue(
+            iVertexID, out oVertexDrawingHistory) )
+        {
+            // Remove the VertexDrawingHistory object from the dictionary.
+
+            oVertexDrawingHistories.Remove(iVertexID);
+
+            // Remove the vertex's DrawingVisual object, which will cause the
+            // vertex to disappear.
+
+            m_oAllVertexDrawingVisuals.Children.Remove(
+                oVertexDrawingHistory.DrawingVisual);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: UndrawEdge()
+    //
+    /// <summary>
+    /// "Undraws" an edge that was drawn by <see cref="DrawGraph" />.
+    /// </summary>
+    ///
+    /// <param name="edge">
+    /// The edge to remove from the contained collection of Visual objects.
+    /// </param>
+    ///
+    /// <param name="graphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.  This
+    /// must be the same object that was passed to <see cref="DrawGraph" /> the
+    /// last time the entire graph was drawn.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Use this method to undraw an edge without incurring the overhead of
+    /// redrawing the entire graph.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    UndrawEdge
+    (
+        IEdge edge,
+        GraphDrawingContext graphDrawingContext
+    )
+    {
+        Debug.Assert(edge != null);
+        Debug.Assert(graphDrawingContext != null);
+        AssertValid();
+
         // Retrieve the EdgeDrawingHistory object for the edge, if one exists.
         // (If the edge was previously hidden, there won't be an
         // EdgeDrawingHistory object for it.)
@@ -669,14 +814,6 @@ public class GraphDrawer : DrawerBase
             GetEdgeDrawingVisuals(oEdgeDrawingHistory).Children.Remove(
                 oEdgeDrawingHistory.DrawingVisual);
         }
-
-        // Redraw the edge.  This adds a replacement DrawingVisual object to
-        // either m_oUnselectedEdgeDrawingVisuals or
-        // m_oSelectedEdgeDrawingVisuals and adds a replacement
-        // EdgeDrawingHistory object to the
-        // graphDrawingContext.EdgeDrawingHistories dictionary.
-
-        DrawEdge(edge, graphDrawingContext);
     }
 
     //*************************************************************************

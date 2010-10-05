@@ -36,40 +36,6 @@ public class NotificationUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: GraphHasDuplicateEdge
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether the user should be warned that
-    /// the graph has a duplicate edge before graph metrics are calculated.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to warn the user.  The default is true.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("true") ]
-
-    public Boolean
-    GraphHasDuplicateEdge
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[GraphHasDuplicateEdgeKey] );
-        }
-
-        set
-        {
-            this[GraphHasDuplicateEdgeKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: LayoutTypeIsNull
     //
     /// <summary>
@@ -114,7 +80,6 @@ public class NotificationUserSettings : NodeXLApplicationSettingsBase
     public void
     EnableAllNotifications()
     {
-        this.GraphHasDuplicateEdge = true;
         this.LayoutTypeIsNull = true;
     }
 
@@ -141,11 +106,6 @@ public class NotificationUserSettings : NodeXLApplicationSettingsBase
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
-
-    /// Name of the settings key for the GraphHasDuplicateEdge property.
-
-    protected const String GraphHasDuplicateEdgeKey =
-        "GraphHasDuplicateEdge";
 
     /// Name of the settings key for the LayoutTypeIsNull property.
 

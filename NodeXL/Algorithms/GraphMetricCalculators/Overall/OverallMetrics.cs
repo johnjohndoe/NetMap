@@ -36,10 +36,6 @@ public class OverallMetrics : Object
     /// The number of edges that have duplicates.
     /// </param>
     ///
-    /// <param name="totalEdges">
-    /// The total number of edges.
-    /// </param>
-    ///
     /// <param name="selfLoops">
     /// The number of self-loops.
     /// </param>
@@ -82,7 +78,6 @@ public class OverallMetrics : Object
         GraphDirectedness directedness,
         Int32 uniqueEdges,
         Int32 edgesWithDuplicates,
-        Int32 totalEdges,
         Int32 selfLoops,
         Int32 vertices,
         Nullable<Double> graphDensity,
@@ -97,7 +92,6 @@ public class OverallMetrics : Object
         m_eDirectedness = directedness;
         m_iUniqueEdges = uniqueEdges;
         m_iEdgesWithDuplicates = edgesWithDuplicates;
-        m_iTotalEdges = totalEdges;
         m_iSelfLoops = selfLoops;
         m_iVertices = vertices;
         m_dGraphDensity = graphDensity;
@@ -202,7 +196,7 @@ public class OverallMetrics : Object
         {
             AssertValid();
 
-            return (m_iTotalEdges);
+            return (m_iUniqueEdges + m_iEdgesWithDuplicates);
         }
     }
 
@@ -327,7 +321,6 @@ public class OverallMetrics : Object
     //
     /// <summary>
     /// Gets the maximum number of vertices in a connected component.
-    /// vertex.
     /// </summary>
     ///
     /// <value>
@@ -351,7 +344,6 @@ public class OverallMetrics : Object
     //
     /// <summary>
     /// Gets the maximum number of edges in a connected component.
-    /// vertex.
     /// </summary>
     ///
     /// <value>
@@ -433,7 +425,6 @@ public class OverallMetrics : Object
         // m_eDirectedness
         Debug.Assert(m_iUniqueEdges >= 0);
         Debug.Assert(m_iEdgesWithDuplicates >= 0);
-        Debug.Assert(m_iTotalEdges >= 0);
         Debug.Assert(m_iSelfLoops >= 0);
         Debug.Assert(m_iVertices >= 0);
         Debug.Assert(!m_dGraphDensity.HasValue || m_dGraphDensity.Value >= 0);
@@ -465,10 +456,6 @@ public class OverallMetrics : Object
     /// The number of edges that have duplicates.
 
     protected Int32 m_iEdgesWithDuplicates;
-
-    /// The total number of edges.
-
-    protected Int32 m_iTotalEdges;
 
     /// The number of self-loops.
 

@@ -83,6 +83,10 @@
       <Link>Controls\ToolStripPlus.cs</Link>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="..\..\Common\Controls\TrackBarWithDelay.cs">
+      <Link>Controls\TrackBarWithDelay.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="..\..\Common\Dialogs\OpenFileDialog2.cs">
       <Link>Dialogs\OpenFileDialog2.cs</Link>
     </Compile>

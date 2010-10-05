@@ -73,7 +73,82 @@ public static class ReservedMetadataKeys : Object
     /// </remarks>
 
     public static readonly String VertexToolTip =
-        FirstChar + "CCTT";
+        FirstChar + "VTT";
+
+    /// <summary>
+    /// Key added to the vertex that represents a collapsed group.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an ICollection&lt;IVertex&gt;.
+    ///
+    /// <para>
+    /// When a group of vertices is collapsed in the NodeXLControl, this key
+    /// gets added to the new vertex that represents the collapsed group.  The
+    /// value contains the group's vertices, which were all removed from the
+    /// graph during the collapse operation.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String CollapsedVertices =
+        FirstChar + "CV";
+
+    /// <summary>
+    /// Key added to the vertex that represents a collapsed group.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an ICollection&lt;IEdge&gt;.
+    ///
+    /// <para>
+    /// When a group of vertices is collapsed in the NodeXLControl, this key
+    /// gets added to the new vertex that represents the collapsed group.  The
+    /// value contains the group's internal edges, which were all removed from
+    /// the graph during the collapse operation.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String CollapsedInternalEdges =
+        FirstChar + "CIE";
+
+    /// <summary>
+    /// Key added to an edge external to a collapsed group.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an IVertex.
+    ///
+    /// <para>
+    /// When a group of vertices is collapsed in the NodeXLControl, either this
+    /// key or <see cref="OriginalVertex2InEdge" /> gets added to each edge
+    /// external to the collapsed group.  The value is the collapsed vertex
+    /// that was originally the edge's first or second vertex.  This is used to
+    /// reconnect the edge to its original vertex when the group is later
+    /// expanded.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String OriginalVertex1InEdge =
+        FirstChar + "OV1";
+
+    /// <summary>
+    /// Key added to an edge external to a collapsed group.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is an IVertex.
+    ///
+    /// <para>
+    /// See <see cref="OriginalVertex1InEdge" />.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String OriginalVertex2InEdge =
+        FirstChar + "OV2";
 
 
     //*************************************************************************
@@ -319,6 +394,25 @@ public static class ReservedMetadataKeys : Object
 
     public static readonly String PerVertexLabelFontSize =
         FirstChar + "VDLFS";
+
+    /// <summary>
+    /// Key added to a vertex to force a plus sign to be drawn on top of the
+    /// vertex.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If this key is present, a plus sign is drawn on top of the vertex.
+    /// This is used by the NodeXLControl to distinguish a vertex that
+    /// represents a collapsed group.
+    ///
+    /// <para>
+    /// The key's value is not used.
+    /// </para>
+    ///
+    /// </remarks>
+
+    public static readonly String PerVertexDrawPlusSign =
+        FirstChar + "VDP";
 
 
     //*************************************************************************
@@ -721,6 +815,45 @@ public static class ReservedMetadataKeys : Object
 
     public static readonly String AllVertexMetadataKeys =
         FirstChar + "AllVertexMetadataKeys";
+
+
+    //*************************************************************************
+    //  Keys used by VertexWorksheetReader
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to a graph by the VertexWorksheetReader to indicate that the
+    /// <see cref="VertexToolTip" /> key has been added to at least one of the
+    /// graph's vertices.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is null.
+    /// </remarks>
+
+    public static readonly String ToolTipSet =
+        FirstChar + "VWRTTS";
+
+
+    //*************************************************************************
+    //  Keys used by GroupWorksheetReader
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to a graph by the GroupWorksheetReader to specify the graph's
+    /// group information.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// When WorkbookReader.ReadWorkbook() is called with a
+    /// ReadWorkbookContext.ReadGroups value of true, this key gets added to
+    /// the graph.  The key's value is of type
+    /// ICollection&lt;GroupInformation&gt;, with one GroupInformation object
+    /// in the collection for each of the graph's groups.
+    /// </remarks>
+
+    public static readonly String GroupInformation =
+        FirstChar + "GWRGI";
 
 
     //*************************************************************************

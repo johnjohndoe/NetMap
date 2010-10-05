@@ -1485,7 +1485,7 @@ public partial class AnalyzeEmailNetworkDialog : ExcelTemplateForm
         {
             if (m_bClearTablesFirst)
             {
-                NodeXLWorkbookUtil.ClearTables(m_oWorkbook);
+                NodeXLWorkbookUtil.ClearAllNodeXLTables(m_oWorkbook);
             }
 
             // Populate the edge table with participant pairs.

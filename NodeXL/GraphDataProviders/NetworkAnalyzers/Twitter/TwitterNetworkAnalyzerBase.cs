@@ -86,7 +86,28 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         {
             WebException oWebException = (WebException)oException;
 
-            if (oWebException.Response is HttpWebResponse)
+            if ( WebExceptionIsDueToRateLimit(oWebException) )
+            {
+                // Note that this shouldn't actually occur, because
+                // this.GetXmlDocument() pauses and retries when Twitter rate
+                // limits kick in.  This "if" clause is included in case
+                // Twitter misbehaves, or if the pause-retry code is ever
+                // removed from GetXmlDocument().
+
+                sMessage = String.Format(
+
+                    RefusedMessage 
+                    + "  A likely cause is that you have made too many"
+                    + " requests in the last hour.  (Twitter limits"
+                    + " information requests to prevent its service from being"
+                    + " attacked.  Click the '{0}' link for details.)"
+                    + "\r\n\r\n"
+                    + "Wait 60 minutes and try again."
+                    ,
+                    TwitterAuthorizationControl.RateLimitingLinkText
+                    );
+            }
+            else if (oWebException.Response is HttpWebResponse)
             {
                 HttpWebResponse oHttpWebResponse =
                     (HttpWebResponse)oWebException.Response;
@@ -114,28 +135,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     case HttpStatusCode.RequestTimeout:  // HTTP 408.
 
                         sMessage = TimeoutMessage;
-                        break;
-
-                    case HttpStatusCode.BadRequest:  // HTTP 400.
-                    case (HttpStatusCode)420:
-
-                        // See TwitterNetworkAnalyzerBase for an explanation of
-                        // why there are two status codes for this case.
-
-                        sMessage = String.Format(
-
-                            RefusedMessage 
-                            + "  A likely cause is that you have made too many"
-                            + " requests in the last hour.  (Twitter limits"
-                            + " information requests to prevent its service"
-                            + " from being attacked.  Click the '{0}' link for"
-                            + " details.)"
-                            + "\r\n\r\n"
-                            + "Wait 60 minutes and try again."
-                            ,
-                            TwitterAuthorizationControl.RateLimitingLinkText
-                            );
-
                         break;
 
                     case HttpStatusCode.Forbidden:  // HTTP 403.
@@ -170,6 +169,108 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         }
 
         return (sMessage);
+    }
+
+    //*************************************************************************
+    //  Method: WebExceptionIsDueToRateLimit()
+    //
+    /// <summary>
+    /// Determines whether a WebException is due to Twitter rate limits.
+    /// </summary>
+    ///
+    /// <param name="oWebException">
+    /// The WebException to check.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="oWebException" /> is due to Twitter rate limits
+    /// kicking in.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    WebExceptionIsDueToRateLimit
+    (
+        WebException oWebException
+    )
+    {
+        Debug.Assert(oWebException != null);
+        AssertValid();
+
+        return ( WebExceptionHasHttpStatusCode(oWebException,
+            HttpStatusCode.BadRequest, (HttpStatusCode)420) );
+    }
+
+    //*************************************************************************
+    //  Method: GetRateLimitPauseMs()
+    //
+    /// <summary>
+    /// Gets the time to pause before retrying a request after Twitter rate
+    /// limits kicks in.
+    /// </summary>
+    ///
+    /// <param name="oWebException">
+    /// The WebException to check.
+    /// </param>
+    ///
+    /// <returns>
+    /// The time to pause before retrying a request after Twitter rate limits
+    /// kick in, in milliseconds.
+    /// </returns>
+    //*************************************************************************
+
+    protected Int32
+    GetRateLimitPauseMs
+    (
+        WebException oWebException
+    )
+    {
+        Debug.Assert(oWebException != null);
+        AssertValid();
+
+        // The Twitter REST API provides a custom X-RateLimit-Reset header in
+        // the response headers.  This is the time at which the request should
+        // be made again, in seconds since 1/1/1970, in UTC.  If this header is
+        // available, use it.  Otherwise, use a default pause time.
+        //
+        // Note that the Twitter search API uses a different header for the
+        // same purpose, Retry-After, that is in "seconds to wait."  This
+        // method doesn't check for that header, because NodeXL makes
+        // relatively few calls to the search API and is unlikely to encounter
+        // search API rate limiting.
+
+        WebResponse oWebResponse = oWebException.Response;
+
+        if (oWebResponse != null)
+        {
+            String sXRateLimitReset =
+                oWebResponse.Headers["X-RateLimit-Reset"];
+
+            Int32 iSecondsSince1970;
+
+            // (Note that Int32.TryParse() can handle null, which indicates a
+            // missing header.)
+
+            if ( Int32.TryParse(sXRateLimitReset, out iSecondsSince1970) )
+            {
+                DateTime oResetTimeUtc =
+                    new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).
+                        AddSeconds(iSecondsSince1970);
+
+                Double dRateLimitPauseMs =
+                    (oResetTimeUtc - DateTime.UtcNow).TotalMilliseconds;
+
+                // Don't wait longer than two hours.
+
+                if (dRateLimitPauseMs > 0 &&
+                    dRateLimitPauseMs <= 2 * 60 * 60 * 1000)
+                {
+                    return ( (Int32)dRateLimitPauseMs );
+                }
+            }
+        }
+
+        return (DefaultRateLimitPauseMs);
     }
 
     //*************************************************************************
@@ -347,7 +448,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         ReportProgress( String.Format(
 
-            "Getting people {0} \"{1}\""
+            "Getting people {0} \"{1}\"."
             ,
             bFollowed ? "followed by" : "following",
             sScreenName
@@ -412,8 +513,54 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             sUrl = sAuthorizedUrl;
         }
 
-        return ( GetXmlDocumentWithRetries(sUrl, SpecialHttpStatusCodes,
-            oRequestStatistics, null) );
+        Int32 iRateLimitPauses = 0;
+
+        while (true)
+        {
+            try
+            {
+                return ( GetXmlDocumentWithRetries(sUrl,
+                    HttpStatusCodesToFailImmediately, oRequestStatistics,
+                    null) );
+            }
+            catch (WebException oWebException)
+            {
+                if (!WebExceptionIsDueToRateLimit(oWebException) ||
+                    iRateLimitPauses > 0)
+                {
+                    throw;
+                }
+
+                // Twitter rate limits have kicked in.  Pause and try again.
+
+                iRateLimitPauses++;
+                Int32 iRateLimitPauseMs = GetRateLimitPauseMs(oWebException);
+
+                DateTime oWakeUpTime = DateTime.Now.AddMilliseconds(
+                    iRateLimitPauseMs);
+
+                ReportProgress( String.Format(
+
+                    "Reached Twitter rate limits.  Pausing until {0}."
+                    ,
+                    oWakeUpTime.ToLongTimeString()
+                    ) );
+
+                // Don't pause in one large interval, which would prevent
+                // cancellation.
+
+                const Int32 SleepCycleDurationMs = 1000;
+
+                Int32 iSleepCycles = (Int32)Math.Ceiling(
+                    (Double)iRateLimitPauseMs / SleepCycleDurationMs) ;
+
+                for (Int32 i = 0; i < iSleepCycles; i++)
+                {
+                    CheckCancellationPending();
+                    System.Threading.Thread.Sleep(SleepCycleDurationMs);
+                }
+            }
+        }
     }
 
     //*************************************************************************
@@ -505,7 +652,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         {
             if (iPage > 1)
             {
-                ReportProgress("Getting page " + iPage);
+                ReportProgress("Getting page " + iPage + ".");
             }
 
             String sUrlWithPagination = String.Format(
@@ -539,17 +686,14 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     yield break;
                 }
 
-                // Don't skip BadRequest or 420 on page 1, which indicates that
-                // Twitter rate limiting has kicked in.
+                // Don't skip rate limit exceptions on page 1.
 
                 if (
                     bSkipMostPage1Errors
                     &&
                     oException is WebException
                     &&
-                    !WebExceptionHasHttpStatusCode(
-                        (WebException)oException,
-                        HttpStatusCode.BadRequest, (HttpStatusCode)420)
+                    !WebExceptionIsDueToRateLimit( (WebException)oException )
                     )
                 {
                     yield break;
@@ -1049,16 +1193,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <remarks>
     /// This method loops through the vertex nodes in <paramref
     /// name="oGraphMLXmlDocument" /> and for any that are missing attribute
@@ -1086,15 +1220,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
         Boolean bIncludeStatistics,
         Boolean bIncludeLatestStatuses,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         if (!bIncludeStatistics && !bIncludeLatestStatuses)
@@ -1112,10 +1243,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 continue;
             }
 
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return;
-            }
 
             String sScreenName = XmlUtil2.SelectRequiredSingleNodeAsString(
                 oVertexXmlNode, "@id", null);
@@ -1129,7 +1256,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             ReportProgress( String.Format(
 
-                "Getting information about \"{0}\""
+                "Getting information about \"{0}\"."
                 ,
                 sScreenName
                 ) );
@@ -1261,7 +1388,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         XmlNamespaceManager oGraphMLXmlNamespaceManager =
             oGraphMLXmlDocument.CreateXmlNamespaceManager("g");
 
-        ReportProgress("Examining relationships");
+        ReportProgress("Examining relationships.");
 
         // "Starts with a screen name," which means it's a "reply-to".
 
@@ -1378,8 +1505,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// HTTP status codes that have special meaning with Twitter.  When they
     /// occur, the requests are not retried.
 
-    protected static readonly HttpStatusCode [] SpecialHttpStatusCodes =
-        new HttpStatusCode[] {
+    protected static readonly HttpStatusCode []
+        HttpStatusCodesToFailImmediately = new HttpStatusCode[] {
 
             // Occurs when information about a user who has "protected" status
             // is requested, for example.
@@ -1402,10 +1529,16 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             HttpStatusCode.BadRequest,
             (HttpStatusCode)420,
 
-            // Not sure about this one.
+            // Not sure about what causes this one.
 
             HttpStatusCode.Forbidden,
         };
+
+
+    /// Default time to pause before retrying a request after Twitter rate
+    /// limits kick in, in milliseconds.
+
+    protected const Int32 DefaultRateLimitPauseMs = 60 * 60 * 1000;
 
 
     /// GraphML-attribute IDs.

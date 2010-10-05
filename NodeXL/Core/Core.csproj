@@ -126,7 +126,6 @@
     </Compile>
     <Compile Include="Interfaces\IVertexSorter.cs" />
     <Compile Include="Util\EdgeUtil.cs" />
-    <Compile Include="Util\EventUtil.cs" />
     <Compile Include="Util\GraphUtil.cs" />
     <Compile Include="Util\IDGenerator.cs" />
     <Compile Include="Util\LayoutUtil.cs" />

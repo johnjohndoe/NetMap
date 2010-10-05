@@ -147,14 +147,14 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: TryGetVideoNetworkInternal()
+    //  Method: GetVideoNetworkInternal()
     //
     /// <overloads>
-    /// Attempts to get a network of related YouTube videos.
+    /// Gets a network of related YouTube videos.
     /// </overloads>
     ///
     /// <summary>
-    /// Attempts to get a network of related YouTube videos.
+    /// Gets a network of related YouTube videos.
     /// </summary>
     ///
     /// <param name="sSearchTerm">
@@ -169,73 +169,47 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// Maximum number of videos to request, or Int32.MaxValue for no limit.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
     /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
+    /// An XmlDocument containing the network as GraphML.
     /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetVideoNetworkInternal
+    protected XmlDocument
+    GetVideoNetworkInternal
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumVideos,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
-        out XmlDocument oXmlDocument
+        Int32 iMaximumVideos
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumVideos > 0);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
-
-        oXmlDocument = null;
 
         GraphMLXmlDocument oGraphMLXmlDocument = CreateGraphMLXmlDocument();
         RequestStatistics oRequestStatistics = new RequestStatistics();
 
         try
         {
-            if ( !TryGetVideoNetworkInternal(sSearchTerm, eWhatToInclude,
-                    iMaximumVideos, oRequestStatistics, oBackgroundWorker,
-                    oDoWorkEventArgs, oGraphMLXmlDocument) )
-            {
-                // The user cancelled.
-
-                return (false);
-            }
+            GetVideoNetworkInternal(sSearchTerm, eWhatToInclude,
+                iMaximumVideos, oRequestStatistics, oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
             OnTerminatingException(oException);
         }
 
-        return ( OnNetworkObtainedWithoutTerminatingException(
-            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+        OnNetworkObtainedWithoutTerminatingException(oGraphMLXmlDocument,
+            oRequestStatistics);
+
+        return (oGraphMLXmlDocument);
     }
 
     //*************************************************************************
-    //  Method: TryGetVideoNetworkInternal()
+    //  Method: GetVideoNetworkInternal()
     //
     /// <summary>
-    /// Attempts to get a network of related YouTube videos, given a
-    /// GraphMLXmlDocument.
+    /// Gets a network of related YouTube videos, given a GraphMLXmlDocument.
     /// </summary>
     ///
     /// <param name="sSearchTerm">
@@ -255,41 +229,24 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument to populate with the requested network.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetVideoNetworkInternal
+    protected void
+    GetVideoNetworkInternal
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumVideos,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumVideos > 0);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -298,13 +255,9 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         HashSet<String> oVideoIDs;
         Dictionary< String, LinkedList<String> > oTagDictionary;
 
-        if ( !TryAppendVertexXmlNodes(sSearchTerm, eWhatToInclude,
-            iMaximumVideos, oGraphMLXmlDocument, oRequestStatistics,
-            oBackgroundWorker, oDoWorkEventArgs, out oVideoIDs,
-            out oTagDictionary) )
-        {
-            return (false);
-        }
+        AppendVertexXmlNodes(sSearchTerm, eWhatToInclude, iMaximumVideos,
+            oGraphMLXmlDocument, oRequestStatistics, out oVideoIDs,
+            out oTagDictionary);
 
         // Now add whatever edges were requested.
 
@@ -313,7 +266,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         {
             Debug.Assert(oTagDictionary != null);
 
-            ReportProgress("Adding edges for shared tags");
+            ReportProgress("Adding edges for shared tags.");
 
             AppendEdgesFromDictionary(oTagDictionary, oGraphMLXmlDocument,
                 "Shared tag");
@@ -324,30 +277,20 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedCommenterEdges) )
         {
-            if ( !TryAppendSharedResponderEdges(oGraphMLXmlDocument,
-                oVideoIDs, MaximumCommentsPerVideo,
+            AppendSharedResponderEdges(oGraphMLXmlDocument, oVideoIDs,
+                MaximumCommentsPerVideo,
                 "http://gdata.youtube.com/feeds/api/videos/{0}/comments",
-                "commenter", oRequestStatistics, oBackgroundWorker,
-                oDoWorkEventArgs) )
-            {
-                return (false);
-            }
+                "commenter", oRequestStatistics);
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedVideoResponderEdges) )
         {
-            if ( !TryAppendSharedResponderEdges(oGraphMLXmlDocument,
-                oVideoIDs, iMaximumVideos,
+            AppendSharedResponderEdges(oGraphMLXmlDocument, oVideoIDs,
+                iMaximumVideos,
                 "http://gdata.youtube.com/feeds/api/videos/{0}/responses",
-                "video responder", oRequestStatistics, oBackgroundWorker,
-                oDoWorkEventArgs) )
-            {
-                return (false);
-            }
+                "video responder", oRequestStatistics);
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -398,11 +341,11 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: TryAppendVertexXmlNodes()
+    //  Method: AppendVertexXmlNodes()
     //
     /// <summary>
-    /// Attempts to append a vertex XML node for each video that matches a
-    /// specified search term.
+    /// Appends a vertex XML node for each video that matches a specified
+    /// search term.
     /// </summary>
     ///
     /// <param name="sSearchTerm">
@@ -426,16 +369,6 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oVideoIDs">
     /// Where the set of unique video IDs gets stored.
     /// </param>
@@ -446,22 +379,16 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// lower-case tag and the value is a LinkedList of the video IDs that have
     /// the tag.  Otherwise, it gets set to null.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the vertices were added, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryAppendVertexXmlNodes
+    protected void
+    AppendVertexXmlNodes
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumVideos,
         GraphMLXmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         out HashSet<String> oVideoIDs,
         out Dictionary< String, LinkedList<String> > oTagDictionary
     )
@@ -470,10 +397,9 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         Debug.Assert(iMaximumVideos> 0);
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
-        ReportProgress("Getting a list of videos");
+        ReportProgress("Getting a list of videos.");
 
         // This is used to skip duplicate videos in the results returned by
         // YouTube.  (I'm not sure why YouTube sometimes returns duplicates,
@@ -507,11 +433,6 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         foreach ( XmlNode oEntryXmlNode in EnumerateXmlNodes(sUrl,
             "a:feed/a:entry", iMaximumVideos, false, oRequestStatistics) )
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             XmlNamespaceManager oXmlNamespaceManager =
                 CreateXmlNamespaceManager(oEntryXmlNode.OwnerDocument);
 
@@ -578,16 +499,14 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                     oTagDictionary);
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryAppendSharedResponderEdges()
+    //  Method: AppendSharedResponderEdges()
     //
     /// <summary>
-    /// Attempts to append an edge XML node for each pair of videos for which
-    /// the same person responded.
+    /// Appends an edge XML node for each pair of videos for which the same
+    /// person responded.
     /// </summary>
     ///
     /// <param name="oGraphMLXmlDocument">
@@ -616,33 +535,17 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the vertices were added, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryAppendSharedResponderEdges
+    protected void
+    AppendSharedResponderEdges
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
         HashSet<String> oVideoIDs,
         Int32 iMaximumResponses,
         String sUrlPattern,
         String sResponderTitle,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
@@ -652,7 +555,6 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         Debug.Assert(sUrlPattern.IndexOf("{0}") >= 0);
         Debug.Assert( !String.IsNullOrEmpty(sResponderTitle) );
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         // The key is the name of an author and the value is a LinkedList of
@@ -665,7 +567,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         {
             ReportProgress(String.Format(
             
-                "Getting {0}s for the video with the ID \"{1}\""
+                "Getting {0}s for the video with the ID \"{1}\"."
                 ,
                 sResponderTitle,
                 sVideoID
@@ -684,11 +586,6 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                 "a:feed/a:entry", iMaximumResponses, true,
                 oRequestStatistics) )
             {
-                if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
-
                 XmlNamespaceManager oXmlNamespaceManager =
                     CreateXmlNamespaceManager(oEntryXmlNode.OwnerDocument);
 
@@ -710,12 +607,10 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             }
         }
 
-        ReportProgress("Adding edges for shared " + sResponderTitle + "s");
+        ReportProgress("Adding edges for shared " + sResponderTitle + "s.");
 
         AppendEdgesFromDictionary(oAuthorUserNameDictionary,
             oGraphMLXmlDocument, "Shared " + sResponderTitle);
-
-        return (true);
     }
 
     //*************************************************************************
@@ -960,15 +855,15 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs =
             (GetNetworkAsyncArgs)e.Argument;
 
-        XmlDocument oGraphMLDocument;
-        
-        if ( TryGetVideoNetworkInternal(
-            oGetNetworkAsyncArgs.SearchTerm,
-            oGetNetworkAsyncArgs.WhatToInclude,
-            oGetNetworkAsyncArgs.MaximumVideos,
-            oBackgroundWorker, e, out oGraphMLDocument) )
+        try
         {
-            e.Result = oGraphMLDocument;
+            e.Result = GetVideoNetworkInternal(oGetNetworkAsyncArgs.SearchTerm,
+                oGetNetworkAsyncArgs.WhatToInclude,
+                oGetNetworkAsyncArgs.MaximumVideos);
+        }
+        catch (CancellationPendingException)
+        {
+            e.Cancel = true;
         }
     }
 

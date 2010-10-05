@@ -3,7 +3,10 @@
 
 using System;
 using System.Windows.Forms;
+using System.Text;
+using System.Reflection;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
@@ -60,7 +63,6 @@ public class SheetHelper : Object
         Microsoft.Office.Tools.Excel.ListObject table
     )
     {
-        m_bIgnoreSelectionEvents = false;
         m_oWorksheet = worksheet;
         m_oTable = table;
 
@@ -107,37 +109,6 @@ public class SheetHelper : Object
             }
         }
     }
-
-    //*************************************************************************
-    //  Method: Sheet_Startup()
-    //
-    /// <summary>
-    /// Handles the Startup event on the worksheet.
-    /// </summary>
-    //*************************************************************************
-
-    public void
-    Sheet_Startup()
-    {
-        AssertValid();
-
-        m_oTable.SelectionChange += new DocEvents_SelectionChangeEventHandler(
-            Table_SelectionChange);
-
-        m_oTable.Deselected += new DocEvents_SelectionChangeEventHandler(
-            Table_Deselected);
-    }
-
-    //*************************************************************************
-    //  Event: TableSelectionChanged
-    //
-    /// <summary>
-    /// Occurs when the selection state of the table changes.
-    /// </summary>
-    //*************************************************************************
-
-    public event TableSelectionChangedEventHandler TableSelectionChanged;
-
 
     //*************************************************************************
     //  Method: SetVisualAttribute()
@@ -210,6 +181,102 @@ public class SheetHelper : Object
     }
 
     //*************************************************************************
+    //  Method: TryGetValuesInAllRows()
+    //
+    /// <summary>
+    /// Attempts to get a dictionary containing a column value from each row in
+    /// the table.
+    /// </summary>
+    ///
+    /// <typeparam name="TValue">
+    /// Type of the column values to read.
+    /// </typeparam>
+    ///
+    /// <param name="sColumnName">
+    /// Name of the column to read the values from.
+    /// </param>
+    ///
+    /// <param name="oTryGetValueFromCell">
+    /// Method that attempts to get a value of a specified type from a
+    /// worksheet cell given an array of cell values read from the worksheet.
+    /// </param>
+    ///
+    /// <param name="oValueDictionary">
+    /// Where a dictionary gets stored if true is returned.  There is one
+    /// dictionary entry for each row in the table that has a value in the
+    /// specified column.  The dictionary key is the cell value and the
+    /// dictionary value is the one-based row number relative to the worksheet.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the dictionary was obtained, false if there is no such column.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned dictionary includes the values in hidden rows.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetValuesInAllRows<TValue>
+    (
+        String sColumnName,
+        ExcelUtil.TryGetValueFromCell<TValue> oTryGetValueFromCell,
+        out Dictionary<TValue, Int32> oValueDictionary
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sColumnName) );
+        Debug.Assert(oTryGetValueFromCell != null);
+        AssertValid();
+
+        oValueDictionary = null;
+
+        if (!TableExists)
+        {
+            return (false);
+        }
+
+        Range oDataBodyRange = m_oTable.DataBodyRange;
+
+        if (oDataBodyRange == null)
+        {
+            return (false);
+        }
+
+        Range oColumnData;
+        Object [,] aoColumnValues;
+
+        // Get the values in the column.  This includes hidden rows but
+        // excludes the header row.
+
+        if ( !ExcelUtil.TryGetTableColumnDataAndValues(m_oTable.InnerObject,
+            sColumnName, out oColumnData, out aoColumnValues) )
+        {
+            return (false);
+        }
+
+        oValueDictionary = new Dictionary<TValue, Int32>();
+
+        Int32 iDataBodyRangeRow = oDataBodyRange.Row;
+        Int32 iRows = oColumnData.Rows.Count;
+
+        for (Int32 iRowOneBased = 1; iRowOneBased <= iRows; iRowOneBased++)
+        {
+            TValue tValue;
+
+            if ( !oTryGetValueFromCell(aoColumnValues, iRowOneBased, 1,
+                out tValue) )
+            {
+                continue;
+            }
+
+            oValueDictionary[tValue] = iRowOneBased + iDataBodyRangeRow - 1;
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
     //  Method: TryGetSelectedRange()
     //
     /// <summary>
@@ -261,103 +328,94 @@ public class SheetHelper : Object
     }
 
     //*************************************************************************
-    //  Method: GetSelectedRowIDs()
+    //  Method: GetSelectedStringColumnValues()
     //
     /// <summary>
-    /// Gets an array of IDs for all rows in the table that have at least one
-    /// cell selected.
+    /// Gets a collection of unique string values from one column for all rows
+    /// in the table that have at least one selected cell.
     /// </summary>
     ///
-    /// <param name="oSelectedRange">
-    /// Range that contains the selected cells in the table.  The range may
-    /// contain multiple areas.
+    /// <param name="columnName">
+    /// Name of the column to read the values from.
     /// </param>
     ///
     /// <returns>
-    /// An array of unique IDs.  The IDs are the values stored in the table's
-    /// ID column and are different from the IVertex.ID and IEdge.ID values in
-    /// the graph.
+    /// A collection of zero or more string cell values.  The collection can be
+    /// empty but is never null.  The collection values are the cell values,
+    /// which are guaranteed to be non-null, non-empty, and unique.
     /// </returns>
+    ///
+    /// <remarks>
+    /// This method activates the worksheet if it isn't already activated.
+    /// Then, for each row in the table that has at least one selected cell, it
+    /// reads the string value from the row's <paramref name="columnName" />
+    /// cell and stores it in the returned collection.
+    /// </remarks>
     //*************************************************************************
 
-    protected Int32 []
-    GetSelectedRowIDs
+    public ICollection<String>
+    GetSelectedStringColumnValues
     (
-        Range oSelectedRange
+        String columnName
     )
     {
-        Debug.Assert(oSelectedRange != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
         AssertValid();
 
-        // Get the IDs as strings.
-
-        Dictionary<String, Char> oSelectedValues =
-            GetSelectedColumnValues(oSelectedRange, CommonTableColumnNames.ID);
-
-        // Transfer all numbers to an array.
-
-        List<Int32> oSelectedRowIDs = new List<Int32>();
-
-        foreach (String sSelectedValue in oSelectedValues.Keys)
-        {
-            Int32 iSelectedRowID;
-
-            if ( Int32.TryParse(sSelectedValue, out iSelectedRowID) )
-            {
-                oSelectedRowIDs.Add(iSelectedRowID);
-            }
-        }
-
-        return ( oSelectedRowIDs.ToArray() );
+        return ( GetSelectedColumnValues<String>(columnName,
+            ExcelUtil.TryGetNonEmptyStringFromCell) );
     }
 
     //*************************************************************************
     //  Method: GetSelectedColumnValues()
     //
     /// <summary>
-    /// Gets a dictionary of values from one column for all rows in the table
-    /// that have at least one selected cell.
+    /// Gets a collection of unique values from one column for all rows in the
+    /// table that have at least one selected cell.
     /// </summary>
     ///
-    /// <param name="selectedRange">
-    /// Range that contains the selected cells in the table.  The range may
-    /// contain multiple areas.
-    /// </param>
+    /// <typeparam name="TValue">
+    /// Type of the column values to read.
+    /// </typeparam>
     ///
     /// <param name="columnName">
-    /// Name of the column to get the values from.
+    /// Name of the column to read the values from.
+    /// </param>
+    ///
+    /// <param name="tryGetValueFromCell">
+    /// Method that attempts to get a value of a specified type from a
+    /// worksheet cell given an array of cell values read from the worksheet.
     /// </param>
     ///
     /// <returns>
-    /// A dictionary of zero or more cell values.  The dictionary can be empty
-    /// but is never null.  The dictionary keys are the cell values, which are
-    /// guaranteed to be non-null, non-empty, and unique.  The dictionary
-    /// values aren't used.
+    /// A collection of zero or more cell values.  The collection can be empty
+    /// but is never null.  The collection values are the cell values, which
+    /// are guaranteed to be non-null, non-empty, and unique.
     /// </returns>
     ///
     /// <remarks>
-    /// For each row in the table that has at least one selected cell, this
-    /// method reads the string from the row's <paramref name="columnName" />
-    /// cell and stores it in the returned dictionary.
+    /// This method activates the worksheet if it isn't already activated.
+    /// Then, for each row in the table that has at least one selected cell, it
+    /// reads the value from the row's <paramref name="columnName" /> cell and
+    /// stores it in the returned collection.
     /// </remarks>
     //*************************************************************************
 
-    public Dictionary<String, Char>
-    GetSelectedColumnValues
+    public ICollection<TValue>
+    GetSelectedColumnValues<TValue>
     (
-        Range selectedRange,
-        String columnName
+        String columnName,
+        ExcelUtil.TryGetValueFromCell<TValue> tryGetValueFromCell
     )
     {
-        Debug.Assert(selectedRange != null);
         Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        Debug.Assert(tryGetValueFromCell != null);
         AssertValid();
 
-        // Create a dictionary for the selected values.  The dictionary key is
-        // the cell value and the dictionary value is not used.
+        // Create a HashSet for the selected values.  The HashSet key is the
+        // cell value.
 
-        Dictionary<String, Char> oSelectedValues =
-            new Dictionary<String, Char>();
+        HashSet<TValue> oSelectedValues = new HashSet<TValue>();
 
         if (!this.TableExists)
         {
@@ -365,12 +423,15 @@ public class SheetHelper : Object
         }
 
         // The selected range can extend outside the table.  Get the
-        // intersection of the table with the selection.
+        // intersection of the table with the selection.  Note that
+        // ExcelUtil.TryGetSelectedTableRange() activates the worksheet.
 
+        ListObject oTable;
         Range oSelectedTableRange;
 
-        if ( !ExcelUtil.TryGetSelectedTableRange(m_oTable.InnerObject,
-            selectedRange, out oSelectedTableRange) )
+        if ( !ExcelUtil.TryGetSelectedTableRange(
+            (Workbook)m_oWorksheet.Parent, m_oWorksheet.Name,
+            m_oTable.Name, out oTable, out oSelectedTableRange) )
         {
             goto Done;
         }
@@ -383,18 +444,15 @@ public class SheetHelper : Object
         // excludes the header row.
 
         Range oColumnData;
+        Object [,] aoColumnValues;
 
-        if ( !ExcelUtil.TryGetTableColumnData(m_oTable.InnerObject, columnName,
-            out oColumnData) )
+        if ( !ExcelUtil.TryGetTableColumnDataAndValues(m_oTable.InnerObject,
+            columnName, out oColumnData, out aoColumnValues) )
         {
             goto Done;
         }
 
-        Int32 iRows = oDataBodyRange.Rows.Count;
-
         // Read the column.
-
-        Object [,] aoValues = ExcelUtil.GetRangeValues(oColumnData);
 
         foreach (Range oSelectedTableRangeArea in oSelectedTableRange.Areas)
         {
@@ -407,15 +465,12 @@ public class SheetHelper : Object
             for (Int32 iRowOneBased = iFirstRowOneBased;
                 iRowOneBased <= iLastRowOneBased; iRowOneBased++)
             {
-                String sValue;
+                TValue tValue;
 
-                if ( ExcelUtil.TryGetNonEmptyStringFromCell(aoValues,
-                    iRowOneBased, 1, out sValue) )
+                if ( tryGetValueFromCell(aoColumnValues, iRowOneBased, 1,
+                    out tValue) )
                 {
-                    // There may be two or more areas that include the same
-                    // row, so use Dictionary.Item and not Dictionary.Add().
-
-                    oSelectedValues[sValue] = ' ';
+                    oSelectedValues.Add(tValue);
                 }
             }
         }
@@ -426,23 +481,55 @@ public class SheetHelper : Object
     }
 
     //*************************************************************************
-    //  Method: OnSelectionChangedInTable()
+    //  Method: SelectTableRowsByColumnValues()
     //
     /// <summary>
-    /// Handles the SelectionChange event on the table.
+    /// Selects the rows in the table that contain one of a collection of
+    /// values in a specified column.
     /// </summary>
     ///
-    /// <param name="Target">
-    /// Standard event argument.
+    /// <typeparam name="TValue">
+    /// Type of the values in the specified column.
+    /// </typeparam>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to read.
     /// </param>
+    ///
+    /// <param name="valuesToSelect">
+    /// Collection of values to look for.
+    /// </param>
+    ///
+    /// <param name="tryGetValueFromCell">
+    /// Method that attempts to get a value of a specified type from a
+    /// worksheet cell given an array of cell values read from the worksheet.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method activates the worksheet if it isn't already activated, then
+    /// selects each row that contains one of the values in <paramref
+    /// name="valuesToSelect" /> in the column named <paramref
+    /// name="columnName" />.  The values are of type TValue.
+    ///
+    /// <para>
+    /// Any row that doesn't contain one of the specified values gets
+    /// deselected.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
-    protected void
-    OnSelectionChangedInTable
+    public void
+    SelectTableRowsByColumnValues<TValue>
     (
-        Range Target
+        String columnName,
+        ICollection<TValue> valuesToSelect,
+        ExcelUtil.TryGetValueFromCell<TValue> tryGetValueFromCell
     )
     {
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        Debug.Assert(valuesToSelect != null);
+        Debug.Assert(tryGetValueFromCell != null);
         AssertValid();
 
         if (!TableExists)
@@ -450,191 +537,119 @@ public class SheetHelper : Object
             return;
         }
 
-        TableSelectionChangedEventHandler oTableSelectionChanged =
-            this.TableSelectionChanged;
+        ExcelUtil.ActivateWorksheet(m_oWorksheet.InnerObject);
 
-        if (oTableSelectionChanged == null)
+        Int32 iValuesToSelect = valuesToSelect.Count;
+
+        if (iValuesToSelect == 0)
         {
-            // No one is handling the event, so there is nothing to do.
+            // Unselect any currently selected rows.
+
+            m_oTable.HeaderRowRange.Select();
 
             return;
         }
 
-        // Get an array of unique row IDs for all rows that have at least one
-        // cell selected.
+        // Get a dictionary containing the value of each row in the table.  The
+        // key is the value from the specified column and the value is the
+        // one-based row number relative to the worksheet.
 
-        Int32 [] aiSelectedRowIDs = GetSelectedRowIDs(Target);
+        Dictionary<TValue, Int32> oValueDictionary;
 
-        // Forward the event.
-
-        FireTableSelectionChanged(aiSelectedRowIDs,
-            TableSelectionChangedEventOrigin.SelectionChangedInTable);
-    }
-
-    //*************************************************************************
-    //  Method: FireTableSelectionChanged()
-    //
-    /// <summary>
-    /// Fires the <see cref="TableSelectionChanged" /> event if appropriate.
-    /// </summary>
-    ///
-    /// <param name="aiSelectedIDs">
-    /// Array of IDs of selected rows.
-    /// </param>
-    ///
-    /// <param name="eEventOrigin">
-    /// Specifies how the event originated.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    FireTableSelectionChanged
-    (
-        Int32 [] aiSelectedIDs,
-        TableSelectionChangedEventOrigin eEventOrigin
-    )
-    {
-        AssertValid();
-
-        TableSelectionChangedEventHandler oTableSelectionChanged =
-            this.TableSelectionChanged;
-
-        if (oTableSelectionChanged != null)
+        if ( !TryGetValuesInAllRows<TValue>(columnName, tryGetValueFromCell,
+            out oValueDictionary) )
         {
-            try
+            return;
+        }
+
+        // Build a range address string that is the union of the rows to
+        // select.  Sample: "3:3,6:6,12:12".  Excel allows this for an address
+        // up to MaximumBuiltRangeAddressLength characters.  (This was
+        // determined experimentally.)  Building a union via a string address
+        // is much more efficient than creating one range per row and using
+        // Application.Union() on all of them.
+
+        StringBuilder oBuiltRangeAddress = new StringBuilder();
+
+        const Int32 MaximumBuiltRangeAddressLength = 250;
+
+        Range oAccumulatedRange = null;
+
+        // The ExcelLocale1033(true) attribute in AssemblyInfo.cs is supposed
+        // to make the Excel object model act the same in all locales, so a
+        // hard-coded comma should always work as the list separator for a
+        // union range address.  That's not the case, though; Excel uses the
+        // locale-specified list separator instead.  Is this a bug in the Excel
+        // PIAs?  Here is a posting from someone else who found the same
+        // problem:
+        //
+        // http://social.msdn.microsoft.com/Forums/en-US/vsto/thread/
+        // 0e4bd7dc-37d3-42ea-9ce4-53b9e5a53719/
+
+        String sListSeparator =
+            CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
+        Int32 i = 0;
+
+        foreach (TValue tValueToSelect in valuesToSelect)
+        {
+            Int32 iRow;
+
+            if ( oValueDictionary.TryGetValue(tValueToSelect, out iRow) )
             {
-                oTableSelectionChanged( this,
-                    new TableSelectionChangedEventArgs(
-                        aiSelectedIDs, eEventOrigin)
-                    );
+                if (oBuiltRangeAddress.Length != 0)
+                {
+                    oBuiltRangeAddress.Append(sListSeparator);
+                }
+
+                oBuiltRangeAddress.Append(String.Format(
+                    "{0}:{0}",
+                    iRow
+                    ) );
             }
-            catch (Exception oException)
+
+            // In the following test, assume that the next appended address
+            // would be ",1048576:1048576".
+
+            Int32 iBuiltRangeAddressLength = oBuiltRangeAddress.Length;
+
+            if (
+                iBuiltRangeAddressLength + 1 + 7 + 1 + 7 >
+                    MaximumBuiltRangeAddressLength
+                ||
+                (i == iValuesToSelect - 1 && iBuiltRangeAddressLength > 0)
+                )
             {
-                // If exceptions aren't caught here, Excel consumes them
-                // without indicating that anything is wrong.
+                // Get the range specified by the StringBuilder.
 
-                ErrorUtil.OnException(oException);
+                Range oBuiltRange = m_oWorksheet.InnerObject.get_Range(
+                    oBuiltRangeAddress.ToString(), Missing.Value);
+
+                Debug.Assert(oBuiltRange != null);
+
+                // Add it to the total.
+
+                if ( !ExcelUtil.TryUnionRanges(
+                    oAccumulatedRange, oBuiltRange, out oAccumulatedRange) )
+                {
+                    Debug.Assert(false);
+                }
+
+                oBuiltRangeAddress.Length = 0;
             }
-        }
-    }
 
-    //*************************************************************************
-    //  Method: Table_SelectionChange()
-    //
-    /// <summary>
-    /// Handles the SelectionChange event on the table.
-    /// </summary>
-    ///
-    /// <param name="Target">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    Table_SelectionChange
-    (
-        Range Target
-    )
-    {
-        AssertValid();
-
-        if (ExcelUtil.SpecialCellsBeingCalled)
-        {
-            // Work around an Excel bug.  See the
-            // ExcelUtil.SpecialCellsBeingCalled property for details.
-
-            return;
+        i++;
         }
 
-        if (m_bIgnoreSelectionEvents)
+        // Intersect the accumulated range with the table and select the
+        // intersection.
+
+        Range oRangeToSelect;
+
+        if ( ExcelUtil.TryIntersectRanges(oAccumulatedRange,
+            m_oTable.DataBodyRange, out oRangeToSelect) )
         {
-            // Prevent an endless loop.
-
-            return;
-        }
-
-        m_bIgnoreSelectionEvents = true;
-
-        try
-        {
-            OnSelectionChangedInTable(Target);
-        }
-        catch (COMException)
-        {
-            // A user reported a bug in which Application.Intersect() throws a
-            // COMException with an HRESULT of 0x800AC472.
-            // (Application.Intersect() gets called indirectly by
-            // OnSelectionChangedInTable().)  The bug occurred while switching
-            // windows.  I couldn't reproduce the bug, but the following post
-            // suggests that the HRESULT, which is VBA_E_IGNORE, occurs when an
-            // object model call is made while the object model is "suspended."
-            //
-            // http://social.msdn.microsoft.com/forums/en-US/vsto/thread/
-            // 9168f9f2-e5bc-4535-8d7d-4e374ab8ff09/
-            //
-            // Other posts also mention that it can occur during window
-            // switches.
-            //
-            // I can't reproduce the bug and I'm not sure of the root cause,
-            // but catching and ignoring the error should lead to nothing worse
-            // than a mouse click being ignored.
-        }
-        catch (Exception oException)
-        {
-            // If exceptions aren't caught here, Excel consumes them without
-            // indicating that anything is wrong.
-
-            ErrorUtil.OnException(oException);
-        }
-        finally
-        {
-            m_bIgnoreSelectionEvents = false;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: Table_Deselected()
-    //
-    /// <summary>
-    /// Handles the Deselected event on the table.
-    /// </summary>
-    ///
-    /// <param name="Target">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    Table_Deselected
-    (
-        Range Target
-    )
-    {
-        AssertValid();
-
-        if (m_bIgnoreSelectionEvents)
-        {
-            // Prevent an endless loop.
-
-            return;
-        }
-
-        // When the user clicks outside of the table,
-        // ListObject.SelectionChange does not fire.  That's why Deselected
-        // must be handled.
-
-        // Let the event handler know that there are no table rows selected.
-
-        m_bIgnoreSelectionEvents = true;
-
-        try
-        {
-            FireTableSelectionChanged(WorksheetReaderBase.EmptyIDArray,
-                TableSelectionChangedEventOrigin.SelectionChangedInTable);
-        }
-        finally
-        {
-            m_bIgnoreSelectionEvents = false;
+            oRangeToSelect.Select();
         }
     }
 
@@ -652,7 +667,6 @@ public class SheetHelper : Object
     public virtual void
     AssertValid()
     {
-        // m_bIgnoreSelectionEvents
         Debug.Assert(m_oWorksheet != null);
         Debug.Assert(m_oTable != null);
     }
@@ -661,10 +675,6 @@ public class SheetHelper : Object
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
-
-    /// true if selection events should be ignored.
-
-    protected Boolean m_bIgnoreSelectionEvents;
 
     /// The worksheet that owns this object.
 

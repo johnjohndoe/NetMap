@@ -116,8 +116,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// skipped vertices (and their incident edges) are removed from <paramref
     /// name="graph" />, <paramref
     /// name="readWorkbookContext" />.VertexNameDictionary, and
-    /// <paramref name="readWorkbookContext" />.EdgeIDDictionary.  Otherwise, a
-    /// <see cref="WorkbookFormatException" /> is thrown.
+    /// <paramref name="readWorkbookContext" />.EdgeRowIDDictionary.
+    /// Otherwise, a <see cref="WorkbookFormatException" /> is thrown.
     /// </remarks>
     //*************************************************************************
 
@@ -148,9 +148,12 @@ public class VertexWorksheetReader : WorksheetReaderBase
             ExcelHiddenColumns oHiddenColumns =
                 ExcelColumnHider.ShowHiddenColumns(oVertexTable);
 
+            Boolean bLayoutOrderSet, bToolTipSet;
+
             try
             {
-                ReadVertexTable(oVertexTable, readWorkbookContext, graph);
+                ReadVertexTable(oVertexTable, readWorkbookContext, graph,
+                    out bLayoutOrderSet, out bToolTipSet);
             }
             finally
             {
@@ -158,7 +161,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                     oHiddenColumns);
             }
 
-            if (readWorkbookContext.LayoutOrderSet)
+            if (bLayoutOrderSet)
             {
                 // The layout order was specified for at least one vertex.
                 // The ByMetadataVertexSorter used by SortableLayoutBase
@@ -174,6 +177,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
                 graph.SetValue(
                     ReservedMetadataKeys.SortableLayoutOrderSet, null);
+            }
+
+            if (bToolTipSet)
+            {
+                graph.SetValue(ReservedMetadataKeys.ToolTipSet, null);
             }
         }
     }
@@ -197,6 +205,16 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// <param name="oGraph">
     /// Graph to add vertices to.
     /// </param>
+    ///
+    /// <param name="bLayoutOrderSet">
+    /// Gets set to true if a vertex layout order was specified for at least
+    /// one vertex, or false otherwise.
+    /// </param>
+    ///
+    /// <param name="bToolTipSet">
+    /// Gets set to true if a tooltip was specified for at least one vertex, or
+    /// false otherwise.
+    /// </param>
     //*************************************************************************
 
     protected void
@@ -204,13 +222,17 @@ public class VertexWorksheetReader : WorksheetReaderBase
     (
         ListObject oVertexTable,
         ReadWorkbookContext oReadWorkbookContext,
-        IGraph oGraph
+        IGraph oGraph,
+        out Boolean bLayoutOrderSet,
+        out Boolean bToolTipSet
     )
     {
         Debug.Assert(oVertexTable != null);
         Debug.Assert(oReadWorkbookContext != null);
         Debug.Assert(oGraph != null);
         AssertValid();
+
+        bLayoutOrderSet = bToolTipSet = false;
 
         if (GetTableColumnIndex(oVertexTable,
             VertexTableColumnNames.VertexName, false) == NoSuchColumn)
@@ -223,8 +245,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Boolean bReadAllEdgeAndVertexColumns =
             oReadWorkbookContext.ReadAllEdgeAndVertexColumns;
 
-        if (oReadWorkbookContext.FillIDColumns &&
-            !bReadAllEdgeAndVertexColumns)
+        if (oReadWorkbookContext.FillIDColumns)
         {
             FillIDColumn(oVertexTable);
         }
@@ -244,8 +265,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
         Dictionary<String, IVertex> oVertexNameDictionary =
             oReadWorkbookContext.VertexNameDictionary;
 
-        Dictionary<Int32, IIdentityProvider> oEdgeIDDictionary =
-            oReadWorkbookContext.EdgeIDDictionary;
+        Dictionary<Int32, IIdentityProvider> oEdgeRowIDDictionary =
+            oReadWorkbookContext.EdgeRowIDDictionary;
+
+        BooleanConverter oBooleanConverter =
+            oReadWorkbookContext.BooleanConverter;
 
         VertexVisibilityConverter oVertexVisibilityConverter =
             new VertexVisibilityConverter();
@@ -328,7 +352,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
                         {
                             if (oIncidentEdge.Tag is Int32)
                             {
-                                oEdgeIDDictionary.Remove(
+                                oEdgeRowIDDictionary.Remove(
                                     (Int32)oIncidentEdge.Tag);
                             }
                         }
@@ -392,8 +416,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
             // If there is an ID column, add the vertex to the vertex ID
             // dictionary and set the vertex's Tag to the ID.
 
-            AddToIDDictionary(oRow, oVertex,
-                oReadWorkbookContext.VertexIDDictionary);
+            AddToRowIDDictionary(oRow, oVertex,
+                oReadWorkbookContext.VertexRowIDDictionary);
 
             if (bReadAllEdgeAndVertexColumns)
             {
@@ -410,7 +434,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             if ( ReadLayoutOrder(oRow, oVertex) )
             {
-                oReadWorkbookContext.LayoutOrderSet = true;
+                bLayoutOrderSet = true;
             }
 
             // Location and Locked.
@@ -422,7 +446,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 bLocationSpecified = ReadLocation(oRow,
                     oReadWorkbookContext.VertexLocationConverter, oVertex);
 
-                ReadLocked(oRow, bLocationSpecified, oVertex);
+                ReadLocked(oRow, oBooleanConverter, bLocationSpecified,
+                    oVertex);
             }
 
             // Polar coordinates.
@@ -431,7 +456,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
 
             // Marked.
 
-            ReadMarked(oRow, oVertex);
+            ReadMarked(oRow, oBooleanConverter, oVertex);
 
             // Custom menu items.
 
@@ -449,7 +474,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
             if ( ReadCellAndSetMetadata(oRow, VertexTableColumnNames.ToolTip,
                 oVertex, ReservedMetadataKeys.VertexToolTip) )
             {
-                oReadWorkbookContext.ToolTipsUsed = true;
+                bToolTipSet = true;
             }
 
             // Label.
@@ -1103,6 +1128,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// Row containing the vertex data.
     /// </param>
     ///
+    /// <param name="oBooleanConverter">
+    /// Object that converts a Boolean between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
+    /// </param>
+    ///
     /// <param name="bLocationSpecified">
     /// true if a location was specified for the vertex.
     /// </param>
@@ -1120,29 +1150,22 @@ public class VertexWorksheetReader : WorksheetReaderBase
     ReadLocked
     (
         ExcelTableReader.ExcelTableRow oRow,
+        BooleanConverter oBooleanConverter,
         Boolean bLocationSpecified,
         IVertex oVertex
     )
     {
         Debug.Assert(oRow != null);
+        Debug.Assert(oBooleanConverter != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
-        String sLocked;
-
-        if ( !oRow.TryGetNonEmptyStringFromCell(
-            VertexTableColumnNames.Locked, out sLocked) )
-        {
-            return;
-        }
-
         Boolean bLocked;
 
-        if ( !( new BooleanConverter() ).TryWorkbookToGraph(
-            sLocked, out bLocked) )
+        if ( !TryGetBoolean(oRow, VertexTableColumnNames.Locked,
+            oBooleanConverter, out bLocked) )
         {
-            OnWorkbookFormatErrorWithDropDown(oRow,
-                VertexTableColumnNames.Locked, "locked value");
+            return;
         }
 
         if (bLocked && !bLocationSpecified)
@@ -1178,6 +1201,11 @@ public class VertexWorksheetReader : WorksheetReaderBase
     /// Row containing the vertex data.
     /// </param>
     ///
+    /// <param name="oBooleanConverter">
+    /// Object that converts a Boolean between values used in the Excel
+    /// workbook and values used in the NodeXL graph.
+    /// </param>
+    ///
     /// <param name="oVertex">
     /// Vertex to set the marked flag on.
     /// </param>
@@ -1192,38 +1220,21 @@ public class VertexWorksheetReader : WorksheetReaderBase
     ReadMarked
     (
         ExcelTableReader.ExcelTableRow oRow,
+        BooleanConverter oBooleanConverter,
         IVertex oVertex
     )
     {
         Debug.Assert(oRow != null);
+        Debug.Assert(oBooleanConverter != null);
         Debug.Assert(oVertex != null);
         AssertValid();
 
-        String sMarked;
-
-        if ( !oRow.TryGetNonEmptyStringFromCell(VertexTableColumnNames.Marked,
-            out sMarked) )
-        {
-            return;
-        }
-
         Boolean bMarked;
 
-        if ( !( new BooleanConverter() ).TryWorkbookToGraph(
-            sMarked, out bMarked) )
+        if ( !TryGetBoolean(oRow, VertexTableColumnNames.Marked,
+            oBooleanConverter, out bMarked) )
         {
-            Range oInvalidCell = oRow.GetRangeForCell(
-                VertexTableColumnNames.Marked);
-
-            OnWorkbookFormatError( String.Format(
-
-                "The cell {0} contains an invalid marked value."
-                ,
-                ExcelUtil.GetRangeAddress(oInvalidCell)
-                ),
-
-                oInvalidCell
-                );
+            return;
         }
 
         oVertex.SetValue(ReservedMetadataKeys.Marked, bMarked);

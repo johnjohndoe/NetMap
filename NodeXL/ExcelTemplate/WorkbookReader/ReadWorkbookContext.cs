@@ -43,7 +43,9 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// </para>
 ///
 /// <para>
-/// Set <see cref="ReadClusters" /> to true to read the cluster worksheets.
+/// Set <see cref="ReadGroups" /> to true to read the group worksheets.  To
+/// save collections of the vertices in each group, also set <see
+/// cref="SaveGroupVertices" /> to true.
 /// </para>
 ///
 /// <para>
@@ -60,8 +62,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// <para>
 /// To read all columns in the edge and vertex worksheets and store the cell
 /// values as metadata on the graph's edge and vertex objects, set <see
-/// cref="ReadAllEdgeAndVertexColumns" /> to true.  All other <see
-/// cref="ReadWorkbookContext" /> properties are ignored in this case.
+/// cref="ReadAllEdgeAndVertexColumns" /> to true.
 /// </para>
 ///
 /// </remarks>
@@ -84,7 +85,8 @@ public class ReadWorkbookContext : Object
         m_bFillIDColumns = false;
         m_bPopulateVertexWorksheet = false;
         m_bReadEdgeWeights = false;
-        m_bReadClusters = false;
+        m_bReadGroups = false;
+        m_bSaveGroupVertices = false;
         m_bReadVertexLabels = false;
         m_bReadEdgeLabels = false;
         m_bReadVertexImages = false;
@@ -92,8 +94,8 @@ public class ReadWorkbookContext : Object
         m_eDefaultVertexShape = VertexShape.Disk;
         m_bReadAllEdgeAndVertexColumns = false;
         m_oGraphRectangle = Rectangle.FromLTRB(0, 0, 100, 100);
-        m_bLayoutOrderSet = false;
         m_oColorConverter2 = new ColorConverter2();
+        m_oBooleanConverter = new BooleanConverter();
         m_oEdgeWidthConverter = new EdgeWidthConverter();
         m_oEdgeStyleConverter = new EdgeStyleConverter();
         m_oVertexRadiusConverter = new VertexRadiusConverter();
@@ -102,9 +104,8 @@ public class ReadWorkbookContext : Object
             new VertexLocationConverter(m_oGraphRectangle);
 
         m_oVertexNameDictionary = new Dictionary<String, IVertex>();
-        m_oEdgeIDDictionary = new Dictionary<Int32, IIdentityProvider>();
-        m_oVertexIDDictionary = new Dictionary<Int32, IIdentityProvider>();
-        m_bToolTipsUsed = false;
+        m_oEdgeRowIDDictionary = new Dictionary<Int32, IIdentityProvider>();
+        m_oVertexRowIDDictionary = new Dictionary<Int32, IIdentityProvider>();
 
         AssertValid();
     }
@@ -254,31 +255,91 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
-    //  Property: ReadClusters
+    //  Property: ReadGroups
     //
     /// <summary>
-    /// Gets or sets a flag indicating whether the cluster worksheets should be
+    /// Gets or sets a flag indicating whether the group worksheets should be
     /// read.
     /// </summary>
     ///
     /// <value>
-    /// true to read the cluster worksheets.  The default is false.
+    /// true to read the group worksheets.  The default is false.
     /// </value>
+    ///
+    /// <remarks>
+    /// If <see cref="ReadGroups" /> is true, the following metadata key gets
+    /// added to the graph after the workbook is read:
+    ///
+    /// <list>
+    ///
+    /// <item><term>
+    /// <see cref="ReservedMetadataKeys.GroupInformation" />
+    /// </term></item>
+    ///
+    /// </list>
+    ///
+    /// <para>
+    /// The key's value is a collection of <see cref="GroupInformation" />
+    /// objects, one for each of the graph's group.  If <see
+    /// cref="SaveGroupVertices" /> is false, the <see
+    /// cref="GroupInformation.Vertices" /> property is null.  If <see
+    /// cref="SaveGroupVertices" /> is true, the <see
+    /// cref="GroupInformation.Vertices" /> property gets set to a collection
+    /// of the group's vertices.
+    /// </para>
+    ///
+    /// </remarks>
     //*************************************************************************
 
     public Boolean
-    ReadClusters
+    ReadGroups
     {
         get
         {
             AssertValid();
 
-            return (m_bReadClusters);
+            return (m_bReadGroups);
         }
 
         set
         {
-            m_bReadClusters = value;
+            m_bReadGroups = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: SaveGroupVertices
+    //
+    /// <summary>
+    /// Gets or sets a flag indicating whether the vertices in each group
+    /// should be saved.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to save the group's vertices.  The default is false.
+    /// </value>
+    ///
+    /// <remarks>
+    /// If <see cref="ReadGroups" /> is false, this property is ignored.  See
+    /// <see cref="ReadGroups" /> for more information.
+    /// </remarks>
+    //*************************************************************************
+
+    public Boolean
+    SaveGroupVertices
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bSaveGroupVertices);
+        }
+
+        set
+        {
+            m_bSaveGroupVertices = value;
 
             AssertValid();
         }
@@ -482,11 +543,6 @@ public class ReadWorkbookContext : Object
     /// <see cref="ReservedMetadataKeys.AllVertexMetadataKeys" /> keys.
     /// </para>
     ///
-    /// <para>
-    /// When set to true, all other <see cref="ReadWorkbookContext" />
-    /// properties are ignored.
-    /// </para>
-    ///
     /// </remarks>
     //*************************************************************************
 
@@ -544,45 +600,6 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
-    //  Property: LayoutOrderSet
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether a vertex layout order has been
-    /// specified.
-    /// </summary>
-    ///
-    /// <value>
-    /// true if a vertex layout order has been specified.
-    /// </value>
-    ///
-    /// <remarks>
-    /// Vertex layout order is specified with the <see
-    /// cref="ReservedMetadataKeys.SortableLayoutOrder" /> and <see
-    /// cref="ReservedMetadataKeys.SortableLayoutOrderSet" /> keys.  The order
-    /// is used only by layouts derived from <see
-    /// cref="Microsoft.NodeXL.Layouts.SortableLayoutBase" />.
-    /// </remarks>
-    //*************************************************************************
-
-    public Boolean
-    LayoutOrderSet
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_bLayoutOrderSet);
-        }
-
-        set
-        {
-            m_bLayoutOrderSet = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: ColorConverter2
     //
     /// <summary>
@@ -602,6 +619,29 @@ public class ReadWorkbookContext : Object
             AssertValid();
 
             return (m_oColorConverter2);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BooleanConverter
+    //
+    /// <summary>
+    /// Gets an object for converting strings to Booleans.
+    /// </summary>
+    ///
+    /// <value>
+    /// A <see cref="BooleanConverter" /> object.
+    /// </value>
+    //*************************************************************************
+
+    public BooleanConverter
+    BooleanConverter
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_oBooleanConverter);
         }
     }
 
@@ -734,83 +774,52 @@ public class ReadWorkbookContext : Object
     }
 
     //*************************************************************************
-    //  Property: EdgeIDDictionary
+    //  Property: EdgeRowIDDictionary
     //
     /// <summary>
-    /// Gets a dictionary that maps edge IDs from the edge worksheet to edge
-    /// objects in the graph.
+    /// Gets a dictionary that maps edge row IDs from the edge worksheet to
+    /// edge objects in the graph.
     /// </summary>
     ///
     /// <value>
-    /// Edge dictionary.  The key is the edge ID from the edge worksheet and
-    /// the value is the IEdge object.
+    /// Edge dictionary.  The key is the edge row ID from the edge worksheet
+    /// and the value is the IEdge object.
     /// </value>
     //*************************************************************************
 
     public Dictionary<Int32, IIdentityProvider>
-    EdgeIDDictionary
+    EdgeRowIDDictionary
     {
         get
         {
             AssertValid();
 
-            return (m_oEdgeIDDictionary);
+            return (m_oEdgeRowIDDictionary);
         }
     }
 
     //*************************************************************************
-    //  Property: VertexIDDictionary
+    //  Property: VertexRowIDDictionary
     //
     /// <summary>
-    /// Gets a dictionary that maps vertex IDs from the vertex worksheet to
+    /// Gets a dictionary that maps vertex row IDs from the vertex worksheet to
     /// vertex objects in the graph.
     /// </summary>
     ///
     /// <value>
-    /// Vertex dictionary.  The key is the vertex ID from the vertex worksheet
-    /// and the value is the IVertex object.
+    /// Vertex dictionary.  The key is the vertex row ID from the vertex
+    /// worksheet and the value is the IVertex object.
     /// </value>
     //*************************************************************************
 
     public Dictionary<Int32, IIdentityProvider>
-    VertexIDDictionary
+    VertexRowIDDictionary
     {
         get
         {
             AssertValid();
 
-            return (m_oVertexIDDictionary);
-        }
-    }
-
-    //*************************************************************************
-    //  Property: ToolTipsUsed
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether a tooltip was set on at least
-    /// one vertex.
-    /// </summary>
-    ///
-    /// <value>
-    /// true if a tooltip was set on at least one vertex.
-    /// </value>
-    //*************************************************************************
-
-    public Boolean
-    ToolTipsUsed
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_bToolTipsUsed);
-        }
-
-        set
-        {
-            m_bToolTipsUsed = value;
-
-            AssertValid();
+            return (m_oVertexRowIDDictionary);
         }
     }
 
@@ -832,7 +841,8 @@ public class ReadWorkbookContext : Object
         // m_bFillIDColumns
         // m_bPopulateVertexWorksheet
         // m_bReadEdgeWeights
-        // m_bReadClusters
+        // m_bReadGroups
+        // m_bSaveGroupVertices
         // m_bReadVertexLabels
         // m_bReadEdgeLabels
         // m_bReadVertexImages
@@ -840,16 +850,15 @@ public class ReadWorkbookContext : Object
         // m_eDefaultVertexShape
         // m_bReadAllEdgeAndVertexColumns
         // m_oGraphRectangle
-        // m_bLayoutOrderSet
         Debug.Assert(m_oColorConverter2 != null);
+        Debug.Assert(m_oBooleanConverter != null);
         Debug.Assert(m_oEdgeWidthConverter != null);
         Debug.Assert(m_oEdgeStyleConverter != null);
         Debug.Assert(m_oVertexRadiusConverter != null);
         Debug.Assert(m_oVertexLocationConverter != null);
         Debug.Assert(m_oVertexNameDictionary != null);
-        Debug.Assert(m_oEdgeIDDictionary != null);
-        Debug.Assert(m_oVertexIDDictionary != null);
-        // m_bToolTipsUsed
+        Debug.Assert(m_oEdgeRowIDDictionary != null);
+        Debug.Assert(m_oVertexRowIDDictionary != null);
     }
 
 
@@ -874,9 +883,13 @@ public class ReadWorkbookContext : Object
 
     protected Boolean m_bReadEdgeWeights;
 
-    /// true to read the cluster worksheets.
+    /// true to read the group worksheets.
 
-    protected Boolean m_bReadClusters;
+    protected Boolean m_bReadGroups;
+
+    /// true to save the groups' vertices.
+
+    protected Boolean m_bSaveGroupVertices;
 
     /// true to read the labels on the vertex worksheet.
 
@@ -906,13 +919,13 @@ public class ReadWorkbookContext : Object
 
     protected Rectangle m_oGraphRectangle;
 
-    /// true if a vertex layout order has been specified.
-
-    protected Boolean m_bLayoutOrderSet;
-
     /// Object for converting strings to colors.
 
     protected ColorConverter2 m_oColorConverter2;
+
+    /// Object for converting strings to Booleans.
+
+    protected BooleanConverter m_oBooleanConverter;
 
     /// Object that converts an edge width between values used in the Excel
     /// workbook and values used in the NodeXL graph.
@@ -939,19 +952,15 @@ public class ReadWorkbookContext : Object
 
     protected Dictionary<String, IVertex> m_oVertexNameDictionary;
 
-    /// Edge dictionary.  The key is the edge ID from the edge worksheet and
-    /// the value is the IEdge object.
+    /// Edge dictionary.  The key is the edge row ID from the edge worksheet
+    /// and the value is the IEdge object.
 
-    protected Dictionary<Int32, IIdentityProvider> m_oEdgeIDDictionary;
+    protected Dictionary<Int32, IIdentityProvider> m_oEdgeRowIDDictionary;
 
-    /// Vertex dictionary.  The key is the vertex ID from the vertex worksheet
-    /// and the value is the IVertex object.
+    /// Vertex dictionary.  The key is the vertex row ID from the vertex
+    /// worksheet and the value is the IVertex object.
 
-    protected Dictionary<Int32, IIdentityProvider> m_oVertexIDDictionary;
-
-    /// true if a tooltip was set on at least one vertex.
-
-    protected Boolean m_bToolTipsUsed;
+    protected Dictionary<Int32, IIdentityProvider> m_oVertexRowIDDictionary;
 }
 
 }

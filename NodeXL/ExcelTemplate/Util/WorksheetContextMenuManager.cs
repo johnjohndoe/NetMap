@@ -67,12 +67,12 @@ public class WorksheetContextMenuManager : Object
     /// The vertex table on the vertex worksheet.
     /// </param>
     ///
-    /// <param name="clusterWorksheet">
-    /// The cluster worksheet in the Excel workbook.
+    /// <param name="groupWorksheet">
+    /// The group worksheet in the Excel workbook.
     /// </param>
     ///
-    /// <param name="clusterTable">
-    /// The cluster table on the cluster worksheet.
+    /// <param name="groupTable">
+    /// The group table on the group worksheet.
     /// </param>
     //*************************************************************************
 
@@ -83,8 +83,8 @@ public class WorksheetContextMenuManager : Object
         Microsoft.Office.Tools.Excel.ListObject edgeTable,
         Microsoft.Office.Tools.Excel.Worksheet vertexWorksheet,
         Microsoft.Office.Tools.Excel.ListObject vertexTable,
-        Microsoft.Office.Tools.Excel.Worksheet clusterWorksheet,
-        Microsoft.Office.Tools.Excel.ListObject clusterTable
+        Microsoft.Office.Tools.Excel.Worksheet groupWorksheet,
+        Microsoft.Office.Tools.Excel.ListObject groupTable
     )
     {
         Debug.Assert(workbook != null);
@@ -92,13 +92,13 @@ public class WorksheetContextMenuManager : Object
         Debug.Assert(edgeTable != null);
         Debug.Assert(vertexWorksheet != null);
         Debug.Assert(vertexTable != null);
-        Debug.Assert(clusterWorksheet != null);
-        Debug.Assert(clusterTable != null);
+        Debug.Assert(groupWorksheet != null);
+        Debug.Assert(groupTable != null);
 
         m_oWorkbook = workbook;
         m_oEdgeTable = edgeTable;
         m_oVertexTable = vertexTable;
-        m_oClusterTable = clusterTable;
+        m_oGroupTable = groupTable;
 
         // Handle the events involved in adding, handling, and removing custom
         // menu items.
@@ -113,7 +113,7 @@ public class WorksheetContextMenuManager : Object
         vertexWorksheet.Deactivate += new Microsoft.Office.Interop.
             Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
 
-        clusterWorksheet.Deactivate += new Microsoft.Office.Interop.
+        groupWorksheet.Deactivate += new Microsoft.Office.Interop.
             Excel.DocEvents_DeactivateEventHandler(this.Worksheet_Deactivate);
 
         edgeTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
@@ -123,9 +123,9 @@ public class WorksheetContextMenuManager : Object
             DocEvents_BeforeRightClickEventHandler(
                 VertexTable_BeforeRightClick);
 
-        clusterTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
+        groupTable.BeforeRightClick += new Microsoft.Office.Interop.Excel.
             DocEvents_BeforeRightClickEventHandler(
-                ClusterTable_BeforeRightClick);
+                GroupTable_BeforeRightClick);
     }
 
     //*************************************************************************
@@ -498,11 +498,11 @@ public class WorksheetContextMenuManager : Object
     }
 
     //*************************************************************************
-    //  Method: AddClusterContextMenuItems()
+    //  Method: AddGroupContextMenuItems()
     //
     /// <summary>
     /// Adds custom menu items to the context menu that appears when a cell is
-    /// right-clicked in the cluster table.
+    /// right-clicked in the group table.
     /// </summary>
     ///
     /// <param name="oClickedRange">
@@ -511,7 +511,7 @@ public class WorksheetContextMenuManager : Object
     //*************************************************************************
 
     protected void
-    AddClusterContextMenuItems
+    AddGroupContextMenuItems
     (
         Microsoft.Office.Interop.Excel.Range oClickedRange
     )
@@ -525,8 +525,8 @@ public class WorksheetContextMenuManager : Object
 
         // Add a "set color" menu item if the clicked range is a color cell.
 
-        AddSetColorContextMenuItem(m_oClusterTable, oClickedRange,
-            ClusterTableColumnNames.VertexColor);
+        AddSetColorContextMenuItem(m_oGroupTable, oClickedRange,
+            GroupTableColumnNames.VertexColor);
     }
 
     //*************************************************************************
@@ -552,7 +552,7 @@ public class WorksheetContextMenuManager : Object
     ///
     /// <param name="iClickedID">
     /// Where the ID of the edge or vertex that was right-clicked gets stored.
-    /// Can be NoID.
+    /// Can be NoRowID.
     /// </param>
     ///
     /// <param name="oTopLevelPopup">
@@ -575,7 +575,7 @@ public class WorksheetContextMenuManager : Object
         Debug.Assert( !String.IsNullOrEmpty(sIDColumnName) );
         AssertValid();
 
-        iClickedID = NoID;
+        iClickedID = NoRowID;
 
         // Start with a clean slate.
 
@@ -588,7 +588,7 @@ public class WorksheetContextMenuManager : Object
         {
             // No.
 
-            iClickedID = NoID;
+            iClickedID = NoRowID;
         }
 
         // Get the context menu.
@@ -622,7 +622,7 @@ public class WorksheetContextMenuManager : Object
     ///
     /// <param name="iClickedID">
     /// ID of the single edge or vertex that was selected and right-clicked in
-    /// the edge or vertex table.  Can be NoID.
+    /// the edge or vertex table.  Can be NoRowID.
     /// </param>
     ///
     /// <param name="oEventHandler">
@@ -1014,7 +1014,7 @@ public class WorksheetContextMenuManager : Object
         }
 
         // Retrieve the ID of the vertex that was right-clicked.  This can be
-        // NoID.
+        // NoRowID.
 
         Int32 iClickedVertexID =
             CommandBarButtonToClickedID(oCommandBarButton);
@@ -1059,7 +1059,7 @@ public class WorksheetContextMenuManager : Object
         }
 
         // Retrieve the ID of the edge that was right-clicked.  This can be
-        // NoID.
+        // NoRowID.
 
         Int32 iClickedEdgeID = CommandBarButtonToClickedID(oCommandBarButton);
 
@@ -1080,7 +1080,7 @@ public class WorksheetContextMenuManager : Object
     /// </param>
     ///
     /// <returns>
-    /// The retreived ID, or NoID if a single edge or vertex wasn't
+    /// The retreived ID, or NoRowID if a single edge or vertex wasn't
     /// right-clicked.
     /// </returns>
     //*************************************************************************
@@ -1175,10 +1175,10 @@ public class WorksheetContextMenuManager : Object
     }
 
     //*************************************************************************
-    //  Method: ClusterTable_BeforeRightClick()
+    //  Method: GroupTable_BeforeRightClick()
     //
     /// <summary>
-    /// Handles the BeforeRightClick event on the cluster table.
+    /// Handles the BeforeRightClick event on the group table.
     /// </summary>
     ///
     /// <param name="Target">
@@ -1191,7 +1191,7 @@ public class WorksheetContextMenuManager : Object
     //*************************************************************************
 
     protected void
-    ClusterTable_BeforeRightClick
+    GroupTable_BeforeRightClick
     (
         Microsoft.Office.Interop.Excel.Range Target,
         ref bool Cancel
@@ -1201,7 +1201,7 @@ public class WorksheetContextMenuManager : Object
 
         try
         {
-            AddClusterContextMenuItems(Target);
+            AddGroupContextMenuItems(Target);
         }
         catch (Exception oException)
         {
@@ -1668,10 +1668,10 @@ public class WorksheetContextMenuManager : Object
     //*************************************************************************
 
     /// <summary>
-    /// Indicates that an edge or vertex ID isn't available.
+    /// Indicates that an edge or vertex row ID isn't available.
     /// </summary>
 
-    public static readonly Int32 NoID = Int32.MinValue;
+    public static readonly Int32 NoRowID = Int32.MinValue;
 
 
     //*************************************************************************
@@ -1703,9 +1703,9 @@ public class WorksheetContextMenuManager : Object
 
     protected Microsoft.Office.Tools.Excel.ListObject m_oVertexTable;
 
-    /// The cluster table on the cluster worksheet.
+    /// The group table on the group worksheet.
 
-    protected Microsoft.Office.Tools.Excel.ListObject m_oClusterTable;
+    protected Microsoft.Office.Tools.Excel.ListObject m_oGroupTable;
 }
 
 }

@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
-using System.Linq;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
+using Microsoft.NodeXL.Algorithms;
 using Microsoft.NodeXL.Visualization.Wpf;
 using Microsoft.Research.CommunityTechnologies.AppLib;
 
@@ -248,8 +248,7 @@ public class EdgeWorksheetReader : WorksheetReaderBase
         Boolean bReadAllEdgeAndVertexColumns =
             oReadWorkbookContext.ReadAllEdgeAndVertexColumns;
 
-        if (oReadWorkbookContext.FillIDColumns &&
-            !bReadAllEdgeAndVertexColumns)
+        if (oReadWorkbookContext.FillIDColumns)
         {
             FillIDColumn(oEdgeTable);
         }
@@ -337,11 +336,11 @@ public class EdgeWorksheetReader : WorksheetReaderBase
 
             IEdge oEdge = oEdges.Add(oVertex1, oVertex2, bGraphIsDirected);
 
-            // If there is an ID column, add the edge to the edge ID dictionary
-            // and set the edge's Tag to the ID.
+            // If there is an ID column, add the edge to the edge row ID
+            // dictionary and set the edge's Tag to the row ID.
 
-            AddToIDDictionary(oRow, oEdge,
-                oReadWorkbookContext.EdgeIDDictionary);
+            AddToRowIDDictionary(oRow, oEdge,
+                oReadWorkbookContext.EdgeRowIDDictionary);
 
             if (bReadAllEdgeAndVertexColumns)
             {

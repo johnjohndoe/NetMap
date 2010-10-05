@@ -20,27 +20,16 @@ namespace Microsoft.NodeXL.ExcelTemplate
 /// <remarks>
 /// Use <see cref="ConvertNodeXLWorkbook" /> to copy and convert a NodeXL
 /// workbook.
+///
+/// <para>
+/// All methods are static.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
-public class NodeXLWorkbookConverter : Object
+public static class NodeXLWorkbookConverter : Object
 {
-    //*************************************************************************
-    //  Constructor: NodeXLWorkbookConverter()
-    //
-    /// <summary>
-    /// Initializes a new instance of the <see
-    /// cref="NodeXLWorkbookConverter" /> class.
-    /// </summary>
-    //*************************************************************************
-
-    public NodeXLWorkbookConverter()
-    {
-        // (Do nothing.)
-
-        AssertValid();
-    }
-
     //*************************************************************************
     //  Method: ConvertNodeXLWorkbook()
     //
@@ -56,10 +45,6 @@ public class NodeXLWorkbookConverter : Object
     /// <param name="convertedWorkbookFile">
     /// Full path to the converted workbook this method will create.  If the
     /// file already exists, it gets overwritten.
-    /// </param>
-    ///
-    /// <param name="application">
-    /// Excel application.
     /// </param>
     ///
     /// <remarks>
@@ -128,30 +113,26 @@ public class NodeXLWorkbookConverter : Object
     /// </remarks>
     //*************************************************************************
 
-    public void
+    public static void
     ConvertNodeXLWorkbook
     (
         String otherWorkbookFile,
-        String convertedWorkbookFile,
-        Microsoft.Office.Interop.Excel.Application application
+        String convertedWorkbookFile
     )
     {
-        AssertValid();
         Debug.Assert( !String.IsNullOrEmpty(otherWorkbookFile) );
         Debug.Assert( File.Exists(otherWorkbookFile) );
         Debug.Assert( !String.IsNullOrEmpty(convertedWorkbookFile) );
-        Debug.Assert(application != null);
 
         // The application's template is needed to get the customization
         // information.
 
         String sTemplatePath;
 
-        if ( !ApplicationUtil.TryGetTemplatePath(application,
-            out sTemplatePath) )
+        if ( !ApplicationUtil.TryGetTemplatePath(out sTemplatePath) )
         {
             throw new NodeXLWorkbookConversionException(
-                ApplicationUtil.GetMissingTemplateMessage(application) );
+                ApplicationUtil.GetMissingTemplateMessage() );
         }
 
         #if false  // For testing.
@@ -207,7 +188,7 @@ public class NodeXLWorkbookConverter : Object
         // solution ID and deployment manifest name will be obtained from this.
 
         using ( ServerDocument oTemplateServerDocument =
-            new ServerDocument(sTemplatePath) )
+            new ServerDocument(sTemplatePath, FileAccess.Read) )
         {
             // For some reason, ServerDocument.AddCustomization() also requires
             // a path to the NodeXL assembly file, even though it doesn't get
@@ -227,24 +208,7 @@ public class NodeXLWorkbookConverter : Object
 
 
     //*************************************************************************
-    //  Method: AssertValid()
-    //
-    /// <summary>
-    /// Asserts if the object is in an invalid state.  Debug-only.
-    /// </summary>
-    //*************************************************************************
-
-    [Conditional("DEBUG")]
-
-    public void
-    AssertValid()
-    {
-        // (Do nothing.)
-    }
-
-
-    //*************************************************************************
-    //  Protected fields
+    //  Private fields
     //*************************************************************************
 
     // (None.)

@@ -196,20 +196,6 @@ public static class TestGraphUtil
         GraphDirectedness.Undirected,
         GraphDirectedness.Mixed
     };
-
-    /// <summary>
-    /// Array of all possible <see cref="GraphRestrictions" /> values.
-    /// </summary>
-
-    public static GraphRestrictions [] AllGraphRestrictions =
-        new GraphRestrictions []
-    {
-        GraphRestrictions.None,
-        GraphRestrictions.NoSelfLoops,
-        GraphRestrictions.NoParallelEdges,
-        GraphRestrictions.NoSelfLoops | GraphRestrictions.NoParallelEdges,
-        GraphRestrictions.All
-    };
 }
 
 }

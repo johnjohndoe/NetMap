@@ -724,7 +724,7 @@ public class MatrixWorkbookImporter : WorkbookImporterBase
 
         if (bClearDestinationTablesFirst)
         {
-            NodeXLWorkbookUtil.ClearTables(oDestinationNodeXLWorkbook);
+            NodeXLWorkbookUtil.ClearAllNodeXLTables(oDestinationNodeXLWorkbook);
         }
         else
         {

@@ -20,9 +20,9 @@ namespace Microsoft.NodeXL.Algorithms
 /// edge's vertices is used to test for duplicate edges.
 ///
 /// <para>
-/// The edges A,B and A,B are always considered duplicates.  The edges A,B
-/// and B,A are considered duplicates if the graph is undirected, but not if it
-/// is directed.
+/// The edges (A,B) and (A,B) are always considered duplicates.  The edges
+/// (A,B) and (B,A) are considered duplicates if the graph is undirected, but
+/// not if it is directed.
 /// </para>
 ///
 /// <para>
@@ -57,7 +57,7 @@ public class DuplicateEdgeDetector
         m_bEdgesCounted = false;
         m_iUniqueEdges = Int32.MinValue;
         m_iEdgesWithDuplicates = Int32.MinValue;
-        m_iEdges = Int32.MinValue;
+        m_iTotalEdgesAfterMergingDuplicatesNoSelfLoops = Int32.MinValue;
 
         AssertValid();
     }
@@ -149,24 +149,26 @@ public class DuplicateEdgeDetector
     }
 
     //*************************************************************************
-    //  Property: Edges()
+    //  Property: TotalEdgesAfterMergingDuplicatesNoSelfLoops()
     //
     /// <summary>
-    /// Gets the number of edges in the graph.
+    /// Gets the total number of edges the graph would have if its duplicate
+    /// edges were merged and all self-loops were removed.
     /// </summary>
     ///
     /// <value>
-    /// The number of edges in the graph.
+    /// The total number of edges the graph would have if its duplicate edges
+    /// were merged and all self-loops were removed.
     /// </value>
     ///
     /// <remarks>
-    /// The number of edges in the graph is the sum of <see
-    /// cref="UniqueEdges" /> and <see cref="EdgesWithDuplicates" />.
+    /// This class does not actually merge duplicate edges or remove
+    /// self-loops.
     /// </remarks>
     //*************************************************************************
 
     public Int32
-    Edges
+    TotalEdgesAfterMergingDuplicatesNoSelfLoops
     {
         get
         {
@@ -177,7 +179,7 @@ public class DuplicateEdgeDetector
 
             CountEdges();
 
-            return (m_iEdges);
+            return (m_iTotalEdgesAfterMergingDuplicatesNoSelfLoops);
         }
     }
 
@@ -202,7 +204,6 @@ public class DuplicateEdgeDetector
 
         m_iUniqueEdges = 0;
         m_iEdgesWithDuplicates = 0;
-        m_iEdges = 0;
 
         IEdgeCollection oEdges = m_oGraph.Edges;
 
@@ -228,9 +229,7 @@ public class DuplicateEdgeDetector
                 continue;
             }
 
-            m_iEdges++;
-
-            String sVertexNamePair = GetVertexNamePair(
+            String sVertexNamePair = Edge.GetVertexNamePair(
                 sVertex0Name, sVertex1Name, bGraphIsDirected);
 
             Boolean bEdgeHasDuplicate;
@@ -258,72 +257,24 @@ public class DuplicateEdgeDetector
             }
         }
 
+        m_iTotalEdgesAfterMergingDuplicatesNoSelfLoops = 0;
+
+        foreach (String sVertexNamePair in oVertexNamePairs.Keys)
+        {
+            String [] asVertexNames = sVertexNamePair.Split(
+                Edge.VertexNamePairSeparator);
+
+            Debug.Assert(asVertexNames.Length == 2);
+
+            if ( asVertexNames[0] != asVertexNames[1] )
+            {
+                m_iTotalEdgesAfterMergingDuplicatesNoSelfLoops++;
+            }
+        }
+
         m_bEdgesCounted = true;
 
         AssertValid();
-    }
-
-    //*************************************************************************
-    //  Method: GetVertexNamePair()
-    //
-    /// <summary>
-    /// Combines the names of an edge's vertices into a name pair suitable for
-    /// use as a dictionary key.
-    /// </summary>
-    ///
-    /// <param name="vertex0Name">
-    /// Name of the edge's first vertex.  Can't be null or empty.
-    /// </param>
-    ///
-    /// <param name="vertex1Name">
-    /// Name of the edge's second vertex.  Can't be null or empty.
-    /// </param>
-    ///
-    /// <param name="graphIsDirected">
-    /// true if the graph is directed, false if it is undirected.
-    /// </param>
-    ///
-    /// <returns>
-    /// A name pair suitable for use as a dictionary key.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The returned string can be used as a key in a dictionary used to find
-    /// duplicate edges.
-    /// </remarks>
-    //*************************************************************************
-
-    public static String
-    GetVertexNamePair
-    (
-        String vertex0Name,
-        String vertex1Name,
-        Boolean graphIsDirected
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(vertex0Name) );
-        Debug.Assert( !String.IsNullOrEmpty(vertex1Name) );
-
-        // This is a vertical tab, which is highly unlikely to be used in a
-        // vertex name.
-
-        const Char Separator = '\v';
-
-        String sVertexNamePair;
-
-        // In the undirected case, guarantee that A,B and B,A are considered
-        // duplicates by always pairing them in the same order.
-
-        if (graphIsDirected || vertex0Name.CompareTo(vertex1Name) < 0)
-        {
-            sVertexNamePair = vertex0Name + Separator + vertex1Name;
-        }
-        else
-        {
-            sVertexNamePair = vertex1Name + Separator + vertex0Name;
-        }
-
-        return (sVertexNamePair);
     }
 
 
@@ -346,9 +297,7 @@ public class DuplicateEdgeDetector
         {
             Debug.Assert(m_iUniqueEdges >= 0);
             Debug.Assert(m_iEdgesWithDuplicates >= 0);
-            Debug.Assert(m_iEdges >= 0);
-
-            Debug.Assert(m_iEdges == m_iUniqueEdges + m_iEdgesWithDuplicates);
+            Debug.Assert(m_iTotalEdgesAfterMergingDuplicatesNoSelfLoops >= 0);
         }
     }
 
@@ -375,10 +324,11 @@ public class DuplicateEdgeDetector
 
     protected Int32 m_iEdgesWithDuplicates;
 
-    /// If m_bEdgesCounted is true, this is the total number of edges in
-    /// m_oGraph.
+    /// If m_bEdgesCounted is true, this is the number of edges that would be
+    /// in m_oGraph if its duplicate edges were merged and all self-loops were
+    /// removed.
 
-    protected Int32 m_iEdges;
+    protected Int32 m_iTotalEdgesAfterMergingDuplicatesNoSelfLoops;
 }
 
 }

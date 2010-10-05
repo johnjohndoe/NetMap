@@ -20,8 +20,31 @@ namespace Microsoft.NodeXL.ExcelTemplate
 //  Class: Ribbon
 //
 /// <summary>
-/// Implements the template's ribbon customizations.
+/// Represents the template's ribbon tab.
 /// </summary>
+///
+/// <remarks>
+/// How the Ribbon is Connected to the Rest of the Application
+///
+/// <para>
+/// The ribbon has direct access to the public methods and properties on the
+/// ThisWorkbook object.  It does not have direct access to the TaskPane.
+/// </para>
+///
+/// <para>
+/// When the user clicks a ribbon control that is best handled by ThisWorkbook,
+/// the ribbon calls the appropriate public method on ThisWorkbook, passing the
+/// method whatever arguments are required to perform the requested task.
+/// </para>
+///
+/// <para>
+/// When the user clicks a ribbon control that is best handled by the TaskPane,
+/// the ribbon fires an event that gets handled by the TaskPane.  The
+/// arguments required to perform the requested task get passed to the TaskPane
+/// via event arguments.
+/// </para>
+///
+/// </remarks>
 //*****************************************************************************
 
 public partial class Ribbon : OfficeRibbon
@@ -54,7 +77,7 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         this.ClusterAlgorithm = oGeneralUserSettings.ClusterAlgorithm;
-        this.ReadClusters = oGeneralUserSettings.ReadClusters;
+        this.ReadGroups = oGeneralUserSettings.ReadGroups;
         this.ReadVertexLabels = oGeneralUserSettings.ReadVertexLabels;
         this.ReadEdgeLabels = oGeneralUserSettings.ReadEdgeLabels;
         this.ShowGraphLegend = oGeneralUserSettings.ShowGraphLegend;
@@ -67,31 +90,31 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Property: ReadClusters
+    //  Property: ReadGroups
     //
     /// <summary>
-    /// Gets or sets a flag indicating whether the cluster worksheets should be
+    /// Gets or sets a flag indicating whether the group worksheets should be
     /// read when the workbook is read into the graph.
     /// </summary>
     ///
     /// <value>
-    /// true to read the cluster worksheets.
+    /// true to read the group worksheets.
     /// </value>
     //*************************************************************************
 
     public Boolean
-    ReadClusters
+    ReadGroups
     {
         get
         {
             AssertValid();
 
-            return (chkReadClusters.Checked);
+            return (chkReadGroups.Checked);
         }
 
         set
         {
-            chkReadClusters.Checked = value;
+            chkReadGroups.Checked = value;
 
             AssertValid();
         }
@@ -504,9 +527,10 @@ public partial class Ribbon : OfficeRibbon
         // Make sure the graph is showing, then tell the TaskPane to read the
         // workbook.
 
-        this.ThisWorkbook.ShowGraph();
-
-        FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
+        if ( this.ThisWorkbook.ShowGraph() )
+        {
+            FireRunRibbonCommandEvent(RibbonCommand.ReadWorkbook);
+        }
     }
 
     //*************************************************************************
@@ -726,9 +750,9 @@ public partial class Ribbon : OfficeRibbon
             AssertValid();
 
             // The cluster algorithm is selected with a set of RibbonCheckBox
-            // controls that are children of sbCalculateClusters.
+            // controls that are children of mnuClusterOptions.
 
-            foreach (RibbonControl oControl in sbCalculateClusters.Items)
+            foreach (RibbonControl oControl in mnuClusterOptions.Items)
             {
                 if (oControl is RibbonCheckBox)
                 {
@@ -748,7 +772,7 @@ public partial class Ribbon : OfficeRibbon
 
         set
         {
-            foreach (RibbonControl oControl in sbCalculateClusters.Items)
+            foreach (RibbonControl oControl in mnuClusterOptions.Items)
             {
                 if (oControl is RibbonCheckBox)
                 {
@@ -885,9 +909,10 @@ public partial class Ribbon : OfficeRibbon
 
         rddGraphDirectedness.Enabled = (iTemplateVersion >= 51);
 
-        // The ability to create clusters depends on the template version.
+        // The ability to create groups (which used to be called clusters)
+        // was introduced in version 54.
 
-        btnCalculateClusters.Enabled = (iTemplateVersion >= 54);
+        mnuGroups.Enabled = (iTemplateVersion >= 54);
 
         // Should the layout automatically be set and the workbook read?  (This
         // feature was added in January 2010 for the Microsoft Biology
@@ -951,7 +976,7 @@ public partial class Ribbon : OfficeRibbon
         GeneralUserSettings oGeneralUserSettings = new GeneralUserSettings();
 
         oGeneralUserSettings.ClusterAlgorithm = this.ClusterAlgorithm;
-        oGeneralUserSettings.ReadClusters = this.ReadClusters;
+        oGeneralUserSettings.ReadGroups = this.ReadGroups;
         oGeneralUserSettings.ReadVertexLabels = this.ReadVertexLabels;
         oGeneralUserSettings.ReadEdgeLabels = this.ReadEdgeLabels;
         oGeneralUserSettings.ShowGraphLegend = this.ShowGraphLegend;
@@ -961,10 +986,6 @@ public partial class Ribbon : OfficeRibbon
             this.ClearTablesBeforeImport;
 
         oGeneralUserSettings.Save();
-
-        // Clean up the application's user settings.
-
-        NodeXLApplicationSettingsBase.OnWorkbookShutdown();
     }
 
     //*************************************************************************
@@ -1563,6 +1584,34 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: btnGroupByVertexAttribute_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnGroupByVertexAttribute button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnGroupByVertexAttribute_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.GroupByVertexAttribute();
+    }
+
+    //*************************************************************************
     //  Method: btnCalculateClusters_Click()
     //
     /// <summary>
@@ -1588,6 +1637,34 @@ public partial class Ribbon : OfficeRibbon
         AssertValid();
 
         OnCalculateClustersClick();
+    }
+
+    //*************************************************************************
+    //  Method: btnCalculateConnectedComponents_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnCalculateConnectedComponents button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnCalculateConnectedComponents_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        this.ThisWorkbook.CalculateConnectedComponents();
     }
 
     //*************************************************************************
@@ -2130,6 +2207,132 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
+    //  Method: mnuGroups_ItemsLoading()
+    //
+    /// <summary>
+    /// Handles the ItemsLoading event on the mnuGroups RibbonMenu.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    mnuGroups_ItemsLoading
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        GroupCommands [] aeGroupCommands = {
+            GroupCommands.CollapseSelectedGroups,
+            GroupCommands.ExpandSelectedGroups,
+            GroupCommands.CollapseAllGroups,
+            GroupCommands.ExpandAllGroups,
+            GroupCommands.SelectGroupsWithSelectedVertices,
+            GroupCommands.SelectAllGroups,
+            GroupCommands.AddSelectedVerticesToGroup,
+            GroupCommands.RemoveSelectedVerticesFromGroups,
+            GroupCommands.RemoveSelectedGroups,
+            GroupCommands.RemoveAllGroups,
+            };
+
+        RibbonButton [] aoCorrespondingRibbonButtons = {
+            btnCollapseSelectedGroups,
+            btnExpandSelectedGroups,
+            btnCollapseAllGroups,
+            btnExpandAllGroups,
+            btnSelectGroupsWithSelectedVertices,
+            btnSelectAllGroups,
+            btnAddSelectedVerticesToGroup,
+            btnRemoveSelectedVerticesFromGroups,
+            btnRemoveSelectedGroups,
+            btnRemoveAllGroups,
+            };
+
+        Debug.Assert(aeGroupCommands.Length ==
+            aoCorrespondingRibbonButtons.Length);
+
+        // Various worksheets must be activated to read their selection.  Save
+        // the active worksheet state.
+
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook =
+            this.ThisWorkbook.InnerObject;
+
+        ExcelActiveWorksheetRestorer oExcelActiveWorksheetRestorer =
+            new ExcelActiveWorksheetRestorer(oWorkbook);
+
+        ExcelActiveWorksheetState oExcelActiveWorksheetState =
+            oExcelActiveWorksheetRestorer.GetActiveWorksheetState();
+
+        GroupCommands eGroupCommandsToEnable;
+
+        try
+        {
+            eGroupCommandsToEnable =
+                GroupManager.GetGroupCommandsToEnable(oWorkbook);
+        }
+        finally
+        {
+            oExcelActiveWorksheetRestorer.Restore(oExcelActiveWorksheetState);
+        }
+
+        for (Int32 i = 0; i < aeGroupCommands.Length; i++)
+        {
+            aoCorrespondingRibbonButtons[i].Enabled =
+                ( (eGroupCommandsToEnable & aeGroupCommands[i] ) != 0);
+        }
+
+        // This is required to force the ItemsLoading event to fire the next
+        // time the mnuGroups menu is opened.
+
+        this.RibbonUI.InvalidateControl(this.mnuGroups.Name);
+    }
+
+    //*************************************************************************
+    //  Method: GroupCommandButton_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the buttons corresponding to the
+    /// GroupCommands enumeration values.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    GroupCommandButton_Click
+    (
+        object sender,
+        RibbonControlEventArgs e
+    )
+    {
+        AssertValid();
+
+        // The buttons corresponding to the GroupCommands enumeration values
+        // have the enumeration value stored in their Tag.
+
+        Debug.Assert(sender is RibbonButton);
+        Debug.Assert( ( (RibbonButton)sender ).Tag is GroupCommands );
+
+        this.ThisWorkbook.RunGroupCommand(
+            (GroupCommands)( (RibbonButton)sender ).Tag );
+    }
+
+    //*************************************************************************
     //  Method: mnuShowColumnGroups_ItemsLoading()
     //
     /// <summary>
@@ -2157,9 +2360,10 @@ public partial class Ribbon : OfficeRibbon
         PerWorkbookSettings oPerWorkbookSettings = GetPerWorkbookSettings();
 
         // Note that the chkShowVisualAttributeColumnGroups RibbonCheckBox
-        // controls the visibility of two column groups:
-        // ColumnGroup.EdgeVisualAttributes and
-        // ColumnGroup.VertexVisualAttributes.
+        // controls the visibility of three column groups:
+        // ColumnGroup.EdgeVisualAttributes,
+        // ColumnGroup.VertexVisualAttributes, and
+        // ColumnGroup.GroupVisualAttributes.
 
         chkShowVisualAttributeColumnGroups.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
@@ -2177,13 +2381,17 @@ public partial class Ribbon : OfficeRibbon
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.VertexLayout);
 
-        chkShowVertexGraphMetricsColumnGroup.Checked =
+        // Note that the chkShowGraphMetricColumnGroups RibbonCheckBox
+        // controls the visibility of two column groups:
+        // ColumnGroup.VertexGraphMetrics and ColumnGroup.GroupGraphMetrics.
+
+        chkShowGraphMetricColumnGroups.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
                 ColumnGroup.VertexGraphMetrics);
 
         // Note that the chkShowOtherColumns RibbonCheckBox controls the
-        // visibility of two column groups: ColumnGroup.EdgeOtherColumns and
-        // ColumnGroup.VertexOtherColumns.
+        // visibility of three column groups: ColumnGroup.EdgeOtherColumns,
+        // ColumnGroup.VertexOtherColumns, and ColumnGroup.GroupOtherColumns.
 
         chkShowOtherColumns.Checked =
             oPerWorkbookSettings.GetColumnGroupVisibility(
@@ -2196,7 +2404,7 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: chkShowVisualASttributesColumnGroup_Click()
+    //  Method: chkShowVisualAttributesColumnGroup_Click()
     //
     /// <summary>
     /// Handles the Click event on the chkShowVisualASttributesColumnGroup
@@ -2228,6 +2436,9 @@ public partial class Ribbon : OfficeRibbon
             bShow, false);
 
         oThisWorkbook.ShowColumnGroup(ColumnGroup.VertexVisualAttributes,
+            bShow, false);
+
+        oThisWorkbook.ShowColumnGroup(ColumnGroup.GroupVisualAttributes,
             bShow, false);
     }
 
@@ -2294,10 +2505,10 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: chkShowVertexGraphMetricsColumnGroup_Click()
+    //  Method: chkShowGraphMetricColumnGroups_Click()
     //
     /// <summary>
-    /// Handles the Click event on the chkShowVertexGraphMetricsColumnGroup
+    /// Handles the Click event on the chkShowGraphMetricColumnGroups
     /// RibbonCheckBox.
     /// </summary>
     ///
@@ -2311,7 +2522,7 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     private void
-    chkShowVertexGraphMetricsColumnGroup_Click
+    chkShowGraphMetricColumnGroups_Click
     (
         object sender,
         RibbonControlEventArgs e
@@ -2319,8 +2530,14 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
+        Boolean bShow = this.chkShowGraphMetricColumnGroups.Checked;
+        ThisWorkbook oThisWorkbook = this.ThisWorkbook;
+
         this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexGraphMetrics,
-            this.chkShowVertexGraphMetricsColumnGroup.Checked, true);
+            bShow, false);
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.GroupGraphMetrics,
+            bShow, false);
     }
 
     //*************************************************************************
@@ -2354,6 +2571,9 @@ public partial class Ribbon : OfficeRibbon
             bShow, false);
 
         this.ThisWorkbook.ShowColumnGroup(ColumnGroup.VertexOtherColumns,
+            bShow, false);
+
+        this.ThisWorkbook.ShowColumnGroup(ColumnGroup.GroupOtherColumns,
             bShow, false);
     }
 
@@ -2486,7 +2706,7 @@ public partial class Ribbon : OfficeRibbon
 
         Boolean bShow = (Boolean)oButton.Tag;
 
-        chkReadClusters.Checked = chkReadVertexLabels.Checked =
+        chkReadGroups.Checked = chkReadVertexLabels.Checked =
             chkReadEdgeLabels.Checked = chkShowGraphLegend.Checked =
             chkShowGraphAxes.Checked = bShow;
 

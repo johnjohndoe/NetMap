@@ -202,30 +202,19 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(maximumPeoplePerRequest > 0);
         AssertValid();
 
-        XmlDocument oXmlDocument;
-
-        Boolean bCancelled = !TryGetSearchNetworkInternal(searchTerm,
-            whatToInclude, maximumPeoplePerRequest, null, null,
-            out oXmlDocument);
-
-        // Cancelling can occur only in the asynchronous case.
-
-        Debug.Assert(!bCancelled);
-
-        return (oXmlDocument);
+        return ( GetSearchNetworkInternal(searchTerm, whatToInclude,
+            maximumPeoplePerRequest) );
     }
 
     //*************************************************************************
-    //  Method: TryGetSearchNetworkInternal()
+    //  Method: GetSearchNetworkInternal()
     //
     /// <overloads>
-    /// Attempts to get the network of people who have tweeted a specified
-    /// search term.
+    /// Gets the network of people who have tweeted a specified search term.
     /// </overloads>
     ///
     /// <summary>
-    /// Attempts to get the network of people who have tweeted a specified
-    /// search term.
+    /// Gets the network of people who have tweeted a specified search term.
     /// </summary>
     ///
     /// <param name="sSearchTerm">
@@ -241,43 +230,22 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// for no limit.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
     /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
+    /// An XmlDocument containing the network as GraphML.
     /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetSearchNetworkInternal
+    protected XmlDocument
+    GetSearchNetworkInternal
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumPeoplePerRequest,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
-        out XmlDocument oXmlDocument
+        Int32 iMaximumPeoplePerRequest
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumPeoplePerRequest > 0);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
-
-        oXmlDocument = null;
 
         BeforeGetNetwork();
 
@@ -291,30 +259,27 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         try
         {
-            if ( !TryGetSearchNetworkInternal(sSearchTerm, eWhatToInclude,
+            GetSearchNetworkInternal(sSearchTerm, eWhatToInclude,
                 iMaximumPeoplePerRequest, oRequestStatistics,
-                oBackgroundWorker, oDoWorkEventArgs, oGraphMLXmlDocument) )
-            {
-                // The user cancelled.
-
-                return (false);
-            }
+                oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
             OnTerminatingException(oException);
         }
 
-        return ( OnNetworkObtainedWithoutTerminatingException(
-            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+        OnNetworkObtainedWithoutTerminatingException(oGraphMLXmlDocument,
+            oRequestStatistics);
+
+        return (oGraphMLXmlDocument);
     }
 
     //*************************************************************************
-    //  Method: TryGetSearchNetworkInternal()
+    //  Method: GetSearchNetworkInternal()
     //
     /// <summary>
-    /// Attempts to get the network of people who have tweeted a specified
-    /// search term, given a GraphMLXmlDocument.
+    /// Gets the network of people who have tweeted a specified search term,
+    /// given a GraphMLXmlDocument.
     /// </summary>
     ///
     /// <param name="sSearchTerm">
@@ -335,41 +300,24 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument to populate with the requested network.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetSearchNetworkInternal
+    protected void
+    GetSearchNetworkInternal
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumPeoplePerRequest,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumPeoplePerRequest > 0);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -391,13 +339,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         // First, add a vertex for each person who has tweeted the search term.
 
-        if ( !TryAppendVertexXmlNodes(sSearchTerm, eWhatToInclude,
+        AppendVertexXmlNodes(sSearchTerm, eWhatToInclude,
             iMaximumPeoplePerRequest, oGraphMLXmlDocument,
-            oScreenNameDictionary, oRequestStatistics, oBackgroundWorker,
-            oDoWorkEventArgs) )
-        {
-            return (false);
-        }
+            oScreenNameDictionary, oRequestStatistics);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges) )
@@ -406,13 +350,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // has also tweeted the search term, add an edge between the author
             // and the followed.
 
-            if ( !TryAppendFollowedEdgeXmlNodes(eWhatToInclude,
+            AppendFollowedEdgeXmlNodes(eWhatToInclude,
                 iMaximumPeoplePerRequest, oGraphMLXmlDocument,
-                oScreenNameDictionary, oRequestStatistics, oBackgroundWorker,
-                oDoWorkEventArgs) )
-            {
-                return (false);
-            }
+                oScreenNameDictionary, oRequestStatistics);
         }
 
         Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
@@ -420,7 +360,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AppendMissingGraphMLAttributeValues(oGraphMLXmlDocument,
             oScreenNameDictionary, bIncludeStatistics, false,
-            oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs);
+            oRequestStatistics);
 
         AppendRepliesToAndMentionsXmlNodes(oGraphMLXmlDocument,
             oScreenNameDictionary,
@@ -431,16 +371,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.MentionsEdges)
             );
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryAppendVertexXmlNodes()
+    //  Method: AppendVertexXmlNodes()
     //
     /// <summary>
-    /// Attempts to append a vertex XML node for each person who has tweeted a
-    /// specified search term.
+    /// Appends a vertex XML node for each person who has tweeted a specified
+    /// search term.
     /// </summary>
     ///
     /// <param name="sSearchTerm">
@@ -469,33 +407,17 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the vertices were added, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryAppendVertexXmlNodes
+    protected void
+    AppendVertexXmlNodes
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumPeoplePerRequest,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
@@ -503,7 +425,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         // Convert spaces in the search term to a plus sign.
@@ -519,7 +440,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             UrlUtil.EncodeUrlParameter(sSearchTerm).Replace("%20", "+")
             );
 
-        ReportProgress("Getting a list of tweets");
+        ReportProgress("Getting a list of tweets.");
 
         Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.Statistics);
@@ -536,11 +457,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             sUrl, "a:feed/a:entry/a:author/a:name", "a", AtomNamespaceUri,
             15, Int32.MaxValue, true, false, oRequestStatistics) )
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             if (oScreenNameDictionary.Count == iMaximumPeoplePerRequest)
             {
                 break;
@@ -624,16 +540,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 }
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryAppendFollowedEdgeXmlNodes()
+    //  Method: AppendFollowedEdgeXmlNodes()
     //
     /// <summary>
-    /// Attempts to append an edge XML node for each pair of people who have
-    /// tweeted a specified search term and one follows the other.
+    /// Appends an edge XML node for each pair of people who have tweeted a
+    /// specified search term and one follows the other.
     /// </summary>
     ///
     /// <param name="eWhatToInclude">
@@ -658,39 +572,22 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the edges were added, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryAppendFollowedEdgeXmlNodes
+    protected void
+    AppendFollowedEdgeXmlNodes
     (
         WhatToInclude eWhatToInclude,
         Int32 iMaximumPeoplePerRequest,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterVertex> oScreenNameDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(iMaximumPeoplePerRequest > 0);
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oScreenNameDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
@@ -709,11 +606,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 "users_list/users/user", null, null, Int32.MaxValue,
                 iMaximumPeoplePerRequest, false, true, oRequestStatistics) )
             {
-                if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
-
                 String sOtherScreenName;
 
                 if ( !TryGetScreenName(oOtherUserXmlNode,
@@ -750,8 +642,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 }
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -818,15 +708,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs =
             (GetNetworkAsyncArgs)e.Argument;
 
-        XmlDocument oGraphMLDocument;
-        
-        if ( TryGetSearchNetworkInternal(
-            oGetNetworkAsyncArgs.SearchTerm,
-            oGetNetworkAsyncArgs.WhatToInclude,
-            oGetNetworkAsyncArgs.MaximumPeoplePerRequest,
-            oBackgroundWorker, e, out oGraphMLDocument) )
+        try
         {
-            e.Result = oGraphMLDocument;
+            e.Result = GetSearchNetworkInternal(
+                oGetNetworkAsyncArgs.SearchTerm,
+                oGetNetworkAsyncArgs.WhatToInclude,
+                oGetNetworkAsyncArgs.MaximumPeoplePerRequest);
+        }
+        catch (CancellationPendingException)
+        {
+            e.Cancel = true;
         }
     }
 

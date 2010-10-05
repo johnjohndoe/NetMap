@@ -69,7 +69,7 @@ public class GraphMetricUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Method: CalculateGraphMetrics
+    //  Method: ShouldCalculateGraphMetrics
     //
     /// <summary>
     /// Gets a flag specifying whether any one of a set of specified graph
@@ -87,7 +87,7 @@ public class GraphMetricUserSettings : NodeXLApplicationSettingsBase
     //*************************************************************************
 
     public Boolean
-    CalculateGraphMetrics
+    ShouldCalculateGraphMetrics
     (
         GraphMetrics graphMetrics
     )

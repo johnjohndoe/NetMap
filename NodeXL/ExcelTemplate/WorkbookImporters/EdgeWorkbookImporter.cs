@@ -142,7 +142,7 @@ public class EdgeWorkbookImporter : WorkbookImporterBase
 
         if (clearDestinationTablesFirst)
         {
-            NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+            NodeXLWorkbookUtil.ClearAllNodeXLTables(destinationNodeXLWorkbook);
         }
         else
         {

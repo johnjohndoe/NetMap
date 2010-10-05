@@ -272,7 +272,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.msiContextReadWorkbook.Name = "msiContextReadWorkbook";
             this.msiContextReadWorkbook.Size = new System.Drawing.Size(324, 22);
             this.msiContextReadWorkbook.Text = "Show &Graph";
-            this.msiContextReadWorkbook.ToolTipText = "Read the workbook contents into the graph pane";
+            this.msiContextReadWorkbook.ToolTipText = "Show or refresh the graph in the graph pane";
             this.msiContextReadWorkbook.Click += new System.EventHandler(this.ReadWorkbook_Click);
             // 
             // tssContextEditVertexAttributes
@@ -426,7 +426,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tsbReadWorkbook.Name = "tsbReadWorkbook";
             this.tsbReadWorkbook.Size = new System.Drawing.Size(91, 22);
             this.tsbReadWorkbook.Text = "Show Graph";
-            this.tsbReadWorkbook.ToolTipText = "Read the workbook contents into the graph pane";
+            this.tsbReadWorkbook.ToolTipText = "Show or refresh the graph in the graph pane";
             this.tsbReadWorkbook.Click += new System.EventHandler(this.ReadWorkbook_Click);
             // 
             // toolStripSeparator1
@@ -564,8 +564,7 @@ namespace Microsoft.NodeXL.ExcelTemplate
             this.tsbShowDynamicFilters.Name = "tsbShowDynamicFilters";
             this.tsbShowDynamicFilters.Size = new System.Drawing.Size(108, 22);
             this.tsbShowDynamicFilters.Text = "Dynamic Filters";
-            this.tsbShowDynamicFilters.ToolTipText = "Filter the graph\'s vertices and edges in real time.  The Show Graph button must b" +
-                "e clicked before dynamic filters can be used.";
+            this.tsbShowDynamicFilters.ToolTipText = "Filter the graph\'s vertices and edges in real time.\r\n\r\nThe graph must be shown using the Show Graph/Refresh Graph button before dynamic filters can be used.";
             this.tsbShowDynamicFilters.Click += new System.EventHandler(this.ShowDynamicFilters_Click);
             // 
             // tsbOptions

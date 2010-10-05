@@ -244,13 +244,10 @@ public partial class ConvertNodeXLWorkbookDialog : ExcelTemplateForm
         Debug.Assert( !String.IsNullOrEmpty(sOtherWorkbookFile) );
         Debug.Assert( !String.IsNullOrEmpty(sConvertedWorkbookFile) );
 
-        NodeXLWorkbookConverter oNodeXLWorkbookConverter =
-            new NodeXLWorkbookConverter();
-
         try
         {
-            oNodeXLWorkbookConverter.ConvertNodeXLWorkbook(sOtherWorkbookFile,
-                sConvertedWorkbookFile, m_oApplication);
+            NodeXLWorkbookConverter.ConvertNodeXLWorkbook(sOtherWorkbookFile,
+                sConvertedWorkbookFile);
         }
         catch (NodeXLWorkbookConversionException
             oNodeXLWorkbookConversionException)

@@ -183,9 +183,12 @@ public class GraphBinner : Object
         // Split the vertices into strongly connected components, sorted in
         // increasing order of vertex count.
 
-        List< LinkedList<IVertex> > oComponents =
-            ConnectedComponentCalculator.GetStronglyConnectedComponents(
-                verticesToLayOut, graph);
+        ConnectedComponentCalculator oConnectedComponentCalculator =
+            new ConnectedComponentCalculator();
+
+        IList< LinkedList<IVertex> > oComponents =
+            oConnectedComponentCalculator.CalculateStronglyConnectedComponents(
+                verticesToLayOut, graph, true);
 
         Int32 iComponents = oComponents.Count;
 
@@ -324,7 +327,7 @@ public class GraphBinner : Object
     protected ICollection<IVertex>
     GetRemainingVertices
     (
-        List< LinkedList<IVertex> > oComponents,
+        IList< LinkedList<IVertex> > oComponents,
         Int32 iFirstRemainingComponent
     )
     {

@@ -61,8 +61,8 @@ public class PageRankCalculator2 : OneDoubleGraphMetricCalculatorBase
     /// </param>
     ///
     /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
+    /// true if the graph metrics were calculated or don't need to be
+    /// calculated, false if the user wants to cancel.
     /// </returns>
     ///
     /// <remarks>
@@ -101,7 +101,7 @@ public class PageRankCalculator2 : OneDoubleGraphMetricCalculatorBase
             new Algorithms.PageRankCalculator(),
 
             calculateGraphMetricsContext.GraphMetricUserSettings.
-                CalculateGraphMetrics(GraphMetrics.PageRank),
+                ShouldCalculateGraphMetrics(GraphMetrics.PageRank),
 
             VertexTableColumnNames.PageRank,
             VertexTableColumnWidths.PageRank,

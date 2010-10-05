@@ -25,20 +25,20 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     /// cref="RequestVertexCommandEnableEventArgs" /> class.
     /// </summary>
     ///
-    /// <param name="vertexID">
-    /// ID of the vertex that was right-clicked in the vertex table in the
-    /// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoID" /> if
-    /// a vertex wasn't right-clicked.  This is an ID that is stored in the
-    /// worksheet, NOT an IEdge.ID value.
+    /// <param name="vertexRowID">
+    /// Row ID of the vertex that was right-clicked in the vertex table in the
+    /// vertex worksheet, or <see cref="WorksheetContextMenuManager.NoRowID" />
+    /// if a vertex wasn't right-clicked.  This is a row ID that is stored in
+    /// the worksheet, NOT an IEdge.ID value.
     /// </param>
     //*************************************************************************
 
     public RequestVertexCommandEnableEventArgs
     (
-        Int32 vertexID
+        Int32 vertexRowID
     )
     {
-        m_iVertexID = vertexID;
+        m_iVertexRowID = vertexRowID;
         m_bEnableSelectAllVertices = false;
         m_bEnableDeselectAllVertices = false;
         m_bEnableSelectAdjacentVertices = false;
@@ -52,29 +52,29 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     }
 
     //*************************************************************************
-    //  Property: VertexID
+    //  Property: VertexRowID
     //
     /// <summary>
-    /// Gets the ID of the vertex that was right-clicked in the vertex table in
-    /// the vertex worksheet.
+    /// Gets the row ID of the vertex that was right-clicked in the vertex
+    /// table in the vertex worksheet.
     /// </summary>
     ///
     /// <value>
-    /// The ID of the right-clicked vertex, or <see
-    /// cref="WorksheetContextMenuManager.NoID" /> if a vertex wasn't right-
-    /// clicked.  This is an ID that is stored in the worksheet, NOT an
-    /// IEdge.ID value.
+    /// The row ID of the right-clicked vertex, or <see
+    /// cref="WorksheetContextMenuManager.NoRowID" /> if a vertex wasn't right-
+    /// clicked.  This is a row ID that is stored in the worksheet, NOT an
+    /// IVertex.ID value.
     /// </value>
     //*************************************************************************
 
     public Int32
-    VertexID
+    VertexRowID
     {
         get
         {
             AssertValid();
 
-            return (m_iVertexID);
+            return (m_iVertexRowID);
         }
     }
 
@@ -340,8 +340,8 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     public void
     AssertValid()
     {
-        Debug.Assert(m_iVertexID == WorksheetContextMenuManager.NoID ||
-            m_iVertexID > 0);
+        Debug.Assert(m_iVertexRowID == WorksheetContextMenuManager.NoRowID ||
+            m_iVertexRowID > 0);
 
         // m_bEnableSelectAllVertices
         // m_bEnableDeselectAllVertices
@@ -358,11 +358,11 @@ public class RequestVertexCommandEnableEventArgs : EventArgs
     //  Protected fields
     //*************************************************************************
 
-    /// ID of the vertex that was right-clicked in the vertex table in the
-    /// vertex worksheet, or WorksheetContextMenuManager.NoID if a vertex
+    /// Row ID of the vertex that was right-clicked in the vertex table in the
+    /// vertex worksheet, or WorksheetContextMenuManager.NoRowID if a vertex
     /// wasn't right-clicked.
 
-    protected Int32 m_iVertexID;
+    protected Int32 m_iVertexRowID;
 
     /// true to enable the Select All Vertices command.
 

@@ -89,9 +89,9 @@ public class SubgraphImageCreator : Object
     /// </param>
     ///
     /// <param name="selectedVertices">
-    /// Array of the vertices in <paramref name="graph" /> that were selected
-    /// by the user in the workbook from which the graph was created.  Can be
-    /// empty but not null.
+    /// Collection of the vertices in <paramref name="graph" /> that were
+    /// selected by the user in the workbook from which the graph was created.
+    /// Can be empty but not null.
     /// </param>
     ///
     /// <param name="levels">
@@ -181,7 +181,7 @@ public class SubgraphImageCreator : Object
     CreateSubgraphImagesAsync
     (
         IGraph graph,
-        IVertex [] selectedVertices,
+        ICollection<IVertex> selectedVertices,
         Decimal levels,
         Boolean saveToFolder,
         String folder,
@@ -1321,7 +1321,7 @@ public class SubgraphImageCreator : Object
         ///
         public IGraph Graph;
         ///
-        public IVertex [] SelectedVertices;
+        public ICollection<IVertex> SelectedVertices;
         ///
         public Decimal Levels;
         ///

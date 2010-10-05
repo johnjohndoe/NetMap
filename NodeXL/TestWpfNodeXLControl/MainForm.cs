@@ -595,7 +595,7 @@ public partial class MainForm : Form
     )
     {
         AddToStatus("VerticesMoved: " +
-            verticesMovedEventArgs.MovedVertices.Length);
+            verticesMovedEventArgs.MovedVertices.Count);
     }
 
     private void

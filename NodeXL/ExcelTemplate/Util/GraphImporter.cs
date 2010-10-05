@@ -108,7 +108,7 @@ public class GraphImporter : Object
 
         if (clearTablesFirst)
         {
-            NodeXLWorkbookUtil.ClearTables(destinationNodeXLWorkbook);
+            NodeXLWorkbookUtil.ClearAllNodeXLTables(destinationNodeXLWorkbook);
         }
 
         // Get the required table that contains edge data.  GetEdgeTable()

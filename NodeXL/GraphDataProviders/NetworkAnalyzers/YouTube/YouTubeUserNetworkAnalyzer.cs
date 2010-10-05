@@ -163,14 +163,14 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkInternal()
+    //  Method: GetUserNetworkInternal()
     //
     /// <overloads>
-    /// Attempts to get a network of YouTube users.
+    /// Gets a network of YouTube users.
     /// </overloads>
     ///
     /// <summary>
-    /// Attempts to get a network of YouTube users.
+    /// Gets a network of YouTube users.
     /// </summary>
     ///
     /// <param name="sUserNameToAnalyze">
@@ -191,36 +191,18 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// for no limit.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// Where an XmlDocument containing the network as GraphML gets stored if
-    /// true is returned.
-    /// </param>
-    ///
     /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
+    /// An XmlDocument containing the network as GraphML.
     /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkInternal
+    protected XmlDocument
+    GetUserNetworkInternal
     (
         String sUserNameToAnalyze,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
-        Int32 iMaximumPeoplePerRequest,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
-        out XmlDocument oXmlDocument
+        Int32 iMaximumPeoplePerRequest
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUserNameToAnalyze) );
@@ -230,11 +212,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             eNetworkLevel == NetworkLevel.Two);
 
         Debug.Assert(iMaximumPeoplePerRequest > 0);
-
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
-
-        oXmlDocument = null;
 
         GraphMLXmlDocument oGraphMLXmlDocument =
             CreateGraphMLXmlDocument( WhatToIncludeFlagIsSet(
@@ -244,30 +222,26 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
         try
         {
-            if ( !TryGetUserNetworkInternal(sUserNameToAnalyze,
-                eWhatToInclude, eNetworkLevel, iMaximumPeoplePerRequest,
-                oRequestStatistics, oBackgroundWorker, oDoWorkEventArgs,
-                oGraphMLXmlDocument) )
-            {
-                // The user cancelled.
-
-                return (false);
-            }
+            GetUserNetworkInternal(sUserNameToAnalyze, eWhatToInclude,
+                eNetworkLevel, iMaximumPeoplePerRequest, oRequestStatistics,
+                oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
             OnTerminatingException(oException);
         }
 
-        return ( OnNetworkObtainedWithoutTerminatingException(
-            oGraphMLXmlDocument, oRequestStatistics, out oXmlDocument) );
+        OnNetworkObtainedWithoutTerminatingException(oGraphMLXmlDocument,
+            oRequestStatistics);
+
+        return (oGraphMLXmlDocument);
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkInternal()
+    //  Method: GetUserNetworkInternal()
     //
     /// <summary>
-    /// Attempts to get a network of YouTube users, given a GraphMLXmlDocument.
+    /// Gets a network of YouTube users, given a GraphMLXmlDocument.
     /// </summary>
     ///
     /// <param name="sUserNameToAnalyze">
@@ -293,35 +267,19 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// requests made while getting the network.
     /// </param>
     ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument to populate with the requested network.
     /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkInternal
+    protected void
+    GetUserNetworkInternal
     (
         String sUserNameToAnalyze,
         WhatToInclude eWhatToInclude,
         NetworkLevel eNetworkLevel,
         Int32 iMaximumPeoplePerRequest,
         RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
@@ -333,7 +291,6 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
         Debug.Assert(iMaximumPeoplePerRequest > 0);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -359,36 +316,26 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         {
             if ( abIncludes[i] )
             {
-                if ( !TryGetUserNetworkRecursive(sUserNameToAnalyze,
-                    eWhatToInclude, (i == 0), eNetworkLevel,
-                    iMaximumPeoplePerRequest, 1, oGraphMLXmlDocument,
-                    oUserNameDictionary, oRequestStatistics, oBackgroundWorker,
-                    oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                GetUserNetworkRecursive(sUserNameToAnalyze, eWhatToInclude,
+                    (i == 0), eNetworkLevel, iMaximumPeoplePerRequest, 1,
+                    oGraphMLXmlDocument, oUserNameDictionary,
+                    oRequestStatistics);
             }
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.AllStatistics) )
         {
-            if ( !AppendAllStatisticGraphMLAttributeValues(oGraphMLXmlDocument,
-                oUserNameDictionary, oRequestStatistics, oBackgroundWorker,
-                oDoWorkEventArgs) )
-            {
-                return (false);
-            }
+            AppendAllStatisticGraphMLAttributeValues(oGraphMLXmlDocument,
+                oUserNameDictionary, oRequestStatistics);
         }
-
-        return (true);
     }
 
     //*************************************************************************
-    //  Method: TryGetUserNetworkRecursive()
+    //  Method: GetUserNetworkRecursive()
     //
     /// <summary>
-    /// Attempts to recursively get a network of YouTube users.
+    /// Recursively gets a network of YouTube users.
     /// </summary>
     ///
     /// <param name="sUserName">
@@ -432,24 +379,10 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the network was obtained, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
-    TryGetUserNetworkRecursive
+    protected void
+    GetUserNetworkRecursive
     (
         String sUserName,
         WhatToInclude eWhatToInclude,
@@ -459,9 +392,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         Int32 iRecursionLevel,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, XmlNode> oUserNameDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUserName) );
@@ -475,7 +406,6 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oUserNameDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         /*
@@ -531,11 +461,6 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             "a:feed/a:entry", iMaximumPeoplePerRequest, bSkipMostPage1Errors,
             oRequestStatistics) )
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             XmlNamespaceManager oXmlNamespaceManager =
                 CreateXmlNamespaceManager(oEntryXmlNode.OwnerDocument);
 
@@ -618,18 +543,12 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         {
             foreach (String sUserNameToRecurse in oUserNamesToRecurse)
             {
-                if ( !TryGetUserNetworkRecursive(sUserNameToRecurse,
+                GetUserNetworkRecursive(sUserNameToRecurse,
                     eWhatToInclude, bIncludeFriendsThisCall, eNetworkLevel,
                     iMaximumPeoplePerRequest, 2, oGraphMLXmlDocument,
-                    oUserNameDictionary, oRequestStatistics, oBackgroundWorker,
-                    oDoWorkEventArgs) )
-                {
-                    return (false);
-                }
+                    oUserNameDictionary, oRequestStatistics);
             }
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -791,7 +710,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
         ReportProgress( String.Format(
 
-            "Getting {0} \"{1}\""
+            "Getting {0} \"{1}\"."
             ,
             bFriends ? "friends of" : "people subscribed to by",
             sUserName
@@ -887,51 +806,29 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// A BackgroundWorker object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <param name="oDoWorkEventArgs">
-    /// A DoWorkEventArgs object if this method is being called
-    /// asynchronously, or null if it is being called synchronously.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the statistics were appended, or false if the user cancelled.
-    /// </returns>
     //*************************************************************************
 
-    protected Boolean
+    protected void
     AppendAllStatisticGraphMLAttributeValues
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, XmlNode> oUserNameDictionary,
-        RequestStatistics oRequestStatistics,
-        BackgroundWorker oBackgroundWorker,
-        DoWorkEventArgs oDoWorkEventArgs
+        RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oUserNameDictionary != null);
         Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oBackgroundWorker == null || oDoWorkEventArgs != null);
         AssertValid();
 
         foreach (KeyValuePair<String, XmlNode> oKeyValuePair in
             oUserNameDictionary)
         {
-            if ( CancelIfRequested(oBackgroundWorker, oDoWorkEventArgs) )
-            {
-                return (false);
-            }
-
             String sUserName = oKeyValuePair.Key;
 
             ReportProgress( String.Format(
 
-                "Getting statistics for \"{0}\""
+                "Getting statistics for \"{0}\"."
                 ,
                 sUserName
                 ) );
@@ -939,8 +836,6 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             AppendAllStatisticGraphMLAttributeValues(sUserName,
                 oKeyValuePair.Value, oGraphMLXmlDocument, oRequestStatistics);
         }
-
-        return (true);
     }
 
     //*************************************************************************
@@ -1153,16 +1048,17 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs =
             (GetNetworkAsyncArgs)e.Argument;
 
-        XmlDocument oGraphMLDocument;
-        
-        if ( TryGetUserNetworkInternal(
-            oGetNetworkAsyncArgs.UserNameToAnalyze,
-            oGetNetworkAsyncArgs.WhatToInclude,
-            oGetNetworkAsyncArgs.NetworkLevel,
-            oGetNetworkAsyncArgs.MaximumPeoplePerRequest,
-            oBackgroundWorker, e, out oGraphMLDocument) )
+        try
         {
-            e.Result = oGraphMLDocument;
+            e.Result = GetUserNetworkInternal(
+                oGetNetworkAsyncArgs.UserNameToAnalyze,
+                oGetNetworkAsyncArgs.WhatToInclude,
+                oGetNetworkAsyncArgs.NetworkLevel,
+                oGetNetworkAsyncArgs.MaximumPeoplePerRequest);
+        }
+        catch (CancellationPendingException)
+        {
+            e.Cancel = true;
         }
     }
 

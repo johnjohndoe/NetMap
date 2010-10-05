@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using System.IO;
+using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.NodeXL.GraphDataProviders;
 using Microsoft.NodeXL.GraphDataProviders.Twitter;
@@ -282,6 +283,10 @@ class Program
         TwitterSearchNetworkAnalyzer oTwitterSearchNetworkAnalyzer =
             new TwitterSearchNetworkAnalyzer();
 
+        oTwitterSearchNetworkAnalyzer.ProgressChanged +=
+            new ProgressChangedEventHandler(
+                HttpNetworkAnalyzer_ProgressChanged);
+
         Console.WriteLine(
             "Getting the Twitter Search network specified in \"{0}\".  The"
             + " search term is \"{1}\"."
@@ -400,6 +405,10 @@ class Program
 
         TwitterUserNetworkAnalyzer oTwitterUserNetworkAnalyzer =
             new TwitterUserNetworkAnalyzer();
+
+        oTwitterUserNetworkAnalyzer.ProgressChanged +=
+            new ProgressChangedEventHandler(
+                HttpNetworkAnalyzer_ProgressChanged);
 
         Console.WriteLine(
             "Getting the Twitter User network specified in \"{0}\".  The"
@@ -532,10 +541,6 @@ class Program
         Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
         Debug.Assert( !String.IsNullOrEmpty(sNetworkFileFolderPath) );
 
-        Console.WriteLine(
-            "Saving the network to a GraphML file."
-            );
-
         // Sample network file path:
         //
         // C:\NetworkConfiguration_2010-06-01_02-00-00.graphml
@@ -543,6 +548,12 @@ class Program
         String sNetworkFilePath = FileUtil.GetOutputFilePath(oStartTime,
             sNetworkConfigurationFilePath, sNetworkFileFolderPath,
             String.Empty, "graphml");
+
+        Console.WriteLine(
+            "Saving the network to the GraphML file \"{0}\"."
+            ,
+            sNetworkFilePath
+            );
 
         try
         {
@@ -598,10 +609,6 @@ class Program
         Debug.Assert(oXmlDocument != null);
         Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
         Debug.Assert( !String.IsNullOrEmpty(sNetworkFileFolderPath) );
-
-        Console.WriteLine(
-            "Saving the network to a NodeXL workbook."
-            );
 
         try
         {
@@ -683,10 +690,6 @@ class Program
     /// <returns>
     /// The partial network, as GraphML.
     /// </returns>
-    ///
-    /// <remarks>
-    /// This method exits the program.
-    /// </remarks>
     //*************************************************************************
 
     private static XmlDocument
@@ -799,6 +802,34 @@ class Program
         }
 
         Exit(ExitCode.CouldNotGetNetwork, sErrorMessage);
+    }
+
+    //*************************************************************************
+    //  Method: HttpNetworkAnalyzer_ProgressChanged()
+    //
+    /// <summary>
+    /// Handles the ProgressChanged event on the HttpNetworkAnalyzer objects.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    HttpNetworkAnalyzer_ProgressChanged
+    (
+        object sender,
+        ProgressChangedEventArgs e
+    )
+    {
+        Debug.Assert(e.UserState is String);
+
+        Console.WriteLine( (String)e.UserState );
     }
 
     //*************************************************************************

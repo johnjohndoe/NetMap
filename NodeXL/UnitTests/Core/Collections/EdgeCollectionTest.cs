@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.NodeXL.Core;
@@ -220,42 +221,6 @@ public class EdgeCollectionTest : Object
         m_oEdgeCollection.Add(oEdge);
 
         oEdge = new Edge(aoVertices[0], aoVertices[1], false);
-
-        Int32 iSecondEdgeID = oEdge.ID;
-
-        m_oEdgeCollection.Add(oEdge);
-
-        Assert.IsTrue( m_oEdgeCollection.Contains(iFirstEdgeID) );
-        Assert.IsTrue( m_oEdgeCollection.Contains(iSecondEdgeID) );
-    }
-
-    //*************************************************************************
-    //  Method: TestAdd7()
-    //
-    /// <summary>
-    /// Tests the Add(IEdge) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestAdd7()
-    {
-        // Add anit-parallel edge to graph that prohibits parallel edges.
-
-        InitializeGraph(
-            GraphDirectedness.Directed, GraphRestrictions.NoParallelEdges);
-
-        IVertex [] aoVertices = AddVertices(2);
-
-        IEdge oEdge = new Edge(aoVertices[0], aoVertices[1], true);
-
-        Int32 iFirstEdgeID = oEdge.ID;
-
-        m_oEdgeCollection.Add(oEdge);
-
-        oEdge = new Edge(aoVertices[1], aoVertices[0], true);
 
         Int32 iSecondEdgeID = oEdge.ID;
 
@@ -828,151 +793,6 @@ public class EdgeCollectionTest : Object
                 + "EdgeCollection.Add: A directed edge can't be added to an"
                 + " undirected graph.\r\n"
                 + "Parameter name: edge"
-                ,
-                oArgumentException.Message
-                );
-
-            throw oArgumentException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestAddBad13()
-    //
-    /// <summary>
-    /// Tests the Add(IEdge) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentException) ) ]
-
-    public void
-    TestAddBad13()
-    {
-        // Add edge twice.
-
-        IEdge oEdge = null;
-
-        try
-        {
-            IVertex [] aoVertices = AddVertices(2);
-
-            oEdge = new Edge(aoVertices[0], aoVertices[1], false);
-
-            m_oEdgeCollection.Add(oEdge);
-            m_oEdgeCollection.Add(oEdge);
-        }
-        catch (ArgumentException oArgumentException)
-        {
-            Assert.AreEqual( String.Format(
-
-                "Microsoft.NodeXL.Core."
-                + "EdgeCollection.Add: An edge with the ID {0} already exists"
-                + " in the collection.\r\n"
-                + "Parameter name: edge"
-                ,
-                oEdge.ID
-                )
-                ,
-                oArgumentException.Message
-                );
-
-            throw oArgumentException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestAddBad14()
-    //
-    /// <summary>
-    /// Tests the Add(IEdge) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentException) ) ]
-
-    public void
-    TestAddBad14()
-    {
-        // Add self-loop to graph that doesn't allow it.
-
-        try
-        {
-            InitializeGraph(
-                GraphDirectedness.Mixed, GraphRestrictions.NoSelfLoops);
-
-            IVertex [] aoVertices = AddVertices(1);
-
-            IEdge oEdge = new Edge(aoVertices[0], aoVertices[0], false);
-
-            m_oEdgeCollection.Add(oEdge);
-        }
-        catch (ArgumentException oArgumentException)
-        {
-            Assert.AreEqual(
-
-                "Microsoft.NodeXL.Core."
-                + "EdgeCollection.Add: The edge is a self-loop, and the parent"
-                + " graph's Restrictions property includes the NoSelfLoops"
-                + " flag.\r\n"
-                + "Parameter name: edge"
-                ,
-                oArgumentException.Message
-                );
-
-            throw oArgumentException;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TestAddBad15()
-    //
-    /// <summary>
-    /// Tests the Add(IEdge) method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-    [ ExpectedException( typeof(ArgumentException) ) ]
-
-    public void
-    TestAddBad15()
-    {
-        // Add parallel edge to graph that doesn't allow it.
-
-        Int32 iFirstEdgeID = -1;
-
-        try
-        {
-            InitializeGraph(
-                GraphDirectedness.Mixed, GraphRestrictions.NoParallelEdges);
-
-            IVertex [] aoVertices = AddVertices(2);
-
-            IEdge oEdge = new Edge(aoVertices[0], aoVertices[1], false);
-
-            iFirstEdgeID = oEdge.ID;
-
-            m_oEdgeCollection.Add(oEdge);
-
-            oEdge = new Edge(aoVertices[0], aoVertices[1], false);
-
-            m_oEdgeCollection.Add(oEdge);
-        }
-        catch (ArgumentException oArgumentException)
-        {
-            Assert.AreEqual( String.Format(
-
-                "Microsoft.NodeXL.Core."
-                + "EdgeCollection.Add: The edge is parallel to the edge with"
-                + " the ID {0}, and the parent graph's Restrictions property"
-                + " includes the NoParallelEdges flag.\r\n"
-                + "Parameter name: edge"
-                ,
-                iFirstEdgeID
-                )
                 ,
                 oArgumentException.Message
                 );
@@ -1829,8 +1649,6 @@ public class EdgeCollectionTest : Object
         // Add N vertices.
 
         const Int32 Vertices = 1512;
-
-        m_oGraph.PerformExtraValidations = false;
 
         TestContainsAndFind(Vertices);
     }
@@ -2720,8 +2538,6 @@ public class EdgeCollectionTest : Object
     {
         // One connecting edge.
 
-        m_oGraph.PerformExtraValidations = false;
-
         const Int32 Vertices = 10000;
 
         IVertex [] aoVertices;
@@ -3069,6 +2885,316 @@ public class EdgeCollectionTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestRemoveDuplicates()
+    //
+    /// <summary>
+    /// Tests the RemoveDuplicates() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestRemoveDuplicates()
+    {
+        // Directed graph, no duplicates.
+
+        InitializeGraph(GraphDirectedness.Directed);
+
+        AddEdges(10000, GraphDirectedness.Directed, AddOverload.IEdge);
+
+        Int32 iOriginalEdges = m_oEdgeCollection.Count;
+
+        m_oEdgeCollection.RemoveDuplicates();
+
+        Assert.AreEqual(iOriginalEdges, m_oEdgeCollection.Count);
+        Assert.AreEqual(10000, m_oGraph.Vertices.Count);
+    }
+
+    //*************************************************************************
+    //  Method: TestRemoveDuplicates2()
+    //
+    /// <summary>
+    /// Tests the RemoveDuplicates() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestRemoveDuplicates2()
+    {
+        // Directed graph, a few duplicates.
+
+        InitializeGraph(GraphDirectedness.Directed);
+
+        IVertex[] aoVertices = AddVertices(4);
+
+        for (Int32 i = 0; i < aoVertices.Length; i++)
+        {
+            aoVertices[i].Name = i.ToString(CultureInfo.InvariantCulture);
+        }
+
+        m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], true);
+        m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], true);
+        m_oEdgeCollection.Add(aoVertices[2], aoVertices[3], true);
+        m_oEdgeCollection.Add(aoVertices[1], aoVertices[0], true);
+        m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], true);
+
+        m_oEdgeCollection.RemoveDuplicates();
+
+        List<String> oExpectedVertexIDPairs = new List<String>( new String[] {
+            "0-1",
+            "2-3",
+            "1-0",
+            } );
+
+        Assert.AreEqual(oExpectedVertexIDPairs.Count, m_oEdgeCollection.Count);
+
+        foreach (IEdge oEdge in m_oEdgeCollection)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
+
+            Int32 iIndex = oExpectedVertexIDPairs.IndexOf(
+                sVertex1Name + "-" + sVertex2Name
+                );
+
+            Assert.IsTrue(iIndex >= 0);
+
+            oExpectedVertexIDPairs.RemoveAt(iIndex);
+        }
+
+        Assert.AreEqual(0, oExpectedVertexIDPairs.Count);
+    }
+
+    //*************************************************************************
+    //  Method: TestRemoveDuplicates3()
+    //
+    /// <summary>
+    /// Tests the RemoveDuplicates() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestRemoveDuplicates3()
+    {
+        // Directed graph, many duplicates.
+
+        InitializeGraph(GraphDirectedness.Directed);
+
+        IVertex[] aoVertices = AddVertices(10000);
+
+        for (Int32 i = 0; i < aoVertices.Length; i++)
+        {
+            aoVertices[i].Name = i.ToString(CultureInfo.InvariantCulture);
+        }
+
+        for (Int32 i = 0; i < 10000; i++)
+        {
+            m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], true);
+            m_oEdgeCollection.Add(aoVertices[2], aoVertices[3], true);
+            m_oEdgeCollection.Add(aoVertices[3], aoVertices[4], true);
+
+            m_oEdgeCollection.Add(aoVertices[1], aoVertices[0], true);
+            m_oEdgeCollection.Add(aoVertices[3], aoVertices[2], true);
+            m_oEdgeCollection.Add(aoVertices[4], aoVertices[3], true);
+        }
+
+        m_oEdgeCollection.Add(aoVertices[5], aoVertices[6], true);
+
+        m_oEdgeCollection.RemoveDuplicates();
+
+        List<String> oExpectedVertexIDPairs = new List<String>( new String[] {
+            "0-1",
+            "2-3",
+            "3-4",
+
+            "1-0",
+            "3-2",
+            "4-3",
+
+            "5-6",
+            } );
+
+        Assert.AreEqual(oExpectedVertexIDPairs.Count, m_oEdgeCollection.Count);
+
+        foreach (IEdge oEdge in m_oEdgeCollection)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
+
+            Int32 iIndex = oExpectedVertexIDPairs.IndexOf(
+                sVertex1Name + "-" + sVertex2Name
+                );
+
+            Assert.IsTrue(iIndex >= 0);
+
+            oExpectedVertexIDPairs.RemoveAt(iIndex);
+        }
+
+        Assert.AreEqual(0, oExpectedVertexIDPairs.Count);
+    }
+
+    //*************************************************************************
+    //  Method: TestRemoveDuplicates4()
+    //
+    /// <summary>
+    /// Tests the RemoveDuplicates() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestRemoveDuplicates4()
+    {
+        // Undirected graph, no duplicates.
+
+        InitializeGraph(GraphDirectedness.Undirected);
+
+        AddEdges(10000, GraphDirectedness.Undirected, AddOverload.IEdge);
+
+        Int32 iOriginalEdges = m_oEdgeCollection.Count;
+
+        m_oEdgeCollection.RemoveDuplicates();
+
+        Assert.AreEqual(iOriginalEdges, m_oEdgeCollection.Count);
+        Assert.AreEqual(10000, m_oGraph.Vertices.Count);
+    }
+
+    //*************************************************************************
+    //  Method: TestRemoveDuplicates5()
+    //
+    /// <summary>
+    /// Tests the RemoveDuplicates() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestRemoveDuplicates5()
+    {
+        // Undirected graph, a few duplicates.
+
+        InitializeGraph(GraphDirectedness.Undirected);
+
+        IVertex[] aoVertices = AddVertices(4);
+
+        for (Int32 i = 0; i < aoVertices.Length; i++)
+        {
+            aoVertices[i].Name = i.ToString(CultureInfo.InvariantCulture);
+        }
+
+        m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], false);
+        m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], false);
+        m_oEdgeCollection.Add(aoVertices[2], aoVertices[3], false);
+        m_oEdgeCollection.Add(aoVertices[1], aoVertices[0], false);
+        m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], false);
+
+        m_oEdgeCollection.RemoveDuplicates();
+
+        List<String> oExpectedVertexIDPairs = new List<String>( new String[] {
+            "0-1",
+            "2-3",
+            } );
+
+        Assert.AreEqual(oExpectedVertexIDPairs.Count, m_oEdgeCollection.Count);
+
+        foreach (IEdge oEdge in m_oEdgeCollection)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
+
+            String sVertexIDPair = (sVertex1Name.CompareTo(sVertex2Name) < 0) ?
+                sVertex1Name + "-" + sVertex2Name
+                :
+                sVertex2Name + "-" + sVertex1Name
+                ;
+
+            Int32 iIndex = oExpectedVertexIDPairs.IndexOf(sVertexIDPair);
+
+            Assert.IsTrue(iIndex >= 0);
+
+            oExpectedVertexIDPairs.RemoveAt(iIndex);
+        }
+
+        Assert.AreEqual(0, oExpectedVertexIDPairs.Count);
+    }
+
+    //*************************************************************************
+    //  Method: TestRemoveDuplicates6()
+    //
+    /// <summary>
+    /// Tests the RemoveDuplicates() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestRemoveDuplicates6()
+    {
+        // Undirected graph, many duplicates.
+
+        InitializeGraph(GraphDirectedness.Undirected);
+
+        IVertex[] aoVertices = AddVertices(10000);
+
+        for (Int32 i = 0; i < aoVertices.Length; i++)
+        {
+            aoVertices[i].Name = i.ToString(CultureInfo.InvariantCulture);
+        }
+
+        for (Int32 i = 0; i < 10000; i++)
+        {
+            m_oEdgeCollection.Add(aoVertices[0], aoVertices[1], false);
+            m_oEdgeCollection.Add(aoVertices[2], aoVertices[3], false);
+            m_oEdgeCollection.Add(aoVertices[3], aoVertices[4], false);
+
+            m_oEdgeCollection.Add(aoVertices[1], aoVertices[0], false);
+            m_oEdgeCollection.Add(aoVertices[3], aoVertices[2], false);
+            m_oEdgeCollection.Add(aoVertices[4], aoVertices[3], false);
+        }
+
+        m_oEdgeCollection.Add(aoVertices[5], aoVertices[6], false);
+
+        m_oEdgeCollection.RemoveDuplicates();
+
+        List<String> oExpectedVertexIDPairs = new List<String>( new String[] {
+            "0-1",
+            "2-3",
+            "3-4",
+            "5-6",
+            } );
+
+        Assert.AreEqual(oExpectedVertexIDPairs.Count, m_oEdgeCollection.Count);
+
+        foreach (IEdge oEdge in m_oEdgeCollection)
+        {
+            String sVertex1Name = oEdge.Vertices[0].Name;
+            String sVertex2Name = oEdge.Vertices[1].Name;
+
+            String sVertexIDPair = (sVertex1Name.CompareTo(sVertex2Name) < 0) ?
+                sVertex1Name + "-" + sVertex2Name
+                :
+                sVertex2Name + "-" + sVertex1Name
+                ;
+
+            Int32 iIndex = oExpectedVertexIDPairs.IndexOf(sVertexIDPair);
+
+            Assert.IsTrue(iIndex >= 0);
+
+            oExpectedVertexIDPairs.RemoveAt(iIndex);
+        }
+
+        Assert.AreEqual(0, oExpectedVertexIDPairs.Count);
+    }
+
+    //*************************************************************************
     //  Method: TestToString()
     //
     /// <summary>
@@ -3223,35 +3349,7 @@ public class EdgeCollectionTest : Object
         GraphDirectedness eDirectedness
     )
     {
-        InitializeGraph(eDirectedness, GraphRestrictions.None);
-    }
-
-    //*************************************************************************
-    //  Method: InitializeGraph()
-    //
-    /// <summary>
-    /// Initializes m_oGraph and related member fields.
-    /// </summary>
-    ///
-    /// <param name="eDirectedness">
-    /// Directedness of m_oGraph.
-    /// </param>
-    ///
-    /// <param name="eRestrictions">
-    /// Restrictions to apply to m_oGraph.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    InitializeGraph
-    (
-        GraphDirectedness eDirectedness,
-        GraphRestrictions eRestrictions
-    )
-    {
-        m_oGraph = new Graph(eDirectedness, eRestrictions);
-
-        m_oGraph.PerformExtraValidations = true;
+        m_oGraph = new Graph(eDirectedness);
 
         Debug.Assert(m_oGraph.Edges is EdgeCollection);
 
@@ -3385,8 +3483,6 @@ public class EdgeCollectionTest : Object
         Debug.Assert(iVerticesToAdd >= 0);
         Debug.Assert(iOffset >= 0);
 
-        m_oGraph.PerformExtraValidations = false;
-
         IEdge [] aoAddedEdges = AddEdges(
             iVerticesToAdd, GraphDirectedness.Directed, AddOverload.IEdge);
 
@@ -3444,8 +3540,6 @@ public class EdgeCollectionTest : Object
     )
     {
         Debug.Assert(iVerticesToAdd >= 0);
-
-        m_oGraph.PerformExtraValidations = false;
 
         IEdge [] aoAddedEdges = AddEdges(
             iVerticesToAdd, GraphDirectedness.Directed, AddOverload.IEdge);

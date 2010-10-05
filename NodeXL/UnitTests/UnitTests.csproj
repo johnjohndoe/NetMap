@@ -49,8 +49,9 @@
     <Compile Include="Adapters\GraphAdapters\GraphML\GraphMLGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\Pajek\PajekGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\SimpleGraphAdapterTest.cs" />
-    <Compile Include="Algorithms\Miscellaneous\ConnectedComponentCalculatorTest.cs" />
+    <Compile Include="Algorithms\GraphMetricCalculators\ConnectedComponentCalculatorTest.cs" />
     <Compile Include="Algorithms\Miscellaneous\DuplicateEdgeDetectorTest.cs" />
+    <Compile Include="Algorithms\Miscellaneous\SubgraphCalculatorTest.cs" />
     <Compile Include="Core\Collections\EdgeCollectionEnumeratorTest.cs" />
     <Compile Include="Core\Collections\EdgeCollectionTest.cs" />
     <Compile Include="Core\Collections\MetadataProviderTest.cs" />

@@ -26,12 +26,6 @@ namespace Microsoft.NodeXL.Algorithms
 /// entire graph.
 ///
 /// <para>
-/// The metric values are provided as a Dictionary&lt;Int32, Double&gt;.  There
-/// is one key/value pair for each vertex in the graph.  The key is the
-/// IVertex.ID and the value is the vertex's metric, as a Double.
-/// </para>
-///
-/// <para>
 /// If a vertex is isolated, its metric value is zero.
 /// </para>
 ///
@@ -39,7 +33,7 @@ namespace Microsoft.NodeXL.Algorithms
 //*****************************************************************************
 
 public abstract class OneSnapGraphMetricCalculatorBase :
-    GraphMetricCalculatorBase
+    OneDoubleGraphMetricCalculatorBase
 {
     //*************************************************************************
     //  Constructor: OneSnapGraphMetricCalculatorBase()
@@ -108,9 +102,8 @@ public abstract class OneSnapGraphMetricCalculatorBase :
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread, and provides the metrics in
-    /// a type-safe manner.
+    /// Attempts to calculate the graph metrics while optionally running on a
+    /// background thread.
     /// </summary>
     ///
     /// <param name="graph">
@@ -124,8 +117,9 @@ public abstract class OneSnapGraphMetricCalculatorBase :
     /// </param>
     ///
     /// <param name="graphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
+    /// Where the graph metrics get stored if true is returned.  There is one
+    /// key/value pair for each vertex in the graph.  The key is the IVertex.ID
+    /// and the value is the vertex's metric, as a Double.
     /// </param>
     ///
     /// <returns>
@@ -134,7 +128,7 @@ public abstract class OneSnapGraphMetricCalculatorBase :
     /// </returns>
     //*************************************************************************
 
-    public Boolean
+    public override Boolean
     TryCalculateGraphMetrics
     (
         IGraph graph,
@@ -143,74 +137,25 @@ public abstract class OneSnapGraphMetricCalculatorBase :
     )
     {
         Debug.Assert(graph != null);
-
-        Object oGraphMetricsAsObject;
-
-        Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
-            out oGraphMetricsAsObject);
-
-        graphMetrics = ( Dictionary<Int32, Double> )oGraphMetricsAsObject;
-
-        return (bReturn);
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetricsCore()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method, or null if
-    /// the method is being called by some other thread.
-    /// </param>
-    ///
-    /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected override Boolean
-    TryCalculateGraphMetricsCore
-    (
-        IGraph oGraph,
-        BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
-    )
-    {
-        Debug.Assert(oGraph != null);
         AssertValid();
 
         Stopwatch oStopwatch = Stopwatch.StartNew();
 
-        IVertexCollection oVertices = oGraph.Vertices;
+        IVertexCollection oVertices = graph.Vertices;
 
         Dictionary<Int32, Double> oGraphMetricDictionary =
             new Dictionary<Int32, Double>(oVertices.Count);
 
-        oGraphMetrics = oGraphMetricDictionary;
+        graphMetrics = oGraphMetricDictionary;
 
-        if (oBackgroundWorker != null)
+        if (backgroundWorker != null)
         {
-            if (oBackgroundWorker.CancellationPending)
+            if (backgroundWorker.CancellationPending)
             {
                 return (false);
             }
 
-            ReportProgress(1, 3, oBackgroundWorker);
+            ReportProgress(1, 3, backgroundWorker);
         }
 
         // The code below doesn't calculate metric values for isolates, so
@@ -222,12 +167,12 @@ public abstract class OneSnapGraphMetricCalculatorBase :
             oGraphMetricDictionary.Add(oVertex.ID, 0);
         }
 
-        String sOutputFilePath = CalculateSnapGraphMetrics(oGraph,
+        String sOutputFilePath = CalculateSnapGraphMetrics(graph,
             m_eSnapGraphMetric);
 
-        if (oBackgroundWorker != null)
+        if (backgroundWorker != null)
         {
-            ReportProgress(2, 3, oBackgroundWorker);
+            ReportProgress(2, 3, backgroundWorker);
         }
 
         using ( StreamReader oStreamReader = new StreamReader(

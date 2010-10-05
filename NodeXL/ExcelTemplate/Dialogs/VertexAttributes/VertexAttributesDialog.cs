@@ -98,13 +98,21 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
             NotEditedMarker, String.Empty,
 
+            VertexWorksheetReader.Visibility.ShowIfInAnEdge,
+                oVertexVisibilityConverter.GraphToWorkbook(
+                    VertexWorksheetReader.Visibility.ShowIfInAnEdge),
+
             VertexWorksheetReader.Visibility.Skip,
                 oVertexVisibilityConverter.GraphToWorkbook(
                     VertexWorksheetReader.Visibility.Skip),
 
             VertexWorksheetReader.Visibility.Hide,
                 oVertexVisibilityConverter.GraphToWorkbook(
-                    VertexWorksheetReader.Visibility.Hide)
+                    VertexWorksheetReader.Visibility.Hide),
+
+            VertexWorksheetReader.Visibility.Show,
+                oVertexVisibilityConverter.GraphToWorkbook(
+                    VertexWorksheetReader.Visibility.Show)
             );
 
         ( new VertexLabelPositionConverter() ).PopulateComboBox(
@@ -271,11 +279,12 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
                     ( Nullable<VertexWorksheetReader.Visibility> )
                         oSelectedVisibility;
 
-                if (m_oEditedVertexAttributes.Visibility ==
-                    VertexWorksheetReader.Visibility.Skip)
+                if (m_oEditedVertexAttributes.Visibility !=
+                    VertexWorksheetReader.Visibility.Hide)
                 {
-                    // Skipping a vertex involves more than just editing
-                    // vertex metadata.  Force the workbook to be reread.
+                    // Doing anything except hiding a vertex involves more than
+                    // just editing vertex metadata.  Force the workbook to be
+                    // reread.
 
                     m_oEditedVertexAttributes.WorkbookMustBeReread = true;
                 }
@@ -594,11 +603,11 @@ public partial class VertexAttributesDialog : ExcelTemplateForm
 
         this.ShowInformation( String.Format(
 
-            "Changing the Visibility to \"{0}\" causes the workbook to be read"
-            + " into the graph again."
+            "Changing the Visibility to anything except \"{0}\" causes the"
+            + " workbook to be read into the graph again."
             ,
             ( new VertexVisibilityConverter() ).GraphToWorkbook(
-                VertexWorksheetReader.Visibility.Skip)
+                VertexWorksheetReader.Visibility.Hide)
             ) );
     }
 

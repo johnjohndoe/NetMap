@@ -296,7 +296,7 @@ public class DuplicateEdgeMerger : Object
 
             // Has an instance of this edge already been found?
 
-            String sVertexNamePair = DuplicateEdgeDetector.GetVertexNamePair(
+            String sVertexNamePair = Edge.GetVertexNamePair(
                 sVertex1Name, sVertex2Name, bGraphIsDirected);
 
             Int32 iFirstInstanceRowOneBased;

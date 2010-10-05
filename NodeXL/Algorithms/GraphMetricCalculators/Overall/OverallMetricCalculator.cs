@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.ComponentModel;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.NodeXL.Core;
 
@@ -18,16 +18,8 @@ namespace Microsoft.NodeXL.Algorithms
 /// </summary>
 ///
 /// <remarks>
-/// The overall metrics are provided as an <see cref="OverallMetrics" />
-/// object.
-///
-/// <para>
-/// The calculations for graph density skip all self-loops, which would render
-/// the density invalid.  The graph density is rendered invalid if the graph
-/// has duplicate edges, however.  You can check for duplicate edges with <see
-/// cref="DuplicateEdgeDetector" />.
-/// </para>
-///
+/// The calculations for <see cref="OverallMetrics.GraphDensity" /> skip all
+/// self-loops and duplicate edges, which would render the density invalid.
 /// </remarks>
 //*****************************************************************************
 
@@ -75,12 +67,44 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
+    //  Method: CalculateGraphMetrics()
+    //
+    /// <summary>
+    /// Calculate the graph metrics.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <returns>
+    /// The graph metrics.
+    /// </returns>
+    //*************************************************************************
+
+    public OverallMetrics
+    CalculateGraphMetrics
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        OverallMetrics oGraphMetrics;
+
+        TryCalculateGraphMetrics(graph, null, out oGraphMetrics);
+
+        return (oGraphMetrics);
+    }
+
+    //*************************************************************************
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread, and provides the metrics in
-    /// a type-safe manner.
+    /// Attempts to calculate the graph metrics while optionally running on a
+    /// background thread.
     /// </summary>
     ///
     /// <param name="graph">
@@ -93,9 +117,8 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     /// the method is being called by some other thread.
     /// </param>
     ///
-    /// <param name="overallMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
+    /// <param name="graphMetrics">
+    /// Where the graph metrics get stored if true is returned.  
     /// </param>
     ///
     /// <returns>
@@ -109,98 +132,36 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     (
         IGraph graph,
         BackgroundWorker backgroundWorker,
-        out OverallMetrics overallMetrics
+        out OverallMetrics graphMetrics
     )
     {
         Debug.Assert(graph != null);
-
-        Object oGraphMetricsAsObject;
-
-        Boolean bReturn = TryCalculateGraphMetricsCore(graph, backgroundWorker,
-            out oGraphMetricsAsObject);
-
-        overallMetrics = (OverallMetrics)oGraphMetricsAsObject;
-
-        return (bReturn);
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateGraphMetricsCore()
-    //
-    /// <summary>
-    /// Attempts to calculate a set of one or more related metrics while
-    /// optionally running on a background thread.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oBackgroundWorker">
-    /// The BackgroundWorker whose thread is calling this method, or null if
-    /// the method is being called by some other thread.
-    /// </param>
-    ///
-    /// <param name="oGraphMetrics">
-    /// Where the graph metrics get stored if true is returned.  See the class
-    /// notes for details on the type.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected override Boolean
-    TryCalculateGraphMetricsCore
-    (
-        IGraph oGraph,
-        BackgroundWorker oBackgroundWorker,
-        out Object oGraphMetrics
-    )
-    {
-        Debug.Assert(oGraph != null);
         AssertValid();
 
-        oGraphMetrics = null;
+        graphMetrics = null;
 
-        if (oBackgroundWorker != null)
+        if (backgroundWorker != null)
         {
-            if (oBackgroundWorker.CancellationPending)
+            if (backgroundWorker.CancellationPending)
             {
                 return (false);
             }
 
-            ReportProgress(1, 3, oBackgroundWorker);
+            ReportProgress(1, 3, backgroundWorker);
         }
 
-        Int32 iVertices = oGraph.Vertices.Count;
-        Int32 iEdges = oGraph.Edges.Count;
-        Int32 iSelfLoops = CountSelfLoops(oGraph);
-
-        // The definition of graph density for an undirected graph is given
-        // here:
-        //
-        // http://en.wikipedia.org/wiki/Dense_graph
-        //
-        // For directed graphs, the equation must be divided by 2 to account
-        // for the doubled number of possible edges.
-        //
-        // The equation doesn't take self-loops into account.  They should not
-        // be included.
-
-        Int32 iNonSelfLoops = iEdges - iSelfLoops;
-
         DuplicateEdgeDetector oDuplicateEdgeDetector =
-            new DuplicateEdgeDetector(oGraph);
+            new DuplicateEdgeDetector(graph);
+
+        Int32 iVertices = graph.Vertices.Count;
+        Int32 iEdges = graph.Edges.Count;
+        Int32 iSelfLoops = CountSelfLoops(graph);
 
         Int32 iConnectedComponents, iSingleVertexConnectedComponents,
             iMaximumConnectedComponentVertices,
             iMaximumConnectedComponentEdges;
 
-        CalculateConnectedComponentMetrics(oGraph, out iConnectedComponents,
+        CalculateConnectedComponentMetrics(graph, out iConnectedComponents,
             out iSingleVertexConnectedComponents,
             out iMaximumConnectedComponentVertices,
             out iMaximumConnectedComponentEdges);
@@ -208,22 +169,25 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
         Nullable<Int32> iMaximumGeodesicDistance;
         Nullable<Double> dAverageGeodesicDistance;
 
-        if (oBackgroundWorker != null)
+        if (backgroundWorker != null)
         {
-            ReportProgress(2, 3, oBackgroundWorker);
+            ReportProgress(2, 3, backgroundWorker);
         }
 
-        CalculateGeodesicDistances(oGraph, out iMaximumGeodesicDistance,
+        CalculateGeodesicDistances(graph, out iMaximumGeodesicDistance,
             out dAverageGeodesicDistance);
 
         OverallMetrics oOverallMetrics = new OverallMetrics(
-            oGraph.Directedness,
+            graph.Directedness,
             oDuplicateEdgeDetector.UniqueEdges,
             oDuplicateEdgeDetector.EdgesWithDuplicates,
-            iEdges,
             iSelfLoops,
             iVertices,
-            CalculateGraphDensity(oGraph, iVertices, iEdges, iSelfLoops),
+
+            CalculateGraphDensity(graph, iVertices,
+                oDuplicateEdgeDetector.
+                    TotalEdgesAfterMergingDuplicatesNoSelfLoops),
+
             iConnectedComponents,
             iSingleVertexConnectedComponents,
             iMaximumConnectedComponentVertices,
@@ -232,7 +196,7 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
             dAverageGeodesicDistance
             );
 
-        oGraphMetrics = oOverallMetrics;
+        graphMetrics = oOverallMetrics;
 
         return (true);
     }
@@ -290,12 +254,9 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     /// The number of vertices in the graph.
     /// </param>
     ///
-    /// <param name="iEdges">
-    /// The number of edges in the graph.
-    /// </param>
-    ///
-    /// <param name="iSelfLoops">
-    /// The number of self-loops in the graph.
+    /// <param name="iTotalEdgesAfterMergingDuplicatesNoSelfLoops">
+    /// The total number of edges the graph would have if its duplicate edges
+    /// were merged and all self-loops were removed.
     /// </param>
     ///
     /// <returns>
@@ -308,14 +269,12 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
     (
         IGraph oGraph,
         Int32 iVertices,
-        Int32 iEdges,
-        Int32 iSelfLoops
+        Int32 iTotalEdgesAfterMergingDuplicatesNoSelfLoops
     )
     {
         Debug.Assert(oGraph != null);
         Debug.Assert(iVertices >= 0);
-        Debug.Assert(iEdges >= 0);
-        Debug.Assert(iSelfLoops >= 0);
+        Debug.Assert(iTotalEdgesAfterMergingDuplicatesNoSelfLoops >= 0);
         AssertValid();
 
         // The definition of graph density for an undirected graph is given
@@ -326,10 +285,8 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
         // For directed graphs, the equation must be divided by 2 to account
         // for the doubled number of possible edges.
         //
-        // The equation doesn't take self-loops into account.  They should not
-        // be included.
-
-        Int32 iNonSelfLoops = iEdges - iSelfLoops;
+        // The equation doesn't take self-loops or duplicates into account.
+        // They should not be included.
 
         Nullable<Double> dGraphDensity = null;
 
@@ -337,7 +294,8 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
         {
             Double dVertices = (Double)iVertices;
 
-            dGraphDensity = (2 * (Double)iNonSelfLoops) /
+            dGraphDensity =
+                (2 * (Double)iTotalEdgesAfterMergingDuplicatesNoSelfLoops) /
                 ( dVertices * (dVertices - 1) );
 
             if (oGraph.Directedness == GraphDirectedness.Directed)
@@ -397,9 +355,12 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
         Debug.Assert(oGraph != null);
         AssertValid();
 
-        List< LinkedList<IVertex> > oConnectedComponents =
-            ConnectedComponentCalculator.GetStronglyConnectedComponents(
-                oGraph);
+        ConnectedComponentCalculator oConnectedComponentCalculator =
+            new ConnectedComponentCalculator();
+
+        IList< LinkedList<IVertex> > oConnectedComponents =
+            oConnectedComponentCalculator.CalculateStronglyConnectedComponents(
+                oGraph, true);
 
         iConnectedComponents = oConnectedComponents.Count;
         iSingleVertexConnectedComponents = 0;
@@ -461,7 +422,7 @@ public class OverallMetricCalculator : GraphMetricCalculatorBase
         iMaximumGeodesicDistance = new Nullable<Int32>();
         dAverageGeodesicDistance = new Nullable<Double>();
 
-        if (oGraph.Vertices.Count == 0)
+        if (oGraph.Vertices.Count == 0 || oGraph.Edges.Count == 0)
         {
             return;
         }

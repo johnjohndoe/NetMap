@@ -158,9 +158,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oDirectedVertexC, m_oDirectedVertexWithNullName, true);
 
         Assert.IsFalse(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(5, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(5, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(0, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -192,9 +194,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oDirectedVertexA, m_oDirectedVertexB, true);
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(6, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(4, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(2, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -226,9 +230,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oDirectedVertexB, m_oDirectedVertexA, true);
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(6, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(4, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(2, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -260,9 +266,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oDirectedVertexA, m_oDirectedVertexA, true);
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(6, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(4, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(2, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -294,9 +302,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oDirectedVertexC, m_oDirectedVertexWithNullName, true);
 
         Assert.IsFalse(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(5, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(5, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(0, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -328,9 +338,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oDirectedVertexWithNullName, m_oDirectedVertexC, true);
 
         Assert.IsFalse(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(5, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(5, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(0, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -368,9 +380,11 @@ public class DuplicateEdgeDetectorTest : Object
 
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(13, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(1, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(12, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(3, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -401,9 +415,11 @@ public class DuplicateEdgeDetectorTest : Object
             false);
 
         Assert.IsFalse(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(4, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(4, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(0, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(2, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -436,9 +452,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oUndirectedVertexA, m_oUndirectedVertexB, false);
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(5, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(3, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(2, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(2, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -471,9 +489,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oUndirectedVertexB, m_oUndirectedVertexA, false);
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(5, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(3, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(2, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(2, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -507,9 +527,11 @@ public class DuplicateEdgeDetectorTest : Object
             false);
 
         Assert.IsFalse(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(4, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(4, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(0, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(2, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -543,9 +565,11 @@ public class DuplicateEdgeDetectorTest : Object
             false);
 
         Assert.IsFalse(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(4, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(4, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(0, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
+
+        Assert.AreEqual(2, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
     //*************************************************************************
@@ -579,77 +603,11 @@ public class DuplicateEdgeDetectorTest : Object
         oEdges.Add(m_oUndirectedVertexC, m_oUndirectedVertexD, false);
 
         Assert.IsTrue(m_oDuplicateEdgeDetector.GraphContainsDuplicateEdges);
-        Assert.AreEqual(9, m_oDuplicateEdgeDetector.Edges);
         Assert.AreEqual(2, m_oDuplicateEdgeDetector.UniqueEdges);
         Assert.AreEqual(7, m_oDuplicateEdgeDetector.EdgesWithDuplicates);
-    }
 
-    //*************************************************************************
-    //  Method: TestGetVertexNamePair()
-    //
-    /// <summary>
-    /// Tests the GetVertexNamePair() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetVertexNamePair()
-    {
-        Assert.AreEqual( "A\vB",
-            DuplicateEdgeDetector.GetVertexNamePair("A", "B", true) );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetVertexNamePair2()
-    //
-    /// <summary>
-    /// Tests the GetVertexNamePair() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetVertexNamePair2()
-    {
-        Assert.AreEqual( "B\vA",
-            DuplicateEdgeDetector.GetVertexNamePair("B", "A", true) );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetVertexNamePair3()
-    //
-    /// <summary>
-    /// Tests the GetVertexNamePair() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetVertexNamePair3()
-    {
-        Assert.AreEqual( "A\vB",
-            DuplicateEdgeDetector.GetVertexNamePair("A", "B", false) );
-    }
-
-    //*************************************************************************
-    //  Method: TestGetVertexNamePair4()
-    //
-    /// <summary>
-    /// Tests the GetVertexNamePair() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetVertexNamePair4()
-    {
-        Assert.AreEqual( "A\vB",
-            DuplicateEdgeDetector.GetVertexNamePair("B", "A", false) );
+        Assert.AreEqual(2, m_oDuplicateEdgeDetector.
+            TotalEdgesAfterMergingDuplicatesNoSelfLoops);
     }
 
 

@@ -75,6 +75,12 @@ GraphMetrics
     /// </summary>
 
     OverallMetrics = 128,
+
+    /// <summary>
+    /// Group metrics.
+    /// </summary>
+
+    GroupMetrics = 256,
 }
 
 }

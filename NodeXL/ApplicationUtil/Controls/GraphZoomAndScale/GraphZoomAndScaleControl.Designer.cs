@@ -31,7 +31,7 @@ namespace Microsoft.NodeXL.ApplicationUtil
             this.label1 = new System.Windows.Forms.Label();
             this.tbGraphZoom = new System.Windows.Forms.TrackBar();
             this.label2 = new System.Windows.Forms.Label();
-            this.tbGraphScale = new System.Windows.Forms.TrackBar();
+            this.tbGraphScale = new Microsoft.Research.CommunityTechnologies.AppLib.TrackBarWithDelay();
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbGraphScale)).BeginInit();
             this.SuspendLayout();
@@ -99,6 +99,6 @@ namespace Microsoft.NodeXL.ApplicationUtil
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar tbGraphZoom;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TrackBar tbGraphScale;
+        private Microsoft.Research.CommunityTechnologies.AppLib.TrackBarWithDelay tbGraphScale;
     }
 }
